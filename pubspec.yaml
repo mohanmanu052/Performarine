@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   uuid: ^3.0.7
-  font_awesome_flutter: ^9.2.0
+  font_awesome_flutter: ^10.2.1
   path: ^1.8.0
   flutter_speed_dial: ^6.2.0
   sqflite: ^2.0.1
@@ -22,12 +22,12 @@ dependencies:
   country_picker: ^2.0.16
   pin_code_fields: ^7.4.0
   #images_picker: ^1.2.11
-  lottie: ^1.4.2
+  lottie: ^2.0.0
   sliding_up_panel: ^2.0.0+1
   step_progress_indicator: ^1.0.2
   package_info_plus: ^3.0.1
   get: ^4.6.5
-  animate_do: ^2.1.0
+  animate_do: ^3.0.2
   smooth_page_indicator: ^1.0.0+2
   provider: ^6.0.4
   http: ^0.13.5
@@ -36,7 +36,7 @@ dependencies:
   permission_handler: ^10.0.0
   device_info_plus: ^8.0.0
   google_sign_in: ^5.4.2
-  firebase_core: ^1.24.0
+  firebase_core: ^2.3.0
   sign_in_with_apple: ^4.1.0
   shared_preferences: ^2.0.15
   cached_network_image: ^3.2.1
