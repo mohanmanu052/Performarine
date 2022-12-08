@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class tripselector extends StatelessWidget {
-  const tripselector({
+class TripSelector extends StatelessWidget {
+  const TripSelector({
     Key? key,
     required this.trips,
     required this.selectedIndex,
@@ -17,7 +17,7 @@ class tripselector extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Select breed',
+          'Select Trip',
           style: TextStyle(
             fontSize: 16.0,
             fontWeight: FontWeight.w500,

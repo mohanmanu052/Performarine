@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sqflite_example/common_widgets/age_slider.dart';
-import 'package:flutter_sqflite_example/common_widgets/breed_selector.dart';
+// import 'package:flutter_sqflite_example/common_widgets/Trip_selector.dart';
 import 'package:flutter_sqflite_example/common_widgets/color_picker.dart';
-import 'package:flutter_sqflite_example/models/breed.dart';
-import 'package:flutter_sqflite_example/models/dog.dart';
+import 'package:flutter_sqflite_example/models/trip.dart';
+// import 'package:flutter_sqflite_example/models/Trip.dart';
+import 'package:flutter_sqflite_example/models/vessel.dart';
 import 'package:flutter_sqflite_example/services/database_service.dart';
 import 'package:uuid/uuid.dart';
 
@@ -44,43 +45,43 @@ class _VesselFormPageState extends State<VesselFormPage> {
     Color(0xFF862F07),
     Color(0xFF2F1B15),
   ];
-  static final List<Breed> _trips = [];
+  static final List<Trip> _trips = [];
 
   final DatabaseService _databaseService = DatabaseService();
 
   int _selectedAge = 0;
   int _selectedColor = 0;
-  int _selectedBreed = 0;
+  int _selectedTrip = 0;
 
   @override
   void initState() {
     super.initState();
     if (widget.vessel != null) {
-      _nameController.text = widget.vessel!.vesselName.toString();
+      _nameController.text = widget.vessel!.name.toString();
       _modelController.text = widget.vessel!.model.toString();
-      _builderController.text =  widget.vessel!.builder.toString();
-      _registrationNumberController.text = widget.vessel!.registrationNumber.toString();
-      _mmsiController.text = widget.vessel!.mmsi.toString();
+      _builderController.text =  widget.vessel!.builderName.toString();
+      _registrationNumberController.text = widget.vessel!.regNumber.toString();
+      _mmsiController.text = widget.vessel!.mMSI.toString();
       _engineTypeController.text = widget.vessel!.engineType.toString();
       _fuelCapacityController.text = widget.vessel!.fuelCapacity.toString();
       _batteryCapacityController.text = widget.vessel!.batteryCapacity.toString();
       _weightController.text = widget.vessel!.weight.toString();
-      _freeboardController.text = widget.vessel!.freeboard.toString();
+      _freeboardController.text = widget.vessel!.freeBoard.toString();
       _lengthController.text = widget.vessel!.lengthOverall.toString();
       _beamController.text = widget.vessel!.beam.toString();
       _draftController.text = widget.vessel!.draft.toString();
-      _sizeController.text = widget.vessel!.size.toString();
+      _sizeController.text = widget.vessel!.vesselSize.toString();
       _capacityController.text = widget.vessel!.capacity.toString();
       _builtyearController.text = widget.vessel!.builtYear.toString();
     }
     // debugPrint("freeboard: ${_freeboardController.text.runtimeType}");
   }
 
-  Future<List<Breed>> _gettrips() async {
+  Future<List<Trip>> _gettrips() async {
     final trips = await _databaseService.trips();
     if (_trips.length == 0) _trips.addAll(trips);
     if (widget.dog != null) {
-      _selectedBreed = _trips.indexWhere((e) => e.id == widget.dog!.breedId);
+      _selectedTrip = _trips.indexWhere((e) => e.id == widget.dog!.TripId);
     }
     return _trips;
   }
@@ -89,12 +90,12 @@ class _VesselFormPageState extends State<VesselFormPage> {
   //   final name = _nameController.text;
   //   final age = _selectedAge;
   //   // final color = _colors[_selectedColor];
-  //   final breed = _trips[_selectedBreed];
+  //   final Trip = _trips[_selectedTrip];
   //
   //   // Add save code here
   //   widget.dog == null
   //       ? await _databaseService.insertDog(
-  //           Dog(name: name, age: age,color: , breedId: breed.id!),
+  //           Dog(name: name, age: age,color: , TripId: Trip.id!),
   //         )
   //       : await _databaseService.updateDog(
   //           Dog(
@@ -102,7 +103,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
   //             name: name,
   //             age: age,
   //             // color: color,
-  //             breedId: breed.id!,
+  //             TripId: breed.id!,
   //           ),
   //         );
   //
@@ -135,42 +136,53 @@ class _VesselFormPageState extends State<VesselFormPage> {
             // Dog(name: name, age: age, breedId: breed.id!),
             CreateVessel(
               id:uuid.v1(),
-              vesselName: vesselName,
-              builder: builder,
+              name: vesselName,
+              builderName: builder,
               model: model,
-              registrationNumber: registrationNumber,
-              mmsi: mmsi,
+              regNumber: registrationNumber,
+              mMSI: mmsi,
               engineType: engineType,
               fuelCapacity: fuelCapacity,
               batteryCapacity: batteryCapacity,
               weight: int.parse(weight),
-              freeboard: double.parse(freeBoard),
+              freeBoard: double.parse(freeBoard),
               lengthOverall: double.parse(lengthOverall),
               beam: double.parse(beam),
               draft: double.parse(draft),
-              size: double.parse(size),
+              vesselSize: double.parse(size),
               capacity: int.parse(capacity),
-              builtYear: int.parse(builtYear)
+              builtYear: int.parse(builtYear),
+              isSync: 0,
+              vesselStatus: 1,
+              //ToDo: Need to add the image urls in base 64 format
+              imageURLs: "",
+              createdAt: DateTime.now().toString(),
+              createdBy: "",
+              updatedAt: DateTime.now().toString(),
+              updatedBy: ""
+
           ))
         : await _databaseService.updateVessel(
             CreateVessel(
                 id: widget.vessel!.id,
-                vesselName: vesselName,
-                builder: builder,
+                name: vesselName,
+                builderName: builder,
                 model: model,
-                registrationNumber: registrationNumber,
-                mmsi: mmsi,
+                regNumber: registrationNumber,
+                mMSI: mmsi,
                 engineType: engineType,
                 fuelCapacity: fuelCapacity,
                 batteryCapacity: batteryCapacity,
                 weight: int.parse(weight),
-                freeboard: freeBoard!="null"?double.parse(freeBoard):0.0,
+                freeBoard: freeBoard!="null"?double.parse(freeBoard):0.0,
                 lengthOverall: lengthOverall!="null"?double.parse(lengthOverall):0.0,
                 beam: double.parse(beam),
                 draft: double.parse(draft),
-                size: double.parse(size),
+                vesselSize: double.parse(size),
                 capacity: int.parse(capacity),
-                builtYear: int.parse(builtYear)
+                builtYear: int.parse(builtYear),
+                updatedBy: "",
+                updatedAt: DateTime.now().toString()
             )
             );
 

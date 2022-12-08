@@ -1,14 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:flutter_sqflite_example/common_widgets/dog_builder.dart';
-import 'package:flutter_sqflite_example/common_widgets/breed_builder.dart';
+import 'package:flutter_sqflite_example/common_widgets/trip_builder.dart';
+// import 'package:flutter_sqflite_example/common_widgets/Trip_builder.dart';
 import 'package:flutter_sqflite_example/common_widgets/vessel_builder.dart';
-import 'package:flutter_sqflite_example/models/breed.dart';
-import 'package:flutter_sqflite_example/models/dog.dart';
-import 'package:flutter_sqflite_example/pages/breed_form_page.dart';
-import 'package:flutter_sqflite_example/pages/dogForm.dart';
+import 'package:flutter_sqflite_example/models/trip.dart';
+// import 'package:flutter_sqflite_example/models/Trip.dart';
+import 'package:flutter_sqflite_example/models/vessel.dart';
+import 'package:flutter_sqflite_example/pages/tripStart.dart';
 import 'package:flutter_sqflite_example/pages/vessel_form.dart';
 import 'package:flutter_sqflite_example/pages/vessel_single_view.dart';
 import 'package:flutter_sqflite_example/services/database_service.dart';
@@ -24,23 +22,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final DatabaseService _databaseService = DatabaseService();
 
-  Future<List<Dog>> _getDogs() async {
-    return await _databaseService.dogs();
-  }
   Future<List<CreateVessel>> _getVessels() async {
-    // List<CreateVessel> result=await _databaseService.vessels();
-    // debugPrint("result.toString():${jsonDecode(result[0].model.toString())}");
     return await _databaseService.vessels();
   }
 
-  Future<List<Breed>> _gettrips() async {
+  Future<List<Trip>> _gettrips() async {
     return await _databaseService.trips();
   }
 
-  Future<void> _onDogDelete(Dog dog) async {
-    await _databaseService.deleteDog(dog.id!);
-    setState(() {});
-  }
+
   Future<void> _onVesselDelete(CreateVessel vessel) async {
     await _databaseService.deleteVessel(vessel.id.toString());
     setState(() {});
@@ -95,23 +85,8 @@ class _HomePageState extends State<HomePage> {
               },
               onDelete: _onVesselDelete,
             ),
-            // DogBuilder(
-            //   future: _getDogs(),
-            //   onEdit: (value) {
-            //     {
-            //       Navigator.of(context)
-            //           .push(
-            //             MaterialPageRoute(
-            //               builder: (_) => VesselFormPage(dog: value),
-            //               fullscreenDialog: true,
-            //             ),
-            //           )
-            //           .then((_) => setState(() {}));
-            //     }
-            //   },
-            //   onDelete: _onDogDelete,
-            // ),
-            BreedBuilder(
+
+            TripBuilder(
               future: _gettrips(),
             ),
           ],
@@ -164,6 +139,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: Icon(Icons.add)
             ),
+            // ToDo: floating button elements
             SpeedDialChild(
               child: FaIcon(FontAwesomeIcons.ship),
               backgroundColor: Colors.blue,
@@ -176,17 +152,16 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context)
                     .push(
                   MaterialPageRoute(
-                    builder: (_) => BreedFormPage(vessels: vessel,),
+                    builder: (_) => StartTrip(vessels: vessel,context: context,),
                     fullscreenDialog: true,
                   ),
-                )
-                    .then((_) => setState(() {}));
+                );
               },
               onLongPress: () {
                 Navigator.of(context)
                     .push(
                   MaterialPageRoute(
-                    builder: (_) => BreedFormPage(),
+                    builder: (_) => StartTrip(context: context,),
                     fullscreenDialog: true,
                   ),
                 )
@@ -194,7 +169,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
 
-            //add more menu item children here
+            // add more menu item children here
           ],
         ),
 

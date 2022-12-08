@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sqflite_example/models/dog.dart';
+import 'package:flutter_sqflite_example/models/trip.dart';
+import 'package:flutter_sqflite_example/models/vessel.dart';
 import 'package:flutter_sqflite_example/pages/vessel_single_view.dart';
 import 'package:flutter_sqflite_example/services/database_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -22,10 +23,10 @@ class VesselBuilder extends StatefulWidget {
 }
 
 class _VesselBuilderState extends State<VesselBuilder> {
-  Future<String> getBreedName(int id) async {
+  Future<String> getTripName(int id) async {
     final DatabaseService _databaseService = DatabaseService();
-    final breed = await _databaseService.breed(id);
-    return breed.vesselName;
+    final Trip = await _databaseService.getTrip(id);
+    return Trip.vesselId!;
   }
 
   @override
@@ -82,7 +83,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      vessel.vesselName.toString(),
+                      vessel.name.toString(),
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w500,
@@ -91,9 +92,9 @@ class _VesselBuilderState extends State<VesselBuilder> {
                     SizedBox(height: 4.0),
                     //ToDo: dynamic query featch from table
                     // FutureBuilder<String>(
-                    //   future: getBreedName(),
+                    //   future: getTripName(),
                     //   builder: (context, snapshot) {
-                    //     return Text('Breed: ${snapshot.data}');
+                    //     return Text('Trip: ${snapshot.data}');
                     //   },
                     // ),
                     SizedBox(height: 4.0),
@@ -101,8 +102,8 @@ class _VesselBuilderState extends State<VesselBuilder> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('MMSI: ${vessel.mmsi.toString()}}'),
-                        Text('Builder:  ${vessel.builder.toString()}'),
+                        Text('MMSI: ${vessel.mMSI.toString()}}'),
+                        Text('Builder:  ${vessel.builderName.toString()}'),
                       ],
                     ),
                   ],
