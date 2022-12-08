@@ -1,6 +1,10 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sqflite_example/models/dog.dart';
+import 'package:flutter_sqflite_example/models/vessel.dart';
+import 'package:flutter_sqflite_example/pages/tripStart.dart';
+import 'package:flutter_sqflite_example/services/database_service.dart';
+import 'package:flutter_sqflite_example/widgets/common_widgets.dart';
+import 'package:flutter_sqflite_example/widgets/status_tag.dart';
 
 class VesselSingleView extends StatefulWidget {
  final CreateVessel? vessel;
@@ -12,11 +16,12 @@ class VesselSingleView extends StatefulWidget {
 }
 
 class VesselSingleViewState extends State<VesselSingleView> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.vessel!.vesselName}"),
+        title: Text("${widget.vessel!.name}"),
       ),
       body: ExpandableTheme(
         data: const ExpandableThemeData(
@@ -54,6 +59,7 @@ class ExpansionCard extends StatefulWidget {
 }
 
 class _ExpansionCardState extends State<ExpansionCard> {
+  List<CreateVessel>? vessel=[];
   @override
   Widget build(BuildContext context) {
     return ExpandableNotifier(
@@ -104,7 +110,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                       header: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: Text(
-                          "${widget.vessel!.vesselName!.toUpperCase()}",
+                          "${widget.vessel!.name!.toUpperCase()}",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -121,6 +127,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                       expanded: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
+
                           Container(
                             padding:EdgeInsets.symmetric(vertical:10),
                             child: Row(
@@ -134,6 +141,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                               ],
                             ),
                           ),
+
                           ListTile(
                             contentPadding: EdgeInsets.all(10),
                             title:Text("Measurements"),
@@ -144,7 +152,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text("Length (LOA) : ${widget.vessel!.lengthOverall}"),
-                                    Text("Freeboard : ${widget.vessel!.freeboard}")
+                                    Text("Freeboard : ${widget.vessel!.freeBoard}")
                                   ],
                                 ),
                                 SizedBox(height: 10,),
@@ -169,7 +177,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                   children: [
                                     Text("Capacity : ${widget.vessel!.capacity}"),
                                     Text("Built Year : ${widget.vessel!.builtYear}"),
-                                    Text("Reg No : ${widget.vessel!.registrationNumber}")
+                                    Text("Reg No : ${widget.vessel!.regNumber}")
                                   ],
                                 ),
                                 SizedBox(height: 10,),
@@ -177,8 +185,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text("Weight : ${widget.vessel!.weight}"),
-                                    Text("Size (hp) : ${widget.vessel!.size}"),
-                                    Text("MMSI : ${widget.vessel!.mmsi}")
+                                    Text("Size (hp) : ${widget.vessel!.vesselSize}"),
+                                    Text("MMSI : ${widget.vessel!.mMSI}")
                                   ],
                                 )
                               ],
@@ -216,8 +224,36 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                 child: Icon(Icons.delete, color: Colors.white),
                               ),
                             ),
-                          ],)
+                          ],),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () async {
+                                // final DatabaseService _databaseService = DatabaseService();
+                                vessel!.add(widget.vessel!);
+                                // print(vessel[0].vesselName);
+                                Navigator.of(context)
+                                    .push(
+                                  MaterialPageRoute(
+                                    builder: (_) => StartTrip(vessels: vessel,context: context),
+                                    fullscreenDialog: true,
+                                  ),
+                                );
+                              },
+                              child: Container(
 
+                                height: 40.0,
+                                width: MediaQuery.of(context).size.width,
+                                color: Colors.teal,
+                                // decoration: BoxDecoration(
+                                //   shape: BoxShape.circle,
+                                //   color: Colors.grey[200],
+                                // ),
+                                alignment: Alignment.center,
+                                child: Text("Start Trip",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+                              ),
+                            ),
+                          ),
 
                         ],
                       ),

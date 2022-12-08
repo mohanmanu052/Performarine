@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sqflite_example/models/dog.dart';
+import 'package:flutter_sqflite_example/models/vessel.dart';
 import 'package:flutter_sqflite_example/services/database_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -14,10 +14,10 @@ class DogBuilder extends StatelessWidget {
   final Function(Dog) onEdit;
   final Function(Dog) onDelete;
 
-  Future<String> getBreedName(int id) async {
+  Future<String> getTripName(int id) async {
     final DatabaseService _databaseService = DatabaseService();
-    final breed = await _databaseService.breed(id);
-    return breed.vesselName;
+    final Trip = await _databaseService.getTrip(id);
+    return Trip.vesselId!;
   }
 
   @override
@@ -74,9 +74,9 @@ class DogBuilder extends StatelessWidget {
                   ),
                   SizedBox(height: 4.0),
                   FutureBuilder<String>(
-                    future: getBreedName(dog.breedId),
+                    future: getTripName(dog.TripId),
                     builder: (context, snapshot) {
-                      return Text('Breed: ${snapshot.data}');
+                      return Text('Trip: ${snapshot.data}');
                     },
                   ),
                   SizedBox(height: 4.0),

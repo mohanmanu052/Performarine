@@ -22,7 +22,7 @@ dependencies:
   country_picker: ^2.0.16
   pin_code_fields: ^7.4.0
   #images_picker: ^1.2.11
-  lottie: ^2.0.0
+  lottie:
   sliding_up_panel: ^2.0.0+1
   step_progress_indicator: ^1.0.2
   package_info_plus: ^3.0.1

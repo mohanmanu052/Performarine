@@ -3,18 +3,18 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 
 class Dog {
-  final int? id;
+  final String? id;
   final String name;//vessel name
   final int age;
   final Color color;
-  final int breedId;
+  final int TripId;
 
   Dog({
     this.id,
     required this.name,
     required this.age,
     required this.color,
-    required this.breedId,
+    required this.TripId,
   });
 
   // Convert a Dog into a Map. The keys must correspond to the names of the
@@ -25,7 +25,7 @@ class Dog {
       'name': name,
       'age': age,
       'color': color.value,
-      'breedId': breedId,
+      'TripId': TripId,
     };
   }
 
@@ -35,7 +35,7 @@ class Dog {
       name: map['name'] ?? '',
       age: map['age']?? 0,
       color: Color(map['color']),
-      breedId: map['breedId'] ?? 0,
+      TripId: map['TripId'] ?? 0,
     );
   }
 
@@ -47,65 +47,115 @@ class Dog {
   // each dog when using the print statement.
   @override
   String toString() {
-    return 'Dog(id: $id, name: $name, age: $age, breedId: $breedId)';
+    return 'Dog(id: $id, name: $name, age: $age, TripId: $TripId)';
   }
 }
+//  'id Text PRIMARY KEY, '
+//           'name TEXT, '
+//           'model TEXT, '
+//           'builderName TEXT, '
+//           'regNumber TEXT'
+//           ', mMSI TEXT'
+//           ', engineType TEXT'
+//           ', fuelCapacity TEXT'
+//           ', batteryCapacity TEXT'
+//           ', weight TEXT'
+//           ', imageURLs TEXT'
+//           ', freeBoard DOUBLE,'
+//           ' lengthOverall DOUBLE,'
+//           ' beam DOUBLE, '
+//           'depth DOUBLE, '
+//           'vesselSize INTEGER, '
+//           'capacity INTEGER,'
+//           'builtYear TEXT ,'
+//           'vesselStatus INTEGER DEFAULT 1,'
+//           'isSync INTEGER DEFAULT 0,'
+//           'createdAt TEXT,'
+//           'createdBy TEXT,'
+//           'updatedAt TEXT, '
+//           'updatedBy TEXT '
+
+
 class CreateVessel {
   String? id;
-  String? vesselName;
-  String? builder;
+  String? name;
+  String? builderName;
   String? model;
-  String? registrationNumber;
-  String? mmsi;
+  String? regNumber;
+  String? mMSI;
   String? engineType;
   String? fuelCapacity;
   String? batteryCapacity;
   int? weight;
-  double? freeboard;
+  String? imageURLs;
+  double? freeBoard;
   double? lengthOverall;
   double? beam;
   double? draft;
-  dynamic size;
+  dynamic vesselSize;
   int? capacity;
   dynamic builtYear;
+  int? isSync;
+  int? vesselStatus;
+  String? createdAt;
+  String? createdBy;
+  String? updatedAt;
+  String? updatedBy;
+
 
   CreateVessel(
       {this.id,
-        this.vesselName,
-        this.builder,
+        this.name,
+        this.builderName,
         this.model,
-        this.registrationNumber,
-        this.mmsi,
+        this.regNumber,
+        this.mMSI,
         this.engineType,
         this.fuelCapacity,
         this.batteryCapacity,
         this.weight,
-        this.freeboard,
+        this.freeBoard,
         this.lengthOverall,
         this.beam,
         this.draft,
-        this.size,
+        this.vesselSize,
         this.capacity,
-        this.builtYear});
+        this.builtYear,
+        this.isSync,
+        this.vesselStatus,
+        this.createdAt,
+        this.createdBy,
+        this.updatedAt,
+        this.updatedBy,
+        this.imageURLs
+      });
 
   CreateVessel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    vesselName = json['vesselName'];
-    builder = json['builder'];
+    name = json['name'];
+    builderName = json['builderName'];
     model = json['Model'];
-    registrationNumber = json['registrationNumber'];
-    mmsi = json['mmsi'];
+    regNumber = json['regNumber'];
+    mMSI = json['mMSI'];
     engineType = json['engineType'];
     fuelCapacity = json['fuelCapacity'];
     batteryCapacity = json['batteryCapacity'];
     weight = json['weight'];
-    freeboard = json['freeboard'];
+    freeBoard = json['freeBoard'];
     lengthOverall = json['lengthOverall'];
     beam = json['beam'];
     draft = json['draft'];
-    size = json['size'];
+    vesselSize = json['vesselSize'];
     capacity = json['capacity'];
     builtYear = json['builtYear'];
+    imageURLs=json["imageURLs"];
+    isSync=json["isSync"];
+    vesselStatus=json["vesselStatus"];
+    createdBy=json["createdBy"];
+    createdAt=json["createdAt"];
+    updatedBy=json["updatedBy"];
+    updatedAt=json["updatedAt"];
+
   }
 
 
@@ -114,45 +164,58 @@ class CreateVessel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'vesselName': vesselName,
-      'builder': builder,
+      'name': name,
+      'builderName': builderName,
       'model': model,
-      'registrationNumber': registrationNumber,
-      'mmsi': mmsi,
+      'regNumber': regNumber,
+      'mMSI': mMSI,
       'engineType': engineType,
       'fuelCapacity': fuelCapacity,
       'batteryCapacity': batteryCapacity,
       'weight': weight,
-      'freeboard': freeboard,
+      'freeBoard': freeBoard,
       'lengthOverall': lengthOverall,
       'beam': beam,
       'draft': draft,
-      'size': size,
+      'vesselSize': vesselSize,
       'capacity': capacity,
       'builtYear': builtYear,
-
+      'imageURLs':imageURLs,
+      'isSync':isSync,
+      'vesselStatus':vesselStatus,
+      'createdBy':createdBy,
+      'createdAt':createdAt,
+      'updatedAt':updatedAt,
+      'updatedBy':updatedBy,
     };
   }
 
   factory CreateVessel.fromMap(Map<String, dynamic> map) {
     return CreateVessel(
       id: map['id'].toString(),
-      vesselName: map['vesselName'] ?? '',
-      builder : map['builder'],
+      name: map['name'] ?? '',
+      builderName : map['builderName'],
       model : map['model'],
-      registrationNumber : map['registrationNumber'],
-      mmsi : map['mmsi'],
+      regNumber : map['regNumber'],
+      mMSI : map['mMSI'],
       engineType : map['engineType'],
       fuelCapacity : map['fuelCapacity'],
       batteryCapacity : map['batteryCapacity'],
       weight : 0,
-      freeboard : map['freeBoard'],
+      freeBoard : map['freeBoard'],
       lengthOverall: map['lengthOverall'],
       beam : map['beam'],
       draft : map['draft'],
-      size : map['size']??0.0,
+      vesselSize : map['vesselSize']??0.0,
       capacity : map['capacity'],
       builtYear : map['builtYear'],
+      isSync: map['isSync'],
+      vesselStatus: map['vesselStatus'],
+      imageURLs: map['imageURLs'],
+      createdAt: map['createdAt'],
+      createdBy: map['createdBy'],
+      updatedBy: map['updatedBy'],
+      updatedAt: map['updatedAt'],
     );
   }
 
@@ -164,22 +227,28 @@ class CreateVessel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['vesselName'] = this.vesselName;
-    data['builder'] = this.builder;
+    data['name'] = this.name;
+    data['builderName'] = this.builderName;
     data['model'] = this.model;
-    data['registrationNumber'] = this.registrationNumber;
-    data['mmsi'] = this.mmsi;
+    data['regNumber'] = this.regNumber;
+    data['mMSI'] = this.mMSI;
     data['engineType'] = this.engineType;
     data['fuelCapacity'] = this.fuelCapacity;
     data['batteryCapacity'] = this.batteryCapacity;
     data['weight'] = this.weight;
-    data['freeboard'] = this.freeboard;
+    data['freeBoard'] = this.freeBoard;
     data['lengthOverall'] = this.lengthOverall;
     data['beam'] = this.beam;
     data['draft'] = this.draft;
-    data['size'] = this.size;
+    data['vesselSize'] = this.vesselSize;
     data['capacity'] = this.capacity;
-    data['builtYear'] = this.builtYear;
+    data['isSync'] = this.isSync;
+    data['vesselStatus'] = this.vesselStatus;
+    data['imageURLs'] = this.imageURLs;
+    data['createdAt'] = this.createdAt;
+    data['createdBy'] = this.createdBy;
+    data['updatedBy'] = this.updatedBy;
+    data['updatedAt'] = this.updatedAt;
     return data;
   }
 }

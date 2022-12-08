@@ -202,14 +202,16 @@ class Utils {
 
     try {
       if (await Permission.location.request().isGranted) {
-        if (ModalRoute.of(context)?.isCurrent != null) {
-          if (ModalRoute.of(context)?.isCurrent != true) {
-            Get.back();
-          }
-        }
+        // if (ModalRoute.of(context)?.isCurrent != null) {
+        //   if (ModalRoute.of(context)?.isCurrent != true) {
+        //     // debugPrint("im in the loop:$locationData");
+        //     // Get.back();
+        //   }
+        // }
         ModalRoute.of(context)?.isCurrent != true;
         isPermissionGranted = true;
         locationData = await Utils.getCurrentLocation();
+        debugPrint("im in the loop assigned getCurrentLocation:$locationData");
       } else if (await Permission.location.request().isPermanentlyDenied) {
         isPermissionGranted = false;
         print('PD');
@@ -253,8 +255,13 @@ class Utils {
             });*/
 
         isPermissionGranted = await openAppSettings();
+        debugPrint("isPermissionGranted:$isPermissionGranted");
+        Utils.showActionSnackBar(
+            scaffoldKey, 'Location permissions are denied without permissions we are unable to start the trip', () {
+          // OpenFile.open(directoryPath);
+        });
       } else if (await Permission.location.request().isDenied) {
-        print('D');
+        // print('D');
         isPermissionGranted = false;
         /*showDialog(
             context: scaffoldKey.currentContext!,
@@ -273,6 +280,10 @@ class Utils {
                 },
               );
             });*/
+        Utils.showActionSnackBar(
+            scaffoldKey, 'Location permissions are denied without permissions we are unable to start the trip', () {
+          // OpenFile.open(directoryPath);
+        });
       } else {
         locationData = await getCurrentLocation();
       }
