@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_sqflite_example/models/device_model.dart';
 
 class Trip {
   final String? id;
-
   final String? vesselId;
+  final String? vesselName;
   final String? currentLoad;
+  final String? filePath;
   final String? lat;
   final String? long;
   final String? createdAt;
@@ -15,18 +17,19 @@ class Trip {
   final int? tripStatus;
   String? deviceInfo;
 
-  Trip({
-    this.id,
-    this.vesselId,
-    required this.currentLoad,
-    this.isSync,
-    this.tripStatus,
-    this.updatedAt,
-    this.createdAt,
-    this.deviceInfo,
-    this.lat,
-    this.long
-  });
+  Trip(
+      {this.id,
+      this.vesselId,
+      this.vesselName,
+      required this.currentLoad,
+      this.filePath,
+      this.isSync,
+      this.tripStatus,
+      this.updatedAt,
+      this.createdAt,
+      this.deviceInfo,
+      this.lat,
+      this.long});
 
   // Convert a Trip into a Map. The keys must correspond to the vesselNames of the
   // columns in the database.
@@ -34,7 +37,9 @@ class Trip {
     return {
       'id': id,
       'vesselId': vesselId,
+      'vesselName': vesselName,
       'currentLoad': currentLoad,
+      'filePath': filePath,
       'isSync': isSync,
       'tripStatus': tripStatus,
       'updatedAt': updatedAt,
@@ -47,10 +52,12 @@ class Trip {
 
   factory Trip.fromMap(Map<String, dynamic> map) {
     return Trip(
-      id: map['id']?? 0,
+      id: map['id'] ?? 0,
       vesselId: map['vesselId'] ?? '',
+      vesselName: map['vesselName'] ?? '',
       currentLoad: map['currentLoad'] ?? '',
-      isSync: map['isSync']?.toInt()?? 0,
+      filePath: map['filePath'] ?? '',
+      isSync: map['isSync']?.toInt() ?? 0,
       tripStatus: map['tripStatus']?.toInt() ?? 0,
       updatedAt: map['updatedAt'] ?? '',
       createdAt: map['createdAt'] ?? '',
@@ -70,6 +77,8 @@ class Trip {
   String toString() => 'Trip(id: $id, '
       'currentLoad: $currentLoad,'
       'vesselId: $vesselId,'
+      'vesselName: $vesselName,'
+      'filePath: $filePath,'
       'isSync: $isSync,'
       'deviceInfo: $deviceInfo,'
       'tripStatus: $tripStatus)';

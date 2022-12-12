@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sqflite_example/common_widgets/widgets/common_widgets.dart';
+import 'package:flutter_sqflite_example/common_widgets/widgets/status_tag.dart';
 import 'package:flutter_sqflite_example/models/trip.dart';
-import 'package:flutter_sqflite_example/widgets/common_widgets.dart';
-import 'package:flutter_sqflite_example/widgets/status_tag.dart';
 import 'package:get/get.dart';
 // import 'package:flutter_sqflite_example/models/Trip.dart';
 
@@ -28,7 +28,7 @@ class TripBuilder extends StatelessWidget {
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               final Trip = snapshot.data![index];
-              return _buildTripCard(Trip,index, context);
+              return _buildTripCard(Trip, index, context);
             },
           ),
         );
@@ -36,10 +36,9 @@ class TripBuilder extends StatelessWidget {
     );
   }
 
-  Widget _buildTripCard(Trip trip,int index, BuildContext context) {
+  Widget _buildTripCard(Trip trip, int index, BuildContext context) {
     return Stack(
       children: [
-
         Card(
           child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -54,7 +53,7 @@ class TripBuilder extends StatelessWidget {
                   ),
                   alignment: Alignment.center,
                   child: Text(
-                    (index+1).toString(),
+                    (index + 1).toString(),
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
@@ -75,11 +74,9 @@ class TripBuilder extends StatelessWidget {
                       ),
                       SizedBox(height: 4.0),
                       Text(trip.currentLoad!),
-
                     ],
                   ),
                 ),
-
               ],
             ),
           ),
@@ -88,18 +85,16 @@ class TripBuilder extends StatelessWidget {
           top: 10,
           right: 10,
           child: CustomPaint(
-            painter: StatusTag(
-                color: Colors.blue),
+            painter: StatusTag(color: Colors.blue),
             child: Container(
-              margin: EdgeInsets.only(left: MediaQuery.of(context).size.width* 0.05),
+              margin: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.05),
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: commonText(
                     context: context,
-                    text: trip.isSync==1
-                        ? "Synced"
-                        : " Un Synced ",
+                    text: trip.isSync == 1 ? "Synced" : " Un Synced ",
                     fontWeight: FontWeight.w500,
                     textColor: Colors.white,
                     textSize: MediaQuery.of(context).size.width * 0.03,

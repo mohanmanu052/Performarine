@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 const primaryColor = Color(0xFF42B5BF);
 const letsGetStartedButtonColor = Color(0xFF202022);
 const darkBlueColor = Color(0xFF275778);
-const backgroundColor = Color(0xFFECF3F9);
+//const backgroundColor = Color(0xFFECF3F9);
+const backgroundColor = Color(0xFFBFF2B9);
 const buttonBGColor = Color(0xFF1A3154);
 
 Map<int, Color> materialPrimaryColor = {

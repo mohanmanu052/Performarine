@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sqflite_example/common_widgets/utils/common_size_helper.dart';
 import 'dart:math' as math;
 
-import 'package:flutter_sqflite_example/widgets/common_widgets.dart';
+import 'package:flutter_sqflite_example/common_widgets/widgets/common_widgets.dart';
 
 // import 'package:goe/widgets/common_widgets.dart';
 
@@ -15,28 +15,37 @@ class DashedRect extends StatelessWidget {
   final Color? backgroundColor, primaryTextColor;
 
   DashedRect(
-      {this.color = Colors.black, this.strokeWidth = 1.0, this.gap = 5.0, this.onTap, this.title, this.primaryTextColor, this.backgroundColor});
+      {this.color = Colors.black,
+      this.strokeWidth = 1.0,
+      this.gap = 5.0,
+      this.onTap,
+      this.title,
+      this.primaryTextColor,
+      this.backgroundColor});
 
   @override
-  Widget build(BuildContext context, ) {
+  Widget build(
+    BuildContext context,
+  ) {
     return Container(
       color: backgroundColor,
       child: Padding(
         padding: EdgeInsets.all(strokeWidth! / 1),
         child: CustomPaint(
-          painter: DashRectPainter(color: color!, strokeWidth: strokeWidth!, gap: gap!),
+          painter: DashRectPainter(
+              color: color!, strokeWidth: strokeWidth!, gap: gap!),
           child: MaterialButton(
             onPressed: onTap,
             child: Center(
                 child: commonText(
-                  text: title!,
-                  context: context,
-                  textSize: displayWidth(context) * 0.04,
-                  textColor: Theme.of(context).brightness == Brightness.dark
+              text: title!,
+              context: context,
+              textSize: displayWidth(context) * 0.04,
+              textColor: Theme.of(context).brightness == Brightness.dark
                   ? primaryTextColor!
                   : Colors.black,
-                  fontWeight: FontWeight.w500,)
-            ),
+              fontWeight: FontWeight.w500,
+            )),
           ),
         ),
       ),

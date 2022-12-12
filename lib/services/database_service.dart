@@ -12,7 +12,6 @@ class DatabaseService {
 
   static Database? _database;
   Future<Database> get database async {
-
     if (_database != null) return _database!;
     // Initialize the DB first time it is accessed
     _database = await _initDatabase();
@@ -44,9 +43,9 @@ class DatabaseService {
     //tripStatus 0=started and 1= ended
     //ToDo: @rupali add the filepath also in the DB and save the once the data is featched
     await db.execute(
-      'CREATE TABLE trips(id Text PRIMARY KEY,vesselId Text, currentLoad TEXT,isSync INTEGER DEFAULT 0,'
-          'tripStatus INTEGER  DEFAULT 0,deviceInfo Text, lat Text,long Text,'
-          ' createdAt TEXT,updatedAt TEXT,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL)',
+      'CREATE TABLE trips(id Text PRIMARY KEY,vesselId Text,vesselName Text, currentLoad TEXT,filePath Text,isSync INTEGER DEFAULT 0,'
+      'tripStatus INTEGER  DEFAULT 0,deviceInfo Text, lat Text,long Text,'
+      ' createdAt TEXT,updatedAt TEXT,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL)',
     );
     // Run the CREATE {dogs} TABLE statement on the database.
     // await db.execute(
@@ -54,36 +53,34 @@ class DatabaseService {
     // );
     await db.execute(
       'CREATE TABLE IF NOT EXISTS vessels('
-          'id Text PRIMARY KEY, '
-          'name TEXT, '
-          'model TEXT, '
-          'builderName TEXT, '
-          'regNumber TEXT'
-          ', mMSI TEXT'
-          ', engineType TEXT'
-          ', fuelCapacity TEXT'
-          ', batteryCapacity TEXT'
-          ', weight TEXT'
-          ', imageURLs TEXT'
-          ', freeBoard DOUBLE,'
-          ' lengthOverall DOUBLE,'
-          ' beam DOUBLE, '
-          'draft DOUBLE, '
-          'vesselSize INTEGER, '
-          'capacity INTEGER,'
-          'builtYear TEXT ,'
-          'vesselStatus INTEGER DEFAULT 1,'
-          'isSync INTEGER DEFAULT 0,'
-          'createdAt TEXT,'
-          'createdBy TEXT,'
-          'updatedAt TEXT, '
-          'updatedBy TEXT '
-          ')',
+      'id Text PRIMARY KEY, '
+      'name TEXT, '
+      'model TEXT, '
+      'builderName TEXT, '
+      'regNumber TEXT'
+      ', mMSI TEXT'
+      ', engineType TEXT'
+      ', fuelCapacity TEXT'
+      ', batteryCapacity TEXT'
+      ', weight TEXT'
+      ', imageURLs TEXT'
+      ', freeBoard DOUBLE,'
+      ' lengthOverall DOUBLE,'
+      ' beam DOUBLE, '
+      'draft DOUBLE, '
+      'vesselSize INTEGER, '
+      'capacity INTEGER,'
+      'builtYear TEXT ,'
+      'vesselStatus INTEGER DEFAULT 1,'
+      'isSync INTEGER DEFAULT 0,'
+      'createdAt TEXT,'
+      'createdBy TEXT,'
+      'updatedAt TEXT, '
+      'updatedBy TEXT '
+      ')',
     );
-  //  ToDo: Foreign Key mapping
-  //  FOREIGN KEY (TripId) REFERENCES trips(id) ON DELETE SET NULL
-
-
+    //  ToDo: Foreign Key mapping
+    //  FOREIGN KEY (TripId) REFERENCES trips(id) ON DELETE SET NULL
   }
 
   // Define a function that inserts trips into the database
@@ -101,7 +98,6 @@ class DatabaseService {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
-
 
   Future<void> insertVessel(CreateVessel vessel) async {
     final db = await _databaseService.database;
@@ -122,10 +118,9 @@ class DatabaseService {
     final List<Map<String, dynamic>> maps = await db.query('vessels');
     print("get vessels, :${maps.toString()}");
     // Convert the List<Map<String, dynamic> into a List<Trip>.
-    return List.generate(maps.length, (index) => CreateVessel.fromMap(maps[index]));
+    return List.generate(
+        maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }
-
-
 
   // A method that retrieves all the trips from the trips table.
   Future<List<Trip>> trips() async {
@@ -139,6 +134,14 @@ class DatabaseService {
     return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
   }
 
+  /// Method to get AllTrips data By Vessel Id
+  Future<List<Trip>> getAllTripsByVesselId(int id) async {
+    final db = await _databaseService.database;
+    final List<Map<String, dynamic>> maps =
+        await db.query('trips', where: 'vesselId = ?', whereArgs: [id]);
+    return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
+  }
+
   Future<Trip> getTrip(int id) async {
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps =
@@ -146,11 +149,11 @@ class DatabaseService {
     return Trip.fromMap(maps[0]);
   }
 
-
   Future<List<CreateVessel>> vessels() async {
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps = await db.query('vessels');
-    return List.generate(maps.length, (index) => CreateVessel.fromMap(maps[index]));
+    return List.generate(
+        maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }
 
   // A method that updates a trip data from the trips table.
@@ -176,7 +179,8 @@ class DatabaseService {
   Future<void> updateVessel(CreateVessel vessel) async {
     final db = await _databaseService.database;
     print("vessel.toMap():${vessel.toMap()}");
-    await db.update('vessels', vessel.toMap(), where: 'id = ?', whereArgs: [vessel.id]);
+    await db.update('vessels', vessel.toMap(),
+        where: 'id = ?', whereArgs: [vessel.id]);
   }
 
   // A method that deletes a trip data from the trips table.
@@ -193,7 +197,6 @@ class DatabaseService {
       whereArgs: [id],
     );
   }
-
 
   Future<void> deleteVessel(String id) async {
     final db = await _databaseService.database;

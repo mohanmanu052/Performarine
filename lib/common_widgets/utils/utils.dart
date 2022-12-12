@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_sqflite_example/common_widgets/utils/colors.dart';
-import 'package:flutter_sqflite_example/widgets/custom_dialog.dart';
+import 'package:flutter_sqflite_example/common_widgets/widgets/custom_dialog.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 // import 'package:goe/providers/common_provider.dart';
@@ -256,8 +256,9 @@ class Utils {
 
         isPermissionGranted = await openAppSettings();
         debugPrint("isPermissionGranted:$isPermissionGranted");
-        Utils.showActionSnackBar(
-            scaffoldKey, 'Location permissions are denied without permissions we are unable to start the trip', () {
+        Utils.showActionSnackBar(scaffoldKey,
+            'Location permissions are denied without permissions we are unable to start the trip',
+            () {
           // OpenFile.open(directoryPath);
         });
       } else if (await Permission.location.request().isDenied) {
@@ -280,8 +281,9 @@ class Utils {
                 },
               );
             });*/
-        Utils.showActionSnackBar(
-            scaffoldKey, 'Location permissions are denied without permissions we are unable to start the trip', () {
+        Utils.showActionSnackBar(scaffoldKey,
+            'Location permissions are denied without permissions we are unable to start the trip',
+            () {
           // OpenFile.open(directoryPath);
         });
       } else {
@@ -346,10 +348,11 @@ class Utils {
         isPermissionGranted = true;
       } else if (await permission.request().isPermanentlyDenied) {
         final result = await Permission.storage.request();
-        if (result==PermissionStatus.granted){
+        if (result == PermissionStatus.granted) {
           isPermissionGranted = true;
-        }else{
-        isPermissionGranted = false;}
+        } else {
+          isPermissionGranted = false;
+        }
         print('PD');
 
         /*showDialog(
@@ -516,7 +519,6 @@ class Utils {
 
   static void showActionSnackBar(
       GlobalKey<ScaffoldState> scaffoldKey, String message, Function onTap) {
-
     final snackBar = new SnackBar(
       backgroundColor: primaryColor,
       content: Row(

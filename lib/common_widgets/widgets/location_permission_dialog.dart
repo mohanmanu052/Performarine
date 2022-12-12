@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sqflite_example/common_widgets/utils/colors.dart';
 import 'package:flutter_sqflite_example/common_widgets/utils/common_size_helper.dart';
-import 'package:flutter_sqflite_example/widgets/common_buttons.dart';
-import 'package:flutter_sqflite_example/widgets/common_widgets.dart';
+import 'package:flutter_sqflite_example/common_widgets/widgets/common_buttons.dart';
+import 'package:flutter_sqflite_example/common_widgets/widgets/common_widgets.dart';
 
 class LocationPermissionCustomDialog extends StatelessWidget {
   String? text, subText, buttonText, headingText, stepOne, stepTwo, stepThree;
