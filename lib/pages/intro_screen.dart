@@ -3,6 +3,8 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/pages/lets_get_started_screen.dart';
+import 'package:performarine/pages/sign_in_screen.dart';
 
 import '../common_widgets/utils/constants.dart';
 
@@ -120,13 +122,13 @@ class _IntroScreenState extends State<IntroScreen> {
                               SizedBox(height: displayHeight(context) * 0.02),
                               GestureDetector(
                                 onTap: () {
-                                  /*Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const LetsGetStartedScreen(),
-                                ),
-                                ModalRoute.withName(""));*/
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LetsGetStartedScreen(),
+                                      ),
+                                      ModalRoute.withName(""));
 
                                   checkIfUserIsLoggedIn();
                                 },
@@ -169,12 +171,12 @@ class _IntroScreenState extends State<IntroScreen> {
 
     debugPrint('ISUSERLOGEDIN $isUserLoggedIn');
 
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-        ModalRoute.withName(""));
+    // Navigator.pushAndRemoveUntil(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => const HomePage()),
+    //     ModalRoute.withName(""));
 
-    /*if (isUserLoggedIn == null) {
+    if (isUserLoggedIn == null) {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const LetsGetStartedScreen()),
@@ -182,13 +184,13 @@ class _IntroScreenState extends State<IntroScreen> {
     } else if (isUserLoggedIn) {
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const DashboardScreen()),
+          MaterialPageRoute(builder: (context) => const HomePage()),
           ModalRoute.withName(""));
     } else {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const SignInScreen()),
           ModalRoute.withName(""));
-    }*/
+    }
   }
 }

@@ -1,7 +1,13 @@
-/*
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
+import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/common_buttons.dart';
+import 'package:performarine/common_widgets/widgets/common_dropdown.dart';
+import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
+import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
@@ -70,8 +76,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
 
     //commonProvider = context.read<CommonProvider>();
 
-    */
-/* if (widget.isEdit!) {
+    /*if (widget.isEdit!) {
       if (widget.addVesselData != null) {
         debugPrint('ENGINE TYPE ${widget.addVesselData!.engineType!}');
 
@@ -87,8 +92,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
             widget.addVesselData!.batteryCapacity!.toString();
         weightController.text = widget.addVesselData!.weight!;
       }
-    }*/ /*
-
+    } */
   }
 
   @override
@@ -206,15 +210,13 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       obscureText: false,
                       onTap: () {},
                       onChanged: (String value) {},
-                      */
-/*validator: (value) {
+                      validator: (value) {
                         if (value!.isEmpty) {
                           return 'Enter registration number';
                         }
 
                         return null;
-                      },*/ /*
-
+                      },
                       onSaved: (String value) {
                         print(value);
                       }),
@@ -234,15 +236,13 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       obscureText: false,
                       onTap: () {},
                       onChanged: (String value) {},
-                      */
-/*validator: (value) {
+                      validator: (value) {
                         if (value!.isEmpty) {
                           return 'Enter MMSI';
                         }
 
                         return null;
-                      },*/ /*
-
+                      },
                       onSaved: (String value) {
                         print(value);
                       }),
@@ -388,7 +388,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                     }, Colors.grey),
                   ),
                   SizedBox(height: displayHeight(context) * 0.01),
-                  widget.addVesselData == null
+                  /*widget.addVesselData == null
                       ? SizedBox()
                       : widget.addVesselData!.imageURLs == null
                           ? SizedBox()
@@ -429,13 +429,12 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                                     border: Border.all(
                                                         color: Colors
                                                             .grey.shade300),
-                                                    */
-/*image: DecorationImage(
+image: DecorationImage(
                                                           fit: BoxFit.cover,
                                                           image: NetworkImage(widget
                                                                   .addVesselData!
                                                                   .imageURLs![
-                                                              index]))*/ /*
+                                                              index]))
 
                                                   ),
                                                   child: CachedNetworkImage(
@@ -477,11 +476,10 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                                         (context, url, error) =>
                                                             Icon(Icons.error),
                                                   ),
-                                                  */
-/*child: Icon(
+child: Icon(
                                       Icons.close,
                                       size: displayWidth(context) * 0.05,
-                                    ),*/ /*
+                                    ),
 
                                                 ),
                                                 Positioned(
@@ -512,7 +510,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                           );
                                         }),
                                   ),
-                                ),
+                                ),*/
                   finalSelectedFiles.isEmpty
                       ? Container()
                       : Container(
@@ -550,12 +548,10 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                                             index]!
                                                         .path),
                                                   ))),
-                                          */
-/*child: Icon(
-                                      Icons.close,
-                                      size: displayWidth(context) * 0.05,
-                                    ),*/ /*
-
+                                          child: Icon(
+                                            Icons.close,
+                                            size: displayWidth(context) * 0.05,
+                                          ),
                                         ),
                                         Positioned(
                                           right: 0,
@@ -596,7 +592,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                     width: displayWidth(context),
                     onTap: () {
                       if (formKey.currentState!.validate()) {
-                        commonProvider.addVesselRequestModel =
+                        /*commonProvider.addVesselRequestModel =
                             AddVesselRequestModel();
 
                         commonProvider.addVesselRequestModel!.name =
@@ -630,14 +626,12 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
 
                         widget.pageController!.nextPage(
                             duration: Duration(milliseconds: 300),
-                            curve: Curves.easeOut);
+                            curve: Curves.easeOut);*/
                       }
-                      */
-/*Navigator.push(
+                      /*Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => const VerifyEmailScreen()),
-                              );*/ /*
-
+                              ); */
                     }),
               ),
             ],
@@ -718,9 +712,8 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
       });
     }
 
-    */
-/* if (Platform.isAndroid) {
-      bool isPermitted = await Utils.getStoragePermission(context, scaffoldKey);
+    if (Platform.isAndroid) {
+      bool isPermitted = await Utils.getStoragePermission(context);
 
       if (isPermitted) {
         await selectImage(context, primaryColor,
@@ -747,12 +740,10 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
           finalSelectedFiles.addAll(pickFilePath);
         });
       });
-    }*/ /*
-
+    }
   }
 
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
-*/

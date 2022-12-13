@@ -1,9 +1,11 @@
-/*
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/pages/add_vessel/add_new_vessel_step_one.dart';
+import 'package:performarine/pages/add_vessel/add_new_vessel_step_two.dart';
+import 'package:performarine/pages/home_page.dart';
 
 class AddNewVesselScreen extends StatefulWidget {
   //final
@@ -11,9 +13,7 @@ class AddNewVesselScreen extends StatefulWidget {
   //final AddVesselData? addVesselData;
   final String? calledFrom;
   const AddNewVesselScreen(
-      {Key? key, this.isEdit = false,
-this.addVesselData,
- this.calledFrom})
+      {Key? key, this.isEdit = false, /*this.addVesselData,*/ this.calledFrom})
       : super(key: key);
 
   @override
@@ -39,13 +39,12 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
     return WillPopScope(
       onWillPop: () async {
         if (widget.calledFrom == 'SuccessFullScreen') {
-Navigator.pushAndRemoveUntil(
+          Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const DashboardScreen(),
+                builder: (context) => const HomePage(),
               ),
               ModalRoute.withName(""));
-
 
           return false;
         } else if (pageIndex == 0) {
@@ -67,11 +66,11 @@ Navigator.pushAndRemoveUntil(
           backgroundColor: Colors.white,
           leading: IconButton(
             onPressed: () {
-if (widget.calledFrom == 'SuccessFullScreen') {
+              if (widget.calledFrom == 'SuccessFullScreen') {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const DashboardScreen(),
+                      builder: (context) => const HomePage(),
                     ),
                     ModalRoute.withName(""));
               } else if (pageIndex == 1) {
@@ -81,7 +80,6 @@ if (widget.calledFrom == 'SuccessFullScreen') {
               } else {
                 Navigator.of(context).pop();
               }
-
             },
             icon: const Icon(Icons.arrow_back),
             color: Theme.of(context).brightness == Brightness.dark
@@ -118,14 +116,12 @@ if (widget.calledFrom == 'SuccessFullScreen') {
                     AddVesselStepOne(
                         pageController: pageController,
                         scaffoldKey: scaffoldKey,
-                        addVesselData:
-                            widget.isEdit! ? widget.addVesselData : null,
+                        //addVesselData: widget.isEdit! ? widget.addVesselData : null,
                         isEdit: widget.isEdit),
                     AddNewVesselStepTwo(
                       pageController: pageController,
                       scaffoldKey: scaffoldKey,
-                      addVesselData:
-                          widget.isEdit! ? widget.addVesselData : null,
+                      //addVesselData: widget.isEdit! ? widget.addVesselData : null,
                       isEdit: widget.isEdit,
                     ),
                     // AccountSetupScreen(pageController: pageController, scaffoldKey: scaffoldKey)
@@ -180,4 +176,3 @@ class AddVesselRequestModel {
       this.imageUrls,
       this.files});
 }
-*/
