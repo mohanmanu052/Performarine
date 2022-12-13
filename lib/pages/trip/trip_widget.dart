@@ -139,7 +139,7 @@ class _TripWidgetState extends State<TripWidget> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          widget.tripList?.updatedAt != null
+                          widget.tripList?.isSync != 0
                               ? SizedBox(
                                   height: displayHeight(context) * 0.038,
                                   child: CommonButtons.getActionButton(
@@ -187,9 +187,9 @@ class _TripWidgetState extends State<TripWidget> {
                         padding: const EdgeInsets.all(4.0),
                         child: commonText(
                           context: context,
-                          text: widget.tripList?.updatedAt != null
+                          text: widget.tripList?.tripStatus != 0
                               ? "Completed"
-                              : " Pending Upload ",
+                              : " In Progress ",
                           fontWeight: FontWeight.w500,
                           textColor: Colors.white,
                           textSize: displayWidth(context) * 0.03,

@@ -145,7 +145,7 @@ class DatabaseService {
   Future<List<CreateVessel>> getVesselNameByID(String id) async {
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps =
-    await db.query('vessels', where: 'vesselId = ?', whereArgs: [id]);
+    await db.query('vessels', where: 'id = ?', whereArgs: [id]);
     return List.generate(
         maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }

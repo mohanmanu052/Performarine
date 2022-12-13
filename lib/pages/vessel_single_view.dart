@@ -5,12 +5,15 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/trip/trip_list_screen.dart';
+import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/pages/tripStart.dart';
 import 'package:performarine/services/database_service.dart';
 
 class VesselSingleView extends StatefulWidget {
   final CreateVessel? vessel;
+
   VesselSingleView({this.vessel});
   @override
   State createState() {
@@ -24,6 +27,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   Future<List<Trip>> _getTripsByID(String id) async {
     return await _databaseService.getAllTripsByVesselId(id);
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getTripsByID(widget.vessel!.id.toString());
   }
 
   @override
@@ -46,11 +55,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
             ListTile(
 
               title: Text("Trip History:",style: TextStyle(fontWeight: FontWeight.bold),),
-            ),
+              subtitle:Padding(
+                padding: const EdgeInsets.only(bottom:30.0),
+                child: Card(child: TripViewListing(future:  _getTripsByID(widget.vessel!.id.toString()))),
+              )
 
-            TripBuilder(
-            future: _getTripsByID(widget.vessel!.id.toString()),
-    )
+            ),
+            // TripViewBuilder(widget.vesselId.toString()),
+    //         TripBuilder(
+    //         future: _getTripsByID(widget.vessel!.id.toString()),
+    // )
             // your widget...
           ],
         ),
@@ -80,6 +94,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
           onTap: () async {
             // final DatabaseService _databaseService = DatabaseService();
             vessel!.add(widget.vessel!);
+
             // print(vessel[0].vesselName);
             /*Navigator.of(context).push(
                             MaterialPageRoute(
@@ -88,6 +103,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               fullscreenDialog: true,
                             ),
                           );*/
+
+            //ToDo: @rupali: enable the start trip by adding the below code.and add the expansion tile like vessel card for trip history also.
+            // locationPermissions(widget.vesselSize!, widget.vesselName!,
+            //     widget.vesselId!);
 
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -361,37 +380,37 @@ class _ExpansionCardState extends State<ExpansionCard> {
                         ],
                       ),
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //   children: [
-                    //     // SizedBox(width: 20.0),
-                    //     GestureDetector(
-                    //       onTap: () => widget.onEdit(widget.vessel!),
-                    //       child: Container(
-                    //         height: 40.0,
-                    //         width: MediaQuery.of(context).size.width * .4,
-                    //         color:letsGetStartedButtonColor,
-                    //         // decoration: BoxDecoration(
-                    //         //   shape: BoxShape.circle,
-                    //         //   color: Colors.grey[200],
-                    //         // ),
-                    //         alignment: Alignment.center,
-                    //         child: Icon(Icons.edit, color: Colors.white),
-                    //       ),
-                    //     ),
-                    //     // SizedBox(width: 20.0),
-                    //     GestureDetector(
-                    //       onTap: () => widget.onDelete(widget.vessel!),
-                    //       child: Container(
-                    //         height: 40.0,
-                    //         width: MediaQuery.of(context).size.width * .4,
-                    //         color:letsGetStartedButtonColor,
-                    //         alignment: Alignment.center,
-                    //         child: Icon(Icons.delete, color: Colors.white),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // SizedBox(width: 20.0),
+                        GestureDetector(
+                          onTap: () => widget.onEdit(widget.vessel!),
+                          child: Container(
+                            height: 40.0,
+                            width: MediaQuery.of(context).size.width * .4,
+                            color:letsGetStartedButtonColor,
+                            // decoration: BoxDecoration(
+                            //   shape: BoxShape.circle,
+                            //   color: Colors.grey[200],
+                            // ),
+                            alignment: Alignment.center,
+                            child: Icon(Icons.edit, color: Colors.white),
+                          ),
+                        ),
+                        // SizedBox(width: 20.0),
+                        GestureDetector(
+                          onTap: () => widget.onDelete(widget.vessel!),
+                          child: Container(
+                            height: 40.0,
+                            width: MediaQuery.of(context).size.width * .4,
+                            color:letsGetStartedButtonColor,
+                            alignment: Alignment.center,
+                            child: Icon(Icons.delete, color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
                     widget.isSingleView? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(

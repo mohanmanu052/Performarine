@@ -69,8 +69,8 @@ class _TripListScreenState extends State<TripListScreen> {
 
   final DatabaseService _databaseService = DatabaseService();
 
-  Future<List<Trip>> getTripListByVesselId() async {
-    return await _databaseService.trips();
+  Future<List<Trip>> getTripListByVesselId(String id) async {
+    return await _databaseService.getAllTripsByVesselId(id);
   }
 
   DeviceInfo? deviceDetails;
@@ -203,47 +203,8 @@ class _TripListScreenState extends State<TripListScreen> {
       ),*/
       body: Stack(
         children: [
-          FutureBuilder<List<Trip>>(
-            future: getTripListByVesselId(),
-            builder: (context, snapshot) {
-              return snapshot.data != null
-                  ? StatefulBuilder(
-                      builder: (BuildContext context, StateSetter setter) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ListView.builder(
-                          itemCount: snapshot.data!.length,
-                          itemBuilder: (context, index) {
-                            return snapshot.data!.isNotEmpty
-                                ? TripWidget(
-                                    tripList: snapshot.data![index],
-                                  )
-                                : commonText(
-                                    text: 'oops! No Trips are added yet',
-                                    context: context,
-                                    textSize: displayWidth(context) * 0.04,
-                                    textColor: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontWeight: FontWeight.w500);
-                          },
-                        ),
-                      );
-                    })
-                  : Container(
-                      child: commonText(
-                          text: 'oops! No Trips are added yet',
-                          context: context,
-                          textSize: displayWidth(context) * 0.04,
-                          textColor:
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.white
-                                  : Colors.black,
-                          fontWeight: FontWeight.w500),
-                    );
-            },
-          ),
+          TripViewBuilder(widget.vesselId.toString()),
+
           Positioned(
             bottom: 0,
             right: 0,
@@ -326,6 +287,52 @@ class _TripListScreenState extends State<TripListScreen> {
           ),
         ],
       ),
+    );
+  }
+
+
+
+  TripViewBuilder(String id){
+    return FutureBuilder<List<Trip>>(
+      future: getTripListByVesselId(id),
+      builder: (context, snapshot) {
+        return snapshot.data != null
+            ? StatefulBuilder(
+            builder: (BuildContext context, StateSetter setter) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    return snapshot.data!.isNotEmpty
+                        ? TripWidget(
+                      tripList: snapshot.data![index],
+                    )
+                        : commonText(
+                        text: 'oops! No Trips are added yet',
+                        context: context,
+                        textSize: displayWidth(context) * 0.04,
+                        textColor: Theme.of(context).brightness ==
+                            Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                        fontWeight: FontWeight.w500);
+                  },
+                ),
+              );
+            })
+            : Container(
+          child: commonText(
+              text: 'oops! No Trips are added yet',
+              context: context,
+              textSize: displayWidth(context) * 0.04,
+              textColor:
+              Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+              fontWeight: FontWeight.w500),
+        );
+      },
     );
   }
 
