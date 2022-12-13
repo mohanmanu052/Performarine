@@ -4,7 +4,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lets_get_started_screen.dart';
-import 'package:performarine/pages/sign_in_screen.dart';
+import 'package:performarine/pages/authentication/sign_in_screen.dart';
 
 import '../common_widgets/utils/constants.dart';
 

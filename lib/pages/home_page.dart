@@ -7,12 +7,15 @@ import 'package:performarine/common_widgets/vessel_builder.dart';
 import 'package:performarine/models/trip.dart';
 // import 'package:performarine/models/Trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/tripStart.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -23,6 +26,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final DatabaseService _databaseService = DatabaseService();
+
+  late CommonProvider commonProvider;
 
   Future<List<CreateVessel>> _getVessels() async {
     return await _databaseService.vessels();
@@ -42,40 +47,46 @@ class _HomePageState extends State<HomePage> {
     await _databaseService.deleteVessel(vessel.id.toString());
     setState(() {});
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    commonProvider = context.read<CommonProvider>();
+    commonProvider.init();
   }
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-
-          title:RichText(
+          title: RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
               children: [
                 WidgetSpan(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset("assets/images/lognotitle.png",height: 50,width: 50,),
-                      Text("Performarine")
-                    ],
-                  )
-                ),
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/lognotitle.png",
+                      height: 50,
+                      width: 50,
+                    ),
+                    Text("Performarine")
+                  ],
+                )),
                 // TextSpan(
                 //   text: " to add",
                 // ),
               ],
             ),
           ),
-
           centerTitle: true,
           bottom: TabBar(
             indicatorColor: primaryColor,
@@ -91,13 +102,8 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           backgroundColor: letsGetStartedButtonColor,
-
         ),
-        drawer:Drawer(
-          width: MediaQuery.of(context).size.width*.5,
-          elevation: 3,
-          backgroundColor: letsGetStartedButtonColor.withOpacity(.9),
-        ),
+        drawer: const CustomDrawer(),
         body: TabBarView(
           children: [
             VesselBuilder(
@@ -106,45 +112,49 @@ class _HomePageState extends State<HomePage> {
                 {
                   Navigator.of(context)
                       .push(
-                    MaterialPageRoute(
-                      builder: (_) => VesselFormPage(vessel: value),
-                      fullscreenDialog: true,
-                    ),
-                  ).then((_) => setState(() {}));
+                        MaterialPageRoute(
+                          builder: (_) => VesselFormPage(vessel: value),
+                          fullscreenDialog: true,
+                        ),
+                      )
+                      .then((_) => setState(() {}));
                 }
               },
-              onTap:(value) async {
+              onTap: (value) async {
                 {
                   Navigator.of(context)
                       .push(
-                    MaterialPageRoute(
-                      builder: (_) => VesselSingleView(vessel: value,),
-                      fullscreenDialog: true,
-                    ),
-                  ).then((_) => setState(() {}));
+                        MaterialPageRoute(
+                          builder: (_) => VesselSingleView(
+                            vessel: value,
+                          ),
+                          fullscreenDialog: true,
+                        ),
+                      )
+                      .then((_) => setState(() {}));
                 }
               },
               onDelete: _onVesselDelete,
             ),
-
             SingleChildScrollView(
-              child:
-              TripViewListing(future:  _gettrips()),
+              child: TripViewListing(future: _gettrips()),
               // TripBuilder(
               //   future: _gettrips(),
               // ),
             ),
           ],
         ),
-        floatingActionButton: SpeedDial(
+        /*floatingActionButton: SpeedDial(
           // marginBottom: 10, //margin bottom
           icon: Icons.menu, //icon on Floating action button
           activeIcon: Icons.close, //icon when menu is expanded on button
-          backgroundColor: letsGetStartedButtonColor, //background color of button
+          backgroundColor:
+              letsGetStartedButtonColor, //background color of button
           foregroundColor: Colors.white, //font color, icon color in button
-          activeBackgroundColor: letsGetStartedButtonColor, //background color when menu is expanded
+          activeBackgroundColor:
+              letsGetStartedButtonColor, //background color when menu is expanded
           activeForegroundColor: Colors.white,
-          buttonSize: Size(55,55),
+          buttonSize: Size(55, 55),
           visible: true,
           closeManually: false,
           curve: Curves.bounceIn,
@@ -165,25 +175,24 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {
                   Navigator.of(context)
                       .push(
-                    MaterialPageRoute(
-                      builder: (_) => VesselFormPage(),
-                      fullscreenDialog: true,
-                    ),
-                  )
+                        MaterialPageRoute(
+                          builder: (_) => VesselFormPage(),
+                          fullscreenDialog: true,
+                        ),
+                      )
                       .then((_) => setState(() {}));
                 },
                 onLongPress: () {
                   Navigator.of(context)
                       .push(
-                    MaterialPageRoute(
-                      builder: (_) => VesselFormPage(),
-                      fullscreenDialog: true,
-                    ),
-                  )
+                        MaterialPageRoute(
+                          builder: (_) => VesselFormPage(),
+                          fullscreenDialog: true,
+                        ),
+                      )
                       .then((_) => setState(() {}));
                 },
-                child: Icon(Icons.add)
-            ),
+                child: Icon(Icons.add)),
             // ToDo: floating button elements
             // SpeedDialChild(
             //   child: FaIcon(FontAwesomeIcons.ship),
@@ -216,8 +225,7 @@ class _HomePageState extends State<HomePage> {
 
             // add more menu item children here
           ],
-        ),
-
+        ),*/
       ),
     );
   }

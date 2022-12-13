@@ -392,87 +392,86 @@ class _SignInScreenState extends State<SignInScreen> {
                                   ? Center(child: CircularProgressIndicator())
                                   : InkWell(
                                       onTap: () async {
-                                        // GoogleSignInAccount?
-                                        //     googleSignInAccount;
-                                        //
-                                        // if (await googleSignIn.isSignedIn()) {
-                                        //   googleSignIn.signOut();
-                                        //   googleSignInAccount =
-                                        //       await googleSignIn.signIn();
-                                        // } else {
-                                        //   googleSignInAccount =
-                                        //       await googleSignIn.signIn();
-                                        // }
-                                        //
-                                        // if (googleSignInAccount == null) {
-                                        //   // TODO handle
-                                        //   setState(() {
-                                        //     isGoogleSignInBtnClicked = false;
-                                        //   });
-                                        // }
-                                        // else {
-                                        //   try {
-                                        //     // print(
-                                        //     //     'NAME: ${googleSignInAccount!.id}');
-                                        //     // print(
-                                        //     //     'NAME: ${googleSignInAccount!.email}');
-                                        //     // print(
-                                        //     //     'NAME: ${googleSignInAccount!.displayName}');
-                                        //     // print(
-                                        //     //     'NAME: ${googleSignInAccount!.photoUrl}');
-                                        //     // print(
-                                        //     //     'NAME: ${googleSignInAccount!.serverAuthCode}');
-                                        //     // print(
-                                        //     //     'NAME: ${googleSignInAccount!.authHeaders}');
-                                        //     // print(
-                                        //     //     'NAME: ${googleSignInAccount!.toString()}');
-                                        //
-                                        //     setState(() {
-                                        //       isGoogleSignInBtnClicked = true;
-                                        //     });
-                                        //
-                                        //     commonProvider
-                                        //         .login(
-                                        //             context,
-                                        //             googleSignInAccount.email,
-                                        //             "",
-                                        //             true,
-                                        //             googleSignInAccount.id,
-                                        //             scaffoldKey)
-                                        //         .then((value) {
-                                        //       setState(() {
-                                        //         isGoogleSignInBtnClicked =
-                                        //             false;
-                                        //       });
-                                        //
-                                        //       if (value != null) {
-                                        //         if (value.status!) {
-                                        //           setState(() {
-                                        //             isGoogleSignInBtnClicked =
-                                        //                 false;
-                                        //           });
-                                        //           Navigator.pushAndRemoveUntil(
-                                        //               context,
-                                        //               MaterialPageRoute(
-                                        //                 builder: (context) =>
-                                        //                     const HomePage(),
-                                        //               ),
-                                        //               ModalRoute.withName(""));
-                                        //         }
-                                        //       }
-                                        //     }).catchError((e) {
-                                        //       setState(() {
-                                        //         isGoogleSignInBtnClicked =
-                                        //             false;
-                                        //       });
-                                        //     });
-                                        //
-                                        //     //getAuthenticatedClient(context);
-                                        //   } catch (e) {
-                                        //     print('EXE: $e');
-                                        //     // TODO handle
-                                        //   }
-                                        // }
+                                        GoogleSignInAccount?
+                                            googleSignInAccount;
+
+                                        if (await googleSignIn.isSignedIn()) {
+                                          googleSignIn.signOut();
+                                          googleSignInAccount =
+                                              await googleSignIn.signIn();
+                                        } else {
+                                          googleSignInAccount =
+                                              await googleSignIn.signIn();
+                                        }
+
+                                        if (googleSignInAccount == null) {
+                                          // TODO handle
+                                          setState(() {
+                                            isGoogleSignInBtnClicked = false;
+                                          });
+                                        } else {
+                                          try {
+                                            // print(
+                                            //     'NAME: ${googleSignInAccount!.id}');
+                                            // print(
+                                            //     'NAME: ${googleSignInAccount!.email}');
+                                            // print(
+                                            //     'NAME: ${googleSignInAccount!.displayName}');
+                                            // print(
+                                            //     'NAME: ${googleSignInAccount!.photoUrl}');
+                                            // print(
+                                            //     'NAME: ${googleSignInAccount!.serverAuthCode}');
+                                            // print(
+                                            //     'NAME: ${googleSignInAccount!.authHeaders}');
+                                            // print(
+                                            //     'NAME: ${googleSignInAccount!.toString()}');
+
+                                            setState(() {
+                                              isGoogleSignInBtnClicked = true;
+                                            });
+
+                                            commonProvider
+                                                .login(
+                                                    context,
+                                                    googleSignInAccount.email,
+                                                    "",
+                                                    true,
+                                                    googleSignInAccount.id,
+                                                    scaffoldKey)
+                                                .then((value) {
+                                              setState(() {
+                                                isGoogleSignInBtnClicked =
+                                                    false;
+                                              });
+
+                                              if (value != null) {
+                                                if (value.status!) {
+                                                  setState(() {
+                                                    isGoogleSignInBtnClicked =
+                                                        false;
+                                                  });
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const HomePage(),
+                                                      ),
+                                                      ModalRoute.withName(""));
+                                                }
+                                              }
+                                            }).catchError((e) {
+                                              setState(() {
+                                                isGoogleSignInBtnClicked =
+                                                    false;
+                                              });
+                                            });
+
+                                            //getAuthenticatedClient(context);
+                                          } catch (e) {
+                                            print('EXE: $e');
+                                            // TODO handle
+                                          }
+                                        }
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -517,7 +516,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   return;
                                 }*/
 
-                                /*if (formKey.currentState!.validate()) {
+                                if (formKey.currentState!.validate()) {
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
 
@@ -556,7 +555,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       });
                                     });
                                   } else {
-                                    Navigator.push(
+                                    /*Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => VerifyOtpScreen(
@@ -565,9 +564,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                                 mobileNumber:
                                                     phoneController.text,
                                               )),
-                                    );
+                                    );*/
                                   }
-                                }*/
+                                }
                               }),
                       SizedBox(
                         height: displayHeight(context) * 0.02,

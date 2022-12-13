@@ -9,6 +9,7 @@ import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/trip/trip_list_screen.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/pages/tripStart.dart';
+import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/services/database_service.dart';
 
 class VesselSingleView extends StatefulWidget {
@@ -28,6 +29,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
   Future<List<Trip>> _getTripsByID(String id) async {
     return await _databaseService.getAllTripsByVesselId(id);
   }
+
+  Future<void> _onVesselDelete(CreateVessel vessel) async {
+    await _databaseService.deleteVessel(vessel.id.toString());
+    setState(() {});
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -42,29 +49,48 @@ class VesselSingleViewState extends State<VesselSingleView> {
         backgroundColor: letsGetStartedButtonColor,
         title: Text("${widget.vessel!.name}"),
       ),
-      body:SingleChildScrollView ( // this will make your body scrollable
+      body: SingleChildScrollView(
+        // this will make your body scrollable
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
+
           /// your parameters
-          children: <Widget> [
+          children: <Widget>[
             // your widgets,
             // Container(height: 900,color: Colors.red,),
             ExpansionCard(
-                widget.vessel, (value) {}, (value) {}, (value) {}, false),
+                widget.vessel,
+                (value) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => VesselFormPage(
+                        vessel: widget.vessel,
+                      ),
+                      fullscreenDialog: true,
+                    ),
+                  );
+                },
+                (value) {},
+                (value) {
+                  _onVesselDelete(value);
+                },
+                false),
             ListTile(
-
-              title: Text("Trip History:",style: TextStyle(fontWeight: FontWeight.bold),),
-              subtitle:Padding(
-                padding: const EdgeInsets.only(bottom:30.0),
-                child: Card(child: TripViewListing(future:  _getTripsByID(widget.vessel!.id.toString()))),
-              )
-
-            ),
+                title: Text(
+                  "Trip History:",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(bottom: 30.0),
+                  child: Card(
+                      child: TripViewListing(
+                          future: _getTripsByID(widget.vessel!.id.toString()))),
+                )),
             // TripViewBuilder(widget.vesselId.toString()),
-    //         TripBuilder(
-    //         future: _getTripsByID(widget.vessel!.id.toString()),
-    // )
+            //         TripBuilder(
+            //         future: _getTripsByID(widget.vessel!.id.toString()),
+            // )
             // your widget...
           ],
         ),
@@ -88,7 +114,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       //     ],
       //   ),
       // ),
-      bottomSheet:Padding(
+      bottomSheet: Padding(
         padding: const EdgeInsets.all(8.0),
         child: GestureDetector(
           onTap: () async {
@@ -122,7 +148,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
           child: Container(
             height: 40.0,
             width: MediaQuery.of(context).size.width,
-            color:letsGetStartedButtonColor,
+            color: letsGetStartedButtonColor,
             // decoration: BoxDecoration(
             //   shape: BoxShape.circle,
             //   color: Colors.grey[200],
@@ -130,14 +156,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
             alignment: Alignment.center,
             child: Text(
               "Start Trip",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
         ),
       ),
-
     );
   }
 }
@@ -195,65 +219,66 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                 'https://thumbs.dreamstime.com/z/fisherman-boat-blue-sea-sky-clouds-landscape-background-close-up-beautiful-seascape-red-wooden-fishing-vessel-thailand-162902543.jpg'),
                             fit: BoxFit.cover),
                       ),
-
                     ),
-
-                    !widget.isSingleView? Positioned(
-                      right: 10,
-                      top: 10,
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 15,
-                            backgroundColor: letsGetStartedButtonColor,
-                            child: Center(
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.edit,
-                                  size: 15,
-                                  color: Colors.white,
+                    !widget.isSingleView
+                        ? Positioned(
+                            right: 10,
+                            top: 10,
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: letsGetStartedButtonColor,
+                                  child: Center(
+                                    child: IconButton(
+                                      icon: Icon(
+                                        Icons.edit,
+                                        size: 15,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        widget.onEdit(widget.vessel!);
+                                      },
+                                    ),
+                                  ),
                                 ),
-                                onPressed: () {
-                                  widget.onEdit(widget.vessel!);
-                                },
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 6,),
-                          CircleAvatar(
-                            radius: 15,
-                            backgroundColor: letsGetStartedButtonColor,
-                            child: Center(
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.delete,
-                                  size: 15,
-                                  color: Colors.white,
+                                SizedBox(
+                                  width: 6,
                                 ),
-                                onPressed: () {
-                                  widget.onDelete(widget.vessel!);
-                                },
-                              ),
+                                CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: letsGetStartedButtonColor,
+                                  child: Center(
+                                    child: IconButton(
+                                      icon: Icon(
+                                        Icons.delete,
+                                        size: 15,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        widget.onDelete(widget.vessel!);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                      // Container(
-                      //   height: 30,
-                      //   width: 30,
-                      //   // decoration: BoxDecoration(
-                      //   //     shape: BoxShape.circle, color: backgroundColor),
-                      //   child: Center(
-                      //     child: IconButton(
-                      //
-                      //         onPressed: () {
-                      //
-                      //         },
-                      //         icon: Icon(Icons.delete, color: buttonBGColor,size: 20,)),
-                      //   ),
-                      // ),
-                    ):Container()
-
+                            // Container(
+                            //   height: 30,
+                            //   width: 30,
+                            //   // decoration: BoxDecoration(
+                            //   //     shape: BoxShape.circle, color: backgroundColor),
+                            //   child: Center(
+                            //     child: IconButton(
+                            //
+                            //         onPressed: () {
+                            //
+                            //         },
+                            //         icon: Icon(Icons.delete, color: buttonBGColor,size: 20,)),
+                            //   ),
+                            // ),
+                          )
+                        : Container()
                   ],
                 ),
               ),
@@ -284,13 +309,15 @@ class _ExpansionCardState extends State<ExpansionCard> {
                     Text(
                       "|",
                       style: TextStyle(
-                          color: letsGetStartedButtonColor, fontWeight: FontWeight.bold),
+                          color: letsGetStartedButtonColor,
+                          fontWeight: FontWeight.bold),
                     ),
                     Text("Battery : ${widget.vessel!.batteryCapacity}"),
                     Text(
                       "|",
                       style: TextStyle(
-                          color:letsGetStartedButtonColor, fontWeight: FontWeight.bold),
+                          color: letsGetStartedButtonColor,
+                          fontWeight: FontWeight.bold),
                     ),
                     Text("Engine : ${widget.vessel!.engineType}"),
                   ],
@@ -307,14 +334,14 @@ class _ExpansionCardState extends State<ExpansionCard> {
                           Text(
                             "|",
                             style: TextStyle(
-                                color:letsGetStartedButtonColor,
+                                color: letsGetStartedButtonColor,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text("Battery : ${widget.vessel!.batteryCapacity}"),
                           Text(
                             "|",
                             style: TextStyle(
-                                color:letsGetStartedButtonColor,
+                                color: letsGetStartedButtonColor,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text("Engine : ${widget.vessel!.engineType}"),
@@ -380,7 +407,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                         ],
                       ),
                     ),
-                    Row(
+                    /*   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         // SizedBox(width: 20.0),
@@ -389,7 +416,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                           child: Container(
                             height: 40.0,
                             width: MediaQuery.of(context).size.width * .4,
-                            color:letsGetStartedButtonColor,
+                            color: letsGetStartedButtonColor,
                             // decoration: BoxDecoration(
                             //   shape: BoxShape.circle,
                             //   color: Colors.grey[200],
@@ -404,21 +431,22 @@ class _ExpansionCardState extends State<ExpansionCard> {
                           child: Container(
                             height: 40.0,
                             width: MediaQuery.of(context).size.width * .4,
-                            color:letsGetStartedButtonColor,
+                            color: letsGetStartedButtonColor,
                             alignment: Alignment.center,
                             child: Icon(Icons.delete, color: Colors.white),
                           ),
                         ),
                       ],
-                    ),
-                    widget.isSingleView? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () async {
-                          // final DatabaseService _databaseService = DatabaseService();
-                          vessel!.add(widget.vessel!);
-                          // print(vessel[0].vesselName);
-                          /*Navigator.of(context).push(
+                    ),*/
+                    widget.isSingleView
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () async {
+                                // final DatabaseService _databaseService = DatabaseService();
+                                vessel!.add(widget.vessel!);
+                                // print(vessel[0].vesselName);
+                                /*Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) =>
                                   StartTrip(vessels: vessel, context: context),
@@ -426,35 +454,36 @@ class _ExpansionCardState extends State<ExpansionCard> {
                             ),
                           );*/
 
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => TripListScreen(
-                                vesselId: widget.vessel!.id,
-                                vesselName: widget.vessel!.name,
-                                vesselSize: widget.vessel!.vesselSize,
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => TripListScreen(
+                                      vesselId: widget.vessel!.id,
+                                      vesselName: widget.vessel!.name,
+                                      vesselSize: widget.vessel!.vesselSize,
+                                    ),
+                                    fullscreenDialog: true,
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                height: 40.0,
+                                width: MediaQuery.of(context).size.width,
+                                color: letsGetStartedButtonColor,
+                                // decoration: BoxDecoration(
+                                //   shape: BoxShape.circle,
+                                //   color: Colors.grey[200],
+                                // ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Start Trip",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                              fullscreenDialog: true,
                             ),
-                          );
-                        },
-                        child: Container(
-                          height: 40.0,
-                          width: MediaQuery.of(context).size.width,
-                          color:letsGetStartedButtonColor,
-                          // decoration: BoxDecoration(
-                          //   shape: BoxShape.circle,
-                          //   color: Colors.grey[200],
-                          // ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Start Trip",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ):Container(),
+                          )
+                        : Container(),
                   ],
                 ),
                 builder: (_, collapsed, expanded) {

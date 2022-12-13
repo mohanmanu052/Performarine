@@ -4,22 +4,35 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/intro_screen.dart';
 import 'package:performarine/pages/splash_screen.dart';
 import 'package:get/get.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(MyApp());
+SharedPreferences? sharedPreferences;
+void main() async {
+  await WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.getInstance().then((value) {
+    sharedPreferences = value;
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: 'Flutter SQFLite Example',
-      debugShowCheckedModeBanner: false,
-      // theme: ThemeData(
-      //   // primarySwatch: Color(0xFF42B5BF),
-      //   // accentColor: Colors.tealAccent,
-      // ),
-      home: IntroScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CommonProvider()),
+      ],
+      child: GetMaterialApp(
+        title: 'Flutter SQFLite Example',
+        debugShowCheckedModeBanner: false,
+        // theme: ThemeData(
+        //   // primarySwatch: Color(0xFF42B5BF),
+        //   // accentColor: Colors.tealAccent,
+        // ),
+        home: IntroScreen(),
+      ),
     );
   }
 }

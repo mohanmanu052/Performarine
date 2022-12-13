@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
-import 'package:performarine/pages/sign_in_screen.dart';
+import 'package:performarine/pages/authentication/sign_in_screen.dart';
+import 'package:performarine/pages/authentication/sign_up_screen.dart';
 
 class LetsGetStartedScreen extends StatefulWidget {
   const LetsGetStartedScreen({Key? key}) : super(key: key);
@@ -79,12 +80,11 @@ class _LetsGetStartedScreenState extends State<LetsGetStartedScreen> {
                           onTap: () {
                             FocusScope.of(context).requestFocus(FocusNode());
 
-                            /*Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                      const RegistrationScreen()),
-                                );*/
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SignUpScreen()),
+                            );
                           }),
                     ],
                   )
