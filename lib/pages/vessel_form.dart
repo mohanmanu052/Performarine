@@ -11,8 +11,7 @@ import 'package:uuid/uuid.dart';
 
 
 class VesselFormPage extends StatefulWidget {
-  const VesselFormPage({Key? key, this.dog,this.vessel}) : super(key: key);
-  final Dog? dog;
+  const VesselFormPage({Key? key,this.vessel}) : super(key: key);
   final CreateVessel? vessel;
 
   @override
@@ -80,9 +79,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
   Future<List<Trip>> _gettrips() async {
     final trips = await _databaseService.trips();
     if (_trips.length == 0) _trips.addAll(trips);
-    if (widget.dog != null) {
-      _selectedTrip = _trips.indexWhere((e) => e.id == widget.dog!.TripId);
-    }
+
     return _trips;
   }
 

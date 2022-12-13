@@ -27,9 +27,9 @@ class TripBuilder extends StatelessWidget {
           child: ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: 20,//snapshot.data!.length,
+            itemCount:snapshot.data!.length,
             itemBuilder: (context, index) {
-              final Trip = snapshot.data![0];//snapshot.data![index];
+              final Trip = snapshot.data![index];
               return _buildTripCard(Trip, index, context);
             },
           ),

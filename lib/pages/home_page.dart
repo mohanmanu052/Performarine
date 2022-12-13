@@ -7,6 +7,7 @@ import 'package:performarine/common_widgets/vessel_builder.dart';
 import 'package:performarine/models/trip.dart';
 // import 'package:performarine/models/Trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/tripStart.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
@@ -30,11 +31,21 @@ class _HomePageState extends State<HomePage> {
   Future<List<Trip>> _gettrips() async {
     return await _databaseService.trips();
   }
-
+//ToDo: Vessel Name by Vessel Id
+//   Future<String> _getVesselName() async {
+//     List<CreateVessel> data= await _databaseService.getVesselNameByID("538b49e0-7ab5-11ed-8f52-89603b7614ba");
+//     debugPrint("data:${data[0].name.toString()}");
+//     return data[0].name.toString();
+//   }
 
   Future<void> _onVesselDelete(CreateVessel vessel) async {
     await _databaseService.deleteVessel(vessel.id.toString());
     setState(() {});
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
   @override
@@ -117,9 +128,11 @@ class _HomePageState extends State<HomePage> {
             ),
 
             SingleChildScrollView(
-              child: TripBuilder(
-                future: _gettrips(),
-              ),
+              child:
+              TripViewListing(future:  _gettrips()),
+              // TripBuilder(
+              //   future: _gettrips(),
+              // ),
             ),
           ],
         ),
@@ -172,34 +185,34 @@ class _HomePageState extends State<HomePage> {
                 child: Icon(Icons.add)
             ),
             // ToDo: floating button elements
-            SpeedDialChild(
-              child: FaIcon(FontAwesomeIcons.ship),
-              backgroundColor: primaryColor,
-              foregroundColor: Colors.white,
-              label: 'Start Trip',
-              labelStyle: TextStyle(fontSize: 14.0),
-              onTap: () async{
-                List<CreateVessel>?vessel=await _databaseService.getAllVessels();
-                // print(vessel[0].vesselName);
-                Navigator.of(context)
-                    .push(
-                  MaterialPageRoute(
-                    builder: (_) => StartTrip(vessels: vessel,context: context,),
-                    fullscreenDialog: true,
-                  ),
-                );
-              },
-              onLongPress: () {
-                Navigator.of(context)
-                    .push(
-                  MaterialPageRoute(
-                    builder: (_) => StartTrip(context: context,),
-                    fullscreenDialog: true,
-                  ),
-                )
-                    .then((_) => setState(() {}));
-              },
-            ),
+            // SpeedDialChild(
+            //   child: FaIcon(FontAwesomeIcons.ship),
+            //   backgroundColor: primaryColor,
+            //   foregroundColor: Colors.white,
+            //   label: 'Start Trip',
+            //   labelStyle: TextStyle(fontSize: 14.0),
+            //   onTap: () async{
+            //     List<CreateVessel>?vessel=await _databaseService.getAllVessels();
+            //     // print(vessel[0].vesselName);
+            //     Navigator.of(context)
+            //         .push(
+            //       MaterialPageRoute(
+            //         builder: (_) => StartTrip(vessels: vessel,context: context,),
+            //         fullscreenDialog: true,
+            //       ),
+            //     );
+            //   },
+            //   onLongPress: () {
+            //     Navigator.of(context)
+            //         .push(
+            //       MaterialPageRoute(
+            //         builder: (_) => StartTrip(context: context,),
+            //         fullscreenDialog: true,
+            //       ),
+            //     )
+            //         .then((_) => setState(() {}));
+            //   },
+            // ),
 
             // add more menu item children here
           ],
