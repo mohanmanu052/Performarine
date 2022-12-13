@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sqflite_example/common_widgets/utils/common_size_helper.dart';
-import 'package:flutter_sqflite_example/common_widgets/widgets/common_widgets.dart';
-import 'package:flutter_sqflite_example/common_widgets/widgets/dash_rect.dart';
+import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/dash_rect.dart';
 
 class CommonButtons {
   static Widget getTextButton(

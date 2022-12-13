@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sqflite_example/common_widgets/utils/common_size_helper.dart';
-import 'package:flutter_sqflite_example/pages/intro_screen.dart';
+import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/pages/intro_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

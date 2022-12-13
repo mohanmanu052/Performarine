@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sqflite_example/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 
 class ZigZagLineWidget extends StatelessWidget {
   const ZigZagLineWidget({Key? key}) : super(key: key);

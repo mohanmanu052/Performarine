@@ -91,7 +91,7 @@ packages:
       name: country_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.17"
+    version: "2.0.18"
   cross_file:
     dependency: transitive
     description:
@@ -112,7 +112,7 @@ packages:
       name: cupertino_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.5"
   device_info_plus:
     dependency: "direct main"
     description:
@@ -175,14 +175,14 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.3"
+    version: "5.2.4"
   firebase_core:
     dependency: "direct main"
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0"
+    version: "2.4.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -196,7 +196,7 @@ packages:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -253,7 +253,7 @@ packages:
       name: font_awesome_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "10.2.1"
+    version: "10.3.0"
   geocoding:
     dependency: "direct main"
     description:
@@ -804,14 +804,14 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.3+1"
   sqflite_common:
     dependency: transitive
     description:
       name: sqflite_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1+1"
+    version: "2.4.0"
   stack_trace:
     dependency: transitive
     description:
@@ -846,7 +846,7 @@ packages:
       name: synchronized
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.0+3"
   term_glyph:
     dependency: transitive
     description:

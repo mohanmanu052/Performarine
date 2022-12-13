@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:flutter_sqflite_example/common_widgets/trip_builder.dart';
-// import 'package:flutter_sqflite_example/common_widgets/Trip_builder.dart';
-import 'package:flutter_sqflite_example/common_widgets/vessel_builder.dart';
-import 'package:flutter_sqflite_example/models/trip.dart';
-// import 'package:flutter_sqflite_example/models/Trip.dart';
-import 'package:flutter_sqflite_example/models/vessel.dart';
-import 'package:flutter_sqflite_example/pages/tripStart.dart';
-import 'package:flutter_sqflite_example/pages/vessel_form.dart';
-import 'package:flutter_sqflite_example/pages/vessel_single_view.dart';
-import 'package:flutter_sqflite_example/services/database_service.dart';
+import 'package:performarine/common_widgets/trip_builder.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
+// import 'package:performarine/common_widgets/Trip_builder.dart';
+import 'package:performarine/common_widgets/vessel_builder.dart';
+import 'package:performarine/models/trip.dart';
+// import 'package:performarine/models/Trip.dart';
+import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/tripStart.dart';
+import 'package:performarine/pages/vessel_form.dart';
+import 'package:performarine/pages/vessel_single_view.dart';
+import 'package:performarine/services/database_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -42,9 +43,31 @@ class _HomePageState extends State<HomePage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Performarine',style: TextStyle(fontWeight: FontWeight.bold),),
+
+          title:RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              children: [
+                WidgetSpan(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset("assets/images/lognotitle.png",height: 50,width: 50,),
+                      Text("Performarine")
+                    ],
+                  )
+                ),
+                // TextSpan(
+                //   text: " to add",
+                // ),
+              ],
+            ),
+          ),
+
           centerTitle: true,
           bottom: TabBar(
+            indicatorColor: primaryColor,
             tabs: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -56,6 +79,13 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
+          backgroundColor: letsGetStartedButtonColor,
+
+        ),
+        drawer:Drawer(
+          width: MediaQuery.of(context).size.width*.5,
+          elevation: 3,
+          backgroundColor: letsGetStartedButtonColor.withOpacity(.9),
         ),
         body: TabBarView(
           children: [
@@ -86,8 +116,10 @@ class _HomePageState extends State<HomePage> {
               onDelete: _onVesselDelete,
             ),
 
-            TripBuilder(
-              future: _gettrips(),
+            SingleChildScrollView(
+              child: TripBuilder(
+                future: _gettrips(),
+              ),
             ),
           ],
         ),
@@ -95,9 +127,9 @@ class _HomePageState extends State<HomePage> {
           // marginBottom: 10, //margin bottom
           icon: Icons.menu, //icon on Floating action button
           activeIcon: Icons.close, //icon when menu is expanded on button
-          backgroundColor: Colors.teal, //background color of button
+          backgroundColor: letsGetStartedButtonColor, //background color of button
           foregroundColor: Colors.white, //font color, icon color in button
-          activeBackgroundColor: Colors.blue, //background color when menu is expanded
+          activeBackgroundColor: letsGetStartedButtonColor, //background color when menu is expanded
           activeForegroundColor: Colors.white,
           buttonSize: Size(55,55),
           visible: true,
@@ -113,7 +145,7 @@ class _HomePageState extends State<HomePage> {
 
           children: [
             SpeedDialChild(
-                backgroundColor: Colors.teal,
+                backgroundColor: buttonBGColor,
                 foregroundColor: Colors.white,
                 label: 'Add Vessel',
                 labelStyle: TextStyle(fontSize: 14.0),
@@ -142,7 +174,7 @@ class _HomePageState extends State<HomePage> {
             // ToDo: floating button elements
             SpeedDialChild(
               child: FaIcon(FontAwesomeIcons.ship),
-              backgroundColor: Colors.blue,
+              backgroundColor: primaryColor,
               foregroundColor: Colors.white,
               label: 'Start Trip',
               labelStyle: TextStyle(fontSize: 14.0),

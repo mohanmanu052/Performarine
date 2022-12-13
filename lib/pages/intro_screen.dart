@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sqflite_example/common_widgets/utils/common_size_helper.dart';
-import 'package:flutter_sqflite_example/common_widgets/utils/utils.dart';
-import 'package:flutter_sqflite_example/common_widgets/widgets/common_widgets.dart';
-import 'package:flutter_sqflite_example/pages/home_page.dart';
+import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/pages/home_page.dart';
 
 import '../common_widgets/utils/constants.dart';
 

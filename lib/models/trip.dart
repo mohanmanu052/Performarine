@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_sqflite_example/models/device_model.dart';
+import 'package:performarine/models/device_model.dart';
 
 class Trip {
   final String? id;

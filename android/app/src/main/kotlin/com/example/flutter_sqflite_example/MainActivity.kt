@@ -1,4 +1,4 @@
-package com.example.flutter_sqflite_example
+package com.example.performarine
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/gestures.dart';
-import 'package:flutter_sqflite_example/common_widgets/utils/common_size_helper.dart';
-import 'package:flutter_sqflite_example/common_widgets/utils/constants.dart';
-import 'package:flutter_sqflite_example/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 // import 'package:goe/utils/utils/common_size_helper.dart';
 // import 'package:goe/utils/utils/constants.dart';
 // import 'package:goe/utils/utils.dart';

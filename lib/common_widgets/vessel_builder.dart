@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sqflite_example/models/trip.dart';
-import 'package:flutter_sqflite_example/models/vessel.dart';
-import 'package:flutter_sqflite_example/pages/vessel_single_view.dart';
-import 'package:flutter_sqflite_example/services/database_service.dart';
+import 'package:performarine/models/trip.dart';
+import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/vessel_single_view.dart';
+import 'package:performarine/services/database_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class VesselBuilder extends StatefulWidget {
@@ -23,7 +23,7 @@ class VesselBuilder extends StatefulWidget {
 }
 
 class _VesselBuilderState extends State<VesselBuilder> {
-  Future<String> getTripName(int id) async {
+  Future<String> getTripName(String id) async {
     final DatabaseService _databaseService = DatabaseService();
     final Trip = await _databaseService.getTrip(id);
     return Trip.vesselId!;

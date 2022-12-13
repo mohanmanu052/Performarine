@@ -1,6 +1,6 @@
-// import 'package:flutter_sqflite_example/models/Trip.dart';
-import 'package:flutter_sqflite_example/models/vessel.dart';
-import 'package:flutter_sqflite_example/models/trip.dart';
+// import 'package:performarine/models/Trip.dart';
+import 'package:performarine/models/vessel.dart';
+import 'package:performarine/models/trip.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -135,14 +135,22 @@ class DatabaseService {
   }
 
   /// Method to get AllTrips data By Vessel Id
-  Future<List<Trip>> getAllTripsByVesselId(int id) async {
+  Future<List<Trip>> getAllTripsByVesselId(String id) async {
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps =
         await db.query('trips', where: 'vesselId = ?', whereArgs: [id]);
     return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
   }
 
-  Future<Trip> getTrip(int id) async {
+  Future<List<CreateVessel>> getVesselNameByID(String id) async {
+    final db = await _databaseService.database;
+    final List<Map<String, dynamic>> maps =
+    await db.query('vessels', where: 'vesselId = ?', whereArgs: [id]);
+    return List.generate(
+        maps.length, (index) => CreateVessel.fromMap(maps[index]));
+  }
+
+  Future<Trip> getTrip(String id) async {
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps =
         await db.query('trips', where: 'id = ?', whereArgs: [id]);

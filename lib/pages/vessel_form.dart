@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_sqflite_example/common_widgets/age_slider.dart';
-// import 'package:flutter_sqflite_example/common_widgets/Trip_selector.dart';
-import 'package:flutter_sqflite_example/common_widgets/color_picker.dart';
-import 'package:flutter_sqflite_example/models/trip.dart';
-// import 'package:flutter_sqflite_example/models/Trip.dart';
-import 'package:flutter_sqflite_example/models/vessel.dart';
-import 'package:flutter_sqflite_example/services/database_service.dart';
+import 'package:performarine/common_widgets/age_slider.dart';
+// import 'package:performarine/common_widgets/Trip_selector.dart';
+import 'package:performarine/common_widgets/color_picker.dart';
+import 'package:performarine/models/trip.dart';
+// import 'package:performarine/models/Trip.dart';
+import 'package:performarine/models/vessel.dart';
+import 'package:performarine/services/database_service.dart';
 import 'package:uuid/uuid.dart';
 
 

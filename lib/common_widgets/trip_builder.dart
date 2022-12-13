@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sqflite_example/common_widgets/widgets/common_widgets.dart';
-import 'package:flutter_sqflite_example/common_widgets/widgets/status_tag.dart';
-import 'package:flutter_sqflite_example/models/trip.dart';
+import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/status_tag.dart';
+import 'package:performarine/models/trip.dart';
 import 'package:get/get.dart';
-// import 'package:flutter_sqflite_example/models/Trip.dart';
+// import 'package:performarine/models/Trip.dart';
 
 class TripBuilder extends StatelessWidget {
   const TripBuilder({
@@ -25,9 +25,11 @@ class TripBuilder extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: ListView.builder(
-            itemCount: snapshot.data!.length,
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: 20,//snapshot.data!.length,
             itemBuilder: (context, index) {
-              final Trip = snapshot.data![index];
+              final Trip = snapshot.data![0];//snapshot.data![index];
               return _buildTripCard(Trip, index, context);
             },
           ),

@@ -38,7 +38,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.flutter_sqflite_example"
+        applicationId "com.example.performarine"
         minSdkVersion 28
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
