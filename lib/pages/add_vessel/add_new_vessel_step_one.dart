@@ -8,6 +8,8 @@ import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_dropdown.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/models/vessel.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
@@ -16,13 +18,13 @@ import 'package:flutter/material.dart';
 class AddVesselStepOne extends StatefulWidget {
   final PageController? pageController;
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  //final AddVesselData? addVesselData;
+  final CreateVessel? addVesselData;
   final bool? isEdit;
   const AddVesselStepOne(
       {Key? key,
       this.pageController,
       this.scaffoldKey,
-      // this.addVesselData,
+      this.addVesselData,
       this.isEdit})
       : super(key: key);
 
@@ -59,7 +61,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
 
   String? selectedEngineType;
 
-  //late CommonProvider commonProvider;
+  late CommonProvider commonProvider;
 
   List<String> deletedImageUrls = [];
 
@@ -76,7 +78,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
 
     //commonProvider = context.read<CommonProvider>();
 
-    /*if (widget.isEdit!) {
+   if (widget.isEdit!) {
       if (widget.addVesselData != null) {
         debugPrint('ENGINE TYPE ${widget.addVesselData!.engineType!}');
 
@@ -90,14 +92,14 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
             widget.addVesselData!.fuelCapacity!.toString();
         batteryCapacityController.text =
             widget.addVesselData!.batteryCapacity!.toString();
-        weightController.text = widget.addVesselData!.weight!;
+        weightController.text = widget.addVesselData!.weight!.toString();
       }
-    } */
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // commonProvider = context.watch<CommonProvider>();
+    commonProvider = context.watch<CommonProvider>();
 
     return Form(
         key: formKey,
@@ -329,7 +331,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                             CommonTextField(
                                 controller: batteryCapacityController,
                                 focusNode: batteryCapacityFocusNode,
-                                labelText: 'Battery Capacity kw*',
+                                labelText: 'Battery Capacity(kw)*',
                                 hintText: '',
                                 suffixText: null,
                                 textInputAction: TextInputAction.next,
@@ -592,8 +594,8 @@ child: Icon(
                     width: displayWidth(context),
                     onTap: () {
                       if (formKey.currentState!.validate()) {
-                        /*commonProvider.addVesselRequestModel =
-                            AddVesselRequestModel();
+                        commonProvider.addVesselRequestModel =
+                            CreateVessel();
 
                         commonProvider.addVesselRequestModel!.name =
                             nameController.text;
@@ -603,7 +605,7 @@ child: Icon(
                             builderNameController.text;
                         commonProvider.addVesselRequestModel!.regNumber =
                             registrationNumberController.text;
-                        commonProvider.addVesselRequestModel!.MMSI =
+                        commonProvider.addVesselRequestModel!.mMSI =
                             mmsiController.text;
                         commonProvider.addVesselRequestModel!.engineType =
                             selectedEngineType;
@@ -612,21 +614,21 @@ child: Icon(
                                 ? '0'
                                 : fuelCapacityController.text;
                         commonProvider.addVesselRequestModel!.weight =
-                            weightController.text;
-                        commonProvider.addVesselRequestModel!.files =
-                            finalSelectedFiles;
+                            int.parse(weightController.text);
+                        // commonProvider.addVesselRequestModel!.files =
+                        //     finalSelectedFiles;
                         commonProvider.addVesselRequestModel!.batteryCapacity =
                             batteryCapacityController.text.isEmpty
                                 ? '0'
                                 : batteryCapacityController.text;
-                        commonProvider.addVesselRequestModel!.imageUrls =
+                        commonProvider.addVesselRequestModel!.imageURLs =
                             deletedImageUrls.isNotEmpty
                                 ? deletedImageUrls.join(',')
                                 : " ";
 
                         widget.pageController!.nextPage(
                             duration: Duration(milliseconds: 300),
-                            curve: Curves.easeOut);*/
+                            curve: Curves.easeOut);
                       }
                       /*Navigator.push(
                                 context,

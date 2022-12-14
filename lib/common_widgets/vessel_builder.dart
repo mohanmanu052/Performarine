@@ -40,6 +40,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
   @override
   Widget build(BuildContext context) {
     return Stack(
+
       children: [
         FutureBuilder<List<CreateVessel>>(
           future: widget.future,
@@ -52,9 +53,10 @@ class _VesselBuilderState extends State<VesselBuilder> {
             if (snapshot.hasData) {
               // CreateVessel vessel= snapshot.data![0];
               // print("hello world: ${vessel.model.toString()}");
-              return Padding(
+              return Container(
+                color: Colors.transparent,
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+                    const EdgeInsets.only(left: 8.0,right: 8.0,  top: 8,bottom: 70),
                 child: ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
@@ -81,6 +83,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
           right: 0,
           left: 0,
           child: Container(
+            // color: Colors.transparent,
             margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
             child: CommonButtons.getActionButton(
                 title: 'Add Vessel',
@@ -94,8 +97,14 @@ class _VesselBuilderState extends State<VesselBuilder> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const VesselFormPage()),
+                        builder: (context) =>
+                        const AddNewVesselScreen()),
                   );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) => const VesselFormPage()),
+                  // );
                 }),
           ),
         )
@@ -203,6 +212,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
         );
       },
       child: Card(
+        color: Colors.black,
         elevation: 3.0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         child: Stack(
@@ -219,6 +229,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                           height: displayHeight(context) * 0.22,
                           width: displayWidth(context),
                           fit: BoxFit.cover,
+
                         ),
                         /*Image.asset(
                             'assets/images/shadow_img.png',
@@ -245,46 +256,47 @@ class _VesselBuilderState extends State<VesselBuilder> {
                             ))
                       ],
                     )
-                  : CachedNetworkImage(
-                      height: displayHeight(context) * 0.22,
-                      width: displayWidth(context),
-                      imageUrl: vesselData.imageURLs![0],
-                      imageBuilder: (context, imageProvider) => Stack(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                              bottom: 0,
-                              right: 0,
-                              left: 0,
-                              child: Container(
-                                height: displayHeight(context) * 0.14,
-                                width: displayWidth(context),
-                                padding: const EdgeInsets.only(top: 20),
-                                decoration: BoxDecoration(boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.black.withOpacity(0.5),
-                                      blurRadius: 50,
-                                      spreadRadius: 5,
-                                      offset: const Offset(0, 50))
-                                ]),
-                              ))
-                        ],
-                      ),
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) => Center(
-                        child: CircularProgressIndicator(
-                            value: downloadProgress.progress),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
+                  : Image.asset("assets/images/batlic_winter.png")
+              // CachedNetworkImage(
+              //         height: displayHeight(context) * 0.22,
+              //         width: displayWidth(context),
+              //         // imageUrl: vesselData.imageURLs![0],
+              //         imageBuilder: (context, imageProvider) => Stack(
+              //           children: [
+              //             Container(
+              //               decoration: BoxDecoration(
+              //                 borderRadius: BorderRadius.circular(14),
+              //                 image: DecorationImage(
+              //                   image: imageProvider,
+              //                   fit: BoxFit.fill,
+              //                 ),
+              //               ),
+              //             ),
+              //             Positioned(
+              //                 bottom: 0,
+              //                 right: 0,
+              //                 left: 0,
+              //                 child: Container(
+              //                   height: displayHeight(context) * 0.14,
+              //                   width: displayWidth(context),
+              //                   padding: const EdgeInsets.only(top: 20),
+              //                   decoration: BoxDecoration(boxShadow: [
+              //                     BoxShadow(
+              //                         color: Colors.black.withOpacity(0.5),
+              //                         blurRadius: 50,
+              //                         spreadRadius: 5,
+              //                         offset: const Offset(0, 50))
+              //                   ]),
+              //                 ))
+              //           ],
+              //         ),
+              //         progressIndicatorBuilder:
+              //             (context, url, downloadProgress) => Center(
+              //           child: CircularProgressIndicator(
+              //               value: downloadProgress.progress),
+              //         ),
+              //         errorWidget: (context, url, error) => Icon(Icons.error),
+              //       ),
             ),
             Positioned(
               bottom: 0,

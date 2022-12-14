@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/add_vessel/sucessfully_added_screen.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class AddNewVesselStepTwo extends StatefulWidget {
   final PageController? pageController;
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  // final AddVesselData? addVesselData;
+   final CreateVessel? addVesselData;
   final bool? isEdit;
   const AddNewVesselStepTwo(
       {Key? key,
       this.pageController,
       this.scaffoldKey,
-      /*this.addVesselData,*/
+      this.addVesselData,
       this.isEdit})
       : super(key: key);
 
@@ -26,7 +32,7 @@ class AddNewVesselStepTwo extends StatefulWidget {
 class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
     with AutomaticKeepAliveClientMixin<AddNewVesselStepTwo> {
   late GlobalKey<ScaffoldState> scaffoldKey;
-
+  final DatabaseService _databaseService = DatabaseService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController freeBoardController = TextEditingController();
@@ -45,7 +51,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
   FocusNode capacityFocusNode = FocusNode();
   FocusNode builtYearFocusNode = FocusNode();
 
-  //late CommonProvider commonProvider;
+  late CommonProvider commonProvider;
 
   bool? isBtnClicked = false;
 
@@ -57,25 +63,25 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
       scaffoldKey = widget.scaffoldKey!;
     });
 
-    //commonProvider = context.read<CommonProvider>();
+    commonProvider = context.read<CommonProvider>();
 
-    /* if (widget.isEdit!) {
+    if (widget.isEdit!) {
       if (widget.addVesselData != null) {
         freeBoardController.text = widget.addVesselData!.freeBoard!.toString();
         lengthOverallController.text =
             widget.addVesselData!.lengthOverall!.toString();
         moldedBeamController.text = widget.addVesselData!.beam!.toString();
-        moldedDepthController.text = widget.addVesselData!.depth!.toString();
+        moldedDepthController.text = widget.addVesselData!.draft!.toString();
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
         capacityController.text = widget.addVesselData!.capacity!.toString();
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
       }
-    }*/
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // commonProvider = context.watch<CommonProvider>();
+    commonProvider = context.watch<CommonProvider>();
 
     return Form(
         key: formKey,
@@ -133,7 +139,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                   CommonTextField(
                       controller: lengthOverallController,
                       focusNode: lengthOverallFocusNode,
-                      labelText: 'Length overall (m)*',
+                      labelText: 'Length overall (ft)*',
                       hintText: '',
                       suffixText: null,
                       textInputAction: TextInputAction.next,
@@ -316,7 +322,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                           borderColor: buttonBGColor,
                           width: displayWidth(context),
                           onTap: () async {
-                            /*if (formKey.currentState!.validate()) {
+                            if (formKey.currentState!.validate()) {
                           setState(() {
                             isBtnClicked = true;
                           });
@@ -325,100 +331,147 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                               .requestFocus(new FocusNode());
 
                           commonProvider.addVesselRequestModel!.freeBoard =
-                              freeBoardController.text;
+                              double.parse(freeBoardController.text);
                           commonProvider.addVesselRequestModel!
-                              .lenghtOverAll = lengthOverallController.text;
+                              .lengthOverall = double.parse(lengthOverallController.text);
                           commonProvider.addVesselRequestModel!.beam =
-                              moldedBeamController.text;
-                          commonProvider.addVesselRequestModel!.depth =
-                              moldedDepthController.text;
-                          commonProvider.addVesselRequestModel!.size =
-                              sizeController.text;
+                              double.parse(moldedBeamController.text);
+                          commonProvider.addVesselRequestModel!.draft =
+                              double.parse(moldedDepthController.text);
+                          commonProvider.addVesselRequestModel!.vesselSize =
+                              double.parse(sizeController.text);
                           commonProvider.addVesselRequestModel!.capacity =
-                              capacityController.text;
+                              int.parse(capacityController.text);
                           commonProvider.addVesselRequestModel!.builtYear =
                               builtYearController.text;
+                          var uuid = Uuid();
+                          commonProvider.addVesselRequestModel!.id =uuid.v1();
 
-                          if (widget.isEdit!) {
-                            debugPrint(
-                                'VESSEL ID ${widget.addVesselData!.id!}');
+                          debugPrint(commonProvider.addVesselRequestModel!.name.toString());
 
-                            commonProvider
-                                .editVessel(
+
+                          if (!widget.isEdit!) {
+                            await _databaseService.insertVessel(
+                                commonProvider.addVesselRequestModel!
+                            ).then((value) {
+                              // Navigator.pushReplacement(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) =>
+                              //           SuccessfullyAddedScreen(
+                              //               data: value.addVesselData,
+                              //               isEdit: widget.isEdit)),
+                              // );
+                              setState(() {
+                                isBtnClicked = false;
+                              });
+                              Utils.showSnackBar(context,
+                                  scaffoldKey: scaffoldKey, message: "Vessel created successfully");
+                              Navigator.pushReplacement(
                                 context,
-                                commonProvider.addVesselRequestModel,
-                                commonProvider.loginModel!.userId!,
-                                commonProvider.loginModel!.token!,
-                                widget.addVesselData!.id!,
-                                widget.scaffoldKey!)
-                                .then((value) async {
-                              setState(() {
-                                isBtnClicked = false;
-                              });
-
-                              if (value != null) {
-                                if (value.status!) {
-                                  setState(() {
-                                    isBtnClicked = false;
-                                  });
-
-                                  var result = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            SuccessfullyAddedScreen(
-                                                data: value.addVesselData,
-                                                isEdit: widget.isEdit)),
-                                  );
-
-                                  if (result != null) {
-                                    if (result) {
-                                      Navigator.of(context).pop(true);
-                                    }
-                                  }
-                                }
-                              }
-                            }).catchError((e) {
-                              setState(() {
-                                isBtnClicked = false;
-                              });
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SuccessfullyAddedScreen(
+                                            data:  commonProvider.addVesselRequestModel!,
+                                            isEdit: widget.isEdit)),
+                              );
                             });
-                          } else {
-                            commonProvider
-                                .addVessel(
-                                context,
-                                commonProvider.addVesselRequestModel,
-                                commonProvider.loginModel!.userId!,
-                                commonProvider.loginModel!.token!,
-                                widget.scaffoldKey!)
-                                .then((value) {
+                          }else{
+                            await _databaseService.updateVessel(
+                                commonProvider.addVesselRequestModel!
+                            ).then((value) {
                               setState(() {
                                 isBtnClicked = false;
                               });
+                              Utils.showSnackBar(context,
+                                  scaffoldKey: scaffoldKey, message: "Vessel details updated successfully");
 
-                              if (value != null) {
-                                if (value.status!) {
-                                  setState(() {
-                                    isBtnClicked = false;
-                                  });
-
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            SuccessfullyAddedScreen(
-                                                data: value.addVesselData,
-                                                isEdit: widget.isEdit)),
-                                  );
-                                }
-                              }
-                            }).catchError((e) {
-                              setState(() {
-                                isBtnClicked = false;
-                              });
                             });
                           }
-                        }*/
+
+
+
+                          isBtnClicked = false;
+                          // if (widget.isEdit!) {
+                          //   // debugPrint(
+                          //   //     'VESSEL ID ${widget.addVesselData!.id!}');
+                          //
+                          //   commonProvider
+                          //       .editVessel(
+                          //       context,
+                          //       commonProvider.addVesselRequestModel,
+                          //       commonProvider.loginModel!.userId!,
+                          //       commonProvider.loginModel!.token!,
+                          //       widget.addVesselData!.id!,
+                          //       widget.scaffoldKey!)
+                          //       .then((value) async {
+                          //     setState(() {
+                          //       isBtnClicked = false;
+                          //     });
+                          //
+                          //     if (value != null) {
+                          //       if (value.status!) {
+                          //         setState(() {
+                          //           isBtnClicked = false;
+                          //         });
+                          //
+                          //         var result = await Navigator.push(
+                          //           context,
+                          //           MaterialPageRoute(
+                          //               builder: (context) =>
+                          //                   SuccessfullyAddedScreen(
+                          //                       data: value.addVesselData,
+                          //                       isEdit: widget.isEdit)),
+                          //         );
+                          //
+                          //         if (result != null) {
+                          //           if (result) {
+                          //             Navigator.of(context).pop(true);
+                          //           }
+                          //         }
+                          //       }
+                          //     }
+                          //   }).catchError((e) {
+                          //     setState(() {
+                          //       isBtnClicked = false;
+                          //     });
+                          //   });
+                          // } else {
+                          //   commonProvider
+                          //       .addVessel(
+                          //       context,
+                          //       commonProvider.addVesselRequestModel,
+                          //       commonProvider.loginModel!.userId!,
+                          //       commonProvider.loginModel!.token!,
+                          //       widget.scaffoldKey!)
+                          //       .then((value) {
+                          //     setState(() {
+                          //       isBtnClicked = false;
+                          //     });
+                          //
+                          //     if (value != null) {
+                          //       if (value.status!) {
+                          //         setState(() {
+                          //           isBtnClicked = false;
+                          //         });
+                          //
+                          //         // Navigator.pushReplacement(
+                          //         //   context,
+                          //         //   MaterialPageRoute(
+                          //         //       builder: (context) =>
+                          //         //           SuccessfullyAddedScreen(
+                          //         //               data: value.addVesselData,
+                          //         //               isEdit: widget.isEdit)),
+                          //         // );
+                          //       }
+                          //     }
+                          //   }).catchError((e) {
+                          //     setState(() {
+                          //       isBtnClicked = false;
+                          //     });
+                          //   });
+                          // }
+                        }
                           }),
                 ),
               ),

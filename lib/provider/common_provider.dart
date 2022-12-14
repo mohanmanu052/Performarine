@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/registration_model.dart';
+import 'package:performarine/models/vessel.dart';
 import 'package:performarine/provider/login_api_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
 
 class CommonProvider with ChangeNotifier {
   LoginModel? loginModel;
   RegistrationModel? registrationModel;
+  CreateVessel? addVesselRequestModel;
+
 
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
