@@ -94,7 +94,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const VesselFormPage()),
+                        builder: (context) => const AddNewVesselScreen()),
                   );
                 }),
           ),
