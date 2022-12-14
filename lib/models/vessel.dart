@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 
@@ -27,34 +28,34 @@ class CreateVessel {
   String? createdBy;
   String? updatedAt;
   String? updatedBy;
-
+  List<File?>? selectedImages;
 
   CreateVessel(
       {this.id,
-        this.name,
-        this.builderName,
-        this.model,
-        this.regNumber,
-        this.mMSI,
-        this.engineType,
-        this.fuelCapacity,
-        this.batteryCapacity,
-        this.weight,
-        this.freeBoard,
-        this.lengthOverall,
-        this.beam,
-        this.draft,
-        this.vesselSize,
-        this.capacity,
-        this.builtYear,
-        this.isSync,
-        this.vesselStatus,
-        this.createdAt,
-        this.createdBy,
-        this.updatedAt,
-        this.updatedBy,
-        this.imageURLs
-      });
+      this.name,
+      this.builderName,
+      this.model,
+      this.regNumber,
+      this.mMSI,
+      this.engineType,
+      this.fuelCapacity,
+      this.batteryCapacity,
+      this.weight,
+      this.freeBoard,
+      this.lengthOverall,
+      this.beam,
+      this.draft,
+      this.vesselSize,
+      this.capacity,
+      this.builtYear,
+      this.isSync,
+      this.vesselStatus,
+      this.createdAt,
+      this.createdBy,
+      this.updatedAt,
+      this.updatedBy,
+      this.imageURLs,
+      this.selectedImages});
 
   CreateVessel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -74,16 +75,15 @@ class CreateVessel {
     vesselSize = json['vesselSize'];
     capacity = json['capacity'];
     builtYear = json['builtYear'];
-    imageURLs=json["imageURLs"];
-    isSync=json["isSync"];
-    vesselStatus=json["vesselStatus"];
-    createdBy=json["createdBy"];
-    createdAt=json["createdAt"];
-    updatedBy=json["updatedBy"];
-    updatedAt=json["updatedAt"];
-
+    imageURLs = json["imageURLs"];
+    selectedImages = json["selectedImages"];
+    isSync = json["isSync"];
+    vesselStatus = json["vesselStatus"];
+    createdBy = json["createdBy"];
+    createdAt = json["createdAt"];
+    updatedBy = json["updatedBy"];
+    updatedAt = json["updatedAt"];
   }
-
 
   // Convert a CreateVessel into a Map. The keys must correspond to the names of the
   // columns in the database.
@@ -106,13 +106,13 @@ class CreateVessel {
       'vesselSize': vesselSize,
       'capacity': capacity,
       'builtYear': builtYear,
-      'imageURLs':imageURLs,
-      'isSync':isSync,
-      'vesselStatus':vesselStatus,
-      'createdBy':createdBy,
-      'createdAt':createdAt,
-      'updatedAt':updatedAt,
-      'updatedBy':updatedBy,
+      'imageURLs': imageURLs,
+      'isSync': isSync,
+      'vesselStatus': vesselStatus,
+      'createdBy': createdBy,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      'updatedBy': updatedBy,
     };
   }
 
@@ -120,21 +120,21 @@ class CreateVessel {
     return CreateVessel(
       id: map['id'].toString(),
       name: map['name'] ?? '',
-      builderName : map['builderName'],
-      model : map['model'],
-      regNumber : map['regNumber'],
-      mMSI : map['mMSI'],
-      engineType : map['engineType'],
-      fuelCapacity : map['fuelCapacity'],
-      batteryCapacity : map['batteryCapacity'],
-      weight : 0,
-      freeBoard : map['freeBoard'],
+      builderName: map['builderName'],
+      model: map['model'],
+      regNumber: map['regNumber'],
+      mMSI: map['mMSI'],
+      engineType: map['engineType'],
+      fuelCapacity: map['fuelCapacity'],
+      batteryCapacity: map['batteryCapacity'],
+      weight: 0,
+      freeBoard: map['freeBoard'],
       lengthOverall: map['lengthOverall'],
-      beam : map['beam'],
-      draft : map['draft'],
-      vesselSize : map['vesselSize']??0.0,
-      capacity : map['capacity'],
-      builtYear : map['builtYear'],
+      beam: map['beam'],
+      draft: map['draft'],
+      vesselSize: map['vesselSize'] ?? 0.0,
+      capacity: map['capacity'],
+      builtYear: map['builtYear'],
       isSync: map['isSync'],
       vesselStatus: map['vesselStatus'],
       imageURLs: map['imageURLs'],
@@ -148,7 +148,6 @@ class CreateVessel {
   // String toJson() => json.encode(toMap());
 
   // factory CreateVessel.fromJson(String source) => CreateVessel().fromMap(json.decode(source));
-
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

@@ -1,22 +1,32 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/add_vessel/sucessfully_added_screen.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:performarine/services/database_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+import 'package:path/path.dart' as path;
 
 class AddNewVesselStepTwo extends StatefulWidget {
   final PageController? pageController;
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  // final AddVesselData? addVesselData;
+  final CreateVessel? addVesselData;
   final bool? isEdit;
   const AddNewVesselStepTwo(
       {Key? key,
       this.pageController,
       this.scaffoldKey,
-      // this.addVesselData,
+      this.addVesselData,
       this.isEdit})
       : super(key: key);
 
@@ -27,7 +37,7 @@ class AddNewVesselStepTwo extends StatefulWidget {
 class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
     with AutomaticKeepAliveClientMixin<AddNewVesselStepTwo> {
   late GlobalKey<ScaffoldState> scaffoldKey;
-
+  final DatabaseService _databaseService = DatabaseService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController freeBoardController = TextEditingController();
@@ -46,7 +56,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
   FocusNode capacityFocusNode = FocusNode();
   FocusNode builtYearFocusNode = FocusNode();
 
-  //late CommonProvider commonProvider;
+  late CommonProvider commonProvider;
 
   bool? isBtnClicked = false;
 
@@ -58,275 +68,266 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
       scaffoldKey = widget.scaffoldKey!;
     });
 
-    CreateVessel createVessel = CreateVessel();
+    commonProvider = context.read<CommonProvider>();
 
-    debugPrint('VESSEL NAME ${createVessel.name}');
-    //commonProvider = context.read<CommonProvider>();
-
-    /* if (widget.isEdit!) {
+    if (widget.isEdit!) {
       if (widget.addVesselData != null) {
         freeBoardController.text = widget.addVesselData!.freeBoard!.toString();
         lengthOverallController.text =
             widget.addVesselData!.lengthOverall!.toString();
         moldedBeamController.text = widget.addVesselData!.beam!.toString();
-        moldedDepthController.text = widget.addVesselData!.depth!.toString();
+        moldedDepthController.text = widget.addVesselData!.draft!.toString();
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
         capacityController.text = widget.addVesselData!.capacity!.toString();
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
       }
-    }*/
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // commonProvider = context.watch<CommonProvider>();
+    commonProvider = context.watch<CommonProvider>();
 
     return Form(
         key: formKey,
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.only(
-                  bottom: displayHeight(context) * 0.09,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: displayHeight(context) * 0.02),
-                    commonText(
-                        context: context,
-                        text: 'Step 2/2',
-                        fontWeight: FontWeight.w600,
-                        textColor: Colors.black,
-                        textSize: displayWidth(context) * 0.04,
-                        textAlign: TextAlign.start),
-                    SizedBox(height: displayHeight(context) * 0.02),
-                    commonText(
-                        context: context,
-                        text: 'Size of the boat',
-                        fontWeight: FontWeight.w500,
-                        textColor: Colors.black54,
-                        textSize: displayWidth(context) * 0.035,
-                        textAlign: TextAlign.start),
-                    SizedBox(height: displayHeight(context) * 0.02),
-                    CommonTextField(
-                        controller: freeBoardController,
-                        focusNode: freeBoardFocusNode,
-                        labelText: 'Freeboard (ft)*',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType:
-                            TextInputType.numberWithOptions(decimal: true),
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 6,
-                        prefixIcon: null,
-                        requestFocusNode: lengthOverallFocusNode,
-                        obscureText: false,
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter vessel freeboard';
-                          }
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: displayHeight(context) * 0.02),
+                  commonText(
+                      context: context,
+                      text: 'Step 2/2',
+                      fontWeight: FontWeight.w600,
+                      textColor: Colors.black,
+                      textSize: displayWidth(context) * 0.04,
+                      textAlign: TextAlign.start),
+                  SizedBox(height: displayHeight(context) * 0.02),
+                  commonText(
+                      context: context,
+                      text: 'Size of the boat',
+                      fontWeight: FontWeight.w500,
+                      textColor: Colors.black54,
+                      textSize: displayWidth(context) * 0.035,
+                      textAlign: TextAlign.start),
+                  SizedBox(height: displayHeight(context) * 0.02),
+                  CommonTextField(
+                      controller: freeBoardController,
+                      focusNode: freeBoardFocusNode,
+                      labelText: 'Freeboard (ft)*',
+                      hintText: '',
+                      suffixText: null,
+                      textInputAction: TextInputAction.next,
+                      textInputType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      textCapitalization: TextCapitalization.words,
+                      maxLength: 6,
+                      prefixIcon: null,
+                      requestFocusNode: lengthOverallFocusNode,
+                      obscureText: false,
+                      onTap: () {},
+                      onChanged: (String value) {},
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter vessel freeboard';
+                        }
 
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          print(value);
-                        }),
-                    SizedBox(height: displayHeight(context) * 0.015),
-                    CommonTextField(
-                        controller: lengthOverallController,
-                        focusNode: lengthOverallFocusNode,
-                        labelText: 'Length overall (m)*',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType:
-                            TextInputType.numberWithOptions(decimal: true),
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 6,
-                        prefixIcon: null,
-                        requestFocusNode: moldedBeamFocusNode,
-                        obscureText: false,
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter vessel length overall';
-                          }
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        print(value);
+                      }),
+                  SizedBox(height: displayHeight(context) * 0.015),
+                  CommonTextField(
+                      controller: lengthOverallController,
+                      focusNode: lengthOverallFocusNode,
+                      labelText: 'Length overall (ft)*',
+                      hintText: '',
+                      suffixText: null,
+                      textInputAction: TextInputAction.next,
+                      textInputType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      textCapitalization: TextCapitalization.words,
+                      maxLength: 6,
+                      prefixIcon: null,
+                      requestFocusNode: moldedBeamFocusNode,
+                      obscureText: false,
+                      onTap: () {},
+                      onChanged: (String value) {},
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter vessel length overall';
+                        }
 
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          print(value);
-                        }),
-                    SizedBox(height: displayHeight(context) * 0.015),
-                    CommonTextField(
-                        controller: moldedBeamController,
-                        focusNode: moldedBeamFocusNode,
-                        labelText: 'Beam (ft)*',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType:
-                            TextInputType.numberWithOptions(decimal: true),
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 6,
-                        prefixIcon: null,
-                        requestFocusNode: moldedDepthFocusNode,
-                        obscureText: false,
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter vessel beam';
-                          }
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        print(value);
+                      }),
+                  SizedBox(height: displayHeight(context) * 0.015),
+                  CommonTextField(
+                      controller: moldedBeamController,
+                      focusNode: moldedBeamFocusNode,
+                      labelText: 'Beam (ft)*',
+                      hintText: '',
+                      suffixText: null,
+                      textInputAction: TextInputAction.next,
+                      textInputType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      textCapitalization: TextCapitalization.words,
+                      maxLength: 6,
+                      prefixIcon: null,
+                      requestFocusNode: moldedDepthFocusNode,
+                      obscureText: false,
+                      onTap: () {},
+                      onChanged: (String value) {},
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter vessel beam';
+                        }
 
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          print(value);
-                        }),
-                    SizedBox(height: displayHeight(context) * 0.015),
-                    CommonTextField(
-                        controller: moldedDepthController,
-                        focusNode: moldedDepthFocusNode,
-                        labelText: 'Draft (ft)*',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType:
-                            TextInputType.numberWithOptions(decimal: true),
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 6,
-                        prefixIcon: null,
-                        requestFocusNode: sizeFocusNode,
-                        obscureText: false,
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter vessel draft';
-                          }
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        print(value);
+                      }),
+                  SizedBox(height: displayHeight(context) * 0.015),
+                  CommonTextField(
+                      controller: moldedDepthController,
+                      focusNode: moldedDepthFocusNode,
+                      labelText: 'Draft (ft)*',
+                      hintText: '',
+                      suffixText: null,
+                      textInputAction: TextInputAction.next,
+                      textInputType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      textCapitalization: TextCapitalization.words,
+                      maxLength: 6,
+                      prefixIcon: null,
+                      requestFocusNode: sizeFocusNode,
+                      obscureText: false,
+                      onTap: () {},
+                      onChanged: (String value) {},
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter vessel draft';
+                        }
 
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          print(value);
-                        }),
-                    SizedBox(height: displayHeight(context) * 0.025),
-                    commonText(
-                        context: context,
-                        text: 'Engine characteristics*',
-                        fontWeight: FontWeight.w500,
-                        textColor: Colors.black54,
-                        textSize: displayWidth(context) * 0.035,
-                        textAlign: TextAlign.start),
-                    SizedBox(height: displayHeight(context) * 0.025),
-                    CommonTextField(
-                        controller: sizeController,
-                        focusNode: sizeFocusNode,
-                        labelText: 'Size (hp)',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 6,
-                        prefixIcon: null,
-                        requestFocusNode: capacityFocusNode,
-                        obscureText: false,
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter vessel size';
-                          }
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        print(value);
+                      }),
+                  SizedBox(height: displayHeight(context) * 0.025),
+                  commonText(
+                      context: context,
+                      text: 'Engine characteristics*',
+                      fontWeight: FontWeight.w500,
+                      textColor: Colors.black54,
+                      textSize: displayWidth(context) * 0.035,
+                      textAlign: TextAlign.start),
+                  SizedBox(height: displayHeight(context) * 0.025),
+                  CommonTextField(
+                      controller: sizeController,
+                      focusNode: sizeFocusNode,
+                      labelText: 'Size (hp)',
+                      hintText: '',
+                      suffixText: null,
+                      textInputAction: TextInputAction.next,
+                      textInputType: TextInputType.number,
+                      textCapitalization: TextCapitalization.words,
+                      maxLength: 6,
+                      prefixIcon: null,
+                      requestFocusNode: capacityFocusNode,
+                      obscureText: false,
+                      onTap: () {},
+                      onChanged: (String value) {},
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter vessel size';
+                        }
 
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          print(value);
-                        }),
-                    SizedBox(height: displayHeight(context) * 0.015),
-                    CommonTextField(
-                        controller: capacityController,
-                        focusNode: capacityFocusNode,
-                        labelText: 'Capacity (cc)*',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 6,
-                        prefixIcon: null,
-                        requestFocusNode: builtYearFocusNode,
-                        obscureText: false,
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter vessel capacity';
-                          }
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        print(value);
+                      }),
+                  SizedBox(height: displayHeight(context) * 0.015),
+                  CommonTextField(
+                      controller: capacityController,
+                      focusNode: capacityFocusNode,
+                      labelText: 'Capacity (cc)*',
+                      hintText: '',
+                      suffixText: null,
+                      textInputAction: TextInputAction.next,
+                      textInputType: TextInputType.number,
+                      textCapitalization: TextCapitalization.words,
+                      maxLength: 6,
+                      prefixIcon: null,
+                      requestFocusNode: builtYearFocusNode,
+                      obscureText: false,
+                      onTap: () {},
+                      onChanged: (String value) {},
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter vessel capacity';
+                        }
 
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          print(value);
-                        }),
-                    SizedBox(height: displayHeight(context) * 0.015),
-                    CommonTextField(
-                        controller: builtYearController,
-                        focusNode: builtYearFocusNode,
-                        labelText: 'Built Year (YYYY)*',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.done,
-                        textInputType: TextInputType.number,
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 4,
-                        prefixIcon: null,
-                        requestFocusNode: null,
-                        obscureText: false,
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter vessel built year';
-                          }
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        print(value);
+                      }),
+                  SizedBox(height: displayHeight(context) * 0.015),
+                  CommonTextField(
+                      controller: builtYearController,
+                      focusNode: builtYearFocusNode,
+                      labelText: 'Built Year (YYYY)*',
+                      hintText: '',
+                      suffixText: null,
+                      textInputAction: TextInputAction.done,
+                      textInputType: TextInputType.number,
+                      textCapitalization: TextCapitalization.words,
+                      maxLength: 4,
+                      prefixIcon: null,
+                      requestFocusNode: null,
+                      obscureText: false,
+                      onTap: () {},
+                      onChanged: (String value) {},
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter vessel built year';
+                        }
 
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          print(value);
-                        }),
-                  ],
-                ),
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        print(value);
+                      }),
+                ],
               ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                margin: EdgeInsets.only(
-                  bottom: displayHeight(context) * 0.01,
-                ),
-                child: isBtnClicked!
-                    ? CircularProgressIndicator()
-                    : CommonButtons.getActionButton(
-                        title: widget.isEdit! ? 'Update Vessel' : 'Add Vessel',
-                        context: context,
-                        fontSize: displayWidth(context) * 0.042,
-                        textColor: Colors.white,
-                        buttonPrimaryColor: buttonBGColor,
-                        borderColor: buttonBGColor,
-                        width: displayWidth(context),
-                        onTap: () async {
-                          /*if (formKey.currentState!.validate()) {
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.only(
+                      bottom: displayHeight(context) * 0.01,
+                      top: displayHeight(context) * 0.02),
+                  child: isBtnClicked!
+                      ? CircularProgressIndicator()
+                      : CommonButtons.getActionButton(
+                          title:
+                              widget.isEdit! ? 'Update Vessel' : 'Add Vessel',
+                          context: context,
+                          fontSize: displayWidth(context) * 0.042,
+                          textColor: Colors.white,
+                          buttonPrimaryColor: buttonBGColor,
+                          borderColor: buttonBGColor,
+                          width: displayWidth(context),
+                          onTap: () async {
+                            if (formKey.currentState!.validate()) {
                               setState(() {
                                 isBtnClicked = true;
                               });
@@ -335,105 +336,210 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                   .requestFocus(new FocusNode());
 
                               commonProvider.addVesselRequestModel!.freeBoard =
-                                  freeBoardController.text;
-                              commonProvider.addVesselRequestModel!
-                                  .lenghtOverAll = lengthOverallController.text;
+                                  double.parse(freeBoardController.text);
+                              commonProvider
+                                      .addVesselRequestModel!.lengthOverall =
+                                  double.parse(lengthOverallController.text);
                               commonProvider.addVesselRequestModel!.beam =
-                                  moldedBeamController.text;
-                              commonProvider.addVesselRequestModel!.depth =
-                                  moldedDepthController.text;
-                              commonProvider.addVesselRequestModel!.size =
-                                  sizeController.text;
+                                  double.parse(moldedBeamController.text);
+                              commonProvider.addVesselRequestModel!.draft =
+                                  double.parse(moldedDepthController.text);
+                              commonProvider.addVesselRequestModel!.vesselSize =
+                                  double.parse(sizeController.text);
                               commonProvider.addVesselRequestModel!.capacity =
-                                  capacityController.text;
+                                  int.parse(capacityController.text);
                               commonProvider.addVesselRequestModel!.builtYear =
                                   builtYearController.text;
+                              var uuid = Uuid();
+                              commonProvider.addVesselRequestModel!.id =
+                                  uuid.v1();
 
-                              if (widget.isEdit!) {
-                                debugPrint(
-                                    'VESSEL ID ${widget.addVesselData!.id!}');
+                              String vesselImagesDirPath =
+                                  await getOrCreateFolder();
+                              print('FOLDER PATH: $vesselImagesDirPath');
 
-                                commonProvider
-                                    .editVessel(
+                              File copiedFile = File(commonProvider
+                                  .addVesselRequestModel!
+                                  .selectedImages![0]!
+                                  .path);
+                              String fileExtension =
+                                  path.extension(copiedFile.path);
+
+                              Directory directory;
+
+                              if (Platform.isAndroid) {
+                                directory = Directory(
+                                    '$vesselImagesDirPath/${commonProvider.addVesselRequestModel!.id}$fileExtension');
+                              } else {
+                                directory =
+                                    await getApplicationDocumentsDirectory();
+                              }
+
+                              copiedFile.copy(directory.path);
+
+                              print(
+                                  'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                              print('COPIED FILE PATH: ${copiedFile.path}');
+                              print('COPIED FILE PATH: ${directory.path}');
+                              print(
+                                  'COPIED FILE PATH EXISTS: ${File(directory.path).existsSync()}');
+
+                              commonProvider.addVesselRequestModel!.imageURLs =
+                                  directory.path;
+
+                              /*setState(() {
+                                isBtnClicked = false;
+                              });
+                              return;*/
+
+                              if (!widget.isEdit!) {
+                                await _databaseService
+                                    .insertVessel(
+                                        commonProvider.addVesselRequestModel!)
+                                    .then((value) {
+                                  // Navigator.pushReplacement(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) =>
+                                  //           SuccessfullyAddedScreen(
+                                  //               data: value.addVesselData,
+                                  //               isEdit: widget.isEdit)),
+                                  // );
+                                  setState(() {
+                                    isBtnClicked = false;
+                                  });
+                                  Utils.showSnackBar(context,
+                                      scaffoldKey: scaffoldKey,
+                                      message: "Vessel created successfully");
+                                  Navigator.pushReplacement(
                                     context,
-                                    commonProvider.addVesselRequestModel,
-                                    commonProvider.loginModel!.userId!,
-                                    commonProvider.loginModel!.token!,
-                                    widget.addVesselData!.id!,
-                                    widget.scaffoldKey!)
-                                    .then((value) async {
-                                  setState(() {
-                                    isBtnClicked = false;
-                                  });
-
-                                  if (value != null) {
-                                    if (value.status!) {
-                                      setState(() {
-                                        isBtnClicked = false;
-                                      });
-
-                                      var result = await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SuccessfullyAddedScreen(
-                                                    data: value.addVesselData,
-                                                    isEdit: widget.isEdit)),
-                                      );
-
-                                      if (result != null) {
-                                        if (result) {
-                                          Navigator.of(context).pop(true);
-                                        }
-                                      }
-                                    }
-                                  }
-                                }).catchError((e) {
-                                  setState(() {
-                                    isBtnClicked = false;
-                                  });
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            SuccessfullyAddedScreen(
+                                                data: commonProvider
+                                                    .addVesselRequestModel!,
+                                                isEdit: widget.isEdit)),
+                                  );
                                 });
                               } else {
-                                commonProvider
-                                    .addVessel(
-                                    context,
-                                    commonProvider.addVesselRequestModel,
-                                    commonProvider.loginModel!.userId!,
-                                    commonProvider.loginModel!.token!,
-                                    widget.scaffoldKey!)
+                                await _databaseService
+                                    .updateVessel(
+                                        commonProvider.addVesselRequestModel!)
                                     .then((value) {
                                   setState(() {
                                     isBtnClicked = false;
                                   });
-
-                                  if (value != null) {
-                                    if (value.status!) {
-                                      setState(() {
-                                        isBtnClicked = false;
-                                      });
-
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SuccessfullyAddedScreen(
-                                                    data: value.addVesselData,
-                                                    isEdit: widget.isEdit)),
-                                      );
-                                    }
-                                  }
-                                }).catchError((e) {
-                                  setState(() {
-                                    isBtnClicked = false;
-                                  });
+                                  Utils.showSnackBar(context,
+                                      scaffoldKey: scaffoldKey,
+                                      message:
+                                          "Vessel details updated successfully");
                                 });
                               }
-                            }*/
-                        }),
+
+                              //  isBtnClicked = false;
+                              // if (widget.isEdit!) {
+                              //   // debugPrint(
+                              //   //     'VESSEL ID ${widget.addVesselData!.id!}');
+                              //
+                              //   commonProvider
+                              //       .editVessel(
+                              //       context,
+                              //       commonProvider.addVesselRequestModel,
+                              //       commonProvider.loginModel!.userId!,
+                              //       commonProvider.loginModel!.token!,
+                              //       widget.addVesselData!.id!,
+                              //       widget.scaffoldKey!)
+                              //       .then((value) async {
+                              //     setState(() {
+                              //       isBtnClicked = false;
+                              //     });
+                              //
+                              //     if (value != null) {
+                              //       if (value.status!) {
+                              //         setState(() {
+                              //           isBtnClicked = false;
+                              //         });
+                              //
+                              //         var result = await Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //               builder: (context) =>
+                              //                   SuccessfullyAddedScreen(
+                              //                       data: value.addVesselData,
+                              //                       isEdit: widget.isEdit)),
+                              //         );
+                              //
+                              //         if (result != null) {
+                              //           if (result) {
+                              //             Navigator.of(context).pop(true);
+                              //           }
+                              //         }
+                              //       }
+                              //     }
+                              //   }).catchError((e) {
+                              //     setState(() {
+                              //       isBtnClicked = false;
+                              //     });
+                              //   });
+                              // } else {
+                              //   commonProvider
+                              //       .addVessel(
+                              //       context,
+                              //       commonProvider.addVesselRequestModel,
+                              //       commonProvider.loginModel!.userId!,
+                              //       commonProvider.loginModel!.token!,
+                              //       widget.scaffoldKey!)
+                              //       .then((value) {
+                              //     setState(() {
+                              //       isBtnClicked = false;
+                              //     });
+                              //
+                              //     if (value != null) {
+                              //       if (value.status!) {
+                              //         setState(() {
+                              //           isBtnClicked = false;
+                              //         });
+                              //
+                              //         // Navigator.pushReplacement(
+                              //         //   context,
+                              //         //   MaterialPageRoute(
+                              //         //       builder: (context) =>
+                              //         //           SuccessfullyAddedScreen(
+                              //         //               data: value.addVesselData,
+                              //         //               isEdit: widget.isEdit)),
+                              //         // );
+                              //       }
+                              //     }
+                              //   }).catchError((e) {
+                              //     setState(() {
+                              //       isBtnClicked = false;
+                              //     });
+                              //   });
+                              // }
+                            }
+                          }),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ));
+  }
+
+  Future<String> getOrCreateFolder() async {
+    final appDirectory = await getApplicationDocumentsDirectory();
+    Directory directory = Directory('${appDirectory.path}/vesselImages');
+    debugPrint('FOLDER PATH $directory');
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+    if ((await directory.exists())) {
+      return directory.path;
+    } else {
+      directory.create();
+      return directory.path;
+    }
   }
 
   @override

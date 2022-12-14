@@ -648,7 +648,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: zipCodeController,
                         focusNode: zipCodeFocusNode,
                         labelText: selectedCountry == 'USA'
-                            ? 'ZipCode'
+                            ? 'Zip Code'
                             : 'Postal Code',
                         hintText: '',
                         suffixText: null,
@@ -883,7 +883,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: phoneController,
                         focusNode: phoneFocusNode,
                         labelText: 'Enter Phone Number',
-                        hintText: '999 999 9999',
+                        hintText: '9999999999',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
                         textInputType: TextInputType.number,

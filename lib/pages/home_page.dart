@@ -63,31 +63,36 @@ class _HomePageState extends State<HomePage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+
         appBar: AppBar(
-          title: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              children: [
-                WidgetSpan(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      "assets/images/lognotitle.png",
-                      height: 50,
-                      width: 50,
-                    ),
-                    Text("Performarine")
-                  ],
-                )),
-                // TextSpan(
-                //   text: " to add",
-                // ),
-              ],
+          centerTitle: true,
+          title: Container(
+            width: MediaQuery.of(context).size.width/2,
+            // color: Colors.yellow,
+            child: RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                children: [
+                  WidgetSpan(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center ,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/lognotitle.png",
+                        height: 50,
+                        width: 50,
+                      ),
+                      Text("Performarine")
+                    ],
+                  )),
+                  // TextSpan(
+                  //   text: " to add",
+                  // ),
+                ],
+              ),
             ),
           ),
-          centerTitle: true,
           bottom: TabBar(
             indicatorColor: primaryColor,
             tabs: [
@@ -104,6 +109,7 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: letsGetStartedButtonColor,
         ),
         drawer: const CustomDrawer(),
+
         body: TabBarView(
           children: [
             VesselBuilder(
@@ -144,88 +150,88 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        /*floatingActionButton: SpeedDial(
-          // marginBottom: 10, //margin bottom
-          icon: Icons.menu, //icon on Floating action button
-          activeIcon: Icons.close, //icon when menu is expanded on button
-          backgroundColor:
-              letsGetStartedButtonColor, //background color of button
-          foregroundColor: Colors.white, //font color, icon color in button
-          activeBackgroundColor:
-              letsGetStartedButtonColor, //background color when menu is expanded
-          activeForegroundColor: Colors.white,
-          buttonSize: Size(55, 55),
-          visible: true,
-          closeManually: false,
-          curve: Curves.bounceIn,
-          overlayColor: Colors.black,
-          overlayOpacity: 0.5,
-          onOpen: () {}, // action when menu opens
-          onClose: () {}, //action when menu closes
-
-          elevation: 8.0, //shadow elevation of button
-          shape: CircleBorder(), //shape of button
-
-          children: [
-            SpeedDialChild(
-                backgroundColor: buttonBGColor,
-                foregroundColor: Colors.white,
-                label: 'Add Vessel',
-                labelStyle: TextStyle(fontSize: 14.0),
-                onTap: () {
-                  Navigator.of(context)
-                      .push(
-                        MaterialPageRoute(
-                          builder: (_) => VesselFormPage(),
-                          fullscreenDialog: true,
-                        ),
-                      )
-                      .then((_) => setState(() {}));
-                },
-                onLongPress: () {
-                  Navigator.of(context)
-                      .push(
-                        MaterialPageRoute(
-                          builder: (_) => VesselFormPage(),
-                          fullscreenDialog: true,
-                        ),
-                      )
-                      .then((_) => setState(() {}));
-                },
-                child: Icon(Icons.add)),
-            // ToDo: floating button elements
-            // SpeedDialChild(
-            //   child: FaIcon(FontAwesomeIcons.ship),
-            //   backgroundColor: primaryColor,
-            //   foregroundColor: Colors.white,
-            //   label: 'Start Trip',
-            //   labelStyle: TextStyle(fontSize: 14.0),
-            //   onTap: () async{
-            //     List<CreateVessel>?vessel=await _databaseService.getAllVessels();
-            //     // print(vessel[0].vesselName);
-            //     Navigator.of(context)
-            //         .push(
-            //       MaterialPageRoute(
-            //         builder: (_) => StartTrip(vessels: vessel,context: context,),
-            //         fullscreenDialog: true,
-            //       ),
-            //     );
-            //   },
-            //   onLongPress: () {
-            //     Navigator.of(context)
-            //         .push(
-            //       MaterialPageRoute(
-            //         builder: (_) => StartTrip(context: context,),
-            //         fullscreenDialog: true,
-            //       ),
-            //     )
-            //         .then((_) => setState(() {}));
-            //   },
-            // ),
-
-            // add more menu item children here
-          ],
-        ),*/
+        // floatingActionButton: SpeedDial(
+        //   // marginBottom: 10, //margin bottom
+        //   icon: Icons.menu, //icon on Floating action button
+        //   activeIcon: Icons.close, //icon when menu is expanded on button
+        //   backgroundColor:
+        //       letsGetStartedButtonColor, //background color of button
+        //   foregroundColor: Colors.white, //font color, icon color in button
+        //   activeBackgroundColor:
+        //       letsGetStartedButtonColor, //background color when menu is expanded
+        //   activeForegroundColor: Colors.white,
+        //   buttonSize: Size(55, 55),
+        //   visible: true,
+        //   closeManually: false,
+        //   curve: Curves.bounceIn,
+        //   overlayColor: Colors.black,
+        //   overlayOpacity: 0.5,
+        //   onOpen: () {}, // action when menu opens
+        //   onClose: () {}, //action when menu closes
+        //
+        //   elevation: 8.0, //shadow elevation of button
+        //   shape: CircleBorder(), //shape of button
+        //
+        //   children: [
+        //     SpeedDialChild(
+        //         backgroundColor: buttonBGColor,
+        //         foregroundColor: Colors.white,
+        //         label: 'Add Vessel',
+        //         labelStyle: TextStyle(fontSize: 14.0),
+        //         onTap: () {
+        //           Navigator.of(context)
+        //               .push(
+        //                 MaterialPageRoute(
+        //                   builder: (_) => PickImages(),
+        //                   fullscreenDialog: true,
+        //                 ),
+        //               )
+        //               .then((_) => setState(() {}));
+        //         },
+        //         // onLongPress: () {
+        //         //   Navigator.of(context)
+        //         //       .push(
+        //         //         MaterialPageRoute(
+        //         //           builder: (_) => VesselFormPage(),
+        //         //           fullscreenDialog: true,
+        //         //         ),
+        //         //       )
+        //         //       .then((_) => setState(() {}));
+        //         // },
+        //         child: Icon(Icons.add)),
+        //     // ToDo: floating button elements
+        //     // SpeedDialChild(
+        //     //   child: FaIcon(FontAwesomeIcons.ship),
+        //     //   backgroundColor: primaryColor,
+        //     //   foregroundColor: Colors.white,
+        //     //   label: 'Start Trip',
+        //     //   labelStyle: TextStyle(fontSize: 14.0),
+        //     //   onTap: () async{
+        //     //     List<CreateVessel>?vessel=await _databaseService.getAllVessels();
+        //     //     // print(vessel[0].vesselName);
+        //     //     Navigator.of(context)
+        //     //         .push(
+        //     //       MaterialPageRoute(
+        //     //         builder: (_) => StartTrip(vessels: vessel,context: context,),
+        //     //         fullscreenDialog: true,
+        //     //       ),
+        //     //     );
+        //     //   },
+        //     //   onLongPress: () {
+        //     //     Navigator.of(context)
+        //     //         .push(
+        //     //       MaterialPageRoute(
+        //     //         builder: (_) => StartTrip(context: context,),
+        //     //         fullscreenDialog: true,
+        //     //       ),
+        //     //     )
+        //     //         .then((_) => setState(() {}));
+        //     //   },
+        //     // ),
+        //
+        //     // add more menu item children here
+        //   ],
+        // ),
       ),
     );
   }

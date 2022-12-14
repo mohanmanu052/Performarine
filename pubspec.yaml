@@ -53,6 +53,7 @@ dependencies:
   image_cropper: ^3.0.1
   file_picker: ^5.2.2
   image_picker: ^0.8.6
+  image_gallery_saver:
 
 dependency_overrides:
   ffi: ^2.0.1
