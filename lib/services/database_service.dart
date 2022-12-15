@@ -159,7 +159,7 @@ class DatabaseService {
 
   Future<List<CreateVessel>> vessels() async {
     final db = await _databaseService.database;
-    final List<Map<String, dynamic>> maps = await db.query('vessels');
+    final List<Map<String, dynamic>> maps = await db.query('vessels',where: 'vesselStatus = ?',whereArgs: [1]);
     return List.generate(
         maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }
@@ -208,6 +208,19 @@ class DatabaseService {
 
   Future<void> deleteVessel(String id) async {
     final db = await _databaseService.database;
-    await db.delete('vessels', where: 'id = ?', whereArgs: [id]);
+    // await db.delete('vessels', where: 'id = ?', whereArgs: [id]);
+    await db.rawUpdate('''UPDATE vessels SET vesselStatus = ? WHERE id = ?''', [0,id]);
   }
+  //update the vessel isSync status
+  Future<void> updateSyncStatus(String id) async {
+    final db = await _databaseService.database;
+    await db.rawUpdate('''UPDATE vessels SET isSync = ? WHERE id = ?''', [1,id]);
+  }
+  //update the vesselStatus in vessel table when its deleted
+  Future<void> updateVesselStatus(String id) async {
+    final db = await _databaseService.database;
+    await db.rawUpdate('''UPDATE vessels SET vesselStatus = ? WHERE id = ?''', [0,id]);
+  }
+
+
 }

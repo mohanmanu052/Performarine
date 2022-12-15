@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
+import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/trip_builder.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -14,10 +15,12 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/expansionCard.dart';
 import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/trip/trip_list_screen.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
@@ -164,6 +167,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   // your widgets,
                   // Container(height: 900,color: Colors.red,),
                   ExpansionCard(
+                      scaffoldKey,
                       widget.vessel,
                       (value) {
                         Navigator.of(context).push(
@@ -225,7 +229,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             right: 0,
             left: 0,
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 17, vertical: 0),
+              margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
               child: CommonButtons.getActionButton(
                   title: 'Start Trip',
                   context: context,
@@ -501,6 +505,68 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    isEndTripButton?
+                    Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(height: 50,),
+                            Center(child: Text("Reading sensor data...",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,),),),
+                            SizedBox(height: 10,),
+                            SizedBox(height: 300,width: 200,child: Lottie.asset('assets/lottie/dataFetch.json')),
+                            SizedBox(height: 10,),
+                          ],
+                        )):isZipFileCreate?InkWell(
+                      onTap: () async {
+                        // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
+                        File copiedFile =
+                        File('${ourDirectory!.path}.zip');
+
+                        Directory directory;
+
+                        if (Platform.isAndroid) {
+                          directory = Directory(
+                              "storage/emulated/0/Download/${widget.vessel!.id}.zip");
+                        } else {
+                          directory =
+                          await getApplicationDocumentsDirectory();
+                        }
+
+                        copiedFile.copy(directory.path);
+
+                        print(
+                            'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                        if (copiedFile.existsSync()) {
+                          Utils.showSnackBar(context,
+                              scaffoldKey: scaffoldKey,
+                              message:
+                              'File downloaded successfully');
+                        }
+
+                        // Utils.download(context, scaffoldKey,ourDirectory!.path);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment:
+                        CrossAxisAlignment.center,
+                        children: [
+                          commonText(
+                              context: context,
+                              text: 'Download File',
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.black,
+                              textSize:
+                              displayWidth(context) * 0.038,
+                              textAlign: TextAlign.start),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
+                            Icon(Icons.file_download_outlined),
+                          )
+                        ],
+                      ),
+                    ):
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1014,7 +1080,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       });
                                       print('FINAL PATH: ${file.path}');
                                       onSave(file);
-
+                                      isEndTripButton=false;
+                                      isZipFileCreate = true;
                                       /*File file = File(zipFile!.path);
                                       Future.delayed(Duration(seconds: 1))
                                           .then((value) {
@@ -1023,6 +1090,70 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         });
                                       });*/
                                     })
+                            :isZipFileCreate?CommonButtons.getActionButton(
+                            title: 'Trip Ended',
+                            context: context,
+                            fontSize: displayWidth(context) * 0.042,
+                            textColor: Colors.white,
+                            buttonPrimaryColor: buttonBGColor,
+                            borderColor: buttonBGColor,
+                            width: displayWidth(context),
+                            onTap: () async {
+
+                              if (isSensorDataUploaded) {
+                                Get.back();
+                                //setState(() {
+                                // future = commonProvider.triplListData(
+                                //     context,
+                                //     commonProvider.loginModel!.token!,
+                                //     widget.vesselId.toString(),
+                                //     scaffoldKey);
+                                //});
+                              } else {
+                                Get.back();
+                              }
+
+                              // getTripId = await getTripIdFromPref();
+
+                              // File? zipFile;
+                              // if (timer != null) timer!.cancel();
+                              // print(
+                              //     'TIMER STOPPED ${ourDirectory!.path}');
+                              // final dataDir =
+                              // Directory(ourDirectory!.path);
+                              //
+                              // try {
+                              //   zipFile =
+                              //       File('${ourDirectory!.path}.zip');
+                              //
+                              //   ZipFile.createFromDirectory(
+                              //       sourceDir: dataDir,
+                              //       zipFile: zipFile,
+                              //       recurseSubDirs: true);
+                              //   print('our path is $dataDir');
+                              // } catch (e) {
+                              //   print(e);
+                              // }
+                              //
+                              // File file = File(zipFile!.path);
+                              // Future.delayed(Duration(seconds: 1))
+                              //     .then((value) {
+                              //   stateSetter(() {
+                              //     isZipFileCreate = true;
+                              //   });
+                              // });
+                              // print('FINAL PATH: ${file.path}');
+                              // onSave(file);
+
+                              /*File file = File(zipFile!.path);
+                                      Future.delayed(Duration(seconds: 1))
+                                          .then((value) {
+                                        stateSetter(() {
+                                          isZipFileCreate = true;
+                                        });
+                                      });*/
+
+                            })
                                 : CommonButtons.getActionButton(
                                     title: 'Cancel',
                                     context: context,
@@ -1894,356 +2025,4 @@ class VesselSingleViewState extends State<VesselSingleView> {
   }
 }
 
-class ExpansionCard extends StatefulWidget {
-  final CreateVessel? vessel;
-  final Function(CreateVessel) onEdit;
-  final Function(CreateVessel) onTap;
-  final Function(CreateVessel) onDelete;
-  final bool isSingleView;
-  ExpansionCard(
-      this.vessel, this.onEdit, this.onTap, this.onDelete, this.isSingleView);
 
-  @override
-  State<ExpansionCard> createState() => _ExpansionCardState();
-}
-
-class _ExpansionCardState extends State<ExpansionCard> {
-  List<CreateVessel>? vessel = [];
-  @override
-  Widget build(BuildContext context) {
-    return ExpandableNotifier(
-        child: Card(
-      // clipBehavior: Clip.antiAlias,
-      child: GestureDetector(
-        onTap: () {
-          if (widget.isSingleView) {
-            Navigator.of(context)
-                .push(
-                  MaterialPageRoute(
-                    builder: (_) => VesselSingleView(
-                      vessel: widget.vessel,
-                    ),
-                    fullscreenDialog: true,
-                  ),
-                )
-                .then((_) => setState(() {}));
-          }
-        },
-        child: Column(
-          children: <Widget>[
-            //ToDo: vessel image need to be dynamic need to work on it
-            SizedBox(
-              height: 150,
-              child: Stack(
-                children: [
-                  widget.vessel!.imageURLs == null ||
-                          widget.vessel!.imageURLs!.isEmpty ||
-                          widget.vessel!.imageURLs == 'string'
-                      ? Container(
-                          decoration: BoxDecoration(
-                            color: Colors.orange,
-                            shape: BoxShape.rectangle,
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage(
-                                "assets/images/batlic.png",
-                              ),
-                              // fit: BoxFit.cover
-                            ),
-                          ),
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                            color: Colors.orange,
-                            shape: BoxShape.rectangle,
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: FileImage(File(widget.vessel!.imageURLs!)),
-                              // fit: BoxFit.cover
-                            ),
-                          ),
-                        ),
-                  !widget.isSingleView
-                      ? Positioned(
-                          right: 10,
-                          top: 10,
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 15,
-                                backgroundColor: letsGetStartedButtonColor,
-                                child: Center(
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.edit,
-                                      size: 15,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      widget.onEdit(widget.vessel!);
-                                    },
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 6,
-                              ),
-                              CircleAvatar(
-                                radius: 15,
-                                backgroundColor: letsGetStartedButtonColor,
-                                child: Center(
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.delete,
-                                      size: 15,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      widget.onDelete(widget.vessel!);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          // Container(
-                          //   height: 30,
-                          //   width: 30,
-                          //   // decoration: BoxDecoration(
-                          //   //     shape: BoxShape.circle, color: backgroundColor),
-                          //   child: Center(
-                          //     child: IconButton(
-                          //
-                          //         onPressed: () {
-                          //
-                          //         },
-                          //         icon: Icon(Icons.delete, color: buttonBGColor,size: 20,)),
-                          //   ),
-                          // ),
-                        )
-                      : Container()
-                ],
-              ),
-            ),
-
-            // ScrollOnExpand(
-            //   scrollOnExpand: true,
-            //   scrollOnCollapse: false,
-            //   child:
-            ExpandablePanel(
-              theme: const ExpandableThemeData(
-                headerAlignment: ExpandablePanelHeaderAlignment.center,
-                tapBodyToCollapse: true,
-              ),
-              header: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text(
-                  "${widget.vessel!.name!.toUpperCase()}",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              collapsed: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  widget.vessel!.fuelCapacity != null ||
-                          widget.vessel!.fuelCapacity != ""
-                      ? Text("Fuel : ${widget.vessel!.fuelCapacity}")
-                      : Container(),
-                  Text(
-                    "|",
-                    style: TextStyle(
-                        color: letsGetStartedButtonColor,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text("Battery : ${widget.vessel!.batteryCapacity}"),
-                  Text(
-                    "|",
-                    style: TextStyle(
-                        color: letsGetStartedButtonColor,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text("Engine : ${widget.vessel!.engineType}"),
-                ],
-              ),
-              expanded: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text("Fuel : ${widget.vessel!.fuelCapacity}"),
-                        Text(
-                          "|",
-                          style: TextStyle(
-                              color: letsGetStartedButtonColor,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text("Battery : ${widget.vessel!.batteryCapacity}"),
-                        Text(
-                          "|",
-                          style: TextStyle(
-                              color: letsGetStartedButtonColor,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text("Engine : ${widget.vessel!.engineType}"),
-                      ],
-                    ),
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.all(10),
-                    title: Text("Measurements"),
-                    subtitle: Column(
-                      children: [
-                        SizedBox(
-                          height: 12,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                                "Length (LOA) : ${widget.vessel!.lengthOverall}"),
-                            Text("Freeboard : ${widget.vessel!.freeBoard}")
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Beam : ${widget.vessel!.beam}"),
-                            Text("Draft : ${widget.vessel!.draft}")
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.all(10),
-                    title: Text("Vessel Particulars"),
-                    subtitle: Column(
-                      children: [
-                        SizedBox(
-                          height: 12,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Capacity : ${widget.vessel!.capacity}"),
-                            Text("Built Year : ${widget.vessel!.builtYear}"),
-                            Text("Reg No : ${widget.vessel!.regNumber}")
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Weight : ${widget.vessel!.weight}"),
-                            Text("Size (hp) : ${widget.vessel!.vesselSize}"),
-                            Text("MMSI : ${widget.vessel!.mMSI}")
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  /*   Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          // SizedBox(width: 20.0),
-                          GestureDetector(
-                            onTap: () => widget.onEdit(widget.vessel!),
-                            child: Container(
-                              height: 40.0,
-                              width: MediaQuery.of(context).size.width * .4,
-                              color: letsGetStartedButtonColor,
-                              // decoration: BoxDecoration(
-                              //   shape: BoxShape.circle,
-                              //   color: Colors.grey[200],
-                              // ),
-                              alignment: Alignment.center,
-                              child: Icon(Icons.edit, color: Colors.white),
-                            ),
-                          ),
-                          // SizedBox(width: 20.0),
-                          GestureDetector(
-                            onTap: () => widget.onDelete(widget.vessel!),
-                            child: Container(
-                              height: 40.0,
-                              width: MediaQuery.of(context).size.width * .4,
-                              color: letsGetStartedButtonColor,
-                              alignment: Alignment.center,
-                              child: Icon(Icons.delete, color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),*/
-                  widget.isSingleView
-                      ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () async {
-                              // final DatabaseService _databaseService = DatabaseService();
-                              vessel!.add(widget.vessel!);
-                              // print(vessel[0].vesselName);
-                              /*Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    StartTrip(vessels: vessel, context: context),
-                                fullscreenDialog: true,
-                              ),
-                            );*/
-
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => TripListScreen(
-                                    vesselId: widget.vessel!.id,
-                                    vesselName: widget.vessel!.name,
-                                    vesselSize: widget.vessel!.vesselSize,
-                                  ),
-                                  fullscreenDialog: true,
-                                ),
-                              );
-                            },
-                            child: Container(
-                              height: 40.0,
-                              width: MediaQuery.of(context).size.width,
-                              color: letsGetStartedButtonColor,
-                              // decoration: BoxDecoration(
-                              //   shape: BoxShape.circle,
-                              //   color: Colors.grey[200],
-                              // ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Start Trip",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        )
-                      : Container(),
-                ],
-              ),
-              builder: (_, collapsed, expanded) {
-                return Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  child: Expandable(
-                    collapsed: widget.isSingleView ? collapsed : expanded,
-                    expanded: widget.isSingleView ? expanded : collapsed,
-                    theme: const ExpandableThemeData(crossFadePoint: 0),
-                  ),
-                );
-              },
-            ),
-            // ),
-          ],
-        ),
-      ),
-    ));
-  }
-}
