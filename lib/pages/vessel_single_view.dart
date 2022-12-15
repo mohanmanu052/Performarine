@@ -516,57 +516,72 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             SizedBox(height: 300,width: 200,child: Lottie.asset('assets/lottie/dataFetch.json')),
                             SizedBox(height: 10,),
                           ],
-                        )):isZipFileCreate?InkWell(
-                      onTap: () async {
-                        // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
-                        File copiedFile =
-                        File('${ourDirectory!.path}.zip');
+                        )):isZipFileCreate?Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                            // SizedBox(height: 50,),
+                        SizedBox(height: 300,width: 300,child: Lottie.asset('assets/lottie/done.json')),
+                        Center(child: Text("Trip Ended Successfully!",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20,),),),
+                            SizedBox(height: 45,),
+                            Center(child: Text("Do you want to download the trip data?",style: TextStyle(fontWeight: FontWeight.w300,fontSize: 14,),),),
+                            // SizedBox(height: 50,),
+                        SizedBox(height: 10,),
+                        CommonButtons.getDottedButton(
+                              "Download Trip Data",
+                              context,
+                                    () async {
+                                  File copiedFile =
+                                  File('${ourDirectory!.path}.zip');
 
-                        Directory directory;
+                                  Directory directory;
 
-                        if (Platform.isAndroid) {
-                          directory = Directory(
-                              "storage/emulated/0/Download/${widget.vessel!.id}.zip");
-                        } else {
-                          directory =
-                          await getApplicationDocumentsDirectory();
-                        }
+                                  if (Platform.isAndroid) {
+                                    directory = Directory(
+                                        "storage/emulated/0/Download/${widget.vessel!.id}.zip");
+                                  } else {
+                                    directory =
+                                    await getApplicationDocumentsDirectory();
+                                  }
 
-                        copiedFile.copy(directory.path);
+                                  copiedFile.copy(directory.path);
 
-                        print(
-                            'DOES FILE EXIST: ${copiedFile.existsSync()}');
+                                  print(
+                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
 
-                        if (copiedFile.existsSync()) {
-                          Utils.showSnackBar(context,
-                              scaffoldKey: scaffoldKey,
-                              message:
-                              'File downloaded successfully');
-                        }
+                                  if (copiedFile.existsSync()) {
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message:
+                                        'File downloaded successfully');
+                                  }
+                                },
+                              primaryColor
+                            ),
+                            // SizedBox(height: 10,),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.center,
+                            //   crossAxisAlignment:
+                            //   CrossAxisAlignment.center,
+                            //   children: [
+                            //     commonText(
+                            //         context: context,
+                            //         text: 'Download File',
+                            //         fontWeight: FontWeight.w500,
+                            //         textColor: Colors.black,
+                            //         textSize:
+                            //         displayWidth(context) * 0.038,
+                            //         textAlign: TextAlign.start),
+                            //     Padding(
+                            //       padding: const EdgeInsets.all(8.0),
+                            //       child:
+                            //       Icon(Icons.file_download_outlined),
+                            //     )
+                            //   ],
+                            // ),
+                            SizedBox(height: 10,),
 
-                        // Utils.download(context, scaffoldKey,ourDirectory!.path);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment:
-                        CrossAxisAlignment.center,
-                        children: [
-                          commonText(
-                              context: context,
-                              text: 'Download File',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black,
-                              textSize:
-                              displayWidth(context) * 0.038,
-                              textAlign: TextAlign.start),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child:
-                            Icon(Icons.file_download_outlined),
-                          )
-                        ],
-                      ),
-                    ):
+                          ],
+                        ):
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
