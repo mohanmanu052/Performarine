@@ -122,8 +122,21 @@ class DatabaseService {
         maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }
 
-  // A method that retrieves all the trips from the trips table.
+  // A method that retrieves all the unSynced trips from the trips table
   Future<List<Trip>> trips() async {
+    // Get a reference to the database.
+    final db = await _databaseService.database;
+    // DbColumn(name=isSync, type=4, typeName=INTEGER, schema= DEFAULT 0 )
+
+    // Query the table for all the trips.
+    final List<Map<String, dynamic>> maps = await db.query('trips',where: 'isSync = ?',whereArgs: [0]);
+
+    // Convert the List<Map<String, dynamic> into a List<Trip>.
+    return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
+  }
+
+  // A method that retrieves all the trips from the trips table.
+  Future<List<Trip>> allTrips() async {
     // Get a reference to the database.
     final db = await _databaseService.database;
 

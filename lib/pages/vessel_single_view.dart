@@ -67,6 +67,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   int fileIndex = 1;
   String? latitude, longitude;
   String getTripId = '';
+  var uuid = Uuid();
 
   double progress = 1.0;
   double deviceProgress = 1.0;
@@ -131,11 +132,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // isEndTripButton?writeSensorDataToFile(getTripId):null;
     // _getTripsByID(widget.vessel!.id.toString());
   }
 
   @override
   Widget build(BuildContext context) {
+    // isEndTripButton?writeSensorDataToFile(getTripId):null;
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -208,18 +211,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   SizedBox(
                     height: 50,
                   ),
-                  /*ListTile(
-                      title: Text(
-                        "Trip History:",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(bottom: 50.0),
-                        child: Card(
-                            child: TripViewListing(
-                                future: _getTripsByID(
-                                    widget.vessel!.id.toString()))),
-                      )),*/
                 ],
               ),
             ),
@@ -240,41 +231,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   width: displayWidth(context),
                   onTap: () async {
                     vessel!.add(widget.vessel!);
-
-                    // print(vessel[0].vesselName);
-                    /*Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  StartTrip(vessels: vessel, context: context),
-                              fullscreenDialog: true,
-                            ),
-                          );*/
-
-                    //ToDo: @rupali: enable the start trip by adding the below code.and add the expansion tile like vessel card for trip history also.
-                    // locationPermissions(widget.vesselSize!, widget.vesselName!,
-                    //     widget.vesselId!);
-
-                    /*Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => TripListScreen(
-                    vesselId: widget.vessel!.id,
-                    vesselName: widget.vessel!.name,
-                    vesselSize: widget.vessel!.vesselSize,
-                  ),
-                  fullscreenDialog: true,
-                ),
-              );*/
-
                     locationPermissions(widget.vessel!.vesselSize!,
                         widget.vessel!.name!, widget.vessel!.id!);
-                    // getLocationData();
 
-                    // getBottomSheet(
-                    //   context,
-                    //   size,
-                    //   widget.vesselName!,
-                    //   widget.vesselId!,
-                    // );
                     _streamSubscriptions.add(
                       accelerometerEvents.listen(
                         (AccelerometerEvent event) {
@@ -1094,7 +1053,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         });
                                       });
                                       print('FINAL PATH: ${file.path}');
-                                      onSave(file);
+                                      // onSave(file);
                                       isEndTripButton=false;
                                       isZipFileCreate = true;
                                       /*File file = File(zipFile!.path);
@@ -1449,18 +1408,21 @@ class VesselSingleViewState extends State<VesselSingleView> {
   }
 
   startSensorFunctionality(StateSetter stateSetter) async {
+    stateSetter((){
+      getTripId = uuid.v1();
+    });
+    onSave();
     fileName = '$fileIndex.csv';
-
-    debugPrint('CREATE TRIP $fileName');
-
-    String? tripId;
-    //getTripId = await getTripIdFromPref();
-    print(widget.vessel!.id);
-    writeSensorDataToFile(widget.vessel!.id!);
+    // String? tripId;
+    // getTripId = await getTripIdFromPref();
+    // print(widget.vessel!.id);
+    debugPrint('tripId: $getTripId');
     stateSetter(() {
       isStartButton = false;
       isEndTripButton = true;
     });
+    writeSensorDataToFile(getTripId);
+
   }
 
   getTripIdFromPref() async {
@@ -1476,7 +1438,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     int fileSize = await checkFileSize(file);
 
     /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
-    if (fileSize >= 10) {
+    if (fileSize >= 1000) {
       print('STOPPED WRITING');
       print('CREATING NEW FILE');
       // if (timer != null) timer!.cancel();
@@ -1515,11 +1477,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
       file.writeAsString('$finalString\n', mode: FileMode.append);
 
-      // debugPrint('DATE ${finalString}');
+      debugPrint('finalString ${finalString}');
     }
   }
 
   Future<String> getFile(String tripId) async {
+    debugPrint("tripId: $getTripId");
     String folderPath = await getOrCreateFolder(tripId);
 
     File sensorDataFile = File('$folderPath/$fileName');
@@ -1555,7 +1518,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     var replaceAll = removedBrackets.replaceAll(" ", "");
     var date = DateTime.now().toUtc();
     var todayDate = date.toString().replaceAll(" ", "");
-    return '$type,$todayDate,$replaceAll';
+    return '$type,$replaceAll,$todayDate';
   }
 
   Future<String> getOrCreateFolder(String tripId) async {
@@ -1586,7 +1549,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     }
   }
 
-  Future<void> onSave(File file) async {
+  Future<void> onSave() async {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
     LocationData? locationData =
@@ -1600,14 +1563,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
     String longitude = locationData.longitude!.toString();
 
     debugPrint("current lod:$currentLoad");
-    var uuid = Uuid();
-    final String getTripId = uuid.v1();
+
     await _databaseService.insertTrip(Trip(
         id: getTripId,
         vesselId: widget.vessel!.id,
         vesselName: vesselName,
         currentLoad: currentLoad,
-        filePath: file.path,
+        // filePath: file.path,
         isSync: 0,
         tripStatus: 0,
         createdAt: DateTime.now().toString(),
@@ -1616,427 +1578,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));
 
-    /*if (Platform.isAndroid) {
-      bool isPermitted =
-          await Utils.getLocationPermissions(context, scaffoldKey);
-      print('ISPermitted: $isPermitted');
-      if (isPermitted) {
-        bool isGranted = await Permission.location.isGranted;
-        // onPressed: () {
-        isGranted
-            ? showModalBottomSheet(
-                context: context,
-                backgroundColor: Colors.transparent,
-                builder: (context) {
-                  return StatefulBuilder(
-                      builder: (BuildContext context, StateSetter stateSetter) {
-                    return Stack(
-                      // mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.only(
-                              top: 25, bottom: 25, left: 10, right: 10),
-                          height: displayHeight(context) >= 680
-                              ? displayHeight(context) / 1.35
-                              : displayHeight(context) / 1.25,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                new BoxShadow(
-                                  color: Colors.black,
-                                  blurRadius: 20.0,
-                                ),
-                              ],
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(40),
-                                  topRight: Radius.circular(40))),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    TweenAnimationBuilder(
-                                      duration: const Duration(seconds: 5),
-                                      tween: Tween(
-                                          begin: progressBegin, end: progress),
-                                      builder: (context, double value, _) {
-                                        return SizedBox(
-                                          height: 80,
-                                          width: 80,
-                                          child: Stack(
-                                            fit: StackFit.expand,
-                                            children: [
-                                              CircularProgressIndicator(
-                                                value: value,
-                                                backgroundColor:
-                                                    Colors.grey.shade200,
-                                                strokeWidth: 3,
-                                                color: primaryColor,
-                                              ),
-                                              Center(
-                                                child: buildProgress(value, 60),
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                      onEnd: () {
-                                        debugPrint('END here');
-                                        stateSetter(() {
-                                          isStartButton = true;
-                                        });
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        commonText(
-                                            context: context,
-                                            text:
-                                                'Fetching your device details',
-                                            fontWeight: FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize:
-                                                displayWidth(context) * 0.032,
-                                            textAlign: TextAlign.start),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-                                        TweenAnimationBuilder(
-                                            duration:
-                                                const Duration(seconds: 5),
-                                            tween: Tween(
-                                                begin: deviceProgressBegin,
-                                                end: deviceProgress),
-                                            builder:
-                                                (context, double value, _) {
-                                              return SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child: Stack(
-                                                  fit: StackFit.expand,
-                                                  children: [
-                                                    CircularProgressIndicator(
-                                                      color: Colors.blue,
-                                                      value: value,
-                                                      backgroundColor:
-                                                          Colors.grey.shade200,
-                                                      strokeWidth: 2,
-                                                      valueColor:
-                                                          const AlwaysStoppedAnimation(
-                                                              Colors.green),
-                                                    ),
-                                                    Center(
-                                                      child: subTitleProgress(
-                                                          value,
-                                                          displayWidth(
-                                                                  context) *
-                                                              0.035),
-                                                    )
-                                                  ],
-                                                ),
-                                              );
-                                            }),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        commonText(
-                                            context: context,
-                                            text:
-                                                'Connecting with your Sensors',
-                                            fontWeight: FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize:
-                                                displayWidth(context) * 0.032,
-                                            textAlign: TextAlign.start),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-                                        TweenAnimationBuilder(
-                                            duration:
-                                                const Duration(seconds: 5),
-                                            tween: Tween(
-                                                begin: sensorProgressBegin,
-                                                end: sensorProgress),
-                                            builder:
-                                                (context, double value, _) {
-                                              return SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child: Stack(
-                                                  fit: StackFit.expand,
-                                                  children: [
-                                                    CircularProgressIndicator(
-                                                      color: Colors.blue,
-                                                      value: value,
-                                                      backgroundColor:
-                                                          Colors.grey.shade200,
-                                                      strokeWidth: 2,
-                                                      valueColor:
-                                                          const AlwaysStoppedAnimation(
-                                                              Colors.green),
-                                                    ),
-                                                    Center(
-                                                      child: subTitleProgress(
-                                                          value,
-                                                          displayWidth(
-                                                                  context) *
-                                                              0.035),
-                                                    )
-                                                  ],
-                                                ),
-                                              );
-                                            }),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    isEndTripButton
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              commonText(
-                                                  context: context,
-                                                  text: 'Download File',
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.black,
-                                                  textSize:
-                                                      displayWidth(context) *
-                                                          0.038,
-                                                  textAlign: TextAlign.start),
-                                              InkWell(
-                                                onTap: () async {
-                                                  File copiedFile = File(
-                                                      '${ourDirectory!.path}/$getTripId.zip');
 
-                                                  Directory directory;
-
-                                                  if (Platform.isAndroid) {
-                                                    directory = Directory(
-                                                        '${ourDirectory!.path}/$getTripId.zip');
-                                                  } else {
-                                                    directory =
-                                                        await getApplicationDocumentsDirectory();
-                                                  }
-
-                                                  copiedFile
-                                                      .copy(directory.path);
-
-                                                  print(
-                                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                                  // Utils.download(context, scaffoldKey,ourDirectory!.path);
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Icon(Icons
-                                                      .file_download_outlined),
-                                                ),
-                                              )
-                                            ],
-                                          )
-                                        : SizedBox(),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 50,
-                                width: displayWidth(context),
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
-                                  child: isStartButton
-                                      ? CommonButtons.getActionButton(
-                                          title: 'Start',
-                                          context: context,
-                                          fontSize:
-                                              displayWidth(context) * 0.042,
-                                          textColor: Colors.white,
-                                          buttonPrimaryColor: buttonBGColor,
-                                          borderColor: buttonBGColor,
-                                          width: displayWidth(context),
-                                          onTap: () async {
-                                            setState(() {
-                                              isStartButton = false;
-                                              isEndTripButton = true;
-                                            });
-
-                                            fileName = '$fileIndex.csv';
-                                            Future.delayed(Duration(seconds: 1),
-                                                () {
-                                              timer = Timer.periodic(
-                                                  const Duration(seconds: 1),
-                                                  (timer) {
-                                                _streamSubscriptions.add(
-                                                  accelerometerEvents.listen(
-                                                    (AccelerometerEvent event) {
-                                                      setState(() {
-                                                        _accelerometerValues =
-                                                            <double>[
-                                                          event.x,
-                                                          event.y,
-                                                          event.z
-                                                        ];
-                                                      });
-                                                    },
-                                                  ),
-                                                );
-                                                _streamSubscriptions.add(
-                                                  gyroscopeEvents.listen(
-                                                    (GyroscopeEvent event) {
-                                                      setState(() {
-                                                        _gyroscopeValues =
-                                                            <double>[
-                                                          event.x,
-                                                          event.y,
-                                                          event.z
-                                                        ];
-                                                      });
-                                                    },
-                                                  ),
-                                                );
-                                                _streamSubscriptions.add(
-                                                  userAccelerometerEvents
-                                                      .listen(
-                                                    (UserAccelerometerEvent
-                                                        event) {
-                                                      setState(() {
-                                                        _userAccelerometerValues =
-                                                            <double>[
-                                                          event.x,
-                                                          event.y,
-                                                          event.z
-                                                        ];
-                                                      });
-                                                    },
-                                                  ),
-                                                );
-                                                _streamSubscriptions.add(
-                                                  magnetometerEvents.listen(
-                                                    (MagnetometerEvent event) {
-                                                      setState(() {
-                                                        _magnetometerValues =
-                                                            <double>[
-                                                          event.x,
-                                                          event.y,
-                                                          event.z
-                                                        ];
-                                                      });
-                                                    },
-                                                  ),
-                                                );
-
-                                                writeSensorDataToFile(
-                                                    getTripId);
-                                              });
-                                            });
-                                          })
-                                      : isEndTripButton
-                                          ? CommonButtons.getActionButton(
-                                              title: 'End Trip',
-                                              context: context,
-                                              fontSize:
-                                                  displayWidth(context) * 0.042,
-                                              textColor: Colors.white,
-                                              buttonPrimaryColor: buttonBGColor,
-                                              borderColor: buttonBGColor,
-                                              width: displayWidth(context),
-                                              onTap: () async {
-                                                // getTripId = await getTripIdFromPref();
-                                                stateSetter(() {
-                                                  isEndTripButton = false;
-                                                });
-
-                                                File? zipFile;
-                                                if (timer != null)
-                                                  timer!.cancel();
-                                                print(
-                                                    'TIMER STOPPED ${ourDirectory!.path}');
-                                                final dataDir = Directory(
-                                                    ourDirectory!.path);
-
-                                                try {
-                                                  zipFile = File(
-                                                      '${ourDirectory!.path}.zip');
-
-                                                  ZipFile.createFromDirectory(
-                                                      sourceDir: dataDir,
-                                                      zipFile: zipFile,
-                                                      recurseSubDirs: true);
-                                                  print('our path is $dataDir');
-                                                  Get.back();
-                                                } catch (e) {
-                                                  print('EXEEE: $e');
-                                                }
-                                                File file = File(zipFile!.path);
-                                                print(
-                                                    'FINAL PATH: ${file.path}');
-                                                // onSave(file);
-                                              })
-                                          : CommonButtons.getActionButton(
-                                              title: 'Cancel',
-                                              context: context,
-                                              fontSize:
-                                                  displayWidth(context) * 0.042,
-                                              textColor: Colors.white,
-                                              buttonPrimaryColor: buttonBGColor,
-                                              borderColor: buttonBGColor,
-                                              width: displayWidth(context),
-                                              onTap: () {
-                                                Get.back();
-                                                Navigator.of(context).pop();
-                                              }),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          right: 10,
-                          top: 10,
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: backgroundColor),
-                            child: IconButton(
-                                onPressed: () {
-                                  Get.back();
-                                  Navigator.pop(context);
-                                },
-                                icon: Icon(Icons.close_rounded,
-                                    color: buttonBGColor)),
-                          ),
-                        )
-                      ],
-                    );
-                  });
-                })
-            : Container();
-      }
-
-      // Navigator.pop(context);
-    }*/
   }
 }
 

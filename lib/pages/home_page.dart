@@ -28,14 +28,27 @@ class _HomePageState extends State<HomePage> {
   final DatabaseService _databaseService = DatabaseService();
 
   late CommonProvider commonProvider;
+  List<Trip> trips=[];
+  int tripsCount=0;
 
   Future<List<CreateVessel>> _getVessels() async {
     return await _databaseService.vessels();
   }
 
-  Future<List<Trip>> _gettrips() async {
+  Future<List<Trip>> _getTrips() async {
+    trips=await _databaseService.trips();
     return await _databaseService.trips();
   }
+   _getTripsCount() async {
+    trips=await _databaseService.trips();
+
+    setState(() {
+      tripsCount=trips.length;
+    });
+    // return tripsCount.toString();
+  }
+
+
 //ToDo: Vessel Name by Vessel Id
 //   Future<String> _getVesselName() async {
 //     List<CreateVessel> data= await _databaseService.getVesselNameByID("538b49e0-7ab5-11ed-8f52-89603b7614ba");
@@ -55,6 +68,8 @@ class _HomePageState extends State<HomePage> {
 
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
+   _getTripsCount();
+   debugPrint("tripsCount:$tripsCount");
   }
 
   @override
@@ -102,7 +117,8 @@ class _HomePageState extends State<HomePage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Text('Activity (4)'),
+                child: Text('Activity (${tripsCount.toString()})'),
+
               ),
             ],
           ),
@@ -143,7 +159,7 @@ class _HomePageState extends State<HomePage> {
               onDelete: _onVesselDelete,
             ),
             SingleChildScrollView(
-              child: TripViewListing(future: _gettrips()),
+              child: TripViewListing(future: _getTrips()),
               // TripBuilder(
               //   future: _gettrips(),
               // ),

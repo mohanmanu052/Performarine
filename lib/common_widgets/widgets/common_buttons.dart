@@ -34,6 +34,52 @@ class CommonButtons {
       ],
     );
   }
+  static Widget getRichTextActionButton(
+      {String? title,
+        BuildContext? context,
+        Color? borderColor,
+        Color? textColor,
+        double? fontSize,
+        Function()? onTap,
+        Widget? icon,
+        double? width,
+        Color? buttonPrimaryColor}) {
+    width ??= displayWidth(context!);
+    borderColor ??= buttonPrimaryColor;
+
+    return ElevatedButton(
+        onPressed: onTap,
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(buttonPrimaryColor),
+            fixedSize: MaterialStateProperty.all(
+                Size(width, displayHeight(context!) * 0.065)),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                side: BorderSide(color: borderColor!),
+                borderRadius: BorderRadius.circular(5.0)))),
+        child: Center(
+          child: RichText(
+            text: TextSpan(
+              children: [
+                WidgetSpan(
+                  child: Container(child: icon),
+                ),
+                WidgetSpan(
+                  child: commonText(
+                      text: title,
+                      context: context,
+                      textSize: fontSize,
+                      textColor: textColor,
+                      fontWeight: FontWeight.w500),
+                ),
+                // TextSpan(
+                //   text: title,
+                // ),
+              ],
+            ),
+          ),
+        ));
+  }
+
 
   static Widget getActionButton(
       {String? title,
