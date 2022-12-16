@@ -594,6 +594,10 @@ child: Icon(
                     width: displayWidth(context),
                     onTap: () {
                       if (formKey.currentState!.validate()) {
+                        debugPrint(
+                            'FINAL SELECTED FILES ${finalSelectedFiles.isEmpty}');
+                        // return;
+
                         commonProvider.addVesselRequestModel = CreateVessel();
 
                         commonProvider.addVesselRequestModel!.name =
@@ -615,7 +619,9 @@ child: Icon(
                         commonProvider.addVesselRequestModel!.weight =
                             int.parse(weightController.text);
                         commonProvider.addVesselRequestModel!.selectedImages =
-                            finalSelectedFiles;
+                            finalSelectedFiles.isEmpty
+                                ? []
+                                : finalSelectedFiles;
                         commonProvider.addVesselRequestModel!.batteryCapacity =
                             batteryCapacityController.text.isEmpty
                                 ? '0'

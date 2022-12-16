@@ -145,7 +145,7 @@ class DatabaseService {
   Future<List<CreateVessel>> getVesselNameByID(String id) async {
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps =
-    await db.query('vessels', where: 'id = ?', whereArgs: [id]);
+        await db.query('vessels', where: 'id = ?', whereArgs: [id]);
     return List.generate(
         maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }
@@ -189,6 +189,13 @@ class DatabaseService {
     print("vessel.toMap():${vessel.toMap()}");
     await db.update('vessels', vessel.toMap(),
         where: 'id = ?', whereArgs: [vessel.id]);
+  }
+
+  Future<void> updateTripStatus(int status, String tripId) async {
+    final db = await _databaseService.database;
+    int count = await db.rawUpdate(
+        'UPDATE trips SET tripStatus = ? WHERE id = ?', [status, tripId]);
+    print('updated: $count');
   }
 
   // A method that deletes a trip data from the trips table.

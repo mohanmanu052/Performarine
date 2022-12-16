@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
+import 'dart:ui';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,6 +18,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/status_tag.dart';
+import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
@@ -27,6 +31,8 @@ import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:uuid/uuid.dart';
+
+typedef StartTripServiceFunction();
 
 class VesselSingleView extends StatefulWidget {
   final CreateVessel? vessel;
@@ -476,8 +482,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     scaffoldKey.currentState!.showBottomSheet(
       (context) {
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter stateSetter) {
+        return StatefulBuilder(builder:
+            (BuildContext bottomSheetContext, StateSetter stateSetter) {
           return Stack(
             children: [
               Container(
@@ -948,30 +954,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 buttonPrimaryColor: buttonBGColor,
                                 borderColor: buttonBGColor,
                                 width: displayWidth(context),
-                                onTap: () async {
-                                  bool isLocationPermitted =
-                                      await Permission.location.isGranted;
+                                onTap: () {
+                                  // startTripService();
 
-                                  if (isLocationPermitted) {
-                                    /// TODO Further Process
-                                    await getLocationData();
-
-                                    /// SAVED Sensor data
-                                    startSensorFunctionality(stateSetter);
-                                  } else {
-                                    await Utils.getLocationPermission(
-                                        context, scaffoldKey);
-                                    bool isLocationPermitted =
-                                        await Permission.location.isGranted;
-
-                                    if (isLocationPermission) {
-                                      /// TODO Further Process
-                                      await getLocationData();
-
-                                      /// SAVED Sensor data
-                                      startSensorFunctionality(stateSetter);
-                                    }
-                                  }
+                                  initializeTripService(stateSetter);
                                 })
                             : isEndTripButton
                                 ? CommonButtons.getActionButton(
@@ -1013,7 +999,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         });
                                       });
                                       print('FINAL PATH: ${file.path}');
-                                      onSave(file);
+                                      onSave(file, bottomSheetContext);
 
                                       /*File file = File(zipFile!.path);
                                       Future.delayed(Duration(seconds: 1))
@@ -1071,202 +1057,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
         });
       },
       elevation: 4,
-      /*shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-      ),*/
       enableDrag: false,
     );
-
-    /*return Get.bottomSheet(StatefulBuilder(
-            builder: (BuildContext context, StateSetter stateSetter) {
-      return Container(
-        padding:
-            const EdgeInsets.only(top: 25, bottom: 25, left: 10, right: 10),
-        height: displayHeight(context) / 1.5,
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40), topRight: Radius.circular(40))),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TweenAnimationBuilder(
-                      duration: const Duration(seconds: 5),
-                      tween: Tween(begin: 0.0, end: 1.0),
-                      builder: (context, double value, _) {
-                        return SizedBox(
-                          height: 80,
-                          width: 80,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              CircularProgressIndicator(
-                                value: value,
-                                backgroundColor: Colors.grey.shade200,
-                                strokeWidth: 3,
-                              ),
-                              Center(
-                                child: buildProgress(value, 60),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                      onEnd: () {
-                        debugPrint('END');
-
-                        stateSetter(() {
-                          isStartButton = true;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        commonText(
-                            context: context,
-                            text: 'Fetching your device details',
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.032,
-                            textAlign: TextAlign.start),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        TweenAnimationBuilder(
-                            duration: const Duration(seconds: 5),
-                            tween: Tween(begin: 0.0, end: 1.0),
-                            builder: (context, double value, _) {
-                              return SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    CircularProgressIndicator(
-                                      color: Colors.blue,
-                                      value: value,
-                                      backgroundColor: Colors.grey.shade200,
-                                      strokeWidth: 2,
-                                      valueColor: const AlwaysStoppedAnimation(
-                                          Colors.green),
-                                    ),
-                                    Center(
-                                      child: subTitleProgress(
-                                          value, displayWidth(context) * 0.035),
-                                    )
-                                  ],
-                                ),
-                              );
-                            }),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        commonText(
-                            context: context,
-                            text: 'Connecting with your Sensors',
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.032,
-                            textAlign: TextAlign.start),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        TweenAnimationBuilder(
-                            duration: const Duration(seconds: 5),
-                            tween: Tween(begin: 0.0, end: 1.0),
-                            builder: (context, double value, _) {
-                              return SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    CircularProgressIndicator(
-                                      color: Colors.blue,
-                                      value: value,
-                                      backgroundColor: Colors.grey.shade200,
-                                      strokeWidth: 2,
-                                      valueColor: const AlwaysStoppedAnimation(
-                                          Colors.green),
-                                    ),
-                                    Center(
-                                      child: subTitleProgress(
-                                          value, displayWidth(context) * 0.035),
-                                    )
-                                  ],
-                                ),
-                              );
-                            }),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 50,
-                width: displayWidth(context),
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 10),
-                  child: isStartButton
-                      ? CommonButtons.getActionButton(
-                          title: 'Start',
-                          context: context,
-                          fontSize: displayWidth(context) * 0.042,
-                          textColor: Colors.white,
-                          buttonPrimaryColor: buttonBGColor,
-                          borderColor: buttonBGColor,
-                          width: displayWidth(context),
-                          onTap: () {
-                            fileName = '$fileIndex.csv';
-
-                            Future.delayed(Duration(seconds: 1), () {
-                              timer = Timer.periodic(const Duration(seconds: 1),
-                                  (timer) {
-                                writeSensorDataToFile();
-                              });
-                            });
-                          })
-                      : CommonButtons.getActionButton(
-                          title: 'Cancel',
-                          context: context,
-                          fontSize: displayWidth(context) * 0.042,
-                          textColor: Colors.white,
-                          buttonPrimaryColor: buttonBGColor,
-                          borderColor: buttonBGColor,
-                          width: displayWidth(context),
-                          onTap: () {
-                            //Navigator.of(context).pop();
-                          }),
-                ),
-              )
-            ],
-          ),
-        ),
-      );
-    }),
-        isDismissible: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-        ),
-        enableDrag: false,
-        isScrollControlled: true);*/
   }
 
   buildProgress(double progress, double size) {
@@ -1302,7 +1094,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     return locationData;
   }
 
-  startSensorFunctionality(StateSetter stateSetter) async {
+  startSensorFunctionality(/*StateSetter stateSetter*/) async {
     fileName = '$fileIndex.csv';
 
     debugPrint('CREATE TRIP $fileName');
@@ -1310,11 +1102,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
     String? tripId;
     //getTripId = await getTripIdFromPref();
     print(widget.vessel!.id);
-    writeSensorDataToFile(widget.vessel!.id!);
-    stateSetter(() {
+    //writeSensorDataToFile(widget.vessel!.id!);
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      writeSensorDataToFile(widget.vessel!.id!);
+    });
+    /* stateSetter(() {
       isStartButton = false;
       isEndTripButton = true;
-    });
+    });*/
   }
 
   getTripIdFromPref() async {
@@ -1369,7 +1164,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
       file.writeAsString('$finalString\n', mode: FileMode.append);
 
-      // debugPrint('DATE ${finalString}');
+      debugPrint('DATE ${finalString}');
     }
   }
 
@@ -1440,7 +1235,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     }
   }
 
-  Future<void> onSave(File file) async {
+  Future<void> onSave(File file, BuildContext context) async {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
     LocationData? locationData =
@@ -1469,6 +1264,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
         lat: latitude,
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));
+
+    await _databaseService.updateTripStatus(1, getTripId);
+
+    Navigator.pop(context);
 
     /*if (Platform.isAndroid) {
       bool isPermitted =
@@ -1891,6 +1690,65 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
       // Navigator.pop(context);
     }*/
+  }
+
+  // @pragma('vm:entry-point')
+  Future<void> onServiceStart(ServiceInstance service) async {
+    DartPluginRegistrant.ensureInitialized();
+    startTripService();
+  }
+
+  Future<void> initializeTripService(StateSetter stateSetter) async {
+    int uuid = Random().nextInt(9999);
+
+    var notificationChannelId = 'my_trip_bg_service_$uuid';
+    var notificationId = uuid;
+
+    var service = FlutterBackgroundService();
+    await service.configure(
+      androidConfiguration: AndroidConfiguration(
+        initialNotificationTitle: 'Performarine',
+        onStart: onServiceStart,
+        autoStart: false,
+        isForegroundMode: true,
+        notificationChannelId: notificationChannelId,
+        initialNotificationContent: 'Trip Data Collection in progress...',
+        foregroundServiceNotificationId: notificationId,
+      ),
+      iosConfiguration: IosConfiguration(
+        autoStart: true,
+        onForeground: (service) {},
+      ),
+    );
+
+    service.startService();
+    stateSetter(() {
+      isStartButton = false;
+      isEndTripButton = true;
+    });
+  }
+
+  startTripService() async {
+    bool isLocationPermitted = await Permission.location.isGranted;
+
+    if (isLocationPermitted) {
+      /// TODO Further Process
+      await getLocationData();
+
+      /// SAVED Sensor data
+      startSensorFunctionality();
+    } else {
+      await Utils.getLocationPermission(context, scaffoldKey);
+      bool isLocationPermitted = await Permission.location.isGranted;
+
+      if (isLocationPermitted) {
+        /// TODO Further Process
+        await getLocationData();
+
+        /// SAVED Sensor data
+        startSensorFunctionality();
+      }
+    }
   }
 }
 

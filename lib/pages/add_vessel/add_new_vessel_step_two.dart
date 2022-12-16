@@ -354,39 +354,45 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                               commonProvider.addVesselRequestModel!.id =
                                   uuid.v1();
 
-                              String vesselImagesDirPath =
-                                  await getOrCreateFolder();
-                              print('FOLDER PATH: $vesselImagesDirPath');
+                              if (commonProvider.addVesselRequestModel!
+                                  .selectedImages!.isNotEmpty) {
+                                String vesselImagesDirPath =
+                                    await getOrCreateFolder();
+                                print('FOLDER PATH: $vesselImagesDirPath');
 
-                              File copiedFile = File(commonProvider
-                                  .addVesselRequestModel!
-                                  .selectedImages![0]!
-                                  .path);
-                              String fileExtension =
-                                  path.extension(copiedFile.path);
+                                File copiedFile = File(commonProvider
+                                    .addVesselRequestModel!
+                                    .selectedImages![0]!
+                                    .path);
+                                String fileExtension =
+                                    path.extension(copiedFile.path);
 
-                              Directory directory;
+                                Directory directory;
 
-                              if (Platform.isAndroid) {
-                                directory = Directory(
-                                    '$vesselImagesDirPath/${commonProvider.addVesselRequestModel!.id}$fileExtension');
+                                if (Platform.isAndroid) {
+                                  directory = Directory(
+                                      '$vesselImagesDirPath/${commonProvider.addVesselRequestModel!.id}$fileExtension');
+                                } else {
+                                  directory =
+                                      await getApplicationDocumentsDirectory();
+                                }
+
+                                copiedFile.copy(directory.path);
+
+                                print(
+                                    'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                print('COPIED FILE PATH: ${copiedFile.path}');
+                                print('COPIED FILE PATH: ${directory.path}');
+                                print(
+                                    'COPIED FILE PATH EXISTS: ${File(directory.path).existsSync()}');
+
+                                commonProvider.addVesselRequestModel!
+                                    .imageURLs = directory.path;
                               } else {
-                                directory =
-                                    await getApplicationDocumentsDirectory();
+                                commonProvider
+                                    .addVesselRequestModel!.imageURLs = '';
                               }
-
-                              copiedFile.copy(directory.path);
-
-                              print(
-                                  'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                              print('COPIED FILE PATH: ${copiedFile.path}');
-                              print('COPIED FILE PATH: ${directory.path}');
-                              print(
-                                  'COPIED FILE PATH EXISTS: ${File(directory.path).existsSync()}');
-
-                              commonProvider.addVesselRequestModel!.imageURLs =
-                                  directory.path;
 
                               /*setState(() {
                                 isBtnClicked = false;
