@@ -353,6 +353,14 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                               var uuid = Uuid();
                               commonProvider.addVesselRequestModel!.id =
                                   uuid.v1();
+                              commonProvider.addVesselRequestModel!.isSync=0;
+                              commonProvider.addVesselRequestModel!.vesselStatus=1;
+                              commonProvider.addVesselRequestModel!.createdAt=DateTime.now().toString();
+                              commonProvider.addVesselRequestModel!.updatedAt=DateTime.now().toString();
+                              //ToDo: @ruapli add the created by as login userid.
+                              commonProvider.addVesselRequestModel!.createdBy=commonProvider.loginModel!.userId.toString();
+                              commonProvider.addVesselRequestModel!.updatedBy=commonProvider.loginModel!.userId.toString();
+
 
                               if (commonProvider.addVesselRequestModel!
                                   .selectedImages!.isNotEmpty) {

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -141,7 +143,6 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     );
                   },
                   child: Container(
-                    //color: Colors.red,
                     decoration:
                         BoxDecoration(borderRadius: BorderRadius.circular(10)),
                     margin: const EdgeInsets.only(left: 8, right: 0, bottom: 8),
@@ -193,54 +194,90 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                           ))
                                     ],
                                   )
-                                : CachedNetworkImage(
-                                    height: displayHeight(context) * 0.22,
-                                    width: displayWidth(context),
-                                    imageUrl: widget.data!.imageURLs![0],
-                                    imageBuilder: (context, imageProvider) =>
-                                        Stack(
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                            bottom: 0,
-                                            right: 0,
-                                            left: 0,
-                                            child: Container(
-                                              height:
-                                                  displayHeight(context) * 0.14,
-                                              width: displayWidth(context),
-                                              padding: const EdgeInsets.only(
-                                                  top: 20),
-                                              decoration:
-                                                  BoxDecoration(boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.black
-                                                        .withOpacity(0.5),
-                                                    blurRadius: 50,
-                                                    spreadRadius: 5,
-                                                    offset: const Offset(0, 50))
-                                              ]),
-                                            ))
-                                      ],
+                                : Stack(
+                              children: [
+                                Container(
+                                  height: displayHeight(context) * 0.22,
+                                  width: displayWidth(context),
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                      image: FileImage(File(widget.data!.imageURLs!)),
+                                      fit: BoxFit.cover,
                                     ),
-                                    progressIndicatorBuilder:
-                                        (context, url, downloadProgress) =>
-                                            Center(
-                                      child: CircularProgressIndicator(
-                                          value: downloadProgress.progress),
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
                                   ),
+                                ),
+                                Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    left: 0,
+                                    child: Container(
+                                      height:
+                                      displayHeight(context) * 0.14,
+                                      width: displayWidth(context),
+                                      padding: const EdgeInsets.only(
+                                          top: 20),
+                                      decoration:
+                                      BoxDecoration(boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black
+                                                .withOpacity(0.5),
+                                            blurRadius: 50,
+                                            spreadRadius: 5,
+                                            offset: const Offset(0, 50))
+                                      ]),
+                                    ))
+                              ],
+                            )
+                            // CachedNetworkImage(
+                            //         height: displayHeight(context) * 0.22,
+                            //         width: displayWidth(context),
+                            //         imageUrl: widget.data!.imageURLs![0],
+                            //         imageBuilder: (context, imageProvider) =>
+                            //             Stack(
+                            //           children: [
+                            //             Container(
+                            //               decoration: BoxDecoration(
+                            //                 borderRadius:
+                            //                     BorderRadius.circular(10),
+                            //                 image: DecorationImage(
+                            //                   image: imageProvider,
+                            //                   fit: BoxFit.fill,
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //             Positioned(
+                            //                 bottom: 0,
+                            //                 right: 0,
+                            //                 left: 0,
+                            //                 child: Container(
+                            //                   height:
+                            //                       displayHeight(context) * 0.14,
+                            //                   width: displayWidth(context),
+                            //                   padding: const EdgeInsets.only(
+                            //                       top: 20),
+                            //                   decoration:
+                            //                       BoxDecoration(boxShadow: [
+                            //                     BoxShadow(
+                            //                         color: Colors.black
+                            //                             .withOpacity(0.5),
+                            //                         blurRadius: 50,
+                            //                         spreadRadius: 5,
+                            //                         offset: const Offset(0, 50))
+                            //                   ]),
+                            //                 ))
+                            //           ],
+                            //         ),
+                            //         progressIndicatorBuilder:
+                            //             (context, url, downloadProgress) =>
+                            //                 Center(
+                            //           child: CircularProgressIndicator(
+                            //               value: downloadProgress.progress),
+                            //         ),
+                            //         errorWidget: (context, url, error) =>
+                            //             Icon(Icons.error),
+                            //       ),
                           ),
                           Positioned(
                             bottom: 0,

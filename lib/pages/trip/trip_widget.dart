@@ -96,6 +96,7 @@ class _TripWidgetState extends State<TripWidget> {
                           textColor: Colors.black,
                           textSize: displayWidth(context) * 0.022,
                           textAlign: TextAlign.start),
+
                       const SizedBox(
                         height: 2,
                       ),
@@ -109,6 +110,28 @@ class _TripWidgetState extends State<TripWidget> {
                       const SizedBox(
                         height: 4,
                       ),
+                      commonText(
+                          context: context,
+                          text:
+                              '${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
+                          fontWeight: FontWeight.w500,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.020,
+                          textAlign: TextAlign.start),
+
+                      // const SizedBox(
+                      //   height: 4,
+                      // ),
+                      // commonText(
+                      //     context: context,
+                      //     text: '${widget.tripList!.currentLoad}',
+                      //     fontWeight: FontWeight.w500,
+                      //     textColor: Colors.grey,
+                      //     textSize: displayWidth(context) * 0.034,
+                      //     textAlign: TextAlign.start),
+                      // SizedBox(
+                      //   width: displayWidth(context) * 0.0,
+                      // ),
                       /*Row(
                         children: [
                           commonText(
@@ -123,7 +146,8 @@ class _TripWidgetState extends State<TripWidget> {
                           ),
                           commonText(
                               context: context,
-                              text: */ /*widget.tripList?.deviceInfo?.make == null
+                              text: */
+                      /*widget.tripList?.deviceInfo?.make == null
                                   ? 'Empty'
                                   :*/ /*
                                   'widget.tripList?.deviceInfo?.make',
@@ -134,46 +158,112 @@ class _TripWidgetState extends State<TripWidget> {
                         ],
                       ),*/
                       const SizedBox(
-                        height: 10,
+                        height: 8,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          widget.tripList?.isSync != 0
-                              ? SizedBox(
-                                  height: displayHeight(context) * 0.038,
-                                  child: CommonButtons.getActionButton(
-                                      buttonPrimaryColor: buttonBGColor,
-                                      fontSize: displayWidth(context) * 0.03,
-                                      onTap: () {},
-                                      context: context,
-                                      width: displayWidth(context) * 0.35,
-                                      title: 'View Details'))
-                              : SizedBox(
-                                  height: displayHeight(context) * 0.038,
-                                  child: CommonButtons.getActionButton(
-                                      buttonPrimaryColor: primaryColor,
-                                      fontSize: displayWidth(context) * 0.03,
-                                      onTap: () {},
-                                      context: context,
-                                      width: displayWidth(context) * 0.35,
-                                      title: 'Upload Trip Data')),
-                          commonText(
-                              context: context,
-                              text:
-                                  '${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.026,
-                              textAlign: TextAlign.start),
-                        ],
-                      )
+                      widget.tripList?.tripStatus != 0
+                          ? Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: widget.tripList?.isSync == 0
+                                      ? SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.038,
+                                          child: CommonButtons
+                                              .getRichTextActionButton(
+                                                  buttonPrimaryColor:
+                                                      buttonBGColor,
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.026,
+                                                  onTap: () {},
+                                                  icon: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 8),
+                                                    child: Icon(
+                                                      Icons.analytics_outlined,
+                                                      size: 18,
+                                                    ),
+                                                  ),
+                                                  context: context,
+                                                  width: displayWidth(context) *
+                                                      0.38,
+                                                  title: 'Trip Analytics'))
+                                      : SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.038,
+                                          child: CommonButtons
+                                              .getRichTextActionButton(
+                                                  buttonPrimaryColor:
+                                                      primaryColor,
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.026,
+                                                  onTap: () {},
+                                                  icon: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            right: 8),
+                                                    child: Icon(
+                                                      Icons
+                                                          .cloud_upload_outlined,
+                                                      size: 18,
+                                                    ),
+                                                  ),
+                                                  context: context,
+                                                  width: displayWidth(context) *
+                                                      0.38,
+                                                  title: 'Upload Trip')),
+                                ),
+                                SizedBox(
+                                  width: 14,
+                                ),
+                                Expanded(
+                                  child: SizedBox(
+                                      height: displayHeight(context) * 0.038,
+                                      child:
+                                          CommonButtons.getRichTextActionButton(
+                                              buttonPrimaryColor:
+                                                  buttonBGColor.withOpacity(.5),
+                                              borderColor:
+                                                  buttonBGColor.withOpacity(.5),
+                                              icon: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 8),
+                                                child: Icon(
+                                                  Icons
+                                                      .download_for_offline_outlined,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                              fontSize:
+                                                  displayWidth(context) * 0.026,
+                                              onTap: () {},
+                                              context: context,
+                                              width:
+                                                  displayWidth(context) * 0.38,
+                                              title: 'Download Trip')),
+                                )
+                              ],
+                            )
+                          : SizedBox(
+                              height: displayHeight(context) * 0.038,
+                              child: CommonButtons.getActionButton(
+                                  buttonPrimaryColor:
+                                      buttonBGColor.withOpacity(.7),
+                                  borderColor: buttonBGColor.withOpacity(.7),
+                                  fontSize: displayWidth(context) * 0.03,
+                                  onTap: () {},
+                                  context: context,
+                                  width: displayWidth(context) * 0.8,
+                                  title: 'End Trip'))
                     ],
                   ),
                 ),
               ),
               Positioned(
-                top: 30,
+                top: 10,
                 right: 3,
                 child: CustomPaint(
                   painter: StatusTag(
@@ -189,7 +279,7 @@ class _TripWidgetState extends State<TripWidget> {
                           context: context,
                           text: widget.tripList?.tripStatus != 0
                               ? "Completed"
-                              : " In Progress ",
+                              : " Ongoing ",
                           fontWeight: FontWeight.w500,
                           textColor: Colors.white,
                           textSize: displayWidth(context) * 0.03,

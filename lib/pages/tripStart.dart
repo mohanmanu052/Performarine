@@ -16,7 +16,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:uuid/uuid.dart';
-
 import '../common_widgets/utils/colors.dart';
 import '../common_widgets/utils/common_size_helper.dart';
 import '../models/device_model.dart';
@@ -115,6 +114,7 @@ class _StartTripState extends State<StartTrip> {
     debugPrint("current lod:$currentLoad");
     var uuid = Uuid();
     final String getTripId = uuid.v1();
+    debugPrint(getTripId);
     await _databaseService.insertTrip(Trip(
         id: getTripId,
         vesselId: vesselId,
@@ -973,7 +973,7 @@ class _StartTripState extends State<StartTrip> {
     var replaceAll = removedBrackets.replaceAll(" ", "");
     var date = DateTime.now().toUtc();
     var todayDate = date.toString().replaceAll(" ", "");
-    return '$type,$todayDate,$replaceAll';
+    return '$type,$replaceAll,$todayDate';
   }
 
   Future<String> getOrCreateFolder(String tripId) async {
@@ -996,12 +996,15 @@ class _StartTripState extends State<StartTrip> {
   Future<String> getFile(String tripId) async {
     String folderPath = await getOrCreateFolder(tripId);
 
+    debugPrint("folderPath.toString(): ${folderPath.toString()}");
+
     File sensorDataFile = File('$folderPath/$fileName');
     return sensorDataFile.path;
   }
 
   void writeSensorDataToFile(String tripId) async {
     String filePath = await getFile(tripId);
+    debugPrint("writeSensorDataToFile-filePath: $filePath");
     File file = File(filePath);
 
     int fileSize = checkFileSize(file);

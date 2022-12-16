@@ -10,6 +10,7 @@ import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
+import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/trip_builder.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -17,11 +18,13 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/expansionCard.dart';
 import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/trip/trip_list_screen.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
@@ -70,6 +73,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   int fileIndex = 1;
   String? latitude, longitude;
   String getTripId = '';
+  var uuid = Uuid();
 
   double progress = 1.0;
   double deviceProgress = 1.0;
@@ -86,6 +90,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   }
 
   DeviceInfo? deviceDetails;
+
   //final DatabaseService _databaseService = DatabaseService();
   fetchDeviceInfo() async {
     final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
@@ -134,11 +139,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // isEndTripButton?writeSensorDataToFile(getTripId):null;
     // _getTripsByID(widget.vessel!.id.toString());
   }
 
   @override
   Widget build(BuildContext context) {
+    // isEndTripButton?writeSensorDataToFile(getTripId):null;
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -170,6 +177,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   // your widgets,
                   // Container(height: 900,color: Colors.red,),
                   ExpansionCard(
+                      scaffoldKey,
                       widget.vessel,
                       (value) {
                         Navigator.of(context).push(
@@ -210,18 +218,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   SizedBox(
                     height: 50,
                   ),
-                  /*ListTile(
-                      title: Text(
-                        "Trip History:",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(bottom: 50.0),
-                        child: Card(
-                            child: TripViewListing(
-                                future: _getTripsByID(
-                                    widget.vessel!.id.toString()))),
-                      )),*/
                 ],
               ),
             ),
@@ -231,7 +227,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             right: 0,
             left: 0,
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 17, vertical: 0),
+              margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
               child: CommonButtons.getActionButton(
                   title: 'Start Trip',
                   context: context,
@@ -242,41 +238,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   width: displayWidth(context),
                   onTap: () async {
                     vessel!.add(widget.vessel!);
-
-                    // print(vessel[0].vesselName);
-                    /*Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  StartTrip(vessels: vessel, context: context),
-                              fullscreenDialog: true,
-                            ),
-                          );*/
-
-                    //ToDo: @rupali: enable the start trip by adding the below code.and add the expansion tile like vessel card for trip history also.
-                    // locationPermissions(widget.vesselSize!, widget.vesselName!,
-                    //     widget.vesselId!);
-
-                    /*Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => TripListScreen(
-                    vesselId: widget.vessel!.id,
-                    vesselName: widget.vessel!.name,
-                    vesselSize: widget.vessel!.vesselSize,
-                  ),
-                  fullscreenDialog: true,
-                ),
-              );*/
-
                     locationPermissions(widget.vessel!.vesselSize!,
                         widget.vessel!.name!, widget.vessel!.id!);
-                    // getLocationData();
 
-                    // getBottomSheet(
-                    //   context,
-                    //   size,
-                    //   widget.vesselName!,
-                    //   widget.vesselId!,
-                    // );
                     _streamSubscriptions.add(
                       accelerometerEvents.listen(
                         (AccelerometerEvent event) {
@@ -507,231 +471,74 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TweenAnimationBuilder(
-                            duration: const Duration(seconds: 5),
-                            tween: Tween(begin: progressBegin, end: progress),
-                            builder: (context, double value, _) {
-                              return SizedBox(
-                                height: 80,
-                                width: 80,
-                                child: Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    CircularProgressIndicator(
-                                      value: value,
-                                      backgroundColor: Colors.grey.shade200,
-                                      strokeWidth: 3,
-                                      color: primaryColor,
+                    isEndTripButton
+                        ? Container(
+                            child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                height: 50,
+                              ),
+                              Center(
+                                child: Text(
+                                  "Reading sensor data...",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              SizedBox(
+                                  height: 300,
+                                  width: 200,
+                                  child: Lottie.asset(
+                                      'assets/lottie/dataFetch.json')),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ))
+                        : isZipFileCreate
+                            ? Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // SizedBox(height: 50,),
+                                  SizedBox(
+                                      height: 300,
+                                      width: 300,
+                                      child: Lottie.asset(
+                                          'assets/lottie/done.json')),
+                                  Center(
+                                    child: Text(
+                                      "Trip Ended Successfully!",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
                                     ),
-                                    Center(
-                                      child: buildProgress(value, 60),
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
-                            onEnd: () {
-                              debugPrint('END');
-                              stateSetter(() {
-                                isStartButton = true;
-                              });
-                            },
-                          ),
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: displayWidth(context) * 0.15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                commonText(
-                                    context: context,
-                                    text: 'Fetching your device details',
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.black,
-                                    textSize: displayWidth(context) * 0.032,
-                                    textAlign: TextAlign.start),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                TweenAnimationBuilder(
-                                    duration: const Duration(seconds: 5),
-                                    tween: Tween(
-                                        begin: deviceProgressBegin,
-                                        end: deviceProgress),
-                                    builder: (context, double value, _) {
-                                      return SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: Stack(
-                                          fit: StackFit.expand,
-                                          children: [
-                                            CircularProgressIndicator(
-                                              color: Colors.blue,
-                                              value: value,
-                                              backgroundColor:
-                                                  Colors.grey.shade200,
-                                              strokeWidth: 2,
-                                              valueColor:
-                                                  const AlwaysStoppedAnimation(
-                                                      Colors.green),
-                                            ),
-                                            Center(
-                                              child: subTitleProgress(
-                                                  value,
-                                                  displayWidth(context) *
-                                                      0.035),
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    }),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: displayWidth(context) * 0.15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                commonText(
-                                    context: context,
-                                    text: 'Connecting with your Sensors',
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.black,
-                                    textSize: displayWidth(context) * 0.032,
-                                    textAlign: TextAlign.start),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                TweenAnimationBuilder(
-                                    duration: const Duration(seconds: 5),
-                                    tween: Tween(
-                                        begin: sensorProgressBegin,
-                                        end: sensorProgress),
-                                    builder: (context, double value, _) {
-                                      return SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: Stack(
-                                          fit: StackFit.expand,
-                                          children: [
-                                            CircularProgressIndicator(
-                                              color: Colors.blue,
-                                              value: value,
-                                              backgroundColor:
-                                                  Colors.grey.shade200,
-                                              strokeWidth: 2,
-                                              valueColor:
-                                                  const AlwaysStoppedAnimation(
-                                                      Colors.green),
-                                            ),
-                                            Center(
-                                              child: subTitleProgress(
-                                                  value,
-                                                  displayWidth(context) *
-                                                      0.035),
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    }),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: displayWidth(context) * 0.15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                commonText(
-                                    context: context,
-                                    text: isLocationPermission
-                                        ? 'Location permission granted'
-                                        : 'Location permission is required',
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.black,
-                                    textSize: displayWidth(context) * 0.032,
-                                    textAlign: TextAlign.start),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                !isLocationPermission
-                                    ? SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.red, width: 2),
-                                              shape: BoxShape.circle),
-                                          child: Center(
-                                            child: Icon(
-                                              Icons.close,
-                                              color: Colors.red,
-                                              size: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : TweenAnimationBuilder(
-                                        duration: const Duration(seconds: 5),
-                                        tween: Tween(
-                                            begin: sensorProgressBegin,
-                                            end: sensorProgress),
-                                        builder: (context, double value, _) {
-                                          return SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: Stack(
-                                              fit: StackFit.expand,
-                                              children: [
-                                                CircularProgressIndicator(
-                                                  color: Colors.blue,
-                                                  value: value,
-                                                  backgroundColor:
-                                                      Colors.grey.shade200,
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                      const AlwaysStoppedAnimation(
-                                                          Colors.green),
-                                                ),
-                                                Center(
-                                                  child: subTitleProgress(
-                                                      value,
-                                                      displayWidth(context) *
-                                                          0.035),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        }),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          isZipFileCreate
-                              ? InkWell(
-                                  onTap: () async {
-                                    // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
+                                  ),
+                                  SizedBox(
+                                    height: 45,
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      "Do you want to download the trip data?",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ),
+                                  // SizedBox(height: 50,),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  CommonButtons.getDottedButton(
+                                      "Download Trip Data", context, () async {
                                     File copiedFile =
                                         File('${ourDirectory!.path}.zip');
 
@@ -756,190 +563,533 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           message:
                                               'File downloaded successfully');
                                     }
-
-                                    // Utils.download(context, scaffoldKey,ourDirectory!.path);
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      commonText(
-                                          context: context,
-                                          text: 'Download File',
-                                          fontWeight: FontWeight.w500,
-                                          textColor: Colors.black,
-                                          textSize:
-                                              displayWidth(context) * 0.038,
-                                          textAlign: TextAlign.start),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child:
-                                            Icon(Icons.file_download_outlined),
-                                      )
-                                    ],
+                                  }, primaryColor),
+                                  // SizedBox(height: 10,),
+                                  // Row(
+                                  //   mainAxisAlignment: MainAxisAlignment.center,
+                                  //   crossAxisAlignment:
+                                  //   CrossAxisAlignment.center,
+                                  //   children: [
+                                  //     commonText(
+                                  //         context: context,
+                                  //         text: 'Download File',
+                                  //         fontWeight: FontWeight.w500,
+                                  //         textColor: Colors.black,
+                                  //         textSize:
+                                  //         displayWidth(context) * 0.038,
+                                  //         textAlign: TextAlign.start),
+                                  //     Padding(
+                                  //       padding: const EdgeInsets.all(8.0),
+                                  //       child:
+                                  //       Icon(Icons.file_download_outlined),
+                                  //     )
+                                  //   ],
+                                  // ),
+                                  SizedBox(
+                                    height: 10,
                                   ),
-                                )
-                              : SizedBox(),
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          isEndTripButton
-                              ? Container()
-                              : StatefulBuilder(
-                                  builder: (context, StateSetter stateSetter) {
-                                    return Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20),
-                                          child: Container(
-                                            height: displayHeight(context) >=
-                                                    680
-                                                ? displayHeight(context) * 0.056
-                                                : displayHeight(context) * 0.07,
-                                            alignment: Alignment.centerLeft,
-                                            color: backgroundColor,
-                                            child: InputDecorator(
-                                              decoration: const InputDecoration(
-                                                enabledBorder: InputBorder.none,
-                                                border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                0.0))),
-                                                contentPadding: EdgeInsets.only(
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 5,
-                                                    bottom: 5),
+                                ],
+                              )
+                            : Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    TweenAnimationBuilder(
+                                      duration: const Duration(seconds: 5),
+                                      tween: Tween(
+                                          begin: progressBegin, end: progress),
+                                      builder: (context, double value, _) {
+                                        return SizedBox(
+                                          height: 80,
+                                          width: 80,
+                                          child: Stack(
+                                            fit: StackFit.expand,
+                                            children: [
+                                              CircularProgressIndicator(
+                                                value: value,
+                                                backgroundColor:
+                                                    Colors.grey.shade200,
+                                                strokeWidth: 3,
+                                                color: primaryColor,
                                               ),
-
-                                              child: commonText(
-                                                  context: context,
-                                                  text: vesselName,
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.black54,
-                                                  textSize:
-                                                      displayWidth(context) *
-                                                          0.032,
-                                                  textAlign: TextAlign.start),
-
-                                              //Text(vesselName)
-                                              //     DropdownButtonHideUnderline(
-                                              //   child: DropdownButton<dynamic>(
-                                              //     value: null,
-                                              //     isDense: true,
-                                              //     hint:
-                                              //         Text(selectedVesselName),
-                                              //     isExpanded: true,
-                                              //     items: [
-                                              //       DropdownMenuItem(
-                                              //           value: '1',
-                                              //           child:
-                                              //               Text(vesselName)),
-                                              //     ],
-                                              //     onChanged: (newValue) {
-                                              //       stateSetter(() =>
-                                              //           selectedVesselName =
-                                              //               vesselName);
-                                              //       print(selectedVesselName);
-                                              //     },
-                                              //   ),
-                                              // ),
-                                            ),
+                                              Center(
+                                                child: buildProgress(value, 60),
+                                              )
+                                            ],
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20, top: 10),
-                                          child: Container(
-                                            alignment: Alignment.centerLeft,
-                                            height: displayHeight(context) >=
-                                                    680
-                                                ? displayHeight(context) * 0.056
-                                                : displayHeight(context) * 0.07,
-                                            color: backgroundColor,
-                                            child: InputDecorator(
-                                              decoration: const InputDecoration(
-                                                enabledBorder: InputBorder.none,
-                                                border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                0.0))),
-                                                contentPadding: EdgeInsets.only(
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 10,
-                                                    bottom: 10),
-                                              ),
-                                              child:
-                                                  DropdownButtonHideUnderline(
-                                                child: DropdownButton<dynamic>(
-                                                  value: null,
-                                                  isDense: true,
-                                                  hint: commonText(
-                                                      context: context,
-                                                      text:
-                                                          selectedVesselWeight,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      textColor: Colors.black54,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.032,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                                  //  Text(
-                                                  //     '${selectedVesselWeight}'),
-                                                  isExpanded: true,
-                                                  items: [
-                                                    DropdownMenuItem(
-                                                        value: '1',
-                                                        child: Text('Empty')),
-                                                    DropdownMenuItem(
-                                                        value: '2',
-                                                        child: Text('Half')),
-                                                    DropdownMenuItem(
-                                                        value: '3',
-                                                        child: Text('Full')),
-                                                    DropdownMenuItem(
-                                                        value: '4',
+                                        );
+                                      },
+                                      onEnd: () {
+                                        debugPrint('END');
+                                        stateSetter(() {
+                                          isStartButton = true;
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 40,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              displayWidth(context) * 0.15),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          commonText(
+                                              context: context,
+                                              text:
+                                                  'Fetching your device details',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.032,
+                                              textAlign: TextAlign.start),
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+                                          TweenAnimationBuilder(
+                                              duration:
+                                                  const Duration(seconds: 5),
+                                              tween: Tween(
+                                                  begin: deviceProgressBegin,
+                                                  end: deviceProgress),
+                                              builder:
+                                                  (context, double value, _) {
+                                                return SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: Stack(
+                                                    fit: StackFit.expand,
+                                                    children: [
+                                                      CircularProgressIndicator(
+                                                        color: Colors.blue,
+                                                        value: value,
+                                                        backgroundColor: Colors
+                                                            .grey.shade200,
+                                                        strokeWidth: 2,
+                                                        valueColor:
+                                                            const AlwaysStoppedAnimation(
+                                                                Colors.green),
+                                                      ),
+                                                      Center(
+                                                        child: subTitleProgress(
+                                                            value,
+                                                            displayWidth(
+                                                                    context) *
+                                                                0.035),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              displayWidth(context) * 0.15),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          commonText(
+                                              context: context,
+                                              text:
+                                                  'Connecting with your Sensors',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.032,
+                                              textAlign: TextAlign.start),
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+                                          TweenAnimationBuilder(
+                                              duration:
+                                                  const Duration(seconds: 5),
+                                              tween: Tween(
+                                                  begin: sensorProgressBegin,
+                                                  end: sensorProgress),
+                                              builder:
+                                                  (context, double value, _) {
+                                                return SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: Stack(
+                                                    fit: StackFit.expand,
+                                                    children: [
+                                                      CircularProgressIndicator(
+                                                        color: Colors.blue,
+                                                        value: value,
+                                                        backgroundColor: Colors
+                                                            .grey.shade200,
+                                                        strokeWidth: 2,
+                                                        valueColor:
+                                                            const AlwaysStoppedAnimation(
+                                                                Colors.green),
+                                                      ),
+                                                      Center(
+                                                        child: subTitleProgress(
+                                                            value,
+                                                            displayWidth(
+                                                                    context) *
+                                                                0.035),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              displayWidth(context) * 0.15),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          commonText(
+                                              context: context,
+                                              text: isLocationPermission
+                                                  ? 'Location permission granted'
+                                                  : 'Location permission is required',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.032,
+                                              textAlign: TextAlign.start),
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+                                          !isLocationPermission
+                                              ? SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Colors.red,
+                                                            width: 2),
+                                                        shape: BoxShape.circle),
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons.close,
+                                                        color: Colors.red,
+                                                        size: 14,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : TweenAnimationBuilder(
+                                                  duration: const Duration(
+                                                      seconds: 5),
+                                                  tween: Tween(
+                                                      begin:
+                                                          sensorProgressBegin,
+                                                      end: sensorProgress),
+                                                  builder: (context,
+                                                      double value, _) {
+                                                    return SizedBox(
+                                                      height: 20,
+                                                      width: 20,
+                                                      child: Stack(
+                                                        fit: StackFit.expand,
+                                                        children: [
+                                                          CircularProgressIndicator(
+                                                            color: Colors.blue,
+                                                            value: value,
+                                                            backgroundColor:
+                                                                Colors.grey
+                                                                    .shade200,
+                                                            strokeWidth: 2,
+                                                            valueColor:
+                                                                const AlwaysStoppedAnimation(
+                                                                    Colors
+                                                                        .green),
+                                                          ),
+                                                          Center(
+                                                            child: subTitleProgress(
+                                                                value,
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.035),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 40,
+                                    ),
+                                    isZipFileCreate
+                                        ? InkWell(
+                                            onTap: () async {
+                                              // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
+                                              File copiedFile = File(
+                                                  '${ourDirectory!.path}.zip');
+
+                                              Directory directory;
+
+                                              if (Platform.isAndroid) {
+                                                directory = Directory(
+                                                    "storage/emulated/0/Download/${widget.vessel!.id}.zip");
+                                              } else {
+                                                directory =
+                                                    await getApplicationDocumentsDirectory();
+                                              }
+
+                                              copiedFile.copy(directory.path);
+
+                                              print(
+                                                  'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                              if (copiedFile.existsSync()) {
+                                                Utils.showSnackBar(context,
+                                                    scaffoldKey: scaffoldKey,
+                                                    message:
+                                                        'File downloaded successfully');
+                                              }
+
+                                              // Utils.download(context, scaffoldKey,ourDirectory!.path);
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                commonText(
+                                                    context: context,
+                                                    text: 'Download File',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.black,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.038,
+                                                    textAlign: TextAlign.start),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Icon(Icons
+                                                      .file_download_outlined),
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        : SizedBox(),
+                                    const SizedBox(
+                                      height: 40,
+                                    ),
+                                    isEndTripButton
+                                        ? Container()
+                                        : StatefulBuilder(
+                                            builder: (context,
+                                                StateSetter stateSetter) {
+                                              return Column(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 20,
+                                                            right: 20),
+                                                    child: Container(
+                                                      height: displayHeight(
+                                                                  context) >=
+                                                              680
+                                                          ? displayHeight(
+                                                                  context) *
+                                                              0.056
+                                                          : displayHeight(
+                                                                  context) *
+                                                              0.07,
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      color: backgroundColor,
+                                                      child: InputDecorator(
+                                                        decoration:
+                                                            const InputDecoration(
+                                                          enabledBorder:
+                                                              InputBorder.none,
+                                                          border: OutlineInputBorder(
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          0.0))),
+                                                          contentPadding:
+                                                              EdgeInsets.only(
+                                                                  left: 20,
+                                                                  right: 20,
+                                                                  top: 5,
+                                                                  bottom: 5),
+                                                        ),
+
+                                                        child: commonText(
+                                                            context: context,
+                                                            text: vesselName,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            textColor:
+                                                                Colors.black54,
+                                                            textSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.032,
+                                                            textAlign: TextAlign
+                                                                .start),
+
+                                                        //Text(vesselName)
+                                                        //     DropdownButtonHideUnderline(
+                                                        //   child: DropdownButton<dynamic>(
+                                                        //     value: null,
+                                                        //     isDense: true,
+                                                        //     hint:
+                                                        //         Text(selectedVesselName),
+                                                        //     isExpanded: true,
+                                                        //     items: [
+                                                        //       DropdownMenuItem(
+                                                        //           value: '1',
+                                                        //           child:
+                                                        //               Text(vesselName)),
+                                                        //     ],
+                                                        //     onChanged: (newValue) {
+                                                        //       stateSetter(() =>
+                                                        //           selectedVesselName =
+                                                        //               vesselName);
+                                                        //       print(selectedVesselName);
+                                                        //     },
+                                                        //   ),
+                                                        // ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 20,
+                                                            right: 20,
+                                                            top: 10),
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      height: displayHeight(
+                                                                  context) >=
+                                                              680
+                                                          ? displayHeight(
+                                                                  context) *
+                                                              0.056
+                                                          : displayHeight(
+                                                                  context) *
+                                                              0.07,
+                                                      color: backgroundColor,
+                                                      child: InputDecorator(
+                                                        decoration:
+                                                            const InputDecoration(
+                                                          enabledBorder:
+                                                              InputBorder.none,
+                                                          border: OutlineInputBorder(
+                                                              borderRadius: BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          0.0))),
+                                                          contentPadding:
+                                                              EdgeInsets.only(
+                                                                  left: 20,
+                                                                  right: 20,
+                                                                  top: 10,
+                                                                  bottom: 10),
+                                                        ),
                                                         child:
-                                                            Text('Variable')),
-                                                  ],
-                                                  onChanged: (weightValue) {
-                                                    stateSetter(() {
-                                                      int.parse(weightValue) ==
-                                                              1
-                                                          ? selectedVesselWeight =
-                                                              'Empty'
-                                                          : (int.parse(weightValue) ==
-                                                                  2
-                                                              ? selectedVesselWeight =
-                                                                  'Half'
-                                                              : (int.parse(
-                                                                          weightValue) ==
-                                                                      3
-                                                                  ? selectedVesselWeight =
-                                                                      'Full'
-                                                                  : selectedVesselWeight =
-                                                                      'Variable'));
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                )
-                        ],
-                      ),
-                    ),
+                                                            DropdownButtonHideUnderline(
+                                                          child: DropdownButton<
+                                                              dynamic>(
+                                                            value: null,
+                                                            isDense: true,
+                                                            hint: commonText(
+                                                                context:
+                                                                    context,
+                                                                text:
+                                                                    selectedVesselWeight,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                textColor: Colors
+                                                                    .black54,
+                                                                textSize:
+                                                                    displayWidth(
+                                                                            context) *
+                                                                        0.032,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .start),
+                                                            //  Text(
+                                                            //     '${selectedVesselWeight}'),
+                                                            isExpanded: true,
+                                                            items: [
+                                                              DropdownMenuItem(
+                                                                  value: '1',
+                                                                  child: Text(
+                                                                      'Empty')),
+                                                              DropdownMenuItem(
+                                                                  value: '2',
+                                                                  child: Text(
+                                                                      'Half')),
+                                                              DropdownMenuItem(
+                                                                  value: '3',
+                                                                  child: Text(
+                                                                      'Full')),
+                                                              DropdownMenuItem(
+                                                                  value: '4',
+                                                                  child: Text(
+                                                                      'Variable')),
+                                                            ],
+                                                            onChanged:
+                                                                (weightValue) {
+                                                              stateSetter(() {
+                                                                int.parse(weightValue) ==
+                                                                        1
+                                                                    ? selectedVesselWeight =
+                                                                        'Empty'
+                                                                    : (int.parse(weightValue) ==
+                                                                            2
+                                                                        ? selectedVesselWeight =
+                                                                            'Half'
+                                                                        : (int.parse(weightValue) ==
+                                                                                3
+                                                                            ? selectedVesselWeight =
+                                                                                'Full'
+                                                                            : selectedVesselWeight =
+                                                                                'Variable'));
+                                                              });
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          )
+                                  ],
+                                ),
+                              ),
                     SizedBox(
                       height: 50,
                       width: displayWidth(context),
@@ -955,9 +1105,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 borderColor: buttonBGColor,
                                 width: displayWidth(context),
                                 onTap: () {
-                                  // startTripService();
+                                  startTripService(stateSetter);
 
-                                  initializeTripService(stateSetter);
+                                  //initializeTripService(stateSetter);
                                 })
                             : isEndTripButton
                                 ? CommonButtons.getActionButton(
@@ -992,14 +1142,22 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       }
 
                                       File file = File(zipFile!.path);
-                                      Future.delayed(Duration(seconds: 1))
+                                      stateSetter(() {
+                                        isZipFileCreate = true;
+                                      });
+                                      /*Future.delayed(Duration(seconds: 1))
                                           .then((value) {
                                         stateSetter(() {
                                           isZipFileCreate = true;
                                         });
-                                      });
+                                      });*/
                                       print('FINAL PATH: ${file.path}');
                                       onSave(file, bottomSheetContext);
+
+                                      stateSetter(() {
+                                        isEndTripButton = false;
+                                        isZipFileCreate = true;
+                                      });
 
                                       /*File file = File(zipFile!.path);
                                       Future.delayed(Duration(seconds: 1))
@@ -1009,18 +1167,81 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         });
                                       });*/
                                     })
-                                : CommonButtons.getActionButton(
-                                    title: 'Cancel',
-                                    context: context,
-                                    fontSize: displayWidth(context) * 0.042,
-                                    textColor: Colors.white,
-                                    buttonPrimaryColor: buttonBGColor,
-                                    borderColor: buttonBGColor,
-                                    width: displayWidth(context),
-                                    onTap: () {
-                                      Get.back();
-                                      //Navigator.of(context).pop();
-                                    }),
+                                : isZipFileCreate
+                                    ? CommonButtons.getActionButton(
+                                        title: 'Trip Ended',
+                                        context: context,
+                                        fontSize: displayWidth(context) * 0.042,
+                                        textColor: Colors.white,
+                                        buttonPrimaryColor: buttonBGColor,
+                                        borderColor: buttonBGColor,
+                                        width: displayWidth(context),
+                                        onTap: () async {
+                                          if (isSensorDataUploaded) {
+                                            Get.back();
+                                            //setState(() {
+                                            // future = commonProvider.triplListData(
+                                            //     context,
+                                            //     commonProvider.loginModel!.token!,
+                                            //     widget.vesselId.toString(),
+                                            //     scaffoldKey);
+                                            //});
+                                          } else {
+                                            Get.back();
+                                          }
+
+                                          // getTripId = await getTripIdFromPref();
+
+                                          // File? zipFile;
+                                          // if (timer != null) timer!.cancel();
+                                          // print(
+                                          //     'TIMER STOPPED ${ourDirectory!.path}');
+                                          // final dataDir =
+                                          // Directory(ourDirectory!.path);
+                                          //
+                                          // try {
+                                          //   zipFile =
+                                          //       File('${ourDirectory!.path}.zip');
+                                          //
+                                          //   ZipFile.createFromDirectory(
+                                          //       sourceDir: dataDir,
+                                          //       zipFile: zipFile,
+                                          //       recurseSubDirs: true);
+                                          //   print('our path is $dataDir');
+                                          // } catch (e) {
+                                          //   print(e);
+                                          // }
+                                          //
+                                          // File file = File(zipFile!.path);
+                                          // Future.delayed(Duration(seconds: 1))
+                                          //     .then((value) {
+                                          //   stateSetter(() {
+                                          //     isZipFileCreate = true;
+                                          //   });
+                                          // });
+                                          // print('FINAL PATH: ${file.path}');
+                                          // onSave(file);
+
+                                          /*File file = File(zipFile!.path);
+                                      Future.delayed(Duration(seconds: 1))
+                                          .then((value) {
+                                        stateSetter(() {
+                                          isZipFileCreate = true;
+                                        });
+                                      });*/
+                                        })
+                                    : CommonButtons.getActionButton(
+                                        title: 'Cancel',
+                                        context: context,
+                                        fontSize: displayWidth(context) * 0.042,
+                                        textColor: Colors.white,
+                                        buttonPrimaryColor: buttonBGColor,
+                                        borderColor: buttonBGColor,
+                                        width: displayWidth(context),
+                                        onTap: () {
+                                          Get.back();
+                                          //Navigator.of(context).pop();
+                                        }),
                       ),
                     ),
                   ],
@@ -1094,22 +1315,23 @@ class VesselSingleViewState extends State<VesselSingleView> {
     return locationData;
   }
 
-  startSensorFunctionality(/*StateSetter stateSetter*/) async {
+  startSensorFunctionality(StateSetter stateSetter) async {
+    setState(() {
+      getTripId = uuid.v1();
+    });
+    //onSave();
     fileName = '$fileIndex.csv';
-
-    debugPrint('CREATE TRIP $fileName');
-
-    String? tripId;
-    //getTripId = await getTripIdFromPref();
-    print(widget.vessel!.id);
-    //writeSensorDataToFile(widget.vessel!.id!);
+    // String? tripId;
+    // getTripId = await getTripIdFromPref();
+    // print(widget.vessel!.id);
+    debugPrint('tripId: $getTripId');
+    stateSetter(() {
+      isStartButton = false;
+      isEndTripButton = true;
+    });
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       writeSensorDataToFile(widget.vessel!.id!);
     });
-    /* stateSetter(() {
-      isStartButton = false;
-      isEndTripButton = true;
-    });*/
   }
 
   getTripIdFromPref() async {
@@ -1125,7 +1347,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     int fileSize = await checkFileSize(file);
 
     /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
-    if (fileSize >= 10) {
+    if (fileSize >= 1000) {
       print('STOPPED WRITING');
       print('CREATING NEW FILE');
       // if (timer != null) timer!.cancel();
@@ -1164,11 +1386,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
       file.writeAsString('$finalString\n', mode: FileMode.append);
 
-      debugPrint('DATE ${finalString}');
+      debugPrint('finalString ${finalString}');
     }
   }
 
   Future<String> getFile(String tripId) async {
+    debugPrint("tripId: $getTripId");
     String folderPath = await getOrCreateFolder(tripId);
 
     File sensorDataFile = File('$folderPath/$fileName');
@@ -1204,7 +1427,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     var replaceAll = removedBrackets.replaceAll(" ", "");
     var date = DateTime.now().toUtc();
     var todayDate = date.toString().replaceAll(" ", "");
-    return '$type,$todayDate,$replaceAll';
+    return '$type,$replaceAll,$todayDate';
   }
 
   Future<String> getOrCreateFolder(String tripId) async {
@@ -1249,8 +1472,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     String longitude = locationData.longitude!.toString();
 
     debugPrint("current lod:$currentLoad");
-    var uuid = Uuid();
-    final String getTripId = uuid.v1();
+
     await _databaseService.insertTrip(Trip(
         id: getTripId,
         vesselId: widget.vessel!.id,
@@ -1268,434 +1490,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
     await _databaseService.updateTripStatus(1, getTripId);
 
     Navigator.pop(context);
-
-    /*if (Platform.isAndroid) {
-      bool isPermitted =
-          await Utils.getLocationPermissions(context, scaffoldKey);
-      print('ISPermitted: $isPermitted');
-      if (isPermitted) {
-        bool isGranted = await Permission.location.isGranted;
-        // onPressed: () {
-        isGranted
-            ? showModalBottomSheet(
-                context: context,
-                backgroundColor: Colors.transparent,
-                builder: (context) {
-                  return StatefulBuilder(
-                      builder: (BuildContext context, StateSetter stateSetter) {
-                    return Stack(
-                      // mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.only(
-                              top: 25, bottom: 25, left: 10, right: 10),
-                          height: displayHeight(context) >= 680
-                              ? displayHeight(context) / 1.35
-                              : displayHeight(context) / 1.25,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                new BoxShadow(
-                                  color: Colors.black,
-                                  blurRadius: 20.0,
-                                ),
-                              ],
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(40),
-                                  topRight: Radius.circular(40))),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    TweenAnimationBuilder(
-                                      duration: const Duration(seconds: 5),
-                                      tween: Tween(
-                                          begin: progressBegin, end: progress),
-                                      builder: (context, double value, _) {
-                                        return SizedBox(
-                                          height: 80,
-                                          width: 80,
-                                          child: Stack(
-                                            fit: StackFit.expand,
-                                            children: [
-                                              CircularProgressIndicator(
-                                                value: value,
-                                                backgroundColor:
-                                                    Colors.grey.shade200,
-                                                strokeWidth: 3,
-                                                color: primaryColor,
-                                              ),
-                                              Center(
-                                                child: buildProgress(value, 60),
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                      onEnd: () {
-                                        debugPrint('END here');
-                                        stateSetter(() {
-                                          isStartButton = true;
-                                        });
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        commonText(
-                                            context: context,
-                                            text:
-                                                'Fetching your device details',
-                                            fontWeight: FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize:
-                                                displayWidth(context) * 0.032,
-                                            textAlign: TextAlign.start),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-                                        TweenAnimationBuilder(
-                                            duration:
-                                                const Duration(seconds: 5),
-                                            tween: Tween(
-                                                begin: deviceProgressBegin,
-                                                end: deviceProgress),
-                                            builder:
-                                                (context, double value, _) {
-                                              return SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child: Stack(
-                                                  fit: StackFit.expand,
-                                                  children: [
-                                                    CircularProgressIndicator(
-                                                      color: Colors.blue,
-                                                      value: value,
-                                                      backgroundColor:
-                                                          Colors.grey.shade200,
-                                                      strokeWidth: 2,
-                                                      valueColor:
-                                                          const AlwaysStoppedAnimation(
-                                                              Colors.green),
-                                                    ),
-                                                    Center(
-                                                      child: subTitleProgress(
-                                                          value,
-                                                          displayWidth(
-                                                                  context) *
-                                                              0.035),
-                                                    )
-                                                  ],
-                                                ),
-                                              );
-                                            }),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        commonText(
-                                            context: context,
-                                            text:
-                                                'Connecting with your Sensors',
-                                            fontWeight: FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize:
-                                                displayWidth(context) * 0.032,
-                                            textAlign: TextAlign.start),
-                                        const SizedBox(
-                                          width: 20,
-                                        ),
-                                        TweenAnimationBuilder(
-                                            duration:
-                                                const Duration(seconds: 5),
-                                            tween: Tween(
-                                                begin: sensorProgressBegin,
-                                                end: sensorProgress),
-                                            builder:
-                                                (context, double value, _) {
-                                              return SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child: Stack(
-                                                  fit: StackFit.expand,
-                                                  children: [
-                                                    CircularProgressIndicator(
-                                                      color: Colors.blue,
-                                                      value: value,
-                                                      backgroundColor:
-                                                          Colors.grey.shade200,
-                                                      strokeWidth: 2,
-                                                      valueColor:
-                                                          const AlwaysStoppedAnimation(
-                                                              Colors.green),
-                                                    ),
-                                                    Center(
-                                                      child: subTitleProgress(
-                                                          value,
-                                                          displayWidth(
-                                                                  context) *
-                                                              0.035),
-                                                    )
-                                                  ],
-                                                ),
-                                              );
-                                            }),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    isEndTripButton
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              commonText(
-                                                  context: context,
-                                                  text: 'Download File',
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.black,
-                                                  textSize:
-                                                      displayWidth(context) *
-                                                          0.038,
-                                                  textAlign: TextAlign.start),
-                                              InkWell(
-                                                onTap: () async {
-                                                  File copiedFile = File(
-                                                      '${ourDirectory!.path}/$getTripId.zip');
-
-                                                  Directory directory;
-
-                                                  if (Platform.isAndroid) {
-                                                    directory = Directory(
-                                                        '${ourDirectory!.path}/$getTripId.zip');
-                                                  } else {
-                                                    directory =
-                                                        await getApplicationDocumentsDirectory();
-                                                  }
-
-                                                  copiedFile
-                                                      .copy(directory.path);
-
-                                                  print(
-                                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                                  // Utils.download(context, scaffoldKey,ourDirectory!.path);
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Icon(Icons
-                                                      .file_download_outlined),
-                                                ),
-                                              )
-                                            ],
-                                          )
-                                        : SizedBox(),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 50,
-                                width: displayWidth(context),
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
-                                  child: isStartButton
-                                      ? CommonButtons.getActionButton(
-                                          title: 'Start',
-                                          context: context,
-                                          fontSize:
-                                              displayWidth(context) * 0.042,
-                                          textColor: Colors.white,
-                                          buttonPrimaryColor: buttonBGColor,
-                                          borderColor: buttonBGColor,
-                                          width: displayWidth(context),
-                                          onTap: () async {
-                                            setState(() {
-                                              isStartButton = false;
-                                              isEndTripButton = true;
-                                            });
-
-                                            fileName = '$fileIndex.csv';
-                                            Future.delayed(Duration(seconds: 1),
-                                                () {
-                                              timer = Timer.periodic(
-                                                  const Duration(seconds: 1),
-                                                  (timer) {
-                                                _streamSubscriptions.add(
-                                                  accelerometerEvents.listen(
-                                                    (AccelerometerEvent event) {
-                                                      setState(() {
-                                                        _accelerometerValues =
-                                                            <double>[
-                                                          event.x,
-                                                          event.y,
-                                                          event.z
-                                                        ];
-                                                      });
-                                                    },
-                                                  ),
-                                                );
-                                                _streamSubscriptions.add(
-                                                  gyroscopeEvents.listen(
-                                                    (GyroscopeEvent event) {
-                                                      setState(() {
-                                                        _gyroscopeValues =
-                                                            <double>[
-                                                          event.x,
-                                                          event.y,
-                                                          event.z
-                                                        ];
-                                                      });
-                                                    },
-                                                  ),
-                                                );
-                                                _streamSubscriptions.add(
-                                                  userAccelerometerEvents
-                                                      .listen(
-                                                    (UserAccelerometerEvent
-                                                        event) {
-                                                      setState(() {
-                                                        _userAccelerometerValues =
-                                                            <double>[
-                                                          event.x,
-                                                          event.y,
-                                                          event.z
-                                                        ];
-                                                      });
-                                                    },
-                                                  ),
-                                                );
-                                                _streamSubscriptions.add(
-                                                  magnetometerEvents.listen(
-                                                    (MagnetometerEvent event) {
-                                                      setState(() {
-                                                        _magnetometerValues =
-                                                            <double>[
-                                                          event.x,
-                                                          event.y,
-                                                          event.z
-                                                        ];
-                                                      });
-                                                    },
-                                                  ),
-                                                );
-
-                                                writeSensorDataToFile(
-                                                    getTripId);
-                                              });
-                                            });
-                                          })
-                                      : isEndTripButton
-                                          ? CommonButtons.getActionButton(
-                                              title: 'End Trip',
-                                              context: context,
-                                              fontSize:
-                                                  displayWidth(context) * 0.042,
-                                              textColor: Colors.white,
-                                              buttonPrimaryColor: buttonBGColor,
-                                              borderColor: buttonBGColor,
-                                              width: displayWidth(context),
-                                              onTap: () async {
-                                                // getTripId = await getTripIdFromPref();
-                                                stateSetter(() {
-                                                  isEndTripButton = false;
-                                                });
-
-                                                File? zipFile;
-                                                if (timer != null)
-                                                  timer!.cancel();
-                                                print(
-                                                    'TIMER STOPPED ${ourDirectory!.path}');
-                                                final dataDir = Directory(
-                                                    ourDirectory!.path);
-
-                                                try {
-                                                  zipFile = File(
-                                                      '${ourDirectory!.path}.zip');
-
-                                                  ZipFile.createFromDirectory(
-                                                      sourceDir: dataDir,
-                                                      zipFile: zipFile,
-                                                      recurseSubDirs: true);
-                                                  print('our path is $dataDir');
-                                                  Get.back();
-                                                } catch (e) {
-                                                  print('EXEEE: $e');
-                                                }
-                                                File file = File(zipFile!.path);
-                                                print(
-                                                    'FINAL PATH: ${file.path}');
-                                                // onSave(file);
-                                              })
-                                          : CommonButtons.getActionButton(
-                                              title: 'Cancel',
-                                              context: context,
-                                              fontSize:
-                                                  displayWidth(context) * 0.042,
-                                              textColor: Colors.white,
-                                              buttonPrimaryColor: buttonBGColor,
-                                              borderColor: buttonBGColor,
-                                              width: displayWidth(context),
-                                              onTap: () {
-                                                Get.back();
-                                                Navigator.of(context).pop();
-                                              }),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          right: 10,
-                          top: 10,
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: backgroundColor),
-                            child: IconButton(
-                                onPressed: () {
-                                  Get.back();
-                                  Navigator.pop(context);
-                                },
-                                icon: Icon(Icons.close_rounded,
-                                    color: buttonBGColor)),
-                          ),
-                        )
-                      ],
-                    );
-                  });
-                })
-            : Container();
-      }
-
-      // Navigator.pop(context);
-    }*/
   }
 
   // @pragma('vm:entry-point')
   Future<void> onServiceStart(ServiceInstance service) async {
     DartPluginRegistrant.ensureInitialized();
-    startTripService();
+    // startTripService();
   }
 
   Future<void> initializeTripService(StateSetter stateSetter) async {
@@ -1728,7 +1528,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     });
   }
 
-  startTripService() async {
+  startTripService(StateSetter stateSetter) async {
     bool isLocationPermitted = await Permission.location.isGranted;
 
     if (isLocationPermitted) {
@@ -1736,7 +1536,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       await getLocationData();
 
       /// SAVED Sensor data
-      startSensorFunctionality();
+      startSensorFunctionality(stateSetter);
     } else {
       await Utils.getLocationPermission(context, scaffoldKey);
       bool isLocationPermitted = await Permission.location.isGranted;
@@ -1746,362 +1546,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
         await getLocationData();
 
         /// SAVED Sensor data
-        startSensorFunctionality();
+        startSensorFunctionality(stateSetter);
       }
     }
-  }
-}
-
-class ExpansionCard extends StatefulWidget {
-  final CreateVessel? vessel;
-  final Function(CreateVessel) onEdit;
-  final Function(CreateVessel) onTap;
-  final Function(CreateVessel) onDelete;
-  final bool isSingleView;
-  ExpansionCard(
-      this.vessel, this.onEdit, this.onTap, this.onDelete, this.isSingleView);
-
-  @override
-  State<ExpansionCard> createState() => _ExpansionCardState();
-}
-
-class _ExpansionCardState extends State<ExpansionCard> {
-  List<CreateVessel>? vessel = [];
-  @override
-  Widget build(BuildContext context) {
-    return ExpandableNotifier(
-        child: Card(
-      // clipBehavior: Clip.antiAlias,
-      child: GestureDetector(
-        onTap: () {
-          if (widget.isSingleView) {
-            Navigator.of(context)
-                .push(
-                  MaterialPageRoute(
-                    builder: (_) => VesselSingleView(
-                      vessel: widget.vessel,
-                    ),
-                    fullscreenDialog: true,
-                  ),
-                )
-                .then((_) => setState(() {}));
-          }
-        },
-        child: Column(
-          children: <Widget>[
-            //ToDo: vessel image need to be dynamic need to work on it
-            SizedBox(
-              height: 150,
-              child: Stack(
-                children: [
-                  widget.vessel!.imageURLs == null ||
-                          widget.vessel!.imageURLs!.isEmpty ||
-                          widget.vessel!.imageURLs == 'string'
-                      ? Container(
-                          decoration: BoxDecoration(
-                            color: Colors.orange,
-                            shape: BoxShape.rectangle,
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage(
-                                "assets/images/batlic.png",
-                              ),
-                              // fit: BoxFit.cover
-                            ),
-                          ),
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                            color: Colors.orange,
-                            shape: BoxShape.rectangle,
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: FileImage(File(widget.vessel!.imageURLs!)),
-                              // fit: BoxFit.cover
-                            ),
-                          ),
-                        ),
-                  !widget.isSingleView
-                      ? Positioned(
-                          right: 10,
-                          top: 10,
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 15,
-                                backgroundColor: letsGetStartedButtonColor,
-                                child: Center(
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.edit,
-                                      size: 15,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      widget.onEdit(widget.vessel!);
-                                    },
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 6,
-                              ),
-                              CircleAvatar(
-                                radius: 15,
-                                backgroundColor: letsGetStartedButtonColor,
-                                child: Center(
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.delete,
-                                      size: 15,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      widget.onDelete(widget.vessel!);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          // Container(
-                          //   height: 30,
-                          //   width: 30,
-                          //   // decoration: BoxDecoration(
-                          //   //     shape: BoxShape.circle, color: backgroundColor),
-                          //   child: Center(
-                          //     child: IconButton(
-                          //
-                          //         onPressed: () {
-                          //
-                          //         },
-                          //         icon: Icon(Icons.delete, color: buttonBGColor,size: 20,)),
-                          //   ),
-                          // ),
-                        )
-                      : Container()
-                ],
-              ),
-            ),
-
-            // ScrollOnExpand(
-            //   scrollOnExpand: true,
-            //   scrollOnCollapse: false,
-            //   child:
-            ExpandablePanel(
-              theme: const ExpandableThemeData(
-                headerAlignment: ExpandablePanelHeaderAlignment.center,
-                tapBodyToCollapse: true,
-              ),
-              header: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Text(
-                  "${widget.vessel!.name!.toUpperCase()}",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              collapsed: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  widget.vessel!.fuelCapacity != null ||
-                          widget.vessel!.fuelCapacity != ""
-                      ? Text("Fuel : ${widget.vessel!.fuelCapacity}")
-                      : Container(),
-                  Text(
-                    "|",
-                    style: TextStyle(
-                        color: letsGetStartedButtonColor,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text("Battery : ${widget.vessel!.batteryCapacity}"),
-                  Text(
-                    "|",
-                    style: TextStyle(
-                        color: letsGetStartedButtonColor,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text("Engine : ${widget.vessel!.engineType}"),
-                ],
-              ),
-              expanded: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text("Fuel : ${widget.vessel!.fuelCapacity}"),
-                        Text(
-                          "|",
-                          style: TextStyle(
-                              color: letsGetStartedButtonColor,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text("Battery : ${widget.vessel!.batteryCapacity}"),
-                        Text(
-                          "|",
-                          style: TextStyle(
-                              color: letsGetStartedButtonColor,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text("Engine : ${widget.vessel!.engineType}"),
-                      ],
-                    ),
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.all(10),
-                    title: Text("Measurements"),
-                    subtitle: Column(
-                      children: [
-                        SizedBox(
-                          height: 12,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                                "Length (LOA) : ${widget.vessel!.lengthOverall}"),
-                            Text("Freeboard : ${widget.vessel!.freeBoard}")
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Beam : ${widget.vessel!.beam}"),
-                            Text("Draft : ${widget.vessel!.draft}")
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.all(10),
-                    title: Text("Vessel Particulars"),
-                    subtitle: Column(
-                      children: [
-                        SizedBox(
-                          height: 12,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Capacity : ${widget.vessel!.capacity}"),
-                            Text("Built Year : ${widget.vessel!.builtYear}"),
-                            Text("Reg No : ${widget.vessel!.regNumber}")
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Weight : ${widget.vessel!.weight}"),
-                            Text("Size (hp) : ${widget.vessel!.vesselSize}"),
-                            Text("MMSI : ${widget.vessel!.mMSI}")
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  /*   Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          // SizedBox(width: 20.0),
-                          GestureDetector(
-                            onTap: () => widget.onEdit(widget.vessel!),
-                            child: Container(
-                              height: 40.0,
-                              width: MediaQuery.of(context).size.width * .4,
-                              color: letsGetStartedButtonColor,
-                              // decoration: BoxDecoration(
-                              //   shape: BoxShape.circle,
-                              //   color: Colors.grey[200],
-                              // ),
-                              alignment: Alignment.center,
-                              child: Icon(Icons.edit, color: Colors.white),
-                            ),
-                          ),
-                          // SizedBox(width: 20.0),
-                          GestureDetector(
-                            onTap: () => widget.onDelete(widget.vessel!),
-                            child: Container(
-                              height: 40.0,
-                              width: MediaQuery.of(context).size.width * .4,
-                              color: letsGetStartedButtonColor,
-                              alignment: Alignment.center,
-                              child: Icon(Icons.delete, color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),*/
-                  widget.isSingleView
-                      ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () async {
-                              // final DatabaseService _databaseService = DatabaseService();
-                              vessel!.add(widget.vessel!);
-                              // print(vessel[0].vesselName);
-                              /*Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    StartTrip(vessels: vessel, context: context),
-                                fullscreenDialog: true,
-                              ),
-                            );*/
-
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => TripListScreen(
-                                    vesselId: widget.vessel!.id,
-                                    vesselName: widget.vessel!.name,
-                                    vesselSize: widget.vessel!.vesselSize,
-                                  ),
-                                  fullscreenDialog: true,
-                                ),
-                              );
-                            },
-                            child: Container(
-                              height: 40.0,
-                              width: MediaQuery.of(context).size.width,
-                              color: letsGetStartedButtonColor,
-                              // decoration: BoxDecoration(
-                              //   shape: BoxShape.circle,
-                              //   color: Colors.grey[200],
-                              // ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Start Trip",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        )
-                      : Container(),
-                ],
-              ),
-              builder: (_, collapsed, expanded) {
-                return Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  child: Expandable(
-                    collapsed: widget.isSingleView ? collapsed : expanded,
-                    expanded: widget.isSingleView ? expanded : collapsed,
-                    theme: const ExpandableThemeData(crossFadePoint: 0),
-                  ),
-                );
-              },
-            ),
-            // ),
-          ],
-        ),
-      ),
-    ));
   }
 }
