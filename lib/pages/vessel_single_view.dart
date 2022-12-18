@@ -139,8 +139,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // isEndTripButton?writeSensorDataToFile(getTripId):null;
-    // _getTripsByID(widget.vessel!.id.toString());
   }
 
   @override
@@ -238,7 +236,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   width: displayWidth(context),
                   onTap: () async {
                     vessel!.add(widget.vessel!);
-                    locationPermissions(widget.vessel!.vesselSize!,
+                   await locationPermissions(widget.vessel!.vesselSize!,
                         widget.vessel!.name!, widget.vessel!.id!);
 
                     _streamSubscriptions.add(
@@ -514,6 +512,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           'assets/lottie/done.json')),
                                   Center(
                                     child: Text(
+                                      "TripId: $getTripId",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 15,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Center(
+                                    child: Text(
                                       "Trip Ended Successfully!",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -546,7 +555,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                     if (Platform.isAndroid) {
                                       directory = Directory(
-                                          "storage/emulated/0/Download/${widget.vessel!.id}.zip");
+                                          "storage/emulated/0/Download/$getTripId.zip");
                                     } else {
                                       directory =
                                           await getApplicationDocumentsDirectory();
@@ -1143,21 +1152,22 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                       File file = File(zipFile!.path);
                                       stateSetter(() {
+                                        isEndTripButton = false;
                                         isZipFileCreate = true;
                                       });
-                                      /*Future.delayed(Duration(seconds: 1))
+                                      Future.delayed(Duration(seconds: 1))
                                           .then((value) {
                                         stateSetter(() {
                                           isZipFileCreate = true;
                                         });
-                                      });*/
+                                      });
                                       print('FINAL PATH: ${file.path}');
                                       onSave(file, bottomSheetContext);
 
-                                      stateSetter(() {
-                                        isEndTripButton = false;
-                                        isZipFileCreate = true;
-                                      });
+                                      // stateSetter(() {
+                                      //   isEndTripButton = false;
+                                      //   isZipFileCreate = true;
+                                      // });
 
                                       /*File file = File(zipFile!.path);
                                       Future.delayed(Duration(seconds: 1))
@@ -1329,8 +1339,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isStartButton = false;
       isEndTripButton = true;
     });
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      writeSensorDataToFile(widget.vessel!.id!);
+    timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      writeSensorDataToFile(getTripId);
     });
   }
 
@@ -1489,7 +1499,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     await _databaseService.updateTripStatus(1, getTripId);
 
-    Navigator.pop(context);
+    isZipFileCreate?null:Navigator.pop(context);
   }
 
   // @pragma('vm:entry-point')
