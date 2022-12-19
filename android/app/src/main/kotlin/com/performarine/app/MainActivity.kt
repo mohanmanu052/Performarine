@@ -1,4 +1,4 @@
-package com.glassocean.app
+package com.performarine.app
 
 import io.flutter.embedding.android.FlutterActivity
 

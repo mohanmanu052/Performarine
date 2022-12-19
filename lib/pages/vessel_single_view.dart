@@ -3,10 +3,12 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
@@ -34,6 +36,7 @@ import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:uuid/uuid.dart';
+import 'package:workmanager/workmanager.dart';
 
 typedef StartTripServiceFunction();
 
@@ -139,8 +142,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // isEndTripButton?writeSensorDataToFile(getTripId):null;
-    // _getTripsByID(widget.vessel!.id.toString());
+    AndroidAlarmManager.initialize();
   }
 
   @override
@@ -238,7 +240,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   width: displayWidth(context),
                   onTap: () async {
                     vessel!.add(widget.vessel!);
-                    locationPermissions(widget.vessel!.vesselSize!,
+                    await locationPermissions(widget.vessel!.vesselSize!,
                         widget.vessel!.name!, widget.vessel!.id!);
 
                     _streamSubscriptions.add(
@@ -514,6 +516,19 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           'assets/lottie/done.json')),
                                   Center(
                                     child: Text(
+                                      "TripId: $getTripId",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 15,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Center(
+                                    child: Text(
                                       "Trip Ended Successfully!",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -522,7 +537,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 45,
+                                    height: 35,
                                   ),
                                   Center(
                                     child: Text(
@@ -546,7 +561,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                     if (Platform.isAndroid) {
                                       directory = Directory(
-                                          "storage/emulated/0/Download/${widget.vessel!.id}.zip");
+                                          "storage/emulated/0/Download/$getTripId.zip");
                                     } else {
                                       directory =
                                           await getApplicationDocumentsDirectory();
@@ -1104,10 +1119,93 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 buttonPrimaryColor: buttonBGColor,
                                 borderColor: buttonBGColor,
                                 width: displayWidth(context),
-                                onTap: () {
-                                  startTripService(stateSetter);
+                                onTap: () async {
+                                  //startTripService(stateSetter);
 
                                   //initializeTripService(stateSetter);
+
+                                  /* Workmanager().registerOneOffTask(
+                                      'sensor_task', 'sensor_task_999');*/
+
+                                  /*Timer.periodic(Duration(seconds: 2), (timer) {
+                                    Workmanager().registerOneOffTask(
+                                        'sensor_task', 'sensor_task_999');
+                                  });*/
+
+                                  /* Workmanager().registerPeriodicTask(
+                                      startTripService(stateSetter),
+                                      startTripService(stateSetter),
+                                      initialDelay: Duration(seconds: 10),
+                                    );*/
+
+                                  /* await AndroidAlarmManager.periodic(
+                                      const Duration(minutes: 1),
+                                      1,
+                                      startTripService(stateSetter));*/
+
+                                  /// Working Code
+
+                                  FlutterBackgroundAndroidConfig config =
+                                      const FlutterBackgroundAndroidConfig(
+                                    notificationTitle:
+                                        'flutter_background example app',
+                                    notificationText:
+                                        'Background notification for keeping the example app running in the background',
+                                    notificationIcon: AndroidResource(
+                                        name: 'launch_background'),
+                                    notificationImportance:
+                                        AndroidNotificationImportance.Default,
+                                    enableWifiLock: true,
+                                  );
+
+                                  var hasPermissions =
+                                      await FlutterBackground.hasPermissions;
+
+                                  print('HAS PERMISSION: $hasPermissions');
+
+                                  if (!hasPermissions) {
+                                    await showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                              title: Text('Permissions needed'),
+                                              content: Text(
+                                                  'Shortly the OS will ask you for permission to execute this app in the background. This is required in order to receive chat messages when the app is not in the foreground.'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, 'OK'),
+                                                  child: const Text('OK'),
+                                                ),
+                                              ]);
+                                        });
+                                  }
+
+                                  hasPermissions =
+                                      await FlutterBackground.initialize(
+                                          androidConfig: config);
+
+                                  if (hasPermissions) {
+                                    print('HAS PERMISSION 1: $hasPermissions');
+                                    if (hasPermissions) {
+                                      print(
+                                          'HAS PERMISSION 2: $hasPermissions');
+                                      final backgroundExecution =
+                                          await FlutterBackground
+                                              .enableBackgroundExecution();
+                                      if (backgroundExecution) {
+                                        print(
+                                            'HAS BACKGROUND EXECUTION ENABLED: $backgroundExecution');
+                                        Timer.periodic(Duration(seconds: 2),
+                                            (timer) {
+                                          print(
+                                              'BG Service is working: ${timer.tick}');
+                                        });
+                                        startTripService(stateSetter);
+                                      }
+                                    }
+                                  }
                                 })
                             : isEndTripButton
                                 ? CommonButtons.getActionButton(
@@ -1143,21 +1241,22 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                       File file = File(zipFile!.path);
                                       stateSetter(() {
+                                        isEndTripButton = false;
                                         isZipFileCreate = true;
                                       });
-                                      /*Future.delayed(Duration(seconds: 1))
+                                      Future.delayed(Duration(seconds: 1))
                                           .then((value) {
                                         stateSetter(() {
                                           isZipFileCreate = true;
                                         });
-                                      });*/
+                                      });
                                       print('FINAL PATH: ${file.path}');
                                       onSave(file, bottomSheetContext);
 
-                                      stateSetter(() {
-                                        isEndTripButton = false;
-                                        isZipFileCreate = true;
-                                      });
+                                      // stateSetter(() {
+                                      //   isEndTripButton = false;
+                                      //   isZipFileCreate = true;
+                                      // });
 
                                       /*File file = File(zipFile!.path);
                                       Future.delayed(Duration(seconds: 1))
@@ -1329,8 +1428,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isStartButton = false;
       isEndTripButton = true;
     });
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      writeSensorDataToFile(widget.vessel!.id!);
+    timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      writeSensorDataToFile(getTripId);
     });
   }
 
@@ -1435,10 +1534,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
     ourDirectory = Directory('${appDirectory.path}/$tripId');
 
     debugPrint('FOLDER PATHH $ourDirectory');
-    var status = await Permission.storage.status;
+    /* var status = await Permission.storage.status;
     if (!status.isGranted) {
-      await Permission.storage.request();
-    }
+      var stat = await Permission.storage.request();
+
+    } else {}*/
+
     if ((await ourDirectory!.exists())) {
       return ourDirectory!.path;
     } else {
@@ -1489,11 +1590,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     await _databaseService.updateTripStatus(1, getTripId);
 
-    Navigator.pop(context);
+    isZipFileCreate ? null : Navigator.pop(context);
   }
 
   // @pragma('vm:entry-point')
   Future<void> onServiceStart(ServiceInstance service) async {
+    WidgetsFlutterBinding.ensureInitialized();
     DartPluginRegistrant.ensureInitialized();
     // startTripService();
   }

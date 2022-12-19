@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "263893378527",
+    "project_id": "performarine-9b4c5",
+    "storage_bucket": "performarine-9b4c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263893378527:android:92c91e984349ef1e8d906a",
+        "android_client_info": {
+          "package_name": "com.performarine.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "263893378527-jo4vcglg0gka3sgh3mjg8btbqb17u8rs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.performarine.app",
+            "certificate_hash": "8db00627dd2024f3ce716808b02ad3ed147f3ebe"
+          }
+        },
+        {
+          "client_id": "263893378527-picqsnrv7pso5ekunqlb6if9i2bbfj6r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtuky5kdy0VLyKETw9tDcgczYevfuALNE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "263893378527-picqsnrv7pso5ekunqlb6if9i2bbfj6r.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "263893378527-frupntpobatt2p53th44anj2cijp6jlm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.performarine.ios.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

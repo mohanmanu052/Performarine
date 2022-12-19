@@ -30,6 +30,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
     return ExpandableNotifier(
         child: Card(
           // clipBehavior: Clip.antiAlias,
+
           child: GestureDetector(
             onTap: () {
               if (widget.isSingleView) {
@@ -57,12 +58,13 @@ class _ExpansionCardState extends State<ExpansionCard> {
                           widget.vessel!.imageURLs == 'string'
                           ? Container(
                         decoration: BoxDecoration(
-                          color: Colors.orange,
+                          // color: Colors.orange,
+                          color: Colors.black,
                           shape: BoxShape.rectangle,
                           image: DecorationImage(
                             fit: BoxFit.cover,
                             image: AssetImage(
-                              "assets/images/batlic.png",
+                              "assets/images/dashboard_bg_image.png",
                             ),
                             // fit: BoxFit.cover
                           ),

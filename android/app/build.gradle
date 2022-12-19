@@ -38,7 +38,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.glassocean.app"
+        applicationId "com.performarine.app"
         minSdkVersion 28
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()

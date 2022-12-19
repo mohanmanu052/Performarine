@@ -208,51 +208,13 @@ class Utils {
         //     // Get.back();
         //   }
         // }
-        ModalRoute.of(context)?.isCurrent != true;
+        //ModalRoute.of(context)?.isCurrent != true;
         isPermissionGranted = true;
         locationData = await Utils.getCurrentLocation();
         debugPrint("im in the loop assigned getCurrentLocation:$locationData");
       } else if (await Permission.location.request().isPermanentlyDenied) {
         isPermissionGranted = false;
         print('PD');
-
-        /*showDialog(
-            context: scaffoldKey.currentContext!,
-            builder: (BuildContext context) {
-              return LocationPermissionCustomDialog(
-                headingText: 'Location Permission Required',
-                text: 'Allow Access to "Location Permission" ',
-                subText: '',
-                stepOne: 'Click OK to access App Info',
-                stepTwo: 'Click Permissions to access Permission Info',
-                stepThree: 'Select Media & Photos and change to allow access.',
-                buttonText: 'Ok',
-                buttonOnTap: () async {
-                  isPermissionGranted = await openAppSettings();
-                  Navigator.pop(context);
-                },
-              );
-            });*/
-
-        /* Get.defaultDialog(
-            //barrierDismissible: false,
-            backgroundColor: Colors.white,
-            title: 'Location permission Required',
-            titleStyle: TextStyle(
-              fontSize: 18,
-            ),
-            middleText: 'Please grant the permission to proceed further',
-            middleTextStyle: TextStyle(fontSize: 16),
-            textConfirm: 'Ok',
-            onConfirm: () async {
-              isPermissionGranted = await openAppSettings();
-              */ /*Get.back();
-              bool permission = await Geolocator.openLocationSettings();
-              print('ISPERMISSION $permission');
-              Future.delayed(Duration(seconds: 1), () {
-                getLocationPermission(context);
-              });*/ /*
-            });*/
 
         isPermissionGranted = await openAppSettings();
         debugPrint("isPermissionGranted:$isPermissionGranted");
@@ -264,23 +226,6 @@ class Utils {
       } else if (await Permission.location.request().isDenied) {
         // print('D');
         isPermissionGranted = false;
-        /*showDialog(
-            context: scaffoldKey.currentContext!,
-            builder: (BuildContext context) {
-              return LocationPermissionCustomDialog(
-                headingText: 'Location Permission Required',
-                text: 'Allow Access to "Location Permission" ',
-                subText: "",
-                stepOne: 'Click OK to access App Info',
-                stepTwo: 'Click Permissions to access Permission Info',
-                stepThree: 'Select Media & Photos and change to allow access.',
-                buttonText: 'Ok',
-                buttonOnTap: () async {
-                  isPermissionGranted = await openAppSettings();
-                  Navigator.pop(context);
-                },
-              );
-            });*/
         Utils.showActionSnackBar(scaffoldKey,
             'Location permissions are denied without permissions we are unable to start the trip',
             () {
