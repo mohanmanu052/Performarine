@@ -142,7 +142,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    AndroidAlarmManager.initialize();
   }
 
   @override
