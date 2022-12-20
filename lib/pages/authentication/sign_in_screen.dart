@@ -454,7 +454,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) =>
-                                                            const HomePage(),
+                                                            HomePage(),
                                                       ),
                                                       ModalRoute.withName(""));
                                                 }
@@ -544,7 +544,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const HomePage(),
+                                                    HomePage(),
                                               ),
                                               ModalRoute.withName(""));
                                         }

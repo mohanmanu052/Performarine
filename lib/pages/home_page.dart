@@ -1,9 +1,18 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_archive/flutter_archive.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:location/location.dart';
 import 'package:performarine/common_widgets/trip_builder.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 // import 'package:performarine/common_widgets/Trip_builder.dart';
 import 'package:performarine/common_widgets/vessel_builder.dart';
+import 'package:performarine/main.dart';
+import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 // import 'package:performarine/models/Trip.dart';
 import 'package:performarine/models/vessel.dart';
@@ -18,36 +27,39 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final List<String> tripData;
+  HomePage({Key? key, this.tripData = const []}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
+  //FlutterBackgroundService service = FlutterBackgroundService();
 
   late CommonProvider commonProvider;
-  List<Trip> trips=[];
-  int tripsCount=0;
+  List<Trip> trips = [];
+  int tripsCount = 0;
 
   Future<List<CreateVessel>> _getVessels() async {
     return await _databaseService.vessels();
   }
 
   Future<List<Trip>> _getTrips() async {
-    trips=await _databaseService.trips();
+    trips = await _databaseService.trips();
     return await _databaseService.trips();
   }
-   _getTripsCount() async {
-    trips=await _databaseService.trips();
+
+  _getTripsCount() async {
+    trips = await _databaseService.trips();
 
     setState(() {
-      tripsCount=trips.length;
+      tripsCount = trips.length;
     });
     // return tripsCount.toString();
   }
-
 
 //ToDo: Vessel Name by Vessel Id
 //   Future<String> _getVesselName() async {
@@ -61,6 +73,10 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  IosDeviceInfo? iosDeviceInfo;
+  AndroidDeviceInfo? androidDeviceInfo;
+  DeviceInfo? deviceDetails;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -68,8 +84,152 @@ class _HomePageState extends State<HomePage> {
 
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
-   _getTripsCount();
-   debugPrint("tripsCount:$tripsCount");
+    _getTripsCount();
+    debugPrint("tripsCount:$tripsCount");
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+
+    List<String> tripData = widget.tripData;
+
+    if (tripData.isNotEmpty) {
+      String tripId = tripData[0];
+      String vesselId = tripData[1];
+      String vesselName = tripData[2];
+      String vesselWeight = tripData[3];
+
+      print('TRIP DATA: $tripId * $vesselId * $vesselName');
+
+      Future.delayed(Duration(seconds: 1), () {
+        showAlertDialog(context, tripId, vesselId, vesselName, vesselWeight);
+      });
+    }
+  }
+
+  showAlertDialog(
+      BuildContext context, String tripId, vesselId, vesselName, vesselWeight) {
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("End Trip"),
+          content: Text("Do you want to end the trip?"),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text("End"),
+              onPressed: () {
+                var service = FlutterBackgroundService();
+                service.invoke('stopService');
+
+                File? zipFile;
+                if (timer != null) timer!.cancel();
+                print('TIMER STOPPED ${ourDirectory!.path}/$tripId');
+                final dataDir = Directory('${ourDirectory!.path}/$tripId');
+
+                try {
+                  zipFile = File('${ourDirectory!.path}/$tripId.zip');
+
+                  ZipFile.createFromDirectory(
+                      sourceDir: dataDir,
+                      zipFile: zipFile,
+                      recurseSubDirs: true);
+                  print('our path is $dataDir');
+                } catch (e) {
+                  print(e);
+                }
+
+                File file = File(zipFile!.path);
+                print('FINAL PATH: ${file.path}');
+
+                sharedPreferences!.remove('trip_data');
+
+                service.invoke('stopService');
+
+                onSave(
+                    file, context, tripId, vesselId, vesselName, vesselWeight);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> onSave(File file, BuildContext context, String tripId, vesselId,
+      vesselName, vesselWeight) async {
+    LocationData? locationData =
+        await Utils.getLocationPermission(context, scaffoldKey);
+    // await fetchDeviceInfo();
+    await fetchDeviceData();
+
+    debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
+    // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
+    String latitude = locationData!.latitude!.toString();
+    String longitude = locationData.longitude!.toString();
+
+    debugPrint("current lod:$vesselWeight");
+
+    await _databaseService.insertTrip(Trip(
+        id: tripId,
+        vesselId: vesselId,
+        vesselName: vesselName,
+        currentLoad: vesselWeight,
+        filePath: file.path,
+        isSync: 0,
+        tripStatus: 0,
+        createdAt: DateTime.now().toString(),
+        updatedAt: DateTime.now().toString(),
+        lat: latitude,
+        long: longitude,
+        deviceInfo: deviceDetails!.toJson().toString()));
+
+    await _databaseService.updateTripStatus(1, tripId);
+    service.invoke('stopService');
+    Navigator.pop(context);
+  }
+
+  fetchDeviceData() async {
+    await fetchDeviceInfo();
+    // Platform.isAndroid
+    //     ? androidDeviceInfo = await fetchDeviceInfo()!.androidDeviceData
+    //     : iosDeviceInfo = await fetchDeviceInfo()!.androidDeviceData;
+    deviceDetails = Platform.isAndroid
+        ? DeviceInfo(
+            board: androidDeviceInfo?.board,
+            deviceId: androidDeviceInfo?.id,
+            deviceType: androidDeviceInfo?.type,
+            make: androidDeviceInfo?.manufacturer,
+            model: androidDeviceInfo?.model,
+            version: androidDeviceInfo?.version.release)
+        : DeviceInfo(
+            board: iosDeviceInfo?.utsname.machine,
+            deviceId: '',
+            deviceType: iosDeviceInfo?.utsname.machine,
+            make: iosDeviceInfo?.utsname.machine,
+            model: iosDeviceInfo?.model,
+            version: iosDeviceInfo?.utsname.release);
+    debugPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
+  }
+
+  fetchDeviceInfo() async {
+    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      androidDeviceInfo = await deviceInfoPlugin.androidInfo;
+      return androidDeviceInfo;
+    } else if (Platform.isIOS) {
+      iosDeviceInfo = await deviceInfoPlugin.iosInfo;
+      return iosDeviceInfo;
+    }
   }
 
   @override
@@ -78,11 +238,11 @@ class _HomePageState extends State<HomePage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-
+        key: scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
           title: Container(
-            width: MediaQuery.of(context).size.width/2,
+            width: MediaQuery.of(context).size.width / 2,
             // color: Colors.yellow,
             child: RichText(
               textAlign: TextAlign.center,
@@ -90,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   WidgetSpan(
                       child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center ,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
@@ -118,7 +278,6 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Text('Activity (${tripsCount.toString()})'),
-
               ),
             ],
           ),

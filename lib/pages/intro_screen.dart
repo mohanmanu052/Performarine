@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/main.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lets_get_started_screen.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
@@ -122,13 +124,13 @@ class _IntroScreenState extends State<IntroScreen> {
                               SizedBox(height: displayHeight(context) * 0.02),
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.pushAndRemoveUntil(
+                                  /*Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             const LetsGetStartedScreen(),
                                       ),
-                                      ModalRoute.withName(""));
+                                      ModalRoute.withName(""));*/
 
                                   checkIfUserIsLoggedIn();
                                 },
@@ -176,21 +178,35 @@ class _IntroScreenState extends State<IntroScreen> {
     //     MaterialPageRoute(builder: (context) => const HomePage()),
     //     ModalRoute.withName(""));
 
-    if (isUserLoggedIn == null) {
+    var service = FlutterBackgroundService();
+    bool isServiceRunning = await service.isRunning();
+
+    if (isServiceRunning) {
+      List<String>? tripData = sharedPreferences!.getStringList('trip_data');
+
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const LetsGetStartedScreen()),
-          ModalRoute.withName(""));
-    } else if (isUserLoggedIn) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(
+              builder: (context) => HomePage(tripData: tripData ?? [])),
           ModalRoute.withName(""));
     } else {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const SignInScreen()),
-          ModalRoute.withName(""));
+      if (isUserLoggedIn == null) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const LetsGetStartedScreen()),
+            ModalRoute.withName(""));
+      } else if (isUserLoggedIn) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+            ModalRoute.withName(""));
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const SignInScreen()),
+            ModalRoute.withName(""));
+      }
     }
   }
 }

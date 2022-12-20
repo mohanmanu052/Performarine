@@ -42,7 +42,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomePage(),
+                builder: (context) => HomePage(),
               ),
               ModalRoute.withName("SuccessFullScreen"));
         }
@@ -68,10 +68,10 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => VesselSingleView(
-                              vessel: widget.data!
-                              // isCalledFromSuccessScreen: true,
-                            )),
+                        builder: (context) =>
+                            VesselSingleView(vessel: widget.data!
+                                // isCalledFromSuccessScreen: true,
+                                )),
                   );
                 } else {
                   Navigator.pushReplacement(
@@ -100,7 +100,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const HomePage(),
+                      builder: (context) => HomePage(),
                     ),
                     ModalRoute.withName(""));
               }
@@ -153,132 +153,133 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                       child: Stack(
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: widget.data!.imageURLs == null ||
-                                    widget.data!.imageURLs!.isEmpty ||
-                                    widget.data!.imageURLs == 'string'
-                                ? Stack(
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/dashboard_bg_image.png',
-                                        height: displayHeight(context) * 0.22,
-                                        width: displayWidth(context),
-                                        fit: BoxFit.cover,
-                                      ),
-                                      /*Image.asset(
+                              borderRadius: BorderRadius.circular(10),
+                              child: widget.data!.imageURLs == null ||
+                                      widget.data!.imageURLs!.isEmpty ||
+                                      widget.data!.imageURLs == 'string'
+                                  ? Stack(
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/dashboard_bg_image.png',
+                                          height: displayHeight(context) * 0.22,
+                                          width: displayWidth(context),
+                                          fit: BoxFit.cover,
+                                        ),
+                                        /*Image.asset(
                                             'assets/images/shadow_img.png',
                                             height: displayHeight(context) * 0.22,
                                             width: displayWidth(context),
                                             fit: BoxFit.cover,
                                           ),*/
 
-                                      Positioned(
-                                          bottom: 0,
-                                          right: 0,
-                                          left: 0,
-                                          child: Container(
-                                            height:
-                                                displayHeight(context) * 0.14,
-                                            width: displayWidth(context),
-                                            padding:
-                                                const EdgeInsets.only(top: 20),
-                                            decoration:
-                                                BoxDecoration(boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black
-                                                      .withOpacity(0.5),
-                                                  blurRadius: 50,
-                                                  spreadRadius: 5,
-                                                  offset: const Offset(0, 50))
-                                            ]),
-                                          ))
-                                    ],
-                                  )
-                                : Stack(
-                              children: [
-                                Container(
-                                  height: displayHeight(context) * 0.22,
-                                  width: displayWidth(context),
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                      image: FileImage(File(widget.data!.imageURLs!)),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    left: 0,
-                                    child: Container(
-                                      height:
-                                      displayHeight(context) * 0.14,
-                                      width: displayWidth(context),
-                                      padding: const EdgeInsets.only(
-                                          top: 20),
-                                      decoration:
-                                      BoxDecoration(boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black
-                                                .withOpacity(0.5),
-                                            blurRadius: 50,
-                                            spreadRadius: 5,
-                                            offset: const Offset(0, 50))
-                                      ]),
-                                    ))
-                              ],
-                            )
-                            // CachedNetworkImage(
-                            //         height: displayHeight(context) * 0.22,
-                            //         width: displayWidth(context),
-                            //         imageUrl: widget.data!.imageURLs![0],
-                            //         imageBuilder: (context, imageProvider) =>
-                            //             Stack(
-                            //           children: [
-                            //             Container(
-                            //               decoration: BoxDecoration(
-                            //                 borderRadius:
-                            //                     BorderRadius.circular(10),
-                            //                 image: DecorationImage(
-                            //                   image: imageProvider,
-                            //                   fit: BoxFit.fill,
-                            //                 ),
-                            //               ),
-                            //             ),
-                            //             Positioned(
-                            //                 bottom: 0,
-                            //                 right: 0,
-                            //                 left: 0,
-                            //                 child: Container(
-                            //                   height:
-                            //                       displayHeight(context) * 0.14,
-                            //                   width: displayWidth(context),
-                            //                   padding: const EdgeInsets.only(
-                            //                       top: 20),
-                            //                   decoration:
-                            //                       BoxDecoration(boxShadow: [
-                            //                     BoxShadow(
-                            //                         color: Colors.black
-                            //                             .withOpacity(0.5),
-                            //                         blurRadius: 50,
-                            //                         spreadRadius: 5,
-                            //                         offset: const Offset(0, 50))
-                            //                   ]),
-                            //                 ))
-                            //           ],
-                            //         ),
-                            //         progressIndicatorBuilder:
-                            //             (context, url, downloadProgress) =>
-                            //                 Center(
-                            //           child: CircularProgressIndicator(
-                            //               value: downloadProgress.progress),
-                            //         ),
-                            //         errorWidget: (context, url, error) =>
-                            //             Icon(Icons.error),
-                            //       ),
-                          ),
+                                        Positioned(
+                                            bottom: 0,
+                                            right: 0,
+                                            left: 0,
+                                            child: Container(
+                                              height:
+                                                  displayHeight(context) * 0.14,
+                                              width: displayWidth(context),
+                                              padding: const EdgeInsets.only(
+                                                  top: 20),
+                                              decoration:
+                                                  BoxDecoration(boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.5),
+                                                    blurRadius: 50,
+                                                    spreadRadius: 5,
+                                                    offset: const Offset(0, 50))
+                                              ]),
+                                            ))
+                                      ],
+                                    )
+                                  : Stack(
+                                      children: [
+                                        Container(
+                                          height: displayHeight(context) * 0.22,
+                                          width: displayWidth(context),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            image: DecorationImage(
+                                              image: FileImage(File(
+                                                  widget.data!.imageURLs!)),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                            bottom: 0,
+                                            right: 0,
+                                            left: 0,
+                                            child: Container(
+                                              height:
+                                                  displayHeight(context) * 0.14,
+                                              width: displayWidth(context),
+                                              padding: const EdgeInsets.only(
+                                                  top: 20),
+                                              decoration:
+                                                  BoxDecoration(boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.5),
+                                                    blurRadius: 50,
+                                                    spreadRadius: 5,
+                                                    offset: const Offset(0, 50))
+                                              ]),
+                                            ))
+                                      ],
+                                    )
+                              // CachedNetworkImage(
+                              //         height: displayHeight(context) * 0.22,
+                              //         width: displayWidth(context),
+                              //         imageUrl: widget.data!.imageURLs![0],
+                              //         imageBuilder: (context, imageProvider) =>
+                              //             Stack(
+                              //           children: [
+                              //             Container(
+                              //               decoration: BoxDecoration(
+                              //                 borderRadius:
+                              //                     BorderRadius.circular(10),
+                              //                 image: DecorationImage(
+                              //                   image: imageProvider,
+                              //                   fit: BoxFit.fill,
+                              //                 ),
+                              //               ),
+                              //             ),
+                              //             Positioned(
+                              //                 bottom: 0,
+                              //                 right: 0,
+                              //                 left: 0,
+                              //                 child: Container(
+                              //                   height:
+                              //                       displayHeight(context) * 0.14,
+                              //                   width: displayWidth(context),
+                              //                   padding: const EdgeInsets.only(
+                              //                       top: 20),
+                              //                   decoration:
+                              //                       BoxDecoration(boxShadow: [
+                              //                     BoxShadow(
+                              //                         color: Colors.black
+                              //                             .withOpacity(0.5),
+                              //                         blurRadius: 50,
+                              //                         spreadRadius: 5,
+                              //                         offset: const Offset(0, 50))
+                              //                   ]),
+                              //                 ))
+                              //           ],
+                              //         ),
+                              //         progressIndicatorBuilder:
+                              //             (context, url, downloadProgress) =>
+                              //                 Center(
+                              //           child: CircularProgressIndicator(
+                              //               value: downloadProgress.progress),
+                              //         ),
+                              //         errorWidget: (context, url, error) =>
+                              //             Icon(Icons.error),
+                              //       ),
+                              ),
                           Positioned(
                             bottom: 0,
                             left: 0,
@@ -702,8 +703,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const HomePage(),
+                                    builder: (context) => HomePage(),
                                   ),
                                   ModalRoute.withName(""));
                             },

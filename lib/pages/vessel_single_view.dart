@@ -3,12 +3,10 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
-import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
@@ -36,9 +34,6 @@ import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:uuid/uuid.dart';
-import 'package:workmanager/workmanager.dart';
-
-typedef StartTripServiceFunction();
 
 class VesselSingleView extends StatefulWidget {
   final CreateVessel? vessel;
@@ -65,13 +60,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
   List<double>? _magnetometerValues;
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
 
-  Directory? ourDirectory;
+  // Directory? ourDirectory;
   bool isStartButton = false,
       isEndTripButton = false,
       isZipFileCreate = false,
       isSensorDataUploaded = false;
 
-  Timer? timer;
+  // Timer? timer;
   String fileName = '';
   int fileIndex = 1;
   String? latitude, longitude;
@@ -88,8 +83,19 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   String selectedVesselWeight = 'Select Current Load';
 
+  bool isServiceRunning = false;
+  FlutterBackgroundService service = FlutterBackgroundService();
+
   Future<List<Trip>> getTripListByVesselId(String id) async {
     return await _databaseService.getAllTripsByVesselId(id);
+  }
+
+  getIfServiceIsRunning() async {
+    bool data = await service.isRunning();
+    print('IS SERVICE RUNNING: $data');
+    setState(() {
+      isServiceRunning = data;
+    });
   }
 
   DeviceInfo? deviceDetails;
@@ -242,7 +248,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                     await locationPermissions(widget.vessel!.vesselSize!,
                         widget.vessel!.name!, widget.vessel!.id!);
 
-                    _streamSubscriptions.add(
+                    /*_streamSubscriptions.add(
                       accelerometerEvents.listen(
                         (AccelerometerEvent event) {
                           if (mounted) {
@@ -301,7 +307,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           }
                         },
                       ),
-                    );
+                    );*/
                   }),
             ),
           )
@@ -1119,92 +1125,100 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 borderColor: buttonBGColor,
                                 width: displayWidth(context),
                                 onTap: () async {
-                                  //startTripService(stateSetter);
-
-                                  //initializeTripService(stateSetter);
-
-                                  /* Workmanager().registerOneOffTask(
-                                      'sensor_task', 'sensor_task_999');*/
-
-                                  /*Timer.periodic(Duration(seconds: 2), (timer) {
-                                    Workmanager().registerOneOffTask(
-                                        'sensor_task', 'sensor_task_999');
-                                  });*/
-
-                                  /* Workmanager().registerPeriodicTask(
-                                      startTripService(stateSetter),
-                                      startTripService(stateSetter),
-                                      initialDelay: Duration(seconds: 10),
-                                    );*/
-
-                                  /* await AndroidAlarmManager.periodic(
-                                      const Duration(minutes: 1),
-                                      1,
-                                      startTripService(stateSetter));*/
-
-                                  /// Working Code
-
-                                  FlutterBackgroundAndroidConfig config =
-                                      const FlutterBackgroundAndroidConfig(
-                                    notificationTitle:
-                                        'flutter_background example app',
-                                    notificationText:
-                                        'Background notification for keeping the example app running in the background',
-                                    notificationIcon: AndroidResource(
-                                        name: 'launch_background'),
-                                    notificationImportance:
-                                        AndroidNotificationImportance.Default,
-                                    enableWifiLock: true,
-                                  );
-
-                                  var hasPermissions =
-                                      await FlutterBackground.hasPermissions;
-
-                                  print('HAS PERMISSION: $hasPermissions');
-
-                                  if (!hasPermissions) {
-                                    await showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                              title: Text('Permissions needed'),
-                                              content: Text(
-                                                  'Shortly the OS will ask you for permission to execute this app in the background. This is required in order to receive chat messages when the app is not in the foreground.'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                          context, 'OK'),
-                                                  child: const Text('OK'),
-                                                ),
-                                              ]);
-                                        });
+                                  debugPrint(
+                                      'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+                                  if (selectedVesselWeight == null &&
+                                      selectedVesselWeight.isEmpty) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text("Please select weight"),
+                                      duration: Duration(seconds: 1),
+                                    ));
+                                    return null;
                                   }
 
-                                  hasPermissions =
-                                      await FlutterBackground.initialize(
-                                          androidConfig: config);
+                                  bool isLocationPermitted =
+                                      await Permission.location.isGranted;
 
-                                  if (hasPermissions) {
-                                    print('HAS PERMISSION 1: $hasPermissions');
-                                    if (hasPermissions) {
-                                      print(
-                                          'HAS PERMISSION 2: $hasPermissions');
-                                      final backgroundExecution =
-                                          await FlutterBackground
-                                              .enableBackgroundExecution();
-                                      if (backgroundExecution) {
-                                        print(
-                                            'HAS BACKGROUND EXECUTION ENABLED: $backgroundExecution');
-                                        Timer.periodic(Duration(seconds: 2),
-                                            (timer) {
-                                          print(
-                                              'BG Service is working: ${timer.tick}');
+                                  if (isLocationPermitted) {
+                                    service.startService();
+
+                                    getTripId = uuid.v1();
+
+                                    service.invoke(
+                                        'tripId', {'tripId': getTripId});
+
+                                    Future.delayed(Duration(seconds: 2), () {
+                                      Timer.periodic(Duration(seconds: 1),
+                                          (timer) async {
+                                        LocationData? locationData =
+                                            await Utils.getCurrentLocation();
+                                        service.invoke('location', {
+                                          'lat': locationData!.latitude,
+                                          'long': locationData.longitude,
                                         });
-                                        startTripService(stateSetter);
-                                      }
+                                      });
+                                    });
+
+                                    stateSetter(() {
+                                      isStartButton = false;
+                                      isEndTripButton = true;
+                                    });
+
+                                    sharedPreferences!.setStringList(
+                                        'trip_data', [
+                                      getTripId,
+                                      widget.vessel!.id!,
+                                      widget.vessel!.name!,
+                                      selectedVesselWeight
+                                    ]);
+                                  } else {
+                                    await Utils.getLocationPermission(
+                                        context, scaffoldKey);
+                                    bool isLocationPermitted =
+                                        await Permission.location.isGranted;
+
+                                    if (isLocationPermitted) {
+                                      service.startService();
+
+                                      getTripId = uuid.v1();
+
+                                      service.invoke(
+                                          'tripId', {'tripId': getTripId});
+
+                                      Future.delayed(Duration(seconds: 2), () {
+                                        Timer.periodic(Duration(seconds: 1),
+                                            (timer) async {
+                                          LocationData? locationData =
+                                              await Utils.getCurrentLocation();
+                                          service.invoke('location', {
+                                            'lat': locationData!.latitude,
+                                            'long': locationData.longitude,
+                                          });
+                                        });
+                                      });
+
+                                      stateSetter(() {
+                                        isStartButton = false;
+                                        isEndTripButton = true;
+                                      });
+
+                                      sharedPreferences!.setStringList(
+                                          'trip_data', [
+                                        getTripId,
+                                        widget.vessel!.id!,
+                                        widget.vessel!.name!,
+                                        selectedVesselWeight
+                                      ]);
+
+                                      /// TODO Further Process
+                                      // await getLocationData();
+
+                                      /// SAVED Sensor data
+                                      // startSensorFunctionality(stateSetter);
                                     }
                                   }
+                                  // startTripService(stateSetter);
                                 })
                             : isEndTripButton
                                 ? CommonButtons.getActionButton(
@@ -1218,16 +1232,18 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     onTap: () async {
                                       // getTripId = await getTripIdFromPref();
 
+                                      service.invoke('stopService');
+
                                       File? zipFile;
                                       if (timer != null) timer!.cancel();
                                       print(
-                                          'TIMER STOPPED ${ourDirectory!.path}');
-                                      final dataDir =
-                                          Directory(ourDirectory!.path);
+                                          'TIMER STOPPED ${ourDirectory!.path}/$getTripId');
+                                      final dataDir = Directory(
+                                          '${ourDirectory!.path}/$getTripId');
 
                                       try {
-                                        zipFile =
-                                            File('${ourDirectory!.path}.zip');
+                                        zipFile = File(
+                                            '${ourDirectory!.path}/$getTripId.zip');
 
                                         ZipFile.createFromDirectory(
                                             sourceDir: dataDir,
@@ -1250,6 +1266,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         });
                                       });
                                       print('FINAL PATH: ${file.path}');
+
+                                      sharedPreferences!.remove('trip_data');
+
                                       onSave(file, bottomSheetContext);
 
                                       // stateSetter(() {
@@ -1597,36 +1616,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
     WidgetsFlutterBinding.ensureInitialized();
     DartPluginRegistrant.ensureInitialized();
     // startTripService();
-  }
-
-  Future<void> initializeTripService(StateSetter stateSetter) async {
-    int uuid = Random().nextInt(9999);
-
-    var notificationChannelId = 'my_trip_bg_service_$uuid';
-    var notificationId = uuid;
-
-    var service = FlutterBackgroundService();
-    await service.configure(
-      androidConfiguration: AndroidConfiguration(
-        initialNotificationTitle: 'Performarine',
-        onStart: onServiceStart,
-        autoStart: false,
-        isForegroundMode: true,
-        notificationChannelId: notificationChannelId,
-        initialNotificationContent: 'Trip Data Collection in progress...',
-        foregroundServiceNotificationId: notificationId,
-      ),
-      iosConfiguration: IosConfiguration(
-        autoStart: true,
-        onForeground: (service) {},
-      ),
-    );
-
-    service.startService();
-    stateSetter(() {
-      isStartButton = false;
-      isEndTripButton = true;
-    });
   }
 
   startTripService(StateSetter stateSetter) async {

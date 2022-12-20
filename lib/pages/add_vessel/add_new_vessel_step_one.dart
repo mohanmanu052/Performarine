@@ -212,13 +212,13 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       obscureText: false,
                       onTap: () {},
                       onChanged: (String value) {},
-                      validator: (value) {
+                      /*validator: (value) {
                         if (value!.isEmpty) {
                           return 'Enter registration number';
                         }
 
                         return null;
-                      },
+                      },*/
                       onSaved: (String value) {
                         print(value);
                       }),
@@ -238,13 +238,13 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       obscureText: false,
                       onTap: () {},
                       onChanged: (String value) {},
-                      validator: (value) {
+                      /*validator: (value) {
                         if (value!.isEmpty) {
                           return 'Enter MMSI';
                         }
 
                         return null;
-                      },
+                      },*/
                       onSaved: (String value) {
                         print(value);
                       }),

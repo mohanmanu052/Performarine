@@ -42,7 +42,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomePage(),
+                builder: (context) => HomePage(),
               ),
               ModalRoute.withName(""));
 
@@ -70,7 +70,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const HomePage(),
+                      builder: (context) => HomePage(),
                     ),
                     ModalRoute.withName(""));
               } else if (pageIndex == 1) {
