@@ -24,7 +24,6 @@ SharedPreferences? sharedPreferences;
 bool? isStart;
 Timer? timer;
 Directory? ourDirectory;
-final service = FlutterBackgroundService();
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final StreamController<String?> selectNotificationStream =
@@ -42,8 +41,10 @@ void main() async {
 const notificationChannelId = 'my_foreground';
 
 @pragma('vm:entry-point')
-Future<void> onStart(ServiceInstance service) async {
+Future<void> onStart(ServiceInstance serviceInstance) async {
   DartPluginRegistrant.ensureInitialized();
+  /*Get.put<ServiceInstance>(serviceInstance,
+      permanent: true, tag: 'serviceInstance');*/
   print('Background task is running');
 
   List<double>? _accelerometerValues;
@@ -137,21 +138,26 @@ Future<void> onStart(ServiceInstance service) async {
       double sizeInMB = sizeInKB / 1024;
 
       int finalSizeInMB = sizeInMB.toInt();
-      print('FILE SIZE: $sizeInMB');
-      print('FILE SIZE KB: $sizeInKB');
-      print('FINAL FILE SIZE: $finalSizeInMB');
+      // print('FILE SIZE: $sizeInMB');
+      //print('FILE SIZE KB: $sizeInKB');
+      // print('FINAL FILE SIZE: $finalSizeInMB');
       return sizeInKB.toInt();
     } else {
       return -1;
     }
   }
 
-  service.on('stopService').listen((event) {
-    service.stopSelf();
-    print('service stopped');
+  serviceInstance.on('stopService').listen((event) {
+    serviceInstance.stopSelf();
+    print('service stopped'.toUpperCase());
   });
 
-  service.on('location').listen((event) {
+  serviceInstance.on('stopBGService').listen((event) {
+    serviceInstance.stopSelf();
+    print('service stopped BG'.toUpperCase());
+  });
+
+  serviceInstance.on('location').listen((event) {
     latitude = event!['lat'];
     longitude = event['long'];
   });
@@ -184,8 +190,8 @@ Future<void> onStart(ServiceInstance service) async {
       // print('TIMER STOPPED');
       fileIndex = fileIndex + 1;
       fileName = '$fileIndex.csv';
-      print('FILE NAME: $fileName');
-      print('NEW FILE CREATED');
+      // print('FILE NAME: $fileName');
+      //print('NEW FILE CREATED');
 
       /// STOP WRITING & CREATE NEW FILE
     } else {
@@ -205,6 +211,7 @@ Future<void> onStart(ServiceInstance service) async {
 // this will be used for notification id, So you can update your custom notification with this id.
 const notificationId = 888;
 Future<void> initializeService() async {
+  final service = FlutterBackgroundService();
   isStart = false;
   var status = await Permission.storage.status;
   if (!status.isGranted) {
@@ -235,6 +242,7 @@ Future<void> initializeService() async {
       initialNotificationTitle: 'Performarine',
       onStart: onStart,
       autoStart: false,
+      autoStartOnBoot: true,
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
       initialNotificationContent: 'Trip Data Collection in progress...',

@@ -1,12 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_archive/flutter_archive.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:location/location.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/date_formatter.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:performarine/services/database_service.dart';
 
 import '../../common_widgets/widgets/status_tage.dart';
 
@@ -29,6 +37,10 @@ class TripWidget extends StatefulWidget {
 }
 
 class _TripWidgetState extends State<TripWidget> {
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+  final DatabaseService _databaseService = DatabaseService();
+  FlutterBackgroundService service = FlutterBackgroundService();
+
   @override
   Widget build(BuildContext context) {
     // double height = 150;
@@ -165,7 +177,7 @@ class _TripWidgetState extends State<TripWidget> {
                               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
-                                  child: widget.tripList?.isSync == 0
+                                  child: widget.tripList?.isSync != 0
                                       ? SizedBox(
                                           height:
                                               displayHeight(context) * 0.038,
@@ -254,7 +266,58 @@ class _TripWidgetState extends State<TripWidget> {
                                       buttonBGColor.withOpacity(.7),
                                   borderColor: buttonBGColor.withOpacity(.7),
                                   fontSize: displayWidth(context) * 0.03,
-                                  onTap: () {},
+                                  onTap: () async {
+                                    bool isServiceRunning =
+                                        await service.isRunning();
+
+                                    print(
+                                        'IS SERVICE RUNNING: $isServiceRunning');
+
+                                    try {
+                                      service.invoke('stopService');
+                                      // instan.stopSelf();
+                                    } on Exception catch (e) {
+                                      print('SERVICE STOP BG EXE: $e');
+                                    }
+
+                                    File? zipFile;
+                                    if (timer != null) timer!.cancel();
+                                    print(
+                                        'TIMER STOPPED ${ourDirectory!.path}/${widget.tripList!.id}');
+                                    final dataDir = Directory(
+                                        '${ourDirectory!.path}/${widget.tripList!.id}');
+
+                                    try {
+                                      zipFile = File(
+                                          '${ourDirectory!.path}/${widget.tripList!.id}.zip');
+
+                                      ZipFile.createFromDirectory(
+                                          sourceDir: dataDir,
+                                          zipFile: zipFile,
+                                          recurseSubDirs: true);
+                                      print('our path is $dataDir');
+                                    } catch (e) {
+                                      print(e);
+                                    }
+
+                                    File file = File(zipFile!.path);
+                                    print('FINAL PATH: ${file.path}');
+
+                                    await _databaseService.updateTripStatus(
+                                        1, file.path, widget.tripList!.id!);
+
+                                    sharedPreferences!.remove('trip_data');
+
+                                    // service.invoke('stopService');
+
+                                    /*onSave(
+                                        file,
+                                        context,
+                                        widget.tripList!.id!,
+                                        widget.tripList!.vesselId,
+                                        widget.tripList!.vesselName,
+                                        widget.tripList!.currentLoad);*/
+                                  },
                                   context: context,
                                   width: displayWidth(context) * 0.8,
                                   title: 'End Trip'))
@@ -308,5 +371,36 @@ class _TripWidgetState extends State<TripWidget> {
         ),
       ],
     );
+  }
+
+  Future<void> onSave(File file, BuildContext context, String tripId, vesselId,
+      vesselName, vesselWeight) async {
+    LocationData? locationData =
+        await Utils.getLocationPermission(context, scaffoldKey);
+    // await fetchDeviceInfo();
+
+    //debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
+    // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
+    String latitude = locationData!.latitude!.toString();
+    String longitude = locationData.longitude!.toString();
+
+    debugPrint("current lod:$tripId");
+
+    /*await _databaseService.insertTrip(Trip(
+        id: tripId,
+        vesselId: vesselId,
+        vesselName: vesselName,
+        currentLoad: vesselWeight,
+        filePath: file.path,
+        isSync: 0,
+        tripStatus: 0,
+        createdAt: DateTime.now().toString(),
+        updatedAt: DateTime.now().toString(),
+        lat: latitude,
+        long: longitude,
+        deviceInfo: deviceDetails!.toJson().toString()));*/
+
+    await _databaseService.updateTripStatus(1, file.path, tripId);
+    //Navigator.pop(context);
   }
 }

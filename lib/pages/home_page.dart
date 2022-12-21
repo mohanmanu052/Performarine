@@ -4,8 +4,11 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:get/get.dart';
 import 'package:location/location.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/trip_builder.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -24,6 +27,7 @@ import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -37,7 +41,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
-  //FlutterBackgroundService service = FlutterBackgroundService();
+  FlutterBackgroundService service = FlutterBackgroundService();
 
   late CommonProvider commonProvider;
   List<Trip> trips = [];
@@ -85,7 +89,7 @@ class _HomePageState extends State<HomePage> {
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
     _getTripsCount();
-    debugPrint("tripsCount:$tripsCount");
+    //debugPrint("tripsCount:$tripsCount");
   }
 
   @override
@@ -109,6 +113,23 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  @override
+  void dispose() async {
+    bool isServiceRunning = await service.isRunning();
+
+    print('IS SERVICE RUNNING: $isServiceRunning');
+
+    try {
+      service.invoke('stopService');
+      service.invoke('stopBGService');
+      // instan.stopSelf();
+    } on Exception catch (e) {
+      print('SERVICE STOP BG EXE: $e');
+    }
+
+    super.dispose();
+  }
+
   showAlertDialog(
       BuildContext context, String tripId, vesselId, vesselName, vesselWeight) {
     // show the dialog
@@ -127,9 +148,19 @@ class _HomePageState extends State<HomePage> {
             ),
             TextButton(
               child: Text("End"),
-              onPressed: () {
-                var service = FlutterBackgroundService();
-                service.invoke('stopService');
+              onPressed: () async {
+                // ServiceInstance instan = Get.find(tag: 'serviceInstance');
+
+                bool isServiceRunning = await service.isRunning();
+
+                print('IS SERVICE RUNNING: $isServiceRunning');
+
+                try {
+                  service.invoke('stopService');
+                  // instan.stopSelf();
+                } on Exception catch (e) {
+                  print('SERVICE STOP BG EXE: $e');
+                }
 
                 File? zipFile;
                 if (timer != null) timer!.cancel();
@@ -153,7 +184,7 @@ class _HomePageState extends State<HomePage> {
 
                 sharedPreferences!.remove('trip_data');
 
-                service.invoke('stopService');
+                // service.invoke('stopService');
 
                 onSave(
                     file, context, tripId, vesselId, vesselName, vesselWeight);
@@ -179,7 +210,7 @@ class _HomePageState extends State<HomePage> {
 
     debugPrint("current lod:$vesselWeight");
 
-    await _databaseService.insertTrip(Trip(
+    /*await _databaseService.insertTrip(Trip(
         id: tripId,
         vesselId: vesselId,
         vesselName: vesselName,
@@ -191,10 +222,9 @@ class _HomePageState extends State<HomePage> {
         updatedAt: DateTime.now().toString(),
         lat: latitude,
         long: longitude,
-        deviceInfo: deviceDetails!.toJson().toString()));
+        deviceInfo: deviceDetails!.toJson().toString()));*/
 
-    await _databaseService.updateTripStatus(1, tripId);
-    service.invoke('stopService');
+    await _databaseService.updateTripStatus(1, file.path, tripId);
     Navigator.pop(context);
   }
 

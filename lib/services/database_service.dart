@@ -129,7 +129,8 @@ class DatabaseService {
     // DbColumn(name=isSync, type=4, typeName=INTEGER, schema= DEFAULT 0 )
 
     // Query the table for all the trips.
-    final List<Map<String, dynamic>> maps = await db.query('trips',where: 'isSync = ?',whereArgs: [0]);
+    final List<Map<String, dynamic>> maps =
+        await db.query('trips', where: 'isSync = ?', whereArgs: [0]);
 
     // Convert the List<Map<String, dynamic> into a List<Trip>.
     return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
@@ -172,7 +173,8 @@ class DatabaseService {
 
   Future<List<CreateVessel>> vessels() async {
     final db = await _databaseService.database;
-    final List<Map<String, dynamic>> maps = await db.query('vessels',where: 'vesselStatus = ?',whereArgs: [1]);
+    final List<Map<String, dynamic>> maps =
+        await db.query('vessels', where: 'vesselStatus = ?', whereArgs: [1]);
     return List.generate(
         maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }
@@ -204,10 +206,12 @@ class DatabaseService {
         where: 'id = ?', whereArgs: [vessel.id]);
   }
 
-  Future<void> updateTripStatus(int status, String tripId) async {
+  Future<void> updateTripStatus(
+      int status, String filePath, String tripId) async {
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
-        'UPDATE trips SET tripStatus = ? WHERE id = ?', [status, tripId]);
+        'UPDATE trips SET tripStatus = ?, filePath = ? WHERE id = ?',
+        [status, filePath, tripId]);
     print('updated: $count');
   }
 
@@ -229,18 +233,21 @@ class DatabaseService {
   Future<void> deleteVessel(String id) async {
     final db = await _databaseService.database;
     // await db.delete('vessels', where: 'id = ?', whereArgs: [id]);
-    await db.rawUpdate('''UPDATE vessels SET vesselStatus = ? WHERE id = ?''', [0,id]);
+    await db.rawUpdate(
+        '''UPDATE vessels SET vesselStatus = ? WHERE id = ?''', [0, id]);
   }
+
   //update the vessel isSync status
   Future<void> updateSyncStatus(String id) async {
     final db = await _databaseService.database;
-    await db.rawUpdate('''UPDATE vessels SET isSync = ? WHERE id = ?''', [1,id]);
+    await db
+        .rawUpdate('''UPDATE vessels SET isSync = ? WHERE id = ?''', [1, id]);
   }
+
   //update the vesselStatus in vessel table when its deleted
   Future<void> updateVesselStatus(String id) async {
     final db = await _databaseService.database;
-    await db.rawUpdate('''UPDATE vessels SET vesselStatus = ? WHERE id = ?''', [0,id]);
+    await db.rawUpdate(
+        '''UPDATE vessels SET vesselStatus = ? WHERE id = ?''', [0, id]);
   }
-
-
 }

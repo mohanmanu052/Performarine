@@ -145,12 +145,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
   }
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     // isEndTripButton?writeSensorDataToFile(getTripId):null;
     return Scaffold(
@@ -1218,6 +1212,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       // startSensorFunctionality(stateSetter);
                                     }
                                   }
+                                  onSave('', bottomSheetContext, true);
                                   // startTripService(stateSetter);
                                 })
                             : isEndTripButton
@@ -1269,7 +1264,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                       sharedPreferences!.remove('trip_data');
 
-                                      onSave(file, bottomSheetContext);
+                                      await _databaseService.updateTripStatus(
+                                          1, file.path, getTripId);
 
                                       // stateSetter(() {
                                       //   isEndTripButton = false;
@@ -1446,9 +1442,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isStartButton = false;
       isEndTripButton = true;
     });
-    timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
-      writeSensorDataToFile(getTripId);
-    });
+
+    Trip tripStatus = await _databaseService.getTrip(getTripId);
+
+    if (tripStatus.tripStatus == 0) {
+      timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+        writeSensorDataToFile(getTripId);
+      });
+    }
   }
 
   getTripIdFromPref() async {
@@ -1475,7 +1476,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
         fileName = '$fileIndex.csv';
 
-        print('FILE NAME: $fileName');
+        // print('FILE NAME: $fileName');
       });
       print('NEW FILE CREATED');
 
@@ -1503,7 +1504,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
       file.writeAsString('$finalString\n', mode: FileMode.append);
 
-      debugPrint('finalString ${finalString}');
+      //debugPrint('finalString ${finalString}');
     }
   }
 
@@ -1522,9 +1523,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
       double sizeInMB = sizeInKB / 1024;
 
       int finalSizeInMB = sizeInMB.toInt();
-      print('FILE SIZE: $sizeInMB');
-      print('FILE SIZE KB: $sizeInKB');
-      print('FINAL FILE SIZE: $finalSizeInMB');
+      // print('FILE SIZE: $sizeInMB');
+      // print('FILE SIZE KB: $sizeInKB');
+      //print('FINAL FILE SIZE: $finalSizeInMB');
       return sizeInKB.toInt();
     } else {
       return -1;
@@ -1577,7 +1578,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
     }
   }
 
-  Future<void> onSave(File file, BuildContext context) async {
+  Future<void> onSave(String file, BuildContext context,
+      bool savingDataWhileStartService) async {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
     LocationData? locationData =
@@ -1591,13 +1593,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
     String longitude = locationData.longitude!.toString();
 
     debugPrint("current lod:$currentLoad");
+    debugPrint("current PATH:$file");
 
     await _databaseService.insertTrip(Trip(
         id: getTripId,
         vesselId: widget.vessel!.id,
         vesselName: vesselName,
         currentLoad: currentLoad,
-        filePath: file.path,
+        filePath: file,
         isSync: 0,
         tripStatus: 0,
         createdAt: DateTime.now().toString(),
@@ -1606,9 +1609,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));
 
-    await _databaseService.updateTripStatus(1, getTripId);
-
-    isZipFileCreate ? null : Navigator.pop(context);
+    /*if (!savingDataWhileStartService) {
+      await _databaseService.updateTripStatus(1, getTripId, file);
+      isZipFileCreate ? null : Navigator.pop(context);
+    }*/
   }
 
   // @pragma('vm:entry-point')
