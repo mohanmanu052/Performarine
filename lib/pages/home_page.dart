@@ -113,23 +113,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  @override
-  void dispose() async {
-    bool isServiceRunning = await service.isRunning();
-
-    print('IS SERVICE RUNNING: $isServiceRunning');
-
-    try {
-      service.invoke('stopService');
-      service.invoke('stopBGService');
-      // instan.stopSelf();
-    } on Exception catch (e) {
-      print('SERVICE STOP BG EXE: $e');
-    }
-
-    super.dispose();
-  }
-
   showAlertDialog(
       BuildContext context, String tripId, vesselId, vesselName, vesselWeight) {
     // show the dialog
@@ -161,6 +144,9 @@ class _HomePageState extends State<HomePage> {
                 } on Exception catch (e) {
                   print('SERVICE STOP BG EXE: $e');
                 }
+
+                final appDirectory = await getApplicationDocumentsDirectory();
+                ourDirectory = Directory('${appDirectory.path}');
 
                 File? zipFile;
                 if (timer != null) timer!.cancel();

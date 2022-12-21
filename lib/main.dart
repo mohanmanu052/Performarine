@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
@@ -31,7 +32,11 @@ final StreamController<String?> selectNotificationStream =
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  initializeService();
+  // initializeService();
+  flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()!
+      .requestPermission();
   SharedPreferences.getInstance().then((value) {
     sharedPreferences = value;
     runApp(MyApp());
@@ -147,14 +152,19 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     }
   }
 
+  if (serviceInstance is AndroidServiceInstance) {
+    serviceInstance.on('setAsForeground').listen((event) {
+      serviceInstance.setAsForegroundService();
+    });
+
+    serviceInstance.on('setAsBackground').listen((event) {
+      serviceInstance.setAsBackgroundService();
+    });
+  }
+
   serviceInstance.on('stopService').listen((event) {
     serviceInstance.stopSelf();
     print('service stopped'.toUpperCase());
-  });
-
-  serviceInstance.on('stopBGService').listen((event) {
-    serviceInstance.stopSelf();
-    print('service stopped BG'.toUpperCase());
   });
 
   serviceInstance.on('location').listen((event) {
@@ -164,53 +174,57 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 
   // bring to foreground
   timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-    flutterLocalNotificationsPlugin.show(
-      notificationId,
-      'Performarine',
-      'Trip data collection in progress. Tap to stop.',
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          notificationChannelId,
-          'MY FOREGROUND SERVICE',
-          icon: '@drawable/logo',
-          ongoing: true,
-        ),
-      ),
-    );
+    if (serviceInstance is AndroidServiceInstance) {
+      if (await serviceInstance.isForegroundService()) {
+        flutterLocalNotificationsPlugin.show(
+          notificationId,
+          'Performarine',
+          'Trip data collection in progress. Tap to stop.',
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              notificationChannelId,
+              'MY FOREGROUND SERVICE',
+              icon: '@drawable/logo',
+              ongoing: true,
+            ),
+          ),
+        );
+      }
 
-    String filePath = await getFile();
-    File file = File(filePath);
-    int fileSize = await checkFileSize(file);
+      String filePath = await getFile();
+      File file = File(filePath);
+      int fileSize = await checkFileSize(file);
 
-    /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
-    if (fileSize >= 10) {
-      print('STOPPED WRITING');
-      print('CREATING NEW FILE');
-      // if (timer != null) timer.cancel();
-      // print('TIMER STOPPED');
-      fileIndex = fileIndex + 1;
-      fileName = '$fileIndex.csv';
-      // print('FILE NAME: $fileName');
-      //print('NEW FILE CREATED');
+      /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
+      if (fileSize >= 10) {
+        print('STOPPED WRITING');
+        print('CREATING NEW FILE');
+        // if (timer != null) timer.cancel();
+        // print('TIMER STOPPED');
+        fileIndex = fileIndex + 1;
+        fileName = '$fileIndex.csv';
+        // print('FILE NAME: $fileName');
+        //print('NEW FILE CREATED');
 
-      /// STOP WRITING & CREATE NEW FILE
-    } else {
-      print('WRITING');
-      String acc = convertDataToString('AAC', _accelerometerValues!);
-      String uacc = convertDataToString('UACC', _userAccelerometerValues!);
-      String gyro = convertDataToString('GYRO', _gyroscopeValues!);
-      String mag = convertDataToString('MAG', _magnetometerValues!);
-      String location = '$latitude $longitude';
-      String gps = convertLocationToString('GPS', location);
-      String finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
-      file.writeAsString('$finalString\n', mode: FileMode.append);
+        /// STOP WRITING & CREATE NEW FILE
+      } else {
+        print('WRITING');
+        String acc = convertDataToString('AAC', _accelerometerValues!);
+        String uacc = convertDataToString('UACC', _userAccelerometerValues!);
+        String gyro = convertDataToString('GYRO', _gyroscopeValues!);
+        String mag = convertDataToString('MAG', _magnetometerValues!);
+        String location = '$latitude $longitude';
+        String gps = convertLocationToString('GPS', location);
+        String finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
+        file.writeAsString('$finalString\n', mode: FileMode.append);
+      }
     }
   });
 }
 
 // this will be used for notification id, So you can update your custom notification with this id.
 const notificationId = 888;
-Future<void> initializeService() async {
+/*Future<void> initializeService() async {
   final service = FlutterBackgroundService();
   isStart = false;
   var status = await Permission.storage.status;
@@ -253,8 +267,8 @@ Future<void> initializeService() async {
       onForeground: (service) {},
     ),
   );
-  // service.startService();
-}
+   service.startService();
+}*/
 
 class MyApp extends StatelessWidget {
   @override

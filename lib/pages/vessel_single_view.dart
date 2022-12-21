@@ -8,6 +8,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 import 'package:lottie/lottie.dart';
@@ -25,6 +26,7 @@ import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/pages/new_screen.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/trip/trip_list_screen.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
@@ -144,292 +146,311 @@ class VesselSingleViewState extends State<VesselSingleView> {
     setState(() {});
   }
 
+  bool isBottomSheetOpened = false;
+
   @override
   Widget build(BuildContext context) {
     // isEndTripButton?writeSensorDataToFile(getTripId):null;
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          title: Text(
-            "${widget.vessel!.name}",
-            style: TextStyle(color: Colors.black),
-          ),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(Icons.arrow_back),
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black,
-          )),
-      body: Stack(
-        children: [
-          SizedBox(
-            height: displayHeight(context),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  // your widgets,
-                  // Container(height: 900,color: Colors.red,),
-                  ExpansionCard(
-                      scaffoldKey,
-                      widget.vessel,
-                      (value) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => VesselFormPage(
-                              vessel: widget.vessel,
-                            ),
-                            fullscreenDialog: true,
-                          ),
-                        );
-                      },
-                      (value) {},
-                      (value) {
-                        _onVesselDelete(value);
-                      },
-                      false),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Card(
-                    child: ExpansionTile(
-                      textColor: Colors.black,
-                      iconColor: Colors.black,
-                      title: Text(
-                        "Trip History:",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 0.0),
-                          child: TripViewListing(
-                              future:
-                                  _getTripsByID(widget.vessel!.id.toString())),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                ],
-              ),
+    return WillPopScope(
+      onWillPop: () async {
+        if (isBottomSheetOpened) {
+          // Navigator.pop(context);
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: Colors.white,
+            centerTitle: true,
+            title: Text(
+              "${widget.vessel!.name}",
+              style: TextStyle(color: Colors.black),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
-              child: CommonButtons.getActionButton(
-                  title: 'Start Trip',
-                  context: context,
-                  fontSize: displayWidth(context) * 0.042,
-                  textColor: Colors.white,
-                  buttonPrimaryColor: buttonBGColor,
-                  borderColor: buttonBGColor,
-                  width: displayWidth(context),
-                  onTap: () async {
-                    vessel!.add(widget.vessel!);
-                    await locationPermissions(widget.vessel!.vesselSize!,
-                        widget.vessel!.name!, widget.vessel!.id!);
-
-                    /*_streamSubscriptions.add(
-                      accelerometerEvents.listen(
-                        (AccelerometerEvent event) {
-                          if (mounted) {
-                            setState(() {
-                              _accelerometerValues = <double>[
-                                event.x,
-                                event.y,
-                                event.z
-                              ];
-                            });
-                          }
-                        },
-                      ),
-                    );
-                    _streamSubscriptions.add(
-                      gyroscopeEvents.listen(
-                        (GyroscopeEvent event) {
-                          if (mounted) {
-                            setState(() {
-                              _gyroscopeValues = <double>[
-                                event.x,
-                                event.y,
-                                event.z
-                              ];
-                            });
-                          }
-                        },
-                      ),
-                    );
-                    _streamSubscriptions.add(
-                      userAccelerometerEvents.listen(
-                        (UserAccelerometerEvent event) {
-                          if (mounted) {
-                            setState(() {
-                              _userAccelerometerValues = <double>[
-                                event.x,
-                                event.y,
-                                event.z
-                              ];
-                            });
-                          }
-                        },
-                      ),
-                    );
-                    _streamSubscriptions.add(
-                      magnetometerEvents.listen(
-                        (MagnetometerEvent event) {
-                          if (mounted) {
-                            setState(() {
-                              _magnetometerValues = <double>[
-                                event.x,
-                                event.y,
-                                event.z
-                              ];
-                            });
-                          }
-                        },
-                      ),
-                    );*/
-                  }),
-            ),
-          )
-        ],
-      ),
-      // SingleChildScrollView(
-      //   child: Column(
-      //     // physics: const BouncingScrollPhysics(),
-      //     children: <Widget>[
-      //       ExpansionCard(
-      //           widget.vessel, (value) {}, (value) {}, (value) {}, false),
-
-      //       Container(
-      //         height: 200,
-      //         width: MediaQuery.of(context).size.width,
-      //         child: TripBuilder(
-      //           future: _getTripsByID(widget.vessel!.id.toString()),
-      //         ),
-      //       ),
-      //
-      //
-      //     ],
-      //   ),
-      // ),
-      /*bottomNavigationBar: Container(
-        margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
-        child: CommonButtons.getActionButton(
-            title: 'Start Trip',
-            context: context,
-            fontSize: displayWidth(context) * 0.042,
-            textColor: Colors.white,
-            buttonPrimaryColor: buttonBGColor,
-            borderColor: buttonBGColor,
-            width: displayWidth(context),
-            onTap: () async {
-              vessel!.add(widget.vessel!);
-
-              // print(vessel[0].vesselName);
-              */ /*Navigator.of(context).push(
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.arrow_back),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            )),
+        body: Stack(
+          children: [
+            SizedBox(
+              height: displayHeight(context),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    // your widgets,
+                    // Container(height: 900,color: Colors.red,),
+                    ExpansionCard(
+                        scaffoldKey,
+                        widget.vessel,
+                        (value) {
+                          Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) =>
-                                  StartTrip(vessels: vessel, context: context),
+                              builder: (_) => VesselFormPage(
+                                vessel: widget.vessel,
+                              ),
                               fullscreenDialog: true,
                             ),
-                          );*/ /*
+                          );
+                        },
+                        (value) {},
+                        (value) {
+                          _onVesselDelete(value);
+                        },
+                        false),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Card(
+                      child: ExpansionTile(
+                        textColor: Colors.black,
+                        iconColor: Colors.black,
+                        title: Text(
+                          "Trip History:",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 0.0),
+                            child: TripViewListing(
+                                future: _getTripsByID(
+                                    widget.vessel!.id.toString())),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              left: 0,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
+                child: CommonButtons.getActionButton(
+                    title: 'Start Trip',
+                    context: context,
+                    fontSize: displayWidth(context) * 0.042,
+                    textColor: Colors.white,
+                    buttonPrimaryColor: buttonBGColor,
+                    borderColor: buttonBGColor,
+                    width: displayWidth(context),
+                    onTap: () async {
+                      /* Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => NewScreen(),
+                      ));*/
 
-              //ToDo: @rupali: enable the start trip by adding the below code.and add the expansion tile like vessel card for trip history also.
-              // locationPermissions(widget.vesselSize!, widget.vesselName!,
-              //     widget.vesselId!);
+                      /// Working Code
+                      vessel!.add(widget.vessel!);
+                      await locationPermissions(widget.vessel!.vesselSize!,
+                          widget.vessel!.name!, widget.vessel!.id!);
 
-              */ /*Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => TripListScreen(
-                    vesselId: widget.vessel!.id,
-                    vesselName: widget.vessel!.name,
-                    vesselSize: widget.vessel!.vesselSize,
+                      /// ###
+
+                      /*_streamSubscriptions.add(
+                        accelerometerEvents.listen(
+                          (AccelerometerEvent event) {
+                            if (mounted) {
+                              setState(() {
+                                _accelerometerValues = <double>[
+                                  event.x,
+                                  event.y,
+                                  event.z
+                                ];
+                              });
+                            }
+                          },
+                        ),
+                      );
+                      _streamSubscriptions.add(
+                        gyroscopeEvents.listen(
+                          (GyroscopeEvent event) {
+                            if (mounted) {
+                              setState(() {
+                                _gyroscopeValues = <double>[
+                                  event.x,
+                                  event.y,
+                                  event.z
+                                ];
+                              });
+                            }
+                          },
+                        ),
+                      );
+                      _streamSubscriptions.add(
+                        userAccelerometerEvents.listen(
+                          (UserAccelerometerEvent event) {
+                            if (mounted) {
+                              setState(() {
+                                _userAccelerometerValues = <double>[
+                                  event.x,
+                                  event.y,
+                                  event.z
+                                ];
+                              });
+                            }
+                          },
+                        ),
+                      );
+                      _streamSubscriptions.add(
+                        magnetometerEvents.listen(
+                          (MagnetometerEvent event) {
+                            if (mounted) {
+                              setState(() {
+                                _magnetometerValues = <double>[
+                                  event.x,
+                                  event.y,
+                                  event.z
+                                ];
+                              });
+                            }
+                          },
+                        ),
+                      );*/
+                    }),
+              ),
+            )
+          ],
+        ),
+        // SingleChildScrollView(
+        //   child: Column(
+        //     // physics: const BouncingScrollPhysics(),
+        //     children: <Widget>[
+        //       ExpansionCard(
+        //           widget.vessel, (value) {}, (value) {}, (value) {}, false),
+
+        //       Container(
+        //         height: 200,
+        //         width: MediaQuery.of(context).size.width,
+        //         child: TripBuilder(
+        //           future: _getTripsByID(widget.vessel!.id.toString()),
+        //         ),
+        //       ),
+        //
+        //
+        //     ],
+        //   ),
+        // ),
+        /*bottomNavigationBar: Container(
+          margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
+          child: CommonButtons.getActionButton(
+              title: 'Start Trip',
+              context: context,
+              fontSize: displayWidth(context) * 0.042,
+              textColor: Colors.white,
+              buttonPrimaryColor: buttonBGColor,
+              borderColor: buttonBGColor,
+              width: displayWidth(context),
+              onTap: () async {
+                vessel!.add(widget.vessel!);
+
+                // print(vessel[0].vesselName);
+                */ /*Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    StartTrip(vessels: vessel, context: context),
+                                fullscreenDialog: true,
+                              ),
+                            );*/ /*
+
+                //ToDo: @rupali: enable the start trip by adding the below code.and add the expansion tile like vessel card for trip history also.
+                // locationPermissions(widget.vesselSize!, widget.vesselName!,
+                //     widget.vesselId!);
+
+                */ /*Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => TripListScreen(
+                      vesselId: widget.vessel!.id,
+                      vesselName: widget.vessel!.name,
+                      vesselSize: widget.vessel!.vesselSize,
+                    ),
+                    fullscreenDialog: true,
                   ),
-                  fullscreenDialog: true,
-                ),
-              );*/ /*
+                );*/ /*
 
-              locationPermissions(widget.vessel!.vesselSize!,
-                  widget.vessel!.name!, widget.vessel!.id!);
-              // getLocationData();
+                locationPermissions(widget.vessel!.vesselSize!,
+                    widget.vessel!.name!, widget.vessel!.id!);
+                // getLocationData();
 
-              // getBottomSheet(
-              //   context,
-              //   size,
-              //   widget.vesselName!,
-              //   widget.vesselId!,
-              // );
-              _streamSubscriptions.add(
-                accelerometerEvents.listen(
-                  (AccelerometerEvent event) {
-                    setState(() {
-                      _accelerometerValues = <double>[
-                        event.x,
-                        event.y,
-                        event.z
-                      ];
-                    });
-                  },
-                ),
-              );
-              _streamSubscriptions.add(
-                gyroscopeEvents.listen(
-                  (GyroscopeEvent event) {
-                    setState(() {
-                      _gyroscopeValues = <double>[event.x, event.y, event.z];
-                    });
-                  },
-                ),
-              );
-              _streamSubscriptions.add(
-                userAccelerometerEvents.listen(
-                  (UserAccelerometerEvent event) {
-                    setState(() {
-                      _userAccelerometerValues = <double>[
-                        event.x,
-                        event.y,
-                        event.z
-                      ];
-                    });
-                  },
-                ),
-              );
-              _streamSubscriptions.add(
-                magnetometerEvents.listen(
-                  (MagnetometerEvent event) {
-                    setState(() {
-                      _magnetometerValues = <double>[event.x, event.y, event.z];
-                    });
-                  },
-                ),
-              );
-            }),
-      ),*/
+                // getBottomSheet(
+                //   context,
+                //   size,
+                //   widget.vesselName!,
+                //   widget.vesselId!,
+                // );
+                _streamSubscriptions.add(
+                  accelerometerEvents.listen(
+                    (AccelerometerEvent event) {
+                      setState(() {
+                        _accelerometerValues = <double>[
+                          event.x,
+                          event.y,
+                          event.z
+                        ];
+                      });
+                    },
+                  ),
+                );
+                _streamSubscriptions.add(
+                  gyroscopeEvents.listen(
+                    (GyroscopeEvent event) {
+                      setState(() {
+                        _gyroscopeValues = <double>[event.x, event.y, event.z];
+                      });
+                    },
+                  ),
+                );
+                _streamSubscriptions.add(
+                  userAccelerometerEvents.listen(
+                    (UserAccelerometerEvent event) {
+                      setState(() {
+                        _userAccelerometerValues = <double>[
+                          event.x,
+                          event.y,
+                          event.z
+                        ];
+                      });
+                    },
+                  ),
+                );
+                _streamSubscriptions.add(
+                  magnetometerEvents.listen(
+                    (MagnetometerEvent event) {
+                      setState(() {
+                        _magnetometerValues = <double>[event.x, event.y, event.z];
+                      });
+                    },
+                  ),
+                );
+              }),
+        ),*/
+      ),
     );
   }
 
   locationPermissions(int size, String vesselName, String weight) async {
     if (Platform.isAndroid) {
-      bool isLocationPermitted = await Permission.location.isGranted;
+      bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
         getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
-        bool isLocationPermitted = await Permission.location.isGranted;
+        bool isLocationPermitted = await Permission.locationAlways.isGranted;
         getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       }
     }
@@ -441,9 +462,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
     isEndTripButton = false;
     isSensorDataUploaded = false;
     isZipFileCreate = false;
+    isBottomSheetOpened = true;
 
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}');
+
+    initializeService();
 
     scaffoldKey.currentState!.showBottomSheet(
       (context) {
@@ -609,7 +633,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     TweenAnimationBuilder(
-                                      duration: const Duration(seconds: 5),
+                                      duration: const Duration(seconds: 2),
                                       tween: Tween(
                                           begin: progressBegin, end: progress),
                                       builder: (context, double value, _) {
@@ -1132,10 +1156,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   }
 
                                   bool isLocationPermitted =
-                                      await Permission.location.isGranted;
+                                      await Permission.locationAlways.isGranted;
 
                                   if (isLocationPermitted) {
-                                    service.startService();
+                                    /*service.startService();
+
+                                    service.invoke("setAsForeground");
 
                                     getTripId = uuid.v1();
 
@@ -1152,7 +1178,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           'long': locationData.longitude,
                                         });
                                       });
-                                    });
+                                    });*/
 
                                     stateSetter(() {
                                       isStartButton = false;
@@ -1169,11 +1195,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   } else {
                                     await Utils.getLocationPermission(
                                         context, scaffoldKey);
-                                    bool isLocationPermitted =
-                                        await Permission.location.isGranted;
+                                    bool isLocationPermitted = await Permission
+                                        .locationAlways.isGranted;
 
                                     if (isLocationPermitted) {
-                                      service.startService();
+                                      /* service.startService();
+                                      service.invoke("setAsForeground");
 
                                       getTripId = uuid.v1();
 
@@ -1190,7 +1217,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             'long': locationData.longitude,
                                           });
                                         });
-                                      });
+                                      });*/
 
                                       stateSetter(() {
                                         isStartButton = false;
@@ -1370,6 +1397,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       shape: BoxShape.circle, color: backgroundColor),
                   child: IconButton(
                       onPressed: () {
+                        isBottomSheetOpened = false;
                         if (isSensorDataUploaded) {
                           Get.back();
                           //setState(() {
@@ -1623,7 +1651,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   }
 
   startTripService(StateSetter stateSetter) async {
-    bool isLocationPermitted = await Permission.location.isGranted;
+    bool isLocationPermitted = await Permission.locationAlways.isGranted;
 
     if (isLocationPermitted) {
       /// TODO Further Process
@@ -1633,7 +1661,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       startSensorFunctionality(stateSetter);
     } else {
       await Utils.getLocationPermission(context, scaffoldKey);
-      bool isLocationPermitted = await Permission.location.isGranted;
+      bool isLocationPermitted = await Permission.locationAlways.isGranted;
 
       if (isLocationPermitted) {
         /// TODO Further Process
@@ -1643,5 +1671,61 @@ class VesselSingleViewState extends State<VesselSingleView> {
         startSensorFunctionality(stateSetter);
       }
     }
+  }
+
+  Future<void> initializeService() async {
+    isStart = false;
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+    final appDirectory = await getApplicationDocumentsDirectory();
+    ourDirectory = Directory('${appDirectory.path}');
+
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      notificationChannelId,
+      'MY FOREGROUND SERVICE',
+      description:
+          'This channel is used for important notifications.', // description
+      importance: Importance.low, // importance must be at low or higher level
+    );
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    await service.configure(
+      androidConfiguration: AndroidConfiguration(
+        initialNotificationTitle: 'Performarine',
+        onStart: onStart,
+        autoStart: true,
+        isForegroundMode: true,
+        notificationChannelId: notificationChannelId,
+        initialNotificationContent: 'Trip Data Collection in progress...',
+        foregroundServiceNotificationId: notificationId,
+      ),
+      iosConfiguration: IosConfiguration(
+        autoStart: true,
+        onForeground: (service) {},
+      ),
+    );
+    service.startService();
+
+    service.invoke("setAsForeground");
+
+    getTripId = uuid.v1();
+
+    service.invoke('tripId', {'tripId': getTripId});
+
+    Future.delayed(Duration(seconds: 2), () {
+      Timer.periodic(Duration(seconds: 1), (timer) async {
+        LocationData? locationData = await Utils.getCurrentLocation();
+        service.invoke('location', {
+          'lat': locationData!.latitude,
+          'long': locationData.longitude,
+        });
+      });
+    });
   }
 }
