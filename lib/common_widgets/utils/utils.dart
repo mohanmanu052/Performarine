@@ -201,7 +201,7 @@ class Utils {
     loc.LocationData? locationData;
 
     try {
-      if (await Permission.locationAlways.request().isGranted) {
+      if (await Permission.location.request().isGranted) {
         // if (ModalRoute.of(context)?.isCurrent != null) {
         //   if (ModalRoute.of(context)?.isCurrent != true) {
         //     // debugPrint("im in the loop:$locationData");
@@ -212,7 +212,7 @@ class Utils {
         isPermissionGranted = true;
         locationData = await Utils.getCurrentLocation();
         debugPrint("im in the loop assigned getCurrentLocation:$locationData");
-      } else if (await Permission.locationAlways
+      } else if (await Permission.location
           .request()
           .isPermanentlyDenied) {
         isPermissionGranted = false;
@@ -225,7 +225,7 @@ class Utils {
             () {
           // OpenFile.open(directoryPath);
         });
-      } else if (await Permission.locationAlways.request().isDenied) {
+      } else if (await Permission.location.request().isDenied) {
         // print('D');
         isPermissionGranted = false;
         Utils.showActionSnackBar(scaffoldKey,
@@ -263,15 +263,15 @@ class Utils {
       BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) async {
     bool isPermissionGranted = false;
     try {
-      if (await Permission.locationAlways.request().isGranted) {
+      if (await Permission.location.request().isGranted) {
         isPermissionGranted = true;
         // isPermissionGranted = await openAppSettings();
-      } else if (await Permission.locationAlways
+      } else if (await Permission.location
           .request()
           .isPermanentlyDenied) {
         isPermissionGranted = false;
         isPermissionGranted = await openAppSettings();
-      } else if (await Permission.locationAlways.request().isDenied) {
+      } else if (await Permission.location.request().isDenied) {
         isPermissionGranted = false;
       }
     } catch (e) {
@@ -324,7 +324,7 @@ class Utils {
             });*/
 
         isPermissionGranted = await openAppSettings();
-      } else if (await Permission.locationAlways.request().isDenied) {
+      } else if (await Permission.location.request().isDenied) {
         print('D');
         isPermissionGranted = false;
         //getStoragePermission(context, scaffoldKey);

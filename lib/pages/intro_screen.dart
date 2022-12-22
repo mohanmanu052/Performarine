@@ -170,6 +170,7 @@ class _IntroScreenState extends State<IntroScreen> {
     var pref = await Utils.initSharedPreferences();
 
     bool? isUserLoggedIn = pref.getBool('isUserLoggedIn');
+    bool? isTripStarted = pref.getBool('trip_started');
 
     debugPrint('ISUSERLOGEDIN $isUserLoggedIn');
 
@@ -181,7 +182,25 @@ class _IntroScreenState extends State<IntroScreen> {
     var service = FlutterBackgroundService();
     bool isServiceRunning = await service.isRunning();
 
-    if (isServiceRunning) {
+    if (isTripStarted == null) {
+      if (isUserLoggedIn == null) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const LetsGetStartedScreen()),
+            ModalRoute.withName(""));
+      } else if (isUserLoggedIn) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+            ModalRoute.withName(""));
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const SignInScreen()),
+            ModalRoute.withName(""));
+      }
+    } else if (isTripStarted) {
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
       Navigator.pushAndRemoveUntil(

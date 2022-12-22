@@ -445,12 +445,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   locationPermissions(int size, String vesselName, String weight) async {
     if (Platform.isAndroid) {
-      bool isLocationPermitted = await Permission.locationAlways.isGranted;
+      bool isLocationPermitted = await Permission.location.isGranted;
       if (isLocationPermitted) {
         getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
-        bool isLocationPermitted = await Permission.locationAlways.isGranted;
+        bool isLocationPermitted = await Permission.location.isGranted;
         getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       }
     }
@@ -467,7 +467,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}');
 
-    initializeService();
+    // initializeService();
 
     scaffoldKey.currentState!.showBottomSheet(
       (context) {
@@ -1145,21 +1145,30 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 onTap: () async {
                                   debugPrint(
                                       'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                  if (selectedVesselWeight == null &&
-                                      selectedVesselWeight.isEmpty) {
+                                  if (selectedVesselWeight ==
+                                      'Select Current Load') {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                       content: Text("Please select weight"),
                                       duration: Duration(seconds: 1),
                                     ));
-                                    return null;
+                                    return;
                                   }
 
                                   bool isLocationPermitted =
-                                      await Permission.locationAlways.isGranted;
+                                      await Permission.location.isGranted;
 
                                   if (isLocationPermitted) {
-                                    /*service.startService();
+                                    // service.startService();
+
+                                    bool isServiceRunning =
+                                        await service.isRunning();
+
+                                    if (!isServiceRunning) {
+                                      service.startService();
+                                    }
+
+                                    service.invoke("onStart");
 
                                     service.invoke("setAsForeground");
 
@@ -1178,13 +1187,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           'long': locationData.longitude,
                                         });
                                       });
-                                    });*/
+                                    });
 
                                     stateSetter(() {
                                       isStartButton = false;
                                       isEndTripButton = true;
                                     });
 
+                                    sharedPreferences!
+                                        .setBool('trip_started', true);
                                     sharedPreferences!.setStringList(
                                         'trip_data', [
                                       getTripId,
@@ -1195,11 +1206,20 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   } else {
                                     await Utils.getLocationPermission(
                                         context, scaffoldKey);
-                                    bool isLocationPermitted = await Permission
-                                        .locationAlways.isGranted;
+                                    bool isLocationPermitted =
+                                        await Permission.location.isGranted;
 
                                     if (isLocationPermitted) {
-                                      /* service.startService();
+                                      // service.startService();
+
+                                      bool isServiceRunning =
+                                          await service.isRunning();
+                                      if (!isServiceRunning) {
+                                        service.startService();
+                                      }
+
+                                      service.invoke("onStart");
+
                                       service.invoke("setAsForeground");
 
                                       getTripId = uuid.v1();
@@ -1217,13 +1237,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             'long': locationData.longitude,
                                           });
                                         });
-                                      });*/
+                                      });
 
                                       stateSetter(() {
                                         isStartButton = false;
                                         isEndTripButton = true;
                                       });
 
+                                      sharedPreferences!
+                                          .setBool('trip_started', true);
                                       sharedPreferences!.setStringList(
                                           'trip_data', [
                                         getTripId,
@@ -1290,6 +1312,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       print('FINAL PATH: ${file.path}');
 
                                       sharedPreferences!.remove('trip_data');
+                                      sharedPreferences!.remove('trip_started');
 
                                       await _databaseService.updateTripStatus(
                                           1, file.path, getTripId);
@@ -1457,9 +1480,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
   }
 
   startSensorFunctionality(StateSetter stateSetter) async {
-    setState(() {
+    /*setState(() {
       getTripId = uuid.v1();
-    });
+    });*/
     //onSave();
     fileName = '$fileIndex.csv';
     // String? tripId;
@@ -1581,6 +1604,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     ourDirectory = Directory('${appDirectory.path}/$tripId');
 
     debugPrint('FOLDER PATHH $ourDirectory');
+    debugPrint('FOLDER PATHH TRIP ID $tripId');
     /* var status = await Permission.storage.status;
     if (!status.isGranted) {
       var stat = await Permission.storage.request();
@@ -1623,6 +1647,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
     debugPrint("current lod:$currentLoad");
     debugPrint("current PATH:$file");
 
+    /*setState(() {
+      getTripId = uuid.v1();
+    });*/
+
+    debugPrint("ON SAVE FIRST INSERT :$getTripId");
+
     await _databaseService.insertTrip(Trip(
         id: getTripId,
         vesselId: widget.vessel!.id,
@@ -1651,7 +1681,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   }
 
   startTripService(StateSetter stateSetter) async {
-    bool isLocationPermitted = await Permission.locationAlways.isGranted;
+    bool isLocationPermitted = await Permission.location.isGranted;
 
     if (isLocationPermitted) {
       /// TODO Further Process
@@ -1661,7 +1691,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       startSensorFunctionality(stateSetter);
     } else {
       await Utils.getLocationPermission(context, scaffoldKey);
-      bool isLocationPermitted = await Permission.locationAlways.isGranted;
+      bool isLocationPermitted = await Permission.location.isGranted;
 
       if (isLocationPermitted) {
         /// TODO Further Process
@@ -1671,61 +1701,5 @@ class VesselSingleViewState extends State<VesselSingleView> {
         startSensorFunctionality(stateSetter);
       }
     }
-  }
-
-  Future<void> initializeService() async {
-    isStart = false;
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
-    }
-    final appDirectory = await getApplicationDocumentsDirectory();
-    ourDirectory = Directory('${appDirectory.path}');
-
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      notificationChannelId,
-      'MY FOREGROUND SERVICE',
-      description:
-          'This channel is used for important notifications.', // description
-      importance: Importance.low, // importance must be at low or higher level
-    );
-
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
-
-    await service.configure(
-      androidConfiguration: AndroidConfiguration(
-        initialNotificationTitle: 'Performarine',
-        onStart: onStart,
-        autoStart: true,
-        isForegroundMode: true,
-        notificationChannelId: notificationChannelId,
-        initialNotificationContent: 'Trip Data Collection in progress...',
-        foregroundServiceNotificationId: notificationId,
-      ),
-      iosConfiguration: IosConfiguration(
-        autoStart: true,
-        onForeground: (service) {},
-      ),
-    );
-    service.startService();
-
-    service.invoke("setAsForeground");
-
-    getTripId = uuid.v1();
-
-    service.invoke('tripId', {'tripId': getTripId});
-
-    Future.delayed(Duration(seconds: 2), () {
-      Timer.periodic(Duration(seconds: 1), (timer) async {
-        LocationData? locationData = await Utils.getCurrentLocation();
-        service.invoke('location', {
-          'lat': locationData!.latitude,
-          'long': locationData.longitude,
-        });
-      });
-    });
   }
 }

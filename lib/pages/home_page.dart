@@ -41,7 +41,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
-  FlutterBackgroundService service = FlutterBackgroundService();
 
   late CommonProvider commonProvider;
   List<Trip> trips = [];
@@ -133,6 +132,7 @@ class _HomePageState extends State<HomePage> {
               child: Text("End"),
               onPressed: () async {
                 // ServiceInstance instan = Get.find(tag: 'serviceInstance');
+                FlutterBackgroundService service = FlutterBackgroundService();
 
                 bool isServiceRunning = await service.isRunning();
 
@@ -169,6 +169,7 @@ class _HomePageState extends State<HomePage> {
                 print('FINAL PATH: ${file.path}');
 
                 sharedPreferences!.remove('trip_data');
+                sharedPreferences!.remove('trip_started');
 
                 // service.invoke('stopService');
 
