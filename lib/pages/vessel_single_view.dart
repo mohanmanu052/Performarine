@@ -443,7 +443,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     );
   }
 
-  locationPermissions(int size, String vesselName, String weight) async {
+  locationPermissions(dynamic size, String vesselName, String weight) async {
     if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.location.isGranted;
       if (isLocationPermitted) {
@@ -456,7 +456,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     }
   }
 
-  getBottomSheet(BuildContext context, int size, String vesselName,
+  getBottomSheet(BuildContext context, dynamic size, String vesselName,
       String weight, bool isLocationPermission) async {
     isStartButton = false;
     isEndTripButton = false;
