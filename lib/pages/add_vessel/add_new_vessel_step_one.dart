@@ -37,6 +37,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
   late GlobalKey<ScaffoldState> scaffoldKey;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final FocusScopeNode node = FocusScopeNode();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController modelController = TextEditingController();
@@ -234,7 +235,13 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       textCapitalization: TextCapitalization.words,
                       maxLength: 10,
                       prefixIcon: null,
-                      requestFocusNode: null,
+                      requestFocusNode: selectedEngineType == 'Hybrid' ||
+                              selectedEngineType == 'Combustion'
+                          ? fuelCapacityFocusNode
+                          : selectedEngineType == 'Hybrid' ||
+                                  selectedEngineType == 'Electric'
+                              ? batteryCapacityFocusNode
+                              : weightFocusNode,
                       obscureText: false,
                       onTap: () {},
                       onChanged: (String value) {},
@@ -257,7 +264,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       hintText: 'Engine Type*',
                       labelText: '',
                       onChanged: (String value) {
-                        formKey.currentState!.validate();
+                        // formKey.currentState!.validate();
 
                         setState(() {
                           selectedEngineType = value;
@@ -271,6 +278,20 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                         } else {
                           setState(() {
                             isBatteryCapacityEnable = false;
+                          });
+                        }
+
+                        if (selectedEngineType!.toLowerCase() == 'hybrid' ||
+                            selectedEngineType!.toLowerCase() == 'combustion') {
+                          setState(() {
+                            FocusScope.of(context)
+                                .requestFocus(fuelCapacityFocusNode);
+                          });
+                        } else if (selectedEngineType!.toLowerCase() ==
+                            'electric') {
+                          setState(() {
+                            FocusScope.of(context)
+                                .requestFocus(batteryCapacityFocusNode);
                           });
                         }
                       },
@@ -304,7 +325,9 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 textCapitalization: TextCapitalization.words,
                                 maxLength: 6,
                                 prefixIcon: null,
-                                requestFocusNode: weightFocusNode,
+                                requestFocusNode: selectedEngineType == 'Hybrid'
+                                    ? batteryCapacityFocusNode
+                                    : weightFocusNode,
                                 obscureText: false,
                                 onTap: () {},
                                 onChanged: (String value) {},

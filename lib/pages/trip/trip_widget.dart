@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:location/location.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/date_formatter.dart';
@@ -15,6 +16,7 @@ import 'package:performarine/models/trip.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../common_widgets/widgets/status_tage.dart';
 
@@ -22,15 +24,17 @@ class TripWidget extends StatefulWidget {
   //final Color? statusColor;
   //final String? status;
   //final String? vesselName;
+  final VoidCallback? onTap;
   final Trip? tripList;
 
-  const TripWidget({
-    super.key,
-    //this.statusColor,
-    //this.status,
-    this.tripList,
-    //this.vesselName
-  });
+  const TripWidget(
+      {super.key,
+      //this.statusColor,
+      //this.status,
+      this.tripList,
+      this.onTap
+      //this.vesselName
+      });
 
   @override
   State<TripWidget> createState() => _TripWidgetState();
@@ -251,7 +255,83 @@ class _TripWidgetState extends State<TripWidget> {
                                               ),
                                               fontSize:
                                                   displayWidth(context) * 0.026,
-                                              onTap: () {},
+                                              onTap: () async {
+                                                var isStoragePermitted =
+                                                    await Permission
+                                                        .storage.status;
+                                                if (isStoragePermitted
+                                                    .isGranted) {
+                                                  //File copiedFile = File('${ourDirectory!.path}.zip');
+                                                  File copiedFile = File(
+                                                      '${ourDirectory!.path}/${widget.tripList?.id}.zip');
+
+                                                  print(
+                                                      'DIR PATH R ${ourDirectory!.path}');
+
+                                                  Directory directory;
+
+                                                  if (Platform.isAndroid) {
+                                                    directory = Directory(
+                                                        "storage/emulated/0/Download/${widget.tripList?.id}.zip");
+                                                  } else {
+                                                    directory =
+                                                        await getApplicationDocumentsDirectory();
+                                                  }
+
+                                                  copiedFile
+                                                      .copy(directory.path);
+
+                                                  print(
+                                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                                  if (copiedFile.existsSync()) {
+                                                    Utils.showSnackBar(context,
+                                                        scaffoldKey:
+                                                            scaffoldKey,
+                                                        message:
+                                                            'File downloaded successfully');
+                                                  }
+                                                } else {
+                                                  await Utils
+                                                      .getStoragePermission(
+                                                          context);
+                                                  var isStoragePermitted =
+                                                      await Permission
+                                                          .storage.status;
+
+                                                  if (isStoragePermitted
+                                                      .isGranted) {
+                                                    File copiedFile = File(
+                                                        '${ourDirectory!.path}.zip');
+
+                                                    Directory directory;
+
+                                                    if (Platform.isAndroid) {
+                                                      directory = Directory(
+                                                          "storage/emulated/0/Download/${widget.tripList?.id}.zip");
+                                                    } else {
+                                                      directory =
+                                                          await getApplicationDocumentsDirectory();
+                                                    }
+
+                                                    copiedFile
+                                                        .copy(directory.path);
+
+                                                    print(
+                                                        'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                                    if (copiedFile
+                                                        .existsSync()) {
+                                                      Utils.showSnackBar(
+                                                          context,
+                                                          scaffoldKey:
+                                                              scaffoldKey,
+                                                          message:
+                                                              'File downloaded successfully');
+                                                    }
+                                                  }
+                                                }
+                                              },
                                               context: context,
                                               width:
                                                   displayWidth(context) * 0.38,
@@ -267,46 +347,7 @@ class _TripWidgetState extends State<TripWidget> {
                                   borderColor: buttonBGColor.withOpacity(.7),
                                   fontSize: displayWidth(context) * 0.03,
                                   onTap: () async {
-                                    bool isServiceRunning =
-                                        await service.isRunning();
-
-                                    print(
-                                        'IS SERVICE RUNNING: $isServiceRunning');
-
-                                    try {
-                                      service.invoke('stopService');
-                                      // instan.stopSelf();
-                                    } on Exception catch (e) {
-                                      print('SERVICE STOP BG EXE: $e');
-                                    }
-
-                                    File? zipFile;
-                                    if (timer != null) timer!.cancel();
-                                    print(
-                                        'TIMER STOPPED ${ourDirectory!.path}/${widget.tripList!.id}');
-                                    final dataDir = Directory(
-                                        '${ourDirectory!.path}/${widget.tripList!.id}');
-
-                                    try {
-                                      zipFile = File(
-                                          '${ourDirectory!.path}/${widget.tripList!.id}.zip');
-
-                                      ZipFile.createFromDirectory(
-                                          sourceDir: dataDir,
-                                          zipFile: zipFile,
-                                          recurseSubDirs: true);
-                                      print('our path is $dataDir');
-                                    } catch (e) {
-                                      print(e);
-                                    }
-
-                                    File file = File(zipFile!.path);
-                                    print('FINAL PATH: ${file.path}');
-
-                                    await _databaseService.updateTripStatus(
-                                        1, file.path, widget.tripList!.id!);
-
-                                    sharedPreferences!.remove('trip_data');
+                                    widget.onTap!.call();
 
                                     // service.invoke('stopService');
 

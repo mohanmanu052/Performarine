@@ -335,7 +335,7 @@ class _HomePageState extends State<HomePage> {
               onDelete: _onVesselDelete,
             ),
             SingleChildScrollView(
-              child: TripViewListing(future: _getTrips()),
+              child: TripViewListing(/*future: _getTrips()*/),
               // TripBuilder(
               //   future: _gettrips(),
               // ),

@@ -234,10 +234,7 @@ const notificationId = 888;
 Future<void> initializeService() async {
   final service = FlutterBackgroundService();
   isStart = false;
-  var status = await Permission.storage.status;
-  if (!status.isGranted) {
-    await Permission.storage.request();
-  }
+
   final appDirectory = await getApplicationDocumentsDirectory();
   ourDirectory = Directory('${appDirectory.path}');
 

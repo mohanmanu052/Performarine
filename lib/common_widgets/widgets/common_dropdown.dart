@@ -40,7 +40,7 @@ class CommonDropDownFormField extends FormField<dynamic> {
     this.textColor,
   }) : super(
           onSaved: onSaved,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          //autovalidateMode: AutovalidateMode.onUserInteraction,
           initialValue: value == '' ? null : value,
           builder: (FormFieldState<dynamic> state) {
             return Container(

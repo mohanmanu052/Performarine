@@ -577,52 +577,75 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   ),
                                   CommonButtons.getDottedButton(
                                       "Download Trip Data", context, () async {
-                                    File copiedFile =
-                                        File('${ourDirectory!.path}.zip');
+                                    final androidInfo =
+                                        await DeviceInfoPlugin().androidInfo;
 
-                                    Directory directory;
+                                    var isStoragePermitted =
+                                        androidInfo.version.sdkInt > 32
+                                            ? await Permission.photos.status
+                                            : await Permission.storage.status;
+                                    if (isStoragePermitted.isGranted) {
+                                      //File copiedFile = File('${ourDirectory!.path}.zip');
+                                      File copiedFile = File(
+                                          '${ourDirectory!.path}/$getTripId.zip');
 
-                                    if (Platform.isAndroid) {
-                                      directory = Directory(
-                                          "storage/emulated/0/Download/$getTripId.zip");
+                                      print('DIR PATH R ${ourDirectory!.path}');
+
+                                      Directory directory;
+
+                                      if (Platform.isAndroid) {
+                                        directory = Directory(
+                                            "storage/emulated/0/Download/$getTripId.zip");
+                                      } else {
+                                        directory =
+                                            await getApplicationDocumentsDirectory();
+                                      }
+
+                                      copiedFile.copy(directory.path);
+
+                                      print(
+                                          'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                      if (copiedFile.existsSync()) {
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message:
+                                                'File downloaded successfully');
+                                      }
                                     } else {
-                                      directory =
-                                          await getApplicationDocumentsDirectory();
-                                    }
+                                      await Utils.getStoragePermission(context);
+                                      var isStoragePermitted =
+                                          await Permission.storage.status;
 
-                                    copiedFile.copy(directory.path);
+                                      if (isStoragePermitted.isGranted) {
+                                        File copiedFile =
+                                            File('${ourDirectory!.path}.zip');
 
-                                    print(
-                                        'DOES FILE EXIST: ${copiedFile.existsSync()}');
+                                        Directory directory;
 
-                                    if (copiedFile.existsSync()) {
-                                      Utils.showSnackBar(context,
-                                          scaffoldKey: scaffoldKey,
-                                          message:
-                                              'File downloaded successfully');
+                                        if (Platform.isAndroid) {
+                                          directory = Directory(
+                                              "storage/emulated/0/Download/$getTripId.zip");
+                                        } else {
+                                          directory =
+                                              await getApplicationDocumentsDirectory();
+                                        }
+
+                                        copiedFile.copy(directory.path);
+
+                                        print(
+                                            'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                        if (copiedFile.existsSync()) {
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'File downloaded successfully');
+                                        }
+                                      }
                                     }
                                   }, primaryColor),
-                                  // SizedBox(height: 10,),
-                                  // Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.center,
-                                  //   crossAxisAlignment:
-                                  //   CrossAxisAlignment.center,
-                                  //   children: [
-                                  //     commonText(
-                                  //         context: context,
-                                  //         text: 'Download File',
-                                  //         fontWeight: FontWeight.w500,
-                                  //         textColor: Colors.black,
-                                  //         textSize:
-                                  //         displayWidth(context) * 0.038,
-                                  //         textAlign: TextAlign.start),
-                                  //     Padding(
-                                  //       padding: const EdgeInsets.all(8.0),
-                                  //       child:
-                                  //       Icon(Icons.file_download_outlined),
-                                  //     )
-                                  //   ],
-                                  // ),
+
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -1151,69 +1174,34 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         .showSnackBar(SnackBar(
                                       content: Text("Please select weight"),
                                       duration: Duration(seconds: 1),
+                                      backgroundColor: Colors.blue,
                                     ));
                                     return;
                                   }
 
+                                  print('ISSSSSSSSS');
+
                                   bool isLocationPermitted =
                                       await Permission.location.isGranted;
+
+                                  print('ISSSSSSSSS: $isLocationPermitted');
 
                                   if (isLocationPermitted) {
                                     // service.startService();
 
-                                    bool isServiceRunning =
-                                        await service.isRunning();
+                                    final androidInfo =
+                                        await DeviceInfoPlugin().androidInfo;
 
-                                    if (!isServiceRunning) {
-                                      service.startService();
-                                    }
-
-                                    service.invoke("onStart");
-
-                                    service.invoke("setAsForeground");
-
-                                    getTripId = uuid.v1();
-
-                                    service.invoke(
-                                        'tripId', {'tripId': getTripId});
-
-                                    Future.delayed(Duration(seconds: 2), () {
-                                      Timer.periodic(Duration(seconds: 1),
-                                          (timer) async {
-                                        LocationData? locationData =
-                                            await Utils.getCurrentLocation();
-                                        service.invoke('location', {
-                                          'lat': locationData!.latitude,
-                                          'long': locationData.longitude,
-                                        });
-                                      });
-                                    });
-
-                                    stateSetter(() {
-                                      isStartButton = false;
-                                      isEndTripButton = true;
-                                    });
-
-                                    sharedPreferences!
-                                        .setBool('trip_started', true);
-                                    sharedPreferences!.setStringList(
-                                        'trip_data', [
-                                      getTripId,
-                                      widget.vessel!.id!,
-                                      widget.vessel!.name!,
-                                      selectedVesselWeight
-                                    ]);
-                                  } else {
-                                    await Utils.getLocationPermission(
-                                        context, scaffoldKey);
-                                    bool isLocationPermitted =
-                                        await Permission.location.isGranted;
-
-                                    if (isLocationPermitted) {
-                                      // service.startService();
-
+                                    var isStoragePermitted =
+                                        androidInfo.version.sdkInt > 32
+                                            ? await Permission.photos.status
+                                            : await Permission.storage.status;
+                                    if (isStoragePermitted.isGranted) {
                                       bool isServiceRunning =
                                           await service.isRunning();
+
+                                      print('ISSSSS: $isServiceRunning');
+
                                       if (!isServiceRunning) {
                                         service.startService();
                                       }
@@ -1254,6 +1242,196 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         selectedVesselWeight
                                       ]);
 
+                                      onSave('', bottomSheetContext, true);
+
+                                      // await Permission.storage.request();
+                                    } else {
+                                      await Utils.getStoragePermission(context);
+                                      final androidInfo =
+                                          await DeviceInfoPlugin().androidInfo;
+
+                                      var isStoragePermitted =
+                                          androidInfo.version.sdkInt > 32
+                                              ? await Permission.photos.status
+                                              : await Permission.storage.status;
+
+                                      if (isStoragePermitted.isGranted) {
+                                        bool isServiceRunning =
+                                            await service.isRunning();
+
+                                        if (!isServiceRunning) {
+                                          service.startService();
+                                        }
+
+                                        service.invoke("onStart");
+
+                                        service.invoke("setAsForeground");
+
+                                        getTripId = uuid.v1();
+
+                                        service.invoke(
+                                            'tripId', {'tripId': getTripId});
+
+                                        Future.delayed(Duration(seconds: 2),
+                                            () {
+                                          Timer.periodic(Duration(seconds: 1),
+                                              (timer) async {
+                                            LocationData? locationData =
+                                                await Utils
+                                                    .getCurrentLocation();
+                                            service.invoke('location', {
+                                              'lat': locationData!.latitude,
+                                              'long': locationData.longitude,
+                                            });
+                                          });
+                                        });
+
+                                        stateSetter(() {
+                                          isStartButton = false;
+                                          isEndTripButton = true;
+                                        });
+
+                                        sharedPreferences!
+                                            .setBool('trip_started', true);
+                                        sharedPreferences!.setStringList(
+                                            'trip_data', [
+                                          getTripId,
+                                          widget.vessel!.id!,
+                                          widget.vessel!.name!,
+                                          selectedVesselWeight
+                                        ]);
+
+                                        onSave('', bottomSheetContext, true);
+                                      }
+                                    }
+                                  } else {
+                                    await Utils.getLocationPermission(
+                                        context, scaffoldKey);
+                                    bool isLocationPermitted =
+                                        await Permission.location.isGranted;
+
+                                    if (isLocationPermitted) {
+                                      // service.startService();
+
+                                      final androidInfo =
+                                          await DeviceInfoPlugin().androidInfo;
+
+                                      var isStoragePermitted =
+                                          androidInfo.version.sdkInt > 32
+                                              ? await Permission.photos.status
+                                              : await Permission.storage.status;
+                                      if (isStoragePermitted.isGranted) {
+                                        bool isServiceRunning =
+                                            await service.isRunning();
+
+                                        if (!isServiceRunning) {
+                                          service.startService();
+                                        }
+
+                                        service.invoke("onStart");
+
+                                        service.invoke("setAsForeground");
+
+                                        getTripId = uuid.v1();
+
+                                        service.invoke(
+                                            'tripId', {'tripId': getTripId});
+
+                                        Future.delayed(Duration(seconds: 2),
+                                            () {
+                                          Timer.periodic(Duration(seconds: 1),
+                                              (timer) async {
+                                            LocationData? locationData =
+                                                await Utils
+                                                    .getCurrentLocation();
+                                            service.invoke('location', {
+                                              'lat': locationData!.latitude,
+                                              'long': locationData.longitude,
+                                            });
+                                          });
+                                        });
+
+                                        stateSetter(() {
+                                          isStartButton = false;
+                                          isEndTripButton = true;
+                                        });
+
+                                        sharedPreferences!
+                                            .setBool('trip_started', true);
+                                        sharedPreferences!.setStringList(
+                                            'trip_data', [
+                                          getTripId,
+                                          widget.vessel!.id!,
+                                          widget.vessel!.name!,
+                                          selectedVesselWeight
+                                        ]);
+
+                                        onSave('', bottomSheetContext, true);
+
+                                        // await Permission.storage.request();
+                                      } else {
+                                        await Utils.getStoragePermission(
+                                            context);
+                                        final androidInfo =
+                                            await DeviceInfoPlugin()
+                                                .androidInfo;
+
+                                        var isStoragePermitted =
+                                            androidInfo.version.sdkInt > 32
+                                                ? await Permission.photos.status
+                                                : await Permission
+                                                    .storage.status;
+
+                                        if (isStoragePermitted.isGranted) {
+                                          bool isServiceRunning =
+                                              await service.isRunning();
+
+                                          if (!isServiceRunning) {
+                                            service.startService();
+                                          }
+
+                                          service.invoke("onStart");
+
+                                          service.invoke("setAsForeground");
+
+                                          getTripId = uuid.v1();
+
+                                          service.invoke(
+                                              'tripId', {'tripId': getTripId});
+
+                                          Future.delayed(Duration(seconds: 2),
+                                              () {
+                                            Timer.periodic(Duration(seconds: 1),
+                                                (timer) async {
+                                              LocationData? locationData =
+                                                  await Utils
+                                                      .getCurrentLocation();
+                                              service.invoke('location', {
+                                                'lat': locationData!.latitude,
+                                                'long': locationData.longitude,
+                                              });
+                                            });
+                                          });
+
+                                          stateSetter(() {
+                                            isStartButton = false;
+                                            isEndTripButton = true;
+                                          });
+
+                                          sharedPreferences!
+                                              .setBool('trip_started', true);
+                                          sharedPreferences!.setStringList(
+                                              'trip_data', [
+                                            getTripId,
+                                            widget.vessel!.id!,
+                                            widget.vessel!.name!,
+                                            selectedVesselWeight
+                                          ]);
+
+                                          onSave('', bottomSheetContext, true);
+                                        }
+                                      }
+
                                       /// TODO Further Process
                                       // await getLocationData();
 
@@ -1261,7 +1439,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       // startSensorFunctionality(stateSetter);
                                     }
                                   }
-                                  onSave('', bottomSheetContext, true);
                                   // startTripService(stateSetter);
                                 })
                             : isEndTripButton

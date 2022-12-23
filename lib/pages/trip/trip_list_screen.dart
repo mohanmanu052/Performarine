@@ -4,11 +4,13 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
@@ -35,6 +37,7 @@ class TripListScreen extends StatefulWidget {
 
 class _TripListScreenState extends State<TripListScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+  FlutterBackgroundService service = FlutterBackgroundService();
 
   IosDeviceInfo? iosDeviceInfo;
   AndroidDeviceInfo? androidDeviceInfo;
@@ -68,6 +71,8 @@ class _TripListScreenState extends State<TripListScreen> {
   String selectedVesselWeight = 'Select Current Load';
 
   final DatabaseService _databaseService = DatabaseService();
+
+  late Future<List<Trip>> future;
 
   Future<List<Trip>> getTripListByVesselId(String id) async {
     return await _databaseService.getAllTripsByVesselId(id);
@@ -107,6 +112,14 @@ class _TripListScreenState extends State<TripListScreen> {
             model: iosDeviceInfo?.model,
             version: iosDeviceInfo?.utsname.release);
     debugPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    future = _databaseService.getAllTripsByVesselId(widget.vesselId.toString());
   }
 
   @override
@@ -291,7 +304,7 @@ class _TripListScreenState extends State<TripListScreen> {
 
   TripViewBuilder(String id) {
     return FutureBuilder<List<Trip>>(
-      future: getTripListByVesselId(id),
+      future: future,
       builder: (context, snapshot) {
         return snapshot.data != null
             ? StatefulBuilder(
@@ -304,7 +317,53 @@ class _TripListScreenState extends State<TripListScreen> {
                       return snapshot.data!.isNotEmpty
                           ? TripWidget(
                               tripList: snapshot.data![index],
-                            )
+                              onTap: () async {
+                                bool isServiceRunning =
+                                    await service.isRunning();
+
+                                print('IS SERVICE RUNNING: $isServiceRunning');
+
+                                try {
+                                  service.invoke('stopService');
+                                  // instan.stopSelf();
+                                } on Exception catch (e) {
+                                  print('SERVICE STOP BG EXE: $e');
+                                }
+
+                                File? zipFile;
+                                if (timer != null) timer!.cancel();
+                                print(
+                                    'TIMER STOPPED ${ourDirectory!.path}/${snapshot.data![index].id}');
+                                final dataDir = Directory(
+                                    '${ourDirectory!.path}/${snapshot.data![index].id}');
+
+                                try {
+                                  zipFile = File(
+                                      '${ourDirectory!.path}/${snapshot.data![index].id}.zip');
+
+                                  ZipFile.createFromDirectory(
+                                      sourceDir: dataDir,
+                                      zipFile: zipFile,
+                                      recurseSubDirs: true);
+                                  print('our path is $dataDir');
+                                } catch (e) {
+                                  print(e);
+                                }
+
+                                File file = File(zipFile!.path);
+                                print('FINAL PATH: ${file.path}');
+
+                                await _databaseService.updateTripStatus(
+                                    1, file.path, snapshot.data![index].id!);
+
+                                sharedPreferences!.remove('trip_data');
+
+                                setState(() {
+                                  future =
+                                      _databaseService.getAllTripsByVesselId(
+                                          widget.vesselId.toString());
+                                });
+                              })
                           : commonText(
                               text: 'oops! No Trips are added yet',
                               context: context,
