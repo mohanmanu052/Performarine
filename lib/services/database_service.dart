@@ -199,19 +199,22 @@ class DatabaseService {
   //   final db = await _databaseService.database;
   //   await db.update('dogs', dog.toMap(), where: 'id = ?', whereArgs: [dog.id]);
   // }
-  Future<void> updateVessel(CreateVessel vessel) async {
+  Future<int> updateVessel(CreateVessel vessel) async {
     final db = await _databaseService.database;
     print("vessel.toMap():${vessel.toMap()}");
-    await db.update('vessels', vessel.toMap(),
+    int result = await db.update('vessels', vessel.toMap(),
         where: 'id = ?', whereArgs: [vessel.id]);
+    print('UPDATE: $result');
+
+    return result;
   }
 
   Future<void> updateTripStatus(
-      int status, String filePath, String tripId) async {
+      int status, String filePath, String updatedAt, String tripId) async {
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
-        'UPDATE trips SET tripStatus = ?, filePath = ? WHERE id = ?',
-        [status, filePath, tripId]);
+        'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ? WHERE id = ?',
+        [status, filePath, updatedAt, tripId]);
     print('updated: $count');
   }
 
@@ -228,7 +231,7 @@ class DatabaseService {
       // Pass the Trip's id as a whereArg to prevent SQL injection.
       whereArgs: [id],
     );
-  }
+  } // vesselId
 
   Future<void> deleteVessel(String id) async {
     final db = await _databaseService.database;
@@ -249,5 +252,51 @@ class DatabaseService {
     final db = await _databaseService.database;
     await db.rawUpdate(
         '''UPDATE vessels SET vesselStatus = ? WHERE id = ?''', [0, id]);
+  }
+
+  Future<void> deleteVesselImage(
+    String id,
+  ) async {
+    final db = await _databaseService.database;
+    int count = await db
+        .rawUpdate('UPDATE vessels SET imageURLs = ? WHERE id = ?', ['', id]);
+    print('updated: $count');
+  }
+
+  Future<void> deleteTripBasedOnVesselId(String vesselId) async {
+    // Get a reference to the database.
+    final db = await _databaseService.database;
+
+    // Remove the Trip from the database.
+    await db.delete(
+      'trips',
+      // Use a `where` clause to delete a specific trip.
+      where: 'vesselId = ?',
+      // Pass the Trip's id as a whereArg to prevent SQL injection.
+      whereArgs: [vesselId],
+    );
+  } // vesselId
+
+  Future<List<Trip>> getTripsByVesselId(String vesselId) async {
+    // Get a reference to the database.
+    final db = await _databaseService.database;
+    // DbColumn(name=isSync, type=4, typeName=INTEGER, schema= DEFAULT 0 )
+
+    // Query the table for all the trips.
+    final List<Map<String, dynamic>> maps =
+        await db.query('trips', where: 'vesselId = ?', whereArgs: [vesselId]);
+
+    // Convert the List<Map<String, dynamic> into a List<Trip>.
+    return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
+  }
+
+  Future<bool> tripIsRunning() async {
+    final db = await _databaseService.database;
+    var result = await db.rawQuery(
+      'SELECT EXISTS(SELECT 1 FROM trips WHERE tripStatus="0")',
+    );
+    int? exists = Sqflite.firstIntValue(result);
+    print('EXIST $exists');
+    return exists == 1;
   }
 }

@@ -212,9 +212,7 @@ class Utils {
         isPermissionGranted = true;
         locationData = await Utils.getCurrentLocation();
         debugPrint("im in the loop assigned getCurrentLocation:$locationData");
-      } else if (await Permission.location
-          .request()
-          .isPermanentlyDenied) {
+      } else if (await Permission.location.request().isPermanentlyDenied) {
         isPermissionGranted = false;
         print('PD');
 
@@ -266,9 +264,7 @@ class Utils {
       if (await Permission.location.request().isGranted) {
         isPermissionGranted = true;
         // isPermissionGranted = await openAppSettings();
-      } else if (await Permission.location
-          .request()
-          .isPermanentlyDenied) {
+      } else if (await Permission.location.request().isPermanentlyDenied) {
         isPermissionGranted = false;
         isPermissionGranted = await openAppSettings();
       } else if (await Permission.location.request().isDenied) {
@@ -503,5 +499,37 @@ class Utils {
       ),
     );
     // scaffoldKey.currentState!.showSnackBar(snackBar);
+  }
+
+  static Future<bool> getNotificationPermission(BuildContext context,
+      [Permission permission = Permission.notification]) async {
+    bool isPermissionGranted = false;
+
+    /*final androidInfo = await DeviceInfoPlugin().androidInfo;
+
+    if (permission == Permission.notification) {
+      if (androidInfo.version.sdkInt > 33) {
+        permission = Permission.notification;
+      }
+    }*/
+
+    try {
+      if (await permission.request().isGranted) {
+        isPermissionGranted = true;
+      } else if (await permission.request().isPermanentlyDenied) {
+        isPermissionGranted = false;
+        print('PD');
+
+        isPermissionGranted = await openAppSettings();
+      } else if (await Permission.notification.request().isDenied) {
+        print('D');
+        isPermissionGranted = false;
+        //getStoragePermission(context, scaffoldKey);
+      }
+    } catch (e) {
+      isPermissionGranted = false;
+    }
+
+    return isPermissionGranted;
   }
 }

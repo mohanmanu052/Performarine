@@ -51,6 +51,9 @@ class _VesselBuilderState extends State<VesselBuilder> {
                 child: CircularProgressIndicator(),
               );
             }
+            print('HAS DATA: ${snapshot.hasData}');
+            print('HAS DATA: ${snapshot.error}');
+            print('HAS DATA: ${snapshot.hasError}');
             if (snapshot.hasData) {
               // CreateVessel vessel= snapshot.data![0];
               // print("hello world: ${vessel.model.toString()}");
@@ -202,7 +205,10 @@ class _VesselBuilderState extends State<VesselBuilder> {
   Widget vesselSingleViewCard(CreateVessel vesselData) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
+        widget.onTap(vesselData);
+      },
+      /*() async {
+        var result = await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => VesselSingleView(
               vessel: vesselData,
@@ -210,7 +216,15 @@ class _VesselBuilderState extends State<VesselBuilder> {
             fullscreenDialog: true,
           ),
         );
-      },
+
+        if (result != null) {
+          if (result) {
+            setState(() {
+              widget.future;
+            });
+          }
+        }
+      },*/
       child: Card(
         color: Colors.black,
         elevation: 3.0,
@@ -259,7 +273,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                         children: [
                           Image.file(
                             File(vesselData.imageURLs!),
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                             height: displayHeight(context) * 0.22,
                             width: displayWidth(context),
                           ),

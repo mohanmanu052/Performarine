@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -256,14 +257,25 @@ class _TripWidgetState extends State<TripWidget> {
                                               fontSize:
                                                   displayWidth(context) * 0.026,
                                               onTap: () async {
+                                                debugPrint(
+                                                    'DOWLOAD Started!!!');
+
+                                                final androidInfo =
+                                                    await DeviceInfoPlugin()
+                                                        .androidInfo;
+
                                                 var isStoragePermitted =
-                                                    await Permission
-                                                        .storage.status;
+                                                    androidInfo.version.sdkInt >
+                                                            32
+                                                        ? await Permission
+                                                            .photos.status
+                                                        : await Permission
+                                                            .storage.status;
                                                 if (isStoragePermitted
                                                     .isGranted) {
                                                   //File copiedFile = File('${ourDirectory!.path}.zip');
                                                   File copiedFile = File(
-                                                      '${ourDirectory!.path}/${widget.tripList?.id}.zip');
+                                                      '${ourDirectory!.path}/${widget.tripList!.id}.zip');
 
                                                   print(
                                                       'DIR PATH R ${ourDirectory!.path}');
@@ -272,7 +284,7 @@ class _TripWidgetState extends State<TripWidget> {
 
                                                   if (Platform.isAndroid) {
                                                     directory = Directory(
-                                                        "storage/emulated/0/Download/${widget.tripList?.id}.zip");
+                                                        "storage/emulated/0/Download/${widget.tripList!.id}.zip");
                                                   } else {
                                                     directory =
                                                         await getApplicationDocumentsDirectory();
@@ -308,7 +320,7 @@ class _TripWidgetState extends State<TripWidget> {
 
                                                     if (Platform.isAndroid) {
                                                       directory = Directory(
-                                                          "storage/emulated/0/Download/${widget.tripList?.id}.zip");
+                                                          "storage/emulated/0/Download/${widget.tripList!.id}.zip");
                                                     } else {
                                                       directory =
                                                           await getApplicationDocumentsDirectory();
@@ -441,7 +453,8 @@ class _TripWidgetState extends State<TripWidget> {
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));*/
 
-    await _databaseService.updateTripStatus(1, file.path, tripId);
+    await _databaseService.updateTripStatus(
+        1, file.path, DateTime.now().toString(), tripId);
     //Navigator.pop(context);
   }
 }

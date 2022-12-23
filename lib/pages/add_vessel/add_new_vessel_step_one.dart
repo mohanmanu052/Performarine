@@ -10,6 +10,7 @@ import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/provider/common_provider.dart';
+import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
@@ -35,6 +36,7 @@ class AddVesselStepOne extends StatefulWidget {
 class _AddVesselStepOneState extends State<AddVesselStepOne>
     with AutomaticKeepAliveClientMixin<AddVesselStepOne> {
   late GlobalKey<ScaffoldState> scaffoldKey;
+  final DatabaseService _databaseService = DatabaseService();
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final FocusScopeNode node = FocusScopeNode();
@@ -82,6 +84,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
     if (widget.isEdit!) {
       if (widget.addVesselData != null) {
         debugPrint('ENGINE TYPE ${widget.addVesselData!.engineType!}');
+        debugPrint('Image ${widget.addVesselData!.imageURLs!}');
 
         nameController.text = widget.addVesselData!.name!;
         modelController.text = widget.addVesselData!.model!;
@@ -413,7 +416,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                     }, Colors.grey),
                   ),
                   SizedBox(height: displayHeight(context) * 0.01),
-                  /*widget.addVesselData == null
+                  widget.addVesselData == null
                       ? SizedBox()
                       : widget.addVesselData!.imageURLs == null
                           ? SizedBox()
@@ -422,7 +425,106 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                               : Container(
                                   margin: const EdgeInsets.only(top: 15.0),
                                   child: SingleChildScrollView(
-                                    child: GridView.builder(
+                                    child: SizedBox(
+                                      height: displayHeight(context) * 0.065,
+                                      width: displayHeight(context) * 0.065,
+                                      child: Stack(
+                                        children: [
+                                          /*Container(
+                                            margin: EdgeInsets.all(6),
+                                            alignment: Alignment.topRight,
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[200],
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              border: Border.all(
+                                                  color: Colors.grey.shade300),
+                                              */ /*image: DecorationImage(
+                                                          fit: BoxFit.cover,
+                                                          image: NetworkImage(widget
+                                                                  .addVesselData!
+                                                                  .imageURLs![
+                                                              index]))*/ /*
+                                            ),
+                                            child: CachedNetworkImage(
+                                              height:
+                                                  displayHeight(context) * 0.12,
+                                              width:
+                                                  displayHeight(context) * 0.12,
+                                              // imageUrl: 'https://picsum.photos/200',
+                                              imageUrl: widget
+                                                  .addVesselData!.imageURLs!,
+                                              imageBuilder:
+                                                  (context, imageProvider) =>
+                                                      Container(
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                                ),
+                                              ),
+                                              progressIndicatorBuilder:
+                                                  (context, url,
+                                                          downloadProgress) =>
+                                                      Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        value: downloadProgress
+                                                            .progress),
+                                              ),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
+                                            ),
+                                            */ /*child: Icon(
+                                      Icons.close,
+                                      size: displayWidth(context) * 0.05,
+                                    ),*/ /*
+                                          ),*/
+
+                                          Container(
+                                            //margin: EdgeInsets.all(6),
+                                            decoration: BoxDecoration(
+                                              //color: Colors.orange,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: FileImage(File(widget
+                                                    .addVesselData!
+                                                    .imageURLs!)),
+                                                // fit: BoxFit.cover
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            right: 0,
+                                            top: 0,
+                                            child: InkWell(
+                                              onTap: () async {
+                                                /* await _databaseService
+                                                    .deleteVesselImage(widget
+                                                        .addVesselData!.id!);*/
+                                                setState(() {
+                                                  widget.addVesselData!
+                                                      .imageURLs = '';
+                                                });
+                                              },
+                                              child: Icon(
+                                                Icons.close,
+                                                size: displayWidth(context) *
+                                                    0.05,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ), /*GridView.builder(
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 4,
@@ -454,13 +556,12 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                                     border: Border.all(
                                                         color: Colors
                                                             .grey.shade300),
-image: DecorationImage(
+                                                    */ /*image: DecorationImage(
                                                           fit: BoxFit.cover,
                                                           image: NetworkImage(widget
                                                                   .addVesselData!
                                                                   .imageURLs![
-                                                              index]))
-
+                                                              index]))*/ /*
                                                   ),
                                                   child: CachedNetworkImage(
                                                     height:
@@ -501,25 +602,22 @@ image: DecorationImage(
                                                         (context, url, error) =>
                                                             Icon(Icons.error),
                                                   ),
-child: Icon(
+                                                  */ /*child: Icon(
                                       Icons.close,
                                       size: displayWidth(context) * 0.05,
-                                    ),
-
+                                    ),*/ /*
                                                 ),
                                                 Positioned(
                                                   right: 0,
                                                   top: 0,
                                                   child: InkWell(
                                                     onTap: () {
-                                                      setState(() {
-                                                        deletedImageUrls.add(
-                                                            widget.addVesselData!
-                                                                    .imageURLs![
-                                                                index]);
-                                                        widget.addVesselData!
-                                                            .imageURLs!
-                                                            .removeAt(index);
+                                                      setState(() async {
+                                                        await _databaseService
+                                                            .deleteVesselImage(
+                                                                widget
+                                                                    .addVesselData!
+                                                                    .id!);
                                                       });
                                                     },
                                                     child: Icon(
@@ -533,9 +631,9 @@ child: Icon(
                                               ],
                                             ),
                                           );
-                                        }),
+                                        }),*/
                                   ),
-                                ),*/
+                                ),
                   finalSelectedFiles.isEmpty
                       ? Container()
                       : Container(
@@ -573,10 +671,10 @@ child: Icon(
                                                             index]!
                                                         .path),
                                                   ))),
-                                          child: Icon(
+                                          /*child: Icon(
                                             Icons.close,
                                             size: displayWidth(context) * 0.05,
-                                          ),
+                                          ),*/
                                         ),
                                         Positioned(
                                           right: 0,
@@ -621,6 +719,9 @@ child: Icon(
                             'FINAL SELECTED FILES ${finalSelectedFiles.isEmpty}');
                         // return;
 
+                        debugPrint(
+                            'WEIGHT 1 ${int.parse(weightController.text)}');
+
                         commonProvider.addVesselRequestModel = CreateVessel();
 
                         commonProvider.addVesselRequestModel!.name =
@@ -640,7 +741,7 @@ child: Icon(
                                 ? '0'
                                 : fuelCapacityController.text;
                         commonProvider.addVesselRequestModel!.weight =
-                            int.parse(weightController.text);
+                            weightController.text;
                         commonProvider.addVesselRequestModel!.selectedImages =
                             finalSelectedFiles.isEmpty
                                 ? []
@@ -649,10 +750,21 @@ child: Icon(
                             batteryCapacityController.text.isEmpty
                                 ? '0'
                                 : batteryCapacityController.text;
+                        //print('ImageURL NEXT ${widget.addVesselData!.imageURLs}');
+                        commonProvider.addVesselRequestModel!.imageURLs =
+                            widget.addVesselData == null
+                                ? ''
+                                : widget.addVesselData!.imageURLs == null ||
+                                        widget.addVesselData!.imageURLs!.isEmpty
+                                    ? ''
+                                    : widget.addVesselData!.imageURLs;
                         /* commonProvider.addVesselRequestModel!.imageURLs =
                             deletedImageUrls.isNotEmpty
                                 ? deletedImageUrls.join(',')
                                 : " ";*/
+
+                        print('Step ONE VESSEL NAME: ${nameController.text}');
+                        //print('Step ONE VESSEL NAME: ${nameController.text}');
 
                         widget.pageController!.nextPage(
                             duration: Duration(milliseconds: 300),

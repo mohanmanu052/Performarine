@@ -9,9 +9,8 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:uuid/uuid.dart';
 
-
 class VesselFormPage extends StatefulWidget {
-  const VesselFormPage({Key? key,this.vessel}) : super(key: key);
+  const VesselFormPage({Key? key, this.vessel}) : super(key: key);
   final CreateVessel? vessel;
 
   @override
@@ -27,7 +26,8 @@ class _VesselFormPageState extends State<VesselFormPage> {
   final TextEditingController _mmsiController = TextEditingController();
   final TextEditingController _engineTypeController = TextEditingController();
   final TextEditingController _fuelCapacityController = TextEditingController();
-  final TextEditingController _batteryCapacityController = TextEditingController();
+  final TextEditingController _batteryCapacityController =
+      TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _freeboardController = TextEditingController();
   final TextEditingController _lengthController = TextEditingController();
@@ -58,12 +58,13 @@ class _VesselFormPageState extends State<VesselFormPage> {
     if (widget.vessel != null) {
       _nameController.text = widget.vessel!.name.toString();
       _modelController.text = widget.vessel!.model.toString();
-      _builderController.text =  widget.vessel!.builderName.toString();
+      _builderController.text = widget.vessel!.builderName.toString();
       _registrationNumberController.text = widget.vessel!.regNumber.toString();
       _mmsiController.text = widget.vessel!.mMSI.toString();
       _engineTypeController.text = widget.vessel!.engineType.toString();
       _fuelCapacityController.text = widget.vessel!.fuelCapacity.toString();
-      _batteryCapacityController.text = widget.vessel!.batteryCapacity.toString();
+      _batteryCapacityController.text =
+          widget.vessel!.batteryCapacity.toString();
       _weightController.text = widget.vessel!.weight.toString();
       _freeboardController.text = widget.vessel!.freeBoard.toString();
       _lengthController.text = widget.vessel!.lengthOverall.toString();
@@ -132,36 +133,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
         ? await _databaseService.insertVessel(
             // Dog(name: name, age: age, breedId: breed.id!),
             CreateVessel(
-              id:uuid.v1(),
-              name: vesselName,
-              builderName: builder,
-              model: model,
-              regNumber: registrationNumber,
-              mMSI: mmsi,
-              engineType: engineType,
-              fuelCapacity: fuelCapacity,
-              batteryCapacity: batteryCapacity,
-              weight: int.parse(weight),
-              freeBoard: double.parse(freeBoard),
-              lengthOverall: double.parse(lengthOverall),
-              beam: double.parse(beam),
-              draft: double.parse(draft),
-              vesselSize: double.parse(size),
-              capacity: int.parse(capacity),
-              builtYear: int.parse(builtYear),
-              isSync: 0,
-              vesselStatus: 1,
-              //ToDo: Need to add the image urls in base 64 format
-              imageURLs: "",
-              createdAt: DateTime.now().toString(),
-              createdBy: "",
-              updatedAt: DateTime.now().toString(),
-              updatedBy: ""
-
-          ))
-        : await _databaseService.updateVessel(
-            CreateVessel(
-                id: widget.vessel!.id,
+                id: uuid.v1(),
                 name: vesselName,
                 builderName: builder,
                 model: model,
@@ -170,18 +142,43 @@ class _VesselFormPageState extends State<VesselFormPage> {
                 engineType: engineType,
                 fuelCapacity: fuelCapacity,
                 batteryCapacity: batteryCapacity,
-                weight: int.parse(weight),
-                freeBoard: freeBoard!="null"?double.parse(freeBoard):0.0,
-                lengthOverall: lengthOverall!="null"?double.parse(lengthOverall):0.0,
+                weight: weight,
+                freeBoard: double.parse(freeBoard),
+                lengthOverall: double.parse(lengthOverall),
                 beam: double.parse(beam),
                 draft: double.parse(draft),
                 vesselSize: double.parse(size),
                 capacity: int.parse(capacity),
                 builtYear: int.parse(builtYear),
-                updatedBy: "",
-                updatedAt: DateTime.now().toString()
-            )
-            );
+                isSync: 0,
+                vesselStatus: 1,
+                //ToDo: Need to add the image urls in base 64 format
+                imageURLs: "",
+                createdAt: DateTime.now().toString(),
+                createdBy: "",
+                updatedAt: DateTime.now().toString(),
+                updatedBy: ""))
+        : await _databaseService.updateVessel(CreateVessel(
+            id: widget.vessel!.id,
+            name: vesselName,
+            builderName: builder,
+            model: model,
+            regNumber: registrationNumber,
+            mMSI: mmsi,
+            engineType: engineType,
+            fuelCapacity: fuelCapacity,
+            batteryCapacity: batteryCapacity,
+            weight: weight,
+            freeBoard: freeBoard != "null" ? double.parse(freeBoard) : 0.0,
+            lengthOverall:
+                lengthOverall != "null" ? double.parse(lengthOverall) : 0.0,
+            beam: double.parse(beam),
+            draft: double.parse(draft),
+            vesselSize: double.parse(size),
+            capacity: int.parse(capacity),
+            builtYear: int.parse(builtYear),
+            updatedBy: "",
+            updatedAt: DateTime.now().toString()));
 
     Navigator.pop(context);
   }

@@ -352,15 +352,21 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                   builtYearController.text;
                               var uuid = Uuid();
                               commonProvider.addVesselRequestModel!.id =
-                                  uuid.v1();
-                              commonProvider.addVesselRequestModel!.isSync=0;
-                              commonProvider.addVesselRequestModel!.vesselStatus=1;
-                              commonProvider.addVesselRequestModel!.createdAt=DateTime.now().toString();
-                              commonProvider.addVesselRequestModel!.updatedAt=DateTime.now().toString();
+                                  widget.isEdit!
+                                      ? widget.addVesselData!.id
+                                      : uuid.v1();
+                              commonProvider.addVesselRequestModel!.isSync = 0;
+                              commonProvider
+                                  .addVesselRequestModel!.vesselStatus = 1;
+                              commonProvider.addVesselRequestModel!.createdAt =
+                                  DateTime.now().toString();
+                              commonProvider.addVesselRequestModel!.updatedAt =
+                                  DateTime.now().toString();
                               //ToDo: @ruapli add the created by as login userid.
-                              commonProvider.addVesselRequestModel!.createdBy=commonProvider.loginModel!.userId.toString();
-                              commonProvider.addVesselRequestModel!.updatedBy=commonProvider.loginModel!.userId.toString();
-
+                              commonProvider.addVesselRequestModel!.createdBy =
+                                  commonProvider.loginModel!.userId.toString();
+                              commonProvider.addVesselRequestModel!.updatedBy =
+                                  commonProvider.loginModel!.userId.toString();
 
                               if (commonProvider.addVesselRequestModel!
                                   .selectedImages!.isNotEmpty) {
@@ -407,7 +413,35 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                               });
                               return;*/
 
-                              if (!widget.isEdit!) {
+                              if (widget.isEdit!) {
+                                print(
+                                    'VESSEL NAME: ${widget.addVesselData!.name}');
+
+                                await _databaseService
+                                    .updateVessel(
+                                        commonProvider.addVesselRequestModel!)
+                                    .then((value) {
+                                  setState(() {
+                                    isBtnClicked = false;
+                                  });
+
+                                  if (value == 1) {
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message:
+                                            "Vessel details updated successfully");
+
+                                    Navigator.of(context).pop([
+                                      true,
+                                      commonProvider.addVesselRequestModel
+                                    ]);
+                                  } else {
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message: "Failed to update");
+                                  }
+                                });
+                              } else {
                                 await _databaseService
                                     .insertVessel(
                                         commonProvider.addVesselRequestModel!)
@@ -435,19 +469,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                                     .addVesselRequestModel!,
                                                 isEdit: widget.isEdit)),
                                   );
-                                });
-                              } else {
-                                await _databaseService
-                                    .updateVessel(
-                                        commonProvider.addVesselRequestModel!)
-                                    .then((value) {
-                                  setState(() {
-                                    isBtnClicked = false;
-                                  });
-                                  Utils.showSnackBar(context,
-                                      scaffoldKey: scaffoldKey,
-                                      message:
-                                          "Vessel details updated successfully");
                                 });
                               }
 

@@ -32,11 +32,9 @@ final StreamController<String?> selectNotificationStream =
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   initializeService();
-  flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()!
-      .requestPermission();
+
   SharedPreferences.getInstance().then((value) {
     sharedPreferences = value;
     runApp(MyApp());
@@ -176,7 +174,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     tripId = event!['tripId'];
   });
 
-  serviceInstance.on('onStart').listen((event) {
+  serviceInstance.on('onStartTrip').listen((event) {
     // bring to foreground
     timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (serviceInstance is AndroidServiceInstance) {
@@ -200,7 +198,8 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           int fileSize = await checkFileSize(file);
 
           /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
-          if (fileSize >= 10) {
+          /// Now File Size is 10,00,000
+          if (fileSize >= 1000000) {
             print('STOPPED WRITING');
             print('CREATING NEW FILE');
             // if (timer != null) timer.cancel();
@@ -246,10 +245,10 @@ Future<void> initializeService() async {
     importance: Importance.low, // importance must be at low or higher level
   );
 
-  flutterLocalNotificationsPlugin
+  /*flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()!
-      .requestPermission();
+      .requestPermission();*/
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()

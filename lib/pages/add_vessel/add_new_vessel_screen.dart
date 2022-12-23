@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_step_one.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_step_two.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -10,10 +11,10 @@ import 'package:performarine/pages/home_page.dart';
 class AddNewVesselScreen extends StatefulWidget {
   //final
   final bool? isEdit;
-  //final AddVesselData? addVesselData;
+  final CreateVessel? createVessel;
   final String? calledFrom;
   const AddNewVesselScreen(
-      {Key? key, this.isEdit = false, /*this.addVesselData,*/ this.calledFrom})
+      {Key? key, this.isEdit = false, this.createVessel, this.calledFrom})
       : super(key: key);
 
   @override
@@ -116,12 +117,14 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                     AddVesselStepOne(
                         pageController: pageController,
                         scaffoldKey: scaffoldKey,
-                        //addVesselData: widget.isEdit! ? widget.addVesselData : null,
+                        addVesselData:
+                            widget.isEdit! ? widget.createVessel : null,
                         isEdit: widget.isEdit),
                     AddNewVesselStepTwo(
                       pageController: pageController,
                       scaffoldKey: scaffoldKey,
-                      //addVesselData: widget.isEdit! ? widget.addVesselData : null,
+                      addVesselData:
+                          widget.isEdit! ? widget.createVessel : null,
                       isEdit: widget.isEdit,
                     ),
                     // AccountSetupScreen(pageController: pageController, scaffoldKey: scaffoldKey)

@@ -354,7 +354,10 @@ class _TripListScreenState extends State<TripListScreen> {
                                 print('FINAL PATH: ${file.path}');
 
                                 await _databaseService.updateTripStatus(
-                                    1, file.path, snapshot.data![index].id!);
+                                    1,
+                                    file.path,
+                                    DateTime.now().toString(),
+                                    snapshot.data![index].id!);
 
                                 sharedPreferences!.remove('trip_data');
 

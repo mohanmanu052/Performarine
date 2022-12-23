@@ -13,7 +13,7 @@ class CreateVessel {
   String? engineType;
   String? fuelCapacity;
   String? batteryCapacity;
-  int? weight;
+  String? weight;
   String? imageURLs;
   double? freeBoard;
   double? lengthOverall;
@@ -127,7 +127,7 @@ class CreateVessel {
       engineType: map['engineType'],
       fuelCapacity: map['fuelCapacity'],
       batteryCapacity: map['batteryCapacity'],
-      weight: 0,
+      weight: map['weight'],
       freeBoard: map['freeBoard'],
       lengthOverall: map['lengthOverall'],
       beam: map['beam'],

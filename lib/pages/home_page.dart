@@ -46,6 +46,8 @@ class _HomePageState extends State<HomePage> {
   List<Trip> trips = [];
   int tripsCount = 0;
 
+  late Future<List<CreateVessel>> getVesselFuture;
+
   Future<List<CreateVessel>> _getVessels() async {
     return await _databaseService.vessels();
   }
@@ -85,10 +87,27 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
 
+    /*flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()!
+        .requestPermission();*/
+
+    checkNotificationPermission();
+
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
     _getTripsCount();
+
+    getVesselFuture = _databaseService.vessels();
     //debugPrint("tripsCount:$tripsCount");
+  }
+
+  checkNotificationPermission() async {
+    bool isNotificationPermitted = await Permission.notification.isGranted;
+
+    if (!isNotificationPermitted) {
+      await Utils.getNotificationPermission(context);
+    }
   }
 
   @override
@@ -211,7 +230,8 @@ class _HomePageState extends State<HomePage> {
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));*/
 
-    await _databaseService.updateTripStatus(1, file.path, tripId);
+    await _databaseService.updateTripStatus(
+        1, file.path, DateTime.now().toString(), tripId);
     Navigator.pop(context);
   }
 
@@ -305,7 +325,7 @@ class _HomePageState extends State<HomePage> {
         body: TabBarView(
           children: [
             VesselBuilder(
-              future: _getVessels(),
+              future: getVesselFuture,
               onEdit: (value) async {
                 {
                   Navigator.of(context)
@@ -320,16 +340,26 @@ class _HomePageState extends State<HomePage> {
               },
               onTap: (value) async {
                 {
-                  Navigator.of(context)
-                      .push(
-                        MaterialPageRoute(
-                          builder: (_) => VesselSingleView(
-                            vessel: value,
-                          ),
-                          fullscreenDialog: true,
-                        ),
-                      )
-                      .then((_) => setState(() {}));
+                  //print('HOME SINGLE WEIGHT ${value.weight}');
+
+                  var result = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => VesselSingleView(
+                        vessel: value,
+                      ),
+                      fullscreenDialog: true,
+                    ),
+                  );
+
+                  if (result != null) {
+                    print('RESULT HOME PAGE $result');
+                    if (result) {
+                      setState(() {
+                        getVesselFuture = _databaseService.vessels();
+                        _getTripsCount();
+                      });
+                    }
+                  }
                 }
               },
               onDelete: _onVesselDelete,
