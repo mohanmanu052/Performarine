@@ -131,7 +131,7 @@ class DatabaseService {
     // Query the table for all the trips.
     final List<Map<String, dynamic>> maps =
         await db.query('trips', where: 'isSync = ?', whereArgs: [0]);
-
+        // print( "maps.toString():${  maps.toString()}");
     // Convert the List<Map<String, dynamic> into a List<Trip>.
     return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
   }

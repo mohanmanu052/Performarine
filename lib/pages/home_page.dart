@@ -340,7 +340,6 @@ class _HomePageState extends State<HomePage> {
               },
               onTap: (value) async {
                 {
-                  //print('HOME SINGLE WEIGHT ${value.weight}');
 
                   var result = await Navigator.of(context).push(
                     MaterialPageRoute(
@@ -365,7 +364,7 @@ class _HomePageState extends State<HomePage> {
               onDelete: _onVesselDelete,
             ),
             SingleChildScrollView(
-              child: TripViewListing(/*future: _getTrips()*/),
+              child: TripViewListing(),
               // TripBuilder(
               //   future: _gettrips(),
               // ),

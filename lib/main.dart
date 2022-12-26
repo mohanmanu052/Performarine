@@ -182,7 +182,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           flutterLocalNotificationsPlugin.show(
             888,
             'Performarine',
-            'Trip data collection in progress. Tap to stop.',
+            'Trip Data Collection in progress...',
             const NotificationDetails(
               android: AndroidNotificationDetails(
                 notificationChannelId,
@@ -241,7 +241,7 @@ Future<void> initializeService() async {
     notificationChannelId,
     'MY FOREGROUND SERVICE',
     description:
-        'This channel is used for important notifications.', // description
+        'This channel is used for important notifications.',
     importance: Importance.low, // importance must be at low or higher level
   );
 
@@ -269,7 +269,7 @@ Future<void> initializeService() async {
       onForeground: (service) {},
     ),
   );
-  service.startService();
+  // service.startService();
 }
 
 class MyApp extends StatelessWidget {

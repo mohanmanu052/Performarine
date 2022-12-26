@@ -154,17 +154,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   bool isBottomSheetOpened = false, isDataUpdated = false;
 
-  late Future<List<Trip>> getTripsByIdFuture;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    print('VESSEL SINGLE WEIGHT ${widget.vessel!.weight}');
-
-    getTripsByIdFuture =
-        _databaseService.getAllTripsByVesselId(widget.vessel!.id.toString());
   }
 
   @override
@@ -271,7 +265,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(bottom: 0.0),
-                            child: TripViewListing(future: getTripsByIdFuture),
+                            child: TripViewListing( vesselId: widget.vessel!.id,),
                           )
                         ],
                       ),
@@ -2344,7 +2338,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
     var date = DateTime.now().toUtc();
     var todayDate = date.toString().replaceAll(" ", "");
     var gps = sensorData.toString().replaceAll(" ", ",");
-    return '$type,$todayDate,$gps';
+    debugPrint('$type,$gps,$todayDate');
+    return '$type,$gps,$todayDate';
   }
 
   String convertDataToString(String type, List<double> sensorData) {

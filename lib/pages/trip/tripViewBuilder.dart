@@ -7,6 +7,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
+import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/services/database_service.dart';
 
@@ -69,11 +70,8 @@ import 'package:performarine/services/database_service.dart';
 //   }
 // }
 class TripViewListing extends StatefulWidget {
-  TripViewListing({
-    Key? key,
-    future,
-  }) : super(key: key);
-  Future<List<Trip>>? future;
+  String? vesselId;
+  TripViewListing({this.vesselId});
 
   @override
   State<TripViewListing> createState() => _TripViewListingState();
@@ -84,28 +82,26 @@ class _TripViewListingState extends State<TripViewListing> {
   FlutterBackgroundService service = FlutterBackgroundService();
 
   late Future<List<Trip>> future;
+  List<Trip> getTripsByIdFuture=[];
+  Future<List<Trip>>  getTripsByVesselId()async{
+    if (widget.vesselId==null || widget.vesselId== ""){
+      getTripsByIdFuture=await _databaseService.trips();
+    }else{
+      getTripsByIdFuture= await  _databaseService.getAllTripsByVesselId(widget.vesselId.toString());
+    }
+    return getTripsByIdFuture;
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    if (widget.future == null) {
-      future = _databaseService.trips();
-    } else {
-      future = widget.future!;
-    }
-  }
-
-  Future<List<Trip>> _getTrips() async {
-    //trips = await _databaseService.trips();
-    return await _databaseService.trips();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Trip>>(
-      future: future,
+      future: getTripsByVesselId(),
       builder: (context, snapshot) {
         return snapshot.data != null
             ? StatefulBuilder(
