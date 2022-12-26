@@ -138,7 +138,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                       MaterialPageRoute(
                           builder: (context) => VesselSingleView(
                                 vessel: widget.data!,
-                                // isCalledFromSuccessScreen: true,
+                                isCalledFromSuccessScreen: true,
                               )),
                     );
                   },

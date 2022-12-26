@@ -6,6 +6,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
+import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/widgets/common_buttons.dart';
+import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -489,11 +492,7 @@ class Utils {
         label: 'OPEN',
         textColor: Colors.white,
         onPressed: () {
-//<<<<<<< Feat_trip_api
           // scaffoldKey.currentState!.removeCurrentSnackBar();
-//=======
-//          scaffoldKey.currentState!.removeCurrentSnackBar();
-//>>>>>>> Feat_Sensor_functionality
           onTap.call();
         },
       ),
@@ -531,5 +530,109 @@ class Utils {
     }
 
     return isPermissionGranted;
+  }
+
+  showEndTripDialog(BuildContext context, Function() endTripBtnClick) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.24,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: commonText(
+                              context: context,
+                              text: 'Are you sure, you want to End the Trip?',
+                              fontWeight: FontWeight.w600,
+                              textColor: Colors.black,
+                              textSize: displayWidth(context) * 0.042,
+                              textAlign: TextAlign.center),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey)),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Cancel', context, primaryColor, () {
+                                    Navigator.of(context).pop();
+                                  },
+                                      displayWidth(context) * 0.5,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.grey,
+                                      displayHeight(context) * 0.015,
+                                      Colors.transparent,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15.0,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'OK',
+                                      context,
+                                      primaryColor,
+                                      endTripBtnClick,
+                                      displayWidth(context) * 0.5,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.015,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
   }
 }

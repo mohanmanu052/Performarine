@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
@@ -71,7 +72,8 @@ import 'package:performarine/services/database_service.dart';
 // }
 class TripViewListing extends StatefulWidget {
   String? vesselId;
-  TripViewListing({this.vesselId});
+  VoidCallback? onTripEnded;
+  TripViewListing({this.vesselId, this.onTripEnded});
 
   @override
   State<TripViewListing> createState() => _TripViewListingState();
@@ -82,12 +84,13 @@ class _TripViewListingState extends State<TripViewListing> {
   FlutterBackgroundService service = FlutterBackgroundService();
 
   late Future<List<Trip>> future;
-  List<Trip> getTripsByIdFuture=[];
-  Future<List<Trip>>  getTripsByVesselId()async{
-    if (widget.vesselId==null || widget.vesselId== ""){
-      getTripsByIdFuture=await _databaseService.trips();
-    }else{
-      getTripsByIdFuture= await  _databaseService.getAllTripsByVesselId(widget.vesselId.toString());
+  List<Trip> getTripsByIdFuture = [];
+  Future<List<Trip>> getTripsByVesselId() async {
+    if (widget.vesselId == null || widget.vesselId == "") {
+      getTripsByIdFuture = await _databaseService.trips();
+    } else {
+      getTripsByIdFuture = await _databaseService
+          .getAllTripsByVesselId(widget.vesselId.toString());
     }
     return getTripsByIdFuture;
   }
@@ -117,51 +120,59 @@ class _TripViewListingState extends State<TripViewListing> {
                           ? TripWidget(
                               tripList: snapshot.data![index],
                               onTap: () async {
-                                bool isServiceRunning =
-                                    await service.isRunning();
+                                Utils().showEndTripDialog(context, () async {
+                                  Navigator.of(context).pop();
+                                  bool isServiceRunning =
+                                      await service.isRunning();
 
-                                print('IS SERVICE RUNNING: $isServiceRunning');
+                                  print(
+                                      'IS SERVICE RUNNING: $isServiceRunning');
 
-                                try {
-                                  service.invoke('stopService');
-                                  // instan.stopSelf();
-                                } on Exception catch (e) {
-                                  print('SERVICE STOP BG EXE: $e');
-                                }
+                                  try {
+                                    service.invoke('stopService');
+                                    // instan.stopSelf();
+                                  } on Exception catch (e) {
+                                    print('SERVICE STOP BG EXE: $e');
+                                  }
 
-                                File? zipFile;
-                                if (timer != null) timer!.cancel();
-                                print(
-                                    'TIMER STOPPED ${ourDirectory!.path}/${snapshot.data![index].id}');
-                                final dataDir = Directory(
-                                    '${ourDirectory!.path}/${snapshot.data![index].id}');
+                                  File? zipFile;
+                                  if (timer != null) timer!.cancel();
+                                  print(
+                                      'TIMER STOPPED ${ourDirectory!.path}/${snapshot.data![index].id}');
+                                  final dataDir = Directory(
+                                      '${ourDirectory!.path}/${snapshot.data![index].id}');
 
-                                try {
-                                  zipFile = File(
-                                      '${ourDirectory!.path}/${snapshot.data![index].id}.zip');
+                                  try {
+                                    zipFile = File(
+                                        '${ourDirectory!.path}/${snapshot.data![index].id}.zip');
 
-                                  ZipFile.createFromDirectory(
-                                      sourceDir: dataDir,
-                                      zipFile: zipFile,
-                                      recurseSubDirs: true);
-                                  print('our path is $dataDir');
-                                } catch (e) {
-                                  print(e);
-                                }
+                                    ZipFile.createFromDirectory(
+                                        sourceDir: dataDir,
+                                        zipFile: zipFile,
+                                        recurseSubDirs: true);
+                                    print('our path is $dataDir');
+                                  } catch (e) {
+                                    print(e);
+                                  }
 
-                                File file = File(zipFile!.path);
-                                print('FINAL PATH: ${file.path}');
+                                  File file = File(zipFile!.path);
+                                  print('FINAL PATH: ${file.path}');
 
-                                await _databaseService.updateTripStatus(
-                                    1,
-                                    file.path,
-                                    DateTime.now().toString(),
-                                    snapshot.data![index].id!);
+                                  await _databaseService.updateTripStatus(
+                                      1,
+                                      file.path,
+                                      DateTime.now().toString(),
+                                      snapshot.data![index].id!);
 
-                                sharedPreferences!.remove('trip_data');
+                                  sharedPreferences!.remove('trip_data');
 
-                                setState(() {
-                                  future = _databaseService.trips();
+                                  setState(() {
+                                    future = _databaseService.trips();
+                                  });
+
+                                  if (widget.onTripEnded != null) {
+                                    widget.onTripEnded!.call();
+                                  }
                                 });
                               })
                           : commonText(

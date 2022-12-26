@@ -126,7 +126,49 @@ class _HomePageState extends State<HomePage> {
       print('TRIP DATA: $tripId * $vesselId * $vesselName');
 
       Future.delayed(Duration(seconds: 1), () {
-        showAlertDialog(context, tripId, vesselId, vesselName, vesselWeight);
+        Utils().showEndTripDialog(context, () async {
+          FlutterBackgroundService service = FlutterBackgroundService();
+
+          bool isServiceRunning = await service.isRunning();
+
+          print('IS SERVICE RUNNING: $isServiceRunning');
+
+          try {
+            service.invoke('stopService');
+            // instan.stopSelf();
+          } on Exception catch (e) {
+            print('SERVICE STOP BG EXE: $e');
+          }
+
+          final appDirectory = await getApplicationDocumentsDirectory();
+          ourDirectory = Directory('${appDirectory.path}');
+
+          File? zipFile;
+          if (timer != null) timer!.cancel();
+          print('TIMER STOPPED ${ourDirectory!.path}/$tripId');
+          final dataDir = Directory('${ourDirectory!.path}/$tripId');
+
+          try {
+            zipFile = File('${ourDirectory!.path}/$tripId.zip');
+
+            ZipFile.createFromDirectory(
+                sourceDir: dataDir, zipFile: zipFile, recurseSubDirs: true);
+            print('our path is $dataDir');
+          } catch (e) {
+            print(e);
+          }
+
+          File file = File(zipFile!.path);
+          print('FINAL PATH: ${file.path}');
+
+          sharedPreferences!.remove('trip_data');
+          sharedPreferences!.remove('trip_started');
+
+          // service.invoke('stopService');
+
+          onSave(file, context, tripId, vesselId, vesselName, vesselWeight);
+        });
+        // showAlertDialog(context, tripId, vesselId, vesselName, vesselWeight);
       });
     }
   }
@@ -340,7 +382,6 @@ class _HomePageState extends State<HomePage> {
               },
               onTap: (value) async {
                 {
-
                   var result = await Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => VesselSingleView(

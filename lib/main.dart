@@ -182,7 +182,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           flutterLocalNotificationsPlugin.show(
             888,
             'Performarine',
-            'Trip Data Collection in progress...',
+            '' /*'Trip Data Collection in progress...'*/,
             const NotificationDetails(
               android: AndroidNotificationDetails(
                 notificationChannelId,
@@ -228,6 +228,20 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   });
 }
 
+onDidReceiveLocalNotification(
+    int id, String? title, String? body, String? payload) {
+  print('APP RESTART 3');
+
+  /// APP RESTART
+}
+
+@pragma('vm:entry-point')
+onDidReceiveBackgroundNotificationResponse(NotificationResponse response) {
+  print('APP RESTART 2');
+
+  /// APP RESTART
+}
+
 // this will be used for notification id, So you can update your custom notification with this id.
 const notificationId = 888;
 Future<void> initializeService() async {
@@ -240,10 +254,27 @@ Future<void> initializeService() async {
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     notificationChannelId,
     'MY FOREGROUND SERVICE',
-    description:
-        'This channel is used for important notifications.',
+    description: 'This channel is used for important notifications.',
     importance: Importance.low, // importance must be at low or higher level
   );
+
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('logo');
+  final DarwinInitializationSettings initializationSettingsDarwin =
+      DarwinInitializationSettings(
+          onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+  final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin);
+
+  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onDidReceiveNotificationResponse: (value) {
+    print('APP RESTART 1');
+
+    /// APP RESTART
+  },
+      onDidReceiveBackgroundNotificationResponse:
+          onDidReceiveBackgroundNotificationResponse);
 
   /*flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
@@ -261,7 +292,8 @@ Future<void> initializeService() async {
       autoStart: true,
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
-      initialNotificationContent: 'Trip Data Collection in progress...',
+      initialNotificationContent: '',
+      /*'Trip Data Collection in progress...',*/
       foregroundServiceNotificationId: notificationId,
     ),
     iosConfiguration: IosConfiguration(
