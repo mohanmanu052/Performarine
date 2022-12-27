@@ -176,13 +176,13 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 
   serviceInstance.on('onStartTrip').listen((event) {
     // bring to foreground
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+    timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
       if (serviceInstance is AndroidServiceInstance) {
         if (await serviceInstance.isForegroundService()) {
           flutterLocalNotificationsPlugin.show(
             888,
             'Performarine',
-            '' /*'Trip Data Collection in progress...'*/,
+            'Trip Data Collection in progress...' ,
             const NotificationDetails(
               android: AndroidNotificationDetails(
                 notificationChannelId,
@@ -292,7 +292,7 @@ Future<void> initializeService() async {
       autoStart: true,
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
-      initialNotificationContent: '',
+      initialNotificationContent: 'Performarine consuming background services.',
       /*'Trip Data Collection in progress...',*/
       foregroundServiceNotificationId: notificationId,
     ),
@@ -301,7 +301,8 @@ Future<void> initializeService() async {
       onForeground: (service) {},
     ),
   );
-  // service.startService();
+  service.startService();
+
 }
 
 class MyApp extends StatelessWidget {
