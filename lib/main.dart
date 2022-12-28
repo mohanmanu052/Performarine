@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -37,7 +38,7 @@ void main() async {
 
   SharedPreferences.getInstance().then((value) {
     sharedPreferences = value;
-    runApp(MyApp());
+    runApp(Phoenix(child: MyApp()));
   });
 }
 
@@ -107,7 +108,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     var date = DateTime.now().toUtc();
     var todayDate = date.toString().replaceAll(" ", "");
     var gps = sensorData.toString().replaceAll(" ", ",");
-    return '$type,$todayDate,$gps';
+    return '$type,$gps,$todayDate';
   }
 
   Future<String> getOrCreateFolder() async {
@@ -182,7 +183,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           flutterLocalNotificationsPlugin.show(
             888,
             'Performarine',
-            'Trip Data Collection in progress...' ,
+            '',
             const NotificationDetails(
               android: AndroidNotificationDetails(
                 notificationChannelId,
@@ -268,8 +269,11 @@ Future<void> initializeService() async {
       iOS: initializationSettingsDarwin);
 
   flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onDidReceiveNotificationResponse: (value) {
+      onDidReceiveNotificationResponse: (value) async {
     print('APP RESTART 1');
+    await Get.deleteAll(force: true);
+    Phoenix.rebirth(Get.context!);
+    Get.reset();
 
     /// APP RESTART
   },
@@ -292,7 +296,7 @@ Future<void> initializeService() async {
       autoStart: true,
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
-      initialNotificationContent: 'Performarine consuming background services.',
+      initialNotificationContent: '',
       /*'Trip Data Collection in progress...',*/
       foregroundServiceNotificationId: notificationId,
     ),
@@ -302,10 +306,28 @@ Future<void> initializeService() async {
     ),
   );
   service.startService();
-
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    print('APP IN BG INIT');
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+    print('APP IN BG DISPOSE');
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

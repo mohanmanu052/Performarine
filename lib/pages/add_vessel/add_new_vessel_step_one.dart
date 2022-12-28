@@ -168,7 +168,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                         if (value!.isEmpty) {
                           return 'Enter vessel model';
                         }
-
                         return null;
                       },
                       onSaved: (String value) {

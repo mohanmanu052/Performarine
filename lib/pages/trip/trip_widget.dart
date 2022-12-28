@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:location/location.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -297,11 +298,26 @@ class _TripWidgetState extends State<TripWidget> {
                                                       'DOES FILE EXIST: ${copiedFile.existsSync()}');
 
                                                   if (copiedFile.existsSync()) {
-                                                    Utils.showSnackBar(context,
-                                                        scaffoldKey:
-                                                            scaffoldKey,
-                                                        message:
-                                                            'File downloaded successfully');
+                                                    Utils.showSnackBar(
+                                                      context,
+                                                      scaffoldKey: scaffoldKey,
+                                                      message:
+                                                          'File downloaded successfully',
+                                                    );
+                                                    /*Utils.showActionSnackBar(
+                                                        context,
+                                                        scaffoldKey,
+                                                        'File downloaded successfully',
+                                                        () async {
+                                                      print(
+                                                          'Open Btn clicked ttttt');
+                                                      var result =
+                                                          await OpenFile.open(
+                                                              directory.path);
+
+                                                      print(
+                                                          "dataaaaa: ${result.message} ggg ${result.type}");
+                                                    });*/
                                                   }
                                                 } else {
                                                   await Utils
@@ -335,11 +351,27 @@ class _TripWidgetState extends State<TripWidget> {
                                                     if (copiedFile
                                                         .existsSync()) {
                                                       Utils.showSnackBar(
+                                                        context,
+                                                        scaffoldKey:
+                                                            scaffoldKey,
+                                                        message:
+                                                            'File downloaded successfully',
+                                                      );
+
+                                                      /*Utils.showActionSnackBar(
                                                           context,
-                                                          scaffoldKey:
-                                                              scaffoldKey,
-                                                          message:
-                                                              'File downloaded successfully');
+                                                          scaffoldKey,
+                                                          'File downloaded successfully',
+                                                          () {
+                                                        print(
+                                                            'Open Btn clicked');
+                                                        OpenFile.open(
+                                                                directory.path)
+                                                            .catchError(
+                                                                (onError) {
+                                                          print(onError);
+                                                        });
+                                                      });*/
                                                     }
                                                   }
                                                 }

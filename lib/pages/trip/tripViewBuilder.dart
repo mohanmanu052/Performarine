@@ -173,6 +173,8 @@ class _TripViewListingState extends State<TripViewListing> {
                                   if (widget.onTripEnded != null) {
                                     widget.onTripEnded!.call();
                                   }
+                                }, () {
+                                  Navigator.of(context).pop();
                                 });
                               })
                           : commonText(

@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:open_file/open_file.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
@@ -20,7 +21,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart' as loc;
 import 'package:mime/mime.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -221,7 +221,7 @@ class Utils {
 
         isPermissionGranted = await openAppSettings();
         debugPrint("isPermissionGranted:$isPermissionGranted");
-        Utils.showActionSnackBar(scaffoldKey,
+        Utils.showActionSnackBar(context, scaffoldKey,
             'Location permissions are denied without permissions we are unable to start the trip',
             () {
           // OpenFile.open(directoryPath);
@@ -229,7 +229,7 @@ class Utils {
       } else if (await Permission.location.request().isDenied) {
         // print('D');
         isPermissionGranted = false;
-        Utils.showActionSnackBar(scaffoldKey,
+        Utils.showActionSnackBar(context, scaffoldKey,
             'Location permissions are denied without permissions we are unable to start the trip',
             () {
           // OpenFile.open(directoryPath);
@@ -432,7 +432,7 @@ class Utils {
           Navigator.pop(context);
 
           Utils.showActionSnackBar(
-              scaffoldKey, 'File located at: $directoryPath', () {
+              context, scaffoldKey, 'File located at: $directoryPath', () {
             OpenFile.open(directoryPath);
           });
         }
@@ -465,10 +465,10 @@ class Utils {
     });
   }
 
-  static void showActionSnackBar(
-      GlobalKey<ScaffoldState> scaffoldKey, String message, Function onTap) {
+  static void showActionSnackBar(BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey, String message, Function() onTap) {
     final snackBar = new SnackBar(
-      backgroundColor: primaryColor,
+      backgroundColor: Colors.blue,
       content: Row(
         children: [
           Icon(
@@ -491,13 +491,10 @@ class Utils {
       action: SnackBarAction(
         label: 'OPEN',
         textColor: Colors.white,
-        onPressed: () {
-          // scaffoldKey.currentState!.removeCurrentSnackBar();
-          onTap.call();
-        },
+        onPressed: onTap,
       ),
     );
-    // scaffoldKey.currentState!.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   static Future<bool> getNotificationPermission(BuildContext context,
@@ -532,7 +529,8 @@ class Utils {
     return isPermissionGranted;
   }
 
-  showEndTripDialog(BuildContext context, Function() endTripBtnClick) {
+  showEndTripDialog(BuildContext context, Function() endTripBtnClick,
+      Function() onCancelClick) {
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -582,9 +580,10 @@ class Utils {
                                             : Colors.grey)),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Cancel', context, primaryColor, () {
-                                    Navigator.of(context).pop();
-                                  },
+                                      'Cancel',
+                                      context,
+                                      primaryColor,
+                                      onCancelClick,
                                       displayWidth(context) * 0.5,
                                       displayHeight(context) * 0.05,
                                       primaryColor,

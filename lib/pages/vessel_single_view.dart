@@ -230,7 +230,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       ),
                       ModalRoute.withName(""));
                 } else {
-                  Navigator.of(context).pop(false);
+                  Navigator.of(context).pop(true);
                 }
               },
               icon: const Icon(Icons.arrow_back),
@@ -388,6 +388,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 file.path, DateTime.now().toString(), tripId);
 
                             tripIsRunningOrNot();
+                          }, () {
+                            Navigator.of(context).pop();
                           });
                         })
                     : CommonButtons.getActionButton(
@@ -627,30 +629,30 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     // initializeService();
 
-    scaffoldKey.currentState!.showBottomSheet(
-      (context) {
+    showModalBottomSheet(
+      isDismissible: false,
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
         return StatefulBuilder(builder:
             (BuildContext bottomSheetContext, StateSetter stateSetter) {
-          return Stack(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(
-                    top: 25, bottom: 25, left: 10, right: 10),
-                height: displayHeight(context) >= 680
-                    ? displayHeight(context) / 1.35
-                    : displayHeight(context) / 1.25,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      new BoxShadow(
-                        color: Colors.black,
-                        blurRadius: 20.0,
-                      ),
-                    ],
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(40),
-                        topRight: Radius.circular(40))),
-                child: Column(
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.68,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  new BoxShadow(
+                    color: Colors.black,
+                    blurRadius: 20.0,
+                  ),
+                ],
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40))),
+            child: Stack(
+              children: [
+                Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -1310,10 +1312,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 ),
                               ),
                     SizedBox(
-                      height: 50,
+                      //height: 50,
                       width: displayWidth(context),
                       child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        margin: EdgeInsets.only(left: 17, right: 17, bottom: 0),
                         child: isStartButton
                             ? CommonButtons.getActionButton(
                                 title: 'Start',
@@ -2222,39 +2224,39 @@ class VesselSingleViewState extends State<VesselSingleView> {
                     ),
                   ],
                 ),
-              ),
-              Positioned(
-                right: 10,
-                top: 10,
-                child: Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle, color: backgroundColor),
-                  child: IconButton(
-                      onPressed: () {
-                        isBottomSheetOpened = false;
-                        tripIsRunningOrNot();
-                        setState(() {
-                          widget.vessel!.id = widget.vessel!.id;
-                        });
-                        if (isSensorDataUploaded) {
-                          Get.back();
-                          //setState(() {
-                          // future = commonProvider.triplListData(
-                          //     context,
-                          //     commonProvider.loginModel!.token!,
-                          //     widget.vesselId.toString(),
-                          //     scaffoldKey);
-                          //});
-                        } else {
-                          Get.back();
-                        }
-                      },
-                      icon: Icon(Icons.close_rounded, color: buttonBGColor)),
-                ),
-              )
-            ],
+                Positioned(
+                  right: 10,
+                  top: 10,
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: backgroundColor),
+                    child: IconButton(
+                        onPressed: () {
+                          isBottomSheetOpened = false;
+                          tripIsRunningOrNot();
+                          setState(() {
+                            widget.vessel!.id = widget.vessel!.id;
+                          });
+                          if (isSensorDataUploaded) {
+                            Get.back();
+                            //setState(() {
+                            // future = commonProvider.triplListData(
+                            //     context,
+                            //     commonProvider.loginModel!.token!,
+                            //     widget.vesselId.toString(),
+                            //     scaffoldKey);
+                            //});
+                          } else {
+                            Get.back();
+                          }
+                        },
+                        icon: Icon(Icons.close_rounded, color: buttonBGColor)),
+                  ),
+                )
+              ],
+            ),
           );
         });
       },

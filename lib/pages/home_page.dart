@@ -31,7 +31,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  final List<String> tripData;
+  List<String> tripData;
   HomePage({Key? key, this.tripData = const []}) : super(key: key);
 
   @override
@@ -82,6 +82,8 @@ class _HomePageState extends State<HomePage> {
   AndroidDeviceInfo? androidDeviceInfo;
   DeviceInfo? deviceDetails;
 
+  List<String> tripData = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -115,7 +117,7 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
 
-    List<String> tripData = widget.tripData;
+    tripData = widget.tripData;
 
     if (tripData.isNotEmpty) {
       String tripId = tripData[0];
@@ -125,7 +127,7 @@ class _HomePageState extends State<HomePage> {
 
       print('TRIP DATA: $tripId * $vesselId * $vesselName');
 
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(Duration(milliseconds: 300), () {
         Utils().showEndTripDialog(context, () async {
           FlutterBackgroundService service = FlutterBackgroundService();
 
@@ -167,6 +169,9 @@ class _HomePageState extends State<HomePage> {
           // service.invoke('stopService');
 
           onSave(file, context, tripId, vesselId, vesselName, vesselWeight);
+        }, () {
+          widget.tripData = [];
+          Navigator.of(context).pop();
         });
         // showAlertDialog(context, tripId, vesselId, vesselName, vesselWeight);
       });
@@ -394,9 +399,16 @@ class _HomePageState extends State<HomePage> {
                   if (result != null) {
                     print('RESULT HOME PAGE $result');
                     if (result) {
+                      /* Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(),
+                          ),
+                          ModalRoute.withName(""));*/
                       setState(() {
                         getVesselFuture = _databaseService.vessels();
                         _getTripsCount();
+                        setState(() {});
                       });
                     }
                   }
