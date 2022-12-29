@@ -1312,10 +1312,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 ),
                               ),
                     SizedBox(
-                      //height: 50,
+                      height: 60,
                       width: displayWidth(context),
                       child: Container(
-                        margin: EdgeInsets.only(left: 17, right: 17, bottom: 0),
+                        margin: EdgeInsets.only(left: 17, right: 17, bottom: 10),
                         child: isStartButton
                             ? CommonButtons.getActionButton(
                                 title: 'Start',
@@ -1332,7 +1332,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       'Select Current Load') {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
-                                      content: Text("Please select weight"),
+                                      content: Text("Please select current load"),
                                       duration: Duration(seconds: 1),
                                       backgroundColor: Colors.blue,
                                     ));
