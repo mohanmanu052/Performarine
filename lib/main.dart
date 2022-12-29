@@ -183,7 +183,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           flutterLocalNotificationsPlugin.show(
             888,
             'Performarine',
-            '',
+            'Trip Data Collection in progress...' ,
             const NotificationDetails(
               android: AndroidNotificationDetails(
                 notificationChannelId,
@@ -296,7 +296,7 @@ Future<void> initializeService() async {
       autoStart: true,
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
-      initialNotificationContent: '',
+      initialNotificationContent: 'Performarine consuming background services.',
       /*'Trip Data Collection in progress...',*/
       foregroundServiceNotificationId: notificationId,
     ),

@@ -11,9 +11,11 @@ import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/trip_builder.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
+import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 // import 'package:performarine/common_widgets/Trip_builder.dart';
 import 'package:performarine/common_widgets/vessel_builder.dart';
+import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
@@ -45,6 +47,7 @@ class _HomePageState extends State<HomePage> {
   late CommonProvider commonProvider;
   List<Trip> trips = [];
   int tripsCount = 0;
+  int currentTabIndex = 0;
 
   late Future<List<CreateVessel>> getVesselFuture;
 
@@ -324,7 +327,14 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
+          elevation: 0,
           centerTitle: true,
+          leading: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Image.asset(
+              "assets/images/menu.png",
+            ),
+          ),
           title: Container(
             width: MediaQuery.of(context).size.width / 2,
             // color: Colors.yellow,
@@ -342,7 +352,13 @@ class _HomePageState extends State<HomePage> {
                         height: 50,
                         width: 50,
                       ),
-                      Text("Performarine")
+                      commonText(
+                        context: context,
+                        text: 'Performarine',
+                        fontWeight: FontWeight.w600,
+                        textColor: Colors.black87,
+                        textSize: displayWidth(context) * 0.045,
+                      ),
                     ],
                   )),
                   // TextSpan(
@@ -353,19 +369,63 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           bottom: TabBar(
-            indicatorColor: primaryColor,
+            padding: EdgeInsets.all(0),
+            labelPadding: EdgeInsets.zero,
+            isScrollable: true,
+            indicatorColor: Colors.white,
+            onTap: (int value) {
+              setState(() {
+                currentTabIndex = value;
+              });
+            },
             tabs: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Text('Vessels'),
+              Container(
+                margin: EdgeInsets.only(right: 2),
+                width: displayWidth(context) * 0.45,
+                decoration: BoxDecoration(
+                    color: currentTabIndex == 0 ? buttonBGColor : Colors.white,
+                    border: Border.all(color: buttonBGColor),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        bottomLeft: Radius.circular(25))),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 9.0),
+                  child: commonText(
+                    context: context,
+                    text: 'Vessels',
+                    fontWeight: FontWeight.w500,
+                    textColor:
+                        currentTabIndex == 0 ? Colors.white : Colors.black,
+                    textSize: displayWidth(context) * 0.036,
+                  ),
+                  // Text('Vessels'),
+                ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Text('Activity (${tripsCount.toString()})'),
+              Container(
+                margin: EdgeInsets.only(left: 2),
+                width: displayWidth(context) * 0.45,
+                decoration: BoxDecoration(
+                    color: currentTabIndex == 1 ? buttonBGColor : Colors.white,
+                    border: Border.all(color: buttonBGColor),
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(25),
+                        bottomRight: Radius.circular(25))),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 9.0),
+                  child: commonText(
+                    context: context,
+                    text: 'Activity (${tripsCount.toString()})',
+                    fontWeight: FontWeight.w500,
+                    textColor:
+                        currentTabIndex == 1 ? Colors.white : Colors.black,
+                    textSize: displayWidth(context) * 0.036,
+                  ),
+                  // Text('Activity (${tripsCount.toString()})'),
+                ),
               ),
             ],
           ),
-          backgroundColor: letsGetStartedButtonColor,
+          backgroundColor: Colors.white,
         ),
         drawer: const CustomDrawer(),
 

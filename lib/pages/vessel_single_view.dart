@@ -220,8 +220,26 @@ class VesselSingleViewState extends State<VesselSingleView> {
             leading: IconButton(
               onPressed: () {
                 tripIsRunningOrNot();
-                if (isDataUpdated) {
+                if (isBottomSheetOpened) {
+                } else if (widget.isCalledFromSuccessScreen!) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ),
+                      ModalRoute.withName(""));
+                } else {
+                  if (isDataUpdated) {
+                    Navigator.of(context).pop(true);
+                  } else {
+                    Navigator.of(context).pop(false);
+                  }
+                }
+
+                /*if (isDataUpdated) {
                   Navigator.of(context).pop(true);
+                } else {
+                  Navigator.of(context).pop(false);
                 }
                 if (widget.isCalledFromSuccessScreen!) {
                   Navigator.pushAndRemoveUntil(
@@ -232,7 +250,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       ModalRoute.withName(""));
                 } else {
                   Navigator.of(context).pop(true);
-                }
+                }*/
               },
               icon: const Icon(Icons.arrow_back),
               color: Theme.of(context).brightness == Brightness.dark
