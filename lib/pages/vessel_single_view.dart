@@ -52,6 +52,7 @@ class VesselSingleView extends StatefulWidget {
 class VesselSingleViewState extends State<VesselSingleView> {
   List<CreateVessel>? vessel = [];
   final DatabaseService _databaseService = DatabaseService();
+  final GlobalKey<ScaffoldState> _modelScaffoldKey = GlobalKey<ScaffoldState>();
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
@@ -635,84 +636,46 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return StatefulBuilder(builder:
-            (BuildContext bottomSheetContext, StateSetter stateSetter) {
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.68,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  new BoxShadow(
-                    color: Colors.black,
-                    blurRadius: 20.0,
-                  ),
-                ],
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40))),
-            child: Stack(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+        return Scaffold(
+          backgroundColor: Colors.transparent.withOpacity(0.0),
+          extendBody: false,
+          key: _modelScaffoldKey,
+          resizeToAvoidBottomInset: true,
+          body: Align(
+            alignment: Alignment.bottomCenter,
+            child: StatefulBuilder(builder:
+                (BuildContext bottomSheetContext, StateSetter stateSetter) {
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.68,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      new BoxShadow(
+                        color: Colors.black,
+                        blurRadius: 20.0,
+                      ),
+                    ],
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40))),
+                child: Stack(
                   children: [
-                    isEndTripButton
-                        ? Container(
-                            child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                height: 50,
-                              ),
-                              Center(
-                                child: Text(
-                                  "Reading sensor data...",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                  height: 300,
-                                  width: 200,
-                                  child: Lottie.asset(
-                                      'assets/lottie/dataFetch.json')),
-                              SizedBox(
-                                height: 10,
-                              ),
-                            ],
-                          ))
-                        : isZipFileCreate
-                            ? Column(
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        isEndTripButton
+                            ? Container(
+                                child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // SizedBox(height: 50,),
                                   SizedBox(
-                                      height: 300,
-                                      width: 300,
-                                      child: Lottie.asset(
-                                          'assets/lottie/done.json')),
-                                  Center(
-                                    child: Text(
-                                      "TripId: $getTripId",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 15,
-                                        color: primaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
+                                    height: 50,
                                   ),
                                   Center(
                                     child: Text(
-                                      "Trip Ended Successfully!",
+                                      "Reading sensor data...",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20,
@@ -720,302 +683,279 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 35,
-                                  ),
-                                  Center(
-                                    child: Text(
-                                      "Do you want to download the trip data?",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                                  // SizedBox(height: 50,),
-                                  SizedBox(
                                     height: 10,
                                   ),
-                                  CommonButtons.getDottedButton(
-                                      "Download Trip Data", context, () async {
-                                    final androidInfo =
-                                        await DeviceInfoPlugin().androidInfo;
-
-                                    var isStoragePermitted =
-                                        androidInfo.version.sdkInt > 32
-                                            ? await Permission.photos.status
-                                            : await Permission.storage.status;
-                                    if (isStoragePermitted.isGranted) {
-                                      //File copiedFile = File('${ourDirectory!.path}.zip');
-                                      File copiedFile = File(
-                                          '${ourDirectory!.path}/$getTripId.zip');
-
-                                      print('DIR PATH R ${ourDirectory!.path}');
-
-                                      Directory directory;
-
-                                      if (Platform.isAndroid) {
-                                        directory = Directory(
-                                            "storage/emulated/0/Download/$getTripId.zip");
-                                      } else {
-                                        directory =
-                                            await getApplicationDocumentsDirectory();
-                                      }
-
-                                      copiedFile.copy(directory.path);
-
-                                      print(
-                                          'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                      if (copiedFile.existsSync()) {
-                                        Utils.showSnackBar(context,
-                                            scaffoldKey: scaffoldKey,
-                                            message:
-                                                'File downloaded successfully');
-                                      }
-                                    } else {
-                                      await Utils.getStoragePermission(context);
-                                      var isStoragePermitted =
-                                          await Permission.storage.status;
-
-                                      if (isStoragePermitted.isGranted) {
-                                        File copiedFile =
-                                            File('${ourDirectory!.path}.zip');
-
-                                        Directory directory;
-
-                                        if (Platform.isAndroid) {
-                                          directory = Directory(
-                                              "storage/emulated/0/Download/$getTripId.zip");
-                                        } else {
-                                          directory =
-                                              await getApplicationDocumentsDirectory();
-                                        }
-
-                                        copiedFile.copy(directory.path);
-
-                                        print(
-                                            'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                        if (copiedFile.existsSync()) {
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                                  'File downloaded successfully');
-                                        }
-                                      }
-                                    }
-                                  }, primaryColor),
-
+                                  SizedBox(
+                                      height: 300,
+                                      width: 200,
+                                      child: Lottie.asset(
+                                          'assets/lottie/dataFetch.json')),
                                   SizedBox(
                                     height: 10,
                                   ),
                                 ],
-                              )
-                            : Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    TweenAnimationBuilder(
-                                      duration: const Duration(seconds: 2),
-                                      tween: Tween(
-                                          begin: progressBegin, end: progress),
-                                      builder: (context, double value, _) {
-                                        return SizedBox(
-                                          height: 80,
-                                          width: 80,
-                                          child: Stack(
-                                            fit: StackFit.expand,
-                                            children: [
-                                              CircularProgressIndicator(
-                                                value: value,
-                                                backgroundColor:
-                                                    Colors.grey.shade200,
-                                                strokeWidth: 3,
-                                                color: primaryColor,
+                              ))
+                            : isZipFileCreate
+                                ? Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      // SizedBox(height: 50,),
+                                      SizedBox(
+                                          height: 300,
+                                          width: 300,
+                                          child: Lottie.asset(
+                                              'assets/lottie/done.json')),
+                                      Center(
+                                        child: Text(
+                                          "TripId: $getTripId",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 15,
+                                            color: primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Center(
+                                        child: Text(
+                                          "Trip Ended Successfully!",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 35,
+                                      ),
+                                      Center(
+                                        child: Text(
+                                          "Do you want to download the trip data?",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      // SizedBox(height: 50,),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      CommonButtons.getDottedButton(
+                                          "Download Trip Data", context,
+                                          () async {
+                                        final androidInfo =
+                                            await DeviceInfoPlugin()
+                                                .androidInfo;
+
+                                        var isStoragePermitted =
+                                            androidInfo.version.sdkInt > 32
+                                                ? await Permission.photos.status
+                                                : await Permission
+                                                    .storage.status;
+                                        if (isStoragePermitted.isGranted) {
+                                          //File copiedFile = File('${ourDirectory!.path}.zip');
+                                          File copiedFile = File(
+                                              '${ourDirectory!.path}/$getTripId.zip');
+
+                                          print(
+                                              'DIR PATH R ${ourDirectory!.path}');
+
+                                          Directory directory;
+
+                                          if (Platform.isAndroid) {
+                                            directory = Directory(
+                                                "storage/emulated/0/Download/$getTripId.zip");
+                                          } else {
+                                            directory =
+                                                await getApplicationDocumentsDirectory();
+                                          }
+
+                                          copiedFile.copy(directory.path);
+
+                                          print(
+                                              'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                          if (copiedFile.existsSync()) {
+                                            Utils.showSnackBar(context,
+                                                scaffoldKey: scaffoldKey,
+                                                message:
+                                                    'File downloaded successfully');
+                                          }
+                                        } else {
+                                          await Utils.getStoragePermission(
+                                              context);
+                                          var isStoragePermitted =
+                                              await Permission.storage.status;
+
+                                          if (isStoragePermitted.isGranted) {
+                                            File copiedFile = File(
+                                                '${ourDirectory!.path}.zip');
+
+                                            Directory directory;
+
+                                            if (Platform.isAndroid) {
+                                              directory = Directory(
+                                                  "storage/emulated/0/Download/$getTripId.zip");
+                                            } else {
+                                              directory =
+                                                  await getApplicationDocumentsDirectory();
+                                            }
+
+                                            copiedFile.copy(directory.path);
+
+                                            print(
+                                                'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                            if (copiedFile.existsSync()) {
+                                              Utils.showSnackBar(context,
+                                                  scaffoldKey: scaffoldKey,
+                                                  message:
+                                                      'File downloaded successfully');
+                                            }
+                                          }
+                                        }
+                                      }, primaryColor),
+
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  )
+                                : Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        TweenAnimationBuilder(
+                                          duration: const Duration(seconds: 2),
+                                          tween: Tween(
+                                              begin: progressBegin,
+                                              end: progress),
+                                          builder: (context, double value, _) {
+                                            return SizedBox(
+                                              height: 80,
+                                              width: 80,
+                                              child: Stack(
+                                                fit: StackFit.expand,
+                                                children: [
+                                                  CircularProgressIndicator(
+                                                    value: value,
+                                                    backgroundColor:
+                                                        Colors.grey.shade200,
+                                                    strokeWidth: 3,
+                                                    color: primaryColor,
+                                                  ),
+                                                  Center(
+                                                    child: buildProgress(
+                                                        value, 60),
+                                                  )
+                                                ],
                                               ),
-                                              Center(
-                                                child: buildProgress(value, 60),
-                                              )
+                                            );
+                                          },
+                                          onEnd: () {
+                                            debugPrint('END');
+                                            stateSetter(() {
+                                              isStartButton = true;
+                                            });
+                                          },
+                                        ),
+                                        const SizedBox(
+                                          height: 40,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal:
+                                                  displayWidth(context) * 0.15),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              commonText(
+                                                  context: context,
+                                                  text:
+                                                      'Fetching your device details',
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.black,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.032,
+                                                  textAlign: TextAlign.start),
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              TweenAnimationBuilder(
+                                                  duration: const Duration(
+                                                      seconds: 2),
+                                                  tween: Tween(
+                                                      begin:
+                                                          deviceProgressBegin,
+                                                      end: deviceProgress),
+                                                  builder: (context,
+                                                      double value, _) {
+                                                    return SizedBox(
+                                                      height: 20,
+                                                      width: 20,
+                                                      child: Stack(
+                                                        fit: StackFit.expand,
+                                                        children: [
+                                                          CircularProgressIndicator(
+                                                            color: Colors.blue,
+                                                            value: value,
+                                                            backgroundColor:
+                                                                Colors.grey
+                                                                    .shade200,
+                                                            strokeWidth: 2,
+                                                            valueColor:
+                                                                const AlwaysStoppedAnimation(
+                                                                    Colors
+                                                                        .green),
+                                                          ),
+                                                          Center(
+                                                            child: subTitleProgress(
+                                                                value,
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.035),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }),
                                             ],
                                           ),
-                                        );
-                                      },
-                                      onEnd: () {
-                                        debugPrint('END');
-                                        stateSetter(() {
-                                          isStartButton = true;
-                                        });
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              displayWidth(context) * 0.15),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          commonText(
-                                              context: context,
-                                              text:
-                                                  'Fetching your device details',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.032,
-                                              textAlign: TextAlign.start),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          TweenAnimationBuilder(
-                                              duration:
-                                                  const Duration(seconds: 2),
-                                              tween: Tween(
-                                                  begin: deviceProgressBegin,
-                                                  end: deviceProgress),
-                                              builder:
-                                                  (context, double value, _) {
-                                                return SizedBox(
-                                                  height: 20,
-                                                  width: 20,
-                                                  child: Stack(
-                                                    fit: StackFit.expand,
-                                                    children: [
-                                                      CircularProgressIndicator(
-                                                        color: Colors.blue,
-                                                        value: value,
-                                                        backgroundColor: Colors
-                                                            .grey.shade200,
-                                                        strokeWidth: 2,
-                                                        valueColor:
-                                                            const AlwaysStoppedAnimation(
-                                                                Colors.green),
-                                                      ),
-                                                      Center(
-                                                        child: subTitleProgress(
-                                                            value,
-                                                            displayWidth(
-                                                                    context) *
-                                                                0.035),
-                                                      )
-                                                    ],
-                                                  ),
-                                                );
-                                              }),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              displayWidth(context) * 0.15),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          commonText(
-                                              context: context,
-                                              text:
-                                                  'Connecting with your Sensors',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.032,
-                                              textAlign: TextAlign.start),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          TweenAnimationBuilder(
-                                              duration:
-                                                  const Duration(seconds: 2),
-                                              tween: Tween(
-                                                  begin: sensorProgressBegin,
-                                                  end: sensorProgress),
-                                              builder:
-                                                  (context, double value, _) {
-                                                return SizedBox(
-                                                  height: 20,
-                                                  width: 20,
-                                                  child: Stack(
-                                                    fit: StackFit.expand,
-                                                    children: [
-                                                      CircularProgressIndicator(
-                                                        color: Colors.blue,
-                                                        value: value,
-                                                        backgroundColor: Colors
-                                                            .grey.shade200,
-                                                        strokeWidth: 2,
-                                                        valueColor:
-                                                            const AlwaysStoppedAnimation(
-                                                                Colors.green),
-                                                      ),
-                                                      Center(
-                                                        child: subTitleProgress(
-                                                            value,
-                                                            displayWidth(
-                                                                    context) *
-                                                                0.035),
-                                                      )
-                                                    ],
-                                                  ),
-                                                );
-                                              }),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              displayWidth(context) * 0.15),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          commonText(
-                                              context: context,
-                                              text: isLocationPermission
-                                                  ? 'Location permission granted'
-                                                  : 'Location permission is required',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.032,
-                                              textAlign: TextAlign.start),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          !isLocationPermission
-                                              ? SizedBox(
-                                                  height: 20,
-                                                  width: 20,
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.red,
-                                                            width: 2),
-                                                        shape: BoxShape.circle),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        color: Colors.red,
-                                                        size: 14,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                              : TweenAnimationBuilder(
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal:
+                                                  displayWidth(context) * 0.15),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              commonText(
+                                                  context: context,
+                                                  text:
+                                                      'Connecting with your Sensors',
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.black,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.032,
+                                                  textAlign: TextAlign.start),
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              TweenAnimationBuilder(
                                                   duration: const Duration(
                                                       seconds: 2),
                                                   tween: Tween(
@@ -1053,200 +993,218 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       ),
                                                     );
                                                   }),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    isZipFileCreate
-                                        ? InkWell(
-                                            onTap: () async {
-                                              // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
-                                              File copiedFile = File(
-                                                  '${ourDirectory!.path}.zip');
-
-                                              Directory directory;
-
-                                              if (Platform.isAndroid) {
-                                                directory = Directory(
-                                                    "storage/emulated/0/Download/${widget.vessel!.id}.zip");
-                                              } else {
-                                                directory =
-                                                    await getApplicationDocumentsDirectory();
-                                              }
-
-                                              copiedFile.copy(directory.path);
-
-                                              print(
-                                                  'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                              if (copiedFile.existsSync()) {
-                                                Utils.showSnackBar(context,
-                                                    scaffoldKey: scaffoldKey,
-                                                    message:
-                                                        'File downloaded successfully');
-                                              }
-
-                                              // Utils.download(context, scaffoldKey,ourDirectory!.path);
-                                            },
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                commonText(
-                                                    context: context,
-                                                    text: 'Download File',
-                                                    fontWeight: FontWeight.w500,
-                                                    textColor: Colors.black,
-                                                    textSize:
-                                                        displayWidth(context) *
-                                                            0.038,
-                                                    textAlign: TextAlign.start),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Icon(Icons
-                                                      .file_download_outlined),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        : SizedBox(),
-                                    const SizedBox(
-                                      height: 40,
-                                    ),
-                                    isEndTripButton
-                                        ? Container()
-                                        : StatefulBuilder(
-                                            builder: (context,
-                                                StateSetter stateSetter) {
-                                              return Column(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 20,
-                                                            right: 20),
-                                                    child: Container(
-                                                      height: displayHeight(
-                                                                  context) >=
-                                                              680
-                                                          ? displayHeight(
-                                                                  context) *
-                                                              0.056
-                                                          : displayHeight(
-                                                                  context) *
-                                                              0.07,
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      color: backgroundColor,
-                                                      child: InputDecorator(
-                                                        decoration:
-                                                            const InputDecoration(
-                                                          enabledBorder:
-                                                              InputBorder.none,
-                                                          border: OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          0.0))),
-                                                          contentPadding:
-                                                              EdgeInsets.only(
-                                                                  left: 20,
-                                                                  right: 20,
-                                                                  top: 5,
-                                                                  bottom: 5),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal:
+                                                  displayWidth(context) * 0.15),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              commonText(
+                                                  context: context,
+                                                  text: isLocationPermission
+                                                      ? 'Location permission granted'
+                                                      : 'Location permission is required',
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.black,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.032,
+                                                  textAlign: TextAlign.start),
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              !isLocationPermission
+                                                  ? SizedBox(
+                                                      height: 20,
+                                                      width: 20,
+                                                      child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                color:
+                                                                    Colors.red,
+                                                                width: 2),
+                                                            shape: BoxShape
+                                                                .circle),
+                                                        child: Center(
+                                                          child: Icon(
+                                                            Icons.close,
+                                                            color: Colors.red,
+                                                            size: 14,
+                                                          ),
                                                         ),
-
-                                                        child: commonText(
-                                                            context: context,
-                                                            text: vesselName,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            textColor:
-                                                                Colors.black54,
-                                                            textSize:
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.032,
-                                                            textAlign: TextAlign
-                                                                .start),
-
-                                                        //Text(vesselName)
-                                                        //     DropdownButtonHideUnderline(
-                                                        //   child: DropdownButton<dynamic>(
-                                                        //     value: null,
-                                                        //     isDense: true,
-                                                        //     hint:
-                                                        //         Text(selectedVesselName),
-                                                        //     isExpanded: true,
-                                                        //     items: [
-                                                        //       DropdownMenuItem(
-                                                        //           value: '1',
-                                                        //           child:
-                                                        //               Text(vesselName)),
-                                                        //     ],
-                                                        //     onChanged: (newValue) {
-                                                        //       stateSetter(() =>
-                                                        //           selectedVesselName =
-                                                        //               vesselName);
-                                                        //       print(selectedVesselName);
-                                                        //     },
-                                                        //   ),
-                                                        // ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 20,
-                                                            right: 20,
-                                                            top: 10),
-                                                    child: Container(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      height: displayHeight(
-                                                                  context) >=
-                                                              680
-                                                          ? displayHeight(
-                                                                  context) *
-                                                              0.056
-                                                          : displayHeight(
-                                                                  context) *
-                                                              0.07,
-                                                      color: backgroundColor,
-                                                      child: InputDecorator(
-                                                        decoration:
-                                                            const InputDecoration(
-                                                          enabledBorder:
-                                                              InputBorder.none,
-                                                          border: OutlineInputBorder(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          0.0))),
-                                                          contentPadding:
-                                                              EdgeInsets.only(
-                                                                  left: 20,
-                                                                  right: 20,
-                                                                  top: 10,
-                                                                  bottom: 10),
-                                                        ),
-                                                        child:
-                                                            DropdownButtonHideUnderline(
-                                                          child: DropdownButton<
-                                                              dynamic>(
-                                                            value: null,
-                                                            isDense: true,
-                                                            hint: commonText(
+                                                    )
+                                                  : TweenAnimationBuilder(
+                                                      duration: const Duration(
+                                                          seconds: 2),
+                                                      tween: Tween(
+                                                          begin:
+                                                              sensorProgressBegin,
+                                                          end: sensorProgress),
+                                                      builder: (context,
+                                                          double value, _) {
+                                                        return SizedBox(
+                                                          height: 20,
+                                                          width: 20,
+                                                          child: Stack(
+                                                            fit:
+                                                                StackFit.expand,
+                                                            children: [
+                                                              CircularProgressIndicator(
+                                                                color:
+                                                                    Colors.blue,
+                                                                value: value,
+                                                                backgroundColor:
+                                                                    Colors.grey
+                                                                        .shade200,
+                                                                strokeWidth: 2,
+                                                                valueColor:
+                                                                    const AlwaysStoppedAnimation(
+                                                                        Colors
+                                                                            .green),
+                                                              ),
+                                                              Center(
+                                                                child: subTitleProgress(
+                                                                    value,
+                                                                    displayWidth(
+                                                                            context) *
+                                                                        0.035),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 40,
+                                        ),
+                                        isZipFileCreate
+                                            ? InkWell(
+                                                onTap: () async {
+                                                  // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
+                                                  File copiedFile = File(
+                                                      '${ourDirectory!.path}.zip');
+
+                                                  Directory directory;
+
+                                                  if (Platform.isAndroid) {
+                                                    directory = Directory(
+                                                        "storage/emulated/0/Download/${widget.vessel!.id}.zip");
+                                                  } else {
+                                                    directory =
+                                                        await getApplicationDocumentsDirectory();
+                                                  }
+
+                                                  copiedFile
+                                                      .copy(directory.path);
+
+                                                  print(
+                                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                                  if (copiedFile.existsSync()) {
+                                                    Utils.showSnackBar(context,
+                                                        scaffoldKey:
+                                                            scaffoldKey,
+                                                        message:
+                                                            'File downloaded successfully');
+                                                  }
+
+                                                  // Utils.download(context, scaffoldKey,ourDirectory!.path);
+                                                },
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    commonText(
+                                                        context: context,
+                                                        text: 'Download File',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        textColor: Colors.black,
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.038,
+                                                        textAlign:
+                                                            TextAlign.start),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Icon(Icons
+                                                          .file_download_outlined),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            : SizedBox(),
+                                        const SizedBox(
+                                          height: 40,
+                                        ),
+                                        isEndTripButton
+                                            ? Container()
+                                            : StatefulBuilder(
+                                                builder: (context,
+                                                    StateSetter stateSetter) {
+                                                  return Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 20,
+                                                                right: 20),
+                                                        child: Container(
+                                                          height: displayHeight(context) >=
+                                                                  680
+                                                              ? displayHeight(
+                                                                      context) *
+                                                                  0.056
+                                                              : displayHeight(
+                                                                      context) *
+                                                                  0.07,
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          color:
+                                                              backgroundColor,
+                                                          child: InputDecorator(
+                                                            decoration:
+                                                                const InputDecoration(
+                                                              enabledBorder:
+                                                                  InputBorder
+                                                                      .none,
+                                                              border: OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              0.0))),
+                                                              contentPadding:
+                                                                  EdgeInsets.only(
+                                                                      left: 20,
+                                                                      right: 20,
+                                                                      top: 5,
+                                                                      bottom:
+                                                                          5),
+                                                            ),
+
+                                                            child: commonText(
                                                                 context:
                                                                     context,
                                                                 text:
-                                                                    selectedVesselWeight,
+                                                                    vesselName,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -1259,604 +1217,192 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                                 textAlign:
                                                                     TextAlign
                                                                         .start),
-                                                            //  Text(
-                                                            //     '${selectedVesselWeight}'),
-                                                            isExpanded: true,
-                                                            items: [
-                                                              DropdownMenuItem(
-                                                                  value: '1',
-                                                                  child: Text(
-                                                                      'Empty')),
-                                                              DropdownMenuItem(
-                                                                  value: '2',
-                                                                  child: Text(
-                                                                      'Half')),
-                                                              DropdownMenuItem(
-                                                                  value: '3',
-                                                                  child: Text(
-                                                                      'Full')),
-                                                              DropdownMenuItem(
-                                                                  value: '4',
-                                                                  child: Text(
-                                                                      'Variable')),
-                                                            ],
-                                                            onChanged:
-                                                                (weightValue) {
-                                                              stateSetter(() {
-                                                                int.parse(weightValue) ==
-                                                                        1
-                                                                    ? selectedVesselWeight =
-                                                                        'Empty'
-                                                                    : (int.parse(weightValue) ==
-                                                                            2
-                                                                        ? selectedVesselWeight =
-                                                                            'Half'
-                                                                        : (int.parse(weightValue) ==
-                                                                                3
-                                                                            ? selectedVesselWeight =
-                                                                                'Full'
-                                                                            : selectedVesselWeight =
-                                                                                'Variable'));
-                                                              });
-                                                            },
+
+                                                            //Text(vesselName)
+                                                            //     DropdownButtonHideUnderline(
+                                                            //   child: DropdownButton<dynamic>(
+                                                            //     value: null,
+                                                            //     isDense: true,
+                                                            //     hint:
+                                                            //         Text(selectedVesselName),
+                                                            //     isExpanded: true,
+                                                            //     items: [
+                                                            //       DropdownMenuItem(
+                                                            //           value: '1',
+                                                            //           child:
+                                                            //               Text(vesselName)),
+                                                            //     ],
+                                                            //     onChanged: (newValue) {
+                                                            //       stateSetter(() =>
+                                                            //           selectedVesselName =
+                                                            //               vesselName);
+                                                            //       print(selectedVesselName);
+                                                            //     },
+                                                            //   ),
+                                                            // ),
                                                           ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          )
-                                  ],
-                                ),
-                              ),
-                    SizedBox(
-                      //height: 50,
-                      width: displayWidth(context),
-                      child: Container(
-                        margin: EdgeInsets.only(left: 17, right: 17, bottom: 0),
-                        child: isStartButton
-                            ? CommonButtons.getActionButton(
-                                title: 'Start',
-                                context: context,
-                                fontSize: displayWidth(context) * 0.042,
-                                textColor: Colors.white,
-                                buttonPrimaryColor: buttonBGColor,
-                                borderColor: buttonBGColor,
-                                width: displayWidth(context),
-                                onTap: () async {
-                                  debugPrint(
-                                      'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                  if (selectedVesselWeight ==
-                                      'Select Current Load') {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content: Text("Please select weight"),
-                                      duration: Duration(seconds: 1),
-                                      backgroundColor: Colors.blue,
-                                    ));
-                                    return;
-                                  }
-
-                                  print('ISSSSSSSSS');
-
-                                  bool isLocationPermitted =
-                                      await Permission.location.isGranted;
-
-                                  print('ISSSSSSSSS: $isLocationPermitted');
-
-                                  if (isLocationPermitted) {
-                                    // service.startService();
-
-                                    final androidInfo =
-                                        await DeviceInfoPlugin().androidInfo;
-
-                                    var isStoragePermitted =
-                                        androidInfo.version.sdkInt > 32
-                                            ? await Permission.photos.status
-                                            : await Permission.storage.status;
-                                    if (isStoragePermitted.isGranted) {
-                                      bool isNotificationPermitted =
-                                          await Permission
-                                              .notification.isGranted;
-
-                                      if (isNotificationPermitted) {
-                                        bool isServiceRunning =
-                                            await service.isRunning();
-
-                                        print('ISSSSS: $isServiceRunning');
-
-                                        if (!isServiceRunning) {
-                                          service.startService();
-                                          print(
-                                              'View Single: $isServiceRunning');
-                                        }
-
-                                        await Future.delayed(
-                                            Duration(seconds: 3), () {});
-
-                                        bool isServiceRunning2 =
-                                            await service.isRunning();
-                                        print(
-                                            'View Single: $isServiceRunning2');
-
-                                        service.invoke("onStartTrip");
-
-                                        service.invoke("setAsForeground");
-
-                                        getTripId = uuid.v1();
-
-                                        service.invoke(
-                                            'tripId', {'tripId': getTripId});
-
-                                        Future.delayed(Duration(seconds: 2),
-                                            () {
-                                          Timer.periodic(Duration(seconds: 1),
-                                              (timer) async {
-                                            LocationData? locationData =
-                                                await Utils
-                                                    .getCurrentLocation();
-                                            service.invoke('location', {
-                                              'lat': locationData!.latitude,
-                                              'long': locationData.longitude,
-                                            });
-                                          });
-                                        });
-
-                                        stateSetter(() {
-                                          isStartButton = false;
-                                          isEndTripButton = true;
-                                        });
-
-                                        sharedPreferences!
-                                            .setBool('trip_started', true);
-                                        sharedPreferences!.setStringList(
-                                            'trip_data', [
-                                          getTripId,
-                                          widget.vessel!.id!,
-                                          widget.vessel!.name!,
-                                          selectedVesselWeight
-                                        ]);
-
-                                        onSave('', bottomSheetContext, true);
-                                        tripIsRunningOrNot();
-
-                                        // await Permission.storage.request();
-                                      } else {
-                                        await Utils.getNotificationPermission(
-                                            context);
-                                        bool isNotificationPermitted =
-                                            await Permission
-                                                .notification.isGranted;
-                                        if (isNotificationPermitted) {
-                                          bool isServiceRunning =
-                                              await service.isRunning();
-
-                                          print('ISSSSS: $isServiceRunning');
-
-                                          if (!isServiceRunning) {
-                                            service.startService();
-                                            print(
-                                                'View Single: $isServiceRunning');
-                                          }
-
-                                          await Future.delayed(
-                                              Duration(seconds: 3), () {});
-
-                                          bool isServiceRunning2 =
-                                              await service.isRunning();
-                                          print(
-                                              'View Single: $isServiceRunning2');
-
-                                          service.invoke("onStartTrip");
-
-                                          service.invoke("setAsForeground");
-
-                                          getTripId = uuid.v1();
-
-                                          service.invoke(
-                                              'tripId', {'tripId': getTripId});
-
-                                          Future.delayed(Duration(seconds: 2),
-                                              () {
-                                            Timer.periodic(Duration(seconds: 1),
-                                                (timer) async {
-                                              LocationData? locationData =
-                                                  await Utils
-                                                      .getCurrentLocation();
-                                              service.invoke('location', {
-                                                'lat': locationData!.latitude,
-                                                'long': locationData.longitude,
-                                              });
-                                            });
-                                          });
-
-                                          stateSetter(() {
-                                            isStartButton = false;
-                                            isEndTripButton = true;
-                                          });
-
-                                          sharedPreferences!
-                                              .setBool('trip_started', true);
-                                          sharedPreferences!.setStringList(
-                                              'trip_data', [
-                                            getTripId,
-                                            widget.vessel!.id!,
-                                            widget.vessel!.name!,
-                                            selectedVesselWeight
-                                          ]);
-
-                                          onSave('', bottomSheetContext, true);
-                                          // tripIsRunningOrNot();
-
-                                          // await Permission.storage.request();
-                                        }
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 20,
+                                                                right: 20,
+                                                                top: 10),
+                                                        child: Container(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          height: displayHeight(context) >=
+                                                                  680
+                                                              ? displayHeight(
+                                                                      context) *
+                                                                  0.056
+                                                              : displayHeight(
+                                                                      context) *
+                                                                  0.07,
+                                                          color:
+                                                              backgroundColor,
+                                                          child: InputDecorator(
+                                                            decoration:
+                                                                const InputDecoration(
+                                                              enabledBorder:
+                                                                  InputBorder
+                                                                      .none,
+                                                              border: OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              0.0))),
+                                                              contentPadding:
+                                                                  EdgeInsets.only(
+                                                                      left: 20,
+                                                                      right: 20,
+                                                                      top: 10,
+                                                                      bottom:
+                                                                          10),
+                                                            ),
+                                                            child:
+                                                                DropdownButtonHideUnderline(
+                                                              child:
+                                                                  DropdownButton<
+                                                                      dynamic>(
+                                                                value: null,
+                                                                isDense: true,
+                                                                hint: commonText(
+                                                                    context:
+                                                                        context,
+                                                                    text:
+                                                                        selectedVesselWeight,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    textColor:
+                                                                        Colors
+                                                                            .black54,
+                                                                    textSize:
+                                                                        displayWidth(context) *
+                                                                            0.032,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .start),
+                                                                //  Text(
+                                                                //     '${selectedVesselWeight}'),
+                                                                isExpanded:
+                                                                    true,
+                                                                items: [
+                                                                  DropdownMenuItem(
+                                                                      value:
+                                                                          '1',
+                                                                      child: Text(
+                                                                          'Empty')),
+                                                                  DropdownMenuItem(
+                                                                      value:
+                                                                          '2',
+                                                                      child: Text(
+                                                                          'Half')),
+                                                                  DropdownMenuItem(
+                                                                      value:
+                                                                          '3',
+                                                                      child: Text(
+                                                                          'Full')),
+                                                                  DropdownMenuItem(
+                                                                      value:
+                                                                          '4',
+                                                                      child: Text(
+                                                                          'Variable')),
+                                                                ],
+                                                                onChanged:
+                                                                    (weightValue) {
+                                                                  stateSetter(
+                                                                      () {
+                                                                    int.parse(weightValue) ==
+                                                                            1
+                                                                        ? selectedVesselWeight =
+                                                                            'Empty'
+                                                                        : (int.parse(weightValue) ==
+                                                                                2
+                                                                            ? selectedVesselWeight =
+                                                                                'Half'
+                                                                            : (int.parse(weightValue) == 3
+                                                                                ? selectedVesselWeight = 'Full'
+                                                                                : selectedVesselWeight = 'Variable'));
+                                                                  });
+                                                                },
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              )
+                                      ],
+                                    ),
+                                  ),
+                        SizedBox(
+                          //height: 50,
+                          width: displayWidth(context),
+                          child: Container(
+                            margin:
+                                EdgeInsets.only(left: 17, right: 17, bottom: 0),
+                            child: isStartButton
+                                ? CommonButtons.getActionButton(
+                                    title: 'Start',
+                                    context: context,
+                                    fontSize: displayWidth(context) * 0.042,
+                                    textColor: Colors.white,
+                                    buttonPrimaryColor: buttonBGColor,
+                                    borderColor: buttonBGColor,
+                                    width: displayWidth(context),
+                                    onTap: () async {
+                                      debugPrint(
+                                          'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+                                      if (selectedVesselWeight ==
+                                          'Select Current Load') {
+                                        debugPrint(
+                                            'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          behavior: SnackBarBehavior.floating,
+                                          content: Text("Please select weight"),
+                                          duration: Duration(seconds: 1),
+                                          backgroundColor: Colors.blue,
+                                        ));
+                                        return;
                                       }
-                                    } else {
-                                      await Utils.getStoragePermission(context);
-                                      final androidInfo =
-                                          await DeviceInfoPlugin().androidInfo;
 
-                                      var isStoragePermitted =
-                                          androidInfo.version.sdkInt > 32
-                                              ? await Permission.photos.status
-                                              : await Permission.storage.status;
+                                      print('ISSSSSSSSS');
 
-                                      if (isStoragePermitted.isGranted) {
-                                        bool isNotificationPermitted =
-                                            await Permission
-                                                .notification.isGranted;
+                                      bool isLocationPermitted =
+                                          await Permission.location.isGranted;
 
-                                        if (isNotificationPermitted) {
-                                          bool isServiceRunning =
-                                              await service.isRunning();
+                                      print('ISSSSSSSSS: $isLocationPermitted');
 
-                                          print('ISSSSS: $isServiceRunning');
+                                      if (isLocationPermitted) {
+                                        // service.startService();
 
-                                          if (!isServiceRunning) {
-                                            service.startService();
-                                            print(
-                                                'View Single: $isServiceRunning');
-                                          }
-
-                                          await Future.delayed(
-                                              Duration(seconds: 3), () {});
-
-                                          bool isServiceRunning2 =
-                                              await service.isRunning();
-                                          print(
-                                              'View Single: $isServiceRunning2');
-
-                                          service.invoke("onStartTrip");
-
-                                          service.invoke("setAsForeground");
-
-                                          getTripId = uuid.v1();
-
-                                          service.invoke(
-                                              'tripId', {'tripId': getTripId});
-
-                                          Future.delayed(Duration(seconds: 2),
-                                              () {
-                                            Timer.periodic(Duration(seconds: 1),
-                                                (timer) async {
-                                              LocationData? locationData =
-                                                  await Utils
-                                                      .getCurrentLocation();
-                                              service.invoke('location', {
-                                                'lat': locationData!.latitude,
-                                                'long': locationData.longitude,
-                                              });
-                                            });
-                                          });
-
-                                          stateSetter(() {
-                                            isStartButton = false;
-                                            isEndTripButton = true;
-                                          });
-
-                                          sharedPreferences!
-                                              .setBool('trip_started', true);
-                                          sharedPreferences!.setStringList(
-                                              'trip_data', [
-                                            getTripId,
-                                            widget.vessel!.id!,
-                                            widget.vessel!.name!,
-                                            selectedVesselWeight
-                                          ]);
-
-                                          onSave('', bottomSheetContext, true);
-                                          // tripIsRunningOrNot();
-
-                                          // await Permission.storage.request();
-                                        } else {
-                                          await Utils.getNotificationPermission(
-                                              context);
-                                          bool isNotificationPermitted =
-                                              await Permission
-                                                  .notification.isGranted;
-                                          if (isNotificationPermitted) {
-                                            bool isServiceRunning =
-                                                await service.isRunning();
-
-                                            print('ISSSSS: $isServiceRunning');
-
-                                            if (!isServiceRunning) {
-                                              service.startService();
-                                              print(
-                                                  'View Single: $isServiceRunning');
-                                            }
-
-                                            await Future.delayed(
-                                                Duration(seconds: 3), () {});
-
-                                            bool isServiceRunning2 =
-                                                await service.isRunning();
-                                            print(
-                                                'View Single: $isServiceRunning2');
-
-                                            service.invoke("onStartTrip");
-
-                                            service.invoke("setAsForeground");
-
-                                            getTripId = uuid.v1();
-
-                                            service.invoke('tripId',
-                                                {'tripId': getTripId});
-
-                                            Future.delayed(Duration(seconds: 2),
-                                                () {
-                                              Timer.periodic(
-                                                  Duration(seconds: 1),
-                                                  (timer) async {
-                                                LocationData? locationData =
-                                                    await Utils
-                                                        .getCurrentLocation();
-                                                service.invoke('location', {
-                                                  'lat': locationData!.latitude,
-                                                  'long':
-                                                      locationData.longitude,
-                                                });
-                                              });
-                                            });
-
-                                            stateSetter(() {
-                                              isStartButton = false;
-                                              isEndTripButton = true;
-                                            });
-
-                                            sharedPreferences!
-                                                .setBool('trip_started', true);
-                                            sharedPreferences!.setStringList(
-                                                'trip_data', [
-                                              getTripId,
-                                              widget.vessel!.id!,
-                                              widget.vessel!.name!,
-                                              selectedVesselWeight
-                                            ]);
-
-                                            onSave(
-                                                '', bottomSheetContext, true);
-
-                                            // tripIsRunningOrNot();
-
-                                            // await Permission.storage.request();
-                                          }
-                                        }
-                                      }
-                                    }
-                                  } else {
-                                    await Utils.getLocationPermission(
-                                        context, scaffoldKey);
-                                    bool isLocationPermitted =
-                                        await Permission.location.isGranted;
-
-                                    if (isLocationPermitted) {
-                                      // service.startService();
-
-                                      final androidInfo =
-                                          await DeviceInfoPlugin().androidInfo;
-
-                                      var isStoragePermitted =
-                                          androidInfo.version.sdkInt > 32
-                                              ? await Permission.photos.status
-                                              : await Permission.storage.status;
-                                      if (isStoragePermitted.isGranted) {
-                                        bool isNotificationPermitted =
-                                            await Permission
-                                                .notification.isGranted;
-
-                                        if (isNotificationPermitted) {
-                                          bool isServiceRunning =
-                                              await service.isRunning();
-
-                                          print('ISSSSS: $isServiceRunning');
-
-                                          if (!isServiceRunning) {
-                                            service.startService();
-                                            print(
-                                                'View Single: $isServiceRunning');
-                                          }
-
-                                          await Future.delayed(
-                                              Duration(seconds: 3), () {});
-
-                                          bool isServiceRunning2 =
-                                              await service.isRunning();
-                                          print(
-                                              'View Single: $isServiceRunning2');
-
-                                          service.invoke("onStartTrip");
-
-                                          service.invoke("setAsForeground");
-
-                                          getTripId = uuid.v1();
-
-                                          service.invoke(
-                                              'tripId', {'tripId': getTripId});
-
-                                          Future.delayed(Duration(seconds: 2),
-                                              () {
-                                            Timer.periodic(Duration(seconds: 1),
-                                                (timer) async {
-                                              LocationData? locationData =
-                                                  await Utils
-                                                      .getCurrentLocation();
-                                              service.invoke('location', {
-                                                'lat': locationData!.latitude,
-                                                'long': locationData.longitude,
-                                              });
-                                            });
-                                          });
-
-                                          stateSetter(() {
-                                            isStartButton = false;
-                                            isEndTripButton = true;
-                                          });
-
-                                          sharedPreferences!
-                                              .setBool('trip_started', true);
-                                          sharedPreferences!.setStringList(
-                                              'trip_data', [
-                                            getTripId,
-                                            widget.vessel!.id!,
-                                            widget.vessel!.name!,
-                                            selectedVesselWeight
-                                          ]);
-
-                                          onSave('', bottomSheetContext, true);
-                                          // tripIsRunningOrNot();
-
-                                          // await Permission.storage.request();
-                                        } else {
-                                          await Utils.getNotificationPermission(
-                                              context);
-                                          bool isNotificationPermitted =
-                                              await Permission
-                                                  .notification.isGranted;
-                                          if (isNotificationPermitted) {
-                                            bool isServiceRunning =
-                                                await service.isRunning();
-
-                                            print('ISSSSS: $isServiceRunning');
-
-                                            if (!isServiceRunning) {
-                                              service.startService();
-                                              print(
-                                                  'View Single: $isServiceRunning');
-                                            }
-
-                                            await Future.delayed(
-                                                Duration(seconds: 3), () {});
-
-                                            bool isServiceRunning2 =
-                                                await service.isRunning();
-                                            print(
-                                                'View Single: $isServiceRunning2');
-
-                                            service.invoke("onStartTrip");
-
-                                            service.invoke("setAsForeground");
-
-                                            getTripId = uuid.v1();
-
-                                            service.invoke('tripId',
-                                                {'tripId': getTripId});
-
-                                            Future.delayed(Duration(seconds: 2),
-                                                () {
-                                              Timer.periodic(
-                                                  Duration(seconds: 1),
-                                                  (timer) async {
-                                                LocationData? locationData =
-                                                    await Utils
-                                                        .getCurrentLocation();
-                                                service.invoke('location', {
-                                                  'lat': locationData!.latitude,
-                                                  'long':
-                                                      locationData.longitude,
-                                                });
-                                              });
-                                            });
-
-                                            stateSetter(() {
-                                              isStartButton = false;
-                                              isEndTripButton = true;
-                                            });
-
-                                            sharedPreferences!
-                                                .setBool('trip_started', true);
-                                            sharedPreferences!.setStringList(
-                                                'trip_data', [
-                                              getTripId,
-                                              widget.vessel!.id!,
-                                              widget.vessel!.name!,
-                                              selectedVesselWeight
-                                            ]);
-
-                                            onSave(
-                                                '', bottomSheetContext, true);
-                                            // tripIsRunningOrNot();
-
-                                            // await Permission.storage.request();
-                                          }
-                                        }
-
-                                        /*bool isServiceRunning =
-                                            await service.isRunning();
-
-                                        if (!isServiceRunning) {
-                                          service.startService();
-                                        }
-
-                                        await Future.delayed(
-                                            Duration(seconds: 3), () {});
-
-                                        service.invoke("onStartTrip");
-
-                                        service.invoke("setAsForeground");
-
-                                        getTripId = uuid.v1();
-
-                                        service.invoke(
-                                            'tripId', {'tripId': getTripId});
-
-                                        Future.delayed(Duration(seconds: 2),
-                                            () {
-                                          Timer.periodic(Duration(seconds: 1),
-                                              (timer) async {
-                                            LocationData? locationData =
-                                                await Utils
-                                                    .getCurrentLocation();
-                                            service.invoke('location', {
-                                              'lat': locationData!.latitude,
-                                              'long': locationData.longitude,
-                                            });
-                                          });
-                                        });
-
-                                        stateSetter(() {
-                                          isStartButton = false;
-                                          isEndTripButton = true;
-                                        });
-
-                                        sharedPreferences!
-                                            .setBool('trip_started', true);
-                                        sharedPreferences!.setStringList(
-                                            'trip_data', [
-                                          getTripId,
-                                          widget.vessel!.id!,
-                                          widget.vessel!.name!,
-                                          selectedVesselWeight
-                                        ]);
-
-                                        onSave('', bottomSheetContext, true);*/
-
-                                        // await Permission.storage.request();
-                                      } else {
-                                        await Utils.getStoragePermission(
-                                            context);
                                         final androidInfo =
                                             await DeviceInfoPlugin()
                                                 .androidInfo;
@@ -1866,7 +1412,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 ? await Permission.photos.status
                                                 : await Permission
                                                     .storage.status;
-
                                         if (isStoragePermitted.isGranted) {
                                           bool isNotificationPermitted =
                                               await Permission
@@ -1934,7 +1479,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                             onSave(
                                                 '', bottomSheetContext, true);
-                                            // tripIsRunningOrNot();
+                                            tripIsRunningOrNot();
 
                                             // await Permission.storage.request();
                                           } else {
@@ -2013,140 +1558,629 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               // await Permission.storage.request();
                                             }
                                           }
+                                        } else {
+                                          await Utils.getStoragePermission(
+                                              context);
+                                          final androidInfo =
+                                              await DeviceInfoPlugin()
+                                                  .androidInfo;
 
-                                          /*bool isServiceRunning =
-                                              await service.isRunning();
+                                          var isStoragePermitted = androidInfo
+                                                      .version.sdkInt >
+                                                  32
+                                              ? await Permission.photos.status
+                                              : await Permission.storage.status;
 
-                                          if (!isServiceRunning) {
-                                            service.startService();
+                                          if (isStoragePermitted.isGranted) {
+                                            bool isNotificationPermitted =
+                                                await Permission
+                                                    .notification.isGranted;
+
+                                            if (isNotificationPermitted) {
+                                              bool isServiceRunning =
+                                                  await service.isRunning();
+
+                                              print(
+                                                  'ISSSSS: $isServiceRunning');
+
+                                              if (!isServiceRunning) {
+                                                service.startService();
+                                                print(
+                                                    'View Single: $isServiceRunning');
+                                              }
+
+                                              await Future.delayed(
+                                                  Duration(seconds: 3), () {});
+
+                                              bool isServiceRunning2 =
+                                                  await service.isRunning();
+                                              print(
+                                                  'View Single: $isServiceRunning2');
+
+                                              service.invoke("onStartTrip");
+
+                                              service.invoke("setAsForeground");
+
+                                              getTripId = uuid.v1();
+
+                                              service.invoke('tripId',
+                                                  {'tripId': getTripId});
+
+                                              Future.delayed(
+                                                  Duration(seconds: 2), () {
+                                                Timer.periodic(
+                                                    Duration(seconds: 1),
+                                                    (timer) async {
+                                                  LocationData? locationData =
+                                                      await Utils
+                                                          .getCurrentLocation();
+                                                  service.invoke('location', {
+                                                    'lat':
+                                                        locationData!.latitude,
+                                                    'long':
+                                                        locationData.longitude,
+                                                  });
+                                                });
+                                              });
+
+                                              stateSetter(() {
+                                                isStartButton = false;
+                                                isEndTripButton = true;
+                                              });
+
+                                              sharedPreferences!.setBool(
+                                                  'trip_started', true);
+                                              sharedPreferences!.setStringList(
+                                                  'trip_data', [
+                                                getTripId,
+                                                widget.vessel!.id!,
+                                                widget.vessel!.name!,
+                                                selectedVesselWeight
+                                              ]);
+
+                                              onSave(
+                                                  '', bottomSheetContext, true);
+                                              // tripIsRunningOrNot();
+
+                                              // await Permission.storage.request();
+                                            } else {
+                                              await Utils
+                                                  .getNotificationPermission(
+                                                      context);
+                                              bool isNotificationPermitted =
+                                                  await Permission
+                                                      .notification.isGranted;
+                                              if (isNotificationPermitted) {
+                                                bool isServiceRunning =
+                                                    await service.isRunning();
+
+                                                print(
+                                                    'ISSSSS: $isServiceRunning');
+
+                                                if (!isServiceRunning) {
+                                                  service.startService();
+                                                  print(
+                                                      'View Single: $isServiceRunning');
+                                                }
+
+                                                await Future.delayed(
+                                                    Duration(seconds: 3),
+                                                    () {});
+
+                                                bool isServiceRunning2 =
+                                                    await service.isRunning();
+                                                print(
+                                                    'View Single: $isServiceRunning2');
+
+                                                service.invoke("onStartTrip");
+
+                                                service
+                                                    .invoke("setAsForeground");
+
+                                                getTripId = uuid.v1();
+
+                                                service.invoke('tripId',
+                                                    {'tripId': getTripId});
+
+                                                Future.delayed(
+                                                    Duration(seconds: 2), () {
+                                                  Timer.periodic(
+                                                      Duration(seconds: 1),
+                                                      (timer) async {
+                                                    LocationData? locationData =
+                                                        await Utils
+                                                            .getCurrentLocation();
+                                                    service.invoke('location', {
+                                                      'lat': locationData!
+                                                          .latitude,
+                                                      'long': locationData
+                                                          .longitude,
+                                                    });
+                                                  });
+                                                });
+
+                                                stateSetter(() {
+                                                  isStartButton = false;
+                                                  isEndTripButton = true;
+                                                });
+
+                                                sharedPreferences!.setBool(
+                                                    'trip_started', true);
+                                                sharedPreferences!
+                                                    .setStringList(
+                                                        'trip_data', [
+                                                  getTripId,
+                                                  widget.vessel!.id!,
+                                                  widget.vessel!.name!,
+                                                  selectedVesselWeight
+                                                ]);
+
+                                                onSave('', bottomSheetContext,
+                                                    true);
+
+                                                // tripIsRunningOrNot();
+
+                                                // await Permission.storage.request();
+                                              }
+                                            }
+                                          }
+                                        }
+                                      } else {
+                                        await Utils.getLocationPermission(
+                                            context, scaffoldKey);
+                                        bool isLocationPermitted =
+                                            await Permission.location.isGranted;
+
+                                        if (isLocationPermitted) {
+                                          // service.startService();
+
+                                          final androidInfo =
+                                              await DeviceInfoPlugin()
+                                                  .androidInfo;
+
+                                          var isStoragePermitted = androidInfo
+                                                      .version.sdkInt >
+                                                  32
+                                              ? await Permission.photos.status
+                                              : await Permission.storage.status;
+                                          if (isStoragePermitted.isGranted) {
+                                            bool isNotificationPermitted =
+                                                await Permission
+                                                    .notification.isGranted;
+
+                                            if (isNotificationPermitted) {
+                                              bool isServiceRunning =
+                                                  await service.isRunning();
+
+                                              print(
+                                                  'ISSSSS: $isServiceRunning');
+
+                                              if (!isServiceRunning) {
+                                                service.startService();
+                                                print(
+                                                    'View Single: $isServiceRunning');
+                                              }
+
+                                              await Future.delayed(
+                                                  Duration(seconds: 3), () {});
+
+                                              bool isServiceRunning2 =
+                                                  await service.isRunning();
+                                              print(
+                                                  'View Single: $isServiceRunning2');
+
+                                              service.invoke("onStartTrip");
+
+                                              service.invoke("setAsForeground");
+
+                                              getTripId = uuid.v1();
+
+                                              service.invoke('tripId',
+                                                  {'tripId': getTripId});
+
+                                              Future.delayed(
+                                                  Duration(seconds: 2), () {
+                                                Timer.periodic(
+                                                    Duration(seconds: 1),
+                                                    (timer) async {
+                                                  LocationData? locationData =
+                                                      await Utils
+                                                          .getCurrentLocation();
+                                                  service.invoke('location', {
+                                                    'lat':
+                                                        locationData!.latitude,
+                                                    'long':
+                                                        locationData.longitude,
+                                                  });
+                                                });
+                                              });
+
+                                              stateSetter(() {
+                                                isStartButton = false;
+                                                isEndTripButton = true;
+                                              });
+
+                                              sharedPreferences!.setBool(
+                                                  'trip_started', true);
+                                              sharedPreferences!.setStringList(
+                                                  'trip_data', [
+                                                getTripId,
+                                                widget.vessel!.id!,
+                                                widget.vessel!.name!,
+                                                selectedVesselWeight
+                                              ]);
+
+                                              onSave(
+                                                  '', bottomSheetContext, true);
+                                              // tripIsRunningOrNot();
+
+                                              // await Permission.storage.request();
+                                            } else {
+                                              await Utils
+                                                  .getNotificationPermission(
+                                                      context);
+                                              bool isNotificationPermitted =
+                                                  await Permission
+                                                      .notification.isGranted;
+                                              if (isNotificationPermitted) {
+                                                bool isServiceRunning =
+                                                    await service.isRunning();
+
+                                                print(
+                                                    'ISSSSS: $isServiceRunning');
+
+                                                if (!isServiceRunning) {
+                                                  service.startService();
+                                                  print(
+                                                      'View Single: $isServiceRunning');
+                                                }
+
+                                                await Future.delayed(
+                                                    Duration(seconds: 3),
+                                                    () {});
+
+                                                bool isServiceRunning2 =
+                                                    await service.isRunning();
+                                                print(
+                                                    'View Single: $isServiceRunning2');
+
+                                                service.invoke("onStartTrip");
+
+                                                service
+                                                    .invoke("setAsForeground");
+
+                                                getTripId = uuid.v1();
+
+                                                service.invoke('tripId',
+                                                    {'tripId': getTripId});
+
+                                                Future.delayed(
+                                                    Duration(seconds: 2), () {
+                                                  Timer.periodic(
+                                                      Duration(seconds: 1),
+                                                      (timer) async {
+                                                    LocationData? locationData =
+                                                        await Utils
+                                                            .getCurrentLocation();
+                                                    service.invoke('location', {
+                                                      'lat': locationData!
+                                                          .latitude,
+                                                      'long': locationData
+                                                          .longitude,
+                                                    });
+                                                  });
+                                                });
+
+                                                stateSetter(() {
+                                                  isStartButton = false;
+                                                  isEndTripButton = true;
+                                                });
+
+                                                sharedPreferences!.setBool(
+                                                    'trip_started', true);
+                                                sharedPreferences!
+                                                    .setStringList(
+                                                        'trip_data', [
+                                                  getTripId,
+                                                  widget.vessel!.id!,
+                                                  widget.vessel!.name!,
+                                                  selectedVesselWeight
+                                                ]);
+
+                                                onSave('', bottomSheetContext,
+                                                    true);
+                                                // tripIsRunningOrNot();
+
+                                                // await Permission.storage.request();
+                                              }
+                                            }
+
+                                            /*bool isServiceRunning =
+                                                    await service.isRunning();
+
+                                                if (!isServiceRunning) {
+                                                  service.startService();
+                                                }
+
+                                                await Future.delayed(
+                                                    Duration(seconds: 3), () {});
+
+                                                service.invoke("onStartTrip");
+
+                                                service.invoke("setAsForeground");
+
+                                                getTripId = uuid.v1();
+
+                                                service.invoke(
+                                                    'tripId', {'tripId': getTripId});
+
+                                                Future.delayed(Duration(seconds: 2),
+                                                    () {
+                                                  Timer.periodic(Duration(seconds: 1),
+                                                      (timer) async {
+                                                    LocationData? locationData =
+                                                        await Utils
+                                                            .getCurrentLocation();
+                                                    service.invoke('location', {
+                                                      'lat': locationData!.latitude,
+                                                      'long': locationData.longitude,
+                                                    });
+                                                  });
+                                                });
+
+                                                stateSetter(() {
+                                                  isStartButton = false;
+                                                  isEndTripButton = true;
+                                                });
+
+                                                sharedPreferences!
+                                                    .setBool('trip_started', true);
+                                                sharedPreferences!.setStringList(
+                                                    'trip_data', [
+                                                  getTripId,
+                                                  widget.vessel!.id!,
+                                                  widget.vessel!.name!,
+                                                  selectedVesselWeight
+                                                ]);
+
+                                                onSave('', bottomSheetContext, true);*/
+
+                                            // await Permission.storage.request();
+                                          } else {
+                                            await Utils.getStoragePermission(
+                                                context);
+                                            final androidInfo =
+                                                await DeviceInfoPlugin()
+                                                    .androidInfo;
+
+                                            var isStoragePermitted =
+                                                androidInfo.version.sdkInt > 32
+                                                    ? await Permission
+                                                        .photos.status
+                                                    : await Permission
+                                                        .storage.status;
+
+                                            if (isStoragePermitted.isGranted) {
+                                              bool isNotificationPermitted =
+                                                  await Permission
+                                                      .notification.isGranted;
+
+                                              if (isNotificationPermitted) {
+                                                bool isServiceRunning =
+                                                    await service.isRunning();
+
+                                                print(
+                                                    'ISSSSS: $isServiceRunning');
+
+                                                if (!isServiceRunning) {
+                                                  service.startService();
+                                                  print(
+                                                      'View Single: $isServiceRunning');
+                                                }
+
+                                                await Future.delayed(
+                                                    Duration(seconds: 3),
+                                                    () {});
+
+                                                bool isServiceRunning2 =
+                                                    await service.isRunning();
+                                                print(
+                                                    'View Single: $isServiceRunning2');
+
+                                                service.invoke("onStartTrip");
+
+                                                service
+                                                    .invoke("setAsForeground");
+
+                                                getTripId = uuid.v1();
+
+                                                service.invoke('tripId',
+                                                    {'tripId': getTripId});
+
+                                                Future.delayed(
+                                                    Duration(seconds: 2), () {
+                                                  Timer.periodic(
+                                                      Duration(seconds: 1),
+                                                      (timer) async {
+                                                    LocationData? locationData =
+                                                        await Utils
+                                                            .getCurrentLocation();
+                                                    service.invoke('location', {
+                                                      'lat': locationData!
+                                                          .latitude,
+                                                      'long': locationData
+                                                          .longitude,
+                                                    });
+                                                  });
+                                                });
+
+                                                stateSetter(() {
+                                                  isStartButton = false;
+                                                  isEndTripButton = true;
+                                                });
+
+                                                sharedPreferences!.setBool(
+                                                    'trip_started', true);
+                                                sharedPreferences!
+                                                    .setStringList(
+                                                        'trip_data', [
+                                                  getTripId,
+                                                  widget.vessel!.id!,
+                                                  widget.vessel!.name!,
+                                                  selectedVesselWeight
+                                                ]);
+
+                                                onSave('', bottomSheetContext,
+                                                    true);
+                                                // tripIsRunningOrNot();
+
+                                                // await Permission.storage.request();
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                        context);
+                                                bool isNotificationPermitted =
+                                                    await Permission
+                                                        .notification.isGranted;
+                                                if (isNotificationPermitted) {
+                                                  bool isServiceRunning =
+                                                      await service.isRunning();
+
+                                                  print(
+                                                      'ISSSSS: $isServiceRunning');
+
+                                                  if (!isServiceRunning) {
+                                                    service.startService();
+                                                    print(
+                                                        'View Single: $isServiceRunning');
+                                                  }
+
+                                                  await Future.delayed(
+                                                      Duration(seconds: 3),
+                                                      () {});
+
+                                                  bool isServiceRunning2 =
+                                                      await service.isRunning();
+                                                  print(
+                                                      'View Single: $isServiceRunning2');
+
+                                                  service.invoke("onStartTrip");
+
+                                                  service.invoke(
+                                                      "setAsForeground");
+
+                                                  getTripId = uuid.v1();
+
+                                                  service.invoke('tripId',
+                                                      {'tripId': getTripId});
+
+                                                  Future.delayed(
+                                                      Duration(seconds: 2), () {
+                                                    Timer.periodic(
+                                                        Duration(seconds: 1),
+                                                        (timer) async {
+                                                      LocationData?
+                                                          locationData =
+                                                          await Utils
+                                                              .getCurrentLocation();
+                                                      service
+                                                          .invoke('location', {
+                                                        'lat': locationData!
+                                                            .latitude,
+                                                        'long': locationData
+                                                            .longitude,
+                                                      });
+                                                    });
+                                                  });
+
+                                                  stateSetter(() {
+                                                    isStartButton = false;
+                                                    isEndTripButton = true;
+                                                  });
+
+                                                  sharedPreferences!.setBool(
+                                                      'trip_started', true);
+                                                  sharedPreferences!
+                                                      .setStringList(
+                                                          'trip_data', [
+                                                    getTripId,
+                                                    widget.vessel!.id!,
+                                                    widget.vessel!.name!,
+                                                    selectedVesselWeight
+                                                  ]);
+
+                                                  onSave('', bottomSheetContext,
+                                                      true);
+                                                  // tripIsRunningOrNot();
+
+                                                  // await Permission.storage.request();
+                                                }
+                                              }
+
+                                              /*bool isServiceRunning =
+                                                      await service.isRunning();
+
+                                                  if (!isServiceRunning) {
+                                                    service.startService();
+                                                  }
+
+                                                  await Future.delayed(
+                                                      Duration(seconds: 3), () {});
+
+                                                  service.invoke("onStartTrip");
+
+                                                  service.invoke("setAsForeground");
+
+                                                  getTripId = uuid.v1();
+
+                                                  service.invoke(
+                                                      'tripId', {'tripId': getTripId});
+
+                                                  Future.delayed(Duration(seconds: 2),
+                                                      () {
+                                                    Timer.periodic(Duration(seconds: 1),
+                                                        (timer) async {
+                                                      LocationData? locationData =
+                                                          await Utils
+                                                              .getCurrentLocation();
+                                                      service.invoke('location', {
+                                                        'lat': locationData!.latitude,
+                                                        'long': locationData.longitude,
+                                                      });
+                                                    });
+                                                  });
+
+                                                  stateSetter(() {
+                                                    isStartButton = false;
+                                                    isEndTripButton = true;
+                                                  });
+
+                                                  sharedPreferences!
+                                                      .setBool('trip_started', true);
+                                                  sharedPreferences!.setStringList(
+                                                      'trip_data', [
+                                                    getTripId,
+                                                    widget.vessel!.id!,
+                                                    widget.vessel!.name!,
+                                                    selectedVesselWeight
+                                                  ]);
+
+                                                  onSave('', bottomSheetContext, true);*/
+                                            }
                                           }
 
-                                          await Future.delayed(
-                                              Duration(seconds: 3), () {});
+                                          /// TODO Further Process
+                                          // await getLocationData();
 
-                                          service.invoke("onStartTrip");
-
-                                          service.invoke("setAsForeground");
-
-                                          getTripId = uuid.v1();
-
-                                          service.invoke(
-                                              'tripId', {'tripId': getTripId});
-
-                                          Future.delayed(Duration(seconds: 2),
-                                              () {
-                                            Timer.periodic(Duration(seconds: 1),
-                                                (timer) async {
-                                              LocationData? locationData =
-                                                  await Utils
-                                                      .getCurrentLocation();
-                                              service.invoke('location', {
-                                                'lat': locationData!.latitude,
-                                                'long': locationData.longitude,
-                                              });
-                                            });
-                                          });
-
-                                          stateSetter(() {
-                                            isStartButton = false;
-                                            isEndTripButton = true;
-                                          });
-
-                                          sharedPreferences!
-                                              .setBool('trip_started', true);
-                                          sharedPreferences!.setStringList(
-                                              'trip_data', [
-                                            getTripId,
-                                            widget.vessel!.id!,
-                                            widget.vessel!.name!,
-                                            selectedVesselWeight
-                                          ]);
-
-                                          onSave('', bottomSheetContext, true);*/
+                                          /// SAVED Sensor data
+                                          // startSensorFunctionality(stateSetter);
                                         }
                                       }
-
-                                      /// TODO Further Process
-                                      // await getLocationData();
-
-                                      /// SAVED Sensor data
-                                      // startSensorFunctionality(stateSetter);
-                                    }
-                                  }
-                                  // startTripService(stateSetter);
-                                })
-                            : isEndTripButton
-                                ? CommonButtons.getActionButton(
-                                    title: 'End Trip',
-                                    context: context,
-                                    fontSize: displayWidth(context) * 0.042,
-                                    textColor: Colors.white,
-                                    buttonPrimaryColor: buttonBGColor,
-                                    borderColor: buttonBGColor,
-                                    width: displayWidth(context),
-                                    onTap: () async {
-                                      // getTripId = await getTripIdFromPref();
-
-                                      service.invoke('stopService');
-
-                                      File? zipFile;
-                                      if (timer != null) timer!.cancel();
-                                      print(
-                                          'TIMER STOPPED ${ourDirectory!.path}/$getTripId');
-                                      final dataDir = Directory(
-                                          '${ourDirectory!.path}/$getTripId');
-
-                                      try {
-                                        zipFile = File(
-                                            '${ourDirectory!.path}/$getTripId.zip');
-
-                                        ZipFile.createFromDirectory(
-                                            sourceDir: dataDir,
-                                            zipFile: zipFile,
-                                            recurseSubDirs: true);
-                                        print('our path is $dataDir');
-                                      } catch (e) {
-                                        print(e);
-                                      }
-
-                                      File file = File(zipFile!.path);
-                                      stateSetter(() {
-                                        isEndTripButton = false;
-                                        isZipFileCreate = true;
-                                      });
-                                      Future.delayed(Duration(seconds: 1))
-                                          .then((value) {
-                                        stateSetter(() {
-                                          isZipFileCreate = true;
-                                        });
-                                      });
-                                      print('FINAL PATH: ${file.path}');
-
-                                      sharedPreferences!.remove('trip_data');
-                                      sharedPreferences!.remove('trip_started');
-
-                                      await _databaseService.updateTripStatus(
-                                          1,
-                                          file.path,
-                                          DateTime.now().toString(),
-                                          getTripId);
-
-                                      // stateSetter(() {
-                                      //   isEndTripButton = false;
-                                      //   isZipFileCreate = true;
-                                      // });
-
-                                      /*File file = File(zipFile!.path);
-                                      Future.delayed(Duration(seconds: 1))
-                                          .then((value) {
-                                        stateSetter(() {
-                                          isZipFileCreate = true;
-                                        });
-                                      });*/
+                                      // startTripService(stateSetter);
                                     })
-                                : isZipFileCreate
+                                : isEndTripButton
                                     ? CommonButtons.getActionButton(
-                                        title: 'Trip Ended',
+                                        title: 'End Trip',
                                         context: context,
                                         fontSize: displayWidth(context) * 0.042,
                                         textColor: Colors.white,
@@ -2154,111 +2188,188 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         borderColor: buttonBGColor,
                                         width: displayWidth(context),
                                         onTap: () async {
-                                          tripIsRunningOrNot();
-                                          if (isSensorDataUploaded) {
-                                            Get.back();
-                                            //setState(() {
-                                            // future = commonProvider.triplListData(
-                                            //     context,
-                                            //     commonProvider.loginModel!.token!,
-                                            //     widget.vesselId.toString(),
-                                            //     scaffoldKey);
-                                            //});
-                                          } else {
-                                            Get.back();
-                                          }
-
                                           // getTripId = await getTripIdFromPref();
 
-                                          // File? zipFile;
-                                          // if (timer != null) timer!.cancel();
-                                          // print(
-                                          //     'TIMER STOPPED ${ourDirectory!.path}');
-                                          // final dataDir =
-                                          // Directory(ourDirectory!.path);
-                                          //
-                                          // try {
-                                          //   zipFile =
-                                          //       File('${ourDirectory!.path}.zip');
-                                          //
-                                          //   ZipFile.createFromDirectory(
-                                          //       sourceDir: dataDir,
-                                          //       zipFile: zipFile,
-                                          //       recurseSubDirs: true);
-                                          //   print('our path is $dataDir');
-                                          // } catch (e) {
-                                          //   print(e);
-                                          // }
-                                          //
-                                          // File file = File(zipFile!.path);
-                                          // Future.delayed(Duration(seconds: 1))
-                                          //     .then((value) {
-                                          //   stateSetter(() {
-                                          //     isZipFileCreate = true;
-                                          //   });
+                                          service.invoke('stopService');
+
+                                          File? zipFile;
+                                          if (timer != null) timer!.cancel();
+                                          print(
+                                              'TIMER STOPPED ${ourDirectory!.path}/$getTripId');
+                                          final dataDir = Directory(
+                                              '${ourDirectory!.path}/$getTripId');
+
+                                          try {
+                                            zipFile = File(
+                                                '${ourDirectory!.path}/$getTripId.zip');
+
+                                            ZipFile.createFromDirectory(
+                                                sourceDir: dataDir,
+                                                zipFile: zipFile,
+                                                recurseSubDirs: true);
+                                            print('our path is $dataDir');
+                                          } catch (e) {
+                                            print(e);
+                                          }
+
+                                          File file = File(zipFile!.path);
+                                          stateSetter(() {
+                                            isEndTripButton = false;
+                                            isZipFileCreate = true;
+                                          });
+                                          Future.delayed(Duration(seconds: 1))
+                                              .then((value) {
+                                            stateSetter(() {
+                                              isZipFileCreate = true;
+                                            });
+                                          });
+                                          print('FINAL PATH: ${file.path}');
+
+                                          sharedPreferences!
+                                              .remove('trip_data');
+                                          sharedPreferences!
+                                              .remove('trip_started');
+
+                                          await _databaseService
+                                              .updateTripStatus(
+                                                  1,
+                                                  file.path,
+                                                  DateTime.now().toString(),
+                                                  getTripId);
+
+                                          // stateSetter(() {
+                                          //   isEndTripButton = false;
+                                          //   isZipFileCreate = true;
                                           // });
-                                          // print('FINAL PATH: ${file.path}');
-                                          // onSave(file);
 
                                           /*File file = File(zipFile!.path);
-                                      Future.delayed(Duration(seconds: 1))
-                                          .then((value) {
-                                        stateSetter(() {
-                                          isZipFileCreate = true;
-                                        });
-                                      });*/
+                                              Future.delayed(Duration(seconds: 1))
+                                                  .then((value) {
+                                                stateSetter(() {
+                                                  isZipFileCreate = true;
+                                                });
+                                              });*/
                                         })
-                                    : CommonButtons.getActionButton(
-                                        title: 'Cancel',
-                                        context: context,
-                                        fontSize: displayWidth(context) * 0.042,
-                                        textColor: Colors.white,
-                                        buttonPrimaryColor: buttonBGColor,
-                                        borderColor: buttonBGColor,
-                                        width: displayWidth(context),
-                                        onTap: () {
-                                          Get.back();
-                                          //Navigator.of(context).pop();
-                                        }),
-                      ),
+                                    : isZipFileCreate
+                                        ? CommonButtons.getActionButton(
+                                            title: 'Trip Ended',
+                                            context: context,
+                                            fontSize:
+                                                displayWidth(context) * 0.042,
+                                            textColor: Colors.white,
+                                            buttonPrimaryColor: buttonBGColor,
+                                            borderColor: buttonBGColor,
+                                            width: displayWidth(context),
+                                            onTap: () async {
+                                              tripIsRunningOrNot();
+                                              if (isSensorDataUploaded) {
+                                                Get.back();
+                                                //setState(() {
+                                                // future = commonProvider.triplListData(
+                                                //     context,
+                                                //     commonProvider.loginModel!.token!,
+                                                //     widget.vesselId.toString(),
+                                                //     scaffoldKey);
+                                                //});
+                                              } else {
+                                                Get.back();
+                                              }
+
+                                              // getTripId = await getTripIdFromPref();
+
+                                              // File? zipFile;
+                                              // if (timer != null) timer!.cancel();
+                                              // print(
+                                              //     'TIMER STOPPED ${ourDirectory!.path}');
+                                              // final dataDir =
+                                              // Directory(ourDirectory!.path);
+                                              //
+                                              // try {
+                                              //   zipFile =
+                                              //       File('${ourDirectory!.path}.zip');
+                                              //
+                                              //   ZipFile.createFromDirectory(
+                                              //       sourceDir: dataDir,
+                                              //       zipFile: zipFile,
+                                              //       recurseSubDirs: true);
+                                              //   print('our path is $dataDir');
+                                              // } catch (e) {
+                                              //   print(e);
+                                              // }
+                                              //
+                                              // File file = File(zipFile!.path);
+                                              // Future.delayed(Duration(seconds: 1))
+                                              //     .then((value) {
+                                              //   stateSetter(() {
+                                              //     isZipFileCreate = true;
+                                              //   });
+                                              // });
+                                              // print('FINAL PATH: ${file.path}');
+                                              // onSave(file);
+
+                                              /*File file = File(zipFile!.path);
+                                              Future.delayed(Duration(seconds: 1))
+                                                  .then((value) {
+                                                stateSetter(() {
+                                                  isZipFileCreate = true;
+                                                });
+                                              });*/
+                                            })
+                                        : CommonButtons.getActionButton(
+                                            title: 'Cancel',
+                                            context: context,
+                                            fontSize:
+                                                displayWidth(context) * 0.042,
+                                            textColor: Colors.white,
+                                            buttonPrimaryColor: buttonBGColor,
+                                            borderColor: buttonBGColor,
+                                            width: displayWidth(context),
+                                            onTap: () {
+                                              Get.back();
+                                              //Navigator.of(context).pop();
+                                            }),
+                          ),
+                        ),
+                      ],
                     ),
+                    Positioned(
+                      right: 10,
+                      top: 10,
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: backgroundColor),
+                        child: IconButton(
+                            onPressed: () {
+                              isBottomSheetOpened = false;
+                              tripIsRunningOrNot();
+                              setState(() {
+                                widget.vessel!.id = widget.vessel!.id;
+                              });
+                              if (isSensorDataUploaded) {
+                                Get.back();
+                                //setState(() {
+                                // future = commonProvider.triplListData(
+                                //     context,
+                                //     commonProvider.loginModel!.token!,
+                                //     widget.vesselId.toString(),
+                                //     scaffoldKey);
+                                //});
+                              } else {
+                                Get.back();
+                              }
+                            },
+                            icon: Icon(Icons.close_rounded,
+                                color: buttonBGColor)),
+                      ),
+                    )
                   ],
                 ),
-                Positioned(
-                  right: 10,
-                  top: 10,
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: backgroundColor),
-                    child: IconButton(
-                        onPressed: () {
-                          isBottomSheetOpened = false;
-                          tripIsRunningOrNot();
-                          setState(() {
-                            widget.vessel!.id = widget.vessel!.id;
-                          });
-                          if (isSensorDataUploaded) {
-                            Get.back();
-                            //setState(() {
-                            // future = commonProvider.triplListData(
-                            //     context,
-                            //     commonProvider.loginModel!.token!,
-                            //     widget.vesselId.toString(),
-                            //     scaffoldKey);
-                            //});
-                          } else {
-                            Get.back();
-                          }
-                        },
-                        icon: Icon(Icons.close_rounded, color: buttonBGColor)),
-                  ),
-                )
-              ],
-            ),
-          );
-        });
+              );
+            }),
+          ),
+        );
       },
       elevation: 4,
       enableDrag: false,
