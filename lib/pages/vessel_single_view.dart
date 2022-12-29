@@ -185,10 +185,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
     // isEndTripButton?writeSensorDataToFile(getTripId):null;
     return WillPopScope(
       onWillPop: () async {
-        if (isBottomSheetOpened) {
+        /*if (isBottomSheetOpened) {
           // Navigator.pop(context);
           return false;
-        } else if (widget.isCalledFromSuccessScreen!) {
+        } else */
+        if (widget.isCalledFromSuccessScreen!) {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -198,13 +199,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
           return false;
         } else {
-          if (isDataUpdated) {
+          /*if (isDataUpdated) {
             Navigator.of(context).pop(true);
             return false;
           } else {
             Navigator.of(context).pop(false);
             return false;
-          }
+          }*/
+          Navigator.of(context).pop(true);
+          return false;
         }
       },
       child: Scaffold(
@@ -220,27 +223,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             leading: IconButton(
               onPressed: () {
                 tripIsRunningOrNot();
-                if (isBottomSheetOpened) {
-                } else if (widget.isCalledFromSuccessScreen!) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomePage(),
-                      ),
-                      ModalRoute.withName(""));
-                } else {
-                  if (isDataUpdated) {
-                    Navigator.of(context).pop(true);
-                  } else {
-                    Navigator.of(context).pop(false);
-                  }
-                }
 
-                /*if (isDataUpdated) {
-                  Navigator.of(context).pop(true);
-                } else {
-                  Navigator.of(context).pop(false);
-                }
                 if (widget.isCalledFromSuccessScreen!) {
                   Navigator.pushAndRemoveUntil(
                       context,
@@ -249,8 +232,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       ),
                       ModalRoute.withName(""));
                 } else {
+                  /*if (isDataUpdated) {
+                    Navigator.of(context).pop(true);
+                  } else {
+                    Navigator.of(context).pop(false);
+                  }*/
                   Navigator.of(context).pop(true);
-                }*/
+                }
               },
               icon: const Icon(Icons.arrow_back),
               color: Theme.of(context).brightness == Brightness.dark
@@ -391,13 +379,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             File file = File(zipFile!.path);
                             setState(() {
                               isEndTripButton = false;
-                              isZipFileCreate = true;
+                              // isZipFileCreate = true;
                             });
-                            Future.delayed(Duration(seconds: 1)).then((value) {
+                            /*Future.delayed(Duration(seconds: 1)).then((value) {
                               setState(() {
                                 isZipFileCreate = true;
                               });
-                            });
+                            });*/
                             print('FINAL PATH: ${file.path}');
 
                             sharedPreferences!.remove('trip_data');
@@ -641,7 +629,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     isEndTripButton = false;
     isSensorDataUploaded = false;
     isZipFileCreate = false;
-    isBottomSheetOpened = true;
+    // isBottomSheetOpened = true;
 
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}');
@@ -1439,13 +1427,19 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             bool isServiceRunning =
                                                 await service.isRunning();
 
-                                            print('ISSSSS: $isServiceRunning');
+                                            print(
+                                                'ISSSSS XXXXXXX: $isServiceRunning');
 
                                             if (!isServiceRunning) {
                                               service.startService();
                                               print(
                                                   'View Single: $isServiceRunning');
                                             }
+
+                                            getTripId = uuid.v1();
+
+                                            onSave(
+                                                '', bottomSheetContext, true);
 
                                             await Future.delayed(
                                                 Duration(seconds: 3), () {});
@@ -1459,30 +1453,18 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                             service.invoke("setAsForeground");
 
-                                            getTripId = uuid.v1();
-
                                             service.invoke('tripId',
                                                 {'tripId': getTripId});
 
-                                            Future.delayed(Duration(seconds: 2),
-                                                () {
-                                              Timer.periodic(
-                                                  Duration(seconds: 1),
-                                                  (timer) async {
-                                                LocationData? locationData =
-                                                    await Utils
-                                                        .getCurrentLocation();
-                                                service.invoke('location', {
-                                                  'lat': locationData!.latitude,
-                                                  'long':
-                                                      locationData.longitude,
-                                                });
+                                            Timer.periodic(Duration(seconds: 1),
+                                                (timer) async {
+                                              LocationData? locationData =
+                                                  await Utils
+                                                      .getCurrentLocation();
+                                              service.invoke('location', {
+                                                'lat': locationData!.latitude,
+                                                'long': locationData.longitude,
                                               });
-                                            });
-
-                                            stateSetter(() {
-                                              isStartButton = false;
-                                              isEndTripButton = true;
                                             });
 
                                             sharedPreferences!
@@ -1495,9 +1477,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               selectedVesselWeight
                                             ]);
 
-                                            onSave(
-                                                '', bottomSheetContext, true);
-                                            tripIsRunningOrNot();
+                                            /*onSave(
+                                                '', bottomSheetContext, true);*/
+
+                                            stateSetter(() {
+                                              isStartButton = false;
+                                              isEndTripButton = true;
+                                            });
 
                                             // await Permission.storage.request();
                                           } else {
@@ -1537,26 +1523,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               service.invoke('tripId',
                                                   {'tripId': getTripId});
 
-                                              Future.delayed(
-                                                  Duration(seconds: 2), () {
-                                                Timer.periodic(
-                                                    Duration(seconds: 1),
-                                                    (timer) async {
-                                                  LocationData? locationData =
-                                                      await Utils
-                                                          .getCurrentLocation();
-                                                  service.invoke('location', {
-                                                    'lat':
-                                                        locationData!.latitude,
-                                                    'long':
-                                                        locationData.longitude,
-                                                  });
+                                              Timer.periodic(
+                                                  Duration(seconds: 1),
+                                                  (timer) async {
+                                                LocationData? locationData =
+                                                    await Utils
+                                                        .getCurrentLocation();
+                                                service.invoke('location', {
+                                                  'lat': locationData!.latitude,
+                                                  'long':
+                                                      locationData.longitude,
                                                 });
-                                              });
-
-                                              stateSetter(() {
-                                                isStartButton = false;
-                                                isEndTripButton = true;
                                               });
 
                                               sharedPreferences!.setBool(
@@ -1571,6 +1548,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                               onSave(
                                                   '', bottomSheetContext, true);
+
+                                              stateSetter(() {
+                                                isStartButton = false;
+                                                isEndTripButton = true;
+                                              });
                                               // tripIsRunningOrNot();
 
                                               // await Permission.storage.request();
@@ -1624,26 +1606,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               service.invoke('tripId',
                                                   {'tripId': getTripId});
 
-                                              Future.delayed(
-                                                  Duration(seconds: 2), () {
-                                                Timer.periodic(
-                                                    Duration(seconds: 1),
-                                                    (timer) async {
-                                                  LocationData? locationData =
-                                                      await Utils
-                                                          .getCurrentLocation();
-                                                  service.invoke('location', {
-                                                    'lat':
-                                                        locationData!.latitude,
-                                                    'long':
-                                                        locationData.longitude,
-                                                  });
+                                              Timer.periodic(
+                                                  Duration(seconds: 1),
+                                                  (timer) async {
+                                                LocationData? locationData =
+                                                    await Utils
+                                                        .getCurrentLocation();
+                                                service.invoke('location', {
+                                                  'lat': locationData!.latitude,
+                                                  'long':
+                                                      locationData.longitude,
                                                 });
-                                              });
-
-                                              stateSetter(() {
-                                                isStartButton = false;
-                                                isEndTripButton = true;
                                               });
 
                                               sharedPreferences!.setBool(
@@ -1658,6 +1631,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                               onSave(
                                                   '', bottomSheetContext, true);
+
+                                              stateSetter(() {
+                                                isStartButton = false;
+                                                isEndTripButton = true;
+                                              });
                                               // tripIsRunningOrNot();
 
                                               // await Permission.storage.request();
@@ -1700,26 +1678,18 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 service.invoke('tripId',
                                                     {'tripId': getTripId});
 
-                                                Future.delayed(
-                                                    Duration(seconds: 2), () {
-                                                  Timer.periodic(
-                                                      Duration(seconds: 1),
-                                                      (timer) async {
-                                                    LocationData? locationData =
-                                                        await Utils
-                                                            .getCurrentLocation();
-                                                    service.invoke('location', {
-                                                      'lat': locationData!
-                                                          .latitude,
-                                                      'long': locationData
-                                                          .longitude,
-                                                    });
+                                                Timer.periodic(
+                                                    Duration(seconds: 1),
+                                                    (timer) async {
+                                                  LocationData? locationData =
+                                                      await Utils
+                                                          .getCurrentLocation();
+                                                  service.invoke('location', {
+                                                    'lat':
+                                                        locationData!.latitude,
+                                                    'long':
+                                                        locationData.longitude,
                                                   });
-                                                });
-
-                                                stateSetter(() {
-                                                  isStartButton = false;
-                                                  isEndTripButton = true;
                                                 });
 
                                                 sharedPreferences!.setBool(
@@ -1735,6 +1705,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                                 onSave('', bottomSheetContext,
                                                     true);
+
+                                                stateSetter(() {
+                                                  isStartButton = false;
+                                                  isEndTripButton = true;
+                                                });
 
                                                 // tripIsRunningOrNot();
 
@@ -1796,26 +1771,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               service.invoke('tripId',
                                                   {'tripId': getTripId});
 
-                                              Future.delayed(
-                                                  Duration(seconds: 2), () {
-                                                Timer.periodic(
-                                                    Duration(seconds: 1),
-                                                    (timer) async {
-                                                  LocationData? locationData =
-                                                      await Utils
-                                                          .getCurrentLocation();
-                                                  service.invoke('location', {
-                                                    'lat':
-                                                        locationData!.latitude,
-                                                    'long':
-                                                        locationData.longitude,
-                                                  });
+                                              Timer.periodic(
+                                                  Duration(seconds: 1),
+                                                  (timer) async {
+                                                LocationData? locationData =
+                                                    await Utils
+                                                        .getCurrentLocation();
+                                                service.invoke('location', {
+                                                  'lat': locationData!.latitude,
+                                                  'long':
+                                                      locationData.longitude,
                                                 });
-                                              });
-
-                                              stateSetter(() {
-                                                isStartButton = false;
-                                                isEndTripButton = true;
                                               });
 
                                               sharedPreferences!.setBool(
@@ -1830,6 +1796,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                               onSave(
                                                   '', bottomSheetContext, true);
+
+                                              stateSetter(() {
+                                                isStartButton = false;
+                                                isEndTripButton = true;
+                                              });
+
                                               // tripIsRunningOrNot();
 
                                               // await Permission.storage.request();
@@ -1872,26 +1844,18 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 service.invoke('tripId',
                                                     {'tripId': getTripId});
 
-                                                Future.delayed(
-                                                    Duration(seconds: 2), () {
-                                                  Timer.periodic(
-                                                      Duration(seconds: 1),
-                                                      (timer) async {
-                                                    LocationData? locationData =
-                                                        await Utils
-                                                            .getCurrentLocation();
-                                                    service.invoke('location', {
-                                                      'lat': locationData!
-                                                          .latitude,
-                                                      'long': locationData
-                                                          .longitude,
-                                                    });
+                                                Timer.periodic(
+                                                    Duration(seconds: 1),
+                                                    (timer) async {
+                                                  LocationData? locationData =
+                                                      await Utils
+                                                          .getCurrentLocation();
+                                                  service.invoke('location', {
+                                                    'lat':
+                                                        locationData!.latitude,
+                                                    'long':
+                                                        locationData.longitude,
                                                   });
-                                                });
-
-                                                stateSetter(() {
-                                                  isStartButton = false;
-                                                  isEndTripButton = true;
                                                 });
 
                                                 sharedPreferences!.setBool(
@@ -1907,6 +1871,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                                 onSave('', bottomSheetContext,
                                                     true);
+                                                stateSetter(() {
+                                                  isStartButton = false;
+                                                  isEndTripButton = true;
+                                                });
+
                                                 // tripIsRunningOrNot();
 
                                                 // await Permission.storage.request();
@@ -2015,26 +1984,18 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 service.invoke('tripId',
                                                     {'tripId': getTripId});
 
-                                                Future.delayed(
-                                                    Duration(seconds: 2), () {
-                                                  Timer.periodic(
-                                                      Duration(seconds: 1),
-                                                      (timer) async {
-                                                    LocationData? locationData =
-                                                        await Utils
-                                                            .getCurrentLocation();
-                                                    service.invoke('location', {
-                                                      'lat': locationData!
-                                                          .latitude,
-                                                      'long': locationData
-                                                          .longitude,
-                                                    });
+                                                Timer.periodic(
+                                                    Duration(seconds: 1),
+                                                    (timer) async {
+                                                  LocationData? locationData =
+                                                      await Utils
+                                                          .getCurrentLocation();
+                                                  service.invoke('location', {
+                                                    'lat':
+                                                        locationData!.latitude,
+                                                    'long':
+                                                        locationData.longitude,
                                                   });
-                                                });
-
-                                                stateSetter(() {
-                                                  isStartButton = false;
-                                                  isEndTripButton = true;
                                                 });
 
                                                 sharedPreferences!.setBool(
@@ -2050,6 +2011,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                                 onSave('', bottomSheetContext,
                                                     true);
+
+                                                stateSetter(() {
+                                                  isStartButton = false;
+                                                  isEndTripButton = true;
+                                                });
                                                 // tripIsRunningOrNot();
 
                                                 // await Permission.storage.request();
@@ -2092,28 +2058,18 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   service.invoke('tripId',
                                                       {'tripId': getTripId});
 
-                                                  Future.delayed(
-                                                      Duration(seconds: 2), () {
-                                                    Timer.periodic(
-                                                        Duration(seconds: 1),
-                                                        (timer) async {
-                                                      LocationData?
-                                                          locationData =
-                                                          await Utils
-                                                              .getCurrentLocation();
-                                                      service
-                                                          .invoke('location', {
-                                                        'lat': locationData!
-                                                            .latitude,
-                                                        'long': locationData
-                                                            .longitude,
-                                                      });
+                                                  Timer.periodic(
+                                                      Duration(seconds: 1),
+                                                      (timer) async {
+                                                    LocationData? locationData =
+                                                        await Utils
+                                                            .getCurrentLocation();
+                                                    service.invoke('location', {
+                                                      'lat': locationData!
+                                                          .latitude,
+                                                      'long': locationData
+                                                          .longitude,
                                                     });
-                                                  });
-
-                                                  stateSetter(() {
-                                                    isStartButton = false;
-                                                    isEndTripButton = true;
                                                   });
 
                                                   sharedPreferences!.setBool(
@@ -2129,6 +2085,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                                   onSave('', bottomSheetContext,
                                                       true);
+
+                                                  stateSetter(() {
+                                                    isStartButton = false;
+                                                    isEndTripButton = true;
+                                                  });
                                                   // tripIsRunningOrNot();
 
                                                   // await Permission.storage.request();
@@ -2360,13 +2321,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             shape: BoxShape.circle, color: backgroundColor),
                         child: IconButton(
                             onPressed: () {
-                              isBottomSheetOpened = false;
+                              // isBottomSheetOpened = false;
                               tripIsRunningOrNot();
                               setState(() {
                                 widget.vessel!.id = widget.vessel!.id;
                               });
-                              if (isSensorDataUploaded) {
-                                Get.back();
+                              Get.back();
+                              /*if (isSensorDataUploaded) {
+
                                 //setState(() {
                                 // future = commonProvider.triplListData(
                                 //     context,
@@ -2376,7 +2338,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 //});
                               } else {
                                 Get.back();
-                              }
+                              }*/
                             },
                             icon: Icon(Icons.close_rounded,
                                 color: buttonBGColor)),
@@ -2621,6 +2583,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
       await _databaseService.updateTripStatus(1, getTripId, file);
       isZipFileCreate ? null : Navigator.pop(context);
     }*/
+
+    tripIsRunningOrNot();
   }
 
   // @pragma('vm:entry-point')

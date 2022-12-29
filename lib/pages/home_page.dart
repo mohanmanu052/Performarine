@@ -329,10 +329,15 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
-          leading: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Image.asset(
-              "assets/images/menu.png",
+          leading: InkWell(
+            onTap: () {
+              scaffoldKey.currentState!.openDrawer();
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(19),
+              child: Image.asset(
+                'assets/images/menu.png',
+              ),
             ),
           ),
           title: Container(
