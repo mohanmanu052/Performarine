@@ -559,11 +559,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
     if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.location.isGranted;
       if (isLocationPermitted) {
-        getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
+        Future.delayed(Duration(seconds: 1), () {
+          getBottomSheet(
+              context, size, vesselName, weight, isLocationPermitted);
+        });
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.location.isGranted;
-        getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
+        if (isLocationPermitted) {
+          getBottomSheet(
+              context, size, vesselName, weight, isLocationPermitted);
+        }
       }
     }
   }
@@ -1361,18 +1367,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             return;
                                           }
 
-                                          print('ISSSSSSSSS');
-
                                           bool isLocationPermitted =
                                               await Permission
                                                   .location.isGranted;
 
-                                          print(
-                                              'ISSSSSSSSS: $isLocationPermitted');
-
                                           if (isLocationPermitted) {
-                                            // service.startService();
-
                                             stateSetter(() {
                                               isLocationPermission = true;
                                             });
@@ -2174,79 +2173,93 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           // startTripService(stateSetter);
                                         })
                                 : isEndTripButton
-                                    ? CommonButtons.getActionButton(
-                                        title: 'End Trip',
-                                        context: context,
-                                        fontSize: displayWidth(context) * 0.042,
-                                        textColor: Colors.white,
-                                        buttonPrimaryColor: buttonBGColor,
-                                        borderColor: buttonBGColor,
-                                        width: displayWidth(context),
-                                        onTap: () async {
-                                          // getTripId = await getTripIdFromPref();
+                                    ? addingDataToDB
+                                        ? Center(
+                                            child: CircularProgressIndicator())
+                                        : CommonButtons.getActionButton(
+                                            title: 'End Trip',
+                                            context: context,
+                                            fontSize:
+                                                displayWidth(context) * 0.042,
+                                            textColor: Colors.white,
+                                            buttonPrimaryColor: buttonBGColor,
+                                            borderColor: buttonBGColor,
+                                            width: displayWidth(context),
+                                            onTap: () async {
+                                              // getTripId = await getTripIdFromPref();
 
-                                          service.invoke('stopService');
+                                              stateSetter(() {
+                                                addingDataToDB = true;
+                                              });
 
-                                          File? zipFile;
-                                          if (timer != null) timer!.cancel();
-                                          print(
-                                              'TIMER STOPPED ${ourDirectory!.path}/$getTripId');
-                                          final dataDir = Directory(
-                                              '${ourDirectory!.path}/$getTripId');
+                                              service.invoke('stopService');
 
-                                          try {
-                                            zipFile = File(
-                                                '${ourDirectory!.path}/$getTripId.zip');
+                                              File? zipFile;
+                                              if (timer != null)
+                                                timer!.cancel();
+                                              print(
+                                                  'TIMER STOPPED ${ourDirectory!.path}/$getTripId');
+                                              final dataDir = Directory(
+                                                  '${ourDirectory!.path}/$getTripId');
 
-                                            ZipFile.createFromDirectory(
-                                                sourceDir: dataDir,
-                                                zipFile: zipFile,
-                                                recurseSubDirs: true);
-                                            print('our path is $dataDir');
-                                          } catch (e) {
-                                            print(e);
-                                          }
+                                              try {
+                                                zipFile = File(
+                                                    '${ourDirectory!.path}/$getTripId.zip');
 
-                                          File file = File(zipFile!.path);
-                                          stateSetter(() {
+                                                ZipFile.createFromDirectory(
+                                                    sourceDir: dataDir,
+                                                    zipFile: zipFile,
+                                                    recurseSubDirs: true);
+                                                print('our path is $dataDir');
+                                              } catch (e) {
+                                                print(e);
+                                              }
+
+                                              File file = File(zipFile!.path);
+                                              /*stateSetter(() {
                                             isEndTripButton = false;
                                             isZipFileCreate = true;
-                                          });
-                                          /*Future.delayed(Duration(seconds: 1))
-                                              .then((value) {
-                                            if (mounted) {
-                                              stateSetter(() {
-                                                isZipFileCreate = true;
-                                              });
-                                            }
                                           });*/
-                                          print('FINAL PATH: ${file.path}');
 
-                                          sharedPreferences!
-                                              .remove('trip_data');
-                                          sharedPreferences!
-                                              .remove('trip_started');
+                                              print('FINAL PATH: ${file.path}');
 
-                                          await _databaseService
-                                              .updateTripStatus(
-                                                  1,
-                                                  file.path,
-                                                  DateTime.now().toString(),
-                                                  getTripId);
+                                              sharedPreferences!
+                                                  .remove('trip_data');
+                                              sharedPreferences!
+                                                  .remove('trip_started');
 
-                                          // stateSetter(() {
-                                          //   isEndTripButton = false;
-                                          //   isZipFileCreate = true;
-                                          // });
+                                              await _databaseService
+                                                  .updateTripStatus(
+                                                      1,
+                                                      file.path,
+                                                      DateTime.now().toString(),
+                                                      getTripId);
 
-                                          /*File file = File(zipFile!.path);
+                                              Future.delayed(
+                                                      Duration(seconds: 3))
+                                                  .then((value) {
+                                                if (mounted) {
+                                                  stateSetter(() {
+                                                    addingDataToDB = false;
+                                                    isEndTripButton = false;
+                                                    isZipFileCreate = true;
+                                                  });
+                                                }
+                                              });
+
+                                              // stateSetter(() {
+                                              //   isEndTripButton = false;
+                                              //   isZipFileCreate = true;
+                                              // });
+
+                                              /*File file = File(zipFile!.path);
                                               Future.delayed(Duration(seconds: 1))
                                                   .then((value) {
                                                 stateSetter(() {
                                                   isZipFileCreate = true;
                                                 });
                                               });*/
-                                        })
+                                            })
                                     : isZipFileCreate
                                         ? CommonButtons.getActionButton(
                                             title: 'Trip Ended',
@@ -2651,8 +2664,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
     });
 
     if (!isServiceRunning) {
-      // service.startService();
-      initializeService();
+      await service.startService();
+      // initializeService();
       print('View Single: $isServiceRunning');
     }
 
@@ -2660,17 +2673,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     await onSave('', bottomSheetContext, true);
 
-    await Future.delayed(Duration(seconds: 3), () {
+    await Future.delayed(Duration(seconds: 4), () {
       print('Future delayed duration Ended');
     });
 
     await tripIsRunningOrNot();
 
-    service.invoke("onStartTrip");
+    service.invoke('tripId', {'tripId': getTripId});
 
     service.invoke("setAsForeground");
 
-    service.invoke('tripId', {'tripId': getTripId});
+    service.invoke("onStartTrip");
 
     Timer.periodic(Duration(seconds: 1), (timer) async {
       LocationData? locationData = await Utils.getCurrentLocation();
