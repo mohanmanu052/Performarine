@@ -385,7 +385,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
 
                                 if (Platform.isAndroid) {
                                   directory = Directory(
-                                      '$vesselImagesDirPath/${commonProvider.addVesselRequestModel!.id}$fileExtension');
+                                      '$vesselImagesDirPath/${commonProvider.addVesselRequestModel!.id}-${DateTime.now().millisecondsSinceEpoch}$fileExtension');
                                 } else {
                                   directory =
                                       await getApplicationDocumentsDirectory();
@@ -404,8 +404,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                 commonProvider.addVesselRequestModel!
                                     .imageURLs = directory.path;
                               } else {
-                                commonProvider
-                                    .addVesselRequestModel!.imageURLs = '';
+                                commonProvider.addVesselRequestModel!
+                                    .imageURLs = commonProvider
+                                        .addVesselRequestModel!.imageURLs ??
+                                    '';
                               }
 
                               /*setState(() {
@@ -416,6 +418,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                               if (widget.isEdit!) {
                                 print(
                                     'VESSEL NAME: ${widget.addVesselData!.name}');
+                                print(
+                                    'VESSEL NAME: ${commonProvider.addVesselRequestModel!.toMap()}');
 
                                 await _databaseService
                                     .updateVessel(

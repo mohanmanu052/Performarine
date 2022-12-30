@@ -415,226 +415,60 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                     }, Colors.grey),
                   ),
                   SizedBox(height: displayHeight(context) * 0.01),
-                  widget.addVesselData == null
-                      ? SizedBox()
-                      : widget.addVesselData!.imageURLs == null
-                          ? SizedBox()
-                          : widget.addVesselData!.imageURLs!.isEmpty
-                              ? SizedBox()
-                              : Container(
-                                  margin: const EdgeInsets.only(top: 15.0),
-                                  child: SingleChildScrollView(
-                                    child: SizedBox(
-                                      height: displayHeight(context) * 0.065,
-                                      width: displayHeight(context) * 0.065,
-                                      child: Stack(
-                                        children: [
-                                          /*Container(
-                                            margin: EdgeInsets.all(6),
-                                            alignment: Alignment.topRight,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[200],
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              border: Border.all(
-                                                  color: Colors.grey.shade300),
-                                              */ /*image: DecorationImage(
-                                                          fit: BoxFit.cover,
-                                                          image: NetworkImage(widget
-                                                                  .addVesselData!
-                                                                  .imageURLs![
-                                                              index]))*/ /*
-                                            ),
-                                            child: CachedNetworkImage(
-                                              height:
-                                                  displayHeight(context) * 0.12,
-                                              width:
-                                                  displayHeight(context) * 0.12,
-                                              // imageUrl: 'https://picsum.photos/200',
-                                              imageUrl: widget
-                                                  .addVesselData!.imageURLs!,
-                                              imageBuilder:
-                                                  (context, imageProvider) =>
-                                                      Container(
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.rectangle,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.fill,
-                                                  ),
-                                                ),
-                                              ),
-                                              progressIndicatorBuilder:
-                                                  (context, url,
-                                                          downloadProgress) =>
-                                                      Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                        value: downloadProgress
-                                                            .progress),
-                                              ),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Icon(Icons.error),
-                                            ),
-                                            */ /*child: Icon(
-                                      Icons.close,
-                                      size: displayWidth(context) * 0.05,
-                                    ),*/ /*
-                                          ),*/
-
-                                          Container(
-                                            //margin: EdgeInsets.all(6),
-                                            decoration: BoxDecoration(
-                                              //color: Colors.orange,
-                                              shape: BoxShape.rectangle,
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              image: DecorationImage(
-                                                fit: BoxFit.fill,
-                                                image: FileImage(File(widget
-                                                    .addVesselData!
-                                                    .imageURLs!)),
-                                                // fit: BoxFit.cover
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            right: 0,
-                                            top: 0,
-                                            child: InkWell(
-                                              onTap: () async {
-                                                /* await _databaseService
-                                                    .deleteVesselImage(widget
-                                                        .addVesselData!.id!);*/
-                                                setState(() {
-                                                  widget.addVesselData!
-                                                      .imageURLs = '';
-                                                });
-                                              },
-                                              child: Icon(
-                                                Icons.close,
-                                                size: displayWidth(context) *
-                                                    0.05,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ), /*GridView.builder(
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 4,
-                                          childAspectRatio: 1,
-                                          mainAxisSpacing: 1,
-                                        ),
-                                        shrinkWrap: true,
-                                        physics:
-                                            const NeverScrollableScrollPhysics(),
-                                        itemCount: widget
-                                            .addVesselData!.imageURLs!.length,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return SizedBox(
-                                            height:
-                                                displayHeight(context) * 0.06,
-                                            width:
-                                                displayHeight(context) * 0.06,
-                                            child: Stack(
-                                              children: [
-                                                Container(
-                                                  margin: EdgeInsets.all(6),
-                                                  alignment: Alignment.topRight,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.grey[200],
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                    border: Border.all(
-                                                        color: Colors
-                                                            .grey.shade300),
-                                                    */ /*image: DecorationImage(
-                                                          fit: BoxFit.cover,
-                                                          image: NetworkImage(widget
-                                                                  .addVesselData!
-                                                                  .imageURLs![
-                                                              index]))*/ /*
-                                                  ),
-                                                  child: CachedNetworkImage(
-                                                    height:
-                                                        displayHeight(context) *
-                                                            0.12,
-                                                    width:
-                                                        displayHeight(context) *
-                                                            0.12,
-                                                    // imageUrl: 'https://picsum.photos/200',
-                                                    imageUrl: widget
-                                                        .addVesselData!
-                                                        .imageURLs![index],
-                                                    imageBuilder: (context,
-                                                            imageProvider) =>
-                                                        Container(
-                                                      decoration: BoxDecoration(
-                                                        shape:
-                                                            BoxShape.rectangle,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
-                                                        image: DecorationImage(
-                                                          image: imageProvider,
-                                                          fit: BoxFit.fill,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    progressIndicatorBuilder:
-                                                        (context, url,
-                                                                downloadProgress) =>
-                                                            Center(
-                                                      child: CircularProgressIndicator(
-                                                          value:
-                                                              downloadProgress
-                                                                  .progress),
-                                                    ),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            Icon(Icons.error),
-                                                  ),
-                                                  */ /*child: Icon(
-                                      Icons.close,
-                                      size: displayWidth(context) * 0.05,
-                                    ),*/ /*
-                                                ),
-                                                Positioned(
-                                                  right: 0,
-                                                  top: 0,
-                                                  child: InkWell(
-                                                    onTap: () {
-                                                      setState(() async {
-                                                        await _databaseService
-                                                            .deleteVesselImage(
-                                                                widget
-                                                                    .addVesselData!
-                                                                    .id!);
-                                                      });
-                                                    },
-                                                    child: Icon(
-                                                      Icons.close,
-                                                      size: displayWidth(
-                                                              context) *
-                                                          0.05,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        }),*/
-                                  ),
-                                ),
                   finalSelectedFiles.isEmpty
-                      ? Container()
+                      ? widget.addVesselData == null
+                          ? SizedBox()
+                          : widget.addVesselData!.imageURLs == null
+                              ? SizedBox()
+                              : widget.addVesselData!.imageURLs!.isEmpty
+                                  ? SizedBox()
+                                  : Container(
+                                      margin: const EdgeInsets.only(top: 15.0),
+                                      child: SizedBox(
+                                        height: displayHeight(context) * 0.085,
+                                        width: displayHeight(context) * 0.085,
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              //margin: EdgeInsets.all(6),
+                                              decoration: BoxDecoration(
+                                                //color: Colors.orange,
+                                                shape: BoxShape.rectangle,
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                image: DecorationImage(
+                                                  fit: BoxFit.fill,
+                                                  image: FileImage(File(widget
+                                                      .addVesselData!
+                                                      .imageURLs!)),
+                                                  // fit: BoxFit.cover
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              right: 0,
+                                              top: 0,
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  /* await _databaseService
+                                                  .deleteVesselImage(widget
+                                                      .addVesselData!.id!);*/
+                                                  setState(() {
+                                                    widget.addVesselData!
+                                                        .imageURLs = '';
+                                                  });
+                                                },
+                                                child: Icon(
+                                                  Icons.close,
+                                                  size: displayWidth(context) *
+                                                      0.05,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
                       : Container(
                           margin: const EdgeInsets.only(top: 15.0),
                           child: SingleChildScrollView(
@@ -650,8 +484,8 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 itemCount: finalSelectedFiles.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return SizedBox(
-                                    height: displayHeight(context) * 0.06,
-                                    width: displayHeight(context) * 0.06,
+                                    height: displayHeight(context) * 0.045,
+                                    width: displayHeight(context) * 0.045,
                                     child: Stack(
                                       children: [
                                         Container(

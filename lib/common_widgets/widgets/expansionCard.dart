@@ -75,7 +75,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                         )
                       : Container(
                           decoration: BoxDecoration(
-                            color: Colors.orange,
+                            color: Colors.grey.shade200,
                             shape: BoxShape.rectangle,
                             image: DecorationImage(
                               fit: BoxFit.cover,

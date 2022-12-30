@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
             AndroidFlutterLocalNotificationsPlugin>()!
         .requestPermission();*/
 
-    checkNotificationPermission();
+    //checkNotificationPermission();
 
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();

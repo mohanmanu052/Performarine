@@ -221,19 +221,27 @@ class Utils {
 
         isPermissionGranted = await openAppSettings();
         debugPrint("isPermissionGranted:$isPermissionGranted");
-        Utils.showActionSnackBar(context, scaffoldKey,
+        /* Utils.showActionSnackBar(context, scaffoldKey,
             'Location permissions are denied without permissions we are unable to start the trip',
             () {
           // OpenFile.open(directoryPath);
-        });
+        });*/
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey,
+            message:
+                'Location permissions are denied without permissions we are unable to start the trip');
       } else if (await Permission.location.request().isDenied) {
         // print('D');
         isPermissionGranted = false;
-        Utils.showActionSnackBar(context, scaffoldKey,
+        /*Utils.showActionSnackBar(context, scaffoldKey,
             'Location permissions are denied without permissions we are unable to start the trip',
             () {
           // OpenFile.open(directoryPath);
-        });
+        });*/
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey,
+            message:
+                'Location permissions are denied without permissions we are unable to start the trip');
       } else {
         locationData = await getCurrentLocation();
       }
@@ -431,10 +439,13 @@ class Utils {
               pr.update(progress: 0.0);*/
           Navigator.pop(context);
 
-          Utils.showActionSnackBar(
+          Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey,
+              message: 'File located at: $directoryPath');
+          /*Utils.showActionSnackBar(
               context, scaffoldKey, 'File located at: $directoryPath', () {
             OpenFile.open(directoryPath);
-          });
+          });*/
         }
       });
     } on d.DioError catch (e) {

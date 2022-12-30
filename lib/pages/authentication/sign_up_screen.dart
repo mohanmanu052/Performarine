@@ -14,6 +14,7 @@ import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/zig_zag_line_widget.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
+import 'package:performarine/pages/coming_soon_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -710,8 +711,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           }
                           if (!EmailValidator.validate(value)) {
                             return 'Enter Valid Email';
-                          }
+                          } else if (EmailValidator.validate(value)) {
+                            String emailExt = value.split('.').last;
 
+                            if (!['com', 'in', 'us'].contains(emailExt)) {
+                              return 'Enter valid email';
+                            }
+                          }
                           return null;
                         },
                         onSaved: (String value) {
@@ -1078,10 +1084,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               text: ' T&C',
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () async {
-                                  /*Navigator.of(context).push(
+                                  Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                        return ComingSoonScreen();
-                                      }));*/
+                                    return ComingSoonScreen();
+                                  }));
                                 },
                               style: TextStyle(
                                   fontFamily: poppins,
@@ -1098,10 +1104,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               text: ' Privacy Policy',
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () async {
-                                  /* Navigator.of(context).push(
+                                  Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                        return ComingSoonScreen();
-                                      }));*/
+                                    return ComingSoonScreen();
+                                  }));
                                 },
                               style: TextStyle(
                                   fontFamily: poppins,
