@@ -174,15 +174,14 @@ class _IntroScreenState extends State<IntroScreen> {
 
     debugPrint('ISUSERLOGEDIN $isUserLoggedIn');
 
-    // Navigator.pushAndRemoveUntil(
-    //     context,
-    //     MaterialPageRoute(builder: (context) => const HomePage()),
-    //     ModalRoute.withName(""));
-
     var service = FlutterBackgroundService();
     bool isServiceRunning = await service.isRunning();
 
     if (isTripStarted == null) {
+      if (isServiceRunning) {
+        service.invoke("stopService");
+      }
+
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(
             context,
@@ -209,6 +208,9 @@ class _IntroScreenState extends State<IntroScreen> {
               builder: (context) => HomePage(tripData: tripData ?? [])),
           ModalRoute.withName(""));
     } else {
+      if (isServiceRunning) {
+        service.invoke("stopService");
+      }
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(
             context,
