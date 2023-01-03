@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
-
+import 'package:geolocator_platform_interface/geolocator_platform_interface.dart' as locationAcc;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 import 'package:lottie/lottie.dart';
@@ -2485,12 +2486,31 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
       LocationData? locationData =
       await Utils.getLocationPermission(context, scaffoldKey);
+      Geolocator.getCurrentPosition(desiredAccuracy: locationAcc.LocationAccuracy.high,).then((value) {
+        latitude = value.latitude.toString();
+        longitude = value.longitude.toString();
+      });
 
-      latitude = locationData!.latitude!.toString();
-      longitude = locationData.longitude!.toString();
+      final LocationSettings locationSettings = LocationSettings(
+        accuracy:locationAcc.LocationAccuracy.high,
+        // distanceFilter: 0,
+      );
+      Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position event) {
+        print(event == null ? 'Unknown' : '${event.latitude.toString()}, ${event.longitude.toString()}');
+        latitude=event.latitude.toString();
+        longitude=event.longitude.toString();
+      });
+      // Geolocator.get {
+      //   print(event == null ? 'Unknown' : '${event.latitude.toString()}, ${event.longitude.toString()}');
+      //   latitude=event.latitude;
+      //   longitude=event.longitude;
+      // });
 
-      debugPrint('LAT ${latitude}');
-      debugPrint('LONG ${longitude}');
+      // latitude = locationData!.latitude!.toString();
+      // longitude = locationData.longitude!.toString();
+
+      debugPrint('LAT single view ${latitude}');
+      debugPrint('LONG single view ${longitude}');
 
       String acc = convertDataToString('AAC', _accelerometerValues ?? []);
       String uacc = convertDataToString('UACC', _userAccelerometerValues ?? []);

@@ -8,7 +8,7 @@ import 'package:flutter_background_service_android/flutter_background_service_an
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:location/location.dart';
+// import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
@@ -69,8 +69,8 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   fileName = '$fileIndex.csv';
 
   final LocationSettings locationSettings = LocationSettings(
-    // accuracy: LocationAccuracy.high,
-    distanceFilter: 100,
+    accuracy: LocationAccuracy.high,
+    // distanceFilter: 0,
   );
   Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position event) {
     print(event == null ? 'Unknown' : '${event.latitude.toString()}, ${event.longitude.toString()}');
@@ -129,14 +129,14 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 
     debugPrint('FOLDER PATH $ourDirectory');
 
-    Location location = Location();
-
-    location.onLocationChanged.listen((LocationData currentLocation) {
-      print("${currentLocation.latitude} : ${currentLocation.longitude}");
-
-      latitude = currentLocation.latitude!;
-      longitude = currentLocation.longitude!;
-    });
+    // Location location = Location();
+    //
+    // location.onLocationChanged.listen((LocationData currentLocation) {
+    //   print("${currentLocation.latitude} : ${currentLocation.longitude}");
+    //
+    //   latitude = currentLocation.latitude!;
+    //   longitude = currentLocation.longitude!;
+    // });
 
     debugPrint('MAIN LAT LONGS $latitude $longitude');
     // var status = await Permission.storage.status;
