@@ -7,6 +7,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -62,10 +63,21 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   // Timer? timer;
   String fileName = '';
   int fileIndex = 1;
-
+  StreamSubscription<Position> positionStream;
   // Only available for flutter 3.0.0 and later
 
   fileName = '$fileIndex.csv';
+
+  final LocationSettings locationSettings = LocationSettings(
+    // accuracy: LocationAccuracy.high,
+    distanceFilter: 100,
+  );
+  Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position event) {
+    print(event == null ? 'Unknown' : '${event.latitude.toString()}, ${event.longitude.toString()}');
+    latitude=event.latitude;
+    longitude=event.longitude;
+  });
+
 
   _streamSubscriptions.add(
     accelerometerEvents.listen(
@@ -116,6 +128,17 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     ourDirectory = Directory('${appDirectory.path}/$tripId');
 
     debugPrint('FOLDER PATH $ourDirectory');
+
+    Location location = Location();
+
+    location.onLocationChanged.listen((LocationData currentLocation) {
+      print("${currentLocation.latitude} : ${currentLocation.longitude}");
+
+      latitude = currentLocation.latitude!;
+      longitude = currentLocation.longitude!;
+    });
+
+    debugPrint('MAIN LAT LONGS $latitude $longitude');
     // var status = await Permission.storage.status;
     // if (!status.isGranted) {
     //   await Permission.storage.request();
@@ -166,9 +189,9 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     print('service stopped'.toUpperCase());
   });
 
-  serviceInstance.on('location').listen((event) {
-    latitude = event!['lat'];
-    longitude = event['long'];
+  Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position event)  {
+    latitude = event.latitude;
+    longitude = event.longitude;
   });
 
   serviceInstance.on('tripId').listen((event) {
@@ -178,7 +201,10 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   serviceInstance.on('onStartTrip').listen((event) {
     // bring to foreground
     print('ON START TRIP');
+    //print('LAT LONG $latitude $longitude');
+
     timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
+      print('LAT LONG main file:  $latitude $longitude');
       if (serviceInstance is AndroidServiceInstance) {
         if (await serviceInstance.isForegroundService()) {
           flutterLocalNotificationsPlugin.show(
@@ -214,6 +240,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
             /// STOP WRITING & CREATE NEW FILE
           } else {
             print('WRITING');
+            //print('LAT1 LONG1 $latitude $longitude');
             String acc = convertDataToString('AAC', _accelerometerValues!);
             String uacc =
                 convertDataToString('UACC', _userAccelerometerValues!);
@@ -223,6 +250,8 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
             String gps = convertLocationToString('GPS', location);
             String finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
             file.writeAsString('$finalString\n', mode: FileMode.append);
+
+            print('GPS $gps');
           }
         }
       }
@@ -325,6 +354,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    // positionStream!.cancle
     super.dispose();
     print('APP IN BG DISPOSE');
   }
