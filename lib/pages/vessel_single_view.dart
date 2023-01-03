@@ -51,6 +51,7 @@ class VesselSingleView extends StatefulWidget {
 
 class VesselSingleViewState extends State<VesselSingleView> {
   List<CreateVessel>? vessel = [];
+  Location location = Location();
   final DatabaseService _databaseService = DatabaseService();
   final GlobalKey<ScaffoldState> _modelScaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -559,10 +560,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
     if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.location.isGranted;
       if (isLocationPermitted) {
-        Future.delayed(Duration(seconds: 1), () {
+        // Future.delayed(Duration(seconds: 1), () {
           getBottomSheet(
               context, size, vesselName, weight, isLocationPermitted);
-        });
+        // });
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.location.isGranted;
@@ -2687,9 +2688,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     Timer.periodic(Duration(seconds: 1), (timer) async {
       LocationData? locationData = await Utils.getCurrentLocation();
+      // location.onLocationChanged.listen((LocationData currentLocation) {
+      //   print("${currentLocation.latitude} : ${currentLocation.longitude}");
+      //   setState(() {
+      //     locationData = currentLocation;
+      //   });
+      // });
       service.invoke('location', {
         'lat': locationData!.latitude,
-        'long': locationData.longitude,
+        'long': locationData!.longitude,
       });
     });
 
