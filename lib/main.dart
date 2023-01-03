@@ -217,7 +217,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           flutterLocalNotificationsPlugin.show(
             888,
             'Performarine',
-            'Trip Data Collection in progress...',
+            'Trip Data Collection in progress....',
             const NotificationDetails(
               android: AndroidNotificationDetails(
                 notificationChannelId,
