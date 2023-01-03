@@ -199,11 +199,11 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     }
   });
 
-  Geolocator.getPositionStream(locationSettings: locationSettings)
+  /*Geolocator.getPositionStream(locationSettings: locationSettings)
       .listen((Position event) {
     latitude = event.latitude;
     longitude = event.longitude;
-  });
+  });*/
 
   serviceInstance.on('tripId').listen((event) {
     tripId = event!['tripId'];
