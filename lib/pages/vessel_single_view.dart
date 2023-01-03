@@ -406,37 +406,38 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       });
                     })
                     : CommonButtons.getActionButton(
-                    title: 'Start Trip',
-                    context: context,
-                    fontSize: displayWidth(context) * 0.042,
-                    textColor: Colors.white,
-                    buttonPrimaryColor: buttonBGColor,
-                    borderColor: buttonBGColor,
-                    width: displayWidth(context),
-                    onTap: () async {
-                      bool isLocationPermitted =
-                      await Permission.locationAlways.isGranted;
 
-                      if (isLocationPermitted) {
-                        vessel!.add(widget.vessel!);
-                        await locationPermissions(
-                            widget.vessel!.vesselSize!,
-                            widget.vessel!.name!,
-                            widget.vessel!.id!);
-                      } else {
-                        await Utils.getLocationPermission(
-                            context, scaffoldKey);
-                        bool isLocationPermitted =
-                        await Permission.locationAlways.isGranted;
-                        if (isLocationPermitted) {
-                          vessel!.add(widget.vessel!);
-                          await locationPermissions(
-                              widget.vessel!.vesselSize!,
-                              widget.vessel!.name!,
-                              widget.vessel!.id!);
-                        }
-                      }
-                    }),
+                        title: 'Start Trip',
+                        context: context,
+                        fontSize: displayWidth(context) * 0.042,
+                        textColor: Colors.white,
+                        buttonPrimaryColor: buttonBGColor,
+                        borderColor: buttonBGColor,
+                        width: displayWidth(context),
+                        onTap: () async {
+                          bool isLocationPermitted =
+                              await Permission.locationAlways.isGranted;
+
+                          if (isLocationPermitted) {
+                            vessel!.add(widget.vessel!);
+                            await locationPermissions(
+                                widget.vessel!.vesselSize!,
+                                widget.vessel!.name!,
+                                widget.vessel!.id!);
+                          } else {
+                            await Utils.getLocationPermission(
+                                context, scaffoldKey);
+                            bool isLocationPermitted =
+                                await Permission.locationAlways.isGranted;
+                            if (isLocationPermitted) {
+                              vessel!.add(widget.vessel!);
+                              await locationPermissions(
+                                  widget.vessel!.vesselSize!,
+                                  widget.vessel!.name!,
+                                  widget.vessel!.id!);
+                            }
+                          }
+                        }),
               ),
             )
           ],
@@ -2584,7 +2585,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
     LocationData? locationData =
-    await Utils.getLocationPermission(context, scaffoldKey);
+//<<<<<<< Bug-locationUpdate
+//    await Utils.getLocationPermission(context, scaffoldKey);
+//=======
+        await Utils.getLocationPermission(context, scaffoldKey);
+//>>>>>>> Feat_ui_changes
 
     location = Location();
 

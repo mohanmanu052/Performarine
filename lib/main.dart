@@ -205,6 +205,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 
     timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
       print('LAT LONG main file:  $latitude $longitude');
+
       if (serviceInstance is AndroidServiceInstance) {
         if (await serviceInstance.isForegroundService()) {
           flutterLocalNotificationsPlugin.show(
