@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator_platform_interface/geolocator_platform_interface.dart' as pos;
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -16,7 +17,7 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:get/get.dart';
-import 'package:location/location.dart';
+// import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -1232,12 +1233,12 @@ class _TripListScreenState extends State<TripListScreen> {
     }
   }
 
-  Future<LocationData> getLocationData() async {
-    LocationData? locationData =
+  Future< pos.Position> getLocationData() async {
+    pos.Position? locationData =
         await Utils.getLocationPermission(context, scaffoldKey);
 
-    latitude = locationData!.latitude!.toString();
-    longitude = locationData.longitude!.toString();
+    latitude = locationData!.latitude.toString();
+    longitude = locationData.longitude.toString();
 
     debugPrint('LAT ${latitude}');
     debugPrint('LONG ${longitude}');
@@ -1292,11 +1293,11 @@ class _TripListScreenState extends State<TripListScreen> {
     } else {
       print('WRITING');
 
-      LocationData? locationData =
+      pos.Position? locationData =
           await Utils.getLocationPermission(context, scaffoldKey);
 
-      latitude = locationData!.latitude!.toString();
-      longitude = locationData.longitude!.toString();
+      latitude = locationData!.latitude.toString();
+      longitude = locationData.longitude.toString();
 
       debugPrint('LAT ${latitude}');
       debugPrint('LONG ${longitude}');
@@ -1386,15 +1387,15 @@ class _TripListScreenState extends State<TripListScreen> {
   Future<void> onSave(File file) async {
     final vesselName = widget.vesselName;
     final currentLoad = selectedVesselWeight;
-    LocationData? locationData =
+    pos.Position? locationData =
         await Utils.getLocationPermission(context, scaffoldKey);
     // await fetchDeviceInfo();
     await fetchDeviceData();
 
     debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
     // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
-    String latitude = locationData!.latitude!.toString();
-    String longitude = locationData.longitude!.toString();
+    String latitude = locationData!.latitude.toString();
+    String longitude = locationData.longitude.toString();
 
     debugPrint("current lod:$currentLoad");
     var uuid = Uuid();

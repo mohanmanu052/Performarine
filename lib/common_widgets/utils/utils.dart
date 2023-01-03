@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:open_file/open_file.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -196,27 +197,40 @@ class Utils {
     return Future.value(true);
   }
 
-  static Future<loc.LocationData?> getLocationPermission(
+  static Future<Position?> getLocationPermission(
       BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) async {
     bool isPermissionGranted = false;
 
-    loc.LocationData? locationData;
+   Position? locationData;
 
-    try {
-      if (await Permission.locationAlways.request().isGranted) {
-        // if (ModalRoute.of(context)?.isCurrent != null) {
-        //   if (ModalRoute.of(context)?.isCurrent != true) {
-        //     // debugPrint("im in the loop:$locationData");
-        //     // Get.back();
-        //   }
-        // }
-        //ModalRoute.of(context)?.isCurrent != true;
-        isPermissionGranted = true;
-        locationData = await Utils.getCurrentLocation();
-        debugPrint("im in the loop assigned getCurrentLocation:$locationData");
-      } else if (await Permission.locationAlways
-          .request()
-          .isPermanentlyDenied) {
+    await Geolocator.requestPermission().then((value) async{
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+
+          isPermissionGranted = false;
+          /*Utils.showActionSnackBar(context, scaffoldKey,
+            'Location permissions are denied without permissions we are unable to start the trip',
+            () {
+          // OpenFile.open(directoryPath);
+        });*/
+          Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey,
+              message:
+              'Location permissions are denied without permissions we are unable to start the trip');
+
+          // Permissions are denied, next time you could try
+          // requesting permissions again (this is also where
+          // Android's shouldShowRequestPermissionRationale
+          // returned true. According to Android guidelines
+          // your App should show an explanatory UI now.
+          return Future.error('Location permissions are denied');
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+
         isPermissionGranted = false;
         print('PD');
 
@@ -230,39 +244,89 @@ class Utils {
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey,
             message:
-                'Location permissions are denied without permissions we are unable to start the trip');
-      } else if (await Permission.locationAlways.request().isDenied) {
-        // print('D');
-        isPermissionGranted = false;
-        /*Utils.showActionSnackBar(context, scaffoldKey,
-            'Location permissions are denied without permissions we are unable to start the trip',
-            () {
-          // OpenFile.open(directoryPath);
-        });*/
-        Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey,
-            message:
-                'Location permissions are denied without permissions we are unable to start the trip');
-      } else {
-        locationData = await getCurrentLocation();
-      }
-    } catch (e) {
-      isPermissionGranted = false;
-    }
+            'Location permissions are denied without permissions we are unable to start the trip');
 
-    return locationData;
+        // Permissions are denied forever, handle appropriately.
+        return Future.error(
+            'Location permissions are permanently denied, we cannot request permissions.');
+      }
+
+
+
+      // When we reach here, permissions are granted and we can
+      // continue accessing the position of the device.
+      return await Geolocator.getCurrentPosition();
+
+
+    });
+    return  await Geolocator.getCurrentPosition();
+
+
+    // try {
+    //   if (await Permission.locationAlways.request().isGranted) {
+    //     // if (ModalRoute.of(context)?.isCurrent != null) {
+    //     //   if (ModalRoute.of(context)?.isCurrent != true) {
+    //     //     // debugPrint("im in the loop:$locationData");
+    //     //     // Get.back();
+    //     //   }
+    //     // }
+    //     //ModalRoute.of(context)?.isCurrent != true;
+    //     isPermissionGranted = true;
+    //     locationData = await Utils.getCurrentLocation();
+    //     debugPrint("im in the loop assigned getCurrentLocation:$locationData");
+    //   } else if (
+    //
+    //   // await Geolocator.checkPermission().then((value) => null);
+    //
+    //   await Permission.locationAlways
+    //       .request()
+    //       .isPermanentlyDenied) {
+    //     isPermissionGranted = false;
+    //     print('PD');
+    //
+    //     isPermissionGranted = await openAppSettings();
+    //     debugPrint("isPermissionGranted:$isPermissionGranted");
+    //     /* Utils.showActionSnackBar(context, scaffoldKey,
+    //         'Location permissions are denied without permissions we are unable to start the trip',
+    //         () {
+    //       // OpenFile.open(directoryPath);
+    //     });*/
+    //     Utils.showSnackBar(context,
+    //         scaffoldKey: scaffoldKey,
+    //         message:
+    //             'Location permissions are denied without permissions we are unable to start the trip');
+    //   } else if (await Permission.locationAlways.request().isDenied) {
+    //     // print('D');
+    //     isPermissionGranted = false;
+    //     /*Utils.showActionSnackBar(context, scaffoldKey,
+    //         'Location permissions are denied without permissions we are unable to start the trip',
+    //         () {
+    //       // OpenFile.open(directoryPath);
+    //     });*/
+    //     Utils.showSnackBar(context,
+    //         scaffoldKey: scaffoldKey,
+    //         message:
+    //             'Location permissions are denied without permissions we are unable to start the trip');
+    //   } else {
+    //     locationData = await getCurrentLocation();
+    //   }
+    // } catch (e) {
+    //   isPermissionGranted = false;
+    // }
+
+    // return locationData;
   }
 
-  static Future<loc.LocationData?> getCurrentLocation() async {
-    loc.LocationData? locationData;
+  static Future<Position> getCurrentLocation() async {
+    Position? locationData;
 
     try {
-      var location = loc.Location();
-      locationData = await location.getLocation();
+      await Geolocator.checkPermission();
+      locationData = await Geolocator.getCurrentPosition();
     } on Exception catch (e) {
       locationData = null;
     }
-    return locationData;
+    return locationData!;
   }
 
   static Future<SharedPreferences> initSharedPreferences() async {

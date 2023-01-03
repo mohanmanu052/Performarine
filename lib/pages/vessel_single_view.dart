@@ -11,7 +11,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:location/location.dart';
+// import 'package:location/location.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/trip_builder.dart';
@@ -97,7 +97,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     return await _databaseService.getAllTripsByVesselId(id);
   }
 
-  Location? location;
+  Position? location;
 
   getIfServiceIsRunning() async {
     bool data = await service.isRunning();
@@ -2414,12 +2414,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
     }
   }
 
-  Future<LocationData> getLocationData() async {
-    LocationData? locationData =
+  Future<Position> getLocationData() async {
+    Position? locationData =
     await Utils.getLocationPermission(context, scaffoldKey);
 
-    latitude = locationData!.latitude!.toString();
-    longitude = locationData.longitude!.toString();
+    latitude = locationData!.latitude.toString();
+    longitude = locationData.longitude.toString();
 
     debugPrint('LAT ${latitude}');
     debugPrint('LONG ${longitude}');
@@ -2484,7 +2484,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     } else {
       print('WRITING');
 
-      LocationData? locationData =
+      Position? locationData =
       await Utils.getLocationPermission(context, scaffoldKey);
       Geolocator.getCurrentPosition(desiredAccuracy: locationAcc.LocationAccuracy.high,).then((value) {
         latitude = value.latitude.toString();
@@ -2604,28 +2604,25 @@ class VesselSingleViewState extends State<VesselSingleView> {
       bool savingDataWhileStartService) async {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
-    LocationData? locationData =
-//<<<<<<< Bug-locationUpdate
-//    await Utils.getLocationPermission(context, scaffoldKey);
-//=======
+    Position? locationData =
+
         await Utils.getLocationPermission(context, scaffoldKey);
-//>>>>>>> Feat_ui_changes
-
-    location = Location();
-
-    location!.onLocationChanged.listen((LocationData currentLocation) {
-      print("${currentLocation.latitude} : ${currentLocation.longitude}");
-      setState(() {
-        locationData = currentLocation;
-      });
-    });
+//
+//     location = Position();
+//
+//     Position!.onLocationChanged.listen((LocationData currentLocation) {
+//       print("${currentLocation.latitude} : ${currentLocation.longitude}");
+//       setState(() {
+//         locationData = currentLocation;
+//       });
+//     });
     // await fetchDeviceInfo();
     await fetchDeviceData();
 
     debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
     // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
-    String latitude = locationData!.latitude!.toString();
-    String longitude = locationData!.longitude!.toString();
+    String latitude = locationData!.latitude.toString();
+    String longitude = locationData.longitude.toString();
 
     debugPrint("current lod:$currentLoad");
     debugPrint("current PATH:$file");
@@ -2723,23 +2720,23 @@ class VesselSingleViewState extends State<VesselSingleView> {
     service.invoke("onStartTrip");
 
     Timer.periodic(Duration(milliseconds: 200), (timer) async {
-      LocationData? locationData = await Utils.getCurrentLocation();
+      Position? locationData = await Utils.getCurrentLocation();
 
-      location = Location();
-
-      location!.onLocationChanged.listen((LocationData currentLocation) {
-        print("${currentLocation.latitude} : ${currentLocation.longitude}");
-        setState(() {
-          locationData = currentLocation;
-        });
-      });
+      // location = Location();
+      //
+      // location!.onLocationChanged.listen((LocationData currentLocation) {
+      //   print("${currentLocation.latitude} : ${currentLocation.longitude}");
+      //   setState(() {
+      //     locationData = currentLocation;
+      //   });
+      // });
 
       service.invoke('location', {
-        'lat': locationData!.latitude,
-        'long': locationData!.longitude,
+        'lat': locationData.latitude,
+        'long': locationData.longitude,
       });
       print(
-          'SINGLE VIEW LAT LONG ${locationData!.latitude} ${locationData!.longitude}');
+          'SINGLE VIEW LAT LONG ${locationData.latitude} ${locationData.longitude}');
     });
 
     sharedPreferences!.setBool('trip_started', true);

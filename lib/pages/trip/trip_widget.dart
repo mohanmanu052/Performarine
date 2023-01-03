@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
+import 'package:geolocator_platform_interface/geolocator_platform_interface.dart' as pos;
+
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:location/location.dart';
+// import 'package:location/location.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -460,14 +462,14 @@ class _TripWidgetState extends State<TripWidget> {
 
   Future<void> onSave(File file, BuildContext context, String tripId, vesselId,
       vesselName, vesselWeight) async {
-    LocationData? locationData =
+      pos.Position? locationData =
         await Utils.getLocationPermission(context, scaffoldKey);
     // await fetchDeviceInfo();
 
     //debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
     // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
-    String latitude = locationData!.latitude!.toString();
-    String longitude = locationData.longitude!.toString();
+    String latitude = locationData!.latitude.toString();
+    String longitude = locationData.longitude.toString();
 
     debugPrint("current lod:$tripId");
 

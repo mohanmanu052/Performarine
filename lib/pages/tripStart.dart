@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -101,15 +102,15 @@ class _StartTripState extends State<StartTrip> {
   Future<void> _onSave() async {
     final vesselName = _nameController.text;
     final currentLoad = _descController.text;
-    LocationData? locationData =
+    Position? locationData =
         await Utils.getLocationPermission(context, scaffoldKey);
     // await fetchDeviceInfo();
     await fetchDeviceData();
 
     debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
     // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
-    String latitude = locationData!.latitude!.toString();
-    String longitude = locationData.longitude!.toString();
+    String latitude = locationData!.latitude.toString();
+    String longitude = locationData.longitude.toString();
 
     debugPrint("current lod:$currentLoad");
     var uuid = Uuid();
@@ -1032,12 +1033,12 @@ class _StartTripState extends State<StartTrip> {
     } else {
       print('WRITING');
 
-      LocationData? locationData =
+      Position? locationData =
           await Utils.getLocationPermission(context, scaffoldKey);
       // debugPrint(locationData.toString());
       // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
-      String latitude = locationData!.latitude!.toString();
-      String longitude = locationData.longitude!.toString();
+      String latitude = locationData!.latitude.toString();
+      String longitude = locationData.longitude.toString();
 
       debugPrint('LAT $latitude');
       debugPrint('LONG $longitude');

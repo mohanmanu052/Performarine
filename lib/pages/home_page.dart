@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
+import 'package:geolocator_platform_interface/geolocator_platform_interface.dart' as pos;
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/trip_builder.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -254,15 +255,15 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> onSave(File file, BuildContext context, String tripId, vesselId,
       vesselName, vesselWeight) async {
-    LocationData? locationData =
+    pos.Position? locationData =
         await Utils.getLocationPermission(context, scaffoldKey);
     // await fetchDeviceInfo();
     await fetchDeviceData();
 
     debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
     // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
-    String latitude = locationData!.latitude!.toString();
-    String longitude = locationData.longitude!.toString();
+    // String latitude = locationData!.latitude!.toString();
+    // String longitude = locationData.longitude!.toString();
 
     debugPrint("current lod:$vesselWeight");
 
