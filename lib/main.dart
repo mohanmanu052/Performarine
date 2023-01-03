@@ -72,11 +72,17 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     accuracy: LocationAccuracy.high,
     // distanceFilter: 0,
   );
-  Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position event) {
-    print(event == null ? 'Unknown' : '${event.latitude.toString()}, ${event.longitude.toString()}');
-    latitude=event.latitude;
-    longitude=event.longitude;
+  await Geolocator.checkPermission().then((value) {
+    if (value == LocationPermission.whileInUse || value == LocationPermission.always) {
+      Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position event) {
+        print(event == null ? 'Unknown' : '${event.latitude.toString()}, ${event.longitude.toString()}');
+        latitude=event.latitude;
+        longitude=event.longitude;
+      });
+    }
   });
+
+
 
 
   _streamSubscriptions.add(

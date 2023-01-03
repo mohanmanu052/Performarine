@@ -2735,8 +2735,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
         'lat': locationData.latitude,
         'long': locationData.longitude,
       });
-      print(
-          'SINGLE VIEW LAT LONG ${locationData.latitude} ${locationData.longitude}');
+      // print(
+      //     'SINGLE VIEW LAT LONG ${locationData.latitude} ${locationData.longitude}');
     });
 
     sharedPreferences!.setBool('trip_started', true);
