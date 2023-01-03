@@ -175,6 +175,7 @@ class _HomePageState extends State<HomePage> {
           sharedPreferences!.remove('trip_started');
 
           // service.invoke('stopService');
+          widget.tripData = [];
 
           onSave(file, context, tripId, vesselId, vesselName, vesselWeight);
         }, () {

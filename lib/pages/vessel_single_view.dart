@@ -422,9 +422,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             borderColor: buttonBGColor,
                             width: displayWidth(context),
                             onTap: () async {
-                              setState(() {
-                                isCheckingPermission = true;
-                              });
                               bool isLocationPermitted =
                                   await Permission.locationAlways.isGranted;
 
@@ -438,6 +435,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               } else {
                                 await Utils.getLocationPermission(
                                     context, scaffoldKey);
+
                                 bool isLocationPermitted =
                                     await Permission.locationAlways.isGranted;
                                 if (isLocationPermitted) {
@@ -448,6 +446,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       widget.vessel!.name!,
                                       widget.vessel!.id!);
                                 } else {
+                                  setState(() {
+                                    isCheckingPermission = true;
+                                  });
                                   await Permission.locationAlways.request();
                                   bool isLocationPermitted =
                                       await Permission.locationAlways.isGranted;
@@ -586,13 +587,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
     if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
-        Future.delayed(Duration(seconds: 1), () {
-          setState(() {
-            isCheckingPermission = false;
-          });
-          getBottomSheet(
-              context, size, vesselName, weight, isLocationPermitted);
+        setState(() {
+          isCheckingPermission = false;
         });
+        getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
