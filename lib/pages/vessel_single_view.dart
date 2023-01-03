@@ -411,20 +411,69 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             Navigator.of(context).pop();
                           });
                         })
-                    : isCheckingPermission
-                        ? Center(child: CircularProgressIndicator())
-                        : CommonButtons.getActionButton(
-                            title: 'Start Trip',
-                            context: context,
-                            fontSize: displayWidth(context) * 0.042,
-                            textColor: Colors.white,
-                            buttonPrimaryColor: buttonBGColor,
-                            borderColor: buttonBGColor,
-                            width: displayWidth(context),
-                            onTap: () async {
+                    : CommonButtons.getActionButton(
+                        title: 'Start Trip',
+                        context: context,
+                        fontSize: displayWidth(context) * 0.042,
+                        textColor: Colors.white,
+                        buttonPrimaryColor: buttonBGColor,
+                        borderColor: buttonBGColor,
+                        width: displayWidth(context),
+                        onTap: () async {
+                          bool isLocationPermitted =
+                              await Permission.locationAlways.isGranted;
+
+                          if (isLocationPermitted) {
+                            vessel!.add(widget.vessel!);
+                            await locationPermissions(
+                                widget.vessel!.vesselSize!,
+                                widget.vessel!.name!,
+                                widget.vessel!.id!);
+                          } else {
+                            await Utils.getLocationPermission(
+                                context, scaffoldKey);
+                            bool isLocationPermitted =
+                                await Permission.locationAlways.isGranted;
+                            if (isLocationPermitted) {
+                              vessel!.add(widget.vessel!);
+                              await locationPermissions(
+                                  widget.vessel!.vesselSize!,
+                                  widget.vessel!.name!,
+                                  widget.vessel!.id!);
+                            } else {
+                              await openAppSettings();
+                              // await Permission.locationAlways.request();
+                            }
+                          }
+
+                          /*bool isLocationPermitted =
+                              await Permission.locationAlways.isGranted;
+
+                          if (isLocationPermitted) {
+                            vessel!.add(widget.vessel!);
+
+                            await locationPermissions(
+                                widget.vessel!.vesselSize!,
+                                widget.vessel!.name!,
+                                widget.vessel!.id!);
+                          } else {
+                            await Utils.getLocationPermission(
+                                context, scaffoldKey);
+
+                            await Permission.locationAlways.request();
+                            bool isLocationPermitted =
+                                await Permission.locationAlways.isGranted;
+                            if (isLocationPermitted) {
+                              vessel!.add(widget.vessel!);
+
+                              await locationPermissions(
+                                  widget.vessel!.vesselSize!,
+                                  widget.vessel!.name!,
+                                  widget.vessel!.id!);
+                            } */ /*else {
+                              await Permission.locationAlways.request();
                               bool isLocationPermitted =
                                   await Permission.locationAlways.isGranted;
-
                               if (isLocationPermitted) {
                                 vessel!.add(widget.vessel!);
 
@@ -432,37 +481,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     widget.vessel!.vesselSize!,
                                     widget.vessel!.name!,
                                     widget.vessel!.id!);
-                              } else {
-                                await Utils.getLocationPermission(
-                                    context, scaffoldKey);
-
-                                bool isLocationPermitted =
-                                    await Permission.locationAlways.isGranted;
-                                if (isLocationPermitted) {
-                                  vessel!.add(widget.vessel!);
-
-                                  await locationPermissions(
-                                      widget.vessel!.vesselSize!,
-                                      widget.vessel!.name!,
-                                      widget.vessel!.id!);
-                                } else {
-                                  setState(() {
-                                    isCheckingPermission = true;
-                                  });
-                                  await Permission.locationAlways.request();
-                                  bool isLocationPermitted =
-                                      await Permission.locationAlways.isGranted;
-                                  if (isLocationPermitted) {
-                                    vessel!.add(widget.vessel!);
-
-                                    await locationPermissions(
-                                        widget.vessel!.vesselSize!,
-                                        widget.vessel!.name!,
-                                        widget.vessel!.id!);
-                                  }
-                                }
                               }
-                            }),
+                            }*/ /*
+                          }*/
+                        }),
               ),
             )
           ],
@@ -587,9 +609,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
     if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
-        setState(() {
-          isCheckingPermission = false;
-        });
         getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
