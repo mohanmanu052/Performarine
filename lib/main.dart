@@ -116,6 +116,17 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     ourDirectory = Directory('${appDirectory.path}/$tripId');
 
     debugPrint('FOLDER PATH $ourDirectory');
+
+    Location location = Location();
+
+    location.onLocationChanged.listen((LocationData currentLocation) {
+      print("${currentLocation.latitude} : ${currentLocation.longitude}");
+
+      latitude = currentLocation.latitude!;
+      longitude = currentLocation.longitude!;
+    });
+
+    debugPrint('MAIN LAT LONGS $latitude $longitude');
     // var status = await Permission.storage.status;
     // if (!status.isGranted) {
     //   await Permission.storage.request();
@@ -178,7 +189,10 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   serviceInstance.on('onStartTrip').listen((event) {
     // bring to foreground
     print('ON START TRIP');
+    //print('LAT LONG $latitude $longitude');
+
     timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
+      print('LAT LONG $latitude $longitude');
       if (serviceInstance is AndroidServiceInstance) {
         if (await serviceInstance.isForegroundService()) {
           flutterLocalNotificationsPlugin.show(
@@ -214,6 +228,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
             /// STOP WRITING & CREATE NEW FILE
           } else {
             print('WRITING');
+            //print('LAT1 LONG1 $latitude $longitude');
             String acc = convertDataToString('AAC', _accelerometerValues!);
             String uacc =
                 convertDataToString('UACC', _userAccelerometerValues!);
@@ -223,6 +238,8 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
             String gps = convertLocationToString('GPS', location);
             String finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
             file.writeAsString('$finalString\n', mode: FileMode.append);
+
+            print('GPS $gps');
           }
         }
       }

@@ -96,6 +96,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
     return await _databaseService.getAllTripsByVesselId(id);
   }
 
+  Location? location;
+
   getIfServiceIsRunning() async {
     bool data = await service.isRunning();
     print('IS SERVICE RUNNING: $data');
@@ -413,7 +415,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         width: displayWidth(context),
                         onTap: () async {
                           bool isLocationPermitted =
-                              await Permission.location.isGranted;
+                              await Permission.locationAlways.isGranted;
 
                           if (isLocationPermitted) {
                             vessel!.add(widget.vessel!);
@@ -425,7 +427,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             await Utils.getLocationPermission(
                                 context, scaffoldKey);
                             bool isLocationPermitted =
-                                await Permission.location.isGranted;
+                                await Permission.locationAlways.isGranted;
                             if (isLocationPermitted) {
                               vessel!.add(widget.vessel!);
                               await locationPermissions(
@@ -557,7 +559,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   locationPermissions(dynamic size, String vesselName, String weight) async {
     if (Platform.isAndroid) {
-      bool isLocationPermitted = await Permission.location.isGranted;
+      bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
         Future.delayed(Duration(seconds: 1), () {
           getBottomSheet(
@@ -565,7 +567,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         });
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
-        bool isLocationPermitted = await Permission.location.isGranted;
+        bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
           getBottomSheet(
               context, size, vesselName, weight, isLocationPermitted);
@@ -2495,6 +2497,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       String mag = convertDataToString('MAG', _magnetometerValues ?? []);
       String location = '$latitude $longitude';
       String gps = convertLocationToString('GPS', location);
+      debugPrint('GPS GPS ${gps}');
 
       String finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
 
@@ -2582,13 +2585,22 @@ class VesselSingleViewState extends State<VesselSingleView> {
     final currentLoad = selectedVesselWeight;
     LocationData? locationData =
         await Utils.getLocationPermission(context, scaffoldKey);
+
+    location = Location();
+
+    location!.onLocationChanged.listen((LocationData currentLocation) {
+      print("${currentLocation.latitude} : ${currentLocation.longitude}");
+      setState(() {
+        locationData = currentLocation;
+      });
+    });
     // await fetchDeviceInfo();
     await fetchDeviceData();
 
     debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
     // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
     String latitude = locationData!.latitude!.toString();
-    String longitude = locationData.longitude!.toString();
+    String longitude = locationData!.longitude!.toString();
 
     debugPrint("current lod:$currentLoad");
     debugPrint("current PATH:$file");
@@ -2631,7 +2643,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   }
 
   startTripService(StateSetter stateSetter) async {
-    bool isLocationPermitted = await Permission.location.isGranted;
+    bool isLocationPermitted = await Permission.locationAlways.isGranted;
 
     if (isLocationPermitted) {
       /// TODO Further Process
@@ -2641,7 +2653,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       startSensorFunctionality(stateSetter);
     } else {
       await Utils.getLocationPermission(context, scaffoldKey);
-      bool isLocationPermitted = await Permission.location.isGranted;
+      bool isLocationPermitted = await Permission.locationAlways.isGranted;
 
       if (isLocationPermitted) {
         /// TODO Further Process
@@ -2685,12 +2697,24 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     service.invoke("onStartTrip");
 
-    Timer.periodic(Duration(seconds: 1), (timer) async {
+    Timer.periodic(Duration(milliseconds: 200), (timer) async {
       LocationData? locationData = await Utils.getCurrentLocation();
+
+      location = Location();
+
+      location!.onLocationChanged.listen((LocationData currentLocation) {
+        print("${currentLocation.latitude} : ${currentLocation.longitude}");
+        setState(() {
+          locationData = currentLocation;
+        });
+      });
+
       service.invoke('location', {
         'lat': locationData!.latitude,
-        'long': locationData.longitude,
+        'long': locationData!.longitude,
       });
+      print(
+          'SINGLE VIEW LAT LONG ${locationData!.latitude} ${locationData!.longitude}');
     });
 
     sharedPreferences!.setBool('trip_started', true);
