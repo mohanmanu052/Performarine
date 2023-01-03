@@ -11,7 +11,6 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 // import 'package:goe/providers/common_provider.dart';
 // import 'package:goe/utils/colors.dart';
