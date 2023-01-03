@@ -130,6 +130,7 @@ class _TripViewListingState extends State<TripViewListing> {
 
                                   try {
                                     service.invoke('stopService');
+
                                     // instan.stopSelf();
                                   } on Exception catch (e) {
                                     print('SERVICE STOP BG EXE: $e');

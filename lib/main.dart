@@ -31,6 +31,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final StreamController<String?> selectNotificationStream =
     StreamController<String?>.broadcast();
+StreamSubscription<Position>? positionStream;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,7 +64,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   // Timer? timer;
   String fileName = '';
   int fileIndex = 1;
-  StreamSubscription<Position> positionStream;
+
   // Only available for flutter 3.0.0 and later
 
   fileName = '$fileIndex.csv';
@@ -74,16 +75,16 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   );
   await Geolocator.checkPermission().then((value) {
     if (value == LocationPermission.always) {
-      Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position event) {
-        print(event == null ? 'Unknown' : '${event.latitude.toString()}, ${event.longitude.toString()}');
-        latitude=event.latitude;
-        longitude=event.longitude;
+      Geolocator.getPositionStream(locationSettings: locationSettings)
+          .listen((Position event) {
+        print(event == null
+            ? 'Unknown'
+            : '${event.latitude.toString()}, ${event.longitude.toString()}');
+        latitude = event.latitude;
+        longitude = event.longitude;
       });
     }
   });
-
-
-
 
   _streamSubscriptions.add(
     accelerometerEvents.listen(
@@ -193,9 +194,13 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   serviceInstance.on('stopService').listen((event) {
     serviceInstance.stopSelf();
     print('service stopped'.toUpperCase());
+    if (positionStream != null) {
+      positionStream!.cancel();
+    }
   });
 
-  Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position event)  {
+  Geolocator.getPositionStream(locationSettings: locationSettings)
+      .listen((Position event) {
     latitude = event.latitude;
     longitude = event.longitude;
   });

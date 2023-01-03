@@ -8,7 +8,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart' as pos;
+import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
+    as pos;
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/trip_builder.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -141,6 +142,9 @@ class _HomePageState extends State<HomePage> {
 
           try {
             service.invoke('stopService');
+            if (positionStream != null) {
+              positionStream!.cancel();
+            }
             // instan.stopSelf();
           } on Exception catch (e) {
             print('SERVICE STOP BG EXE: $e');
@@ -210,6 +214,10 @@ class _HomePageState extends State<HomePage> {
 
                 try {
                   service.invoke('stopService');
+                  if (positionStream != null) {
+                    positionStream!.cancel();
+                  }
+
                   // instan.stopSelf();
                 } on Exception catch (e) {
                   print('SERVICE STOP BG EXE: $e');

@@ -26,9 +26,11 @@ class _IntroScreenState extends State<IntroScreen> {
     super.initState();
 
     Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        isBtnVisible = true;
-      });
+      if (mounted) {
+        setState(() {
+          isBtnVisible = true;
+        });
+      }
     });
   }
 
@@ -180,6 +182,9 @@ class _IntroScreenState extends State<IntroScreen> {
     if (isTripStarted == null) {
       if (isServiceRunning) {
         service.invoke("stopService");
+        if (positionStream != null) {
+          positionStream!.cancel();
+        }
       }
 
       if (isUserLoggedIn == null) {
@@ -210,6 +215,9 @@ class _IntroScreenState extends State<IntroScreen> {
     } else {
       if (isServiceRunning) {
         service.invoke("stopService");
+        if (positionStream != null) {
+          positionStream!.cancel();
+        }
       }
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(

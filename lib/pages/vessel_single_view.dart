@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart' as locationAcc;
+import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
+    as locationAcc;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -128,19 +129,19 @@ class VesselSingleViewState extends State<VesselSingleView> {
     //     : iosDeviceInfo = await fetchDeviceInfo()!.androidDeviceData;
     deviceDetails = Platform.isAndroid
         ? DeviceInfo(
-        board: androidDeviceInfo?.board,
-        deviceId: androidDeviceInfo?.id,
-        deviceType: androidDeviceInfo?.type,
-        make: androidDeviceInfo?.manufacturer,
-        model: androidDeviceInfo?.model,
-        version: androidDeviceInfo?.version.release)
+            board: androidDeviceInfo?.board,
+            deviceId: androidDeviceInfo?.id,
+            deviceType: androidDeviceInfo?.type,
+            make: androidDeviceInfo?.manufacturer,
+            model: androidDeviceInfo?.model,
+            version: androidDeviceInfo?.version.release)
         : DeviceInfo(
-        board: iosDeviceInfo?.utsname.machine,
-        deviceId: '',
-        deviceType: iosDeviceInfo?.utsname.machine,
-        make: iosDeviceInfo?.utsname.machine,
-        model: iosDeviceInfo?.model,
-        version: iosDeviceInfo?.utsname.release);
+            board: iosDeviceInfo?.utsname.machine,
+            deviceId: '',
+            deviceType: iosDeviceInfo?.utsname.machine,
+            make: iosDeviceInfo?.utsname.machine,
+            model: iosDeviceInfo?.model,
+            version: iosDeviceInfo?.utsname.release);
     debugPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
   }
 
@@ -266,7 +267,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                     ExpansionCard(
                         scaffoldKey,
                         widget.vessel,
-                            (value) async {
+                        (value) async {
                           /*Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => VesselFormPage(
@@ -295,8 +296,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             });
                           }
                         },
-                            (value) {},
-                            (value) {
+                        (value) {},
+                        (value) {
                           _onDeleteTripsByVesselID(value.id!);
                           _onVesselDelete(value);
                         },
@@ -340,74 +341,76 @@ class VesselSingleViewState extends State<VesselSingleView> {
                 margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
                 child: tripIsRunning
                     ? CommonButtons.getActionButton(
-                    title: 'End Trip',
-                    context: context,
-                    fontSize: displayWidth(context) * 0.042,
-                    textColor: Colors.white,
-                    buttonPrimaryColor: buttonBGColor,
-                    borderColor: buttonBGColor,
-                    width: displayWidth(context),
-                    onTap: () async {
-                      Utils().showEndTripDialog(context, () async {
-                        Navigator.of(context).pop();
+                        title: 'End Trip',
+                        context: context,
+                        fontSize: displayWidth(context) * 0.042,
+                        textColor: Colors.white,
+                        buttonPrimaryColor: buttonBGColor,
+                        borderColor: buttonBGColor,
+                        width: displayWidth(context),
+                        onTap: () async {
+                          Utils().showEndTripDialog(context, () async {
+                            Navigator.of(context).pop();
 
-                        List<String>? tripData =
-                        sharedPreferences!.getStringList('trip_data');
+                            List<String>? tripData =
+                                sharedPreferences!.getStringList('trip_data');
 
-                        String tripId = tripData![0];
-                        /*setState(() {
+                            String tripId = tripData![0];
+                            /*setState(() {
                               tripIsRunning = false;
                             });*/
 
-                        print('TRIP ID $tripId');
+                            print('TRIP ID $tripId');
 
-                        service.invoke('stopService');
+                            service.invoke('stopService');
+                            if (positionStream != null) {
+                              positionStream!.cancel();
+                            }
 
-                        File? zipFile;
-                        if (timer != null) timer!.cancel();
-                        print(
-                            'TIMER STOPPED ${ourDirectory!.path}/$tripId');
-                        final dataDir =
-                        Directory('${ourDirectory!.path}/$tripId');
+                            File? zipFile;
+                            if (timer != null) timer!.cancel();
+                            print(
+                                'TIMER STOPPED ${ourDirectory!.path}/$tripId');
+                            final dataDir =
+                                Directory('${ourDirectory!.path}/$tripId');
 
-                        try {
-                          zipFile =
-                              File('${ourDirectory!.path}/$tripId.zip');
+                            try {
+                              zipFile =
+                                  File('${ourDirectory!.path}/$tripId.zip');
 
-                          ZipFile.createFromDirectory(
-                              sourceDir: dataDir,
-                              zipFile: zipFile,
-                              recurseSubDirs: true);
-                          print('our path is $dataDir');
-                        } catch (e) {
-                          print(e);
-                        }
+                              ZipFile.createFromDirectory(
+                                  sourceDir: dataDir,
+                                  zipFile: zipFile,
+                                  recurseSubDirs: true);
+                              print('our path is $dataDir');
+                            } catch (e) {
+                              print(e);
+                            }
 
-                        File file = File(zipFile!.path);
-                        setState(() {
-                          isEndTripButton = false;
-                          // isZipFileCreate = true;
-                        });
-                        /*Future.delayed(Duration(seconds: 1)).then((value) {
+                            File file = File(zipFile!.path);
+                            setState(() {
+                              isEndTripButton = false;
+                              // isZipFileCreate = true;
+                            });
+                            /*Future.delayed(Duration(seconds: 1)).then((value) {
                               setState(() {
                                 isZipFileCreate = true;
                               });
                             });*/
-                        print('FINAL PATH: ${file.path}');
+                            print('FINAL PATH: ${file.path}');
 
-                        sharedPreferences!.remove('trip_data');
-                        sharedPreferences!.remove('trip_started');
+                            sharedPreferences!.remove('trip_data');
+                            sharedPreferences!.remove('trip_started');
 
-                        await _databaseService.updateTripStatus(1,
-                            file.path, DateTime.now().toString(), tripId);
+                            await _databaseService.updateTripStatus(1,
+                                file.path, DateTime.now().toString(), tripId);
 
-                        tripIsRunningOrNot();
-                      }, () {
-                        Navigator.of(context).pop();
-                      });
-                    })
+                            tripIsRunningOrNot();
+                          }, () {
+                            Navigator.of(context).pop();
+                          });
+                        })
                     : CommonButtons.getActionButton(
-
                         title: 'Start Trip',
                         context: context,
                         fontSize: displayWidth(context) * 0.042,
@@ -629,709 +632,709 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       children: [
                         isEndTripButton
                             ? Container(
-                            child: Column(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  height: 50,
-                                ),
-                                Center(
-                                  child: Text(
-                                    "Reading sensor data...",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
+                                child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    height: 50,
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      "Reading sensor data...",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                    height: 300,
-                                    width: 200,
-                                    child: Lottie.asset(
-                                        'assets/lottie/dataFetch.json')),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                              ],
-                            ))
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  SizedBox(
+                                      height: 300,
+                                      width: 200,
+                                      child: Lottie.asset(
+                                          'assets/lottie/dataFetch.json')),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                ],
+                              ))
                             : isZipFileCreate
-                            ? Column(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            // SizedBox(height: 50,),
-                            SizedBox(
-                                height: 300,
-                                width: 300,
-                                child: Lottie.asset(
-                                    'assets/lottie/done.json')),
-                            Center(
-                              child: Text(
-                                "TripId: $getTripId",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 15,
-                                  color: primaryColor,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Center(
-                              child: Text(
-                                "Trip Ended Successfully!",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 35,
-                            ),
-                            Center(
-                              child: Text(
-                                "Do you want to download the trip data?",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            // SizedBox(height: 50,),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            CommonButtons.getDottedButton(
-                                "Download Trip Data", context,
-                                    () async {
-                                  final androidInfo =
-                                  await DeviceInfoPlugin()
-                                      .androidInfo;
-
-                                  var isStoragePermitted =
-                                  androidInfo.version.sdkInt > 32
-                                      ? await Permission.photos.status
-                                      : await Permission
-                                      .storage.status;
-                                  if (isStoragePermitted.isGranted) {
-                                    //File copiedFile = File('${ourDirectory!.path}.zip');
-                                    File copiedFile = File(
-                                        '${ourDirectory!.path}/$getTripId.zip');
-
-                                    print(
-                                        'DIR PATH R ${ourDirectory!.path}');
-
-                                    Directory directory;
-
-                                    if (Platform.isAndroid) {
-                                      directory = Directory(
-                                          "storage/emulated/0/Download/$getTripId.zip");
-                                    } else {
-                                      directory =
-                                      await getApplicationDocumentsDirectory();
-                                    }
-
-                                    copiedFile.copy(directory.path);
-
-                                    print(
-                                        'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                    if (copiedFile.existsSync()) {
-                                      Utils.showSnackBar(context,
-                                          scaffoldKey: scaffoldKey,
-                                          message:
-                                          'File downloaded successfully');
-                                    }
-                                  } else {
-                                    await Utils.getStoragePermission(
-                                        context);
-                                    var isStoragePermitted =
-                                    await Permission.storage.status;
-
-                                    if (isStoragePermitted.isGranted) {
-                                      File copiedFile = File(
-                                          '${ourDirectory!.path}.zip');
-
-                                      Directory directory;
-
-                                      if (Platform.isAndroid) {
-                                        directory = Directory(
-                                            "storage/emulated/0/Download/$getTripId.zip");
-                                      } else {
-                                        directory =
-                                        await getApplicationDocumentsDirectory();
-                                      }
-
-                                      copiedFile.copy(directory.path);
-
-                                      print(
-                                          'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                      if (copiedFile.existsSync()) {
-                                        Utils.showSnackBar(context,
-                                            scaffoldKey: scaffoldKey,
-                                            message:
-                                            'File downloaded successfully');
-                                      }
-                                    }
-                                  }
-                                }, primaryColor),
-
-                            SizedBox(
-                              height: 10,
-                            ),
-                          ],
-                        )
-                            : Expanded(
-                          child: Column(
-                            mainAxisAlignment:
-                            MainAxisAlignment.center,
-                            children: [
-                              TweenAnimationBuilder(
-                                duration: const Duration(seconds: 3),
-                                tween: Tween(
-                                    begin: progressBegin,
-                                    end: progress),
-                                builder: (context, double value, _) {
-                                  return SizedBox(
-                                    height: 80,
-                                    width: 80,
-                                    child: Stack(
-                                      fit: StackFit.expand,
-                                      children: [
-                                        CircularProgressIndicator(
-                                          value: value,
-                                          backgroundColor:
-                                          Colors.grey.shade200,
-                                          strokeWidth: 3,
-                                          color: primaryColor,
-                                        ),
-                                        Center(
-                                          child: buildProgress(
-                                              value, 60),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                },
-                                onEnd: () {
-                                  debugPrint('END');
-                                  stateSetter(() {
-                                    isStartButton = true;
-                                  });
-                                },
-                              ),
-                              const SizedBox(
-                                height: 40,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                    displayWidth(context) * 0.15),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    commonText(
-                                        context: context,
-                                        text:
-                                        'Fetching your device details',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: Colors.black,
-                                        textSize:
-                                        displayWidth(context) *
-                                            0.032,
-                                        textAlign: TextAlign.start),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    TweenAnimationBuilder(
-                                        duration: const Duration(
-                                            seconds: 3),
-                                        tween: Tween(
-                                            begin:
-                                            deviceProgressBegin,
-                                            end: deviceProgress),
-                                        builder: (context,
-                                            double value, _) {
-                                          return SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: Stack(
-                                              fit: StackFit.expand,
-                                              children: [
-                                                CircularProgressIndicator(
-                                                  color: Colors.blue,
-                                                  value: value,
-                                                  backgroundColor:
-                                                  Colors.grey
-                                                      .shade200,
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                  const AlwaysStoppedAnimation(
-                                                      Colors
-                                                          .green),
-                                                ),
-                                                Center(
-                                                  child: subTitleProgress(
-                                                      value,
-                                                      displayWidth(
-                                                          context) *
-                                                          0.035),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        }),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                    displayWidth(context) * 0.15),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    commonText(
-                                        context: context,
-                                        text:
-                                        'Connecting with your Sensors',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: Colors.black,
-                                        textSize:
-                                        displayWidth(context) *
-                                            0.032,
-                                        textAlign: TextAlign.start),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    TweenAnimationBuilder(
-                                        duration: const Duration(
-                                            seconds: 3),
-                                        tween: Tween(
-                                            begin:
-                                            sensorProgressBegin,
-                                            end: sensorProgress),
-                                        builder: (context,
-                                            double value, _) {
-                                          return SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: Stack(
-                                              fit: StackFit.expand,
-                                              children: [
-                                                CircularProgressIndicator(
-                                                  color: Colors.blue,
-                                                  value: value,
-                                                  backgroundColor:
-                                                  Colors.grey
-                                                      .shade200,
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                  const AlwaysStoppedAnimation(
-                                                      Colors
-                                                          .green),
-                                                ),
-                                                Center(
-                                                  child: subTitleProgress(
-                                                      value,
-                                                      displayWidth(
-                                                          context) *
-                                                          0.035),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        }),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                    displayWidth(context) * 0.15),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    commonText(
-                                        context: context,
-                                        text: isLocationPermission
-                                            ? 'Location permission granted'
-                                            : 'Location permission is required',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: Colors.black,
-                                        textSize:
-                                        displayWidth(context) *
-                                            0.032,
-                                        textAlign: TextAlign.start),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    !isLocationPermission
-                                        ? SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: Container(
-                                        alignment:
-                                        Alignment.center,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color:
-                                                Colors.red,
-                                                width: 2),
-                                            shape: BoxShape
-                                                .circle),
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.close,
-                                            color: Colors.red,
-                                            size: 14,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                        : TweenAnimationBuilder(
-                                        duration: const Duration(
-                                            seconds: 3),
-                                        tween: Tween(
-                                            begin:
-                                            sensorProgressBegin,
-                                            end: sensorProgress),
-                                        builder: (context,
-                                            double value, _) {
-                                          return SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: Stack(
-                                              fit:
-                                              StackFit.expand,
-                                              children: [
-                                                CircularProgressIndicator(
-                                                  color:
-                                                  Colors.blue,
-                                                  value: value,
-                                                  backgroundColor:
-                                                  Colors.grey
-                                                      .shade200,
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                  const AlwaysStoppedAnimation(
-                                                      Colors
-                                                          .green),
-                                                ),
-                                                Center(
-                                                  child: subTitleProgress(
-                                                      value,
-                                                      displayWidth(
-                                                          context) *
-                                                          0.035),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        }),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 40,
-                              ),
-                              isZipFileCreate
-                                  ? InkWell(
-                                onTap: () async {
-                                  // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
-                                  File copiedFile = File(
-                                      '${ourDirectory!.path}.zip');
-
-                                  Directory directory;
-
-                                  if (Platform.isAndroid) {
-                                    directory = Directory(
-                                        "storage/emulated/0/Download/${widget.vessel!.id}.zip");
-                                  } else {
-                                    directory =
-                                    await getApplicationDocumentsDirectory();
-                                  }
-
-                                  copiedFile
-                                      .copy(directory.path);
-
-                                  print(
-                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                  if (copiedFile.existsSync()) {
-                                    Utils.showSnackBar(context,
-                                        scaffoldKey:
-                                        scaffoldKey,
-                                        message:
-                                        'File downloaded successfully');
-                                  }
-
-                                  // Utils.download(context, scaffoldKey,ourDirectory!.path);
-                                },
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    commonText(
-                                        context: context,
-                                        text: 'Download File',
-                                        fontWeight:
-                                        FontWeight.w500,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(
-                                            context) *
-                                            0.038,
-                                        textAlign:
-                                        TextAlign.start),
-                                    Padding(
-                                      padding:
-                                      const EdgeInsets.all(
-                                          8.0),
-                                      child: Icon(Icons
-                                          .file_download_outlined),
-                                    )
-                                  ],
-                                ),
-                              )
-                                  : SizedBox(),
-                              const SizedBox(
-                                height: 40,
-                              ),
-                              isEndTripButton
-                                  ? Container()
-                                  : StatefulBuilder(
-                                builder: (context,
-                                    StateSetter stateSetter) {
-                                  return Column(
+                                ? Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Padding(
-                                        padding:
-                                        const EdgeInsets
-                                            .only(
-                                            left: 20,
-                                            right: 20),
-                                        child: Container(
-                                          height: displayHeight(context) >=
-                                              680
-                                              ? displayHeight(
-                                              context) *
-                                              0.056
-                                              : displayHeight(
-                                              context) *
-                                              0.07,
-                                          alignment: Alignment
-                                              .centerLeft,
-                                          color:
-                                          backgroundColor,
-                                          child: InputDecorator(
-                                            decoration:
-                                            const InputDecoration(
-                                              enabledBorder:
-                                              InputBorder
-                                                  .none,
-                                              border: OutlineInputBorder(
-                                                  borderRadius:
-                                                  BorderRadius.all(
-                                                      Radius.circular(
-                                                          0.0))),
-                                              contentPadding:
-                                              EdgeInsets.only(
-                                                  left: 20,
-                                                  right: 20,
-                                                  top: 5,
-                                                  bottom:
-                                                  5),
-                                            ),
-
-                                            child: commonText(
-                                                context:
-                                                context,
-                                                text:
-                                                vesselName,
-                                                fontWeight:
-                                                FontWeight
-                                                    .w500,
-                                                textColor: Colors
-                                                    .black54,
-                                                textSize:
-                                                displayWidth(
-                                                    context) *
-                                                    0.032,
-                                                textAlign:
-                                                TextAlign
-                                                    .start),
-
-                                            //Text(vesselName)
-                                            //     DropdownButtonHideUnderline(
-                                            //   child: DropdownButton<dynamic>(
-                                            //     value: null,
-                                            //     isDense: true,
-                                            //     hint:
-                                            //         Text(selectedVesselName),
-                                            //     isExpanded: true,
-                                            //     items: [
-                                            //       DropdownMenuItem(
-                                            //           value: '1',
-                                            //           child:
-                                            //               Text(vesselName)),
-                                            //     ],
-                                            //     onChanged: (newValue) {
-                                            //       stateSetter(() =>
-                                            //           selectedVesselName =
-                                            //               vesselName);
-                                            //       print(selectedVesselName);
-                                            //     },
-                                            //   ),
-                                            // ),
+                                      // SizedBox(height: 50,),
+                                      SizedBox(
+                                          height: 300,
+                                          width: 300,
+                                          child: Lottie.asset(
+                                              'assets/lottie/done.json')),
+                                      Center(
+                                        child: Text(
+                                          "TripId: $getTripId",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 15,
+                                            color: primaryColor,
                                           ),
                                         ),
                                       ),
-                                      Padding(
-                                        padding:
-                                        const EdgeInsets
-                                            .only(
-                                            left: 20,
-                                            right: 20,
-                                            top: 10),
-                                        child: Container(
-                                          alignment: Alignment
-                                              .centerLeft,
-                                          height: displayHeight(context) >=
-                                              680
-                                              ? displayHeight(
-                                              context) *
-                                              0.056
-                                              : displayHeight(
-                                              context) *
-                                              0.07,
-                                          color:
-                                          backgroundColor,
-                                          child: InputDecorator(
-                                            decoration:
-                                            const InputDecoration(
-                                              enabledBorder:
-                                              InputBorder
-                                                  .none,
-                                              border: OutlineInputBorder(
-                                                  borderRadius:
-                                                  BorderRadius.all(
-                                                      Radius.circular(
-                                                          0.0))),
-                                              contentPadding:
-                                              EdgeInsets.only(
-                                                  left: 20,
-                                                  right: 20,
-                                                  top: 10,
-                                                  bottom:
-                                                  10),
-                                            ),
-                                            child:
-                                            DropdownButtonHideUnderline(
-                                              child:
-                                              DropdownButton<
-                                                  dynamic>(
-                                                value: null,
-                                                isDense: true,
-                                                hint: commonText(
-                                                    context:
-                                                    context,
-                                                    text:
-                                                    selectedVesselWeight,
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w500,
-                                                    textColor:
-                                                    Colors
-                                                        .black54,
-                                                    textSize:
-                                                    displayWidth(context) *
-                                                        0.032,
-                                                    textAlign:
-                                                    TextAlign
-                                                        .start),
-                                                //  Text(
-                                                //     '${selectedVesselWeight}'),
-                                                isExpanded:
-                                                true,
-                                                items: [
-                                                  DropdownMenuItem(
-                                                      value:
-                                                      '1',
-                                                      child: Text(
-                                                          'Empty')),
-                                                  DropdownMenuItem(
-                                                      value:
-                                                      '2',
-                                                      child: Text(
-                                                          'Half')),
-                                                  DropdownMenuItem(
-                                                      value:
-                                                      '3',
-                                                      child: Text(
-                                                          'Full')),
-                                                  DropdownMenuItem(
-                                                      value:
-                                                      '4',
-                                                      child: Text(
-                                                          'Variable')),
-                                                ],
-                                                onChanged:
-                                                    (weightValue) {
-                                                  stateSetter(
-                                                          () {
-                                                        if (int.parse(
-                                                            weightValue) ==
-                                                            1) {
-                                                          selectedVesselWeight =
-                                                          'Empty';
-                                                        } else if (int.parse(
-                                                            weightValue) ==
-                                                            2) {
-                                                          selectedVesselWeight =
-                                                          'Half';
-                                                        } else if (int.parse(
-                                                            weightValue) ==
-                                                            3) {
-                                                          selectedVesselWeight =
-                                                          'Full';
-                                                        } else {
-                                                          selectedVesselWeight =
-                                                          'Variable';
-                                                        }
-                                                      });
-                                                },
-                                              ),
-                                            ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Center(
+                                        child: Text(
+                                          "Trip Ended Successfully!",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
                                           ),
                                         ),
+                                      ),
+                                      SizedBox(
+                                        height: 35,
+                                      ),
+                                      Center(
+                                        child: Text(
+                                          "Do you want to download the trip data?",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      // SizedBox(height: 50,),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      CommonButtons.getDottedButton(
+                                          "Download Trip Data", context,
+                                          () async {
+                                        final androidInfo =
+                                            await DeviceInfoPlugin()
+                                                .androidInfo;
+
+                                        var isStoragePermitted =
+                                            androidInfo.version.sdkInt > 32
+                                                ? await Permission.photos.status
+                                                : await Permission
+                                                    .storage.status;
+                                        if (isStoragePermitted.isGranted) {
+                                          //File copiedFile = File('${ourDirectory!.path}.zip');
+                                          File copiedFile = File(
+                                              '${ourDirectory!.path}/$getTripId.zip');
+
+                                          print(
+                                              'DIR PATH R ${ourDirectory!.path}');
+
+                                          Directory directory;
+
+                                          if (Platform.isAndroid) {
+                                            directory = Directory(
+                                                "storage/emulated/0/Download/$getTripId.zip");
+                                          } else {
+                                            directory =
+                                                await getApplicationDocumentsDirectory();
+                                          }
+
+                                          copiedFile.copy(directory.path);
+
+                                          print(
+                                              'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                          if (copiedFile.existsSync()) {
+                                            Utils.showSnackBar(context,
+                                                scaffoldKey: scaffoldKey,
+                                                message:
+                                                    'File downloaded successfully');
+                                          }
+                                        } else {
+                                          await Utils.getStoragePermission(
+                                              context);
+                                          var isStoragePermitted =
+                                              await Permission.storage.status;
+
+                                          if (isStoragePermitted.isGranted) {
+                                            File copiedFile = File(
+                                                '${ourDirectory!.path}.zip');
+
+                                            Directory directory;
+
+                                            if (Platform.isAndroid) {
+                                              directory = Directory(
+                                                  "storage/emulated/0/Download/$getTripId.zip");
+                                            } else {
+                                              directory =
+                                                  await getApplicationDocumentsDirectory();
+                                            }
+
+                                            copiedFile.copy(directory.path);
+
+                                            print(
+                                                'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                            if (copiedFile.existsSync()) {
+                                              Utils.showSnackBar(context,
+                                                  scaffoldKey: scaffoldKey,
+                                                  message:
+                                                      'File downloaded successfully');
+                                            }
+                                          }
+                                        }
+                                      }, primaryColor),
+
+                                      SizedBox(
+                                        height: 10,
                                       ),
                                     ],
-                                  );
-                                },
-                              )
-                            ],
-                          ),
-                        ),
+                                  )
+                                : Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        TweenAnimationBuilder(
+                                          duration: const Duration(seconds: 3),
+                                          tween: Tween(
+                                              begin: progressBegin,
+                                              end: progress),
+                                          builder: (context, double value, _) {
+                                            return SizedBox(
+                                              height: 80,
+                                              width: 80,
+                                              child: Stack(
+                                                fit: StackFit.expand,
+                                                children: [
+                                                  CircularProgressIndicator(
+                                                    value: value,
+                                                    backgroundColor:
+                                                        Colors.grey.shade200,
+                                                    strokeWidth: 3,
+                                                    color: primaryColor,
+                                                  ),
+                                                  Center(
+                                                    child: buildProgress(
+                                                        value, 60),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                          onEnd: () {
+                                            debugPrint('END');
+                                            stateSetter(() {
+                                              isStartButton = true;
+                                            });
+                                          },
+                                        ),
+                                        const SizedBox(
+                                          height: 40,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal:
+                                                  displayWidth(context) * 0.15),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              commonText(
+                                                  context: context,
+                                                  text:
+                                                      'Fetching your device details',
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.black,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.032,
+                                                  textAlign: TextAlign.start),
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              TweenAnimationBuilder(
+                                                  duration: const Duration(
+                                                      seconds: 3),
+                                                  tween: Tween(
+                                                      begin:
+                                                          deviceProgressBegin,
+                                                      end: deviceProgress),
+                                                  builder: (context,
+                                                      double value, _) {
+                                                    return SizedBox(
+                                                      height: 20,
+                                                      width: 20,
+                                                      child: Stack(
+                                                        fit: StackFit.expand,
+                                                        children: [
+                                                          CircularProgressIndicator(
+                                                            color: Colors.blue,
+                                                            value: value,
+                                                            backgroundColor:
+                                                                Colors.grey
+                                                                    .shade200,
+                                                            strokeWidth: 2,
+                                                            valueColor:
+                                                                const AlwaysStoppedAnimation(
+                                                                    Colors
+                                                                        .green),
+                                                          ),
+                                                          Center(
+                                                            child: subTitleProgress(
+                                                                value,
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.035),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal:
+                                                  displayWidth(context) * 0.15),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              commonText(
+                                                  context: context,
+                                                  text:
+                                                      'Connecting with your Sensors',
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.black,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.032,
+                                                  textAlign: TextAlign.start),
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              TweenAnimationBuilder(
+                                                  duration: const Duration(
+                                                      seconds: 3),
+                                                  tween: Tween(
+                                                      begin:
+                                                          sensorProgressBegin,
+                                                      end: sensorProgress),
+                                                  builder: (context,
+                                                      double value, _) {
+                                                    return SizedBox(
+                                                      height: 20,
+                                                      width: 20,
+                                                      child: Stack(
+                                                        fit: StackFit.expand,
+                                                        children: [
+                                                          CircularProgressIndicator(
+                                                            color: Colors.blue,
+                                                            value: value,
+                                                            backgroundColor:
+                                                                Colors.grey
+                                                                    .shade200,
+                                                            strokeWidth: 2,
+                                                            valueColor:
+                                                                const AlwaysStoppedAnimation(
+                                                                    Colors
+                                                                        .green),
+                                                          ),
+                                                          Center(
+                                                            child: subTitleProgress(
+                                                                value,
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.035),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal:
+                                                  displayWidth(context) * 0.15),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              commonText(
+                                                  context: context,
+                                                  text: isLocationPermission
+                                                      ? 'Location permission granted'
+                                                      : 'Location permission is required',
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.black,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.032,
+                                                  textAlign: TextAlign.start),
+                                              const SizedBox(
+                                                width: 20,
+                                              ),
+                                              !isLocationPermission
+                                                  ? SizedBox(
+                                                      height: 20,
+                                                      width: 20,
+                                                      child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                color:
+                                                                    Colors.red,
+                                                                width: 2),
+                                                            shape: BoxShape
+                                                                .circle),
+                                                        child: Center(
+                                                          child: Icon(
+                                                            Icons.close,
+                                                            color: Colors.red,
+                                                            size: 14,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : TweenAnimationBuilder(
+                                                      duration: const Duration(
+                                                          seconds: 3),
+                                                      tween: Tween(
+                                                          begin:
+                                                              sensorProgressBegin,
+                                                          end: sensorProgress),
+                                                      builder: (context,
+                                                          double value, _) {
+                                                        return SizedBox(
+                                                          height: 20,
+                                                          width: 20,
+                                                          child: Stack(
+                                                            fit:
+                                                                StackFit.expand,
+                                                            children: [
+                                                              CircularProgressIndicator(
+                                                                color:
+                                                                    Colors.blue,
+                                                                value: value,
+                                                                backgroundColor:
+                                                                    Colors.grey
+                                                                        .shade200,
+                                                                strokeWidth: 2,
+                                                                valueColor:
+                                                                    const AlwaysStoppedAnimation(
+                                                                        Colors
+                                                                            .green),
+                                                              ),
+                                                              Center(
+                                                                child: subTitleProgress(
+                                                                    value,
+                                                                    displayWidth(
+                                                                            context) *
+                                                                        0.035),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 40,
+                                        ),
+                                        isZipFileCreate
+                                            ? InkWell(
+                                                onTap: () async {
+                                                  // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
+                                                  File copiedFile = File(
+                                                      '${ourDirectory!.path}.zip');
+
+                                                  Directory directory;
+
+                                                  if (Platform.isAndroid) {
+                                                    directory = Directory(
+                                                        "storage/emulated/0/Download/${widget.vessel!.id}.zip");
+                                                  } else {
+                                                    directory =
+                                                        await getApplicationDocumentsDirectory();
+                                                  }
+
+                                                  copiedFile
+                                                      .copy(directory.path);
+
+                                                  print(
+                                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                                  if (copiedFile.existsSync()) {
+                                                    Utils.showSnackBar(context,
+                                                        scaffoldKey:
+                                                            scaffoldKey,
+                                                        message:
+                                                            'File downloaded successfully');
+                                                  }
+
+                                                  // Utils.download(context, scaffoldKey,ourDirectory!.path);
+                                                },
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    commonText(
+                                                        context: context,
+                                                        text: 'Download File',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        textColor: Colors.black,
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.038,
+                                                        textAlign:
+                                                            TextAlign.start),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Icon(Icons
+                                                          .file_download_outlined),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            : SizedBox(),
+                                        const SizedBox(
+                                          height: 40,
+                                        ),
+                                        isEndTripButton
+                                            ? Container()
+                                            : StatefulBuilder(
+                                                builder: (context,
+                                                    StateSetter stateSetter) {
+                                                  return Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 20,
+                                                                right: 20),
+                                                        child: Container(
+                                                          height: displayHeight(context) >=
+                                                                  680
+                                                              ? displayHeight(
+                                                                      context) *
+                                                                  0.056
+                                                              : displayHeight(
+                                                                      context) *
+                                                                  0.07,
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          color:
+                                                              backgroundColor,
+                                                          child: InputDecorator(
+                                                            decoration:
+                                                                const InputDecoration(
+                                                              enabledBorder:
+                                                                  InputBorder
+                                                                      .none,
+                                                              border: OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              0.0))),
+                                                              contentPadding:
+                                                                  EdgeInsets.only(
+                                                                      left: 20,
+                                                                      right: 20,
+                                                                      top: 5,
+                                                                      bottom:
+                                                                          5),
+                                                            ),
+
+                                                            child: commonText(
+                                                                context:
+                                                                    context,
+                                                                text:
+                                                                    vesselName,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                textColor: Colors
+                                                                    .black54,
+                                                                textSize:
+                                                                    displayWidth(
+                                                                            context) *
+                                                                        0.032,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .start),
+
+                                                            //Text(vesselName)
+                                                            //     DropdownButtonHideUnderline(
+                                                            //   child: DropdownButton<dynamic>(
+                                                            //     value: null,
+                                                            //     isDense: true,
+                                                            //     hint:
+                                                            //         Text(selectedVesselName),
+                                                            //     isExpanded: true,
+                                                            //     items: [
+                                                            //       DropdownMenuItem(
+                                                            //           value: '1',
+                                                            //           child:
+                                                            //               Text(vesselName)),
+                                                            //     ],
+                                                            //     onChanged: (newValue) {
+                                                            //       stateSetter(() =>
+                                                            //           selectedVesselName =
+                                                            //               vesselName);
+                                                            //       print(selectedVesselName);
+                                                            //     },
+                                                            //   ),
+                                                            // ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 20,
+                                                                right: 20,
+                                                                top: 10),
+                                                        child: Container(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          height: displayHeight(context) >=
+                                                                  680
+                                                              ? displayHeight(
+                                                                      context) *
+                                                                  0.056
+                                                              : displayHeight(
+                                                                      context) *
+                                                                  0.07,
+                                                          color:
+                                                              backgroundColor,
+                                                          child: InputDecorator(
+                                                            decoration:
+                                                                const InputDecoration(
+                                                              enabledBorder:
+                                                                  InputBorder
+                                                                      .none,
+                                                              border: OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              0.0))),
+                                                              contentPadding:
+                                                                  EdgeInsets.only(
+                                                                      left: 20,
+                                                                      right: 20,
+                                                                      top: 10,
+                                                                      bottom:
+                                                                          10),
+                                                            ),
+                                                            child:
+                                                                DropdownButtonHideUnderline(
+                                                              child:
+                                                                  DropdownButton<
+                                                                      dynamic>(
+                                                                value: null,
+                                                                isDense: true,
+                                                                hint: commonText(
+                                                                    context:
+                                                                        context,
+                                                                    text:
+                                                                        selectedVesselWeight,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    textColor:
+                                                                        Colors
+                                                                            .black54,
+                                                                    textSize:
+                                                                        displayWidth(context) *
+                                                                            0.032,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .start),
+                                                                //  Text(
+                                                                //     '${selectedVesselWeight}'),
+                                                                isExpanded:
+                                                                    true,
+                                                                items: [
+                                                                  DropdownMenuItem(
+                                                                      value:
+                                                                          '1',
+                                                                      child: Text(
+                                                                          'Empty')),
+                                                                  DropdownMenuItem(
+                                                                      value:
+                                                                          '2',
+                                                                      child: Text(
+                                                                          'Half')),
+                                                                  DropdownMenuItem(
+                                                                      value:
+                                                                          '3',
+                                                                      child: Text(
+                                                                          'Full')),
+                                                                  DropdownMenuItem(
+                                                                      value:
+                                                                          '4',
+                                                                      child: Text(
+                                                                          'Variable')),
+                                                                ],
+                                                                onChanged:
+                                                                    (weightValue) {
+                                                                  stateSetter(
+                                                                      () {
+                                                                    if (int.parse(
+                                                                            weightValue) ==
+                                                                        1) {
+                                                                      selectedVesselWeight =
+                                                                          'Empty';
+                                                                    } else if (int.parse(
+                                                                            weightValue) ==
+                                                                        2) {
+                                                                      selectedVesselWeight =
+                                                                          'Half';
+                                                                    } else if (int.parse(
+                                                                            weightValue) ==
+                                                                        3) {
+                                                                      selectedVesselWeight =
+                                                                          'Full';
+                                                                    } else {
+                                                                      selectedVesselWeight =
+                                                                          'Variable';
+                                                                    }
+                                                                  });
+                                                                },
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              )
+                                      ],
+                                    ),
+                                  ),
                         SizedBox(
                           //height: 50,
                           width: displayWidth(context),
@@ -1340,67 +1343,67 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 left: 17,
                                 right: 17,
                                 bottom:
-                                isStartButton || isEndTripButton ? 8 : 2),
+                                    isStartButton || isEndTripButton ? 8 : 2),
                             child: isStartButton
                                 ? addingDataToDB
-                                ? Center(child: CircularProgressIndicator())
-                                : CommonButtons.getActionButton(
-                                title: 'Start',
-                                context: context,
-                                fontSize: displayWidth(context) * 0.042,
-                                textColor: Colors.white,
-                                buttonPrimaryColor: buttonBGColor,
-                                borderColor: buttonBGColor,
-                                width: displayWidth(context),
-                                onTap: () async {
-                                  debugPrint(
-                                      'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                  if (selectedVesselWeight ==
-                                      'Select Current Load') {
-                                    debugPrint(
-                                        'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      behavior:
-                                      SnackBarBehavior.floating,
-                                      content:
-                                      Text("Please select weight"),
-                                      duration: Duration(seconds: 1),
-                                      backgroundColor: Colors.blue,
-                                    ));
-                                    return;
-                                  }
+                                    ? Center(child: CircularProgressIndicator())
+                                    : CommonButtons.getActionButton(
+                                        title: 'Start',
+                                        context: context,
+                                        fontSize: displayWidth(context) * 0.042,
+                                        textColor: Colors.white,
+                                        buttonPrimaryColor: buttonBGColor,
+                                        borderColor: buttonBGColor,
+                                        width: displayWidth(context),
+                                        onTap: () async {
+                                          debugPrint(
+                                              'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+                                          if (selectedVesselWeight ==
+                                              'Select Current Load') {
+                                            debugPrint(
+                                                'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              content:
+                                                  Text("Please select weight"),
+                                              duration: Duration(seconds: 1),
+                                              backgroundColor: Colors.blue,
+                                            ));
+                                            return;
+                                          }
 
-                                  bool isLocationPermitted =
-                                  await Permission
-                                      .location.isGranted;
+                                          bool isLocationPermitted =
+                                              await Permission
+                                                  .location.isGranted;
 
-                                  if (isLocationPermitted) {
-                                    stateSetter(() {
-                                      isLocationPermission = true;
-                                    });
+                                          if (isLocationPermitted) {
+                                            stateSetter(() {
+                                              isLocationPermission = true;
+                                            });
 
-                                    final androidInfo =
-                                    await DeviceInfoPlugin()
-                                        .androidInfo;
+                                            final androidInfo =
+                                                await DeviceInfoPlugin()
+                                                    .androidInfo;
 
-                                    var isStoragePermitted =
-                                    androidInfo.version.sdkInt > 32
-                                        ? await Permission
-                                        .photos.status
-                                        : await Permission
-                                        .storage.status;
-                                    if (isStoragePermitted.isGranted) {
-                                      bool isNotificationPermitted =
-                                      await Permission
-                                          .notification.isGranted;
+                                            var isStoragePermitted =
+                                                androidInfo.version.sdkInt > 32
+                                                    ? await Permission
+                                                        .photos.status
+                                                    : await Permission
+                                                        .storage.status;
+                                            if (isStoragePermitted.isGranted) {
+                                              bool isNotificationPermitted =
+                                                  await Permission
+                                                      .notification.isGranted;
 
-                                      if (isNotificationPermitted) {
-                                        startWritingDataToDB(
-                                            bottomSheetContext,
-                                            stateSetter);
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    bottomSheetContext,
+                                                    stateSetter);
 
-                                        /*bool isServiceRunning =
+                                                /*bool isServiceRunning =
                                                 await service.isRunning();
 
                                             print(
@@ -1461,16 +1464,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               isEndTripButton = true;
                                             });*/
 
-                                        // await Permission.storage.request();
-                                      } else {
-                                        await Utils
-                                            .getNotificationPermission(
-                                            context);
-                                        bool isNotificationPermitted =
-                                        await Permission
-                                            .notification.isGranted;
-                                        if (isNotificationPermitted) {
-                                          /*bool isServiceRunning =
+                                                // await Permission.storage.request();
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                        context);
+                                                bool isNotificationPermitted =
+                                                    await Permission
+                                                        .notification.isGranted;
+                                                if (isNotificationPermitted) {
+                                                  /*bool isServiceRunning =
                                                   await service.isRunning();
 
                                               print(
@@ -1529,38 +1532,38 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 isStartButton = false;
                                                 isEndTripButton = true;
                                               });*/
-                                          // tripIsRunningOrNot();
+                                                  // tripIsRunningOrNot();
 
-                                          // await Permission.storage.request();
+                                                  // await Permission.storage.request();
 
-                                          startWritingDataToDB(
-                                              bottomSheetContext,
-                                              stateSetter);
-                                        }
-                                      }
-                                    } else {
-                                      await Utils.getStoragePermission(
-                                          context);
-                                      final androidInfo =
-                                      await DeviceInfoPlugin()
-                                          .androidInfo;
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
+                                                }
+                                              }
+                                            } else {
+                                              await Utils.getStoragePermission(
+                                                  context);
+                                              final androidInfo =
+                                                  await DeviceInfoPlugin()
+                                                      .androidInfo;
 
-                                      var isStoragePermitted =
-                                      androidInfo.version.sdkInt >
-                                          32
-                                          ? await Permission
-                                          .photos.status
-                                          : await Permission
-                                          .storage.status;
+                                              var isStoragePermitted =
+                                                  androidInfo.version.sdkInt >
+                                                          32
+                                                      ? await Permission
+                                                          .photos.status
+                                                      : await Permission
+                                                          .storage.status;
 
-                                      if (isStoragePermitted
-                                          .isGranted) {
-                                        bool isNotificationPermitted =
-                                        await Permission
-                                            .notification.isGranted;
+                                              if (isStoragePermitted
+                                                  .isGranted) {
+                                                bool isNotificationPermitted =
+                                                    await Permission
+                                                        .notification.isGranted;
 
-                                        if (isNotificationPermitted) {
-                                          /* bool isServiceRunning =
+                                                if (isNotificationPermitted) {
+                                                  /* bool isServiceRunning =
                                                   await service.isRunning();
 
                                               print(
@@ -1619,23 +1622,23 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 isStartButton = false;
                                                 isEndTripButton = true;
                                               });*/
-                                          // tripIsRunningOrNot();
+                                                  // tripIsRunningOrNot();
 
-                                          // await Permission.storage.request();
+                                                  // await Permission.storage.request();
 
-                                          startWritingDataToDB(
-                                              bottomSheetContext,
-                                              stateSetter);
-                                        } else {
-                                          await Utils
-                                              .getNotificationPermission(
-                                              context);
-                                          bool isNotificationPermitted =
-                                          await Permission
-                                              .notification
-                                              .isGranted;
-                                          if (isNotificationPermitted) {
-                                            /*bool isServiceRunning =
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
+                                                } else {
+                                                  await Utils
+                                                      .getNotificationPermission(
+                                                          context);
+                                                  bool isNotificationPermitted =
+                                                      await Permission
+                                                          .notification
+                                                          .isGranted;
+                                                  if (isNotificationPermitted) {
+                                                    /*bool isServiceRunning =
                                                     await service.isRunning();
 
                                                 print(
@@ -1699,49 +1702,49 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   isEndTripButton = true;
                                                 });*/
 
-                                            startWritingDataToDB(
-                                                bottomSheetContext,
-                                                stateSetter);
+                                                    startWritingDataToDB(
+                                                        bottomSheetContext,
+                                                        stateSetter);
 
-                                            // tripIsRunningOrNot();
+                                                    // tripIsRunningOrNot();
 
-                                            // await Permission.storage.request();
-                                          }
-                                        }
-                                      }
-                                    }
-                                  } else {
-                                    await Utils.getLocationPermission(
-                                        context, scaffoldKey);
-                                    bool isLocationPermitted =
-                                    await Permission
-                                        .location.isGranted;
+                                                    // await Permission.storage.request();
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            await Utils.getLocationPermission(
+                                                context, scaffoldKey);
+                                            bool isLocationPermitted =
+                                                await Permission
+                                                    .location.isGranted;
 
-                                    if (isLocationPermitted) {
-                                      stateSetter(() {
-                                        isLocationPermission = true;
-                                      });
-                                      // service.startService();
+                                            if (isLocationPermitted) {
+                                              stateSetter(() {
+                                                isLocationPermission = true;
+                                              });
+                                              // service.startService();
 
-                                      final androidInfo =
-                                      await DeviceInfoPlugin()
-                                          .androidInfo;
+                                              final androidInfo =
+                                                  await DeviceInfoPlugin()
+                                                      .androidInfo;
 
-                                      var isStoragePermitted =
-                                      androidInfo.version.sdkInt >
-                                          32
-                                          ? await Permission
-                                          .photos.status
-                                          : await Permission
-                                          .storage.status;
-                                      if (isStoragePermitted
-                                          .isGranted) {
-                                        bool isNotificationPermitted =
-                                        await Permission
-                                            .notification.isGranted;
+                                              var isStoragePermitted =
+                                                  androidInfo.version.sdkInt >
+                                                          32
+                                                      ? await Permission
+                                                          .photos.status
+                                                      : await Permission
+                                                          .storage.status;
+                                              if (isStoragePermitted
+                                                  .isGranted) {
+                                                bool isNotificationPermitted =
+                                                    await Permission
+                                                        .notification.isGranted;
 
-                                        if (isNotificationPermitted) {
-                                          /*bool isServiceRunning =
+                                                if (isNotificationPermitted) {
+                                                  /*bool isServiceRunning =
                                                   await service.isRunning();
 
                                               print(
@@ -1801,23 +1804,23 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 isEndTripButton = true;
                                               });*/
 
-                                          startWritingDataToDB(
-                                              bottomSheetContext,
-                                              stateSetter);
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
 
-                                          // tripIsRunningOrNot();
+                                                  // tripIsRunningOrNot();
 
-                                          // await Permission.storage.request();
-                                        } else {
-                                          await Utils
-                                              .getNotificationPermission(
-                                              context);
-                                          bool isNotificationPermitted =
-                                          await Permission
-                                              .notification
-                                              .isGranted;
-                                          if (isNotificationPermitted) {
-                                            /*bool isServiceRunning =
+                                                  // await Permission.storage.request();
+                                                } else {
+                                                  await Utils
+                                                      .getNotificationPermission(
+                                                          context);
+                                                  bool isNotificationPermitted =
+                                                      await Permission
+                                                          .notification
+                                                          .isGranted;
+                                                  if (isNotificationPermitted) {
+                                                    /*bool isServiceRunning =
                                                     await service.isRunning();
 
                                                 print(
@@ -1880,17 +1883,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   isEndTripButton = true;
                                                 });*/
 
-                                            // tripIsRunningOrNot();
+                                                    // tripIsRunningOrNot();
 
-                                            // await Permission.storage.request();
+                                                    // await Permission.storage.request();
 
-                                            startWritingDataToDB(
-                                                bottomSheetContext,
-                                                stateSetter);
-                                          }
-                                        }
+                                                    startWritingDataToDB(
+                                                        bottomSheetContext,
+                                                        stateSetter);
+                                                  }
+                                                }
 
-                                        /*bool isServiceRunning =
+                                                /*bool isServiceRunning =
                                                     await service.isRunning();
 
                                                 if (!isServiceRunning) {
@@ -1940,32 +1943,32 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                                 onSave('', bottomSheetContext, true);*/
 
-                                        // await Permission.storage.request();
-                                      } else {
-                                        await Utils
-                                            .getStoragePermission(
-                                            context);
-                                        final androidInfo =
-                                        await DeviceInfoPlugin()
-                                            .androidInfo;
+                                                // await Permission.storage.request();
+                                              } else {
+                                                await Utils
+                                                    .getStoragePermission(
+                                                        context);
+                                                final androidInfo =
+                                                    await DeviceInfoPlugin()
+                                                        .androidInfo;
 
-                                        var isStoragePermitted =
-                                        androidInfo.version.sdkInt >
-                                            32
-                                            ? await Permission
-                                            .photos.status
-                                            : await Permission
-                                            .storage.status;
+                                                var isStoragePermitted =
+                                                    androidInfo.version.sdkInt >
+                                                            32
+                                                        ? await Permission
+                                                            .photos.status
+                                                        : await Permission
+                                                            .storage.status;
 
-                                        if (isStoragePermitted
-                                            .isGranted) {
-                                          bool isNotificationPermitted =
-                                          await Permission
-                                              .notification
-                                              .isGranted;
+                                                if (isStoragePermitted
+                                                    .isGranted) {
+                                                  bool isNotificationPermitted =
+                                                      await Permission
+                                                          .notification
+                                                          .isGranted;
 
-                                          if (isNotificationPermitted) {
-                                            /*bool isServiceRunning =
+                                                  if (isNotificationPermitted) {
+                                                    /*bool isServiceRunning =
                                                     await service.isRunning();
 
                                                 print(
@@ -2028,23 +2031,23 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   isStartButton = false;
                                                   isEndTripButton = true;
                                                 });*/
-                                            startWritingDataToDB(
-                                                bottomSheetContext,
-                                                stateSetter);
-                                            // tripIsRunningOrNot();
+                                                    startWritingDataToDB(
+                                                        bottomSheetContext,
+                                                        stateSetter);
+                                                    // tripIsRunningOrNot();
 
-                                            // await Permission.storage.request();
-                                          } else {
-                                            await Utils
-                                                .getNotificationPermission(
-                                                context);
-                                            bool
-                                            isNotificationPermitted =
-                                            await Permission
-                                                .notification
-                                                .isGranted;
-                                            if (isNotificationPermitted) {
-                                              /*bool isServiceRunning =
+                                                    // await Permission.storage.request();
+                                                  } else {
+                                                    await Utils
+                                                        .getNotificationPermission(
+                                                            context);
+                                                    bool
+                                                        isNotificationPermitted =
+                                                        await Permission
+                                                            .notification
+                                                            .isGranted;
+                                                    if (isNotificationPermitted) {
+                                                      /*bool isServiceRunning =
                                                       await service.isRunning();
 
                                                   print(
@@ -2107,15 +2110,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     isStartButton = false;
                                                     isEndTripButton = true;
                                                   });*/
-                                              // tripIsRunningOrNot();
-                                              startWritingDataToDB(
-                                                  bottomSheetContext,
-                                                  stateSetter);
-                                              // await Permission.storage.request();
-                                            }
-                                          }
+                                                      // tripIsRunningOrNot();
+                                                      startWritingDataToDB(
+                                                          bottomSheetContext,
+                                                          stateSetter);
+                                                      // await Permission.storage.request();
+                                                    }
+                                                  }
 
-                                          /*bool isServiceRunning =
+                                                  /*bool isServiceRunning =
                                                       await service.isRunning();
 
                                                   if (!isServiceRunning) {
@@ -2164,180 +2167,183 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   ]);
 
                                                   onSave('', bottomSheetContext, true);*/
-                                        }
-                                      }
+                                                }
+                                              }
 
-                                      /// TODO Further Process
-                                      // await getLocationData();
+                                              /// TODO Further Process
+                                              // await getLocationData();
 
-                                      /// SAVED Sensor data
-                                      // startSensorFunctionality(stateSetter);
-                                    }
-                                  }
-                                  // startTripService(stateSetter);
-                                })
+                                              /// SAVED Sensor data
+                                              // startSensorFunctionality(stateSetter);
+                                            }
+                                          }
+                                          // startTripService(stateSetter);
+                                        })
                                 : isEndTripButton
-                                ? addingDataToDB
-                                ? Center(
-                                child: CircularProgressIndicator())
-                                : CommonButtons.getActionButton(
-                                title: 'End Trip',
-                                context: context,
-                                fontSize:
-                                displayWidth(context) * 0.042,
-                                textColor: Colors.white,
-                                buttonPrimaryColor: buttonBGColor,
-                                borderColor: buttonBGColor,
-                                width: displayWidth(context),
-                                onTap: () async {
-                                  // getTripId = await getTripIdFromPref();
+                                    ? addingDataToDB
+                                        ? Center(
+                                            child: CircularProgressIndicator())
+                                        : CommonButtons.getActionButton(
+                                            title: 'End Trip',
+                                            context: context,
+                                            fontSize:
+                                                displayWidth(context) * 0.042,
+                                            textColor: Colors.white,
+                                            buttonPrimaryColor: buttonBGColor,
+                                            borderColor: buttonBGColor,
+                                            width: displayWidth(context),
+                                            onTap: () async {
+                                              // getTripId = await getTripIdFromPref();
 
-                                  stateSetter(() {
-                                    addingDataToDB = true;
-                                  });
+                                              stateSetter(() {
+                                                addingDataToDB = true;
+                                              });
 
-                                  service.invoke('stopService');
+                                              service.invoke('stopService');
+                                              if (positionStream != null) {
+                                                positionStream!.cancel();
+                                              }
 
-                                  File? zipFile;
-                                  if (timer != null)
-                                    timer!.cancel();
-                                  print(
-                                      'TIMER STOPPED ${ourDirectory!.path}/$getTripId');
-                                  final dataDir = Directory(
-                                      '${ourDirectory!.path}/$getTripId');
+                                              File? zipFile;
+                                              if (timer != null)
+                                                timer!.cancel();
+                                              print(
+                                                  'TIMER STOPPED ${ourDirectory!.path}/$getTripId');
+                                              final dataDir = Directory(
+                                                  '${ourDirectory!.path}/$getTripId');
 
-                                  try {
-                                    zipFile = File(
-                                        '${ourDirectory!.path}/$getTripId.zip');
+                                              try {
+                                                zipFile = File(
+                                                    '${ourDirectory!.path}/$getTripId.zip');
 
-                                    ZipFile.createFromDirectory(
-                                        sourceDir: dataDir,
-                                        zipFile: zipFile,
-                                        recurseSubDirs: true);
-                                    print('our path is $dataDir');
-                                  } catch (e) {
-                                    print(e);
-                                  }
+                                                ZipFile.createFromDirectory(
+                                                    sourceDir: dataDir,
+                                                    zipFile: zipFile,
+                                                    recurseSubDirs: true);
+                                                print('our path is $dataDir');
+                                              } catch (e) {
+                                                print(e);
+                                              }
 
-                                  File file = File(zipFile!.path);
-                                  /*stateSetter(() {
+                                              File file = File(zipFile!.path);
+                                              /*stateSetter(() {
                                             isEndTripButton = false;
                                             isZipFileCreate = true;
                                           });*/
 
-                                  print('FINAL PATH: ${file.path}');
+                                              print('FINAL PATH: ${file.path}');
 
-                                  sharedPreferences!
-                                      .remove('trip_data');
-                                  sharedPreferences!
-                                      .remove('trip_started');
+                                              sharedPreferences!
+                                                  .remove('trip_data');
+                                              sharedPreferences!
+                                                  .remove('trip_started');
 
-                                  await _databaseService
-                                      .updateTripStatus(
-                                      1,
-                                      file.path,
-                                      DateTime.now().toString(),
-                                      getTripId);
+                                              await _databaseService
+                                                  .updateTripStatus(
+                                                      1,
+                                                      file.path,
+                                                      DateTime.now().toString(),
+                                                      getTripId);
 
-                                  Future.delayed(
-                                      Duration(seconds: 3))
-                                      .then((value) {
-                                    if (mounted) {
-                                      stateSetter(() {
-                                        addingDataToDB = false;
-                                        isEndTripButton = false;
-                                        isZipFileCreate = true;
-                                      });
-                                    }
-                                  });
+                                              Future.delayed(
+                                                      Duration(seconds: 3))
+                                                  .then((value) {
+                                                if (mounted) {
+                                                  stateSetter(() {
+                                                    addingDataToDB = false;
+                                                    isEndTripButton = false;
+                                                    isZipFileCreate = true;
+                                                  });
+                                                }
+                                              });
 
-                                  // stateSetter(() {
-                                  //   isEndTripButton = false;
-                                  //   isZipFileCreate = true;
-                                  // });
+                                              // stateSetter(() {
+                                              //   isEndTripButton = false;
+                                              //   isZipFileCreate = true;
+                                              // });
 
-                                  /*File file = File(zipFile!.path);
+                                              /*File file = File(zipFile!.path);
                                               Future.delayed(Duration(seconds: 1))
                                                   .then((value) {
                                                 stateSetter(() {
                                                   isZipFileCreate = true;
                                                 });
                                               });*/
-                                })
-                                : isZipFileCreate
-                                ? CommonButtons.getActionButton(
-                                title: 'Trip Ended',
-                                context: context,
-                                fontSize:
-                                displayWidth(context) * 0.042,
-                                textColor: Colors.white,
-                                buttonPrimaryColor: buttonBGColor,
-                                borderColor: buttonBGColor,
-                                width: displayWidth(context),
-                                onTap: () async {
-                                  tripIsRunningOrNot();
-                                  Get.back();
+                                            })
+                                    : isZipFileCreate
+                                        ? CommonButtons.getActionButton(
+                                            title: 'Trip Ended',
+                                            context: context,
+                                            fontSize:
+                                                displayWidth(context) * 0.042,
+                                            textColor: Colors.white,
+                                            buttonPrimaryColor: buttonBGColor,
+                                            borderColor: buttonBGColor,
+                                            width: displayWidth(context),
+                                            onTap: () async {
+                                              tripIsRunningOrNot();
+                                              Get.back();
 
-                                  // getTripId = await getTripIdFromPref();
+                                              // getTripId = await getTripIdFromPref();
 
-                                  // File? zipFile;
-                                  // if (timer != null) timer!.cancel();
-                                  // print(
-                                  //     'TIMER STOPPED ${ourDirectory!.path}');
-                                  // final dataDir =
-                                  // Directory(ourDirectory!.path);
-                                  //
-                                  // try {
-                                  //   zipFile =
-                                  //       File('${ourDirectory!.path}.zip');
-                                  //
-                                  //   ZipFile.createFromDirectory(
-                                  //       sourceDir: dataDir,
-                                  //       zipFile: zipFile,
-                                  //       recurseSubDirs: true);
-                                  //   print('our path is $dataDir');
-                                  // } catch (e) {
-                                  //   print(e);
-                                  // }
-                                  //
-                                  // File file = File(zipFile!.path);
-                                  // Future.delayed(Duration(seconds: 1))
-                                  //     .then((value) {
-                                  //   stateSetter(() {
-                                  //     isZipFileCreate = true;
-                                  //   });
-                                  // });
-                                  // print('FINAL PATH: ${file.path}');
-                                  // onSave(file);
+                                              // File? zipFile;
+                                              // if (timer != null) timer!.cancel();
+                                              // print(
+                                              //     'TIMER STOPPED ${ourDirectory!.path}');
+                                              // final dataDir =
+                                              // Directory(ourDirectory!.path);
+                                              //
+                                              // try {
+                                              //   zipFile =
+                                              //       File('${ourDirectory!.path}.zip');
+                                              //
+                                              //   ZipFile.createFromDirectory(
+                                              //       sourceDir: dataDir,
+                                              //       zipFile: zipFile,
+                                              //       recurseSubDirs: true);
+                                              //   print('our path is $dataDir');
+                                              // } catch (e) {
+                                              //   print(e);
+                                              // }
+                                              //
+                                              // File file = File(zipFile!.path);
+                                              // Future.delayed(Duration(seconds: 1))
+                                              //     .then((value) {
+                                              //   stateSetter(() {
+                                              //     isZipFileCreate = true;
+                                              //   });
+                                              // });
+                                              // print('FINAL PATH: ${file.path}');
+                                              // onSave(file);
 
-                                  /*File file = File(zipFile!.path);
+                                              /*File file = File(zipFile!.path);
                                               Future.delayed(Duration(seconds: 1))
                                                   .then((value) {
                                                 stateSetter(() {
                                                   isZipFileCreate = true;
                                                 });
                                               });*/
-                                })
-                                : Container(
-                              margin: EdgeInsets.only(bottom: 8),
-                              child:
-                              CommonButtons.getActionButton(
-                                  title: 'Cancel',
-                                  context: context,
-                                  fontSize:
-                                  displayWidth(context) *
-                                      0.042,
-                                  textColor: Colors.white,
-                                  buttonPrimaryColor:
-                                  buttonBGColor,
-                                  borderColor: buttonBGColor,
-                                  width:
-                                  displayWidth(context),
-                                  onTap: () {
-                                    Get.back();
-                                    //Navigator.of(context).pop();
-                                  }),
-                            ),
+                                            })
+                                        : Container(
+                                            margin: EdgeInsets.only(bottom: 8),
+                                            child:
+                                                CommonButtons.getActionButton(
+                                                    title: 'Cancel',
+                                                    context: context,
+                                                    fontSize:
+                                                        displayWidth(context) *
+                                                            0.042,
+                                                    textColor: Colors.white,
+                                                    buttonPrimaryColor:
+                                                        buttonBGColor,
+                                                    borderColor: buttonBGColor,
+                                                    width:
+                                                        displayWidth(context),
+                                                    onTap: () {
+                                                      Get.back();
+                                                      //Navigator.of(context).pop();
+                                                    }),
+                                          ),
                           ),
                         ),
                       ],
@@ -2416,7 +2422,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   Future<Position> getLocationData() async {
     Position? locationData =
-    await Utils.getLocationPermission(context, scaffoldKey);
+        await Utils.getLocationPermission(context, scaffoldKey);
 
     latitude = locationData!.latitude.toString();
     longitude = locationData.longitude.toString();
@@ -2485,20 +2491,25 @@ class VesselSingleViewState extends State<VesselSingleView> {
       print('WRITING');
 
       Position? locationData =
-      await Utils.getLocationPermission(context, scaffoldKey);
-      Geolocator.getCurrentPosition(desiredAccuracy: locationAcc.LocationAccuracy.high,).then((value) {
+          await Utils.getLocationPermission(context, scaffoldKey);
+      Geolocator.getCurrentPosition(
+        desiredAccuracy: locationAcc.LocationAccuracy.high,
+      ).then((value) {
         latitude = value.latitude.toString();
         longitude = value.longitude.toString();
       });
 
       final LocationSettings locationSettings = LocationSettings(
-        accuracy:locationAcc.LocationAccuracy.high,
+        accuracy: locationAcc.LocationAccuracy.high,
         // distanceFilter: 0,
       );
-      Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position event) {
-        print(event == null ? 'Unknown' : '${event.latitude.toString()}, ${event.longitude.toString()}');
-        latitude=event.latitude.toString();
-        longitude=event.longitude.toString();
+      Geolocator.getPositionStream(locationSettings: locationSettings)
+          .listen((Position event) {
+        print(event == null
+            ? 'Unknown'
+            : '${event.latitude.toString()}, ${event.longitude.toString()}');
+        latitude = event.latitude.toString();
+        longitude = event.longitude.toString();
       });
       // Geolocator.get {
       //   print(event == null ? 'Unknown' : '${event.latitude.toString()}, ${event.longitude.toString()}');
@@ -2605,7 +2616,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
     Position? locationData =
-
         await Utils.getLocationPermission(context, scaffoldKey);
 //
 //     location = Position();
