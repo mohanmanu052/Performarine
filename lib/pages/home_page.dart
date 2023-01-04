@@ -369,7 +369,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       commonText(
                         context: context,
-                        text: 'Performarine',
+                        text: 'PerforMarine',
                         fontWeight: FontWeight.w600,
                         textColor: Colors.black87,
                         textSize: displayWidth(context) * 0.045,

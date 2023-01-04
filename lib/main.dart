@@ -221,7 +221,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
         if (await serviceInstance.isForegroundService()) {
           flutterLocalNotificationsPlugin.show(
             888,
-            'Performarine',
+            'PerforMarine',
             'Trip Data Collection in progress....',
             const NotificationDetails(
               android: AndroidNotificationDetails(
@@ -333,12 +333,12 @@ Future<void> initializeService() async {
 
   await service.configure(
     androidConfiguration: AndroidConfiguration(
-      initialNotificationTitle: 'Performarine',
+      initialNotificationTitle: 'PerforMarine',
       onStart: onStart,
       autoStart: true,
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
-      initialNotificationContent: 'Performarine consuming background services.',
+      initialNotificationContent: 'PerforMarine consuming background services.',
       /*'Trip Data Collection in progress...',*/
       foregroundServiceNotificationId: notificationId,
     ),
@@ -378,7 +378,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ChangeNotifierProvider(create: (_) => CommonProvider()),
       ],
       child: GetMaterialApp(
-        title: 'Performarine',
+        title: 'PerforMarine',
         debugShowCheckedModeBanner: false,
         initialRoute: "/",
         /*routes: {

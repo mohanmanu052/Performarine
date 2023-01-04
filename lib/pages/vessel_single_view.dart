@@ -1406,8 +1406,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 .showSnackBar(SnackBar(
                                               behavior:
                                                   SnackBarBehavior.floating,
-                                              content:
-                                                  Text("Please select weight"),
+                                              content: Text(
+                                                  "Please select current load"),
                                               duration: Duration(seconds: 1),
                                               backgroundColor: Colors.blue,
                                             ));

@@ -31,7 +31,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 
     <application
-        android:label="Performarine"
+        android:label="PerforMarine"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
