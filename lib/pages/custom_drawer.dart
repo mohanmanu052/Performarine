@@ -7,6 +7,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -175,6 +176,29 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             textSize: textSize,
                             textAlign: TextAlign.start),
                       ),
+                      SizedBox(
+                        height: displayHeight(context) * 0.02,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const RetiredVesselsScreen()),
+                          );
+                        },
+                        child: commonText(
+                            context: context,
+                            text: 'Retried vessels',
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.black54,
+                            textSize: textSize,
+                            textAlign: TextAlign.start),
+                      ),
+
                       /*SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),

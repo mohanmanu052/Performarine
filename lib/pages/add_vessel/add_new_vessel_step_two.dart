@@ -367,6 +367,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                   commonProvider.loginModel!.userId.toString();
                               commonProvider.addVesselRequestModel!.updatedBy =
                                   commonProvider.loginModel!.userId.toString();
+                              commonProvider.addVesselRequestModel!.isRetire =
+                                  0;
 
                               if (commonProvider.addVesselRequestModel!
                                   .selectedImages!.isNotEmpty) {

@@ -1,11 +1,13 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 
 class LocationPermissionCustomDialog extends StatelessWidget {
-  String? text, subText, buttonText, headingText, stepOne, stepTwo, stepThree;
+  String? text, subText, buttonText;
 
   Function()? buttonOnTap;
 
@@ -15,7 +17,8 @@ class LocationPermissionCustomDialog extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: displayHeight(context) * 0.6,
+          width: displayWidth(context),
+          height: displayHeight(context) * 0.7,
           margin: EdgeInsets.all(10),
           decoration: new BoxDecoration(
             color: Theme.of(context).brightness == Brightness.dark
@@ -43,7 +46,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(top: 10.0, left: 10, right: 10),
                         child: commonText(
-                            text: headingText,
+                            text: 'Location Permission Required',
                             context: context,
                             textSize: displayWidth(context) * 0.045,
                             textColor:
@@ -55,8 +58,9 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                       Center(
                         child: Container(
                           child: Image.asset(
-                            'assets/images/storage_permission.png',
-                            height: displayHeight(context) * 0.1,
+                            'assets/images/location_permission.png',
+                            height: displayHeight(context) * 0.18,
+                            fit: BoxFit.contain,
                           ),
                         ),
                       ),
@@ -87,42 +91,150 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                        child: commonText(
-                            text: stepOne!,
-                            context: context,
-                            textSize: displayWidth(context) * 0.032,
-                            textColor:
-                                Theme.of(context).brightness == Brightness.dark
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Click',
+                            style: TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
                                     ? Colors.white
                                     : Colors.black54,
-                            fontWeight: FontWeight.w500,
-                            textAlign: TextAlign.start),
+                                fontWeight: FontWeight.w500,
+                                fontFamily: poppins,
+                                fontSize: displayWidth(context) * 0.032),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: ' OK',
+                                recognizer: TapGestureRecognizer()
+                                /*..onTap = () async {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return SignUpScreen();
+                                      }));
+                                    }*/
+                                ,
+                                style: TextStyle(
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: poppins,
+                                    fontSize: displayWidth(context) * 0.032),
+                              ),
+                              TextSpan(
+                                text: ' to access App Info',
+                                recognizer: TapGestureRecognizer(),
+                                style: TextStyle(
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black54,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: poppins,
+                                    fontSize: displayWidth(context) * 0.032),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                        child: commonText(
-                            text: stepTwo!,
-                            context: context,
-                            textSize: displayWidth(context) * 0.032,
-                            textColor:
-                                Theme.of(context).brightness == Brightness.dark
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Click',
+                            style: TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
                                     ? Colors.white
                                     : Colors.black54,
-                            fontWeight: FontWeight.w500,
-                            textAlign: TextAlign.start),
+                                fontWeight: FontWeight.w500,
+                                fontFamily: poppins,
+                                fontSize: displayWidth(context) * 0.032),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: ' Permissions',
+                                recognizer: TapGestureRecognizer()
+                                /*..onTap = () async {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return SignUpScreen();
+                                      }));
+                                    }*/
+                                ,
+                                style: TextStyle(
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: poppins,
+                                    fontSize: displayWidth(context) * 0.032),
+                              ),
+                              TextSpan(
+                                text: ' to access Permission Info',
+                                recognizer: TapGestureRecognizer(),
+                                style: TextStyle(
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black54,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: poppins,
+                                    fontSize: displayWidth(context) * 0.032),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                        child: commonText(
-                            text: stepThree!,
-                            context: context,
-                            textSize: displayWidth(context) * 0.032,
-                            textColor:
-                                Theme.of(context).brightness == Brightness.dark
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Select',
+                            style: TextStyle(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
                                     ? Colors.white
                                     : Colors.black54,
-                            fontWeight: FontWeight.w500,
-                            textAlign: TextAlign.start),
+                                fontWeight: FontWeight.w500,
+                                fontFamily: poppins,
+                                fontSize: displayWidth(context) * 0.032),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: ' Location/GPS',
+                                recognizer: TapGestureRecognizer()
+                                /*..onTap = () async {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return SignUpScreen();
+                                      }));
+                                    }*/
+                                ,
+                                style: TextStyle(
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: poppins,
+                                    fontSize: displayWidth(context) * 0.032),
+                              ),
+                              TextSpan(
+                                text: ' and change to allow access.',
+                                recognizer: TapGestureRecognizer(),
+                                style: TextStyle(
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black54,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: poppins,
+                                    fontSize: displayWidth(context) * 0.032),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -204,9 +316,5 @@ class LocationPermissionCustomDialog extends StatelessWidget {
     this.subText,
     this.buttonText,
     this.buttonOnTap,
-    this.headingText,
-    this.stepOne,
-    this.stepTwo,
-    this.stepThree,
   });
 }

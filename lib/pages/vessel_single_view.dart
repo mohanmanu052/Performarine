@@ -22,6 +22,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/expansionCard.dart';
+import 'package:performarine/common_widgets/widgets/location_permission_dialog.dart';
 import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
@@ -430,8 +431,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 widget.vessel!.name!,
                                 widget.vessel!.id!);
                           } else {
-                            await Utils.getLocationPermission(
-                                context, scaffoldKey);
+                            /// WIU
+                            bool isWIULocationPermitted =
+                                await Permission.locationWhenInUse.isGranted;
+
+                            if (!isWIULocationPermitted) {
+                              await Utils.getLocationPermission(
+                                  context, scaffoldKey);
+                            }
                             bool isLocationPermitted =
                                 await Permission.locationAlways.isGranted;
                             if (isLocationPermitted) {
@@ -441,7 +448,22 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   widget.vessel!.name!,
                                   widget.vessel!.id!);
                             } else {
-                              await openAppSettings();
+                              showDialog(
+                                  context: scaffoldKey.currentContext!,
+                                  builder: (BuildContext context) {
+                                    return LocationPermissionCustomDialog(
+                                      text: 'Always Allow Access to “Location”',
+                                      subText:
+                                          "To track trip data we need access for your Location",
+                                      buttonText: 'Ok',
+                                      buttonOnTap: () async {
+                                        Navigator.pop(context);
+                                        await openAppSettings();
+                                        // await Geolocator.openAppSettings();
+                                      },
+                                    );
+                                  });
+
                               // await Permission.locationAlways.request();
                             }
                           }

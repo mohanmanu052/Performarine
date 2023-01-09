@@ -6,11 +6,13 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/trip/trip_list_screen.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
+import 'package:performarine/services/database_service.dart';
 
 class ExpansionCard extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
@@ -28,6 +30,7 @@ class ExpansionCard extends StatefulWidget {
 
 class _ExpansionCardState extends State<ExpansionCard> {
   List<CreateVessel>? vessel = [];
+  final DatabaseService _databaseService = DatabaseService();
   @override
   Widget build(BuildContext context) {
     return ExpandableNotifier(
@@ -109,33 +112,34 @@ class _ExpansionCardState extends State<ExpansionCard> {
                               SizedBox(
                                 width: 6,
                               ),
-                              /*CircleAvatar(
-                              radius: 15,
-                              backgroundColor: letsGetStartedButtonColor,
-                              child: Center(
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.delete,
-                                    size: 15,
-                                    color: Colors.white,
+                              CircleAvatar(
+                                radius: 15,
+                                backgroundColor: letsGetStartedButtonColor,
+                                child: Center(
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.delete,
+                                      size: 15,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () async {
+                                      showDialogBox();
+                                      /*await widget.onDelete(widget.vessel!);
+                                      Utils.showSnackBar(context,
+                                          scaffoldKey: widget.scaffoldKey,
+                                          message:
+                                              'Vessel Deleted Successfully');
+                                      //ToDo: @rupali add the timer of 500 ms then navigate
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) => HomePage(),
+                                          fullscreenDialog: true,
+                                        ),
+                                      );*/
+                                    },
                                   ),
-                                  onPressed: () async {
-                                    await widget.onDelete(widget.vessel!);
-                                    Utils.showSnackBar(context,
-                                        scaffoldKey: widget.scaffoldKey,
-                                        message:
-                                        'Vessel Deleted Successfully');
-                                    //ToDo: @rupali add the timer of 500 ms then navigate
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => HomePage(),
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
-                                  },
                                 ),
                               ),
-                            ),*/
                             ],
                           ),
                           // Container(
@@ -1394,5 +1398,143 @@ class _ExpansionCardState extends State<ExpansionCard> {
         ],
       ),
     );
+  }
+
+  showDialogBox() {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.28,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text: 'Do you want to retire the vessel?',
+                                  fontWeight: FontWeight.w600,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.042,
+                                  textAlign: TextAlign.center),
+                              SizedBox(
+                                height: displayHeight(context) * 0.015,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text:
+                                      'This will archive the vessel and removed it from your My Vessel list. You can always unretire a vessel',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.grey,
+                                  textSize: displayWidth(context) * 0.036,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey)),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Cancel', context, primaryColor, () {
+                                    Navigator.of(context).pop();
+                                  },
+                                      displayWidth(context) * 0.4,
+                                      displayHeight(context) * 0.05,
+                                      Colors.grey.shade400,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black,
+                                      displayHeight(context) * 0.018,
+                                      Colors.grey.shade400,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15.0,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'OK', context, primaryColor, () {
+                                    _databaseService.updateRetireStatus(
+                                        1, widget.vessel!.id!);
+
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: widget.scaffoldKey,
+                                        message: 'Vessel Deleted Successfully');
+
+                                    Navigator.of(dialogContext).pop();
+
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => HomePage(),
+                                        fullscreenDialog: true,
+                                      ),
+                                    );
+                                  },
+                                      displayWidth(context) * 0.4,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.018,
+                                      primaryColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
   }
 }

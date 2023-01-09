@@ -1,50 +1,66 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
-import 'package:performarine/pages/vessel_form.dart';
-import 'package:performarine/pages/vessel_single_view.dart';
+import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/services/database_service.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class VesselBuilder extends StatefulWidget {
-  const VesselBuilder({
-    Key? key,
-    required this.future,
-    required this.onEdit,
-    required this.onTap,
-    required this.onDelete,
-  }) : super(key: key);
-  final Future<List<CreateVessel>> future;
-  final Function(CreateVessel) onEdit;
-  final Function(CreateVessel) onTap;
-  final Function(CreateVessel) onDelete;
+class RetiredVesselsScreen extends StatefulWidget {
+  const RetiredVesselsScreen({Key? key}) : super(key: key);
 
   @override
-  State<VesselBuilder> createState() => _VesselBuilderState();
+  State<RetiredVesselsScreen> createState() => _RetiredVesselsScreenState();
 }
 
-class _VesselBuilderState extends State<VesselBuilder> {
-  Future<String> getTripName(String id) async {
-    final DatabaseService _databaseService = DatabaseService();
-    final Trip = await _databaseService.getTrip(id);
-    return Trip.vesselId!;
+class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+  final DatabaseService _databaseService = DatabaseService();
+
+  late Future<List<CreateVessel>> getVesselFuture;
+
+  bool isUnretire = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getVesselFuture = _databaseService.getRetiredVesselsData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        FutureBuilder<List<CreateVessel>>(
-          future: widget.future,
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Colors.black,
+        ),
+        title: commonText(
+          context: context,
+          text: 'Retried Vessels',
+          fontWeight: FontWeight.w600,
+          textColor: Colors.black87,
+          textSize: displayWidth(context) * 0.045,
+        ),
+        backgroundColor: Colors.white,
+      ),
+      body: Container(
+        color: Colors.white,
+        child: FutureBuilder<List<CreateVessel>>(
+          future: getVesselFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -74,7 +90,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       final vessel = snapshot.data![index];
-                      return vessel.isRetire == 0
+                      return snapshot.data![index].isRetire == 1
                           ? vesselSingleViewCard(
                               vessel,
                             )
@@ -97,122 +113,6 @@ class _VesselBuilderState extends State<VesselBuilder> {
             return Container();
           },
         ),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          left: 0,
-          child: Container(
-            // color: Colors.transparent,
-            margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
-            child: CommonButtons.getActionButton(
-                title: 'Add Vessel',
-                context: context,
-                fontSize: displayWidth(context) * 0.042,
-                textColor: Colors.white,
-                buttonPrimaryColor: buttonBGColor,
-                borderColor: buttonBGColor,
-                width: displayWidth(context),
-                onTap: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const AddNewVesselScreen()),
-                  );
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const VesselFormPage()),
-                  // );
-                }),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _buildVesselCard(CreateVessel vessel, BuildContext context) {
-    return Card(
-      color: Colors.red,
-      child: GestureDetector(
-        onTap: () => widget.onTap(vessel),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              Container(
-                height: 40.0,
-                width: 40.0,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.grey[200],
-                ),
-                alignment: Alignment.center,
-                child: FaIcon(FontAwesomeIcons.ship,
-                    color: Colors.teal, size: 18.0),
-              ),
-              SizedBox(width: 20.0),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      vessel.name.toString(),
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: 4.0),
-                    //ToDo: dynamic query featch from table
-                    // FutureBuilder<String>(
-                    //   future: getTripName(),
-                    //   builder: (context, snapshot) {
-                    //     return Text('Trip: ${snapshot.data}');
-                    //   },
-                    // ),
-                    SizedBox(height: 4.0),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('MMSI: ${vessel.mMSI.toString()}}'),
-                        Text('Builder:  ${vessel.builderName.toString()}'),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(width: 20.0),
-              GestureDetector(
-                onTap: () => widget.onEdit(vessel),
-                child: Container(
-                  height: 40.0,
-                  width: 40.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.grey[200],
-                  ),
-                  alignment: Alignment.center,
-                  child: Icon(Icons.edit, color: Colors.orange[800]),
-                ),
-              ),
-              SizedBox(width: 20.0),
-              GestureDetector(
-                onTap: () => widget.onDelete(vessel),
-                child: Container(
-                  height: 40.0,
-                  width: 40.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.grey[200],
-                  ),
-                  alignment: Alignment.center,
-                  child: Icon(Icons.delete, color: Colors.red[800]),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -220,26 +120,8 @@ class _VesselBuilderState extends State<VesselBuilder> {
   Widget vesselSingleViewCard(CreateVessel vesselData) {
     return GestureDetector(
       onTap: () {
-        widget.onTap(vesselData);
+        //widget.onTap(vesselData);
       },
-      /*() async {
-        var result = await Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => VesselSingleView(
-              vessel: vesselData,
-            ),
-            fullscreenDialog: true,
-          ),
-        );
-
-        if (result != null) {
-          if (result) {
-            setState(() {
-              widget.future;
-            });
-          }
-        }
-      },*/
       child: Card(
         color: Colors.black,
         elevation: 3.0,
@@ -352,6 +234,20 @@ class _VesselBuilderState extends State<VesselBuilder> {
                 //         errorWidget: (context, url, error) => Icon(Icons.error),
                 //       ),
                 ),
+            Positioned(
+              top: 5,
+              right: 10,
+              child: CommonButtons.getTextButton(
+                  title: 'Unretire',
+                  context: context,
+                  textColor: Colors.white,
+                  textSize: displayWidth(context) * 0.04,
+                  isClickLink: false,
+                  fontWeight: FontWeight.w500,
+                  onTap: () {
+                    showDialogBox(vesselData);
+                  }),
+            ),
             Positioned(
               bottom: 0,
               left: 0,
@@ -654,5 +550,141 @@ class _VesselBuilderState extends State<VesselBuilder> {
         ),
       ),
     );
+  }
+
+  showDialogBox(CreateVessel vesselData) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.3,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text: 'Do you want to unretire the vessel?',
+                                  fontWeight: FontWeight.w600,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.042,
+                                  textAlign: TextAlign.center),
+                              SizedBox(
+                                height: displayHeight(context) * 0.015,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text:
+                                      'The vessel will be visible in your vessel list and you can record trips with it again',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.grey,
+                                  textSize: displayWidth(context) * 0.036,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey)),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Cancel', context, primaryColor, () {
+                                    setState(() {
+                                      isUnretire = false;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                      displayWidth(context) * 0.4,
+                                      displayHeight(context) * 0.05,
+                                      Colors.grey.shade400,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black,
+                                      displayHeight(context) * 0.018,
+                                      Colors.grey.shade400,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15.0,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'OK', context, primaryColor, () async {
+                                    await _databaseService
+                                        .updateRetireStatus(0, vesselData.id!)
+                                        .then((value) {
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => HomePage(),
+                                          ),
+                                          ModalRoute.withName(""));
+                                    });
+                                  },
+                                      displayWidth(context) * 0.4,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.018,
+                                      primaryColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
   }
 }

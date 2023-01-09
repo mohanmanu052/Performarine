@@ -76,7 +76,8 @@ class DatabaseService {
       'createdAt TEXT,'
       'createdBy TEXT,'
       'updatedAt TEXT, '
-      'updatedBy TEXT '
+      'updatedBy TEXT, '
+      'isRetire INTEGER DEFAULT 0'
       ')',
     );
     //  ToDo: Foreign Key mapping
@@ -131,7 +132,7 @@ class DatabaseService {
     // Query the table for all the trips.
     final List<Map<String, dynamic>> maps =
         await db.query('trips', where: 'isSync = ?', whereArgs: [0]);
-        // print( "maps.toString():${  maps.toString()}");
+    // print( "maps.toString():${  maps.toString()}");
     // Convert the List<Map<String, dynamic> into a List<Trip>.
     return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
   }
@@ -218,6 +219,14 @@ class DatabaseService {
     print('updated: $count');
   }
 
+  Future<void> updateRetireStatus(int isRetire, String vesselId) async {
+    final db = await _databaseService.database;
+    int count = await db.rawUpdate(
+        'UPDATE vessels SET isRetire = ? WHERE id = ?', [isRetire, vesselId]);
+    print('updated: $vesselId');
+    print('updated: $count');
+  }
+
   // A method that deletes a trip data from the trips table.
   Future<void> deleteTrip(int id) async {
     // Get a reference to the database.
@@ -298,5 +307,27 @@ class DatabaseService {
     int? exists = Sqflite.firstIntValue(result);
     print('EXIST $exists');
     return exists == 1;
+  }
+
+  Future<List<CreateVessel>> getAllVesselsData() async {
+    final db = await _databaseService.database;
+    /*final List<Map<String, dynamic>> maps = await db.query('vessels',
+        where: 'vesselStatus = ?, isRetire = ?', whereArgs: [1, 0]);*/
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+        'SELECT * FROM vessels WHERE vesselStatus LIKE ? AND isRetire LIKE ?',
+        ['1', '0']);
+    return List.generate(
+        maps.length, (index) => CreateVessel.fromMap(maps[index]));
+  }
+
+  Future<List<CreateVessel>> getRetiredVesselsData() async {
+    final db = await _databaseService.database;
+    /*final List<Map<String, dynamic>> maps = await db.query('vessels',
+        where: 'vesselStatus = ?, isRetire = ?', whereArgs: [1, 0]);*/
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+        'SELECT * FROM vessels WHERE vesselStatus LIKE ? AND isRetire LIKE ?',
+        ['1', '1']);
+    return List.generate(
+        maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }
 }

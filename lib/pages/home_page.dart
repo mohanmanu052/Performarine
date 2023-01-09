@@ -105,8 +105,8 @@ class _HomePageState extends State<HomePage> {
     commonProvider.init();
     _getTripsCount();
 
-    getVesselFuture = _databaseService.vessels();
-    //debugPrint("tripsCount:$tripsCount");
+    getVesselFuture = _databaseService.getAllVesselsData();
+    debugPrint("tripsCount:$getVesselFuture");
   }
 
   checkNotificationPermission() async {
