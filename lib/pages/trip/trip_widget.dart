@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart' as pos;
+import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
+    as pos;
 
 import 'package:flutter_background_service/flutter_background_service.dart';
 // import 'package:location/location.dart';
@@ -19,8 +20,10 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 import '../../common_widgets/widgets/status_tage.dart';
 
@@ -49,8 +52,19 @@ class _TripWidgetState extends State<TripWidget> {
   final DatabaseService _databaseService = DatabaseService();
   FlutterBackgroundService service = FlutterBackgroundService();
 
+  late CommonProvider commonProvider;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    commonProvider = context.read<CommonProvider>();
+  }
+
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     // double height = 150;
     Size size = MediaQuery.of(context).size;
     return Row(
@@ -220,7 +234,15 @@ class _TripWidgetState extends State<TripWidget> {
                                                   fontSize:
                                                       displayWidth(context) *
                                                           0.026,
-                                                  onTap: () {},
+                                                  onTap: () {
+                                                    commonProvider.sendSensorDataDio(
+                                                        context,
+                                                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MzM1MDkzNCwianRpIjoiMjIwMWE0YzktY2M5YS00NTYzLWFkMzEtZjk5MGY2ZGExZjAxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjYzNjM2ZWQ3MzU1MGM5MWQxYTZhOWZmZiIsIm5iZiI6MTY3MzM1MDkzNCwiZXhwIjoxNjczOTU1NzM0fQ.29U6u9F6U72eB45EMOnIf0V7mvqnxpqIvAJv2QGd7co',
+                                                        File(
+                                                            'storage/emulated/0/Download/085cdc00-90e4-11ed-8ab6-738082a9daef.zip'),
+                                                        '63bd1d7c9fc945f1e34d6948',
+                                                        scaffoldKey);
+                                                  },
                                                   icon: Padding(
                                                     padding:
                                                         const EdgeInsets.only(
@@ -462,7 +484,7 @@ class _TripWidgetState extends State<TripWidget> {
 
   Future<void> onSave(File file, BuildContext context, String tripId, vesselId,
       vesselName, vesselWeight) async {
-      pos.Position? locationData =
+    pos.Position? locationData =
         await Utils.getLocationPermission(context, scaffoldKey);
     // await fetchDeviceInfo();
 
