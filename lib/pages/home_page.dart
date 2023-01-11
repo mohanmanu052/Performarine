@@ -284,14 +284,14 @@ class _HomePageState extends State<HomePage> {
         filePath: file.path,
         isSync: 0,
         tripStatus: 0,
-        createdAt: DateTime.now().toString(),
-        updatedAt: DateTime.now().toString(),
+        createdAt: DateTime.now().toUtc().toString(),
+        updatedAt: DateTime.now().toUtc().toString(),
         lat: latitude,
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));*/
 
     await _databaseService.updateTripStatus(
-        1, file.path, DateTime.now().toString(), tripId);
+        1, file.path, DateTime.now().toUtc().toString(), tripId);
     Navigator.pop(context);
   }
 

@@ -13,7 +13,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  uuid: ^3.0.7
+#  uuid: ^3.0.7
+  objectid: 2.0.0
   font_awesome_flutter: ^10.2.1
   path: ^1.8.0
   flutter_speed_dial: ^6.2.0
@@ -38,7 +39,7 @@ dependencies:
   device_info_plus: ^8.0.0
   google_sign_in: ^5.4.2
   firebase_core: ^2.3.0
-  sign_in_with_apple: ^4.1.0
+#  sign_in_with_apple: ^4.1.0
   shared_preferences: ^2.0.15
   cached_network_image: ^3.2.1
   geolocator: ^9.0.2
