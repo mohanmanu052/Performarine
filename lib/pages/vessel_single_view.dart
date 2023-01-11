@@ -14,6 +14,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 // import 'package:location/location.dart';
 import 'package:lottie/lottie.dart';
+import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/trip_builder.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -405,7 +406,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             sharedPreferences!.remove('trip_started');
 
                             await _databaseService.updateTripStatus(1,
-                                file.path, DateTime.now().toString(), tripId);
+                                file.path, DateTime.now().toUtc().toString(), tripId);
 
                             tripIsRunningOrNot();
                           }, () {
@@ -1477,7 +1478,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   'View Single: $isServiceRunning');
                                             }
 
-                                            getTripId = uuid.v1();
+                                            getTripId = ObjectId();
 
                                             onSave(
                                                 '', bottomSheetContext, true);
@@ -1547,7 +1548,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     'View Single: $isServiceRunning');
                                               }
 
-                                              getTripId = uuid.v1();
+                                              getTripId = ObjectId();
 
                                               onSave(
                                                   '', bottomSheetContext, true);
@@ -1637,7 +1638,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     'View Single: $isServiceRunning');
                                               }
 
-                                              getTripId = uuid.v1();
+                                              getTripId = ObjectId();
 
                                               onSave(
                                                   '', bottomSheetContext, true);
@@ -1712,7 +1713,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       'View Single: $isServiceRunning');
                                                 }
 
-                                                getTripId = uuid.v1();
+                                                getTripId = ObjectId();
 
                                                 onSave('', bottomSheetContext,
                                                     true);
@@ -1818,7 +1819,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     'View Single: $isServiceRunning');
                                               }
 
-                                              getTripId = uuid.v1();
+                                              getTripId = ObjectId();
 
                                               onSave(
                                                   '', bottomSheetContext, true);
@@ -1894,7 +1895,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       'View Single: $isServiceRunning');
                                                 }
 
-                                                getTripId = uuid.v1();
+                                                getTripId = ObjectId();
 
                                                 onSave('', bottomSheetContext,
                                                     true);
@@ -1969,7 +1970,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                                 service.invoke("setAsForeground");
 
-                                                getTripId = uuid.v1();
+                                                getTripId = ObjectId();
 
                                                 service.invoke(
                                                     'tripId', {'tripId': getTripId});
@@ -2042,7 +2043,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       'View Single: $isServiceRunning');
                                                 }
 
-                                                getTripId = uuid.v1();
+                                                getTripId = ObjectId();
 
                                                 onSave('', bottomSheetContext,
                                                     true);
@@ -2121,7 +2122,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         'View Single: $isServiceRunning');
                                                   }
 
-                                                  getTripId = uuid.v1();
+                                                  getTripId = ObjectId();
 
                                                   onSave('', bottomSheetContext,
                                                       true);
@@ -2194,7 +2195,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                                   service.invoke("setAsForeground");
 
-                                                  getTripId = uuid.v1();
+                                                  getTripId = ObjectId();
 
                                                   service.invoke(
                                                       'tripId', {'tripId': getTripId});
@@ -2304,7 +2305,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   .updateTripStatus(
                                                       1,
                                                       file.path,
-                                                      DateTime.now().toString(),
+                                                      DateTime.now().toUtc().toString(),
                                                       getTripId);
 
                                               Future.delayed(
@@ -2497,7 +2498,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   startSensorFunctionality(StateSetter stateSetter) async {
     /*setState(() {
-      getTripId = uuid.v1();
+      getTripId = ObjectId();
     });*/
     //onSave();
     fileName = '$fileIndex.csv';
@@ -2700,7 +2701,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     debugPrint("current PATH:$file");
 
     /*setState(() {
-      getTripId = uuid.v1();
+      getTripId = ObjectId();
     });*/
 
     debugPrint("ON SAVE FIRST INSERT :$getTripId");
@@ -2714,8 +2715,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
           filePath: file,
           isSync: 0,
           tripStatus: 0,
-          createdAt: DateTime.now().toString(),
-          updatedAt: DateTime.now().toString(),
+          createdAt: DateTime.now().toUtc().toString(),
+          updatedAt: DateTime.now().toUtc().toString(),
           lat: latitude,
           long: longitude,
           deviceInfo: deviceDetails!.toJson().toString()));
@@ -2775,7 +2776,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       print('View Single: $isServiceRunning');
     }
 
-    getTripId = Uuid().v1();
+    getTripId = ObjectId().toString();
 
     await onSave('', bottomSheetContext, true);
 

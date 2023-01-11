@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -14,7 +15,7 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as path;
 
 class AddNewVesselStepTwo extends StatefulWidget {
@@ -350,18 +351,17 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                   int.parse(capacityController.text);
                               commonProvider.addVesselRequestModel!.builtYear =
                                   builtYearController.text;
-                              var uuid = Uuid();
                               commonProvider.addVesselRequestModel!.id =
                                   widget.isEdit!
                                       ? widget.addVesselData!.id
-                                      : uuid.v1();
+                                      : ObjectId().toString();
                               commonProvider.addVesselRequestModel!.isSync = 0;
                               commonProvider
                                   .addVesselRequestModel!.vesselStatus = 1;
                               commonProvider.addVesselRequestModel!.createdAt =
-                                  DateTime.now().toString();
+                                  DateTime.now().toUtc().toString();
                               commonProvider.addVesselRequestModel!.updatedAt =
-                                  DateTime.now().toString();
+                                  DateTime.now().toUtc().toString();
                               //ToDo: @ruapli add the created by as login userid.
                               commonProvider.addVesselRequestModel!.createdBy =
                                   commonProvider.loginModel!.userId.toString();
@@ -387,7 +387,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
 
                                 if (Platform.isAndroid) {
                                   directory = Directory(
-                                      '$vesselImagesDirPath/${commonProvider.addVesselRequestModel!.id}-${DateTime.now().millisecondsSinceEpoch}$fileExtension');
+                                      '$vesselImagesDirPath/${commonProvider.addVesselRequestModel!.id}-${DateTime.now().toUtc().millisecondsSinceEpoch}$fileExtension');
                                 } else {
                                   directory =
                                       await getApplicationDocumentsDirectory();

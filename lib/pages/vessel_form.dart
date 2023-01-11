@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:objectid/objectid.dart';
 import 'package:performarine/common_widgets/age_slider.dart';
 // import 'package:performarine/common_widgets/Trip_selector.dart';
 import 'package:performarine/common_widgets/color_picker.dart';
@@ -133,7 +134,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
         ? await _databaseService.insertVessel(
             // Dog(name: name, age: age, breedId: breed.id!),
             CreateVessel(
-                id: uuid.v1(),
+                id: ObjectId().toString(),
                 name: vesselName,
                 builderName: builder,
                 model: model,
@@ -154,9 +155,9 @@ class _VesselFormPageState extends State<VesselFormPage> {
                 vesselStatus: 1,
                 //ToDo: Need to add the image urls in base 64 format
                 imageURLs: "",
-                createdAt: DateTime.now().toString(),
+                createdAt: DateTime.now().toUtc().toString(),
                 createdBy: "",
-                updatedAt: DateTime.now().toString(),
+                updatedAt: DateTime.now().toUtc().toString(),
                 updatedBy: ""))
         : await _databaseService.updateVessel(CreateVessel(
             id: widget.vessel!.id,
@@ -178,7 +179,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
             capacity: int.parse(capacity),
             builtYear: int.parse(builtYear),
             updatedBy: "",
-            updatedAt: DateTime.now().toString()));
+            updatedAt: DateTime.now().toUtc().toString()));
 
     Navigator.pop(context);
   }

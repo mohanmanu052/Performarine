@@ -162,7 +162,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                   await _databaseService.updateTripStatus(
                                       1,
                                       file.path,
-                                      DateTime.now().toString(),
+                                      DateTime.now().toUtc().toString(),
                                       snapshot.data![index].id!);
 
                                   sharedPreferences!.remove('trip_data');

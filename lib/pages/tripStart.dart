@@ -5,6 +5,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:objectid/objectid.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -114,7 +115,7 @@ class _StartTripState extends State<StartTrip> {
 
     debugPrint("current lod:$currentLoad");
     var uuid = Uuid();
-    final String getTripId = uuid.v1();
+    final String getTripId = ObjectId().toString();
     debugPrint(getTripId);
     await _databaseService.insertTrip(Trip(
         id: getTripId,
@@ -124,8 +125,8 @@ class _StartTripState extends State<StartTrip> {
         /*filePath: '',*/
         isSync: 0,
         tripStatus: 0,
-        createdAt: DateTime.now().toString(),
-        updatedAt: DateTime.now().toString(),
+        createdAt: DateTime.now().toUtc().toString(),
+        updatedAt: DateTime.now().toUtc().toString(),
         lat: latitude,
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));

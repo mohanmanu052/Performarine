@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator_platform_interface/geolocator_platform_interface.dart' as pos;
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:objectid/objectid.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -357,7 +358,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                 await _databaseService.updateTripStatus(
                                     1,
                                     file.path,
-                                    DateTime.now().toString(),
+                                    DateTime.now().toUtc().toString(),
                                     snapshot.data![index].id!);
 
                                 sharedPreferences!.remove('trip_data');
@@ -1399,7 +1400,7 @@ class _TripListScreenState extends State<TripListScreen> {
 
     debugPrint("current lod:$currentLoad");
     var uuid = Uuid();
-    final String getTripId = uuid.v1();
+    final String getTripId = ObjectId().toString();
     await _databaseService.insertTrip(Trip(
         id: getTripId,
         vesselId: widget.vesselId,
@@ -1408,8 +1409,8 @@ class _TripListScreenState extends State<TripListScreen> {
         filePath: file.path,
         isSync: 0,
         tripStatus: 0,
-        createdAt: DateTime.now().toString(),
-        updatedAt: DateTime.now().toString(),
+        createdAt: DateTime.now().toUtc().toString(),
+        updatedAt: DateTime.now().toUtc().toString(),
         lat: latitude,
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));
