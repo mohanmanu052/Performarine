@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
     as pos;
-
+import 'dart:developer' as developer;
 import 'package:flutter_background_service/flutter_background_service.dart';
 // import 'package:location/location.dart';
 import 'package:open_file/open_file.dart';
@@ -20,6 +21,8 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -52,7 +55,12 @@ class _TripWidgetState extends State<TripWidget> {
   final DatabaseService _databaseService = DatabaseService();
   FlutterBackgroundService service = FlutterBackgroundService();
 
+  List<File?> finalSelectedFiles = [];
+
   late CommonProvider commonProvider;
+
+  bool vesselIsSync = false, isTripUploaded = false;
+  late DeviceInfoPlugin deviceDetails;
 
   @override
   void initState() {
@@ -60,6 +68,7 @@ class _TripWidgetState extends State<TripWidget> {
     super.initState();
 
     commonProvider = context.read<CommonProvider>();
+    deviceDetails = DeviceInfoPlugin();
   }
 
   @override
@@ -227,40 +236,51 @@ class _TripWidgetState extends State<TripWidget> {
                                       : SizedBox(
                                           height:
                                               displayHeight(context) * 0.038,
-                                          child: CommonButtons
-                                              .getRichTextActionButton(
-                                                  buttonPrimaryColor:
-                                                      primaryColor,
-                                                  fontSize:
-                                                      displayWidth(context) *
+                                          child: isTripUploaded
+                                              ? Center(
+                                                  child:
+                                                      CircularProgressIndicator())
+                                              : CommonButtons
+                                                  .getRichTextActionButton(
+                                                      buttonPrimaryColor:
+                                                          primaryColor,
+                                                      fontSize: displayWidth(
+                                                              context) *
                                                           0.026,
-                                                  onTap: () {
-                                                    commonProvider
-                                                        .sendSensorDataDio(
-                                                            context,
-                                                            commonProvider
-                                                                .loginModel!
-                                                                .token,
-                                                            // 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MzQwNzYwMCwianRpIjoiY2E2ZDc5OGMtNjA5Mi00OTM3LTkzYTktMTIyNjRmYjJmNWE4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjYzN2UxNjA0MzJiZmUxNDRhMDU5MGRiNiIsIm5iZiI6MTY3MzQwNzYwMCwiZXhwIjoxNjc0MDEyNDAwfQ.WOX_RFqsO-b0KLhvb73tn3PppbWWQdW6mh4iN4fHATo',
-                                                            File(
-                                                                'storage/emulated/0/Download/085cdc00-90e4-11ed-8ab6-738082a9daef.zip'),
-                                                            '63bd1d7c9fc945f1e34d6948',
-                                                            scaffoldKey);
-                                                  },
-                                                  icon: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 8),
-                                                    child: Icon(
-                                                      Icons
-                                                          .cloud_upload_outlined,
-                                                      size: 18,
-                                                    ),
-                                                  ),
-                                                  context: context,
-                                                  width: displayWidth(context) *
-                                                      0.38,
-                                                  title: 'Upload Trip')),
+                                                      onTap: () async {
+                                                        setState(() {
+                                                          isTripUploaded = true;
+                                                        });
+                                                        var connectivityResult =
+                                                            await (Connectivity()
+                                                                .checkConnectivity());
+                                                        if (connectivityResult ==
+                                                            ConnectivityResult
+                                                                .mobile) {
+                                                          print('Mobile');
+                                                          showDialogBox();
+                                                        } else if (connectivityResult ==
+                                                            ConnectivityResult
+                                                                .wifi) {
+                                                          uploadDataIfDataIsNotSync();
+                                                          print('WIFI');
+                                                        }
+                                                      },
+                                                      icon: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(right: 8),
+                                                        child: Icon(
+                                                          Icons
+                                                              .cloud_upload_outlined,
+                                                          size: 18,
+                                                        ),
+                                                      ),
+                                                      context: context,
+                                                      width: displayWidth(
+                                                              context) *
+                                                          0.38,
+                                                      title: 'Upload Trip')),
                                 ),
                                 SizedBox(
                                   width: 14,
@@ -516,5 +536,270 @@ class _TripWidgetState extends State<TripWidget> {
     await _databaseService.updateTripStatus(
         1, file.path, DateTime.now().toUtc().toString(), tripId);
     //Navigator.pop(context);
+  }
+
+  Future<bool> vesselIsSyncOrNot(String vesselId) async {
+    bool result = await _databaseService.getVesselIsSyncOrNot(vesselId);
+
+    setState(() {
+      vesselIsSync = result;
+      print('Vessel isSync $vesselIsSync');
+    });
+
+    /*setState(() {
+      isEndTripButton = tripIsRunning;
+      isStartButton = !tripIsRunning;
+    });*/
+    return result;
+  }
+
+  startSensorFunctionality(Trip tripData) async {
+    //fileName = '$fileIndex.csv';
+
+    AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
+
+    var queryParameters;
+    queryParameters = {
+      "id": tripData.id,
+      "load": tripData.currentLoad,
+      "sensorInfo": [
+        {"make": "qualicom", "name": "gps"}
+      ],
+      "deviceInfo": {
+        "deviceId": androidDeviceInfo.id,
+        "model": androidDeviceInfo.model,
+        "version": androidDeviceInfo.version.release,
+        "make": androidDeviceInfo.manufacturer,
+        "board": androidDeviceInfo.board,
+        "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
+      },
+      "lat": tripData.lat,
+      "long": tripData.long,
+      "vesselId": tripData.vesselId,
+      "filePath": 'storage/emulated/0/Download/${widget.tripList!.id}.zip',
+      "createdAt": tripData.createdAt,
+      "updatedAt": tripData.updatedAt,
+      //"userID": commonProvider.loginModel!.userId!
+    };
+
+    debugPrint('CREATE TRIP $queryParameters');
+
+    commonProvider
+        .sendSensorInfo(
+            context,
+            commonProvider.loginModel!.token!,
+            File('storage/emulated/0/Download/${widget.tripList!.id}.zip'),
+            queryParameters,
+            scaffoldKey)
+        .then((value) async {
+      if (value != null) {
+        if (value.status!) {
+          //TODO
+          setState(() {
+            isTripUploaded = false;
+          });
+        }
+      }
+    }).catchError((onError) {
+      debugPrint('ON ERROR $onError');
+    });
+  }
+
+  showDialogBox() {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.3,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                      'Your carrier may charge for Data Usage to upload trip data do you want to proceed?',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.04,
+                                  textAlign: TextAlign.center),
+                              /* SizedBox(
+                                height: displayHeight(context) * 0.015,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text:
+                                      'The vessel will be visible in your vessel list and you can record trips with it again',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.grey,
+                                  textSize: displayWidth(context) * 0.036,
+                                  textAlign: TextAlign.center),*/
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey)),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Cancel', context, primaryColor, () {
+                                    Navigator.of(context).pop();
+                                  },
+                                      displayWidth(context) * 0.4,
+                                      displayHeight(context) * 0.05,
+                                      Colors.grey.shade400,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black,
+                                      displayHeight(context) * 0.018,
+                                      Colors.grey.shade400,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15.0,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'OK', context, primaryColor, () async {
+                                    setDialogState(() {
+                                      uploadDataIfDataIsNotSync();
+                                    });
+
+                                    Navigator.of(context).pop();
+                                  },
+                                      displayWidth(context) * 0.4,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.018,
+                                      primaryColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
+  }
+
+  uploadDataIfDataIsNotSync() async {
+    vesselIsSyncOrNot(widget.tripList!.vesselId.toString());
+    debugPrint('VESSEL STATUS $vesselIsSync');
+
+    if (!vesselIsSync) {
+      CreateVessel vesselData = await _databaseService
+          .getVesselFromVesselID((widget.tripList!.vesselId.toString()));
+
+      debugPrint('VESSEL DATA ${vesselData.id}');
+
+      commonProvider.addVesselRequestModel = CreateVessel();
+
+      commonProvider.addVesselRequestModel!.name = vesselData.name;
+      commonProvider.addVesselRequestModel!.model = vesselData.model;
+      commonProvider.addVesselRequestModel!.builderName =
+          vesselData.builderName;
+      commonProvider.addVesselRequestModel!.regNumber = vesselData.regNumber;
+      commonProvider.addVesselRequestModel!.mMSI = vesselData.mMSI;
+      commonProvider.addVesselRequestModel!.engineType = vesselData.engineType;
+      commonProvider.addVesselRequestModel!.fuelCapacity =
+          vesselData.fuelCapacity;
+      commonProvider.addVesselRequestModel!.weight = vesselData.weight;
+      commonProvider.addVesselRequestModel!.freeBoard = vesselData.freeBoard;
+      commonProvider.addVesselRequestModel!.lengthOverall =
+          vesselData.lengthOverall;
+      commonProvider.addVesselRequestModel!.beam = vesselData.beam;
+      commonProvider.addVesselRequestModel!.draft = vesselData.draft;
+      commonProvider.addVesselRequestModel!.vesselSize = vesselData.vesselSize;
+      commonProvider.addVesselRequestModel!.capacity = vesselData.capacity;
+      commonProvider.addVesselRequestModel!.builtYear = vesselData.builtYear;
+      commonProvider.addVesselRequestModel!.createdAt = vesselData.createdAt;
+      commonProvider.addVesselRequestModel!.batteryCapacity =
+          vesselData.batteryCapacity;
+      //commonProvider.addVesselRequestModel!.imageURLs = vesselData.imageURLs!;
+      commonProvider.addVesselRequestModel!.selectedImages = finalSelectedFiles;
+
+      finalSelectedFiles.add(File(vesselData.imageURLs!));
+
+      debugPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
+      /*debugPrint(
+          'VESSEL Data ${commonProvider.addVesselRequestModel!.imageURLs}');*/
+
+      commonProvider
+          .addVessel(
+              context,
+              commonProvider.addVesselRequestModel,
+              commonProvider.loginModel!.userId!,
+              commonProvider.loginModel!.token!,
+              scaffoldKey)
+          .then((value) {
+        if (value != null) {
+          if (value.status!) {
+            print('DATA');
+            _databaseService.updateIsSyncStatus(
+                1, widget.tripList!.vesselId.toString());
+
+            setState(() {
+              isTripUploaded = false;
+            });
+
+            startSensorFunctionality(widget.tripList!);
+          }
+        }
+      });
+    } else {
+      startSensorFunctionality(widget.tripList!);
+    }
   }
 }

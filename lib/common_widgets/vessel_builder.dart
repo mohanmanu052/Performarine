@@ -74,7 +74,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       final vessel = snapshot.data![index];
-                      return vessel.isRetire == 0
+                      return vessel.vesselStatus == 1
                           ? vesselSingleViewCard(
                               vessel,
                             )

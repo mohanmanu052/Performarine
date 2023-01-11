@@ -4,33 +4,24 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:get/get.dart';
-import 'package:location/location.dart';
 import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
     as pos;
 import 'package:path_provider/path_provider.dart';
-import 'package:performarine/common_widgets/trip_builder.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
-// import 'package:performarine/common_widgets/Trip_builder.dart';
 import 'package:performarine/common_widgets/vessel_builder.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
-// import 'package:performarine/models/Trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
-import 'package:performarine/pages/tripStart.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -91,22 +82,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
-    /*flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()!
-        .requestPermission();*/
-
-    //checkNotificationPermission();
 
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
     _getTripsCount();
 
-    getVesselFuture = _databaseService.getAllVesselsData();
-    debugPrint("tripsCount:$getVesselFuture");
+    getVesselFuture = _databaseService.vessels();
   }
 
   checkNotificationPermission() async {

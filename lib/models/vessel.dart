@@ -28,7 +28,6 @@ class CreateVessel {
   String? createdBy;
   String? updatedAt;
   String? updatedBy;
-  int? isRetire;
   List<File?>? selectedImages;
 
   CreateVessel(
@@ -55,7 +54,6 @@ class CreateVessel {
       this.createdBy,
       this.updatedAt,
       this.updatedBy,
-      this.isRetire,
       this.imageURLs,
       this.selectedImages});
 
@@ -85,7 +83,6 @@ class CreateVessel {
     createdAt = json["createdAt"];
     updatedBy = json["updatedBy"];
     updatedAt = json["updatedAt"];
-    isRetire = json["isRetire"];
   }
 
   // Convert a CreateVessel into a Map. The keys must correspond to the names of the
@@ -116,7 +113,6 @@ class CreateVessel {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'updatedBy': updatedBy,
-      'isRetire': isRetire,
     };
   }
 
@@ -146,7 +142,6 @@ class CreateVessel {
       createdBy: map['createdBy'],
       updatedBy: map['updatedBy'],
       updatedAt: map['updatedAt'],
-      isRetire: map['isRetire'],
     );
   }
 
@@ -179,7 +174,6 @@ class CreateVessel {
     data['createdBy'] = this.createdBy;
     data['updatedBy'] = this.updatedBy;
     data['updatedAt'] = this.updatedAt;
-    data['isRetire'] = this.isRetire;
     return data;
   }
 }

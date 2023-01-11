@@ -1496,8 +1496,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
                                       'OK', context, primaryColor, () {
-                                    _databaseService.updateRetireStatus(
-                                        1, widget.vessel!.id!);
+                                    _databaseService.updateVesselStatus(
+                                        0, widget.vessel!.id!);
 
                                     Utils.showSnackBar(context,
                                         scaffoldKey: widget.scaffoldKey,

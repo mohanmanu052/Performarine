@@ -1,11 +1,7 @@
-
 class Urls {
-
-
-
   static const String baseUrl = 'goeapidev.azurewebsites.net';
 
-  // Auth   
+  // Auth
   static const String registrationUrl = '/api/auth/signup';
   static const String loginUrl = '/api/auth/login';
 
@@ -15,11 +11,10 @@ class Urls {
   static const String getVesselById = '/api/getVesselById';
   static const String removeVessel = '/api/removeVessel';
   static const String editVessel = '/api/editVessel';
-  
+
 // Trip
   static const String createTrip = '/api/createTrip';
   static const String getTripById = '/api/getTripById';
   static const String GetTripList = '/api/listTrips';
   static const String SendSensorData = '/api/sendSensorInfo';
-
 }

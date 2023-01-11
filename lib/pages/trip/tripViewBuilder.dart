@@ -178,28 +178,36 @@ class _TripViewListingState extends State<TripViewListing> {
                                   Navigator.of(context).pop();
                                 });
                               })
-                          : commonText(
-                              text: 'oops! No Trips are added yet',
-                              context: context,
-                              textSize: displayWidth(context) * 0.04,
-                              textColor: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontWeight: FontWeight.w500);
+                          : Container(
+                              height: displayHeight(context) / 1.5,
+                              child: Center(
+                                child: commonText(
+                                    text: 'oops! No Trips are added yet',
+                                    context: context,
+                                    textSize: displayWidth(context) * 0.04,
+                                    textColor: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            );
                     },
                   ),
                 );
               })
             : Container(
-                child: commonText(
-                    text: 'oops! No Trips are added yet',
-                    context: context,
-                    textSize: displayWidth(context) * 0.04,
-                    textColor: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black,
-                    fontWeight: FontWeight.w500),
+                height: displayHeight(context) / 1.5,
+                child: Center(
+                  child: commonText(
+                      text: 'oops! No Trips are added yet',
+                      context: context,
+                      textSize: displayWidth(context) * 0.04,
+                      textColor: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                      fontWeight: FontWeight.w500),
+                ),
               );
       },
     );

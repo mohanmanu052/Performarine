@@ -30,7 +30,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
     // TODO: implement initState
     super.initState();
 
-    getVesselFuture = _databaseService.getRetiredVesselsData();
+    getVesselFuture = _databaseService.retiredVessels();
   }
 
   @override
@@ -90,7 +90,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       final vessel = snapshot.data![index];
-                      return snapshot.data![index].isRetire == 1
+                      return snapshot.data![index].vesselStatus == 0
                           ? vesselSingleViewCard(
                               vessel,
                             )
@@ -652,7 +652,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                                   child: CommonButtons.getAcceptButton(
                                       'OK', context, primaryColor, () async {
                                     await _databaseService
-                                        .updateRetireStatus(0, vesselData.id!)
+                                        .updateVesselStatus(1, vesselData.id!)
                                         .then((value) {
                                       Navigator.pushAndRemoveUntil(
                                           context,
