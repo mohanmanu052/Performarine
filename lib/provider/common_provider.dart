@@ -104,4 +104,16 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
     return sendSensorDataModel!;
   }
+
+  Future<String> sendSensorDataHttp(
+      BuildContext context,
+      String? accessToken,
+      File? zipFile,
+      String tripId,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    await SendSensorDataApiProvider()
+        .sendSensorDataHttp(context, accessToken, zipFile, tripId, scaffoldKey);
+    notifyListeners();
+    return '';
+  }
 }

@@ -235,13 +235,17 @@ class _TripWidgetState extends State<TripWidget> {
                                                       displayWidth(context) *
                                                           0.026,
                                                   onTap: () {
-                                                    commonProvider.sendSensorDataDio(
-                                                        context,
-                                                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MzM1MDkzNCwianRpIjoiMjIwMWE0YzktY2M5YS00NTYzLWFkMzEtZjk5MGY2ZGExZjAxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjYzNjM2ZWQ3MzU1MGM5MWQxYTZhOWZmZiIsIm5iZiI6MTY3MzM1MDkzNCwiZXhwIjoxNjczOTU1NzM0fQ.29U6u9F6U72eB45EMOnIf0V7mvqnxpqIvAJv2QGd7co',
-                                                        File(
-                                                            'storage/emulated/0/Download/085cdc00-90e4-11ed-8ab6-738082a9daef.zip'),
-                                                        '63bd1d7c9fc945f1e34d6948',
-                                                        scaffoldKey);
+                                                    commonProvider
+                                                        .sendSensorDataDio(
+                                                            context,
+                                                            commonProvider
+                                                                .loginModel!
+                                                                .token,
+                                                            // 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3MzQwNzYwMCwianRpIjoiY2E2ZDc5OGMtNjA5Mi00OTM3LTkzYTktMTIyNjRmYjJmNWE4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjYzN2UxNjA0MzJiZmUxNDRhMDU5MGRiNiIsIm5iZiI6MTY3MzQwNzYwMCwiZXhwIjoxNjc0MDEyNDAwfQ.WOX_RFqsO-b0KLhvb73tn3PppbWWQdW6mh4iN4fHATo',
+                                                            File(
+                                                                'storage/emulated/0/Download/085cdc00-90e4-11ed-8ab6-738082a9daef.zip'),
+                                                            '63bd1d7c9fc945f1e34d6948',
+                                                            scaffoldKey);
                                                   },
                                                   icon: Padding(
                                                     padding:

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -15,6 +16,126 @@ import '../main.dart';
 
 class SendSensorDataApiProvider extends ChangeNotifier {
   SendSensorDataModel? sendSensorDataModel;
+
+  static HttpClient getHttpClient() {
+    HttpClient httpClient = new HttpClient()
+      ..connectionTimeout = const Duration(seconds: 10)
+      ..badCertificateCallback =
+          ((X509Certificate cert, String host, int port) => true);
+
+    return httpClient;
+  }
+
+  Future<String> sendSensorDataHttp(
+      BuildContext context,
+      String? accessToken,
+      File? zipFile,
+      String tripId,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    assert(zipFile != null);
+
+    Uri uri = Uri.https(Urls.baseUrl, Urls.SendSensorData);
+
+    final httpClient = getHttpClient();
+
+    final request = await httpClient.postUrl(uri);
+
+    int byteCount = 0;
+    int _progressPercentValue = 0;
+
+    var multipart =
+        await http.MultipartFile.fromPath('sensorZipFiles', zipFile!.path);
+
+    // final fileStreamFile = file.openRead();
+
+    // var multipart = MultipartFile("file", fileStreamFile, file.lengthSync(),
+    //     filename: fileUtil.basename(file.path));
+
+    var requestMultipart = http.MultipartRequest('POST', uri);
+
+    var headers = {
+      "Content-Type": 'multipart/form-data',
+      "x-access-token": '$accessToken',
+    };
+
+    requestMultipart.files.add(multipart);
+    requestMultipart.headers.addAll(headers);
+    requestMultipart.fields['tripId'] = tripId;
+
+    var msStream = requestMultipart.finalize();
+
+    var totalByteLength = requestMultipart.contentLength;
+
+    request.contentLength = totalByteLength;
+
+    request.headers.set('Content-Type', 'multipart/form-data');
+    request.headers.set('x-access-token', '$accessToken');
+
+    Stream<List<int>> streamUpload = msStream.transform(
+      new StreamTransformer.fromHandlers(
+        handleData: (data, sink) {
+          sink.add(data);
+
+          byteCount += data.length;
+
+          double __progressValue =
+              remap(byteCount.toDouble(), 0, totalByteLength.toDouble(), 0, 1);
+
+          __progressValue = double.parse(__progressValue.toStringAsFixed(2));
+
+          _progressPercentValue =
+              ((byteCount / totalByteLength) * 100.0).toInt();
+
+          print('PROGRESS PERCENTAGE VALUE: $byteCount');
+          print('PROGRESS PERCENTAGE VALUE: $totalByteLength');
+          print('PROGRESS PERCENTAGE VALUE: $_progressPercentValue');
+        },
+        handleError: (error, stack, sink) {
+          print('ERROR: $error');
+          print('STACK: $stack');
+          throw error;
+        },
+        handleDone: (sink) {
+          print('UPLOADING FINISHED');
+          sink.close();
+          // UPLOAD DONE;
+        },
+      ),
+    );
+
+    await request.addStream(streamUpload);
+
+    final httpResponse = await request.close();
+//
+    var statusCode = httpResponse.statusCode;
+
+    if (statusCode ~/ 100 != 2) {
+      throw Exception(
+          'Error uploading file, Status code: ${httpResponse.statusCode}');
+    } else {
+      return await readResponseAsString(httpResponse);
+    }
+  }
+
+  static Future<String> readResponseAsString(HttpClientResponse response) {
+    var completer = new Completer<String>();
+    var contents = new StringBuffer();
+    response.transform(utf8.decoder).listen((String data) {
+      print('DATAAA: $data');
+      contents.write(data);
+    }, onDone: () => completer.complete(contents.toString()));
+    return completer.future;
+  }
+
+  double remap(double value, double originalMinValue, double originalMaxValue,
+      double translatedMinValue, double translatedMaxValue) {
+    if (originalMaxValue - originalMinValue == 0) return 0;
+
+    return (value - originalMinValue) /
+            (originalMaxValue - originalMinValue) *
+            (translatedMaxValue - translatedMinValue) +
+        translatedMinValue;
+  }
 
   Future<SendSensorDataModel> sendSensorDataDio(
       BuildContext context,
