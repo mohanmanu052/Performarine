@@ -2629,20 +2629,20 @@ class VesselSingleViewState extends State<VesselSingleView> {
   }
 
   String convertLocationToString(String type, String sensorData) {
-    var todayDate = DateTime.now().toUtc().toString();
+    var todayDate = DateTime.now().toUtc();
     var gps = sensorData.toString().replaceAll(" ", ",");
     // debugPrint('location data: $type,$gps,$todayDate');
-    return '$type,$gps,$todayDate';
-    // return '$type,${[gps]},$todayDate';
+    // return '$type,$gps,$todayDate';
+    return '$type,"${[gps].toString()}",$todayDate,$getTripId';
   }
 
   String convertDataToString(String type, List<double> sensorData) {
     String? input = sensorData.toString();
     final removedBrackets = input.substring(1, input.length - 1);
     var replaceAll = removedBrackets.replaceAll(" ", "");
-    var todayDate = DateTime.now().toUtc().toString();
-    return  '$type,$replaceAll,$todayDate';
-    // return '$type,${[replaceAll]},$todayDate';
+    var todayDate = DateTime.now().toUtc();
+    // return  '$type,$replaceAll,$todayDate';
+    return '$type,"${[replaceAll].toString()}",$todayDate,$getTripId';
   }
 
   Future<String> getOrCreateFolder(String tripId) async {
