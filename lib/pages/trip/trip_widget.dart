@@ -248,9 +248,6 @@ class _TripWidgetState extends State<TripWidget> {
                                                               context) *
                                                           0.026,
                                                       onTap: () async {
-                                                        setState(() {
-                                                          isTripUploaded = true;
-                                                        });
                                                         var connectivityResult =
                                                             await (Connectivity()
                                                                 .checkConnectivity());
@@ -262,6 +259,10 @@ class _TripWidgetState extends State<TripWidget> {
                                                         } else if (connectivityResult ==
                                                             ConnectivityResult
                                                                 .wifi) {
+                                                          setState(() {
+                                                            isTripUploaded =
+                                                                true;
+                                                          });
                                                           uploadDataIfDataIsNotSync();
                                                           print('WIFI');
                                                         }
@@ -590,6 +591,7 @@ class _TripWidgetState extends State<TripWidget> {
             commonProvider.loginModel!.token!,
             File('${tripData.filePath}'),
             queryParameters,
+            tripData.id!,
             scaffoldKey)
         .then((value) async {
       if (value != null) {
@@ -704,6 +706,9 @@ class _TripWidgetState extends State<TripWidget> {
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
                                       'OK', context, primaryColor, () async {
+                                    setState(() {
+                                      isTripUploaded = true;
+                                    });
                                     setDialogState(() {
                                       uploadDataIfDataIsNotSync();
                                     });
@@ -792,9 +797,9 @@ class _TripWidgetState extends State<TripWidget> {
             _databaseService.updateIsSyncStatus(
                 1, widget.tripList!.vesselId.toString());
 
-            setState(() {
+            /*setState(() {
               isTripUploaded = false;
-            });
+            });*/
 
             startSensorFunctionality(widget.tripList!);
           }

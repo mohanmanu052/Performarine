@@ -145,15 +145,21 @@ class CommonProvider with ChangeNotifier {
       accessToken,
       File sensorZipFiles,
       Map<String, dynamic> queryParameters,
+      String tripId,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     commonModel = CommonModel();
 
-    commonModel = await SendSensorInfoApiProvider().sendSensorInfo(
-        context, accessToken, sensorZipFiles, queryParameters, scaffoldKey);
+    commonModel = await SendSensorInfoApiProvider().sendSensorDataInfoDio(
+        context,
+        accessToken,
+        sensorZipFiles,
+        queryParameters,
+        tripId,
+        scaffoldKey);
     final DatabaseService _databaseService = DatabaseService();
-    print('queryParameters["id"].toString(): ${queryParameters["id"].toString()}');
-    _databaseService.updateTripIsSyncStatus(
-        1, queryParameters["id"]);
+    print(
+        'queryParameters["id"].toString(): ${queryParameters["id"].toString()}');
+    _databaseService.updateTripIsSyncStatus(1, queryParameters["id"]);
     notifyListeners();
 
     return commonModel!;
