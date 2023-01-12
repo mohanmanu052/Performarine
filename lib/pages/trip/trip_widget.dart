@@ -588,7 +588,7 @@ class _TripWidgetState extends State<TripWidget> {
         .sendSensorInfo(
             context,
             commonProvider.loginModel!.token!,
-            File('storage/emulated/0/Download/${widget.tripList!.id}.zip'),
+            File('${tripData.filePath}'),
             queryParameters,
             scaffoldKey)
         .then((value) async {
@@ -598,6 +598,8 @@ class _TripWidgetState extends State<TripWidget> {
           setState(() {
             isTripUploaded = false;
           });
+          _databaseService.updateTripIsSyncStatus(
+              1, widget.tripList!.id.toString());
         }
       }
     }).catchError((onError) {
@@ -745,7 +747,7 @@ class _TripWidgetState extends State<TripWidget> {
       debugPrint('VESSEL DATA ${vesselData.id}');
 
       commonProvider.addVesselRequestModel = CreateVessel();
-
+      commonProvider.addVesselRequestModel!.id = vesselData.id;
       commonProvider.addVesselRequestModel!.name = vesselData.name;
       commonProvider.addVesselRequestModel!.model = vesselData.model;
       commonProvider.addVesselRequestModel!.builderName =
@@ -786,7 +788,7 @@ class _TripWidgetState extends State<TripWidget> {
           .then((value) {
         if (value != null) {
           if (value.status!) {
-            print('DATA');
+            // print('DATA');
             _databaseService.updateIsSyncStatus(
                 1, widget.tripList!.vesselId.toString());
 

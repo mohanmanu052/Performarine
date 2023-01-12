@@ -332,6 +332,11 @@ class DatabaseService {
     await db.rawUpdate(
         '''UPDATE vessels SET isSync = ? WHERE id = ?''', [isSyncValue, id]);
   }
+  Future<void> updateTripIsSyncStatus(int isSyncValue, String id) async {
+    final db = await _databaseService.database;
+    await db.rawUpdate(
+        '''UPDATE trips SET isSync = ? WHERE id = ?''', [isSyncValue, id]);
+  }
 
 /* Future<List<CreateVessel>> getRetiredVesselsData() async {
     final db = await _databaseService.database;

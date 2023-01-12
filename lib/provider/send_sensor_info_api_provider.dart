@@ -35,7 +35,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       );
 
       request.headers.addAll(headers);
-      request.fields['tripData'] = queryParameters.toString();
+      request.fields['tripData'] = jsonEncode(queryParameters);
       // request.fields['sensorZipFiles'] = '${zipFile}';
 
       http.MultipartFile file = await http.MultipartFile.fromPath(
@@ -61,6 +61,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         //final pref = await Utils.initSharedPreferences();
         //pref.setString('createTrip', response.body);
         // pref.setString('tripId', commonModel?.data?.id ?? '');
+
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
         return commonModel!;

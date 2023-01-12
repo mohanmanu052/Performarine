@@ -118,16 +118,18 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     String? input = sensorData.toString();
     final removedBrackets = input.substring(1, input.length - 1);
     var replaceAll = removedBrackets.replaceAll(" ", "");
-    var date = DateTime.now().toUtc();
-    var todayDate = date.toString().replaceAll(" ", "");
+    // var date = DateTime.now().toUtc();
+    var todayDate = DateTime.now().toUtc().toString();
     return '$type,$replaceAll,$todayDate';
+    // return '$type,${[replaceAll]},$todayDate';
   }
 
   String convertLocationToString(String type, String sensorData) {
-    var date = DateTime.now().toUtc();
-    var todayDate = date.toString().replaceAll(" ", "");
+    // var date = DateTime.now().toUtc();
+    var todayDate = DateTime.now().toUtc().toString();
     var gps = sensorData.toString().replaceAll(" ", ",");
     return '$type,$gps,$todayDate';
+    // return '$type,${[gps]},$todayDate';
   }
 
   Future<String> getOrCreateFolder() async {

@@ -352,6 +352,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         borderColor: buttonBGColor,
                         width: displayWidth(context),
                         onTap: () async {
+                          print( 'time stamp:'+DateTime.now().toUtc().toString());
                           Utils().showEndTripDialog(context, () async {
                             Navigator.of(context).pop();
 
@@ -2257,6 +2258,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             width: displayWidth(context),
                                             onTap: () async {
                                               // getTripId = await getTripIdFromPref();
+                                              print( 'time stamp:'+DateTime.now().toUtc().toString());
 
                                               stateSetter(() {
                                                 addingDataToDB = true;
@@ -2592,7 +2594,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       String mag = convertDataToString('MAG', _magnetometerValues ?? []);
       String location = '$latitude $longitude';
       String gps = convertLocationToString('GPS', location);
-      debugPrint('GPS GPS ${gps}');
+      debugPrint('GPS vessel single GPS ${gps}');
 
       String finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
 
@@ -2627,20 +2629,20 @@ class VesselSingleViewState extends State<VesselSingleView> {
   }
 
   String convertLocationToString(String type, String sensorData) {
-    var date = DateTime.now().toUtc();
-    var todayDate = date.toString().replaceAll(" ", "");
+    var todayDate = DateTime.now().toUtc().toString();
     var gps = sensorData.toString().replaceAll(" ", ",");
-    debugPrint('$type,$gps,$todayDate');
+    // debugPrint('location data: $type,$gps,$todayDate');
     return '$type,$gps,$todayDate';
+    // return '$type,${[gps]},$todayDate';
   }
 
   String convertDataToString(String type, List<double> sensorData) {
     String? input = sensorData.toString();
     final removedBrackets = input.substring(1, input.length - 1);
     var replaceAll = removedBrackets.replaceAll(" ", "");
-    var date = DateTime.now().toUtc();
-    var todayDate = date.toString().replaceAll(" ", "");
-    return '$type,$replaceAll,$todayDate';
+    var todayDate = DateTime.now().toUtc().toString();
+    return  '$type,$replaceAll,$todayDate';
+    // return '$type,${[replaceAll]},$todayDate';
   }
 
   Future<String> getOrCreateFolder(String tripId) async {

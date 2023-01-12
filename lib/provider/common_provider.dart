@@ -15,6 +15,7 @@ import 'package:performarine/provider/login_api_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
 import 'package:performarine/provider/send_sensor_data_api_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
+import 'package:performarine/services/database_service.dart';
 
 class CommonProvider with ChangeNotifier {
   LoginModel? loginModel;
@@ -149,6 +150,10 @@ class CommonProvider with ChangeNotifier {
 
     commonModel = await SendSensorInfoApiProvider().sendSensorInfo(
         context, accessToken, sensorZipFiles, queryParameters, scaffoldKey);
+    final DatabaseService _databaseService = DatabaseService();
+    print('queryParameters["id"].toString(): ${queryParameters["id"].toString()}');
+    _databaseService.updateTripIsSyncStatus(
+        1, queryParameters["id"]);
     notifyListeners();
 
     return commonModel!;

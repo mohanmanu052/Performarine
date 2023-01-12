@@ -85,6 +85,7 @@ class AddVesselApiProvider with ChangeNotifier {
       kReleaseMode ? null : debugPrint('user Id ${userId}');
 
       request.headers.addAll(headers);
+      request.fields['id'] = addVesselRequestModel.id!;
       request.fields['name'] = addVesselRequestModel.name!;
       request.fields['model'] = addVesselRequestModel.model!;
       request.fields['builderName'] = addVesselRequestModel.builderName!;
