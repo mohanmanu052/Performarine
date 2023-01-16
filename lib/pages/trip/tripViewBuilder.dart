@@ -110,7 +110,8 @@ class _TripViewListingState extends State<TripViewListing> {
             ? StatefulBuilder(
                 builder: (BuildContext context, StateSetter setter) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding:
+                      const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
                   child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,

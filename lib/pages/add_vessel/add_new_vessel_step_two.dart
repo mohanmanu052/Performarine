@@ -435,6 +435,12 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                         message:
                                             "Vessel details updated successfully");
 
+                                    _databaseService.updateIsSyncStatus(0,
+                                        widget.addVesselData!.id!.toString());
+
+                                    /*_databaseService.updateVesselStatus(1,
+                                        widget.addVesselData!.id!.toString());*/
+
                                     Navigator.of(context).pop([
                                       true,
                                       commonProvider.addVesselRequestModel

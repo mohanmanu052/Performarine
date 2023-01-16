@@ -3,7 +3,8 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart' as pos;
+import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
+    as pos;
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:objectid/objectid.dart';
@@ -312,7 +313,7 @@ class _TripListScreenState extends State<TripListScreen> {
             ? StatefulBuilder(
                 builder: (BuildContext context, StateSetter setter) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8),
                   child: ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
@@ -1234,7 +1235,7 @@ class _TripListScreenState extends State<TripListScreen> {
     }
   }
 
-  Future< pos.Position> getLocationData() async {
+  Future<pos.Position> getLocationData() async {
     pos.Position? locationData =
         await Utils.getLocationPermission(context, scaffoldKey);
 
