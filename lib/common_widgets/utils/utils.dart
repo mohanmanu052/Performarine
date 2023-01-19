@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -26,6 +27,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart' as d;
+
+import 'package:timezone/timezone.dart' as tz;
 
 class Utils {
   static DateTime? currentBackPressedTime;
@@ -201,14 +204,13 @@ class Utils {
       BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) async {
     bool isPermissionGranted = false;
 
-   Position? locationData;
+    Position? locationData;
 
-    await Geolocator.requestPermission().then((value) async{
+    await Geolocator.requestPermission().then((value) async {
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-
           isPermissionGranted = false;
           /*Utils.showActionSnackBar(context, scaffoldKey,
             'Location permissions are denied without permissions we are unable to start the trip',
@@ -218,7 +220,7 @@ class Utils {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey,
               message:
-              'Location permissions are denied without permissions we are unable to start the trip');
+                  'Location permissions are denied without permissions we are unable to start the trip');
 
           // Permissions are denied, next time you could try
           // requesting permissions again (this is also where
@@ -230,7 +232,6 @@ class Utils {
       }
 
       if (permission == LocationPermission.deniedForever) {
-
         isPermissionGranted = false;
         print('PD');
 
@@ -244,23 +245,18 @@ class Utils {
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey,
             message:
-            'Location permissions are denied without permissions we are unable to start the trip');
+                'Location permissions are denied without permissions we are unable to start the trip');
 
         // Permissions are denied forever, handle appropriately.
         return Future.error(
             'Location permissions are permanently denied, we cannot request permissions.');
       }
 
-
-
       // When we reach here, permissions are granted and we can
       // continue accessing the position of the device.
       return await Geolocator.getCurrentPosition();
-
-
     });
-    return  await Geolocator.getCurrentPosition();
-
+    return await Geolocator.getCurrentPosition();
 
     // try {
     //   if (await Permission.locationAlways.request().isGranted) {
@@ -711,5 +707,22 @@ class Utils {
             ),
           );
         });
+  }
+
+  static String getCurrentTZDateTime() {
+    /*var locations = tz.timeZoneDatabase.locations;
+    locations.forEach((key, value) {
+      print('$key: $value');
+    });*/
+    var canada = tz.getLocation('Canada/Pacific');
+    var now = tz.TZDateTime.now(canada).toUtc();
+    var localNow = DateTime.now();
+    print(DateFormat('dd-MM-yyyy hh:mm a').format(now));
+
+    /// TZ
+    print(DateFormat('dd-MM-yyyy hh:mm a').format(localNow));
+
+    /// LOCAL
+    return now.toString();
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/add_vessel_model.dart';
@@ -8,12 +7,11 @@ import 'package:performarine/models/common_model.dart';
 import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/registration_model.dart';
 import 'package:performarine/models/send_sensor_model.dart';
+import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/provider/add_vessel_api_provider.dart';
 import 'package:performarine/provider/login_api_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
-import 'package:performarine/provider/send_sensor_data_api_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
 import 'package:performarine/services/database_service.dart';
 
@@ -24,6 +22,7 @@ class CommonProvider with ChangeNotifier {
   SendSensorDataModel? sendSensorDataModel;
   AddVesselModel? addVesselModel;
   CommonModel? commonModel;
+  int tripsCount = 0;
 
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
@@ -87,44 +86,6 @@ class CommonProvider with ChangeNotifier {
     return registrationModel!;
   }
 
-  Future<SendSensorDataModel> sendSensorData(
-      BuildContext context,
-      String? accessToken,
-      File? zipFile,
-      String tripId,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
-    sendSensorDataModel = SendSensorDataModel();
-    sendSensorDataModel = await SendSensorDataApiProvider()
-        .sendSensorData(context, accessToken, zipFile, tripId, scaffoldKey);
-    notifyListeners();
-    return sendSensorDataModel!;
-  }
-
-  Future<SendSensorDataModel> sendSensorDataDio(
-      BuildContext context,
-      String? accessToken,
-      File? zipFile,
-      String tripId,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
-    sendSensorDataModel = SendSensorDataModel();
-    sendSensorDataModel = await SendSensorDataApiProvider()
-        .sendSensorDataDio(context, accessToken, zipFile, tripId, scaffoldKey);
-    notifyListeners();
-    return sendSensorDataModel!;
-  }
-
-  Future<String> sendSensorDataHttp(
-      BuildContext context,
-      String? accessToken,
-      File? zipFile,
-      String tripId,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
-    await SendSensorDataApiProvider()
-        .sendSensorDataHttp(context, accessToken, zipFile, tripId, scaffoldKey);
-    notifyListeners();
-    return '';
-  }
-
   Future<AddVesselModel> addVessel(
       BuildContext context,
       CreateVessel? addVesselRequestModel,
@@ -164,5 +125,14 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
 
     return commonModel!;
+  }
+
+  getTripsCount() async {
+    final DatabaseService _databaseService = DatabaseService();
+    List<Trip> trips = await _databaseService.trips();
+
+    tripsCount = trips.length;
+    notifyListeners();
+    // return tripsCount.toString();
   }
 }

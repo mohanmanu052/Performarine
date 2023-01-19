@@ -260,7 +260,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                               ? Colors.white
                               : Colors.white,
                           displayHeight(context) * 0.018,
-                          primaryColor,
+                          buttonBGColor,
                           ''),
                     ],
                   ),

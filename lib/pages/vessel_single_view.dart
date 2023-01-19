@@ -352,7 +352,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         borderColor: buttonBGColor,
                         width: displayWidth(context),
                         onTap: () async {
-                          print( 'time stamp:'+DateTime.now().toUtc().toString());
+                          print('time stamp:' +
+                              DateTime.now().toUtc().toString());
                           Utils().showEndTripDialog(context, () async {
                             Navigator.of(context).pop();
 
@@ -406,8 +407,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             sharedPreferences!.remove('trip_data');
                             sharedPreferences!.remove('trip_started');
 
-                            await _databaseService.updateTripStatus(1,
-                                file.path, DateTime.now().toUtc().toString(), tripId);
+                            await _databaseService.updateTripStatus(
+                                1,
+                                file.path,
+                                DateTime.now().toUtc().toString(),
+                                tripId);
 
                             tripIsRunningOrNot();
                           }, () {
@@ -2258,7 +2262,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             width: displayWidth(context),
                                             onTap: () async {
                                               // getTripId = await getTripIdFromPref();
-                                              print( 'time stamp:'+DateTime.now().toUtc().toString());
+                                              print('time stamp:' +
+                                                  DateTime.now()
+                                                      .toUtc()
+                                                      .toString());
 
                                               stateSetter(() {
                                                 addingDataToDB = true;
@@ -2307,7 +2314,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   .updateTripStatus(
                                                       1,
                                                       file.path,
-                                                      DateTime.now().toUtc().toString(),
+                                                      DateTime.now()
+                                                          .toUtc()
+                                                          .toString(),
                                                       getTripId);
 
                                               Future.delayed(
@@ -2717,8 +2726,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
           filePath: file,
           isSync: 0,
           tripStatus: 0,
-          createdAt: DateTime.now().toUtc().toString(),
-          updatedAt: DateTime.now().toUtc().toString(),
+          createdAt: Utils.getCurrentTZDateTime(),
+          updatedAt: Utils.getCurrentTZDateTime(),
           lat: latitude,
           long: longitude,
           deviceInfo: deviceDetails!.toJson().toString()));

@@ -1517,7 +1517,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                       primaryColor,
                                       Colors.white,
                                       displayHeight(context) * 0.018,
-                                      primaryColor,
+                                      buttonBGColor,
                                       '',
                                       fontWeight: FontWeight.w500),
                                 ),

@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
 
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
-    _getTripsCount();
+    commonProvider.getTripsCount();
 
     getVesselFuture = _databaseService.vessels();
   }
@@ -411,7 +411,7 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.symmetric(vertical: 9.0),
                   child: commonText(
                     context: context,
-                    text: 'Activity (${tripsCount.toString()})',
+                    text: 'Activity (${commonProvider.tripsCount.toString()})',
                     fontWeight: FontWeight.w500,
                     textColor:
                         currentTabIndex == 1 ? Colors.white : Colors.black,
@@ -464,9 +464,10 @@ class _HomePageState extends State<HomePage> {
                           ModalRoute.withName(""));*/
                       setState(() {
                         getVesselFuture = _databaseService.vessels();
-                        _getTripsCount();
-                        setState(() {});
+                        // _getTripsCount();
+                        // setState(() {});
                       });
+                      commonProvider.getTripsCount();
                     }
                   }
                 }

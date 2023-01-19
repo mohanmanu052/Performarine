@@ -38,6 +38,7 @@ class TripWidget extends StatefulWidget {
   //final String? status;
   //final String? vesselName;
   final VoidCallback? onTap;
+  final VoidCallback? tripUploadedSuccessfully;
   final Trip? tripList;
 
   const TripWidget(
@@ -45,7 +46,8 @@ class TripWidget extends StatefulWidget {
       //this.statusColor,
       //this.status,
       this.tripList,
-      this.onTap
+      this.onTap,
+      this.tripUploadedSuccessfully
       //this.vesselName
       });
 
@@ -116,7 +118,7 @@ class _TripWidgetState extends State<TripWidget> {
                   commonText(
                     context: context,
                     text:
-                        '${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
+                        '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
                     fontWeight: FontWeight.w500,
                     textColor: Colors.black,
                     textSize: displayWidth(context) * 0.02,
@@ -542,6 +544,8 @@ class _TripWidgetState extends State<TripWidget> {
           });
           _databaseService.updateTripIsSyncStatus(
               1, widget.tripList!.id.toString());
+
+          widget.tripUploadedSuccessfully!.call();
         } else {
           showFailedNoti(tripData.id!);
         }
@@ -559,7 +563,7 @@ class _TripWidgetState extends State<TripWidget> {
 
   cancelOnGoingProgressNotification(String id) {
     setState(() {
-      progress = 100;
+      progress = 10000000;
     });
     flutterLocalNotificationsPlugin.cancel(9986);
     progressTimer!.cancel();
@@ -713,7 +717,7 @@ class _TripWidgetState extends State<TripWidget> {
                                       primaryColor,
                                       Colors.white,
                                       displayHeight(context) * 0.018,
-                                      primaryColor,
+                                      buttonBGColor,
                                       '',
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -743,19 +747,21 @@ class _TripWidgetState extends State<TripWidget> {
     progressTimer = Timer.periodic(Duration(milliseconds: 500), (timer) {
       progress = timer.tick;
       final AndroidNotificationDetails androidPlatformChannelSpecifics =
-          AndroidNotificationDetails('progress channel', 'progress channel',
-              channelDescription: 'progress channel description',
-              channelShowBadge: false,
-              importance: Importance.max,
-              priority: Priority.high,
-              onlyAlertOnce: true,
-              showProgress: true,
-              maxProgress: double.infinity.toInt(),
-              progress: progress);
+          AndroidNotificationDetails(
+        'progress channel',
+        'progress channel',
+        channelDescription: 'progress channel description',
+        channelShowBadge: false,
+        importance: Importance.max,
+        priority: Priority.high,
+        onlyAlertOnce: true,
+        showProgress: true,
+        indeterminate: true,
+      );
       final NotificationDetails platformChannelSpecifics =
           NotificationDetails(android: androidPlatformChannelSpecifics);
-      flutterLocalNotificationsPlugin.show(9986, widget.tripList!.id,
-          'progress notification body', platformChannelSpecifics,
+      flutterLocalNotificationsPlugin.show(
+          9986, widget.tripList!.id, '', platformChannelSpecifics,
           payload: 'item x');
     });
 
@@ -790,12 +796,15 @@ class _TripWidgetState extends State<TripWidget> {
           vesselData.batteryCapacity;
       //commonProvider.addVesselRequestModel!.imageURLs = vesselData.imageURLs!;
 
-      finalSelectedFiles.add(File(vesselData.imageURLs!));
-      commonProvider.addVesselRequestModel!.selectedImages = finalSelectedFiles;
+      if (vesselData.imageURLs!.isNotEmpty) {
+        finalSelectedFiles.add(File(vesselData.imageURLs!));
+        commonProvider.addVesselRequestModel!.selectedImages =
+            finalSelectedFiles;
 
-      debugPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
-      /*debugPrint(
-          'VESSEL Data ${commonProvider.addVesselRequestModel!.imageURLs}');*/
+        debugPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
+      } else {
+        commonProvider.addVesselRequestModel!.selectedImages = [];
+      }
 
       commonProvider
           .addVessel(

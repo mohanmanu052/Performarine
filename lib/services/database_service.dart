@@ -332,10 +332,17 @@ class DatabaseService {
     await db.rawUpdate(
         '''UPDATE vessels SET isSync = ? WHERE id = ?''', [isSyncValue, id]);
   }
+
   Future<void> updateTripIsSyncStatus(int isSyncValue, String id) async {
     final db = await _databaseService.database;
     await db.rawUpdate(
         '''UPDATE trips SET isSync = ? WHERE id = ?''', [isSyncValue, id]);
+  }
+
+  Future<void> updateVesselName(String vesselName, String vesselId) async {
+    final db = await _databaseService.database;
+    await db.rawUpdate('''UPDATE trips SET vesselName = ? WHERE vesselId = ?''',
+        [vesselName, vesselId]);
   }
 
 /* Future<List<CreateVessel>> getRetiredVesselsData() async {
@@ -348,4 +355,5 @@ class DatabaseService {
     return List.generate(
         maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }*/
+
 }

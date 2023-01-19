@@ -34,8 +34,9 @@ class AddVesselApiProvider with ChangeNotifier {
       //debugPrint('VESSEl IMAGE ${addVesselRequestModel!.imageURLs!}');
       debugPrint('VESSEl IMAGE ${addVesselRequestModel!.selectedImages!}');
 
-      if (addVesselRequestModel.selectedImages! == null) {
-        request.fields['files'] = '';
+      if (addVesselRequestModel.selectedImages == null ||
+          addVesselRequestModel.selectedImages!.isEmpty) {
+        // request.fields['files'] = '';
       } else {
         addVesselRequestModel.selectedImages!.forEach((element) async {
           int index = addVesselRequestModel.selectedImages!.indexOf(element);
@@ -128,8 +129,8 @@ class AddVesselApiProvider with ChangeNotifier {
         addVesselModel =
             AddVesselModel.fromJson(json.decode(responseValue.body));
 
-        Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey, message: decodedData['message']);
+        /* Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);*/
 
         return addVesselModel!;
       } else if (responseValue.statusCode == HttpStatus.gatewayTimeout) {

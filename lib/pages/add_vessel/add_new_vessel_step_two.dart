@@ -438,6 +438,11 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                     _databaseService.updateIsSyncStatus(0,
                                         widget.addVesselData!.id!.toString());
 
+                                    _databaseService.updateVesselName(
+                                        commonProvider
+                                            .addVesselRequestModel!.name!,
+                                        widget.addVesselData!.id!.toString());
+
                                     /*_databaseService.updateVesselStatus(1,
                                         widget.addVesselData!.id!.toString());*/
 

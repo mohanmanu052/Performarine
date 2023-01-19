@@ -23,6 +23,8 @@ import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:timezone/data/latest.dart' as tz;
+
 SharedPreferences? sharedPreferences;
 bool? isStart;
 Timer? timer;
@@ -37,6 +39,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   initializeService();
+
+  tz.initializeTimeZones();
 
   SharedPreferences.getInstance().then((value) {
     sharedPreferences = value;

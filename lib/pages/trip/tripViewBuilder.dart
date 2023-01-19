@@ -10,7 +10,9 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:provider/provider.dart';
 
 // class TripViewBuilder extends StatefulWidget {
 //   const TripViewBuilder({Key? key}) : super(key: key);
@@ -82,6 +84,7 @@ class TripViewListing extends StatefulWidget {
 class _TripViewListingState extends State<TripViewListing> {
   final DatabaseService _databaseService = DatabaseService();
   FlutterBackgroundService service = FlutterBackgroundService();
+  late CommonProvider commonProvider;
 
   late Future<List<Trip>> future;
   List<Trip> getTripsByIdFuture = [];
@@ -99,10 +102,14 @@ class _TripViewListingState extends State<TripViewListing> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    commonProvider = context.read<CommonProvider>();
   }
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
+
     return FutureBuilder<List<Trip>>(
       future: getTripsByVesselId(),
       builder: (context, snapshot) {
@@ -120,6 +127,15 @@ class _TripViewListingState extends State<TripViewListing> {
                       return snapshot.data!.isNotEmpty
                           ? TripWidget(
                               tripList: snapshot.data![index],
+                              tripUploadedSuccessfully: () {
+                                /*getTripsByVesselId();
+                                setState(() {});*/
+                                setState(() {
+                                  future = _databaseService.trips();
+                                });
+                                commonProvider.getTripsCount();
+                                //debugPrint('Trip Uploaded');
+                              },
                               onTap: () async {
                                 Utils().showEndTripDialog(context, () async {
                                   Navigator.of(context).pop();

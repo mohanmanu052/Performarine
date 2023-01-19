@@ -667,7 +667,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                                       primaryColor,
                                       Colors.white,
                                       displayHeight(context) * 0.018,
-                                      primaryColor,
+                                      buttonBGColor,
                                       '',
                                       fontWeight: FontWeight.w500),
                                 ),

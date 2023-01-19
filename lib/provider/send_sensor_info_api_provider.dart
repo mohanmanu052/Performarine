@@ -148,8 +148,8 @@ class SendSensorInfoApiProvider with ChangeNotifier {
                   progress: int.parse((sent / total * 100).toStringAsFixed(0)));
           final NotificationDetails platformChannelSpecifics =
               NotificationDetails(android: androidPlatformChannelSpecifics);
-          flutterLocalNotificationsPlugin.show(9986, tripId,
-              'progress notification body', platformChannelSpecifics,
+          flutterLocalNotificationsPlugin.show(
+              9986, tripId, '', platformChannelSpecifics,
               payload: 'item x');
 
           /* if (sent == total) {
