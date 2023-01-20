@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
+import 'package:app_settings/app_settings.dart';
 import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
     as locationAcc;
 import 'package:device_info_plus/device_info_plus.dart';
@@ -460,10 +461,20 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     return LocationPermissionCustomDialog(
                                       text: 'Always Allow Access to “Location”',
                                       subText:
-                                          "To track trip data we need access for your Location",
+                                          "To track your trip while you use other apps we need background access to your location",
                                       buttonText: 'Ok',
                                       buttonOnTap: () async {
                                         Navigator.pop(context);
+
+                                        /* var status = await Permission
+                                            .locationWhenInUse.status;
+
+                                        if (status ==
+                                            PermissionStatus.granted) {
+                                          Permission.locationAlways.request();
+                                        }*/
+
+                                        //  AppSettings.openLocationSettings(asAnotherTask: true);
                                         await openAppSettings();
                                         // await Geolocator.openAppSettings();
                                       },

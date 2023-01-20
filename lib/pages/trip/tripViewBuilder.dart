@@ -75,7 +75,10 @@ import 'package:provider/provider.dart';
 class TripViewListing extends StatefulWidget {
   String? vesselId;
   VoidCallback? onTripEnded;
-  TripViewListing({this.vesselId, this.onTripEnded});
+  TripViewListing({
+    this.vesselId,
+    this.onTripEnded,
+  });
 
   @override
   State<TripViewListing> createState() => _TripViewListingState();

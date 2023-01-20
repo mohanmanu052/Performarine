@@ -18,7 +18,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
       children: [
         Container(
           width: displayWidth(context),
-          height: displayHeight(context) * 0.7,
+          height: displayHeight(context) * 0.75,
           margin: EdgeInsets.all(10),
           decoration: new BoxDecoration(
             color: Theme.of(context).brightness == Brightness.dark
@@ -52,7 +52,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                             textColor:
                                 Theme.of(context).brightness == Brightness.dark
                                     ? Colors.white
-                                    : primaryColor,
+                                    : Colors.blueAccent,
                             fontWeight: FontWeight.w600),
                       ),
                       Center(
@@ -221,7 +221,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                     fontSize: displayWidth(context) * 0.032),
                               ),
                               TextSpan(
-                                text: ' and change to allow access.',
+                                text: ' and change to allow all the time.',
                                 recognizer: TapGestureRecognizer(),
                                 style: TextStyle(
                                     color: Theme.of(context).brightness ==

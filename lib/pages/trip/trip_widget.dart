@@ -20,6 +20,7 @@ import 'package:performarine/common_widgets/utils/date_formatter.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/location_permission_dialog.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:get/get.dart';
@@ -41,15 +42,15 @@ class TripWidget extends StatefulWidget {
   final VoidCallback? tripUploadedSuccessfully;
   final Trip? tripList;
 
-  const TripWidget(
-      {super.key,
-      //this.statusColor,
-      //this.status,
-      this.tripList,
-      this.onTap,
-      this.tripUploadedSuccessfully
-      //this.vesselName
-      });
+  const TripWidget({
+    super.key,
+    //this.statusColor,
+    //this.status,
+    this.tripList,
+    this.onTap,
+    this.tripUploadedSuccessfully,
+    //this.vesselName
+  });
 
   @override
   State<TripWidget> createState() => _TripWidgetState();
@@ -115,14 +116,23 @@ class _TripWidgetState extends State<TripWidget> {
                       textColor: Colors.black,
                       textSize: displayWidth(context) * 0.022,
                       textAlign: TextAlign.start),
-                  commonText(
-                    context: context,
-                    text:
-                        '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
-                    fontWeight: FontWeight.w500,
-                    textColor: Colors.black,
-                    textSize: displayWidth(context) * 0.02,
-                  ),
+                  widget.tripList?.tripStatus == 0
+                      ? commonText(
+                          context: context,
+                          text:
+                              '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
+                          fontWeight: FontWeight.w500,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.02,
+                        )
+                      : commonText(
+                          context: context,
+                          text:
+                              '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
+                          fontWeight: FontWeight.w500,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.02,
+                        ),
                 ],
               ),
 
@@ -277,6 +287,7 @@ class _TripWidgetState extends State<TripWidget> {
                                                 isTripUploaded = true;
                                               });
                                               uploadDataIfDataIsNotSync();
+
                                               print('WIFI');
                                             }
                                           },

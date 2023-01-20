@@ -114,7 +114,9 @@ class _HomePageState extends State<HomePage> {
 
       print('TRIP DATA: $tripId * $vesselId * $vesselName');
 
+      widget.tripData = [];
       Future.delayed(Duration(milliseconds: 300), () {
+        widget.tripData = [];
         Utils().showEndTripDialog(context, () async {
           FlutterBackgroundService service = FlutterBackgroundService();
 

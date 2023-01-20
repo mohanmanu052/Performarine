@@ -237,16 +237,25 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
             Positioned(
               top: 5,
               right: 10,
-              child: CommonButtons.getTextButton(
-                  title: 'Unretire',
-                  context: context,
-                  textColor: Colors.white,
-                  textSize: displayWidth(context) * 0.04,
-                  isClickLink: false,
-                  fontWeight: FontWeight.w500,
-                  onTap: () {
+              child: Container(
+                margin: EdgeInsets.only(
+                  top: 8.0,
+                ),
+                child: Center(
+                  child: CommonButtons.getAcceptButton(
+                      'Unretire', context, primaryColor, () async {
                     showDialogBox(vesselData);
-                  }),
+                  },
+                      displayWidth(context) * 0.18,
+                      displayHeight(context) * 0.04,
+                      primaryColor,
+                      Colors.white,
+                      displayHeight(context) * 0.014,
+                      buttonBGColor,
+                      '',
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
             ),
             Positioned(
               bottom: 0,
