@@ -11,8 +11,8 @@ class AddVesselModel {
     addVesselData =
         json['data'] != null ? new AddVesselData.fromJson(json['data']) : null;
     message = json['message'];
-    status = json['status'];
-    statusCode = json['statusCode'];
+    status = json['status'] ?? false;
+    statusCode = json['statusCode'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {

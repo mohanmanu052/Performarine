@@ -78,6 +78,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       addingDataToDB = false;
 
   // Timer? timer;
+  Timer? locationTimer;
   String fileName = '';
   int fileIndex = 1;
   String? latitude, longitude;
@@ -369,6 +370,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             print('TRIP ID $tripId');
 
                             service.invoke('stopService');
+                            // if (locationTimer != null) {
+                            //   locationTimer!.cancel();
+                            // }
                             if (positionStream != null) {
                               positionStream!.cancel();
                             }
@@ -2283,6 +2287,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               });
 
                                               service.invoke('stopService');
+
+                                              /*if (locationTimer != null) {
+                                                locationTimer!.cancel();
+                                              }*/
+
                                               if (positionStream != null) {
                                                 positionStream!.cancel();
                                               }
@@ -2814,7 +2823,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     service.invoke("onStartTrip");
 
-    Timer.periodic(Duration(milliseconds: 200), (timer) async {
+    /*locationTimer = Timer.periodic(Duration(milliseconds: 200), (timer) async {
       Position? locationData = await Utils.getCurrentLocation();
 
       // location = Location();
@@ -2832,7 +2841,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       });
       // print(
       //     'SINGLE VIEW LAT LONG ${locationData.latitude} ${locationData.longitude}');
-    });
+    });*/
 
     sharedPreferences!.setBool('trip_started', true);
     sharedPreferences!.setStringList('trip_data', [

@@ -126,6 +126,7 @@ class _HomePageState extends State<HomePage> {
 
           try {
             service.invoke('stopService');
+
             if (positionStream != null) {
               positionStream!.cancel();
             }

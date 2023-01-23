@@ -550,6 +550,8 @@ class _TripWidgetState extends State<TripWidget> {
       if (value != null) {
         if (value.status!) {
           cancelOnGoingProgressNotification(tripData.id!);
+
+          showSuccessNoti();
           setState(() {
             isTripUploaded = false;
           });
@@ -558,9 +560,15 @@ class _TripWidgetState extends State<TripWidget> {
 
           widget.tripUploadedSuccessfully!.call();
         } else {
+          setState(() {
+            isTripUploaded = false;
+          });
           showFailedNoti(tripData.id!);
         }
       } else {
+        setState(() {
+          isTripUploaded = false;
+        });
         showFailedNoti(tripData.id!);
       }
     }).catchError((onError) {
@@ -578,7 +586,6 @@ class _TripWidgetState extends State<TripWidget> {
     });
     flutterLocalNotificationsPlugin.cancel(9986);
     progressTimer!.cancel();
-    showSuccessNoti(id);
   }
 
   showFailedNoti(String id) async {
@@ -598,7 +605,7 @@ class _TripWidgetState extends State<TripWidget> {
         payload: 'item x');
   }
 
-  showSuccessNoti(String id) async {
+  showSuccessNoti() async {
     progressTimer!.cancel();
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('progress channel', 'progress channel',
@@ -836,16 +843,30 @@ class _TripWidgetState extends State<TripWidget> {
             });*/
 
             startSensorFunctionality(widget.tripList!);
-          } else {
+          } /* else if (value.statusCode == 400) {
+            setState(() {
+              isTripUploaded = false;
+            });
+          } */
+          else {
             cancelOnGoingProgressNotification(widget.tripList!.id!);
             showFailedNoti(widget.tripList!.id!);
+            setState(() {
+              isTripUploaded = false;
+            });
           }
         } else {
           cancelOnGoingProgressNotification(widget.tripList!.id!);
           showFailedNoti(widget.tripList!.id!);
+          setState(() {
+            isTripUploaded = false;
+          });
         }
       });
     } else {
+      setState(() {
+        isTripUploaded = false;
+      });
       startSensorFunctionality(widget.tripList!);
     }
   }

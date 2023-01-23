@@ -12,7 +12,7 @@ import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 class AddVesselApiProvider with ChangeNotifier {
   AddVesselModel? addVesselModel;
 
-  Future<AddVesselModel> addVesselData(
+  Future<AddVesselModel?> addVesselData(
       BuildContext context,
       CreateVessel? addVesselRequestModel,
       String userId,
@@ -155,6 +155,7 @@ class AddVesselApiProvider with ChangeNotifier {
             ? null
             : debugPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
         kReleaseMode ? null : debugPrint('EXE RESP: $responseValue');
+        addVesselModel = null;
       }
       addVesselModel = null;
     } on SocketException catch (_) {
@@ -169,6 +170,6 @@ class AddVesselApiProvider with ChangeNotifier {
       addVesselModel = null;
     }
 
-    return addVesselModel!;
+    return addVesselModel;
   }
 }

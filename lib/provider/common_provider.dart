@@ -86,7 +86,7 @@ class CommonProvider with ChangeNotifier {
     return registrationModel!;
   }
 
-  Future<AddVesselModel> addVessel(
+  Future<AddVesselModel?> addVessel(
       BuildContext context,
       CreateVessel? addVesselRequestModel,
       String userId,
@@ -98,7 +98,7 @@ class CommonProvider with ChangeNotifier {
         context, addVesselRequestModel, userId, accessToken, scaffoldKey);
     notifyListeners();
 
-    return addVesselModel!;
+    return addVesselModel;
   }
 
   Future<CommonModel> sendSensorInfo(
