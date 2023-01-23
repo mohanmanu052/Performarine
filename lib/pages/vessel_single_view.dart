@@ -368,7 +368,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             });*/
 
                             print('TRIP ID $tripId');
-                            calculateDistance();
                             service.invoke('stopService');
                             // if (locationTimer != null) {
                             //   locationTimer!.cancel();
@@ -676,6 +675,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}');
+    double tripDistance = 0.0;
+    int tripDuration = 0;
 
     // initializeService();
 
@@ -694,6 +695,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
             alignment: Alignment.bottomCenter,
             child: StatefulBuilder(builder:
                 (BuildContext bottomSheetContext, StateSetter stateSetter) {
+              service.on('tripAnalyticsData').listen((event) {
+                tripDistance = event!['tripDistance'];
+                tripDuration = event['tripDuration'];
+                stateSetter(() {});
+              });
               return Container(
                 height: MediaQuery.of(context).size.height * 0.68,
                 decoration: BoxDecoration(
@@ -746,7 +752,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       Column(
                                         children: [
                                           Text(
-                                            "",
+                                            calculateTripDuration(
+                                                (tripDuration / 1000).toInt()),
                                             style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 15,
@@ -786,7 +793,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       Column(
                                         children: [
                                           Text(
-                                            "",
+                                            "${tripDistance.toStringAsFixed(2)}m",
                                             style: TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 15,
@@ -2924,18 +2931,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
     });
   }
 
-  calculateDistance() {
-    String? firstLat = sharedPreferences!.getString('firstLat');
-    String? firstLong = sharedPreferences!.getString('firstLong');
-    String? lastLat = sharedPreferences!.getString('lastLat');
-    String? lastLong = sharedPreferences!.getString('lastLong');
+  String calculateTripDuration(int seconds) {
+    const secondsPerMinute = 60;
+    const secondsPerHour = 60 * 60;
 
-    var distanceBetween = Geolocator.distanceBetween(
-        double.parse(firstLat!),
-        double.parse(firstLong!),
-        double.parse(lastLat!),
-        double.parse(lastLong!));
-
-    debugPrint('CALCULATE DIFFERENCE BETWEEN $distanceBetween}');
+    return '${(seconds / secondsPerHour).toStringAsFixed(0)}:${(seconds / secondsPerMinute).toStringAsFixed(0)}:$seconds';
   }
 }

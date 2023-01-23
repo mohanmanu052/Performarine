@@ -257,6 +257,12 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
       print('TRIP DURATION: $finalTripDuration');
       pref.setDouble('tripDistance', finalTripDistance);
       pref.setInt('tripDuration', finalTripDuration);
+
+      serviceInstance.invoke('tripAnalyticsData', {
+        "tripDistance": finalTripDistance,
+        "tripDuration": finalTripDuration
+      });
+
       if (serviceInstance is AndroidServiceInstance) {
         if (await serviceInstance.isForegroundService()) {
           flutterLocalNotificationsPlugin.show(
