@@ -368,7 +368,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             });*/
 
                             print('TRIP ID $tripId');
-
+                            calculateDistance();
                             service.invoke('stopService');
                             // if (locationTimer != null) {
                             //   locationTimer!.cancel();
@@ -734,11 +734,77 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  SizedBox(
+                                  /*SizedBox(
                                       height: 300,
                                       width: 200,
                                       child: Lottie.asset(
-                                          'assets/lottie/dataFetch.json')),
+                                          'assets/lottie/dataFetch.json')),*/
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Text(
+                                            "",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 15,
+                                              color: primaryColor,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Time",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 15,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Text(
+                                            "",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 15,
+                                              color: primaryColor,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Speed",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 15,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Text(
+                                            "",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 15,
+                                              color: primaryColor,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Distance",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 15,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -2856,5 +2922,20 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isStartButton = false;
       isEndTripButton = true;
     });
+  }
+
+  calculateDistance() {
+    String? firstLat = sharedPreferences!.getString('firstLat');
+    String? firstLong = sharedPreferences!.getString('firstLong');
+    String? lastLat = sharedPreferences!.getString('lastLat');
+    String? lastLong = sharedPreferences!.getString('lastLong');
+
+    var distanceBetween = Geolocator.distanceBetween(
+        double.parse(firstLat!),
+        double.parse(firstLong!),
+        double.parse(lastLat!),
+        double.parse(lastLong!));
+
+    debugPrint('CALCULATE DIFFERENCE BETWEEN $distanceBetween}');
   }
 }

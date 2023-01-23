@@ -28,6 +28,7 @@ import 'package:timezone/data/latest.dart' as tz;
 SharedPreferences? sharedPreferences;
 bool? isStart;
 Timer? timer;
+Timer? tripDurationTimer;
 Directory? ourDirectory;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -66,7 +67,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   var tripId = '';
 
   // Timer? timer;
-  String fileName = '';
+  String fileName = '', firstLat, firstLong;
   int fileIndex = 1;
 
   // Only available for flutter 3.0.0 and later
@@ -199,6 +200,8 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 
   serviceInstance.on('stopService').listen((event) {
     serviceInstance.stopSelf();
+    /*sharedPreferences!.setString('lastLat', latitude.toString()) as String;
+    sharedPreferences!.setString('lastLong', longitude.toString()) as String;*/
     print('service stopped'.toUpperCase());
     if (positionStream != null) {
       positionStream!.cancel();
@@ -215,14 +218,45 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     tripId = event!['tripId'];
   });
 
-  serviceInstance.on('onStartTrip').listen((event) {
+  serviceInstance.on('onStartTrip').listen((event) async {
     // bring to foreground
     print('ON START TRIP');
-    //print('LAT LONG $latitude $longitude');
+
+    Position startTripPosition = await Geolocator.getCurrentPosition();
+    double finalTripDistance = 0.0;
+    int finalTripDuration = 0;
+
+    /*Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen((Position event) {
+      double endTripLat = event.latitude;
+      double endTripLong = event.longitude;
+
+      double tripDistance = Geolocator.distanceBetween(
+          startTripPosition.latitude,
+          startTripPosition.longitude,
+          endTripLat,
+          endTripLong);
+
+      print('TRIP DISTANCE: $tripDistance');
+    });*/
+    var pref = await SharedPreferences.getInstance();
 
     timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
-      print('LAT LONG main file:  $latitude $longitude');
+      finalTripDuration =
+          timer.tick % 5 == 0 ? (timer.tick * 200) : finalTripDuration;
+      Position endTripPosition = await Geolocator.getCurrentPosition();
+      double tripDistance = Geolocator.distanceBetween(
+          startTripPosition.latitude,
+          startTripPosition.longitude,
+          endTripPosition.latitude,
+          endTripPosition.longitude);
 
+      finalTripDistance =
+          finalTripDistance < tripDistance ? tripDistance : finalTripDistance;
+      print('TRIP DISTANCE: $finalTripDistance');
+      print('TRIP DURATION: $finalTripDuration');
+      pref.setDouble('tripDistance', finalTripDistance);
+      pref.setInt('tripDuration', finalTripDuration);
       if (serviceInstance is AndroidServiceInstance) {
         if (await serviceInstance.isForegroundService()) {
           flutterLocalNotificationsPlugin.show(
