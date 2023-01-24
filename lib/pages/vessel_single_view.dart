@@ -2637,8 +2637,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
     int fileSize = await checkFileSize(file);
 
     /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
-    /// Now File Size is 10,00,000
-    if (fileSize >= 1000000) {
+    /// Now File Size is 200000
+    if (fileSize >= 200000) {
       print('STOPPED WRITING');
       print('CREATING NEW FILE');
       // if (timer != null) timer!.cancel();
