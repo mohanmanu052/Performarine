@@ -16,6 +16,9 @@ class Trip {
   final int? isSync;
   final int? tripStatus;
   String? deviceInfo;
+  final String? time;
+  final String? distance;
+  final String? speed;
 
   Trip(
       {this.id,
@@ -29,7 +32,10 @@ class Trip {
       this.createdAt,
       this.deviceInfo,
       this.lat,
-      this.long});
+      this.long,
+      this.time,
+      this.distance,
+      this.speed});
 
   // Convert a Trip into a Map. The keys must correspond to the vesselNames of the
   // columns in the database.
@@ -47,6 +53,9 @@ class Trip {
       'deviceInfo': deviceInfo,
       'lat': lat,
       'long': long,
+      'time': time,
+      'distance': distance,
+      'speed': speed,
     };
   }
 
@@ -64,6 +73,9 @@ class Trip {
       deviceInfo: map['deviceInfo'] ?? '',
       lat: map['lat'] ?? '',
       long: map['long'] ?? '',
+      time: map['time'] ?? '',
+      distance: map['distance'] ?? '',
+      speed: map['speed'] ?? '',
     );
   }
 

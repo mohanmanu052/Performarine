@@ -725,4 +725,13 @@ class Utils {
     /// LOCAL
     return now.toString();
   }
+
+  static String calculateTripDuration(int seconds) {
+    const secondsPerMinute = 60;
+    const secondsPerHour = 60 * 60;
+
+    //print('SPEED ${location!.speed.toString()}');
+
+    return '${(seconds / secondsPerHour).toStringAsFixed(0)}:${(seconds / secondsPerMinute).toStringAsFixed(0)}:$seconds';
+  }
 }

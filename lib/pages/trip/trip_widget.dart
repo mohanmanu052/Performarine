@@ -27,6 +27,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
+import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -70,6 +71,8 @@ class _TripWidgetState extends State<TripWidget> {
 
   int progress = 0;
   Timer? progressTimer;
+
+  List<CreateVessel> getVesselById = [];
 
   @override
   void initState() {
@@ -248,7 +251,25 @@ class _TripWidgetState extends State<TripWidget> {
                                   child: CommonButtons.getRichTextActionButton(
                                       buttonPrimaryColor: buttonBGColor,
                                       fontSize: displayWidth(context) * 0.026,
-                                      onTap: () {},
+                                      onTap: () async {
+                                        getVesselById = await _databaseService
+                                            .getVesselNameByID(widget
+                                                .tripList!.vesselId
+                                                .toString());
+
+                                        debugPrint(
+                                            'VESSEL DATA ${getVesselById[0].name}');
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TripAnalyticsScreen(
+                                                    tripList: widget.tripList!,
+                                                    vessel: getVesselById[0]),
+                                          ),
+                                        );
+                                      },
                                       icon: Padding(
                                         padding:
                                             const EdgeInsets.only(right: 8),
@@ -487,8 +508,25 @@ class _TripWidgetState extends State<TripWidget> {
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));*/
 
+    int? tripDuration = sharedPreferences!.getInt("tripDuration");
+    int? tripDistance = sharedPreferences!.getInt("tripDistance");
+    String? tripSpeed = sharedPreferences!.getString("tripSpeed");
+
+    String finalTripDuration =
+        Utils.calculateTripDuration((tripDuration! / 1000).toInt());
+    String finalTripDistance = tripDistance!.toStringAsFixed(2);
+
     await _databaseService.updateTripStatus(
-        1, file.path, DateTime.now().toUtc().toString(), tripId);
+        1,
+        file.path,
+        DateTime.now().toUtc().toString(),
+        finalTripDuration,
+        finalTripDistance,
+        tripSpeed.toString(),
+        tripId);
+
+    _databaseService.updateVesselDataWithDurationSpeedDistance(
+        finalTripDuration, finalTripDistance, tripSpeed.toString(), vesselId!);
     //Navigator.pop(context);
   }
 

@@ -45,7 +45,7 @@ class DatabaseService {
     await db.execute(
       'CREATE TABLE trips(id Text PRIMARY KEY,vesselId Text,vesselName Text, currentLoad TEXT,filePath Text,isSync INTEGER DEFAULT 0,'
       'tripStatus INTEGER  DEFAULT 0,deviceInfo Text, lat Text,long Text,'
-      ' createdAt TEXT,updatedAt TEXT,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL)',
+      ' createdAt TEXT,updatedAt TEXT,time TEXT,distance TEXT,speed TEXT,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL)',
     );
     // Run the CREATE {dogs} TABLE statement on the database.
     // await db.execute(
@@ -76,7 +76,10 @@ class DatabaseService {
       'createdAt TEXT,'
       'createdBy TEXT,'
       'updatedAt TEXT, '
-      'updatedBy TEXT '
+      'updatedBy TEXT, '
+      'time TEXT, '
+      'distance TEXT, '
+      'speed TEXT '
       ')',
     );
     //  ToDo: Foreign Key mapping
@@ -209,12 +212,12 @@ class DatabaseService {
     return result;
   }
 
-  Future<void> updateTripStatus(
-      int status, String filePath, String updatedAt, String tripId) async {
+  Future<void> updateTripStatus(int status, String filePath, String updatedAt,
+      String time, String distance, String speed, String tripId) async {
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
-        'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ? WHERE id = ?',
-        [status, filePath, updatedAt, tripId]);
+        'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ?, time = ?, distance = ?, speed = ? WHERE id = ?',
+        [status, filePath, updatedAt, time, distance, speed, tripId]);
     print('updated: $count');
   }
 
@@ -356,4 +359,12 @@ class DatabaseService {
         maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }*/
 
+  Future<void> updateVesselDataWithDurationSpeedDistance(
+      String time, String distance, String speed, String vesselId) async {
+    final db = await _databaseService.database;
+    int count = await db.rawUpdate(
+        'UPDATE vessels SET time = ?, distance = ?, speed = ? WHERE id = ?',
+        [time, distance, speed, vesselId]);
+    print('updated: $count');
+  }
 }

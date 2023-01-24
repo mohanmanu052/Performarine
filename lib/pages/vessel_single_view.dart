@@ -41,6 +41,7 @@ import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class VesselSingleView extends StatefulWidget {
@@ -212,6 +213,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
           return false;
         } else {
+          print('hhhhh');
           /*if (isDataUpdated) {
             Navigator.of(context).pop(true);
             return false;
@@ -362,12 +364,29 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             List<String>? tripData =
                                 sharedPreferences!.getStringList('trip_data');
 
+                            print(
+                                'TIMER STOPPED 121212 ${sharedPreferences!.getInt("tripDuration")}');
+
                             String tripId = tripData![0];
+                            String vesselId = tripData[1];
+
+                            int? tripDuration =
+                                sharedPreferences!.getInt("tripDuration");
+                            int? tripDistance =
+                                sharedPreferences!.getInt("tripDistance");
+                            String? tripSpeed =
+                                sharedPreferences!.getString("tripSpeed");
+
+                            String finalTripDuration = calculateTripDuration(
+                                (tripDuration! / 1000).toInt());
+                            String finalTripDistance =
+                                tripDistance!.toStringAsFixed(2);
+
                             /*setState(() {
                               tripIsRunning = false;
                             });*/
 
-                            print('TRIP ID $tripId');
+                            print('TRIP ID $vesselId');
                             service.invoke('stopService');
                             // if (locationTimer != null) {
                             //   locationTimer!.cancel();
@@ -406,7 +425,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 isZipFileCreate = true;
                               });
                             });*/
+                            var pref = await SharedPreferences.getInstance();
                             print('FINAL PATH: ${file.path}');
+                            print('FINAL PATH: ${pref.getInt("tripDuration")}');
 
                             sharedPreferences!.remove('trip_data');
                             sharedPreferences!.remove('trip_started');
@@ -415,7 +436,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 1,
                                 file.path,
                                 DateTime.now().toUtc().toString(),
+                                finalTripDuration,
+                                finalTripDistance,
+                                tripSpeed.toString(),
                                 tripId);
+
+                            _databaseService
+                                .updateVesselDataWithDurationSpeedDistance(
+                                    finalTripDuration,
+                                    finalTripDistance,
+                                    tripSpeed.toString(),
+                                    vesselId);
 
                             tripIsRunningOrNot();
                           }, () {
@@ -663,6 +694,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
     }
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+
+    _modelScaffoldKey.currentState!.dispose();
+  }
+
   getBottomSheet(BuildContext context, dynamic size, String vesselName,
       String weight, bool isLocationPermission) async {
     isStartButton = false;
@@ -671,12 +709,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
     isZipFileCreate = false;
     addingDataToDB = false;
     selectedVesselWeight = 'Select Current Load';
-    // isBottomSheetOpened = true;
+    isBottomSheetOpened = true;
 
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}');
-    double tripDistance = 0.0;
+    int tripDistance = 0;
     int tripDuration = 0;
+    String tripSpeed = '0.0';
 
     // initializeService();
 
@@ -698,7 +737,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
               service.on('tripAnalyticsData').listen((event) {
                 tripDistance = event!['tripDistance'];
                 tripDuration = event['tripDuration'];
-                stateSetter(() {});
+                tripSpeed = event['tripSpeed'];
+
+                if (isBottomSheetOpened) {
+                  if (mounted) stateSetter(() {});
+                }
               });
               return Container(
                 height: MediaQuery.of(context).size.height * 0.68,
@@ -740,76 +783,86 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  /*SizedBox(
+                                  SizedBox(
                                       height: 300,
                                       width: 200,
                                       child: Lottie.asset(
-                                          'assets/lottie/dataFetch.json')),*/
+                                          'assets/lottie/dataFetch.json')),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Column(
                                         children: [
-                                          Text(
-                                            calculateTripDuration(
-                                                (tripDuration / 1000).toInt()),
-                                            style: TextStyle(
+                                          commonText(
+                                              context: context,
+                                              text: calculateTripDuration(
+                                                  (tripDuration / 1000)
+                                                      .toInt()),
+                                              fontWeight: FontWeight.w600,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.036,
+                                              textAlign: TextAlign.start),
+                                          commonText(
+                                              context: context,
+                                              text: 'Time',
                                               fontWeight: FontWeight.w400,
-                                              fontSize: 15,
-                                              color: primaryColor,
-                                            ),
-                                          ),
-                                          Text(
-                                            "Time",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 15,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
+                                              textColor: Colors.grey,
+                                              textSize:
+                                                  displayWidth(context) * 0.026,
+                                              textAlign: TextAlign.start),
                                         ],
                                       ),
+                                      Container(
+                                          width: 1,
+                                          height: displayHeight(context) * 0.05,
+                                          color: Colors.grey),
                                       Column(
                                         children: [
-                                          Text(
-                                            "",
-                                            style: TextStyle(
+                                          commonText(
+                                              context: context,
+                                              text: '$tripSpeed',
+                                              fontWeight: FontWeight.w600,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.036,
+                                              textAlign: TextAlign.start),
+                                          commonText(
+                                              context: context,
+                                              text: 'Speed',
                                               fontWeight: FontWeight.w400,
-                                              fontSize: 15,
-                                              color: primaryColor,
-                                            ),
-                                          ),
-                                          Text(
-                                            "Speed",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 15,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
+                                              textColor: Colors.grey,
+                                              textSize:
+                                                  displayWidth(context) * 0.026,
+                                              textAlign: TextAlign.start),
                                         ],
                                       ),
+                                      Container(
+                                          width: 1,
+                                          height: displayHeight(context) * 0.05,
+                                          color: Colors.grey),
                                       Column(
                                         children: [
-                                          Text(
-                                            "${tripDistance.toStringAsFixed(2)}m",
-                                            style: TextStyle(
+                                          commonText(
+                                              context: context,
+                                              text:
+                                                  '${tripDistance.toStringAsFixed(2)}m',
+                                              fontWeight: FontWeight.w600,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.036,
+                                              textAlign: TextAlign.start),
+                                          commonText(
+                                              context: context,
+                                              text: 'Distance',
                                               fontWeight: FontWeight.w400,
-                                              fontSize: 15,
-                                              color: primaryColor,
-                                            ),
-                                          ),
-                                          Text(
-                                            "Distance",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 15,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
+                                              textColor: Colors.grey,
+                                              textSize:
+                                                  displayWidth(context) * 0.026,
+                                              textAlign: TextAlign.start),
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
                                   SizedBox(
@@ -2398,6 +2451,24 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                               print('FINAL PATH: ${file.path}');
 
+                                              int? tripDuration =
+                                                  sharedPreferences!
+                                                      .getInt("tripDuration");
+                                              int? tripDistance =
+                                                  sharedPreferences!
+                                                      .getInt("tripDistance");
+                                              String? tripSpeed =
+                                                  sharedPreferences!
+                                                      .getString("tripSpeed");
+
+                                              String finalTripDuration =
+                                                  calculateTripDuration(
+                                                      (tripDuration! / 1000)
+                                                          .toInt());
+                                              String finalTripDistance =
+                                                  tripDistance!
+                                                      .toStringAsFixed(2);
+
                                               sharedPreferences!
                                                   .remove('trip_data');
                                               sharedPreferences!
@@ -2410,7 +2481,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       DateTime.now()
                                                           .toUtc()
                                                           .toString(),
+                                                      finalTripDuration,
+                                                      finalTripDistance,
+                                                      tripSpeed.toString(),
                                                       getTripId);
+
+                                              _databaseService
+                                                  .updateVesselDataWithDurationSpeedDistance(
+                                                      finalTripDuration,
+                                                      finalTripDistance,
+                                                      tripSpeed.toString(),
+                                                      widget.vessel!.id!);
 
                                               Future.delayed(
                                                       Duration(seconds: 3))
@@ -2525,12 +2606,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             shape: BoxShape.circle, color: backgroundColor),
                         child: IconButton(
                             onPressed: () {
-                              // isBottomSheetOpened = false;
+                              isBottomSheetOpened = false;
                               tripIsRunningOrNot();
                               setState(() {
                                 widget.vessel!.id = widget.vessel!.id;
                               });
-                              Get.back();
+                              Navigator.of(bottomSheetContext).pop();
+                              // Get.back();
 
                               stateSetter(() {
                                 addingDataToDB = false;
@@ -2564,6 +2646,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     ).then((value) {
       tripIsRunningOrNot();
       print('BACK PRESSED');
+      isBottomSheetOpened = false;
     });
   }
 
@@ -2934,6 +3017,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
   String calculateTripDuration(int seconds) {
     const secondsPerMinute = 60;
     const secondsPerHour = 60 * 60;
+
+    //print('SPEED ${location!.speed.toString()}');
 
     return '${(seconds / secondsPerHour).toStringAsFixed(0)}:${(seconds / secondsPerMinute).toStringAsFixed(0)}:$seconds';
   }

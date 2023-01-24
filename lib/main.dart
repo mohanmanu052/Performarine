@@ -63,8 +63,9 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   List<double>? _gyroscopeValues;
   List<double>? _magnetometerValues;
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
-  double latitude = 0.0, longitude = 0.0;
+  double latitude = 0.0, longitude = 0.0, speed = 0.0;
   var tripId = '';
+  //  bool stopSending = false;
 
   // Timer? timer;
   String fileName = '', firstLat, firstLong;
@@ -85,8 +86,11 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
         print(event == null
             ? 'Unknown'
             : '${event.latitude.toString()}, ${event.longitude.toString()}');
+
+        debugPrint('SPEED SPEED ${event.speed}');
         latitude = event.latitude;
         longitude = event.longitude;
+        speed = event.speed;
       });
     }
   });
@@ -218,13 +222,19 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     tripId = event!['tripId'];
   });
 
+  /* serviceInstance.on("stopSending").listen((event) {
+    print('STOP SENDING: ${event!['stopSending']}');
+    stopSending = event['stopSending'];
+  });*/
+
   serviceInstance.on('onStartTrip').listen((event) async {
     // bring to foreground
     print('ON START TRIP');
 
     Position startTripPosition = await Geolocator.getCurrentPosition();
-    double finalTripDistance = 0.0;
+    int finalTripDistance = 0;
     int finalTripDuration = 0;
+    int finalTripSpeed = 0;
 
     /*Geolocator.getPositionStream(locationSettings: locationSettings)
         .listen((Position event) {
@@ -251,24 +261,29 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           endTripPosition.latitude,
           endTripPosition.longitude);
 
-      finalTripDistance =
-          finalTripDistance < tripDistance ? tripDistance : finalTripDistance;
+      finalTripDistance = finalTripDistance < tripDistance.toInt()
+          ? tripDistance.toInt()
+          : finalTripDistance;
+
+      /*if (finalTripDistance != 0 && finalTripDuration != 0) {
+        finalTripSpeed =
+            ((finalTripDistance / finalTripDuration) * 3.6).toInt(); // 0
+      }*/
+
       print('TRIP DISTANCE: $finalTripDistance');
       print('TRIP DURATION: $finalTripDuration');
-      pref.setDouble('tripDistance', finalTripDistance);
-      pref.setInt('tripDuration', finalTripDuration);
+      print('TRIP SPEED: $finalTripSpeed');
 
-      serviceInstance.invoke('tripAnalyticsData', {
-        "tripDistance": finalTripDistance,
-        "tripDuration": finalTripDuration
-      });
+      pref.setInt('tripDistance', finalTripDistance);
+      pref.setInt('tripDuration', finalTripDuration);
+      pref.setString('tripSpeed', (speed * 3.6).toStringAsFixed(2));
 
       if (serviceInstance is AndroidServiceInstance) {
         if (await serviceInstance.isForegroundService()) {
           flutterLocalNotificationsPlugin.show(
             888,
             'PerforMarine',
-            'Trip Data Collection in progress....',
+            'Dist: ${finalTripDistance}m, Duration: ${finalTripDuration / 1000}sec, Speed: ${(speed * 3.6).toStringAsFixed(2)}km/h',
             const NotificationDetails(
               android: AndroidNotificationDetails(
                 notificationChannelId,
@@ -278,6 +293,12 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
               ),
             ),
           );
+
+          serviceInstance.invoke('tripAnalyticsData', {
+            "tripDistance": finalTripDistance,
+            "tripDuration": finalTripDuration,
+            "tripSpeed": (speed * 3.6).toStringAsFixed(2)
+          });
 
           String filePath = await getFile();
           File file = File(filePath);

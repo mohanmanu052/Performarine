@@ -190,7 +190,7 @@ Widget dashboardRichText(
           textAlign: TextAlign.start,
           style: TextStyle(
             fontSize: displayWidth(context!) * 0.034,
-            color: Colors.white.withOpacity(0.8),
+            color: color,
             fontFamily: poppins,
             fontWeight: FontWeight.w500,
           ),
@@ -216,7 +216,7 @@ Widget dashboardRichText(
           textAlign: TextAlign.start,
           style: TextStyle(
             fontSize: displayWidth(context) * 0.034,
-            color: Colors.white.withOpacity(0.8),
+            color: color,
             fontFamily: poppins,
             fontWeight: FontWeight.w500,
           ),

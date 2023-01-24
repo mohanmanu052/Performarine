@@ -275,8 +275,26 @@ class _HomePageState extends State<HomePage> {
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));*/
 
+    int? tripDuration = sharedPreferences!.getInt("tripDuration");
+    int? tripDistance = sharedPreferences!.getInt("tripDistance");
+    String? tripSpeed = sharedPreferences!.getString("tripSpeed");
+
+    String finalTripDuration =
+        Utils.calculateTripDuration((tripDuration! / 1000).toInt());
+    String finalTripDistance = tripDistance!.toStringAsFixed(2);
+
     await _databaseService.updateTripStatus(
-        1, file.path, DateTime.now().toUtc().toString(), tripId);
+        1,
+        file.path,
+        DateTime.now().toUtc().toString(),
+        finalTripDuration,
+        finalTripDistance,
+        tripSpeed.toString(),
+        tripId);
+
+    _databaseService.updateVesselDataWithDurationSpeedDistance(
+        finalTripDuration, finalTripDistance, tripSpeed.toString(), vesselId);
+
     Navigator.pop(context);
   }
 
