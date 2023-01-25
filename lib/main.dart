@@ -58,6 +58,8 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
       permanent: true, tag: 'serviceInstance');*/
   print('Background task is running');
 
+  var pref = await SharedPreferences.getInstance();
+
   List<double>? _accelerometerValues;
   List<double>? _userAccelerometerValues;
   List<double>? _gyroscopeValues;
@@ -249,7 +251,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 
       print('TRIP DISTANCE: $tripDistance');
     });*/
-    var pref = await SharedPreferences.getInstance();
+    // var pref = await SharedPreferences.getInstance();
 
     timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
       // to get values in seconds (we are executing value every miliseconds)
@@ -275,11 +277,6 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
       print('TRIP DURATION: $finalTripDuration');
       print('TRIP SPEED: $finalTripSpeed');
 
-      pref.setInt('tripDistance', finalTripDistance);
-      pref.setInt('tripDuration', finalTripDuration);
-      // To get values in Km/h
-      pref.setString('tripSpeed', (speed * 3.6).toStringAsFixed(2));
-
       if (serviceInstance is AndroidServiceInstance) {
         if (await serviceInstance.isForegroundService()) {
           flutterLocalNotificationsPlugin.show(
@@ -301,6 +298,13 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
             "tripDuration": finalTripDuration,
             "tripSpeed": (speed * 3.6).toStringAsFixed(2)
           });
+
+          if (timer.tick % 5 == 0) {
+            pref.setInt('tripDistance', finalTripDistance);
+            pref.setInt('tripDuration', finalTripDuration);
+            // To get values in Km/h
+            pref.setString('tripSpeed', (speed * 3.6).toStringAsFixed(2));
+          }
 
           String filePath = await getFile();
           File file = File(filePath);

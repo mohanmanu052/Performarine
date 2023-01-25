@@ -58,7 +58,7 @@ class VesselSingleView extends StatefulWidget {
 class VesselSingleViewState extends State<VesselSingleView> {
   List<CreateVessel>? vessel = [];
   final DatabaseService _databaseService = DatabaseService();
-  final GlobalKey<ScaffoldState> _modelScaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey<ScaffoldState> _modelScaffoldKey = GlobalKey<ScaffoldState>();
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
@@ -236,8 +236,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
               style: TextStyle(color: Colors.black),
             ),
             leading: IconButton(
-              onPressed: () {
-                tripIsRunningOrNot();
+              onPressed: () async {
+                await tripIsRunningOrNot();
 
                 if (widget.isCalledFromSuccessScreen!) {
                   Navigator.pushAndRemoveUntil(
@@ -325,8 +325,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             padding: const EdgeInsets.only(bottom: 0.0),
                             child: TripViewListing(
                               vesselId: widget.vessel!.id,
-                              onTripEnded: () {
-                                tripIsRunningOrNot();
+                              onTripEnded: () async {
+                                await tripIsRunningOrNot();
                               },
                             ),
                           )
@@ -360,6 +360,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               DateTime.now().toUtc().toString());
                           Utils().showEndTripDialog(context, () async {
                             Navigator.of(context).pop();
+
+                            print(
+                                'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+
+                            await sharedPreferences!.reload();
 
                             List<String>? tripData =
                                 sharedPreferences!.getStringList('trip_data');
@@ -448,7 +453,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     tripSpeed.toString(),
                                     vesselId);
 
-                            tripIsRunningOrNot();
+                            await tripIsRunningOrNot();
                           }, () {
                             Navigator.of(context).pop();
                           });
@@ -692,13 +697,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
         }
       }
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-    _modelScaffoldKey.currentState!.dispose();
   }
 
   getBottomSheet(BuildContext context, dynamic size, String vesselName,
@@ -1741,7 +1739,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 isStartButton = false;
                                                 isEndTripButton = true;
                                               });*/
-                                                  // tripIsRunningOrNot();
+                                                  // await tripIsRunningOrNot();
 
                                                   // await Permission.storage.request();
 
@@ -1831,7 +1829,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 isStartButton = false;
                                                 isEndTripButton = true;
                                               });*/
-                                                  // tripIsRunningOrNot();
+                                                  // await tripIsRunningOrNot();
 
                                                   // await Permission.storage.request();
 
@@ -1915,7 +1913,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         bottomSheetContext,
                                                         stateSetter);
 
-                                                    // tripIsRunningOrNot();
+                                                    // await tripIsRunningOrNot();
 
                                                     // await Permission.storage.request();
                                                   }
@@ -2017,7 +2015,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       bottomSheetContext,
                                                       stateSetter);
 
-                                                  // tripIsRunningOrNot();
+                                                  // await tripIsRunningOrNot();
 
                                                   // await Permission.storage.request();
                                                 } else {
@@ -2092,7 +2090,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   isEndTripButton = true;
                                                 });*/
 
-                                                    // tripIsRunningOrNot();
+                                                    // await tripIsRunningOrNot();
 
                                                     // await Permission.storage.request();
 
@@ -2243,7 +2241,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     startWritingDataToDB(
                                                         bottomSheetContext,
                                                         stateSetter);
-                                                    // tripIsRunningOrNot();
+                                                    // await tripIsRunningOrNot();
 
                                                     // await Permission.storage.request();
                                                   } else {
@@ -2319,7 +2317,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     isStartButton = false;
                                                     isEndTripButton = true;
                                                   });*/
-                                                      // tripIsRunningOrNot();
+                                                      // await tripIsRunningOrNot();
                                                       startWritingDataToDB(
                                                           bottomSheetContext,
                                                           stateSetter);
@@ -2450,6 +2448,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           });*/
 
                                               print('FINAL PATH: ${file.path}');
+                                              print(
+                                                  'FINAL PATH: ${sharedPreferences == null}');
+
+                                              await sharedPreferences!.reload();
 
                                               int? tripDuration =
                                                   sharedPreferences!
@@ -2529,7 +2531,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             borderColor: buttonBGColor,
                                             width: displayWidth(context),
                                             onTap: () async {
-                                              tripIsRunningOrNot();
+                                              await tripIsRunningOrNot();
                                               Get.back();
 
                                               // getTripId = await getTripIdFromPref();
@@ -2605,18 +2607,20 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         decoration: BoxDecoration(
                             shape: BoxShape.circle, color: backgroundColor),
                         child: IconButton(
-                            onPressed: () {
+                            onPressed: () async {
                               isBottomSheetOpened = false;
-                              tripIsRunningOrNot();
+                              await tripIsRunningOrNot();
                               setState(() {
                                 widget.vessel!.id = widget.vessel!.id;
                               });
-                              Navigator.of(bottomSheetContext).pop();
+
                               // Get.back();
 
                               stateSetter(() {
                                 addingDataToDB = false;
                               });
+
+                              Navigator.of(bottomSheetContext).pop();
                               /*if (isSensorDataUploaded) {
 
                                 //setState(() {
@@ -2643,10 +2647,18 @@ class VesselSingleViewState extends State<VesselSingleView> {
       },
       elevation: 4,
       enableDrag: false,
-    ).then((value) {
-      tripIsRunningOrNot();
+    ).then((value) async {
+      await tripIsRunningOrNot();
       print('BACK PRESSED');
       isBottomSheetOpened = false;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => VesselSingleView(
+                  vessel: widget.vessel,
+                  isCalledFromSuccessScreen: widget.isCalledFromSuccessScreen,
+                )),
+      );
     });
   }
 

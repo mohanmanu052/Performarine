@@ -301,6 +301,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Enter vessel built year';
+                        } else if (int.parse(value) < 1947) {
+                          return 'Please enter valid year';
+                        } else if (int.parse(value) > DateTime.now().year) {
+                          return 'Please enter valid year';
                         }
 
                         return null;
