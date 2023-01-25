@@ -252,6 +252,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     var pref = await SharedPreferences.getInstance();
 
     timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
+      // to get values in seconds (we are executing value every miliseconds)
       finalTripDuration =
           timer.tick % 5 == 0 ? (timer.tick * 200) : finalTripDuration;
       Position endTripPosition = await Geolocator.getCurrentPosition();
@@ -276,6 +277,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 
       pref.setInt('tripDistance', finalTripDistance);
       pref.setInt('tripDuration', finalTripDuration);
+      // To get values in Km/h
       pref.setString('tripSpeed', (speed * 3.6).toStringAsFixed(2));
 
       if (serviceInstance is AndroidServiceInstance) {
