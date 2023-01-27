@@ -117,6 +117,15 @@ class AddVesselApiProvider with ChangeNotifier {
 
       kReleaseMode
           ? null
+          : debugPrint('Add VESSEL RESP : ' + responseValue.body);
+
+      kReleaseMode
+          ? null
+          : debugPrint(
+              'Add VESSEL RESP : ' + responseValue.statusCode.toString());
+
+      kReleaseMode
+          ? null
           : debugPrint('Add VESSEL RESP : ' + jsonEncode(responseValue.body));
 
       var decodedData = json.decode(responseValue.body);

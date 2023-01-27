@@ -282,7 +282,8 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           flutterLocalNotificationsPlugin.show(
             888,
             'PerforMarine',
-            'Dist: ${finalTripDistance}m, Duration: ${finalTripDuration / 1000}sec, Speed: ${(speed * 3.6).toStringAsFixed(2)}km/h',
+            /*Dist: ${finalTripDistance}m, Duration: ${finalTripDuration / 1000}sec, Speed: ${(speed * 1.944).toStringAsFixed(2)}nm/h*/
+            'Trip data collection is in progress...',
             const NotificationDetails(
               android: AndroidNotificationDetails(
                 notificationChannelId,
@@ -296,14 +297,14 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           serviceInstance.invoke('tripAnalyticsData', {
             "tripDistance": finalTripDistance,
             "tripDuration": finalTripDuration,
-            "tripSpeed": (speed * 3.6).toStringAsFixed(2)
+            "tripSpeed": (speed * 1.944).toStringAsFixed(2)
           });
 
           if (timer.tick % 5 == 0) {
             pref.setInt('tripDistance', finalTripDistance);
             pref.setInt('tripDuration', finalTripDuration);
             // To get values in Km/h
-            pref.setString('tripSpeed', (speed * 3.6).toStringAsFixed(2));
+            pref.setString('tripSpeed', (speed * 1.944).toStringAsFixed(2));
           }
 
           String filePath = await getFile();

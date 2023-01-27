@@ -260,7 +260,7 @@ class _TripWidgetState extends State<TripWidget> {
                                         debugPrint(
                                             'VESSEL DATA ${getVesselById[0].name}');
 
-                                        Navigator.push(
+                                        /* Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
@@ -268,7 +268,7 @@ class _TripWidgetState extends State<TripWidget> {
                                                     tripList: widget.tripList!,
                                                     vessel: getVesselById[0]),
                                           ),
-                                        );
+                                        );*/
                                       },
                                       icon: Padding(
                                         padding:
@@ -286,8 +286,8 @@ class _TripWidgetState extends State<TripWidget> {
                                   child: isTripUploaded
                                       ? Center(
                                           child: SizedBox(
-                                              height: displayHeight(context) *
-                                                  0.030,
+                                              height: 28,
+                                              width: 28,
                                               child:
                                                   CircularProgressIndicator()))
                                       : CommonButtons.getRichTextActionButton(

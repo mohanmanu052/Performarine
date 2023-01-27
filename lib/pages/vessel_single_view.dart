@@ -786,7 +786,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       width: 200,
                                       child: Lottie.asset(
                                           'assets/lottie/dataFetch.json')),
-                                  Row(
+                                  /*Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
@@ -820,7 +820,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         children: [
                                           commonText(
                                               context: context,
-                                              text: '$tripSpeed',
+                                              text: '$tripSpeed nm/h',
                                               fontWeight: FontWeight.w600,
                                               textColor: Colors.black,
                                               textSize:
@@ -862,7 +862,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         ],
                                       ),
                                     ],
-                                  ),
+                                  ),*/
                                   SizedBox(
                                     height: 10,
                                   ),
