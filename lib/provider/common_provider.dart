@@ -110,13 +110,12 @@ class CommonProvider with ChangeNotifier {
       GlobalKey<ScaffoldState> scaffoldKey) async {
     commonModel = CommonModel();
 
-    commonModel = await SendSensorInfoApiProvider().sendSensorInfo(
+    commonModel = await SendSensorInfoApiProvider().sendSensorDataInfoDio(
         context,
         accessToken,
         sensorZipFiles,
         queryParameters,
-        /*
-        tripId,*/
+        tripId,
         scaffoldKey);
     final DatabaseService _databaseService = DatabaseService();
     print(

@@ -71,6 +71,7 @@ class _TripWidgetState extends State<TripWidget> {
 
   int progress = 0;
   Timer? progressTimer;
+  double finalProgress = 0;
 
   List<CreateVessel> getVesselById = [];
 
@@ -587,9 +588,10 @@ class _TripWidgetState extends State<TripWidget> {
         .then((value) async {
       if (value != null) {
         if (value.status!) {
-          cancelOnGoingProgressNotification(tripData.id!);
+          await cancelOnGoingProgressNotification(tripData.id!).then((value) {
+            showSuccessNoti();
+          });
 
-          showSuccessNoti();
           setState(() {
             isTripUploaded = false;
           });
@@ -610,20 +612,28 @@ class _TripWidgetState extends State<TripWidget> {
         showFailedNoti(tripData.id!);
       }
     }).catchError((onError) {
-      setState(() {
-        isTripUploaded = false;
-      });
+      if (mounted) {
+        setState(() {
+          isTripUploaded = false;
+        });
+      }
       // showFailedNoti(tripData.id!);
       debugPrint('ON ERROR $onError');
     });
   }
 
-  cancelOnGoingProgressNotification(String id) {
+  Future<void> cancelOnGoingProgressNotification(String id) async {
+    int fileLength =
+        File('storage/emulated/0/Download/${widget.tripList!.id}.zip')
+            .lengthSync();
+    // progress = fileLength - 100;
     setState(() {
-      progress = 10000000;
+      progress = fileLength - 100;
     });
-    flutterLocalNotificationsPlugin.cancel(9986);
-    progressTimer!.cancel();
+    return await Future.delayed(Duration(seconds: 1), () {
+      flutterLocalNotificationsPlugin.cancel(9986);
+      progressTimer!.cancel();
+    });
   }
 
   showFailedNoti(String id) async {
@@ -644,7 +654,10 @@ class _TripWidgetState extends State<TripWidget> {
   }
 
   showSuccessNoti() async {
-    progressTimer!.cancel();
+    // progressTimer!.cancel();
+
+    await Future.delayed(Duration(seconds: 1), () {});
+
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('progress channel', 'progress channel',
             channelDescription: 'progress channel description',
@@ -798,26 +811,48 @@ class _TripWidgetState extends State<TripWidget> {
     await vesselIsSyncOrNot(widget.tripList!.vesselId.toString());
     debugPrint('VESSEL STATUS isSync $vesselIsSync');
 
+    const int maxProgress = 10;
     progress = 0;
 
     progressTimer = Timer.periodic(Duration(milliseconds: 500), (timer) {
-      progress = timer.tick;
+      progress = progress + 500;
+      //progress = timer.tick;
+
+      int fileLength =
+          File('storage/emulated/0/Download/${widget.tripList!.id}.zip')
+              .lengthSync();
+
+      print('FILE LENGTH: $fileLength');
+
+      var value = progress / fileLength;
+
+      print('FILE LENGTH PER: $value');
+
+      finalProgress = value * 100;
+
+      print('FILE LENGTH PER: $finalProgress');
+
+      finalProgress = finalProgress > 100 ? 100 : finalProgress;
+
       final AndroidNotificationDetails androidPlatformChannelSpecifics =
-          AndroidNotificationDetails(
-        'progress channel',
-        'progress channel',
-        channelDescription: 'progress channel description',
-        channelShowBadge: false,
-        importance: Importance.max,
-        priority: Priority.high,
-        onlyAlertOnce: true,
-        showProgress: true,
-        indeterminate: true,
-      );
+          AndroidNotificationDetails('progress channel', 'progress channel',
+              channelDescription: 'progress channel description',
+              channelShowBadge: false,
+              importance: Importance.max,
+              priority: Priority.high,
+              onlyAlertOnce: true,
+              showProgress: true,
+              ongoing: false,
+              indeterminate: false,
+              progress: finalProgress.toInt(),
+              maxProgress: 100);
       final NotificationDetails platformChannelSpecifics =
           NotificationDetails(android: androidPlatformChannelSpecifics);
       flutterLocalNotificationsPlugin.show(
-          9986, widget.tripList!.id, '', platformChannelSpecifics,
+          9986,
+          '${widget.tripList!.id} ${finalProgress.toStringAsFixed(0)}/100%',
+          '${finalProgress.toStringAsFixed(0)}/100%',
+          platformChannelSpecifics,
           payload: 'item x');
     });
 
@@ -869,7 +904,7 @@ class _TripWidgetState extends State<TripWidget> {
               commonProvider.loginModel!.userId!,
               commonProvider.loginModel!.token!,
               scaffoldKey)
-          .then((value) {
+          .then((value) async {
         if (value != null) {
           if (value.status!) {
             // print('DATA');
@@ -887,14 +922,14 @@ class _TripWidgetState extends State<TripWidget> {
             });
           } */
           else {
-            cancelOnGoingProgressNotification(widget.tripList!.id!);
+            await cancelOnGoingProgressNotification(widget.tripList!.id!);
             showFailedNoti(widget.tripList!.id!);
             setState(() {
               isTripUploaded = false;
             });
           }
         } else {
-          cancelOnGoingProgressNotification(widget.tripList!.id!);
+          await cancelOnGoingProgressNotification(widget.tripList!.id!);
           showFailedNoti(widget.tripList!.id!);
           setState(() {
             isTripUploaded = false;

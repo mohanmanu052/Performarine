@@ -2532,6 +2532,86 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             width: displayWidth(context),
                                             onTap: () async {
                                               await tripIsRunningOrNot();
+
+                                              final androidInfo =
+                                                  await DeviceInfoPlugin()
+                                                      .androidInfo;
+
+                                              var isStoragePermitted =
+                                                  androidInfo.version.sdkInt >
+                                                          32
+                                                      ? await Permission
+                                                          .photos.status
+                                                      : await Permission
+                                                          .storage.status;
+                                              if (isStoragePermitted
+                                                  .isGranted) {
+                                                //File copiedFile = File('${ourDirectory!.path}.zip');
+                                                File copiedFile = File(
+                                                    '${ourDirectory!.path}/$getTripId.zip');
+
+                                                print(
+                                                    'DIR PATH R ${ourDirectory!.path}');
+
+                                                Directory directory;
+
+                                                if (Platform.isAndroid) {
+                                                  directory = Directory(
+                                                      "storage/emulated/0/Download/$getTripId.zip");
+                                                } else {
+                                                  directory =
+                                                      await getApplicationDocumentsDirectory();
+                                                }
+
+                                                copiedFile.copy(directory.path);
+
+                                                print(
+                                                    'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                                if (copiedFile.existsSync()) {
+                                                  // Utils.showSnackBar(context,
+                                                  //     scaffoldKey: scaffoldKey,
+                                                  //     message:
+                                                  //     'File downloaded successfully');
+                                                }
+                                              } else {
+                                                await Utils
+                                                    .getStoragePermission(
+                                                        context);
+                                                var isStoragePermitted =
+                                                    await Permission
+                                                        .storage.status;
+
+                                                if (isStoragePermitted
+                                                    .isGranted) {
+                                                  File copiedFile = File(
+                                                      '${ourDirectory!.path}.zip');
+
+                                                  Directory directory;
+
+                                                  if (Platform.isAndroid) {
+                                                    directory = Directory(
+                                                        "storage/emulated/0/Download/$getTripId.zip");
+                                                  } else {
+                                                    directory =
+                                                        await getApplicationDocumentsDirectory();
+                                                  }
+
+                                                  copiedFile
+                                                      .copy(directory.path);
+
+                                                  print(
+                                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                                  if (copiedFile.existsSync()) {
+                                                    // Utils.showSnackBar(context,
+                                                    //     scaffoldKey: scaffoldKey,
+                                                    //     message:
+                                                    //     'File downloaded successfully');
+                                                  }
+                                                }
+                                              }
+
                                               Get.back();
 
                                               // getTripId = await getTripIdFromPref();
