@@ -9,8 +9,8 @@ class Trip {
   final String? vesselName;
   final String? currentLoad;
   final String? filePath;
-  final String? lat;
-  final String? long;
+  final String? startPosition;
+  final String? endPosition;
   final String? createdAt;
   final String? updatedAt;
   final int? isSync;
@@ -31,8 +31,8 @@ class Trip {
       this.updatedAt,
       this.createdAt,
       this.deviceInfo,
-      this.lat,
-      this.long,
+      this.startPosition,
+      this.endPosition,
       this.time,
       this.distance,
       this.speed});
@@ -51,8 +51,8 @@ class Trip {
       'updatedAt': updatedAt,
       'createdAt': createdAt,
       'deviceInfo': deviceInfo,
-      'lat': lat,
-      'long': long,
+      'startPosition': startPosition,
+      'endPosition': endPosition,
       'time': time,
       'distance': distance,
       'speed': speed,
@@ -71,8 +71,8 @@ class Trip {
       updatedAt: map['updatedAt'] ?? '',
       createdAt: map['createdAt'] ?? '',
       deviceInfo: map['deviceInfo'] ?? '',
-      lat: map['lat'] ?? '',
-      long: map['long'] ?? '',
+      startPosition: map['startPosition'] ?? '',
+      endPosition: map['endPosition'] ?? '',
       time: map['time'] ?? '',
       distance: map['distance'] ?? '',
       speed: map['speed'] ?? '',

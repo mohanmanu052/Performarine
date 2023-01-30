@@ -41,10 +41,9 @@ class DatabaseService {
   Future<void> _onCreate(Database db, int version) async {
     // Run the CREATE {trips} TABLE statement on the database.
     //tripStatus 0=started and 1= ended
-    //ToDo: @rupali add the filepath also in the DB and save the once the data is featched
     await db.execute(
       'CREATE TABLE trips(id Text PRIMARY KEY,vesselId Text,vesselName Text, currentLoad TEXT,filePath Text,isSync INTEGER DEFAULT 0,'
-      'tripStatus INTEGER  DEFAULT 0,deviceInfo Text, lat Text,long Text,'
+      'tripStatus INTEGER  DEFAULT 0,deviceInfo Text, startPosition Text,endPosition Text,'
       ' createdAt TEXT,updatedAt TEXT,time TEXT,distance TEXT,speed TEXT,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL)',
     );
     // Run the CREATE {dogs} TABLE statement on the database.
@@ -87,7 +86,7 @@ class DatabaseService {
   }
 
   // Define a function that inserts trips into the database
-  Future<void> insertTrip(Trip Trip) async {
+  Future<void> insertTrip(Trip trip) async {
     // Get a reference to the database.
     final db = await _databaseService.database;
 
@@ -97,7 +96,7 @@ class DatabaseService {
     // In this case, replace any previous data.
     await db.insert(
       'trips',
-      Trip.toMap(),
+      trip.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -133,7 +132,7 @@ class DatabaseService {
 
     // Query the table for all the trips.
     final List<Map<String, dynamic>> maps =
-        await db.query('trips', where: 'isSync = ?', whereArgs: [0]);
+        await db.query('trips'/*, where: 'isSync = ?',whereArgs: [0]*/,orderBy: "isSync");
     // print( "maps.toString():${  maps.toString()}");
     // Convert the List<Map<String, dynamic> into a List<Trip>.
     return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
@@ -155,7 +154,7 @@ class DatabaseService {
   Future<List<Trip>> getAllTripsByVesselId(String id) async {
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps =
-        await db.query('trips', where: 'vesselId = ?', whereArgs: [id]);
+        await db.query('trips', where: 'vesselId = ?', whereArgs: [id],orderBy: 'isSync');
     return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
   }
 
@@ -212,12 +211,12 @@ class DatabaseService {
     return result;
   }
 
-  Future<void> updateTripStatus(int status, String filePath, String updatedAt,
+  Future<void> updateTripStatus(int status, String filePath, String updatedAt,String endPosition,
       String time, String distance, String speed, String tripId) async {
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
-        'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ?, time = ?, distance = ?, speed = ? WHERE id = ?',
-        [status, filePath, updatedAt, time, distance, speed, tripId]);
+        'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ?,endPosition = ?, time = ?, distance = ?, speed = ? WHERE id = ?',
+        [status, filePath, updatedAt,endPosition, time, distance, speed, tripId]);
     print('updated: $count');
   }
 

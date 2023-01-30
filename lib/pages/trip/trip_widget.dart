@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -6,6 +7,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
     as pos;
 import 'dart:developer' as developer;
@@ -516,11 +518,14 @@ class _TripWidgetState extends State<TripWidget> {
     String finalTripDuration =
         Utils.calculateTripDuration((tripDuration! / 1000).toInt());
     String finalTripDistance = tripDistance!.toStringAsFixed(2);
+    Position? currentLocationData =
+    await Utils.getLocationPermission(context, scaffoldKey);
 
     await _databaseService.updateTripStatus(
         1,
         file.path,
         DateTime.now().toUtc().toString(),
+        json.encode([currentLocationData!.latitude,currentLocationData.longitude]),
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),
@@ -566,8 +571,8 @@ class _TripWidgetState extends State<TripWidget> {
         "board": androidDeviceInfo.board,
         "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
       },
-      "lat": tripData.lat,
-      "long": tripData.long,
+      "lat": tripData.startPosition,
+      "long": tripData.endPosition,
       "vesselId": tripData.vesselId,
       "filePath": 'storage/emulated/0/Download/${widget.tripList!.id}.zip',
       "createdAt": tripData.createdAt,
@@ -575,7 +580,7 @@ class _TripWidgetState extends State<TripWidget> {
       //"userID": commonProvider.loginModel!.userId!
     };
 
-    debugPrint('CREATE TRIP $queryParameters');
+    debugPrint('CREATE TRIP: $queryParameters');
 
     commonProvider
         .sendSensorInfo(
@@ -595,8 +600,9 @@ class _TripWidgetState extends State<TripWidget> {
           setState(() {
             isTripUploaded = false;
           });
+          print("widget.tripList!.id: ${ widget.tripList!.id}");
           _databaseService.updateTripIsSyncStatus(
-              1, widget.tripList!.id.toString());
+              1, tripData.id.toString());
 
           widget.tripUploadedSuccessfully!.call();
         } else {
@@ -817,20 +823,28 @@ class _TripWidgetState extends State<TripWidget> {
     progressTimer = Timer.periodic(Duration(milliseconds: 500), (timer) {
       progress = progress + 500;
       //progress = timer.tick;
+      int fileLength=0;
+      try{
+        fileLength =
+      File('storage/emulated/0/Download/${widget.tripList!.id}.zip')
+          .lengthSync();
+    }catch (e) {
+        showFailedNoti(widget.tripList!.id!);
+        setState(() {
+          isTripUploaded = false;
+        });
+    }
 
-      int fileLength =
-          File('storage/emulated/0/Download/${widget.tripList!.id}.zip')
-              .lengthSync();
 
-      print('FILE LENGTH: $fileLength');
+      // print('FILE LENGTH: $fileLength');
 
       var value = progress / fileLength;
 
-      print('FILE LENGTH PER: $value');
+      // print('FILE LENGTH PER: $value');
 
       finalProgress = value * 100;
 
-      print('FILE LENGTH PER: $finalProgress');
+      // print('FILE LENGTH PER: $finalProgress');
 
       finalProgress = finalProgress > 100 ? 100 : finalProgress;
 

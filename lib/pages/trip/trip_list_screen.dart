@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
     as pos;
 import 'package:flutter_archive/flutter_archive.dart';
@@ -368,11 +370,14 @@ class _TripListScreenState extends State<TripListScreen> {
                                         (tripDuration! / 1000).toInt());
                                 String finalTripDistance =
                                     tripDistance!.toStringAsFixed(2);
+                                Position? locationData =
+                                await Utils.getLocationPermission(context, scaffoldKey);
 
                                 await _databaseService.updateTripStatus(
                                     1,
                                     file.path,
                                     DateTime.now().toUtc().toString(),
+                                    json.encode([locationData!.latitude,locationData.longitude]),
                                     finalTripDuration,
                                     finalTripDistance,
                                     tripSpeed.toString(),
@@ -1435,8 +1440,8 @@ class _TripListScreenState extends State<TripListScreen> {
         tripStatus: 0,
         createdAt: DateTime.now().toUtc().toString(),
         updatedAt: DateTime.now().toUtc().toString(),
-        lat: latitude,
-        long: longitude,
+        startPosition:json.encode([latitude,longitude]) ,
+        endPosition: json.encode([latitude,longitude]) ,
         deviceInfo: deviceDetails!.toJson().toString()));
 
     /*if (Platform.isAndroid) {
