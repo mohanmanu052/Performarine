@@ -473,7 +473,7 @@ class _HomePageState extends State<HomePage> {
                       fullscreenDialog: true,
                     ),
                   );
-
+                  commonProvider.getTripsCount();
                   if (result != null) {
                     print('RESULT HOME PAGE $result');
                     if (result) {
@@ -483,12 +483,12 @@ class _HomePageState extends State<HomePage> {
                             builder: (context) => HomePage(),
                           ),
                           ModalRoute.withName(""));*/
+                      // commonProvider.getTripsCount();
                       setState(() {
                         getVesselFuture = _databaseService.vessels();
                         // _getTripsCount();
                         // setState(() {});
                       });
-                      commonProvider.getTripsCount();
                     }
                   }
                 }

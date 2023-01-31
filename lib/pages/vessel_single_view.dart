@@ -38,8 +38,10 @@ import 'package:performarine/pages/trip/trip_list_screen.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/pages/tripStart.dart';
 import 'package:performarine/pages/vessel_form.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -169,12 +171,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
       tripIsRunning = false,
       isCheckingPermission = false;
 
+  late CommonProvider commonProvider;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
     tripIsRunningOrNot();
+
+    commonProvider = context.read<CommonProvider>();
 
     print('VESSEL Image ${widget.vessel!.imageURLs}');
   }
@@ -438,7 +444,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             sharedPreferences!.remove('trip_started');
 
                             await _databaseService.updateTripStatus(
-                                1,
+                                0,
                                 file.path,
                                 DateTime.now().toUtc().toString(),
                                 finalTripDuration,
@@ -2478,7 +2484,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                               await _databaseService
                                                   .updateTripStatus(
-                                                      1,
+                                                      0,
                                                       file.path,
                                                       DateTime.now()
                                                           .toUtc()
@@ -2532,6 +2538,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             width: displayWidth(context),
                                             onTap: () async {
                                               await tripIsRunningOrNot();
+
+                                              commonProvider.getTripsCount();
 
                                               final androidInfo =
                                                   await DeviceInfoPlugin()

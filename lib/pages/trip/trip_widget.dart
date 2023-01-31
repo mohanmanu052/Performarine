@@ -588,15 +588,15 @@ class _TripWidgetState extends State<TripWidget> {
         .then((value) async {
       if (value != null) {
         if (value.status!) {
-          await cancelOnGoingProgressNotification(tripData.id!).then((value) {
-            showSuccessNoti();
-          });
+          await cancelOnGoingProgressNotification(tripData.id!);
 
           setState(() {
             isTripUploaded = false;
           });
           _databaseService.updateTripIsSyncStatus(
               1, widget.tripList!.id.toString());
+
+          showSuccessNoti();
 
           widget.tripUploadedSuccessfully!.call();
         } else {
@@ -623,17 +623,12 @@ class _TripWidgetState extends State<TripWidget> {
   }
 
   Future<void> cancelOnGoingProgressNotification(String id) async {
-    int fileLength =
-        File('storage/emulated/0/Download/${widget.tripList!.id}.zip')
-            .lengthSync();
-    // progress = fileLength - 100;
-    setState(() {
-      progress = fileLength - 100;
-    });
-    return await Future.delayed(Duration(seconds: 1), () {
-      flutterLocalNotificationsPlugin.cancel(9986);
-      progressTimer!.cancel();
-    });
+    progressTimer!.cancel();
+    flutterLocalNotificationsPlugin.cancel(9986);
+    // setState(() {
+    //   progress = 100;
+    // });
+    return;
   }
 
   showFailedNoti(String id) async {
@@ -654,10 +649,7 @@ class _TripWidgetState extends State<TripWidget> {
   }
 
   showSuccessNoti() async {
-    // progressTimer!.cancel();
-
-    await Future.delayed(Duration(seconds: 1), () {});
-
+    progressTimer!.cancel();
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('progress channel', 'progress channel',
             channelDescription: 'progress channel description',
@@ -815,7 +807,7 @@ class _TripWidgetState extends State<TripWidget> {
     progress = 0;
 
     progressTimer = Timer.periodic(Duration(milliseconds: 500), (timer) {
-      progress = progress + 500;
+      progress = progress + 100;
       //progress = timer.tick;
 
       int fileLength =
@@ -834,6 +826,10 @@ class _TripWidgetState extends State<TripWidget> {
 
       finalProgress = finalProgress > 100 ? 100 : finalProgress;
 
+      if (finalProgress == 100) {
+        progressTimer!.cancel();
+      }
+
       final AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails('progress channel', 'progress channel',
               channelDescription: 'progress channel description',
@@ -842,7 +838,7 @@ class _TripWidgetState extends State<TripWidget> {
               priority: Priority.high,
               onlyAlertOnce: true,
               showProgress: true,
-              ongoing: false,
+              ongoing: true,
               indeterminate: false,
               progress: finalProgress.toInt(),
               maxProgress: 100);
