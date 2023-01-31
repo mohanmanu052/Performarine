@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -127,8 +128,8 @@ class _StartTripState extends State<StartTrip> {
         tripStatus: 0,
         createdAt: DateTime.now().toUtc().toString(),
         updatedAt: DateTime.now().toUtc().toString(),
-        lat: latitude,
-        long: longitude,
+        startPosition: json.encode([latitude,longitude]),
+        endPosition: json.encode([latitude,longitude]),
         deviceInfo: deviceDetails!.toJson().toString()));
 
     if (Platform.isAndroid) {

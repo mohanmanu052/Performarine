@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -191,11 +193,15 @@ class _TripViewListingState extends State<TripViewListing> {
                                           (tripDuration! / 1000).toInt());
                                   String finalTripDistance =
                                       tripDistance!.toStringAsFixed(2);
+                                  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
+                                  Position? currentLocationData =
+                                  await Utils.getLocationPermission(context,scaffoldKey);
                                   await _databaseService.updateTripStatus(
                                       1,
                                       file.path,
                                       DateTime.now().toUtc().toString(),
+                                      json.encode([currentLocationData!.latitude,currentLocationData.longitude]),
                                       finalTripDuration,
                                       finalTripDistance,
                                       tripSpeed.toString(),

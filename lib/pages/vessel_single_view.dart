@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
@@ -442,11 +443,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                             sharedPreferences!.remove('trip_data');
                             sharedPreferences!.remove('trip_started');
-
+                            Position? currentLocationData =
+                            await Utils.getLocationPermission(context, scaffoldKey);
                             await _databaseService.updateTripStatus(
                                 0,
                                 file.path,
                                 DateTime.now().toUtc().toString(),
+                                json.encode([currentLocationData!.latitude,currentLocationData.longitude]),
                                 finalTripDuration,
                                 finalTripDistance,
                                 tripSpeed.toString(),
@@ -2481,7 +2484,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   .remove('trip_data');
                                               sharedPreferences!
                                                   .remove('trip_started');
-
+                                              Position? currentLocationData =
+                                              await Utils.getLocationPermission(context, scaffoldKey);
                                               await _databaseService
                                                   .updateTripStatus(
                                                       0,
@@ -2489,7 +2493,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       DateTime.now()
                                                           .toUtc()
                                                           .toString(),
-                                                      finalTripDuration,
+                                                  json.encode([currentLocationData!.latitude,currentLocationData.longitude]),
+                                                  finalTripDuration,
                                                       finalTripDistance,
                                                       tripSpeed.toString(),
                                                       getTripId);
@@ -3004,8 +3009,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
           tripStatus: 0,
           createdAt: Utils.getCurrentTZDateTime(),
           updatedAt: Utils.getCurrentTZDateTime(),
-          lat: latitude,
-          long: longitude,
+          startPosition: json.encode([latitude,longitude]),
+          endPosition: json.encode([latitude,longitude]),
           deviceInfo: deviceDetails!.toJson().toString()));
     } on Exception catch (e) {
       print('ON SAVE EXE: $e');

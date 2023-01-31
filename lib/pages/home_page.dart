@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
     as pos;
 import 'package:path_provider/path_provider.dart';
@@ -282,11 +284,13 @@ class _HomePageState extends State<HomePage> {
     String finalTripDuration =
         Utils.calculateTripDuration((tripDuration! / 1000).toInt());
     String finalTripDistance = tripDistance!.toStringAsFixed(2);
-
+    Position? currentLocationData =
+    await Utils.getLocationPermission(context,scaffoldKey);
     await _databaseService.updateTripStatus(
         1,
         file.path,
         DateTime.now().toUtc().toString(),
+        json.encode([locationData!.latitude,locationData.longitude]),
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),
