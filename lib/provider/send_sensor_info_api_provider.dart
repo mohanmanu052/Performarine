@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
@@ -115,9 +116,12 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       GlobalKey<ScaffoldState> scaffoldKey) async {
     d.Dio dio = d.Dio();
     var formData = d.FormData.fromMap({
-      'sensorZipFiles': await d.MultipartFile.fromFile(zipFile!.path,
-          filename: zipFile.path.split('/').last),
       'tripData': jsonEncode(tripData),
+      'sensorZipFiles': await d.MultipartFile.fromFile(
+        zipFile!.path,
+        filename: zipFile.path.split('/').last,
+        contentType: new MediaType("image", "jpeg"),
+      ),
     });
 
     Uri uri = Uri.https(Urls.baseUrl, Urls.SendSensorData);
@@ -132,9 +136,12 @@ class SendSensorInfoApiProvider with ChangeNotifier {
             "x-access-token": '$accessToken', // set content-length
           },
         ),
-        onSendProgress: (int sent, int total) {
+        onSendProgress: (int sent, int total) async {
           print(
               'UPLOAD PROGRESS: ${(sent / total * 100).toStringAsFixed(0)} $sent $total');
+
+          int finalProgress =
+              int.parse((sent / total * 100).toStringAsFixed(0));
 
           final AndroidNotificationDetails androidPlatformChannelSpecifics =
               AndroidNotificationDetails('progress channel', 'progress channel',
@@ -143,17 +150,21 @@ class SendSensorInfoApiProvider with ChangeNotifier {
                   importance: Importance.max,
                   priority: Priority.high,
                   onlyAlertOnce: true,
+                  ongoing: true,
                   showProgress: true,
                   maxProgress: 100,
-                  progress: int.parse((sent / total * 100).toStringAsFixed(0)));
+                  progress: finalProgress);
           final NotificationDetails platformChannelSpecifics =
               NotificationDetails(android: androidPlatformChannelSpecifics);
           flutterLocalNotificationsPlugin.show(
-              9986, tripId, '', platformChannelSpecifics,
+              9989,
+              '$tripId - $finalProgress/100 %',
+              '$tripId - $finalProgress/100 %',
+              platformChannelSpecifics,
               payload: 'item x');
 
-          /* if (sent == total) {
-            await flutterLocalNotificationsPlugin.cancel(9981);
+          /*if (sent == total) {
+            await flutterLocalNotificationsPlugin.cancel(9989);
           }*/
         },
       ).then((response) {
@@ -192,6 +203,10 @@ class SendSensorInfoApiProvider with ChangeNotifier {
               : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
           kReleaseMode ? null : debugPrint('EXE RESP: $response');
         }
+        commonModel = null;
+      }).onError((error, stackTrace) {
+        print('ERROR DIO: $error\n$stackTrace');
+        //flutterLocalNotificationsPlugin.cancel(9989);
         commonModel = null;
       });
     } on SocketException catch (_) {

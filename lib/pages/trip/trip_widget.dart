@@ -519,13 +519,14 @@ class _TripWidgetState extends State<TripWidget> {
         Utils.calculateTripDuration((tripDuration! / 1000).toInt());
     String finalTripDistance = tripDistance!.toStringAsFixed(2);
     Position? currentLocationData =
-    await Utils.getLocationPermission(context, scaffoldKey);
+        await Utils.getLocationPermission(context, scaffoldKey);
 
     await _databaseService.updateTripStatus(
         1,
         file.path,
         DateTime.now().toUtc().toString(),
-        json.encode([currentLocationData!.latitude,currentLocationData.longitude]),
+        json.encode(
+            [currentLocationData!.latitude, currentLocationData.longitude]),
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),
@@ -554,6 +555,7 @@ class _TripWidgetState extends State<TripWidget> {
   startSensorFunctionality(Trip tripData) async {
     //fileName = '$fileIndex.csv';
 
+    // flutterLocalNotificationsPlugin.cancel(9988);
     AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
 
     var queryParameters;
@@ -598,9 +600,8 @@ class _TripWidgetState extends State<TripWidget> {
           setState(() {
             isTripUploaded = false;
           });
-          print("widget.tripList!.id: ${ widget.tripList!.id}");
-          _databaseService.updateTripIsSyncStatus(
-              1, tripData.id.toString());
+          print("widget.tripList!.id: ${widget.tripList!.id}");
+          _databaseService.updateTripIsSyncStatus(1, tripData.id.toString());
 
           showSuccessNoti();
 
@@ -617,20 +618,20 @@ class _TripWidgetState extends State<TripWidget> {
         });
         showFailedNoti(tripData.id!);
       }
-    }).catchError((onError) {
+    }).catchError((onError, s) {
       if (mounted) {
         setState(() {
           isTripUploaded = false;
         });
       }
       // showFailedNoti(tripData.id!);
-      debugPrint('ON ERROR $onError');
+      debugPrint('ON ERROR $onError \n $s');
     });
   }
 
   Future<void> cancelOnGoingProgressNotification(String id) async {
-    progressTimer!.cancel();
-    flutterLocalNotificationsPlugin.cancel(9986);
+    //progressTimer!.cancel();
+    flutterLocalNotificationsPlugin.cancel(9989);
     // setState(() {
     //   progress = 100;
     // });
@@ -655,7 +656,7 @@ class _TripWidgetState extends State<TripWidget> {
   }
 
   showSuccessNoti() async {
-    progressTimer!.cancel();
+    // progressTimer!.cancel();
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('progress channel', 'progress channel',
             channelDescription: 'progress channel description',
@@ -812,31 +813,24 @@ class _TripWidgetState extends State<TripWidget> {
     const int maxProgress = 10;
     progress = 0;
 
-    progressTimer = Timer.periodic(Duration(milliseconds: 500), (timer) {
+    /*progressTimer = Timer.periodic(Duration(milliseconds: 500), (timer) {
       progress = progress + 100;
       //progress = timer.tick;
-      int fileLength=0;
-      try{
+      int fileLength = 0;
+      try {
         fileLength =
-      File('storage/emulated/0/Download/${widget.tripList!.id}.zip')
-          .lengthSync();
-    }catch (e) {
+            File('storage/emulated/0/Download/${widget.tripList!.id}.zip')
+                .lengthSync();
+      } catch (e) {
         showFailedNoti(widget.tripList!.id!);
         setState(() {
           isTripUploaded = false;
         });
-    }
-
-
-      // print('FILE LENGTH: $fileLength');
+      }
 
       var value = progress / fileLength;
 
-      // print('FILE LENGTH PER: $value');
-
       finalProgress = value * 100;
-
-      // print('FILE LENGTH PER: $finalProgress');
 
       finalProgress = finalProgress > 100 ? 100 : finalProgress;
 
@@ -864,7 +858,26 @@ class _TripWidgetState extends State<TripWidget> {
           '${finalProgress.toStringAsFixed(0)}/100%',
           platformChannelSpecifics,
           payload: 'item x');
-    });
+    });*/
+
+    final AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'progress channel',
+      'progress channel',
+      channelDescription: 'progress channel description',
+      channelShowBadge: false,
+      importance: Importance.max,
+      priority: Priority.high,
+      onlyAlertOnce: true,
+      showProgress: false,
+      ongoing: true,
+      indeterminate: false,
+    );
+    final NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    flutterLocalNotificationsPlugin.show(
+        9989, 'Uploading vessel details...', '', platformChannelSpecifics,
+        payload: 'item x');
 
     if (!vesselIsSync) {
       CreateVessel vesselData = await _databaseService

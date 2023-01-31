@@ -31,6 +31,9 @@ class ExpansionCard extends StatefulWidget {
 class _ExpansionCardState extends State<ExpansionCard> {
   List<CreateVessel>? vessel = [];
   final DatabaseService _databaseService = DatabaseService();
+
+  bool tripIsRunning = false;
+
   @override
   Widget build(BuildContext context) {
     return ExpandableNotifier(
@@ -123,7 +126,17 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                       color: Colors.white,
                                     ),
                                     onPressed: () async {
-                                      showDialogBox();
+                                      bool value = await tripIsRunningOrNot();
+
+                                      if (value) {
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: widget.scaffoldKey,
+                                            message:
+                                                'Please end the trip which is already running');
+                                      } else {
+                                        showDialogBox();
+                                      }
+
                                       /*await widget.onDelete(widget.vessel!);
                                       Utils.showSnackBar(context,
                                           scaffoldKey: widget.scaffoldKey,
@@ -1536,5 +1549,20 @@ class _ExpansionCardState extends State<ExpansionCard> {
             ),
           );
         });
+  }
+
+  Future<bool> tripIsRunningOrNot() async {
+    bool result = await _databaseService.tripIsRunning();
+
+    setState(() {
+      tripIsRunning = result;
+      print('Trip is Running $tripIsRunning');
+    });
+
+    /*setState(() {
+      isEndTripButton = tripIsRunning;
+      isStartButton = !tripIsRunning;
+    });*/
+    return result;
   }
 }
