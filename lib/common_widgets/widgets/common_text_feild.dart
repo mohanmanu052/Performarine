@@ -25,32 +25,35 @@ class CommonTextField extends StatefulWidget {
   Function(String)? onFieldSubmitted;
   Function(String)? onSaved;
   Function()? onTap;
+  FilteringTextInputFormatter? inputFormatter;
   // GlobalKey<FormFieldState>? formFieldKey;
 
-  CommonTextField({
-    Key? key,
-    this.controller,
-    this.focusNode,
-    this.textInputAction,
-    this.textInputType,
-    this.textCapitalization,
-    this.maxLength,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.labelText,
-    this.hintText,
-    this.suffixText,
-    this.requestFocusNode,
-    this.obscureText,
-    this.readOnly = false,
-    this.validator,
-    this.onSuffixIconTap,
-    this.onChanged,
-    this.onFieldSubmitted,
-    this.onSaved,
-    this.onTap,
-    //this.formFieldKey
-  }) : super(key: key);
+  CommonTextField(
+      {Key? key,
+      this.controller,
+      this.focusNode,
+      this.textInputAction,
+      this.textInputType,
+      this.textCapitalization,
+      this.maxLength,
+      this.prefixIcon,
+      this.suffixIcon,
+      this.labelText,
+      this.hintText,
+      this.suffixText,
+      this.requestFocusNode,
+      this.obscureText,
+      this.readOnly = false,
+      this.validator,
+      this.onSuffixIconTap,
+      this.onChanged,
+      this.onFieldSubmitted,
+      this.onSaved,
+      this.onTap,
+      this.inputFormatter
+      //this.formFieldKey
+      })
+      : super(key: key);
 
   @override
   _CommonTextFieldState createState() => _CommonTextFieldState();
@@ -87,6 +90,8 @@ class _CommonTextFieldState extends State<CommonTextField> {
             LengthLimitingTextInputFormatter(widget.maxLength),
             if (widget.textInputType == TextInputType.number)
               FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+            if (widget.textInputType == TextInputType.number)
+              FilteringTextInputFormatter.digitsOnly
           ],
           //maxLength: widget.maxLength,
           obscureText: obscureText!,

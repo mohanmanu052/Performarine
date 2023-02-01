@@ -516,7 +516,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           "To track your trip while you use other apps we need background access to your location",
                                       buttonText: 'Ok',
                                       buttonOnTap: () async {
-                                        Navigator.pop(context);
+                                        //Navigator.pop(context);
+
+                                        Get.back();
 
                                         /* var status = await Permission
                                             .locationWhenInUse.status;
@@ -528,6 +530,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                         //  AppSettings.openLocationSettings(asAnotherTask: true);
                                         await openAppSettings();
+                                        // Navigator.pop(context);
                                         // await Geolocator.openAppSettings();
                                       },
                                     );

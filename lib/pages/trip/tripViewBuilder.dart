@@ -181,6 +181,8 @@ class _TripViewListingState extends State<TripViewListing> {
                                   File file = File(zipFile!.path);
                                   print('FINAL PATH: ${file.path}');
 
+                                  await sharedPreferences!.reload();
+
                                   int? tripDuration =
                                       sharedPreferences!.getInt("tripDuration");
                                   int? tripDistance =
@@ -193,15 +195,20 @@ class _TripViewListingState extends State<TripViewListing> {
                                           (tripDuration! / 1000).toInt());
                                   String finalTripDistance =
                                       tripDistance!.toStringAsFixed(2);
-                                  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+                                  GlobalKey<ScaffoldState> scaffoldKey =
+                                      GlobalKey();
 
                                   Position? currentLocationData =
-                                  await Utils.getLocationPermission(context,scaffoldKey);
+                                      await Utils.getLocationPermission(
+                                          context, scaffoldKey);
                                   await _databaseService.updateTripStatus(
                                       1,
                                       file.path,
                                       DateTime.now().toUtc().toString(),
-                                      json.encode([currentLocationData!.latitude,currentLocationData.longitude]),
+                                      json.encode([
+                                        currentLocationData!.latitude,
+                                        currentLocationData.longitude
+                                      ]),
                                       finalTripDuration,
                                       finalTripDistance,
                                       tripSpeed.toString(),

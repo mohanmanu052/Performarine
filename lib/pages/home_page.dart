@@ -277,6 +277,8 @@ class _HomePageState extends State<HomePage> {
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));*/
 
+    await sharedPreferences!.reload();
+
     int? tripDuration = sharedPreferences!.getInt("tripDuration");
     int? tripDistance = sharedPreferences!.getInt("tripDistance");
     String? tripSpeed = sharedPreferences!.getString("tripSpeed");
@@ -285,12 +287,12 @@ class _HomePageState extends State<HomePage> {
         Utils.calculateTripDuration((tripDuration! / 1000).toInt());
     String finalTripDistance = tripDistance!.toStringAsFixed(2);
     Position? currentLocationData =
-    await Utils.getLocationPermission(context,scaffoldKey);
+        await Utils.getLocationPermission(context, scaffoldKey);
     await _databaseService.updateTripStatus(
         1,
         file.path,
         DateTime.now().toUtc().toString(),
-        json.encode([locationData!.latitude,locationData.longitude]),
+        json.encode([locationData!.latitude, locationData.longitude]),
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),

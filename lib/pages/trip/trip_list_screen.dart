@@ -358,6 +358,8 @@ class _TripListScreenState extends State<TripListScreen> {
                                 File file = File(zipFile!.path);
                                 print('FINAL PATH: ${file.path}');
 
+                                await sharedPreferences!.reload();
+
                                 int? tripDuration =
                                     sharedPreferences!.getInt("tripDuration");
                                 int? tripDistance =
@@ -371,13 +373,17 @@ class _TripListScreenState extends State<TripListScreen> {
                                 String finalTripDistance =
                                     tripDistance!.toStringAsFixed(2);
                                 Position? locationData =
-                                await Utils.getLocationPermission(context, scaffoldKey);
+                                    await Utils.getLocationPermission(
+                                        context, scaffoldKey);
 
                                 await _databaseService.updateTripStatus(
                                     1,
                                     file.path,
                                     DateTime.now().toUtc().toString(),
-                                    json.encode([locationData!.latitude,locationData.longitude]),
+                                    json.encode([
+                                      locationData!.latitude,
+                                      locationData.longitude
+                                    ]),
                                     finalTripDuration,
                                     finalTripDistance,
                                     tripSpeed.toString(),
@@ -1440,8 +1446,8 @@ class _TripListScreenState extends State<TripListScreen> {
         tripStatus: 0,
         createdAt: DateTime.now().toUtc().toString(),
         updatedAt: DateTime.now().toUtc().toString(),
-        startPosition:json.encode([latitude,longitude]) ,
-        endPosition: json.encode([latitude,longitude]) ,
+        startPosition: json.encode([latitude, longitude]),
+        endPosition: json.encode([latitude, longitude]),
         deviceInfo: deviceDetails!.toJson().toString()));
 
     /*if (Platform.isAndroid) {
