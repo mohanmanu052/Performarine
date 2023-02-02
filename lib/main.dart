@@ -7,6 +7,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
 // import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
@@ -97,34 +98,57 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     }
   });
 
-  _streamSubscriptions.add(
-    accelerometerEvents.listen(
-      (AccelerometerEvent event) {
-        _accelerometerValues = <double>[event.x, event.y, event.z];
-      },
-    ),
-  );
-  _streamSubscriptions.add(
-    gyroscopeEvents.listen(
-      (GyroscopeEvent event) {
-        _gyroscopeValues = <double>[event.x, event.y, event.z];
-      },
-    ),
-  );
-  _streamSubscriptions.add(
-    userAccelerometerEvents.listen(
-      (UserAccelerometerEvent event) {
-        _userAccelerometerValues = <double>[event.x, event.y, event.z];
-      },
-    ),
-  );
-  _streamSubscriptions.add(
-    magnetometerEvents.listen(
-      (MagnetometerEvent event) {
-        _magnetometerValues = <double>[event.x, event.y, event.z];
-      },
-    ),
-  );
+  bool gyroscopeAvailable =
+      await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
+  bool accelerometerAvailable =
+      await s.SensorManager().isSensorAvailable(s.Sensors.ACCELEROMETER);
+  bool magnetometerAvailable =
+      await s.SensorManager().isSensorAvailable(s.Sensors.MAGNETIC_FIELD);
+  bool userAccelerometerAvailable =
+      await s.SensorManager().isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
+
+  debugPrint('GYROSCOPE SENSOR $gyroscopeAvailable');
+
+  if (accelerometerAvailable) {
+    _streamSubscriptions.add(
+      accelerometerEvents.listen(
+        (AccelerometerEvent event) {
+          _accelerometerValues = <double>[event.x, event.y, event.z];
+        },
+      ),
+    );
+  }
+
+  if (gyroscopeAvailable) {
+    _streamSubscriptions.add(
+      gyroscopeEvents.listen(
+        (GyroscopeEvent event) {
+          _gyroscopeValues = <double>[event.x, event.y, event.z];
+        },
+      ),
+    );
+  }
+
+  if (userAccelerometerAvailable) {
+    _streamSubscriptions.add(
+      userAccelerometerEvents.listen(
+        (UserAccelerometerEvent event) {
+          _userAccelerometerValues = <double>[event.x, event.y, event.z];
+        },
+      ),
+    );
+  }
+
+  if (magnetometerAvailable) {
+    _streamSubscriptions.add(
+      magnetometerEvents.listen(
+        (MagnetometerEvent event) {
+          _magnetometerValues = <double>[event.x, event.y, event.z];
+        },
+      ),
+    );
+  }
+
   String convertDataToString(String type, List<double> sensorData) {
     String? input = sensorData.toString();
     final removedBrackets = input.substring(1, input.length - 1);
@@ -326,15 +350,59 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
             /// STOP WRITING & CREATE NEW FILE
           } else {
             print('WRITING');
+            String gyro = '', acc = '', mag = '', uacc = '';
             //print('LAT1 LONG1 $latitude $longitude');
-            String acc = convertDataToString('AAC', _accelerometerValues!);
-            String uacc =
-                convertDataToString('UACC', _userAccelerometerValues!);
-            String gyro = convertDataToString('GYRO', _gyroscopeValues!);
-            String mag = convertDataToString('MAG', _magnetometerValues!);
+
+            if (gyroscopeAvailable) {
+              gyro = convertDataToString('GYRO', _gyroscopeValues!);
+            }
+            if (accelerometerAvailable) {
+              acc = convertDataToString('AAC', _accelerometerValues!);
+            }
+            if (magnetometerAvailable) {
+              mag = convertDataToString('MAG', _magnetometerValues!);
+            }
+            if (userAccelerometerAvailable) {
+              uacc = convertDataToString('UACC', _userAccelerometerValues!);
+            }
+
             String location = '$latitude $longitude';
             String gps = convertLocationToString('GPS', location);
-            String finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
+
+            String finalString = '';
+
+            if (gyroscopeAvailable &&
+                accelerometerAvailable &&
+                userAccelerometerAvailable &&
+                magnetometerAvailable) {
+              finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
+            } else if (!gyroscopeAvailable &&
+                accelerometerAvailable &&
+                userAccelerometerAvailable &&
+                magnetometerAvailable) {
+              finalString = '$acc\n$uacc\n$mag\n$gps';
+            } else if (gyroscopeAvailable &&
+                !accelerometerAvailable &&
+                userAccelerometerAvailable &&
+                magnetometerAvailable) {
+              finalString = '$uacc\n$gyro\n$mag\n$gps';
+            } else if (gyroscopeAvailable &&
+                accelerometerAvailable &&
+                !userAccelerometerAvailable &&
+                magnetometerAvailable) {
+              finalString = '$acc\n$gyro\n$mag\n$gps';
+            } else if (gyroscopeAvailable &&
+                accelerometerAvailable &&
+                userAccelerometerAvailable &&
+                !magnetometerAvailable) {
+              finalString = '$acc\n$uacc\n$gyro\n$gps';
+            } else if (!gyroscopeAvailable &&
+                !accelerometerAvailable &&
+                !userAccelerometerAvailable &&
+                !magnetometerAvailable) {
+              finalString = '$gps';
+            }
+
             file.writeAsString('$finalString\n', mode: FileMode.append);
 
             print('GPS $gps');
