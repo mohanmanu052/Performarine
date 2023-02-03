@@ -91,6 +91,8 @@ class _TripViewListingState extends State<TripViewListing> {
   FlutterBackgroundService service = FlutterBackgroundService();
   late CommonProvider commonProvider;
 
+  bool tripIsRunning = false;
+
   late Future<List<Trip>> future;
   List<Trip> getTripsByIdFuture = [];
   Future<List<Trip>> getTripsByVesselId() async {
@@ -137,6 +139,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                 setState(() {});*/
                                 setState(() {
                                   future = _databaseService.trips();
+                                  //snapshot.data![index].tripStatus = 1;
                                 });
                                 commonProvider.getTripsCount();
                                 //debugPrint('Trip Uploaded');
@@ -144,6 +147,14 @@ class _TripViewListingState extends State<TripViewListing> {
                               onTap: () async {
                                 Utils().showEndTripDialog(context, () async {
                                   Navigator.of(context).pop();
+
+                                  await commonProvider.updateTripStatus(true);
+
+                                  setState(() {
+                                    snapshot.data![index].isEndTripClicked =
+                                        true;
+                                  });
+
                                   bool isServiceRunning =
                                       await service.isRunning();
 
@@ -183,18 +194,21 @@ class _TripViewListingState extends State<TripViewListing> {
 
                                   await sharedPreferences!.reload();
 
-                                  int? tripDuration =
-                                      sharedPreferences!.getInt("tripDuration");
-                                  int? tripDistance =
-                                      sharedPreferences!.getInt("tripDistance");
-                                  String? tripSpeed =
-                                      sharedPreferences!.getString("tripSpeed");
+                                  int? tripDuration = sharedPreferences!
+                                          .getInt("tripDuration") ??
+                                      0;
+                                  int? tripDistance = sharedPreferences!
+                                          .getInt("tripDistance") ??
+                                      0;
+                                  String? tripSpeed = sharedPreferences!
+                                          .getString("tripSpeed") ??
+                                      '0';
 
                                   String finalTripDuration =
                                       Utils.calculateTripDuration(
-                                          (tripDuration ?? 0 / 1000).toInt());
+                                          (tripDuration / 1000).toInt());
                                   String finalTripDistance =
-                                      tripDistance!.toStringAsFixed(2);
+                                      tripDistance.toStringAsFixed(2);
                                   GlobalKey<ScaffoldState> scaffoldKey =
                                       GlobalKey();
 
@@ -224,12 +238,18 @@ class _TripViewListingState extends State<TripViewListing> {
                                   sharedPreferences!.remove('trip_data');
 
                                   setState(() {
-                                    future = _databaseService.trips();
+                                    //future = _databaseService.trips();
+                                    snapshot.data![index].tripStatus = 1;
                                   });
 
                                   if (widget.onTripEnded != null) {
                                     widget.onTripEnded!.call();
+                                    await commonProvider
+                                        .updateTripStatus(false);
                                   }
+
+                                  await tripIsRunningOrNot(
+                                      snapshot.data![index]);
                                 }, () {
                                   Navigator.of(context).pop();
                                 });
@@ -267,5 +287,23 @@ class _TripViewListingState extends State<TripViewListing> {
               );
       },
     );
+  }
+
+  Future<bool> tripIsRunningOrNot(Trip trip) async {
+    bool result = await _databaseService.tripIsRunning();
+
+    setState(() {
+      tripIsRunning = result;
+      print('Trip is Running $tripIsRunning');
+      setState(() {
+        trip.isEndTripClicked = false;
+      });
+    });
+
+    /*setState(() {
+      isEndTripButton = tripIsRunning;
+      isStartButton = !tripIsRunning;
+    });*/
+    return result;
   }
 }

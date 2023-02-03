@@ -79,7 +79,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isEndTripButton = false,
       isZipFileCreate = false,
       isSensorDataUploaded = false,
-      addingDataToDB = false;
+      addingDataToDB = false,
+      isLocationDialogBoxOpen = false;
 
   // Timer? timer;
   Timer? locationTimer;
@@ -170,7 +171,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
   bool isBottomSheetOpened = false,
       isDataUpdated = false,
       tripIsRunning = false,
-      isCheckingPermission = false;
+      isCheckingPermission = false,
+      isTripEndedOrNot = false;
 
   late CommonProvider commonProvider;
 
@@ -192,6 +194,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
     setState(() {
       tripIsRunning = result;
       print('Trip is Running $tripIsRunning');
+
+      if (!tripIsRunning) {
+        setState(() {
+          isTripEndedOrNot = false;
+        });
+      }
     });
 
     /*setState(() {
@@ -354,124 +362,139 @@ class VesselSingleViewState extends State<VesselSingleView> {
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
                 child: tripIsRunning
-                    ? CommonButtons.getActionButton(
-                        title: 'End Trip',
-                        context: context,
-                        fontSize: displayWidth(context) * 0.042,
-                        textColor: Colors.white,
-                        buttonPrimaryColor: buttonBGColor,
-                        borderColor: buttonBGColor,
-                        width: displayWidth(context),
-                        onTap: () async {
-                          print('time stamp:' +
-                              DateTime.now().toUtc().toString());
-                          Utils().showEndTripDialog(context, () async {
-                            Navigator.of(context).pop();
+                    ? isTripEndedOrNot
+                        ? Center(child: CircularProgressIndicator())
+                        : CommonButtons.getActionButton(
+                            title: 'End Trip',
+                            context: context,
+                            fontSize: displayWidth(context) * 0.042,
+                            textColor: Colors.white,
+                            buttonPrimaryColor: buttonBGColor,
+                            borderColor: buttonBGColor,
+                            width: displayWidth(context),
+                            onTap: () async {
+                              print('time stamp:' +
+                                  DateTime.now().toUtc().toString());
+                              Utils().showEndTripDialog(context, () async {
+                                setState(() {
+                                  isTripEndedOrNot = true;
+                                });
 
-                            print(
-                                'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+                                Navigator.of(context).pop();
 
-                            await sharedPreferences!.reload();
+                                print(
+                                    'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
 
-                            List<String>? tripData =
-                                sharedPreferences!.getStringList('trip_data');
+                                await sharedPreferences!.reload();
 
-                            print(
-                                'TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')}');
+                                List<String>? tripData = sharedPreferences!
+                                    .getStringList('trip_data');
 
-                            String tripId = tripData![0];
-                            String vesselId = tripData[1];
+                                print(
+                                    'TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')}');
 
-                            int? tripDuration =
-                                sharedPreferences!.getInt("tripDuration");
-                            int? tripDistance =
-                                sharedPreferences!.getInt("tripDistance");
-                            String? tripSpeed =
-                                sharedPreferences!.getString("tripSpeed");
+                                String tripId = tripData![0];
+                                String vesselId = tripData[1];
 
-                            String finalTripDuration = calculateTripDuration(
-                                (tripDuration! / 1000).toInt());
-                            String finalTripDistance =
-                                tripDistance!.toStringAsFixed(2);
+                                int? tripDuration =
+                                    sharedPreferences!.getInt("tripDuration") ??
+                                        1;
+                                int? tripDistance =
+                                    sharedPreferences!.getInt("tripDistance") ??
+                                        1;
+                                String? tripSpeed =
+                                    sharedPreferences!.getString("tripSpeed") ??
+                                        '1';
 
-                            /*setState(() {
+                                String finalTripDuration =
+                                    calculateTripDuration(
+                                        (tripDuration / 1000).toInt());
+                                String finalTripDistance =
+                                    tripDistance.toStringAsFixed(2);
+
+                                /*setState(() {
                               tripIsRunning = false;
                             });*/
 
-                            print('TRIP ID $vesselId');
-                            service.invoke('stopService');
-                            // if (locationTimer != null) {
-                            //   locationTimer!.cancel();
-                            // }
-                            if (positionStream != null) {
-                              positionStream!.cancel();
-                            }
+                                print('TRIP ID $vesselId');
+                                service.invoke('stopService');
+                                // if (locationTimer != null) {
+                                //   locationTimer!.cancel();
+                                // }
+                                if (positionStream != null) {
+                                  positionStream!.cancel();
+                                }
 
-                            File? zipFile;
-                            if (timer != null) timer!.cancel();
-                            print(
-                                'TIMER STOPPED ${ourDirectory!.path}/$tripId');
-                            final dataDir =
-                                Directory('${ourDirectory!.path}/$tripId');
+                                File? zipFile;
+                                if (timer != null) timer!.cancel();
+                                print(
+                                    'TIMER STOPPED ${ourDirectory!.path}/$tripId');
+                                final dataDir =
+                                    Directory('${ourDirectory!.path}/$tripId');
 
-                            try {
-                              zipFile =
-                                  File('${ourDirectory!.path}/$tripId.zip');
+                                try {
+                                  zipFile =
+                                      File('${ourDirectory!.path}/$tripId.zip');
 
-                              ZipFile.createFromDirectory(
-                                  sourceDir: dataDir,
-                                  zipFile: zipFile,
-                                  recurseSubDirs: true);
-                              print('our path is $dataDir');
-                            } catch (e) {
-                              print(e);
-                            }
+                                  ZipFile.createFromDirectory(
+                                      sourceDir: dataDir,
+                                      zipFile: zipFile,
+                                      recurseSubDirs: true);
+                                  print('our path is $dataDir');
+                                } catch (e) {
+                                  print(e);
+                                }
 
-                            File file = File(zipFile!.path);
-                            setState(() {
-                              isEndTripButton = false;
-                              // isZipFileCreate = true;
-                            });
-                            /*Future.delayed(Duration(seconds: 1)).then((value) {
+                                File file = File(zipFile!.path);
+                                setState(() {
+                                  isEndTripButton = false;
+                                  // isZipFileCreate = true;
+                                });
+                                /*Future.delayed(Duration(seconds: 1)).then((value) {
                               setState(() {
                                 isZipFileCreate = true;
                               });
                             });*/
-                            var pref = await SharedPreferences.getInstance();
-                            print('FINAL PATH: ${file.path}');
-                            print('FINAL PATH: ${pref.getInt("tripDuration")}');
+                                var pref =
+                                    await SharedPreferences.getInstance();
+                                print('FINAL PATH: ${file.path}');
+                                print(
+                                    'FINAL PATH: ${pref.getInt("tripDuration")}');
 
-                            sharedPreferences!.remove('trip_data');
-                            sharedPreferences!.remove('trip_started');
-                            Position? currentLocationData =
-                                await Utils.getLocationPermission(
-                                    context, scaffoldKey);
-                            await _databaseService.updateTripStatus(
-                                1,
-                                file.path,
-                                DateTime.now().toUtc().toString(),
-                                json.encode([
-                                  currentLocationData!.latitude,
-                                  currentLocationData.longitude
-                                ]),
-                                finalTripDuration,
-                                finalTripDistance,
-                                tripSpeed.toString(),
-                                tripId);
-
-                            _databaseService
-                                .updateVesselDataWithDurationSpeedDistance(
+                                sharedPreferences!.remove('trip_data');
+                                sharedPreferences!.remove('trip_started');
+                                Position? currentLocationData =
+                                    await Utils.getLocationPermission(
+                                        context, scaffoldKey);
+                                await _databaseService.updateTripStatus(
+                                    1,
+                                    file.path,
+                                    DateTime.now().toUtc().toString(),
+                                    json.encode([
+                                      currentLocationData!.latitude,
+                                      currentLocationData.longitude
+                                    ]),
                                     finalTripDuration,
                                     finalTripDistance,
                                     tripSpeed.toString(),
-                                    vesselId);
+                                    tripId);
 
-                            await tripIsRunningOrNot();
-                          }, () {
-                            Navigator.of(context).pop();
-                          });
-                        })
-                    : CommonButtons.getActionButton(
+                                _databaseService
+                                    .updateVesselDataWithDurationSpeedDistance(
+                                        finalTripDuration,
+                                        finalTripDistance,
+                                        tripSpeed.toString(),
+                                        vesselId);
+
+                                await tripIsRunningOrNot();
+                              }, () {
+                                Navigator.of(context).pop();
+                              });
+                            })
+                    : /*isLocationDialogBoxOpen
+                        ? Center(child: CircularProgressIndicator())
+                        :*/
+                    CommonButtons.getActionButton(
                         title: 'Start Trip',
                         context: context,
                         fontSize: displayWidth(context) * 0.042,
@@ -498,15 +521,24 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               await Utils.getLocationPermission(
                                   context, scaffoldKey);
                             }
+                            /*setState(() {
+                                  isLocationDialogBoxOpen = true;
+                                });*/
                             bool isLocationPermitted =
                                 await Permission.locationAlways.isGranted;
                             if (isLocationPermitted) {
+                              /*setState(() {
+                                    isLocationDialogBoxOpen = false;
+                                  });*/
                               vessel!.add(widget.vessel!);
                               await locationPermissions(
                                   widget.vessel!.vesselSize!,
                                   widget.vessel!.name!,
                                   widget.vessel!.id!);
                             } else {
+                              /*setState(() {
+                                    isLocationDialogBoxOpen = false;
+                                  });*/
                               showDialog(
                                   context: scaffoldKey.currentContext!,
                                   builder: (BuildContext context) {

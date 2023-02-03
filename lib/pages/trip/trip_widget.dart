@@ -68,7 +68,10 @@ class _TripWidgetState extends State<TripWidget> {
 
   late CommonProvider commonProvider;
 
-  bool vesselIsSync = false, isTripUploaded = false;
+  bool vesselIsSync = false,
+      isTripUploaded = false,
+      isTripEndedOrNot = false,
+      tripIsRunning = false;
   late DeviceInfoPlugin deviceDetails;
 
   int progress = 0;
@@ -84,6 +87,8 @@ class _TripWidgetState extends State<TripWidget> {
 
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
+
+    tripIsRunningOrNot();
   }
 
   @override
@@ -129,7 +134,7 @@ class _TripWidgetState extends State<TripWidget> {
                               '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
                           fontWeight: FontWeight.w500,
                           textColor: Colors.black,
-                          textSize: displayWidth(context) * 0.02,
+                          textSize: displayWidth(context) * 0.018,
                         )
                       : commonText(
                           context: context,
@@ -137,7 +142,7 @@ class _TripWidgetState extends State<TripWidget> {
                               '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
                           fontWeight: FontWeight.w500,
                           textColor: Colors.black,
-                          textSize: displayWidth(context) * 0.02,
+                          textSize: displayWidth(context) * 0.018,
                         ),
                 ],
               ),
@@ -455,28 +460,37 @@ class _TripWidgetState extends State<TripWidget> {
                         )
                       ],
                     )
-                  : SizedBox(
-                      height: displayHeight(context) * 0.038,
-                      child: CommonButtons.getActionButton(
-                          buttonPrimaryColor: buttonBGColor.withOpacity(.7),
-                          borderColor: buttonBGColor.withOpacity(.7),
-                          fontSize: displayWidth(context) * 0.03,
-                          onTap: () async {
-                            widget.onTap!.call();
+                  : /*widget.tripList!.isEndTripClicked!
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      :*/
+                  commonProvider.tripStatus
+                      ? Center(child: CircularProgressIndicator())
+                      : SizedBox(
+                          height: displayHeight(context) * 0.038,
+                          child: CommonButtons.getActionButton(
+                              buttonPrimaryColor: buttonBGColor.withOpacity(.7),
+                              borderColor: buttonBGColor.withOpacity(.7),
+                              fontSize: displayWidth(context) * 0.03,
+                              onTap: () async {
+                                widget.onTap!.call();
 
-                            // service.invoke('stopService');
+                                // service.invoke('stopService');
 
-                            /*onSave(
+                                /*onSave(
                                         file,
                                         context,
                                         widget.tripList!.id!,
                                         widget.tripList!.vesselId,
                                         widget.tripList!.vesselName,
                                         widget.tripList!.currentLoad);*/
-                          },
-                          context: context,
-                          width: displayWidth(context) * 0.8,
-                          title: 'End Trip'))
+
+                                //await tripIsRunningOrNot();
+                              },
+                              context: context,
+                              width: displayWidth(context) * 0.8,
+                              title: 'End Trip'))
             ],
           ),
         ),
@@ -511,13 +525,13 @@ class _TripWidgetState extends State<TripWidget> {
         long: longitude,
         deviceInfo: deviceDetails!.toJson().toString()));*/
 
-    int? tripDuration = sharedPreferences!.getInt("tripDuration");
-    int? tripDistance = sharedPreferences!.getInt("tripDistance");
-    String? tripSpeed = sharedPreferences!.getString("tripSpeed");
+    int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
+    int? tripDistance = sharedPreferences!.getInt("tripDistance") ?? 1;
+    String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
 
     String finalTripDuration =
-        Utils.calculateTripDuration((tripDuration! / 1000).toInt());
-    String finalTripDistance = tripDistance!.toStringAsFixed(2);
+        Utils.calculateTripDuration((tripDuration / 1000).toInt());
+    String finalTripDistance = tripDistance.toStringAsFixed(2);
     Position? currentLocationData =
         await Utils.getLocationPermission(context, scaffoldKey);
 
@@ -965,5 +979,23 @@ class _TripWidgetState extends State<TripWidget> {
       });
       startSensorFunctionality(widget.tripList!);
     }
+  }
+
+  Future<bool> tripIsRunningOrNot() async {
+    bool result = await _databaseService.tripIsRunning();
+
+    setState(() {
+      tripIsRunning = result;
+      print('Trip is Running $tripIsRunning');
+      setState(() {
+        isTripEndedOrNot = false;
+      });
+    });
+
+    /*setState(() {
+      isEndTripButton = tripIsRunning;
+      isStartButton = !tripIsRunning;
+    });*/
+    return result;
   }
 }

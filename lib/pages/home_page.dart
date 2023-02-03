@@ -279,13 +279,13 @@ class _HomePageState extends State<HomePage> {
 
     await sharedPreferences!.reload();
 
-    int? tripDuration = sharedPreferences!.getInt("tripDuration");
-    int? tripDistance = sharedPreferences!.getInt("tripDistance");
-    String? tripSpeed = sharedPreferences!.getString("tripSpeed");
+    int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
+    int? tripDistance = sharedPreferences!.getInt("tripDistance") ?? 1;
+    String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
 
     String finalTripDuration =
-        Utils.calculateTripDuration((tripDuration! / 1000).toInt());
-    String finalTripDistance = tripDistance!.toStringAsFixed(2);
+        Utils.calculateTripDuration((tripDuration / 1000).toInt());
+    String finalTripDistance = tripDistance.toStringAsFixed(2);
     Position? currentLocationData =
         await Utils.getLocationPermission(context, scaffoldKey);
     await _databaseService.updateTripStatus(

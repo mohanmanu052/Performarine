@@ -23,6 +23,7 @@ class CommonProvider with ChangeNotifier {
   AddVesselModel? addVesselModel;
   CommonModel? commonModel;
   int tripsCount = 0;
+  bool tripStatus = false;
 
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
@@ -133,5 +134,10 @@ class CommonProvider with ChangeNotifier {
     tripsCount = trips.length;
     notifyListeners();
     // return tripsCount.toString();
+  }
+
+  updateTripStatus(bool tripStatus) async {
+    tripStatus = tripStatus;
+    notifyListeners();
   }
 }

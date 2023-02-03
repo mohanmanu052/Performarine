@@ -323,6 +323,10 @@ class _TripListScreenState extends State<TripListScreen> {
                           ? TripWidget(
                               tripList: snapshot.data![index],
                               onTap: () async {
+                                setState(() {
+                                  snapshot.data![index].isEndTripClicked = true;
+                                });
+
                                 bool isServiceRunning =
                                     await service.isRunning();
 
@@ -361,17 +365,20 @@ class _TripListScreenState extends State<TripListScreen> {
                                 await sharedPreferences!.reload();
 
                                 int? tripDuration =
-                                    sharedPreferences!.getInt("tripDuration");
+                                    sharedPreferences!.getInt("tripDuration") ??
+                                        1;
                                 int? tripDistance =
-                                    sharedPreferences!.getInt("tripDistance");
+                                    sharedPreferences!.getInt("tripDistance") ??
+                                        1;
                                 String? tripSpeed =
-                                    sharedPreferences!.getString("tripSpeed");
+                                    sharedPreferences!.getString("tripSpeed") ??
+                                        '1';
 
                                 String finalTripDuration =
                                     Utils.calculateTripDuration(
-                                        (tripDuration! / 1000).toInt());
+                                        (tripDuration / 1000).toInt());
                                 String finalTripDistance =
-                                    tripDistance!.toStringAsFixed(2);
+                                    tripDistance.toStringAsFixed(2);
                                 Position? locationData =
                                     await Utils.getLocationPermission(
                                         context, scaffoldKey);
