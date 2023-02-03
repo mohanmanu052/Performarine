@@ -192,7 +192,7 @@ class _TripViewListingState extends State<TripViewListing> {
 
                                   String finalTripDuration =
                                       Utils.calculateTripDuration(
-                                          (tripDuration! / 1000).toInt());
+                                          (tripDuration ?? 0 / 1000).toInt());
                                   String finalTripDistance =
                                       tripDistance!.toStringAsFixed(2);
                                   GlobalKey<ScaffoldState> scaffoldKey =

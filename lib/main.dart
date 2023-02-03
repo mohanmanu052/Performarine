@@ -324,12 +324,14 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
             "tripSpeed": (speed * 1.944).toStringAsFixed(2)
           });
 
-          if (timer.tick % 5 == 0) {
-            pref.setInt('tripDistance', finalTripDistance);
-            pref.setInt('tripDuration', finalTripDuration);
-            // To get values in Km/h
-            pref.setString('tripSpeed', (speed * 1.944).toStringAsFixed(2));
-          }
+          pref.setInt('tripDistance', finalTripDistance);
+          pref.setInt('tripDuration', finalTripDuration);
+          // To get values in Km/h
+          pref.setString('tripSpeed', (speed * 1.944).toStringAsFixed(2));
+
+          /*if (timer.tick % 5 == 0) {
+
+          }*/
 
           String filePath = await getFile();
           File file = File(filePath);
