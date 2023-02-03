@@ -476,6 +476,9 @@ class _TripWidgetState extends State<TripWidget> {
                               onTap: () async {
                                 widget.onTap!.call();
 
+                                debugPrint(
+                                    'TRIP STATUS ${commonProvider.tripStatus}');
+
                                 // service.invoke('stopService');
 
                                 /*onSave(

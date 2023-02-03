@@ -158,6 +158,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
     return await _databaseService.getAllTripsByVesselId(id);
   }
 
+  _isThereCurrentDialogShowing(BuildContext context) =>
+      ModalRoute.of(context)?.isCurrent != true;
+
   Future<void> _onVesselDelete(CreateVessel vessel) async {
     await _databaseService.deleteVessel(vessel.id.toString());
     setState(() {});
@@ -539,20 +542,24 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               /*setState(() {
                                     isLocationDialogBoxOpen = false;
                                   });*/
-                              showDialog(
-                                  context: scaffoldKey.currentContext!,
-                                  builder: (BuildContext context) {
-                                    return LocationPermissionCustomDialog(
-                                      text: 'Always Allow Access to “Location”',
-                                      subText:
-                                          "To track your trip while you use other apps we need background access to your location",
-                                      buttonText: 'Ok',
-                                      buttonOnTap: () async {
-                                        //Navigator.pop(context);
 
-                                        Get.back();
+                              if (!isLocationDialogBoxOpen) {
+                                showDialog(
+                                    context: scaffoldKey.currentContext!,
+                                    builder: (BuildContext context) {
+                                      isLocationDialogBoxOpen = true;
+                                      return LocationPermissionCustomDialog(
+                                        text:
+                                            'Always Allow Access to “Location”',
+                                        subText:
+                                            "To track your trip while you use other apps we need background access to your location",
+                                        buttonText: 'Ok',
+                                        buttonOnTap: () async {
+                                          //Navigator.pop(context);
 
-                                        /* var status = await Permission
+                                          Get.back();
+
+                                          /* var status = await Permission
                                             .locationWhenInUse.status;
 
                                         if (status ==
@@ -560,14 +567,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           Permission.locationAlways.request();
                                         }*/
 
-                                        //  AppSettings.openLocationSettings(asAnotherTask: true);
-                                        await openAppSettings();
-                                        // Navigator.pop(context);
-                                        // await Geolocator.openAppSettings();
-                                      },
-                                    );
-                                  });
-
+                                          //  AppSettings.openLocationSettings(asAnotherTask: true);
+                                          await openAppSettings();
+                                          // Navigator.pop(context);
+                                          // await Geolocator.openAppSettings();
+                                        },
+                                      );
+                                    }).then((value) {
+                                  isLocationDialogBoxOpen = false;
+                                });
+                              }
                               // await Permission.locationAlways.request();
                             }
                           }
