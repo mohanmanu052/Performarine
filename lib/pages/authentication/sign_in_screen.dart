@@ -240,126 +240,6 @@ class _SignInScreenState extends State<SignInScreen> {
                             print(value);
                           }),
                       SizedBox(height: displayHeight(context) * 0.04),
-                      /* commonText(
-                          context: context,
-                          text: 'Or sign in with Phone',
-                          fontWeight: FontWeight.w400,
-                          textColor: Colors.black,
-                          textSize: displayWidth(context) * 0.03,
-                          textAlign: TextAlign.start),
-                      SizedBox(height: displayHeight(context) * 0.03),
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  showCountryPicker(
-                                    context: context,
-                                    showPhoneCode:
-                                        true, // optional. Shows phone code before the country name.
-                                    onSelect: (Country country) {
-                                      if (country == null) {
-                                        setState(() {
-                                          validateCountryCodeWidget = true;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          validateCountryCodeWidget = false;
-                                          selectedCountryCode =
-                                              country.phoneCode;
-                                        });
-                                      }
-                                    },
-                                  );
-                                },
-                                child: Container(
-                                  height: displayHeight(context) * 0.06,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
-                                      border: Border.all(
-                                        width: 1.5,
-                                        color: validateCountryCodeWidget
-                                            ? Colors.red.shade300
-                                                .withOpacity(0.7)
-                                            : Colors.grey.shade200,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Center(
-                                    child: commonText(
-                                        context: context,
-                                        text: selectedCountryCode ?? '+ **',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: selectedCountryCode == null
-                                            ? Colors.grey
-                                            : Colors.black,
-                                        textSize: displayWidth(context) * 0.04,
-                                        textAlign: TextAlign.start),
-                                  ),
-                                ),
-                              ),
-                              validateCountryCodeWidget
-                                  ? Column(
-                                      children: [
-                                        const SizedBox(
-                                          height: 6,
-                                        ),
-                                        commonText(
-                                            context: context,
-                                            text: 'Select',
-                                            fontWeight: FontWeight.w500,
-                                            textColor: Colors.red,
-                                            textSize:
-                                                displayWidth(context) * 0.03,
-                                            textAlign: TextAlign.start),
-                                      ],
-                                    )
-                                  : const SizedBox(),
-                            ],
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: CommonTextField(
-                                controller: phoneController,
-                                focusNode: phoneFocusNode,
-                                labelText: 'Enter Phone Number',
-                                hintText: '999 999 9999',
-                                suffixText: null,
-                                textInputAction: TextInputAction.done,
-                                textInputType: TextInputType.number,
-                                textCapitalization: TextCapitalization.words,
-                                maxLength: 10,
-                                prefixIcon: null,
-                                requestFocusNode: null,
-                                obscureText: false,
-                                onTap: () {},
-                                onChanged: (String value) {},
-                                validator: (value) {
-                                  if (isLoginByMobileNumber) {
-                                    if (value!.isEmpty) {
-                                      return 'Enter Mobile Number';
-                                    }
-                                    if (value.length > 10 ||
-                                        value.length < 10) {
-                                      return 'Enter Valid Mobile Number';
-                                    }
-
-                                    return null;
-                                  }
-
-                                  return null;
-                                },
-                                onSaved: (String value) {
-                                  print(value);
-                                }),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: displayHeight(context) * 0.04),*/
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -378,16 +258,6 @@ class _SignInScreenState extends State<SignInScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              /* Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset(
-                                  'assets/images/apple_logo.png',
-                                  height: displayHeight(context) * 0.04,
-                                ),
-                              ),
-                              SizedBox(
-                                width: displayWidth(context) * 0.045,
-                              ),*/
                               isGoogleSignInBtnClicked!
                                   ? Center(child: CircularProgressIndicator())
                                   : InkWell(
@@ -497,25 +367,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               borderColor: buttonBGColor,
                               width: displayWidth(context),
                               onTap: () {
-                                /*if (isLoginByMobileNumber) {
-                                  if (selectedCountryCode == null) {
-                                    setState(() {
-                                      validateCountryCodeWidget = true;
-                                      isGoogleSignInBtnClicked = false;
-                                    });
-                                    return;
-                                  }
-                                }*/
-
-                                /* if (!isLoginByEmailId &&
-                                    !isLoginByMobileNumber) {
-                                  Get.showSnackbar(GetSnackBar(
-                                    message: 'Please enter valid details',
-                                    duration: Duration(seconds: 2),
-                                  ));
-                                  return;
-                                }*/
-
                                 if (formKey.currentState!.validate()) {
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());

@@ -79,8 +79,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
       scaffoldKey = widget.scaffoldKey!;
     });
 
-    //commonProvider = context.read<CommonProvider>();
-
     if (widget.isEdit!) {
       if (widget.addVesselData != null) {
         debugPrint('ENGINE TYPE ${widget.addVesselData!.engineType!}');

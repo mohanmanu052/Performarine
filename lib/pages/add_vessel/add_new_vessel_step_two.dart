@@ -12,6 +12,7 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/sucessfully_added_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
+import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -374,8 +375,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
 
                               if (commonProvider.addVesselRequestModel!
                                   .selectedImages!.isNotEmpty) {
-                                String vesselImagesDirPath =
-                                    await getOrCreateFolder();
+                                String vesselImagesDirPath = await CreateTrip()
+                                    .getOrCreateFolderForAddVessel();
                                 print('FOLDER PATH: $vesselImagesDirPath');
 
                                 File copiedFile = File(commonProvider
@@ -450,10 +451,20 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                     /*_databaseService.updateVesselStatus(1,
                                         widget.addVesselData!.id!.toString());*/
 
-                                    Navigator.of(context).pop([
+                                    /*Navigator.of(context).pop([
                                       true,
                                       commonProvider.addVesselRequestModel
-                                    ]);
+                                    ]);*/
+
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SuccessfullyAddedScreen(
+                                                  data: commonProvider
+                                                      .addVesselRequestModel!,
+                                                  isEdit: widget.isEdit)),
+                                    );
                                   } else {
                                     Utils.showSnackBar(context,
                                         scaffoldKey: scaffoldKey,
@@ -490,87 +501,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                   );
                                 });
                               }
-
-                              //  isBtnClicked = false;
-                              // if (widget.isEdit!) {
-                              //   // debugPrint(
-                              //   //     'VESSEL ID ${widget.addVesselData!.id!}');
-                              //
-                              //   commonProvider
-                              //       .editVessel(
-                              //       context,
-                              //       commonProvider.addVesselRequestModel,
-                              //       commonProvider.loginModel!.userId!,
-                              //       commonProvider.loginModel!.token!,
-                              //       widget.addVesselData!.id!,
-                              //       widget.scaffoldKey!)
-                              //       .then((value) async {
-                              //     setState(() {
-                              //       isBtnClicked = false;
-                              //     });
-                              //
-                              //     if (value != null) {
-                              //       if (value.status!) {
-                              //         setState(() {
-                              //           isBtnClicked = false;
-                              //         });
-                              //
-                              //         var result = await Navigator.push(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //               builder: (context) =>
-                              //                   SuccessfullyAddedScreen(
-                              //                       data: value.addVesselData,
-                              //                       isEdit: widget.isEdit)),
-                              //         );
-                              //
-                              //         if (result != null) {
-                              //           if (result) {
-                              //             Navigator.of(context).pop(true);
-                              //           }
-                              //         }
-                              //       }
-                              //     }
-                              //   }).catchError((e) {
-                              //     setState(() {
-                              //       isBtnClicked = false;
-                              //     });
-                              //   });
-                              // } else {
-                              //   commonProvider
-                              //       .addVessel(
-                              //       context,
-                              //       commonProvider.addVesselRequestModel,
-                              //       commonProvider.loginModel!.userId!,
-                              //       commonProvider.loginModel!.token!,
-                              //       widget.scaffoldKey!)
-                              //       .then((value) {
-                              //     setState(() {
-                              //       isBtnClicked = false;
-                              //     });
-                              //
-                              //     if (value != null) {
-                              //       if (value.status!) {
-                              //         setState(() {
-                              //           isBtnClicked = false;
-                              //         });
-                              //
-                              //         // Navigator.pushReplacement(
-                              //         //   context,
-                              //         //   MaterialPageRoute(
-                              //         //       builder: (context) =>
-                              //         //           SuccessfullyAddedScreen(
-                              //         //               data: value.addVesselData,
-                              //         //               isEdit: widget.isEdit)),
-                              //         // );
-                              //       }
-                              //     }
-                              //   }).catchError((e) {
-                              //     setState(() {
-                              //       isBtnClicked = false;
-                              //     });
-                              //   });
-                              // }
                             }
                           }),
                 ),
@@ -578,22 +508,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
             ],
           ),
         ));
-  }
-
-  Future<String> getOrCreateFolder() async {
-    final appDirectory = await getApplicationDocumentsDirectory();
-    Directory directory = Directory('${appDirectory.path}/vesselImages');
-    debugPrint('FOLDER PATH $directory');
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
-    }
-    if ((await directory.exists())) {
-      return directory.path;
-    } else {
-      directory.create();
-      return directory.path;
-    }
   }
 
   @override

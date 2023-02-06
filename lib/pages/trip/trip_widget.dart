@@ -477,23 +477,11 @@ class _TripWidgetState extends State<TripWidget> {
                               buttonPrimaryColor: buttonBGColor.withOpacity(.7),
                               borderColor: buttonBGColor.withOpacity(.7),
                               fontSize: displayWidth(context) * 0.03,
-                              onTap: () async {
+                              onTap: () {
                                 widget.onTap!.call();
 
                                 debugPrint(
                                     'TRIP STATUS ${commonProvider.tripStatus}');
-
-                                // service.invoke('stopService');
-
-                                /*onSave(
-                                        file,
-                                        context,
-                                        widget.tripList!.id!,
-                                        widget.tripList!.vesselId,
-                                        widget.tripList!.vesselName,
-                                        widget.tripList!.currentLoad);*/
-
-                                //await tripIsRunningOrNot();
                               },
                               context: context,
                               width: displayWidth(context) * 0.8,

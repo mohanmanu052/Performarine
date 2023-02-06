@@ -18,6 +18,7 @@ import 'package:performarine/pages/intro_screen.dart';
 import 'package:get/get.dart';
 import 'package:performarine/pages/lets_get_started_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
+import 'package:performarine/services/create_trip.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -149,75 +150,6 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     );
   }
 
-  String convertDataToString(String type, List<double> sensorData) {
-    String? input = sensorData.toString();
-    final removedBrackets = input.substring(1, input.length - 1);
-    var replaceAll = removedBrackets.replaceAll(" ", "");
-    // var date = DateTime.now().toUtc();
-    var todayDate = DateTime.now().toUtc();
-    // return '$type,$replaceAll,$todayDate';
-    return '$type,"${[replaceAll].toString()}",$todayDate,$tripId';
-  }
-
-  String convertLocationToString(String type, String sensorData) {
-    // var date = DateTime.now().toUtc();
-    var todayDate = DateTime.now().toUtc();
-    var gps = sensorData.toString().replaceAll(" ", ",");
-    // return '$type,$gps,$todayDate';
-    return '$type,"${[gps]}",$todayDate,$tripId';
-  }
-
-  Future<String> getOrCreateFolder() async {
-    final appDirectory = await getApplicationDocumentsDirectory();
-    ourDirectory = Directory('${appDirectory.path}/$tripId');
-
-    debugPrint('FOLDER PATH $ourDirectory');
-
-    // Location location = Location();
-    //
-    // location.onLocationChanged.listen((LocationData currentLocation) {
-    //   print("${currentLocation.latitude} : ${currentLocation.longitude}");
-    //
-    //   latitude = currentLocation.latitude!;
-    //   longitude = currentLocation.longitude!;
-    // });
-
-    debugPrint('MAIN LAT LONGS $latitude $longitude');
-    // var status = await Permission.storage.status;
-    // if (!status.isGranted) {
-    //   await Permission.storage.request();
-    // }
-    if ((await ourDirectory!.exists())) {
-      return ourDirectory!.path;
-    } else {
-      ourDirectory!.create();
-      return ourDirectory!.path;
-    }
-  }
-
-  Future<String> getFile() async {
-    String folderPath = await getOrCreateFolder();
-
-    File sensorDataFile = File('$folderPath/$fileName');
-    return sensorDataFile.path;
-  }
-
-  int checkFileSize(File file) {
-    if (file.existsSync()) {
-      var bytes = file.lengthSync();
-      double sizeInKB = bytes / 1024;
-      double sizeInMB = sizeInKB / 1024;
-
-      int finalSizeInMB = sizeInMB.toInt();
-      // print('FILE SIZE: $sizeInMB');
-      //print('FILE SIZE KB: $sizeInKB');
-      // print('FINAL FILE SIZE: $finalSizeInMB');
-      return sizeInKB.toInt();
-    } else {
-      return -1;
-    }
-  }
-
   if (serviceInstance is AndroidServiceInstance) {
     serviceInstance.on('setAsForeground').listen((event) {
       serviceInstance.setAsForegroundService();
@@ -292,11 +224,6 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           ? tripDistance.toInt()
           : finalTripDistance;
 
-      /*if (finalTripDistance != 0 && finalTripDuration != 0) {
-        finalTripSpeed =
-            ((finalTripDistance / finalTripDuration) * 3.6).toInt(); // 0
-      }*/
-
       print('TRIP DISTANCE: $finalTripDistance');
       print('TRIP DURATION: $finalTripDuration');
       print('TRIP SPEED: $finalTripSpeed');
@@ -333,9 +260,9 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 
           }*/
 
-          String filePath = await getFile();
+          String filePath = await CreateTrip().getFile(tripId, fileName);
           File file = File(filePath);
-          int fileSize = await checkFileSize(file);
+          int fileSize = await CreateTrip().checkFileSize(file);
 
           /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
           /// Now File Size is 200000
@@ -356,20 +283,25 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
             //print('LAT1 LONG1 $latitude $longitude');
 
             if (gyroscopeAvailable) {
-              gyro = convertDataToString('GYRO', _gyroscopeValues!);
+              gyro = CreateTrip()
+                  .convertDataToString('GYRO', _gyroscopeValues!, tripId);
             }
             if (accelerometerAvailable) {
-              acc = convertDataToString('AAC', _accelerometerValues!);
+              acc = CreateTrip()
+                  .convertDataToString('AAC', _accelerometerValues!, tripId);
             }
             if (magnetometerAvailable) {
-              mag = convertDataToString('MAG', _magnetometerValues!);
+              mag = CreateTrip()
+                  .convertDataToString('MAG', _magnetometerValues!, tripId);
             }
             if (userAccelerometerAvailable) {
-              uacc = convertDataToString('UACC', _userAccelerometerValues!);
+              uacc = CreateTrip().convertDataToString(
+                  'UACC', _userAccelerometerValues!, tripId);
             }
 
             String location = '$latitude $longitude';
-            String gps = convertLocationToString('GPS', location);
+            String gps =
+                CreateTrip().convertLocationToString('GPS', location, tripId);
 
             String finalString = '';
 

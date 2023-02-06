@@ -23,6 +23,7 @@ import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/provider/common_provider.dart';
+import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -45,31 +46,6 @@ class _HomePageState extends State<HomePage> {
   int currentTabIndex = 0;
 
   late Future<List<CreateVessel>> getVesselFuture;
-
-  Future<List<CreateVessel>> _getVessels() async {
-    return await _databaseService.vessels();
-  }
-
-  Future<List<Trip>> _getTrips() async {
-    trips = await _databaseService.trips();
-    return await _databaseService.trips();
-  }
-
-  _getTripsCount() async {
-    trips = await _databaseService.trips();
-
-    setState(() {
-      tripsCount = trips.length;
-    });
-    // return tripsCount.toString();
-  }
-
-//ToDo: Vessel Name by Vessel Id
-//   Future<String> _getVesselName() async {
-//     List<CreateVessel> data= await _databaseService.getVesselNameByID("538b49e0-7ab5-11ed-8f52-89603b7614ba");
-//     debugPrint("data:${data[0].name.toString()}");
-//     return data[0].name.toString();
-//   }
 
   Future<void> _onVesselDelete(CreateVessel vessel) async {
     await _databaseService.deleteVessel(vessel.id.toString());
@@ -120,51 +96,13 @@ class _HomePageState extends State<HomePage> {
       Future.delayed(Duration(milliseconds: 300), () {
         widget.tripData = [];
         Utils().showEndTripDialog(context, () async {
-          FlutterBackgroundService service = FlutterBackgroundService();
-
-          bool isServiceRunning = await service.isRunning();
-
-          print('IS SERVICE RUNNING: $isServiceRunning');
-
-          try {
-            service.invoke('stopService');
-
-            if (positionStream != null) {
-              positionStream!.cancel();
-            }
-            // instan.stopSelf();
-          } on Exception catch (e) {
-            print('SERVICE STOP BG EXE: $e');
-          }
-
-          final appDirectory = await getApplicationDocumentsDirectory();
-          ourDirectory = Directory('${appDirectory.path}');
-
-          File? zipFile;
-          if (timer != null) timer!.cancel();
-          print('TIMER STOPPED ${ourDirectory!.path}/$tripId');
-          final dataDir = Directory('${ourDirectory!.path}/$tripId');
-
-          try {
-            zipFile = File('${ourDirectory!.path}/$tripId.zip');
-
-            ZipFile.createFromDirectory(
-                sourceDir: dataDir, zipFile: zipFile, recurseSubDirs: true);
-            print('our path is $dataDir');
-          } catch (e) {
-            print(e);
-          }
-
-          File file = File(zipFile!.path);
-          print('FINAL PATH: ${file.path}');
-
-          sharedPreferences!.remove('trip_data');
-          sharedPreferences!.remove('trip_started');
-
-          // service.invoke('stopService');
-          widget.tripData = [];
-
-          onSave(file, context, tripId, vesselId, vesselName, vesselWeight);
+          CreateTrip().endTrip(
+              context: context,
+              scaffoldKey: scaffoldKey,
+              onEnded: () {
+                widget.tripData = [];
+                Navigator.pop(context);
+              });
         }, () {
           widget.tripData = [];
           Navigator.of(context).pop();
@@ -174,108 +112,15 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  showAlertDialog(
-      BuildContext context, String tripId, vesselId, vesselName, vesselWeight) {
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("End Trip"),
-          content: Text("Do you want to end the trip?"),
-          actions: [
-            TextButton(
-              child: Text("Cancel"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              child: Text("End"),
-              onPressed: () async {
-                // ServiceInstance instan = Get.find(tag: 'serviceInstance');
-                FlutterBackgroundService service = FlutterBackgroundService();
-
-                bool isServiceRunning = await service.isRunning();
-
-                print('IS SERVICE RUNNING: $isServiceRunning');
-
-                try {
-                  service.invoke('stopService');
-                  if (positionStream != null) {
-                    positionStream!.cancel();
-                  }
-
-                  // instan.stopSelf();
-                } on Exception catch (e) {
-                  print('SERVICE STOP BG EXE: $e');
-                }
-
-                final appDirectory = await getApplicationDocumentsDirectory();
-                ourDirectory = Directory('${appDirectory.path}');
-
-                File? zipFile;
-                if (timer != null) timer!.cancel();
-                print('TIMER STOPPED ${ourDirectory!.path}/$tripId');
-                final dataDir = Directory('${ourDirectory!.path}/$tripId');
-
-                try {
-                  zipFile = File('${ourDirectory!.path}/$tripId.zip');
-
-                  ZipFile.createFromDirectory(
-                      sourceDir: dataDir,
-                      zipFile: zipFile,
-                      recurseSubDirs: true);
-                  print('our path is $dataDir');
-                } catch (e) {
-                  print(e);
-                }
-
-                File file = File(zipFile!.path);
-                print('FINAL PATH: ${file.path}');
-
-                sharedPreferences!.remove('trip_data');
-                sharedPreferences!.remove('trip_started');
-
-                // service.invoke('stopService');
-
-                onSave(
-                    file, context, tripId, vesselId, vesselName, vesselWeight);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Future<void> onSave(File file, BuildContext context, String tripId, vesselId,
       vesselName, vesselWeight) async {
     pos.Position? locationData =
         await Utils.getLocationPermission(context, scaffoldKey);
-    // await fetchDeviceInfo();
     await fetchDeviceData();
 
     debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
-    // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
-    // String latitude = locationData!.latitude!.toString();
-    // String longitude = locationData.longitude!.toString();
 
     debugPrint("current lod:$vesselWeight");
-
-    /*await _databaseService.insertTrip(Trip(
-        id: tripId,
-        vesselId: vesselId,
-        vesselName: vesselName,
-        currentLoad: vesselWeight,
-        filePath: file.path,
-        isSync: 0,
-        tripStatus: 0,
-        createdAt: DateTime.now().toUtc().toString(),
-        updatedAt: DateTime.now().toUtc().toString(),
-        lat: latitude,
-        long: longitude,
-        deviceInfo: deviceDetails!.toJson().toString()));*/
 
     await sharedPreferences!.reload();
 
@@ -452,7 +297,6 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.white,
         ),
         drawer: const CustomDrawer(),
-
         body: TabBarView(
           children: [
             VesselBuilder(
@@ -483,13 +327,6 @@ class _HomePageState extends State<HomePage> {
                   if (result != null) {
                     print('RESULT HOME PAGE $result');
                     if (result) {
-                      /* Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePage(),
-                          ),
-                          ModalRoute.withName(""));*/
-                      // commonProvider.getTripsCount();
                       setState(() {
                         getVesselFuture = _databaseService.vessels();
                         // _getTripsCount();
@@ -505,94 +342,9 @@ class _HomePageState extends State<HomePage> {
               child: TripViewListing(
                 scaffoldKey: scaffoldKey,
               ),
-              // TripBuilder(
-              //   future: _gettrips(),
-              // ),
             ),
           ],
         ),
-        // floatingActionButton: SpeedDial(
-        //   // marginBottom: 10, //margin bottom
-        //   icon: Icons.menu, //icon on Floating action button
-        //   activeIcon: Icons.close, //icon when menu is expanded on button
-        //   backgroundColor:
-        //       letsGetStartedButtonColor, //background color of button
-        //   foregroundColor: Colors.white, //font color, icon color in button
-        //   activeBackgroundColor:
-        //       letsGetStartedButtonColor, //background color when menu is expanded
-        //   activeForegroundColor: Colors.white,
-        //   buttonSize: Size(55, 55),
-        //   visible: true,
-        //   closeManually: false,
-        //   curve: Curves.bounceIn,
-        //   overlayColor: Colors.black,
-        //   overlayOpacity: 0.5,
-        //   onOpen: () {}, // action when menu opens
-        //   onClose: () {}, //action when menu closes
-        //
-        //   elevation: 8.0, //shadow elevation of button
-        //   shape: CircleBorder(), //shape of button
-        //
-        //   children: [
-        //     SpeedDialChild(
-        //         backgroundColor: buttonBGColor,
-        //         foregroundColor: Colors.white,
-        //         label: 'Add Vessel',
-        //         labelStyle: TextStyle(fontSize: 14.0),
-        //         onTap: () {
-        //           Navigator.of(context)
-        //               .push(
-        //                 MaterialPageRoute(
-        //                   builder: (_) => PickImages(),
-        //                   fullscreenDialog: true,
-        //                 ),
-        //               )
-        //               .then((_) => setState(() {}));
-        //         },
-        //         // onLongPress: () {
-        //         //   Navigator.of(context)
-        //         //       .push(
-        //         //         MaterialPageRoute(
-        //         //           builder: (_) => VesselFormPage(),
-        //         //           fullscreenDialog: true,
-        //         //         ),
-        //         //       )
-        //         //       .then((_) => setState(() {}));
-        //         // },
-        //         child: Icon(Icons.add)),
-        //     // ToDo: floating button elements
-        //     // SpeedDialChild(
-        //     //   child: FaIcon(FontAwesomeIcons.ship),
-        //     //   backgroundColor: primaryColor,
-        //     //   foregroundColor: Colors.white,
-        //     //   label: 'Start Trip',
-        //     //   labelStyle: TextStyle(fontSize: 14.0),
-        //     //   onTap: () async{
-        //     //     List<CreateVessel>?vessel=await _databaseService.getAllVessels();
-        //     //     // print(vessel[0].vesselName);
-        //     //     Navigator.of(context)
-        //     //         .push(
-        //     //       MaterialPageRoute(
-        //     //         builder: (_) => StartTrip(vessels: vessel,context: context,),
-        //     //         fullscreenDialog: true,
-        //     //       ),
-        //     //     );
-        //     //   },
-        //     //   onLongPress: () {
-        //     //     Navigator.of(context)
-        //     //         .push(
-        //     //       MaterialPageRoute(
-        //     //         builder: (_) => StartTrip(context: context,),
-        //     //         fullscreenDialog: true,
-        //     //       ),
-        //     //     )
-        //     //         .then((_) => setState(() {}));
-        //     //   },
-        //     // ),
-        //
-        //     // add more menu item children here
-        //   ],
-        // ),
       ),
     );
   }

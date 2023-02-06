@@ -13,67 +13,10 @@ import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/provider/common_provider.dart';
+import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 
-// class TripViewBuilder extends StatefulWidget {
-//   const TripViewBuilder({Key? key}) : super(key: key);
-//
-//   @override
-//   State<TripViewBuilder> createState() => _TripViewBuilderState();
-// }
-//
-// class _TripViewBuilderState extends State<TripViewBuilder> {
-//   final DatabaseService _databaseService = DatabaseService();
-//
-//   Future<List<Trip>> getTripListByVesselId(String id) async {
-//     return await _databaseService.getAllTripsByVesselId(id);
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     return FutureBuilder<List<Trip>>(
-//       future: getTripListByVesselId(id),
-//       builder: (context, snapshot) {
-//         return snapshot.data != null
-//             ? StatefulBuilder(
-//             builder: (BuildContext context, StateSetter setter) {
-//               return Padding(
-//                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-//                 child: ListView.builder(
-//                   itemCount: snapshot.data!.length,
-//                   itemBuilder: (context, index) {
-//                     return snapshot.data!.isNotEmpty
-//                         ? TripWidget(
-//                       tripList: snapshot.data![index],
-//                     )
-//                         : commonText(
-//                         text: 'oops! No Trips are added yet',
-//                         context: context,
-//                         textSize: displayWidth(context) * 0.04,
-//                         textColor: Theme.of(context).brightness ==
-//                             Brightness.dark
-//                             ? Colors.white
-//                             : Colors.black,
-//                         fontWeight: FontWeight.w500);
-//                   },
-//                 ),
-//               );
-//             })
-//             : Container(
-//           child: commonText(
-//               text: 'oops! No Trips are added yet',
-//               context: context,
-//               textSize: displayWidth(context) * 0.04,
-//               textColor:
-//               Theme.of(context).brightness == Brightness.dark
-//                   ? Colors.white
-//                   : Colors.black,
-//               fontWeight: FontWeight.w500),
-//         );
-//       },
-//     );
-//   }
-// }
 class TripViewListing extends StatefulWidget {
   String? vesselId;
   VoidCallback? onTripEnded;
@@ -134,14 +77,11 @@ class _TripViewListingState extends State<TripViewListing> {
                               scaffoldKey: widget.scaffoldKey,
                               tripList: snapshot.data![index],
                               tripUploadedSuccessfully: () {
-                                /*getTripsByVesselId();
-                                setState(() {});*/
                                 setState(() {
                                   future = _databaseService.trips();
                                   //snapshot.data![index].tripStatus = 1;
                                 });
                                 commonProvider.getTripsCount();
-                                //debugPrint('Trip Uploaded');
                               },
                               onTap: () async {
                                 Utils().showEndTripDialog(context, () async {
@@ -154,101 +94,27 @@ class _TripViewListingState extends State<TripViewListing> {
                                         true;
                                   });
 
-                                  bool isServiceRunning =
-                                      await service.isRunning();
+                                  CreateTrip().endTrip(
+                                      context: context,
+                                      scaffoldKey: widget.scaffoldKey,
+                                      onEnded: () async {
+                                        setState(() {
+                                          //future = _databaseService.trips();
+                                          snapshot.data![index].tripStatus = 1;
+                                        });
 
-                                  print(
-                                      'IS SERVICE RUNNING: $isServiceRunning');
+                                        await commonProvider
+                                            .updateTripStatus(false);
 
-                                  try {
-                                    service.invoke('stopService');
+                                        if (widget.onTripEnded != null) {
+                                          widget.onTripEnded!.call();
+                                        }
 
-                                    // instan.stopSelf();
-                                  } on Exception catch (e) {
-                                    print('SERVICE STOP BG EXE: $e');
-                                  }
+                                        await tripIsRunningOrNot(
+                                            snapshot.data![index]);
+                                      });
 
-                                  File? zipFile;
-                                  if (timer != null) timer!.cancel();
-                                  print(
-                                      'TIMER STOPPED ${ourDirectory!.path}/${snapshot.data![index].id}');
-                                  final dataDir = Directory(
-                                      '${ourDirectory!.path}/${snapshot.data![index].id}');
-
-                                  try {
-                                    zipFile = File(
-                                        '${ourDirectory!.path}/${snapshot.data![index].id}.zip');
-
-                                    ZipFile.createFromDirectory(
-                                        sourceDir: dataDir,
-                                        zipFile: zipFile,
-                                        recurseSubDirs: true);
-                                    print('our path is $dataDir');
-                                  } catch (e) {
-                                    print(e);
-                                  }
-
-                                  File file = File(zipFile!.path);
-                                  print('FINAL PATH: ${file.path}');
-
-                                  await sharedPreferences!.reload();
-
-                                  int? tripDuration = sharedPreferences!
-                                          .getInt("tripDuration") ??
-                                      0;
-                                  int? tripDistance = sharedPreferences!
-                                          .getInt("tripDistance") ??
-                                      0;
-                                  String? tripSpeed = sharedPreferences!
-                                          .getString("tripSpeed") ??
-                                      '0';
-
-                                  String finalTripDuration =
-                                      Utils.calculateTripDuration(
-                                          (tripDuration / 1000).toInt());
-                                  String finalTripDistance =
-                                      tripDistance.toStringAsFixed(2);
-                                  GlobalKey<ScaffoldState> scaffoldKey =
-                                      GlobalKey();
-
-                                  Position? currentLocationData =
-                                      await Utils.getLocationPermission(
-                                          context, scaffoldKey);
-                                  await _databaseService.updateTripStatus(
-                                      1,
-                                      file.path,
-                                      DateTime.now().toUtc().toString(),
-                                      json.encode([
-                                        currentLocationData!.latitude,
-                                        currentLocationData.longitude
-                                      ]),
-                                      finalTripDuration,
-                                      finalTripDistance,
-                                      tripSpeed.toString(),
-                                      snapshot.data![index].id!);
-
-                                  _databaseService
-                                      .updateVesselDataWithDurationSpeedDistance(
-                                          finalTripDuration,
-                                          finalTripDistance,
-                                          tripSpeed.toString(),
-                                          snapshot.data![index].vesselId!);
-
-                                  sharedPreferences!.remove('trip_data');
-
-                                  setState(() {
-                                    //future = _databaseService.trips();
-                                    snapshot.data![index].tripStatus = 1;
-                                  });
-
-                                  if (widget.onTripEnded != null) {
-                                    widget.onTripEnded!.call();
-                                    await commonProvider
-                                        .updateTripStatus(false);
-                                  }
-
-                                  await tripIsRunningOrNot(
-                                      snapshot.data![index]);
+                                  return;
                                 }, () {
                                   Navigator.of(context).pop();
                                 });

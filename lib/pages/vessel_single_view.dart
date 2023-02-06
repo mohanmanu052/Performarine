@@ -1,24 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'dart:ui';
-import 'package:app_settings/app_settings.dart';
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
-    as locationAcc;
+
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
+import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
+    as locationAcc;
 import 'package:get/get.dart';
 // import 'package:location/location.dart';
 import 'package:lottie/lottie.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:performarine/common_widgets/trip_builder.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -26,27 +23,20 @@ import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/expansionCard.dart';
 import 'package:performarine/common_widgets/widgets/location_permission_dialog.dart';
-import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/home_page.dart';
-import 'package:performarine/pages/new_screen.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
-import 'package:performarine/pages/trip/trip_list_screen.dart';
-import 'package:performarine/pages/trip/trip_widget.dart';
-import 'package:performarine/pages/tripStart.dart';
-import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/provider/common_provider.dart';
+import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_sensors/flutter_sensors.dart' as s;
 
 class VesselSingleView extends StatefulWidget {
   CreateVessel? vessel;
@@ -165,13 +155,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
     debugPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
   }
 
-  Future<List<Trip>> _getTripsByID(String id) async {
-    return await _databaseService.getAllTripsByVesselId(id);
-  }
-
-  _isThereCurrentDialogShowing(BuildContext context) =>
-      ModalRoute.of(context)?.isCurrent != true;
-
   Future<void> _onVesselDelete(CreateVessel vessel) async {
     await _databaseService.deleteVessel(vessel.id.toString());
     setState(() {});
@@ -234,22 +217,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
       }
     });
 
-    /*setState(() {
-      isEndTripButton = tripIsRunning;
-      isStartButton = !tripIsRunning;
-    });*/
     return result;
   }
 
   @override
   Widget build(BuildContext context) {
-    // isEndTripButton?writeSensorDataToFile(getTripId):null;
     return WillPopScope(
       onWillPop: () async {
-        /*if (isBottomSheetOpened) {
-          // Navigator.pop(context);
-          return false;
-        } else */
         if (widget.isCalledFromSuccessScreen!) {
           Navigator.pushAndRemoveUntil(
               context,
@@ -261,13 +235,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
           return false;
         } else {
           print('hhhhh');
-          /*if (isDataUpdated) {
-            Navigator.of(context).pop(true);
-            return false;
-          } else {
-            Navigator.of(context).pop(false);
-            return false;
-          }*/
+
           Navigator.of(context).pop(true);
           return false;
         }
@@ -294,11 +262,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       ),
                       ModalRoute.withName(""));
                 } else {
-                  /*if (isDataUpdated) {
-                    Navigator.of(context).pop(true);
-                  } else {
-                    Navigator.of(context).pop(false);
-                  }*/
                   Navigator.of(context).pop(true);
                 }
               },
@@ -322,15 +285,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         scaffoldKey,
                         widget.vessel,
                         (value) async {
-                          /*Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => VesselFormPage(
-                                vessel: widget.vessel,
-                              ),
-                              fullscreenDialog: true,
-                            ),
-                          );*/
-
                           var result = await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => AddNewVesselScreen(
@@ -418,116 +372,22 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 print(
                                     'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
 
-                                await sharedPreferences!.reload();
-
-                                List<String>? tripData = sharedPreferences!
-                                    .getStringList('trip_data');
-
-                                print(
-                                    'TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')}');
-
-                                String tripId = tripData![0];
-                                String vesselId = tripData[1];
-
-                                int? tripDuration =
-                                    sharedPreferences!.getInt("tripDuration") ??
-                                        1;
-                                int? tripDistance =
-                                    sharedPreferences!.getInt("tripDistance") ??
-                                        1;
-                                String? tripSpeed =
-                                    sharedPreferences!.getString("tripSpeed") ??
-                                        '1';
-
-                                String finalTripDuration =
-                                    calculateTripDuration(
-                                        (tripDuration / 1000).toInt());
-                                String finalTripDistance =
-                                    tripDistance.toStringAsFixed(2);
-
-                                /*setState(() {
-                              tripIsRunning = false;
-                            });*/
-
-                                print('TRIP ID $vesselId');
-                                service.invoke('stopService');
-                                // if (locationTimer != null) {
-                                //   locationTimer!.cancel();
-                                // }
-                                if (positionStream != null) {
-                                  positionStream!.cancel();
-                                }
-
-                                File? zipFile;
-                                if (timer != null) timer!.cancel();
-                                print(
-                                    'TIMER STOPPED ${ourDirectory!.path}/$tripId');
-                                final dataDir =
-                                    Directory('${ourDirectory!.path}/$tripId');
-
-                                try {
-                                  zipFile =
-                                      File('${ourDirectory!.path}/$tripId.zip');
-
-                                  ZipFile.createFromDirectory(
-                                      sourceDir: dataDir,
-                                      zipFile: zipFile,
-                                      recurseSubDirs: true);
-                                  print('our path is $dataDir');
-                                } catch (e) {
-                                  print(e);
-                                }
-
-                                File file = File(zipFile!.path);
-                                setState(() {
-                                  isEndTripButton = false;
-                                  // isZipFileCreate = true;
-                                });
-                                /*Future.delayed(Duration(seconds: 1)).then((value) {
-                              setState(() {
-                                isZipFileCreate = true;
-                              });
-                            });*/
-                                var pref =
-                                    await SharedPreferences.getInstance();
-                                print('FINAL PATH: ${file.path}');
-                                print(
-                                    'FINAL PATH: ${pref.getInt("tripDuration")}');
-
-                                sharedPreferences!.remove('trip_data');
-                                sharedPreferences!.remove('trip_started');
-                                Position? currentLocationData =
-                                    await Utils.getLocationPermission(
-                                        context, scaffoldKey);
-                                await _databaseService.updateTripStatus(
-                                    1,
-                                    file.path,
-                                    DateTime.now().toUtc().toString(),
-                                    json.encode([
-                                      currentLocationData!.latitude,
-                                      currentLocationData.longitude
-                                    ]),
-                                    finalTripDuration,
-                                    finalTripDistance,
-                                    tripSpeed.toString(),
-                                    tripId);
-
-                                _databaseService
-                                    .updateVesselDataWithDurationSpeedDistance(
-                                        finalTripDuration,
-                                        finalTripDistance,
-                                        tripSpeed.toString(),
-                                        vesselId);
-
-                                await tripIsRunningOrNot();
+                                CreateTrip().endTrip(
+                                    context: context,
+                                    scaffoldKey: scaffoldKey,
+                                    onEnded: () async {
+                                      print('TRIPPPPPP ENDEDDD:');
+                                      setState(() {
+                                        isEndTripButton = false;
+                                        // isZipFileCreate = true;
+                                      });
+                                      await tripIsRunningOrNot();
+                                    });
                               }, () {
                                 Navigator.of(context).pop();
                               });
                             })
-                    : /*isLocationDialogBoxOpen
-                        ? Center(child: CircularProgressIndicator())
-                        :*/
-                    CommonButtons.getActionButton(
+                    : CommonButtons.getActionButton(
                         title: 'Start Trip',
                         context: context,
                         fontSize: displayWidth(context) * 0.042,
@@ -610,162 +470,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               // await Permission.locationAlways.request();
                             }
                           }
-
-                          /*bool isLocationPermitted =
-                              await Permission.locationAlways.isGranted;
-
-                          if (isLocationPermitted) {
-                            vessel!.add(widget.vessel!);
-
-                            await locationPermissions(
-                                widget.vessel!.vesselSize!,
-                                widget.vessel!.name!,
-                                widget.vessel!.id!);
-                          } else {
-                            await Utils.getLocationPermission(
-                                context, scaffoldKey);
-
-                            await Permission.locationAlways.request();
-                            bool isLocationPermitted =
-                                await Permission.locationAlways.isGranted;
-                            if (isLocationPermitted) {
-                              vessel!.add(widget.vessel!);
-
-                              await locationPermissions(
-                                  widget.vessel!.vesselSize!,
-                                  widget.vessel!.name!,
-                                  widget.vessel!.id!);
-                            } */ /*else {
-                              await Permission.locationAlways.request();
-                              bool isLocationPermitted =
-                                  await Permission.locationAlways.isGranted;
-                              if (isLocationPermitted) {
-                                vessel!.add(widget.vessel!);
-
-                                await locationPermissions(
-                                    widget.vessel!.vesselSize!,
-                                    widget.vessel!.name!,
-                                    widget.vessel!.id!);
-                              }
-                            }*/ /*
-                          }*/
                         }),
               ),
             )
           ],
         ),
-        // SingleChildScrollView(
-        //   child: Column(
-        //     // physics: const BouncingScrollPhysics(),
-        //     children: <Widget>[
-        //       ExpansionCard(
-        //           widget.vessel, (value) {}, (value) {}, (value) {}, false),
-
-        //       Container(
-        //         height: 200,
-        //         width: MediaQuery.of(context).size.width,
-        //         child: TripBuilder(
-        //           future: _getTripsByID(widget.vessel!.id.toString()),
-        //         ),
-        //       ),
-        //
-        //
-        //     ],
-        //   ),
-        // ),
-        /*bottomNavigationBar: Container(
-          margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
-          child: CommonButtons.getActionButton(
-              title: 'Start Trip',
-              context: context,
-              fontSize: displayWidth(context) * 0.042,
-              textColor: Colors.white,
-              buttonPrimaryColor: buttonBGColor,
-              borderColor: buttonBGColor,
-              width: displayWidth(context),
-              onTap: () async {
-                vessel!.add(widget.vessel!);
-
-                // print(vessel[0].vesselName);
-                */ /*Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    StartTrip(vessels: vessel, context: context),
-                                fullscreenDialog: true,
-                              ),
-                            );*/ /*
-
-                //ToDo: @rupali: enable the start trip by adding the below code.and add the expansion tile like vessel card for trip history also.
-                // locationPermissions(widget.vesselSize!, widget.vesselName!,
-                //     widget.vesselId!);
-
-                */ /*Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => TripListScreen(
-                      vesselId: widget.vessel!.id,
-                      vesselName: widget.vessel!.name,
-                      vesselSize: widget.vessel!.vesselSize,
-                    ),
-                    fullscreenDialog: true,
-                  ),
-                );*/ /*
-
-                locationPermissions(widget.vessel!.vesselSize!,
-                    widget.vessel!.name!, widget.vessel!.id!);
-                // getLocationData();
-
-                // getBottomSheet(
-                //   context,
-                //   size,
-                //   widget.vesselName!,
-                //   widget.vesselId!,
-                // );
-                _streamSubscriptions.add(
-                  accelerometerEvents.listen(
-                    (AccelerometerEvent event) {
-                      setState(() {
-                        _accelerometerValues = <double>[
-                          event.x,
-                          event.y,
-                          event.z
-                        ];
-                      });
-                    },
-                  ),
-                );
-                _streamSubscriptions.add(
-                  gyroscopeEvents.listen(
-                    (GyroscopeEvent event) {
-                      setState(() {
-                        _gyroscopeValues = <double>[event.x, event.y, event.z];
-                      });
-                    },
-                  ),
-                );
-                _streamSubscriptions.add(
-                  userAccelerometerEvents.listen(
-                    (UserAccelerometerEvent event) {
-                      setState(() {
-                        _userAccelerometerValues = <double>[
-                          event.x,
-                          event.y,
-                          event.z
-                        ];
-                      });
-                    },
-                  ),
-                );
-                _streamSubscriptions.add(
-                  magnetometerEvents.listen(
-                    (MagnetometerEvent event) {
-                      setState(() {
-                        _magnetometerValues = <double>[event.x, event.y, event.z];
-                      });
-                    },
-                  ),
-                );
-              }),
-        ),*/
       ),
     );
   }
@@ -2824,134 +2533,29 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             borderColor: buttonBGColor,
                                             width: displayWidth(context),
                                             onTap: () async {
-                                              // getTripId = await getTripIdFromPref();
-                                              print('time stamp:' +
-                                                  DateTime.now()
-                                                      .toUtc()
-                                                      .toString());
-
                                               stateSetter(() {
                                                 addingDataToDB = true;
                                               });
 
-                                              service.invoke('stopService');
-
-                                              /*if (locationTimer != null) {
-                                                locationTimer!.cancel();
-                                              }*/
-
-                                              if (positionStream != null) {
-                                                positionStream!.cancel();
-                                              }
-
-                                              File? zipFile;
-                                              if (timer != null)
-                                                timer!.cancel();
-                                              print(
-                                                  'TIMER STOPPED ${ourDirectory!.path}/$getTripId');
-                                              final dataDir = Directory(
-                                                  '${ourDirectory!.path}/$getTripId');
-
-                                              try {
-                                                zipFile = File(
-                                                    '${ourDirectory!.path}/$getTripId.zip');
-
-                                                ZipFile.createFromDirectory(
-                                                    sourceDir: dataDir,
-                                                    zipFile: zipFile,
-                                                    recurseSubDirs: true);
-                                                print('our path is $dataDir');
-                                              } catch (e) {
-                                                print(e);
-                                              }
-
-                                              File file = File(zipFile!.path);
-                                              /*stateSetter(() {
-                                            isEndTripButton = false;
-                                            isZipFileCreate = true;
-                                          });*/
-
-                                              print('FINAL PATH: ${file.path}');
-                                              print(
-                                                  'FINAL PATH: ${sharedPreferences == null}');
-
-                                              await sharedPreferences!.reload();
-
-                                              int? tripDuration =
-                                                  sharedPreferences!
-                                                      .getInt("tripDuration");
-                                              int? tripDistance =
-                                                  sharedPreferences!
-                                                      .getInt("tripDistance");
-                                              String? tripSpeed =
-                                                  sharedPreferences!
-                                                      .getString("tripSpeed");
-
-                                              String finalTripDuration =
-                                                  calculateTripDuration(
-                                                      (tripDuration! / 1000)
-                                                          .toInt());
-                                              String finalTripDistance =
-                                                  tripDistance!
-                                                      .toStringAsFixed(2);
-
-                                              sharedPreferences!
-                                                  .remove('trip_data');
-                                              sharedPreferences!
-                                                  .remove('trip_started');
-                                              Position? currentLocationData =
-                                                  await Utils
-                                                      .getLocationPermission(
-                                                          context, scaffoldKey);
-                                              await _databaseService
-                                                  .updateTripStatus(
-                                                      1,
-                                                      file.path,
-                                                      DateTime.now()
-                                                          .toUtc()
-                                                          .toString(),
-                                                      json.encode([
-                                                        currentLocationData!
-                                                            .latitude,
-                                                        currentLocationData
-                                                            .longitude
-                                                      ]),
-                                                      finalTripDuration,
-                                                      finalTripDistance,
-                                                      tripSpeed.toString(),
-                                                      getTripId);
-
-                                              _databaseService
-                                                  .updateVesselDataWithDurationSpeedDistance(
-                                                      finalTripDuration,
-                                                      finalTripDistance,
-                                                      tripSpeed.toString(),
-                                                      widget.vessel!.id!);
-
-                                              Future.delayed(
-                                                      Duration(seconds: 3))
-                                                  .then((value) {
-                                                if (mounted) {
-                                                  stateSetter(() {
-                                                    addingDataToDB = false;
-                                                    isEndTripButton = false;
-                                                    isZipFileCreate = true;
+                                              CreateTrip().endTrip(
+                                                  context: context,
+                                                  scaffoldKey: scaffoldKey,
+                                                  onEnded: () {
+                                                    Future.delayed(Duration(
+                                                            seconds: 3))
+                                                        .then((value) {
+                                                      if (mounted) {
+                                                        stateSetter(() {
+                                                          addingDataToDB =
+                                                              false;
+                                                          isEndTripButton =
+                                                              false;
+                                                          isZipFileCreate =
+                                                              true;
+                                                        });
+                                                      }
+                                                    });
                                                   });
-                                                }
-                                              });
-
-                                              // stateSetter(() {
-                                              //   isEndTripButton = false;
-                                              //   isZipFileCreate = true;
-                                              // });
-
-                                              /*File file = File(zipFile!.path);
-                                              Future.delayed(Duration(seconds: 1))
-                                                  .then((value) {
-                                                stateSetter(() {
-                                                  isZipFileCreate = true;
-                                                });
-                                              });*/
                                             })
                                     : isZipFileCreate
                                         ? CommonButtons.getActionButton(
@@ -3197,213 +2801,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
     }
   }
 
-  Future<Position> getLocationData() async {
-    Position? locationData =
-        await Utils.getLocationPermission(context, scaffoldKey);
-
-    latitude = locationData!.latitude.toString();
-    longitude = locationData.longitude.toString();
-
-    debugPrint('LAT ${latitude}');
-    debugPrint('LONG ${longitude}');
-
-    return locationData;
-  }
-
-  startSensorFunctionality(StateSetter stateSetter) async {
-    /*setState(() {
-      getTripId = ObjectId();
-    });*/
-    //onSave();
-    fileName = '$fileIndex.csv';
-    // String? tripId;
-    // getTripId = await getTripIdFromPref();
-    // print(widget.vessel!.id);
-    debugPrint('tripId: $getTripId');
-    stateSetter(() {
-      isStartButton = false;
-      isEndTripButton = true;
-    });
-
-    Trip tripStatus = await _databaseService.getTrip(getTripId);
-
-    if (tripStatus.tripStatus == 0) {
-      timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
-        writeSensorDataToFile(getTripId);
-      });
-    }
-  }
-
-  getTripIdFromPref() async {
-    final pref = await Utils.initSharedPreferences();
-    var tripId = pref.getString('tripId') ?? '';
-    return tripId;
-  }
-
-  void writeSensorDataToFile(String tripId) async {
-    String filePath = await getFile(tripId);
-    File file = File(filePath);
-
-    int fileSize = await checkFileSize(file);
-
-    /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
-    /// Now File Size is 200000
-    if (fileSize >= 200000) {
-      print('STOPPED WRITING');
-      print('CREATING NEW FILE');
-      // if (timer != null) timer!.cancel();
-      // print('TIMER STOPPED');
-
-      setState(() {
-        fileIndex = fileIndex + 1;
-
-        fileName = '$fileIndex.csv';
-
-        // print('FILE NAME: $fileName');
-      });
-      print('NEW FILE CREATED');
-
-      /// STOP WRITING & CREATE NEW FILE
-    } else {
-      print('WRITING');
-
-      Position? locationData =
-          await Utils.getLocationPermission(context, scaffoldKey);
-      Geolocator.getCurrentPosition(
-        desiredAccuracy: locationAcc.LocationAccuracy.high,
-      ).then((value) {
-        latitude = value.latitude.toString();
-        longitude = value.longitude.toString();
-      });
-
-      final LocationSettings locationSettings = LocationSettings(
-        accuracy: locationAcc.LocationAccuracy.high,
-        // distanceFilter: 0,
-      );
-      Geolocator.getPositionStream(locationSettings: locationSettings)
-          .listen((Position event) {
-        print(event == null
-            ? 'Unknown'
-            : '${event.latitude.toString()}, ${event.longitude.toString()}');
-        latitude = event.latitude.toString();
-        longitude = event.longitude.toString();
-      });
-      // Geolocator.get {
-      //   print(event == null ? 'Unknown' : '${event.latitude.toString()}, ${event.longitude.toString()}');
-      //   latitude=event.latitude;
-      //   longitude=event.longitude;
-      // });
-
-      // latitude = locationData!.latitude!.toString();
-      // longitude = locationData.longitude!.toString();
-
-      debugPrint('LAT single view ${latitude}');
-      debugPrint('LONG single view ${longitude}');
-
-      String acc = convertDataToString('AAC', _accelerometerValues ?? []);
-      String uacc = convertDataToString('UACC', _userAccelerometerValues ?? []);
-      String gyro = convertDataToString('GYRO', _gyroscopeValues ?? []);
-      String mag = convertDataToString('MAG', _magnetometerValues ?? []);
-      String location = '$latitude $longitude';
-      String gps = convertLocationToString('GPS', location);
-      debugPrint('GPS vessel single GPS ${gps}');
-
-      String finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
-
-      file.writeAsString('$finalString\n', mode: FileMode.append);
-
-      //debugPrint('finalString ${finalString}');
-    }
-  }
-
-  Future<String> getFile(String tripId) async {
-    debugPrint("tripId: $getTripId");
-    String folderPath = await getOrCreateFolder(tripId);
-
-    File sensorDataFile = File('$folderPath/$fileName');
-    return sensorDataFile.path;
-  }
-
-  int checkFileSize(File file) {
-    if (file.existsSync()) {
-      var bytes = file.lengthSync();
-      double sizeInKB = bytes / 1024;
-      double sizeInMB = sizeInKB / 1024;
-
-      int finalSizeInMB = sizeInMB.toInt();
-      // print('FILE SIZE: $sizeInMB');
-      // print('FILE SIZE KB: $sizeInKB');
-      //print('FINAL FILE SIZE: $finalSizeInMB');
-      return sizeInKB.toInt();
-    } else {
-      return -1;
-    }
-  }
-
-  String convertLocationToString(String type, String sensorData) {
-    var todayDate = DateTime.now().toUtc();
-    var gps = sensorData.toString().replaceAll(" ", ",");
-    // debugPrint('location data: $type,$gps,$todayDate');
-    // return '$type,$gps,$todayDate';
-    return '$type,"${[gps].toString()}",$todayDate,$getTripId';
-  }
-
-  String convertDataToString(String type, List<double> sensorData) {
-    String? input = sensorData.toString();
-    final removedBrackets = input.substring(1, input.length - 1);
-    var replaceAll = removedBrackets.replaceAll(" ", "");
-    var todayDate = DateTime.now().toUtc();
-    // return  '$type,$replaceAll,$todayDate';
-    return '$type,"${[replaceAll].toString()}",$todayDate,$getTripId';
-  }
-
-  Future<String> getOrCreateFolder(String tripId) async {
-    final appDirectory = await getApplicationDocumentsDirectory();
-    ourDirectory = Directory('${appDirectory.path}/$tripId');
-
-    debugPrint('FOLDER PATHH $ourDirectory');
-    debugPrint('FOLDER PATHH TRIP ID $tripId');
-    /* var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      var stat = await Permission.storage.request();
-
-    } else {}*/
-
-    if ((await ourDirectory!.exists())) {
-      return ourDirectory!.path;
-    } else {
-      ourDirectory!.create();
-      return ourDirectory!.path;
-    }
-  }
-
-  deleteFolder() async {
-    final appDirectory = await getApplicationDocumentsDirectory();
-    Directory ourDirectory = Directory('${appDirectory.path}/sensor');
-
-    if (await ourDirectory.exists()) {
-      Directory('${appDirectory.path}/sensor').delete(recursive: true);
-    } else {
-      debugPrint('Custom Direcotry deleted');
-    }
-  }
-
   Future<void> onSave(String file, BuildContext context,
       bool savingDataWhileStartService) async {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
     Position? locationData =
         await Utils.getLocationPermission(context, scaffoldKey);
-//
-//     location = Position();
-//
-//     Position!.onLocationChanged.listen((LocationData currentLocation) {
-//       print("${currentLocation.latitude} : ${currentLocation.longitude}");
-//       setState(() {
-//         locationData = currentLocation;
-//       });
-//     });
-    // await fetchDeviceInfo();
     await fetchDeviceData();
 
     debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
@@ -3413,10 +2816,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     debugPrint("current lod:$currentLoad");
     debugPrint("current PATH:$file");
-
-    /*setState(() {
-      getTripId = ObjectId();
-    });*/
 
     debugPrint("ON SAVE FIRST INSERT :$getTripId");
 
@@ -3436,41 +2835,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
           deviceInfo: deviceDetails!.toJson().toString()));
     } on Exception catch (e) {
       print('ON SAVE EXE: $e');
-    }
-
-    /*if (!savingDataWhileStartService) {
-      await _databaseService.updateTripStatus(1, getTripId, file);
-      isZipFileCreate ? null : Navigator.pop(context);
-    }*/
-  }
-
-  // @pragma('vm:entry-point')
-  Future<void> onServiceStart(ServiceInstance service) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    DartPluginRegistrant.ensureInitialized();
-    // startTripService();
-  }
-
-  startTripService(StateSetter stateSetter) async {
-    bool isLocationPermitted = await Permission.locationAlways.isGranted;
-
-    if (isLocationPermitted) {
-      /// TODO Further Process
-      await getLocationData();
-
-      /// SAVED Sensor data
-      startSensorFunctionality(stateSetter);
-    } else {
-      await Utils.getLocationPermission(context, scaffoldKey);
-      bool isLocationPermitted = await Permission.locationAlways.isGranted;
-
-      if (isLocationPermitted) {
-        /// TODO Further Process
-        await getLocationData();
-
-        /// SAVED Sensor data
-        startSensorFunctionality(stateSetter);
-      }
     }
   }
 
@@ -3539,14 +2903,5 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isStartButton = false;
       isEndTripButton = true;
     });
-  }
-
-  String calculateTripDuration(int seconds) {
-    const secondsPerMinute = 60;
-    const secondsPerHour = 60 * 60;
-
-    //print('SPEED ${location!.speed.toString()}');
-
-    return '${(seconds / secondsPerHour).toStringAsFixed(0)}:${(seconds / secondsPerMinute).toStringAsFixed(0)}:$seconds';
   }
 }

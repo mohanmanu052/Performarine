@@ -127,7 +127,6 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                           widget.isEdit! ? widget.createVessel : null,
                       isEdit: widget.isEdit,
                     ),
-                    // AccountSetupScreen(pageController: pageController, scaffoldKey: scaffoldKey)
                   ],
                 ),
               ),

@@ -8,6 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
@@ -23,41 +24,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart' as loc;
 import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:performarine/models/trip.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart' as d;
 
 import 'package:timezone/timezone.dart' as tz;
+import 'package:url_launcher/url_launcher.dart';
 
 class Utils {
   static DateTime? currentBackPressedTime;
-
-  /*static Future<List<File>> pickFileFromGallery() async {
-    List<Media>? cameraImage = await ImagesPicker.pick(
-        pickType: PickType.image, cropOpt: CropOption(), count: 10);
-
-    kReleaseMode ? null : debugPrint('CAMERA ${cameraImage![0].path}');
-
-    List<File> filesList = [];
-
-    if (cameraImage != null) {
-      cameraImage.forEach((element) {
-        filesList.add(File(element.path));
-      });
-    }
-
-    return filesList;
-  }
-
-  static Future<List<File>> pickFileFromCamera() async {
-    List<Media>? cameraImage = await ImagesPicker.openCamera(
-        pickType: PickType.image, cropOpt: CropOption());
-
-    kReleaseMode ? null : debugPrint('CAMERA ${cameraImage![0].path}');
-
-    return [new File(cameraImage![0].path)];
-  }*/
 
   static Future<List<File>> pickCameraImages() async {
     final ImagePicker _picker = ImagePicker();
@@ -105,35 +82,6 @@ class Utils {
     if (result != null) {
       files = result.paths.map((path) => File(path!)).toList();
 
-      /*if (files.isNotEmpty) {
-        for (File singleFile in files) {
-          CroppedFile? croppedFile = await ImageCropper().cropImage(
-            sourcePath: singleFile.path,
-            aspectRatioPresets: [
-              CropAspectRatioPreset.square,
-              CropAspectRatioPreset.ratio3x2,
-              CropAspectRatioPreset.original,
-              CropAspectRatioPreset.ratio4x3,
-              CropAspectRatioPreset.ratio16x9
-            ],
-            uiSettings: [
-              AndroidUiSettings(
-                  toolbarTitle: 'Cropper',
-                  toolbarColor: Colors.deepOrange,
-                  toolbarWidgetColor: Colors.white,
-                  initAspectRatio: CropAspectRatioPreset.original,
-                  lockAspectRatio: false),
-              IOSUiSettings(
-                title: 'Cropper',
-              ),
-            ],
-          );
-
-          if (croppedFile != null) {
-            croppedFileList.add(File(croppedFile.path));
-          }
-        }
-      }*/
       return files;
     } else {
       // User canceled the picker
@@ -313,18 +261,6 @@ class Utils {
     // return locationData;
   }
 
-  static Future<Position> getCurrentLocation() async {
-    Position? locationData;
-
-    try {
-      await Geolocator.checkPermission();
-      locationData = await Geolocator.getCurrentPosition();
-    } on Exception catch (e) {
-      locationData = null;
-    }
-    return locationData!;
-  }
-
   static Future<SharedPreferences> initSharedPreferences() async {
     return await SharedPreferences.getInstance();
   }
@@ -448,120 +384,6 @@ class Utils {
           });
     }
     return false;
-  }
-
-  static checkInternet(GlobalKey<ScaffoldState> scaffoldKey) async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        return true;
-      }
-    } on SocketException catch (_) {
-      debugPrint('No Internet');
-      showDialog(
-          context: scaffoldKey.currentContext!,
-          builder: (BuildContext context) {
-            return CustomDialog(
-              text: 'No Internet',
-              subText: 'Please enable your data connection to continue.',
-              positiveBtn: 'Okay',
-              positiveBtnOnTap: () {
-                checkInternet(scaffoldKey);
-                Navigator.of(scaffoldKey.currentContext!).pop();
-              },
-            );
-          });
-    }
-    return false;
-  }
-
-  static void download(BuildContext context,
-      GlobalKey<ScaffoldState> scaffoldKey, String imageUrl) async {
-    bool isPermissionGranted = await Utils.getStoragePermission(context);
-    print('IS PERMISSION GRANTED: $isPermissionGranted');
-
-    Directory directory;
-
-    if (Platform.isAndroid) {
-      directory = Directory("storage/emulated/0/Download");
-    } else {
-      directory = await getApplicationDocumentsDirectory();
-    }
-
-    if (isPermissionGranted) {
-      bool doesExist = await directory.exists();
-      print(doesExist);
-
-      print('FILE URL: $imageUrl');
-      print('DOWNLOAD DIRECTORY PATH: ${directory.path}');
-
-      //showLoaderDialog(context);
-    }
-
-    /*ProgressDialog pr = ProgressDialog(context, type: ProgressDialogType.Download, isDismissible: true);
-    pr.style(
-        child: CircularProgressIndicator(),
-        message: 'Downloading',
-        progressWidget: CircularProgressIndicator(),
-        maxProgress: 100
-    );
-    pr.show();*/
-
-    Response resp;
-    d.Dio dio = d.Dio();
-
-    String fileName = imageUrl.split('/').last;
-    print('FILE NAME: $fileName');
-    String name = '${Random().nextInt(9999).toString()}${fileName.trim()}';
-
-    String directoryPath = '${directory.path}/$name';
-    print('DOWNLOAD DIRECTORY PATH WITH FILENAME: $directoryPath');
-
-    try {
-      dio.download(imageUrl, directoryPath,
-          onReceiveProgress: (progress, total) {
-        // pr.update(progress: double.parse(((progress/total)*100).toStringAsFixed(0)));
-
-        if (progress == total) {
-          /*if(pr.isShowing()) pr.hide();
-              pr.update(progress: 0.0);*/
-          Navigator.pop(context);
-
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey,
-              message: 'File located at: $directoryPath');
-          /*Utils.showActionSnackBar(
-              context, scaffoldKey, 'File located at: $directoryPath', () {
-            OpenFile.open(directoryPath);
-          });*/
-        }
-      });
-    } on d.DioError catch (e) {
-      print('DOWNLOAD EXE: ${e.error}');
-
-      /*if(pr.isShowing())
-      {
-        pr.hide();
-        pr.update(progress: 0.0);
-      }*/
-      Navigator.pop(context);
-    }
-
-    // pr.update(progress: 0.0);
-  }
-
-  static openFiles(String result) async {
-    var value = result.replaceAll(' ', '%20');
-
-    String mime = lookupMimeType(value)!;
-
-    Directory dir = await getApplicationDocumentsDirectory();
-    Response response;
-    var di = d.Dio();
-    var filePath = '${dir.path}_1.${mime.split('/').last}';
-    await di.download(value, filePath).then((value) {
-      OpenFile.open(filePath);
-    });
   }
 
   static void showActionSnackBar(BuildContext context,
@@ -758,5 +580,10 @@ class Utils {
     //print('SPEED ${location!.speed.toString()}');
 
     return '${(seconds / secondsPerHour).toStringAsFixed(0)}:${(seconds / secondsPerMinute).toStringAsFixed(0)}:$seconds';
+  }
+
+  static Future<void> launchURL(String url) async {
+    await launchUrl(Uri.parse(url));
+    return;
   }
 }

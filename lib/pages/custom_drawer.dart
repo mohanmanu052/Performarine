@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
@@ -29,7 +30,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
   void initState() {
     commonProvider = context.read<CommonProvider>();
 
-    // TODO: implement initState
     super.initState();
 
     getVersion();
@@ -83,51 +83,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ]),
                           ),
                         ),
-
-                        // Expanded(
-                        //   child: commonText(
-                        //       context: context,
-                        //       text: snapshot.data!
-                        //           .addVesselData!.model,
-                        //       fontWeight:
-                        //           FontWeight.w500,
-                        //       textColor: Colors.grey,
-                        //       // textSize: displayWidth(
-                        //       //         context) *
-                        //       //     0.03,
-                        //       textAlign:
-                        //           TextAlign.start),
-                        // ),
-                        // SizedBox(
-                        //   width: displayWidth(context) *
-                        //       0.04,
-                        // ),
-                        // Expanded(
-                        //   child: commonText(
-                        //       context: context,
-                        //       text: snapshot
-                        //           .data!
-                        //           .addVesselData!
-                        //           .builderName,
-                        //       fontWeight:
-                        //           FontWeight.w500,
-                        //       textColor: Colors.grey,
-                        //       textSize: displayWidth(
-                        //               context) *
-                        //           0.03,
-                        //       textAlign:
-                        //           TextAlign.start),
-                        // ),
                       ],
                     ),
-
-                    // Image.asset(
-                    //   'assets/images/logo.png',
-                    //   width: displayWidth(context) * 0.4,
-                    //   height: displayHeight(context) * 0.15,
-                    //   fit: BoxFit.contain,
-                    // ),
-                    //color: Colors.red,
                   ),
                   SizedBox(
                     height: displayHeight(context) * 0.06,
@@ -198,90 +155,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             textSize: textSize,
                             textAlign: TextAlign.start),
                       ),
-
-                      /*SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),
-                      commonText(
-                          context: context,
-                          text: 'Notifications',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.black54,
-                          textSize: textSize,
-                          textAlign: TextAlign.start),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),
-                      commonText(
-                          context: context,
-                          text: 'Support',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.black54,
-                          textSize: textSize,
-                          textAlign: TextAlign.start),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),
-                      commonText(
-                          context: context,
-                          text: 'Insights',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.black54,
-                          textSize: textSize,
-                          textAlign: TextAlign.start),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),
-                      commonText(
-                          context: context,
-                          text: 'IOT',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.black54,
-                          textSize: textSize,
-                          textAlign: TextAlign.start),
-                      SizedBox(
-                        height: displayHeight(context) * 0.06,
-                      ),
-                      commonText(
-                          context: context,
-                          text: 'My Profile',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.black54,
-                          textSize: textSize,
-                          textAlign: TextAlign.start),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),
-                      commonText(
-                          context: context,
-                          text: 'About Us',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.black54,
-                          textSize: textSize,
-                          textAlign: TextAlign.start),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),
-                      commonText(
-                          context: context,
-                          text: 'Terms & Conditions',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.black54,
-                          textSize: textSize,
-                          textAlign: TextAlign.start),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),
-                      commonText(
-                          context: context,
-                          text: 'Privacy Policy',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.black54,
-                          textSize: textSize,
-                          textAlign: TextAlign.start),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),*/
                     ],
                   )
                 ],
@@ -335,7 +208,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           fontWeight: FontWeight.w400),
                       TextButton(
                         onPressed: () {
-                          _launchURL('https://www.paccore.com/');
+                          Utils.launchURL('https://www.paccore.com/');
                         },
                         child: Text('paccore.com',
                             style: TextStyle(
@@ -375,7 +248,4 @@ class _CustomDrawerState extends State<CustomDrawer> {
       currentVersion = packageInfo.version;
     });
   }
-
-  void _launchURL(String url) async =>
-      await canLaunch(url) ? await launch(url) : throw 'Could not launch url';
 }
