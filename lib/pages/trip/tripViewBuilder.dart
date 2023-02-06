@@ -77,10 +77,8 @@ import 'package:provider/provider.dart';
 class TripViewListing extends StatefulWidget {
   String? vesselId;
   VoidCallback? onTripEnded;
-  TripViewListing({
-    this.vesselId,
-    this.onTripEnded,
-  });
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  TripViewListing({this.vesselId, this.onTripEnded, this.scaffoldKey});
 
   @override
   State<TripViewListing> createState() => _TripViewListingState();
@@ -133,6 +131,7 @@ class _TripViewListingState extends State<TripViewListing> {
                     itemBuilder: (context, index) {
                       return snapshot.data!.isNotEmpty
                           ? TripWidget(
+                              scaffoldKey: widget.scaffoldKey,
                               tripList: snapshot.data![index],
                               tripUploadedSuccessfully: () {
                                 /*getTripsByVesselId();

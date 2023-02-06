@@ -44,23 +44,25 @@ class TripWidget extends StatefulWidget {
   final VoidCallback? onTap;
   final VoidCallback? tripUploadedSuccessfully;
   final Trip? tripList;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
 
-  const TripWidget({
-    super.key,
-    //this.statusColor,
-    //this.status,
-    this.tripList,
-    this.onTap,
-    this.tripUploadedSuccessfully,
-    //this.vesselName
-  });
+  const TripWidget(
+      {super.key,
+      //this.statusColor,
+      //this.status,
+      this.tripList,
+      this.onTap,
+      this.tripUploadedSuccessfully,
+      this.scaffoldKey
+      //this.vesselName
+      });
 
   @override
   State<TripWidget> createState() => _TripWidgetState();
 }
 
 class _TripWidgetState extends State<TripWidget> {
-  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+  //GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
   FlutterBackgroundService service = FlutterBackgroundService();
 
@@ -303,6 +305,8 @@ class _TripWidgetState extends State<TripWidget> {
                                           fontSize:
                                               displayWidth(context) * 0.026,
                                           onTap: () async {
+                                            Utils().check(widget.scaffoldKey!);
+
                                             var connectivityResult =
                                                 await (Connectivity()
                                                     .checkConnectivity());
@@ -385,7 +389,7 @@ class _TripWidgetState extends State<TripWidget> {
                                       if (copiedFile.existsSync()) {
                                         Utils.showSnackBar(
                                           context,
-                                          scaffoldKey: scaffoldKey,
+                                          scaffoldKey: widget.scaffoldKey,
                                           message:
                                               'File downloaded successfully',
                                         );
@@ -431,7 +435,7 @@ class _TripWidgetState extends State<TripWidget> {
                                         if (copiedFile.existsSync()) {
                                           Utils.showSnackBar(
                                             context,
-                                            scaffoldKey: scaffoldKey,
+                                            scaffoldKey: widget.scaffoldKey,
                                             message:
                                                 'File downloaded successfully',
                                           );
@@ -504,7 +508,7 @@ class _TripWidgetState extends State<TripWidget> {
   Future<void> onSave(File file, BuildContext context, String tripId, vesselId,
       vesselName, vesselWeight) async {
     pos.Position? locationData =
-        await Utils.getLocationPermission(context, scaffoldKey);
+        await Utils.getLocationPermission(context, widget.scaffoldKey!);
     // await fetchDeviceInfo();
 
     //debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
@@ -536,7 +540,7 @@ class _TripWidgetState extends State<TripWidget> {
         Utils.calculateTripDuration((tripDuration / 1000).toInt());
     String finalTripDistance = tripDistance.toStringAsFixed(2);
     Position? currentLocationData =
-        await Utils.getLocationPermission(context, scaffoldKey);
+        await Utils.getLocationPermission(context, widget.scaffoldKey!);
 
     await _databaseService.updateTripStatus(
         1,
@@ -608,7 +612,7 @@ class _TripWidgetState extends State<TripWidget> {
             File('${tripData.filePath}'),
             queryParameters,
             tripData.id!,
-            scaffoldKey)
+            widget.scaffoldKey!)
         .then((value) async {
       if (value != null) {
         if (value.status!) {
@@ -943,7 +947,7 @@ class _TripWidgetState extends State<TripWidget> {
               commonProvider.addVesselRequestModel,
               commonProvider.loginModel!.userId!,
               commonProvider.loginModel!.token!,
-              scaffoldKey)
+              widget.scaffoldKey!)
           .then((value) async {
         if (value != null) {
           if (value.status!) {

@@ -321,6 +321,7 @@ class _TripListScreenState extends State<TripListScreen> {
                     itemBuilder: (context, index) {
                       return snapshot.data!.isNotEmpty
                           ? TripWidget(
+                              scaffoldKey: scaffoldKey,
                               tripList: snapshot.data![index],
                               onTap: () async {
                                 setState(() {

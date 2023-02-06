@@ -136,8 +136,8 @@ class CommonProvider with ChangeNotifier {
     // return tripsCount.toString();
   }
 
-  updateTripStatus(bool tripStatus) async {
-    tripStatus = tripStatus;
+  updateTripStatus(bool value) async {
+    tripStatus = value;
     notifyListeners();
   }
 }

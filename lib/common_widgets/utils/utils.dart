@@ -441,7 +441,32 @@ class Utils {
               subText: 'Please enable your data connection to continue.',
               positiveBtn: 'Okay',
               positiveBtnOnTap: () {
-                check(scaffoldKey);
+                Navigator.of(scaffoldKey.currentContext!).pop();
+                //check(scaffoldKey);
+              },
+            );
+          });
+    }
+    return false;
+  }
+
+  static checkInternet(GlobalKey<ScaffoldState> scaffoldKey) async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on SocketException catch (_) {
+      debugPrint('No Internet');
+      showDialog(
+          context: scaffoldKey.currentContext!,
+          builder: (BuildContext context) {
+            return CustomDialog(
+              text: 'No Internet',
+              subText: 'Please enable your data connection to continue.',
+              positiveBtn: 'Okay',
+              positiveBtnOnTap: () {
+                checkInternet(scaffoldKey);
                 Navigator.of(scaffoldKey.currentContext!).pop();
               },
             );
