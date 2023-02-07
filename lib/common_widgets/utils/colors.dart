@@ -7,6 +7,7 @@ const darkBlueColor = Color(0xFF275778);
 //const backgroundColor = Color(0xFFECF3F9);
 const backgroundColor = Color(0xFFBFF2B9);
 const buttonBGColor = Color(0xFF1A3154);
+const circularProgressColor = Color(0xFF1C75BC);
 
 Map<int, Color> materialPrimaryColor = {
   50: Color(0x1042B5BF),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/models/trip.dart';
@@ -19,7 +20,9 @@ class TripBuilder extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(circularProgressColor),
+            ),
           );
         }
         return Padding(
@@ -27,7 +30,7 @@ class TripBuilder extends StatelessWidget {
           child: ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount:snapshot.data!.length,
+            itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               final Trip = snapshot.data![index];
               return _buildTripCard(Trip, index, context);

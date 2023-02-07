@@ -507,7 +507,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                       value: value,
                                       backgroundColor: Colors.grey.shade200,
                                       strokeWidth: 3,
-                                      color: primaryColor,
+                                      color: circularProgressColor,
                                     ),
                                     Center(
                                       child: buildProgress(value, 60),
@@ -556,7 +556,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                           fit: StackFit.expand,
                                           children: [
                                             CircularProgressIndicator(
-                                              color: Colors.blue,
+                                              color: circularProgressColor,
                                               value: value,
                                               backgroundColor:
                                                   Colors.grey.shade200,
@@ -610,7 +610,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                           fit: StackFit.expand,
                                           children: [
                                             CircularProgressIndicator(
-                                              color: Colors.blue,
+                                              color: circularProgressColor,
                                               value: value,
                                               backgroundColor:
                                                   Colors.grey.shade200,
@@ -685,7 +685,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                               fit: StackFit.expand,
                                               children: [
                                                 CircularProgressIndicator(
-                                                  color: Colors.blue,
+                                                  color: circularProgressColor,
                                                   value: value,
                                                   backgroundColor:
                                                       Colors.grey.shade200,

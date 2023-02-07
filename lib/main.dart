@@ -11,6 +11,7 @@ import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
 // import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -233,8 +234,8 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           flutterLocalNotificationsPlugin.show(
             888,
             'PerforMarine',
-            /*Dist: ${finalTripDistance}m, Duration: ${finalTripDuration / 1000}sec, Speed: ${(speed * 1.944).toStringAsFixed(2)}nm/h*/
-            'Trip data collection is in progress...',
+            'Dist: ${finalTripDistance}m, Duration: ${finalTripDuration / 1000}sec, Speed: ${(speed * 1.944).toStringAsFixed(2)}nm/h',
+            /*'Trip data collection is in progress...',*/
             const NotificationDetails(
               android: AndroidNotificationDetails(
                 notificationChannelId,
@@ -392,6 +393,8 @@ Future<void> initializeService() async {
     await Get.deleteAll(force: true);
     Phoenix.rebirth(Get.context!);
     Get.reset();
+    var pref = await SharedPreferences.getInstance();
+    pref.setBool('sp_key_called_from_noti', true);
 
     /// APP RESTART
   },

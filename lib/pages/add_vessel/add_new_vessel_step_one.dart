@@ -235,13 +235,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       textCapitalization: TextCapitalization.words,
                       maxLength: 10,
                       prefixIcon: null,
-                      requestFocusNode: selectedEngineType == 'Hybrid' ||
-                              selectedEngineType == 'Combustion'
-                          ? fuelCapacityFocusNode
-                          : selectedEngineType == 'Hybrid' ||
-                                  selectedEngineType == 'Electric'
-                              ? batteryCapacityFocusNode
-                              : weightFocusNode,
+                      requestFocusNode: weightFocusNode,
                       obscureText: false,
                       onTap: () {},
                       onChanged: (String value) {},
@@ -252,6 +246,32 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
 
                         return null;
                       },*/
+                      onSaved: (String value) {
+                        print(value);
+                      }),
+                  SizedBox(height: displayHeight(context) * 0.015),
+                  CommonTextField(
+                      controller: weightController,
+                      focusNode: weightFocusNode,
+                      labelText: 'Weight (lb)*',
+                      hintText: '',
+                      suffixText: null,
+                      textInputAction: TextInputAction.done,
+                      textInputType: TextInputType.number,
+                      textCapitalization: TextCapitalization.words,
+                      maxLength: 6,
+                      prefixIcon: null,
+                      requestFocusNode: null,
+                      obscureText: false,
+                      onTap: () {},
+                      onChanged: (String value) {},
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter vessel weight';
+                        }
+
+                        return null;
+                      },
                       onSaved: (String value) {
                         print(value);
                       }),
@@ -379,32 +399,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                           ],
                         )
                       : SizedBox(),
-                  SizedBox(height: displayHeight(context) * 0.015),
-                  CommonTextField(
-                      controller: weightController,
-                      focusNode: weightFocusNode,
-                      labelText: 'Weight (lb)*',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: TextInputAction.done,
-                      textInputType: TextInputType.number,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 6,
-                      prefixIcon: null,
-                      requestFocusNode: null,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {},
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Enter vessel weight';
-                        }
-
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        print(value);
-                      }),
                   Container(
                     margin: EdgeInsets.only(top: 20.0),
                     child: CommonButtons.getDottedButton(

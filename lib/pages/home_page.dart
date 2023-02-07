@@ -67,6 +67,8 @@ class _HomePageState extends State<HomePage> {
     commonProvider.getTripsCount();
 
     getVesselFuture = _databaseService.vessels();
+
+    sharedPreferences!.remove('sp_key_called_from_noti');
   }
 
   checkNotificationPermission() async {
@@ -77,7 +79,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  @override
+  /*@override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
@@ -110,7 +112,7 @@ class _HomePageState extends State<HomePage> {
         // showAlertDialog(context, tripId, vesselId, vesselName, vesselWeight);
       });
     }
-  }
+  }*/
 
   Future<void> onSave(File file, BuildContext context, String tripId, vesselId,
       vesselName, vesselWeight) async {

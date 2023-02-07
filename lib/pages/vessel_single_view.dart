@@ -187,9 +187,24 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     commonProvider = context.read<CommonProvider>();
 
-    print('VESSEL Image ${widget.vessel!.imageURLs}');
+    print('VESSEL Image ${isTripEndedOrNot}');
 
     checkSensorAvailabelOrNot();
+  }
+
+  getRunningTripDetails() async {
+    List<String>? tripData = sharedPreferences!.getStringList('trip_data');
+    Trip tripDetails = await _databaseService.getTrip(tripData![0]);
+    if (tripIsRunning)
+      debugPrint('VESSEL SINGLE VIEW TRIP ID ${tripDetails.id}');
+
+    if (tripIsRunning) {
+      if (tripDetails.vesselId != widget.vessel!.id) {
+        setState(() {
+          tripIsRunning = false;
+        });
+      }
+    }
   }
 
   checkSensorAvailabelOrNot() async {
@@ -209,6 +224,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
     setState(() {
       tripIsRunning = result;
       print('Trip is Running $tripIsRunning');
+
+      if (tripIsRunning) {
+        getRunningTripDetails();
+      }
 
       if (!tripIsRunning) {
         setState(() {
@@ -350,7 +369,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                 margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
                 child: tripIsRunning
                     ? isTripEndedOrNot
-                        ? Center(child: CircularProgressIndicator())
+                        ? Center(
+                            child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                circularProgressColor),
+                          ))
                         : CommonButtons.getActionButton(
                             title: 'End Trip',
                             context: context,
@@ -396,6 +419,23 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         borderColor: buttonBGColor,
                         width: displayWidth(context),
                         onTap: () async {
+                          bool? isTripStarted =
+                              sharedPreferences!.getBool('trip_started');
+
+                          if (isTripStarted != null) {
+                            if (isTripStarted) {
+                              List<String>? tripData =
+                                  sharedPreferences!.getStringList('trip_data');
+                              Trip tripDetails =
+                                  await _databaseService.getTrip(tripData![0]);
+
+                              if (tripDetails.vesselId != widget.vessel!.id) {
+                                showDialogBox();
+                                return;
+                              }
+                            }
+                          }
+
                           bool isLocationPermitted =
                               await Permission.locationAlways.isGranted;
 
@@ -582,7 +622,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       width: 200,
                                       child: Lottie.asset(
                                           'assets/lottie/dataFetch.json')),
-                                  /*Row(
+                                  Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
@@ -590,7 +630,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         children: [
                                           commonText(
                                               context: context,
-                                              text: calculateTripDuration(
+                                              text: Utils.calculateTripDuration(
                                                   (tripDuration / 1000)
                                                       .toInt()),
                                               fontWeight: FontWeight.w600,
@@ -658,7 +698,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         ],
                                       ),
                                     ],
-                                  ),*/
+                                  ),
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -788,7 +828,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           }
                                         }
                                       }, primaryColor),
-
                                       SizedBox(
                                         height: 10,
                                       ),
@@ -816,7 +855,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     backgroundColor:
                                                         Colors.grey.shade200,
                                                     strokeWidth: 3,
-                                                    color: primaryColor,
+                                                    color:
+                                                        circularProgressColor,
                                                   ),
                                                   Center(
                                                     child: buildProgress(
@@ -875,7 +915,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         fit: StackFit.expand,
                                                         children: [
                                                           CircularProgressIndicator(
-                                                            color: Colors.blue,
+                                                            color:
+                                                                circularProgressColor,
                                                             value: value,
                                                             backgroundColor:
                                                                 Colors.grey
@@ -940,7 +981,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         fit: StackFit.expand,
                                                         children: [
                                                           CircularProgressIndicator(
-                                                            color: Colors.blue,
+                                                            color:
+                                                                circularProgressColor,
                                                             value: value,
                                                             backgroundColor:
                                                                 Colors.grey
@@ -1031,7 +1073,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                             children: [
                                                               CircularProgressIndicator(
                                                                 color:
-                                                                    Colors.blue,
+                                                                    circularProgressColor,
                                                                 value: value,
                                                                 backgroundColor:
                                                                     Colors.grey
@@ -1073,34 +1115,41 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 height: displayHeight(context) *
                                                     0.05,
                                                 width: displayWidth(context),
-                                                child: ListView(
-                                                  shrinkWrap: true,
-                                                  scrollDirection:
-                                                      Axis.horizontal,
+                                                child: Row(
                                                   children:
                                                       sensorDataTable.map((e) {
-                                                    return Container(
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.grey),
-                                                      ),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: commonText(
-                                                            context: context,
-                                                            text: e,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            textColor:
-                                                                Colors.black,
-                                                            textSize:
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.032,
-                                                            textAlign: TextAlign
-                                                                .start),
+                                                    return Expanded(
+                                                      child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width: displayWidth(
+                                                            context),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.grey),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: commonText(
+                                                              context: context,
+                                                              text: e,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.black,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.032,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ),
                                                       ),
                                                     );
                                                   }).toList(),
@@ -1110,282 +1159,295 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 height: displayHeight(context) *
                                                     0.05,
                                                 width: displayWidth(context),
-                                                child: ListView(
-                                                  shrinkWrap: true,
-                                                  scrollDirection:
-                                                      Axis.horizontal,
+                                                child: Row(
                                                   children: [
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.grey),
+                                                    Expanded(
+                                                      child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width: displayWidth(
+                                                            context),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.grey),
+                                                        ),
+                                                        child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        11.0,
+                                                                    vertical:
+                                                                        8),
+                                                            child:
+                                                                TweenAnimationBuilder(
+                                                                    duration:
+                                                                        const Duration(
+                                                                            seconds:
+                                                                                3),
+                                                                    tween: Tween(
+                                                                        begin:
+                                                                            accSensorProgressBegin,
+                                                                        end:
+                                                                            accSensorProgress),
+                                                                    builder: (context,
+                                                                        double
+                                                                            value,
+                                                                        _) {
+                                                                      return SizedBox(
+                                                                        height:
+                                                                            20,
+                                                                        width:
+                                                                            20,
+                                                                        child:
+                                                                            Stack(
+                                                                          fit: StackFit
+                                                                              .expand,
+                                                                          children: [
+                                                                            CircularProgressIndicator(
+                                                                              color: circularProgressColor,
+                                                                              value: value,
+                                                                              backgroundColor: Colors.grey.shade200,
+                                                                              strokeWidth: 2,
+                                                                              valueColor: AlwaysStoppedAnimation(accelerometerAvailable! ? Colors.green : Colors.red),
+                                                                            ),
+                                                                            Center(
+                                                                                child: accelerometerAvailable!
+                                                                                    ? Icon(
+                                                                                        Icons.done,
+                                                                                        color: Colors.green,
+                                                                                        size: displayWidth(context) * 0.035,
+                                                                                      )
+                                                                                    : Icon(
+                                                                                        Icons.close,
+                                                                                        color: Colors.red,
+                                                                                        size: displayWidth(context) * 0.035,
+                                                                                      )
+                                                                                // subTitleProgress(value, displayWidth(context) * 0.035),
+                                                                                )
+                                                                          ],
+                                                                        ),
+                                                                      );
+                                                                    })),
                                                       ),
-                                                      child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      11.0,
-                                                                  vertical: 8),
-                                                          child:
-                                                              TweenAnimationBuilder(
-                                                                  duration:
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              3),
-                                                                  tween: Tween(
-                                                                      begin:
-                                                                          accSensorProgressBegin,
-                                                                      end:
-                                                                          accSensorProgress),
-                                                                  builder: (context,
-                                                                      double
-                                                                          value,
-                                                                      _) {
-                                                                    return SizedBox(
-                                                                      height:
-                                                                          20,
-                                                                      width: 20,
-                                                                      child:
-                                                                          Stack(
-                                                                        fit: StackFit
-                                                                            .expand,
-                                                                        children: [
-                                                                          CircularProgressIndicator(
-                                                                            color:
-                                                                                Colors.blue,
-                                                                            value:
-                                                                                value,
-                                                                            backgroundColor:
-                                                                                Colors.grey.shade200,
-                                                                            strokeWidth:
-                                                                                2,
-                                                                            valueColor: AlwaysStoppedAnimation(accelerometerAvailable!
-                                                                                ? Colors.green
-                                                                                : Colors.red),
-                                                                          ),
-                                                                          Center(
-                                                                              child: accelerometerAvailable!
-                                                                                  ? Icon(
-                                                                                      Icons.done,
-                                                                                      color: Colors.green,
-                                                                                      size: displayWidth(context) * 0.035,
-                                                                                    )
-                                                                                  : Icon(
-                                                                                      Icons.close,
-                                                                                      color: Colors.red,
-                                                                                      size: displayWidth(context) * 0.035,
-                                                                                    )
-                                                                              // subTitleProgress(value, displayWidth(context) * 0.035),
-                                                                              )
-                                                                        ],
-                                                                      ),
-                                                                    );
-                                                                  })),
                                                     ),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.grey),
+                                                    Expanded(
+                                                      child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width: displayWidth(
+                                                            context),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.grey),
+                                                        ),
+                                                        child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        15.0,
+                                                                    vertical:
+                                                                        8),
+                                                            child:
+                                                                TweenAnimationBuilder(
+                                                                    duration:
+                                                                        const Duration(
+                                                                            seconds:
+                                                                                3),
+                                                                    tween: Tween(
+                                                                        begin:
+                                                                            uaccSensorProgressBegin,
+                                                                        end:
+                                                                            uaccSensorProgress),
+                                                                    builder: (context,
+                                                                        double
+                                                                            value,
+                                                                        _) {
+                                                                      return SizedBox(
+                                                                        height:
+                                                                            20,
+                                                                        width:
+                                                                            20,
+                                                                        child:
+                                                                            Stack(
+                                                                          fit: StackFit
+                                                                              .expand,
+                                                                          children: [
+                                                                            CircularProgressIndicator(
+                                                                              color: circularProgressColor,
+                                                                              value: value,
+                                                                              backgroundColor: Colors.grey.shade200,
+                                                                              strokeWidth: 2,
+                                                                              valueColor: AlwaysStoppedAnimation(userAccelerometerAvailable! ? Colors.green : Colors.red),
+                                                                            ),
+                                                                            Center(
+                                                                                child: userAccelerometerAvailable!
+                                                                                    ? Icon(
+                                                                                        Icons.done,
+                                                                                        color: Colors.green,
+                                                                                        size: displayWidth(context) * 0.035,
+                                                                                      )
+                                                                                    : Icon(
+                                                                                        Icons.close,
+                                                                                        color: Colors.red,
+                                                                                        size: displayWidth(context) * 0.035,
+                                                                                      )
+                                                                                // subTitleProgress(value, displayWidth(context) * 0.035),
+                                                                                )
+                                                                          ],
+                                                                        ),
+                                                                      );
+                                                                    })),
                                                       ),
-                                                      child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      15.0,
-                                                                  vertical: 8),
-                                                          child:
-                                                              TweenAnimationBuilder(
-                                                                  duration:
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              3),
-                                                                  tween: Tween(
-                                                                      begin:
-                                                                          uaccSensorProgressBegin,
-                                                                      end:
-                                                                          uaccSensorProgress),
-                                                                  builder: (context,
-                                                                      double
-                                                                          value,
-                                                                      _) {
-                                                                    return SizedBox(
-                                                                      height:
-                                                                          20,
-                                                                      width: 20,
-                                                                      child:
-                                                                          Stack(
-                                                                        fit: StackFit
-                                                                            .expand,
-                                                                        children: [
-                                                                          CircularProgressIndicator(
-                                                                            color:
-                                                                                Colors.blue,
-                                                                            value:
-                                                                                value,
-                                                                            backgroundColor:
-                                                                                Colors.grey.shade200,
-                                                                            strokeWidth:
-                                                                                2,
-                                                                            valueColor: AlwaysStoppedAnimation(userAccelerometerAvailable!
-                                                                                ? Colors.green
-                                                                                : Colors.red),
-                                                                          ),
-                                                                          Center(
-                                                                              child: userAccelerometerAvailable!
-                                                                                  ? Icon(
-                                                                                      Icons.done,
-                                                                                      color: Colors.green,
-                                                                                      size: displayWidth(context) * 0.035,
-                                                                                    )
-                                                                                  : Icon(
-                                                                                      Icons.close,
-                                                                                      color: Colors.red,
-                                                                                      size: displayWidth(context) * 0.035,
-                                                                                    )
-                                                                              // subTitleProgress(value, displayWidth(context) * 0.035),
-                                                                              )
-                                                                        ],
-                                                                      ),
-                                                                    );
-                                                                  })),
                                                     ),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.grey),
+                                                    Expanded(
+                                                      child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width: displayWidth(
+                                                            context),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.grey),
+                                                        ),
+                                                        child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        14.5,
+                                                                    vertical:
+                                                                        8),
+                                                            child:
+                                                                TweenAnimationBuilder(
+                                                                    duration:
+                                                                        const Duration(
+                                                                            seconds:
+                                                                                3),
+                                                                    tween: Tween(
+                                                                        begin:
+                                                                            gyroSensorProgressBegin,
+                                                                        end:
+                                                                            gyroSensorProgress),
+                                                                    builder: (context,
+                                                                        double
+                                                                            value,
+                                                                        _) {
+                                                                      return SizedBox(
+                                                                        height:
+                                                                            20,
+                                                                        width:
+                                                                            20,
+                                                                        child:
+                                                                            Stack(
+                                                                          fit: StackFit
+                                                                              .expand,
+                                                                          children: [
+                                                                            CircularProgressIndicator(
+                                                                              color: Colors.blue,
+                                                                              value: value,
+                                                                              backgroundColor: Colors.grey.shade200,
+                                                                              strokeWidth: 2,
+                                                                              valueColor: AlwaysStoppedAnimation(gyroscopeAvailable! ? Colors.green : Colors.red),
+                                                                            ),
+                                                                            Center(
+                                                                                child: gyroscopeAvailable!
+                                                                                    ? Icon(
+                                                                                        Icons.done,
+                                                                                        color: Colors.green,
+                                                                                        size: displayWidth(context) * 0.035,
+                                                                                      )
+                                                                                    : Icon(
+                                                                                        Icons.close,
+                                                                                        color: Colors.red,
+                                                                                        size: displayWidth(context) * 0.035,
+                                                                                      )
+                                                                                // subTitleProgress(value, displayWidth(context) * 0.035),
+                                                                                )
+                                                                          ],
+                                                                        ),
+                                                                      );
+                                                                    })),
                                                       ),
-                                                      child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      14.5,
-                                                                  vertical: 8),
-                                                          child:
-                                                              TweenAnimationBuilder(
-                                                                  duration:
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              3),
-                                                                  tween: Tween(
-                                                                      begin:
-                                                                          gyroSensorProgressBegin,
-                                                                      end:
-                                                                          gyroSensorProgress),
-                                                                  builder: (context,
-                                                                      double
-                                                                          value,
-                                                                      _) {
-                                                                    return SizedBox(
-                                                                      height:
-                                                                          20,
-                                                                      width: 20,
-                                                                      child:
-                                                                          Stack(
-                                                                        fit: StackFit
-                                                                            .expand,
-                                                                        children: [
-                                                                          CircularProgressIndicator(
-                                                                            color:
-                                                                                Colors.blue,
-                                                                            value:
-                                                                                value,
-                                                                            backgroundColor:
-                                                                                Colors.grey.shade200,
-                                                                            strokeWidth:
-                                                                                2,
-                                                                            valueColor: AlwaysStoppedAnimation(gyroscopeAvailable!
-                                                                                ? Colors.green
-                                                                                : Colors.red),
-                                                                          ),
-                                                                          Center(
-                                                                              child: gyroscopeAvailable!
-                                                                                  ? Icon(
-                                                                                      Icons.done,
-                                                                                      color: Colors.green,
-                                                                                      size: displayWidth(context) * 0.035,
-                                                                                    )
-                                                                                  : Icon(
-                                                                                      Icons.close,
-                                                                                      color: Colors.red,
-                                                                                      size: displayWidth(context) * 0.035,
-                                                                                    )
-                                                                              // subTitleProgress(value, displayWidth(context) * 0.035),
-                                                                              )
-                                                                        ],
-                                                                      ),
-                                                                    );
-                                                                  })),
                                                     ),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.grey),
+                                                    Expanded(
+                                                      child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width: displayWidth(
+                                                            context),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.grey),
+                                                        ),
+                                                        child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        16.0,
+                                                                    vertical:
+                                                                        8),
+                                                            child:
+                                                                TweenAnimationBuilder(
+                                                                    duration:
+                                                                        const Duration(
+                                                                            seconds:
+                                                                                3),
+                                                                    tween: Tween(
+                                                                        begin:
+                                                                            magnSensorProgressBegin,
+                                                                        end:
+                                                                            magnSensorProgress),
+                                                                    builder: (context,
+                                                                        double
+                                                                            value,
+                                                                        _) {
+                                                                      return SizedBox(
+                                                                        height:
+                                                                            20,
+                                                                        width:
+                                                                            20,
+                                                                        child:
+                                                                            Stack(
+                                                                          fit: StackFit
+                                                                              .expand,
+                                                                          children: [
+                                                                            CircularProgressIndicator(
+                                                                              color: circularProgressColor,
+                                                                              value: value,
+                                                                              backgroundColor: Colors.grey.shade200,
+                                                                              strokeWidth: 2,
+                                                                              valueColor: AlwaysStoppedAnimation(magnetometerAvailable! ? Colors.green : Colors.red),
+                                                                            ),
+                                                                            Center(
+                                                                                child: magnetometerAvailable!
+                                                                                    ? Icon(
+                                                                                        Icons.done,
+                                                                                        color: Colors.green,
+                                                                                        size: displayWidth(context) * 0.035,
+                                                                                      )
+                                                                                    : Icon(
+                                                                                        Icons.close,
+                                                                                        color: Colors.red,
+                                                                                        size: displayWidth(context) * 0.035,
+                                                                                      )
+                                                                                // subTitleProgress(value, displayWidth(context) * 0.035),
+                                                                                )
+                                                                          ],
+                                                                        ),
+                                                                      );
+                                                                    })),
                                                       ),
-                                                      child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      16.0,
-                                                                  vertical: 8),
-                                                          child:
-                                                              TweenAnimationBuilder(
-                                                                  duration:
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              3),
-                                                                  tween: Tween(
-                                                                      begin:
-                                                                          magnSensorProgressBegin,
-                                                                      end:
-                                                                          magnSensorProgress),
-                                                                  builder: (context,
-                                                                      double
-                                                                          value,
-                                                                      _) {
-                                                                    return SizedBox(
-                                                                      height:
-                                                                          20,
-                                                                      width: 20,
-                                                                      child:
-                                                                          Stack(
-                                                                        fit: StackFit
-                                                                            .expand,
-                                                                        children: [
-                                                                          CircularProgressIndicator(
-                                                                            color:
-                                                                                Colors.blue,
-                                                                            value:
-                                                                                value,
-                                                                            backgroundColor:
-                                                                                Colors.grey.shade200,
-                                                                            strokeWidth:
-                                                                                2,
-                                                                            valueColor: AlwaysStoppedAnimation(magnetometerAvailable!
-                                                                                ? Colors.green
-                                                                                : Colors.red),
-                                                                          ),
-                                                                          Center(
-                                                                              child: magnetometerAvailable!
-                                                                                  ? Icon(
-                                                                                      Icons.done,
-                                                                                      color: Colors.green,
-                                                                                      size: displayWidth(context) * 0.035,
-                                                                                    )
-                                                                                  : Icon(
-                                                                                      Icons.close,
-                                                                                      color: Colors.red,
-                                                                                      size: displayWidth(context) * 0.035,
-                                                                                    )
-                                                                              // subTitleProgress(value, displayWidth(context) * 0.035),
-                                                                              )
-                                                                        ],
-                                                                      ),
-                                                                    );
-                                                                  })),
                                                     ),
                                                   ],
                                                 ),
@@ -1686,7 +1748,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     isStartButton || isEndTripButton ? 8 : 2),
                             child: isStartButton
                                 ? addingDataToDB
-                                    ? Center(child: CircularProgressIndicator())
+                                    ? Center(
+                                        child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    circularProgressColor)))
                                     : CommonButtons.getActionButton(
                                         title: 'Start',
                                         context: context,
@@ -2522,9 +2588,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 : isEndTripButton
                                     ? addingDataToDB
                                         ? Center(
-                                            child: CircularProgressIndicator())
+                                            child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                            Color>(
+                                                        circularProgressColor)))
                                         : CommonButtons.getActionButton(
-                                            title: 'End Trip',
+                                            title: 'End Trip ',
                                             context: context,
                                             fontSize:
                                                 displayWidth(context) * 0.042,
@@ -2862,7 +2932,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       print('Future delayed duration Ended');
     });
 
-    await tripIsRunningOrNot();
+    // await tripIsRunningOrNot();
 
     service.invoke('tripId', {'tripId': getTripId});
 
@@ -2898,10 +2968,81 @@ class VesselSingleViewState extends State<VesselSingleView> {
       selectedVesselWeight
     ]);
 
+    await tripIsRunningOrNot();
+
     stateSetter(() {
       addingDataToDB = false;
       isStartButton = false;
       isEndTripButton = true;
     });
+  }
+
+  showDialogBox() {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.3,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                      'There is a trip in progress from another vessel. Please end that trip and come back here.',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.04,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Center(
+                          child: CommonButtons.getAcceptButton(
+                              'OK', context, primaryColor, () async {
+                            Navigator.of(context).pop();
+                          },
+                              displayWidth(context) * 0.4,
+                              displayHeight(context) * 0.05,
+                              primaryColor,
+                              Colors.white,
+                              displayHeight(context) * 0.018,
+                              buttonBGColor,
+                              '',
+                              fontWeight: FontWeight.w500),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
   }
 }

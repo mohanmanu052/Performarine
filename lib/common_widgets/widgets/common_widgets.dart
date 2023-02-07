@@ -247,11 +247,14 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                       vesselData.imageURLs == 'string'
                   ? Stack(
                       children: [
-                        Image.asset(
-                          'assets/images/dashboard_bg_image.png',
-                          height: displayHeight(context) * 0.22,
-                          width: displayWidth(context),
-                          fit: BoxFit.cover,
+                        Container(
+                          color: Colors.white,
+                          child: Image.asset(
+                            'assets/images/vessel_default_img.png',
+                            height: displayHeight(context) * 0.22,
+                            width: displayWidth(context),
+                            fit: BoxFit.fill,
+                          ),
                         ),
                         /*Image.asset(
                             'assets/images/shadow_img.png',

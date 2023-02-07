@@ -178,7 +178,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             textAlign: TextAlign.start),
                         SizedBox(width: displayWidth(context) * 0.04),
                         isGoogleSignInBtnClicked
-                            ? Center(child: CircularProgressIndicator())
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    circularProgressColor),
+                              ))
                             : InkWell(
                                 onTap: () async {
                                   GoogleSignInAccount? googleSignInAccount;
@@ -997,7 +1001,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }),
                     SizedBox(height: displayHeight(context) * 0.03),
                     isRegistrationBtnClicked
-                        ? Center(child: CircularProgressIndicator())
+                        ? Center(
+                            child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                circularProgressColor),
+                          ))
                         : CommonButtons.getActionButton(
                             title: 'Register',
                             context: context,

@@ -259,7 +259,11 @@ class _SignInScreenState extends State<SignInScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               isGoogleSignInBtnClicked!
-                                  ? Center(child: CircularProgressIndicator())
+                                  ? Center(
+                                      child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          circularProgressColor),
+                                    ))
                                   : InkWell(
                                       onTap: () async {
                                         GoogleSignInAccount?
@@ -357,7 +361,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       SizedBox(height: displayHeight(context) * 0.04),
                       isLoginBtnClicked!
-                          ? Center(child: CircularProgressIndicator())
+                          ? Center(
+                              child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  circularProgressColor),
+                            ))
                           : CommonButtons.getActionButton(
                               title: 'Sign In',
                               context: context,

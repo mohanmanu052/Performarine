@@ -4,9 +4,12 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
+import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lets_get_started_screen.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
+import 'package:performarine/pages/trip_analytics.dart';
+import 'package:performarine/services/database_service.dart';
 
 import '../common_widgets/utils/constants.dart';
 
@@ -18,20 +21,14 @@ class IntroScreen extends StatefulWidget {
 }
 
 class _IntroScreenState extends State<IntroScreen> {
-  bool? isBtnVisible = false;
+  bool? isBtnVisible = false, isTripRunningCurrently = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        setState(() {
-          isBtnVisible = true;
-        });
-      }
-    });
+    checkIfTripIsRunning();
   }
 
   @override
@@ -168,11 +165,58 @@ class _IntroScreenState extends State<IntroScreen> {
     );
   }
 
+  checkIfTripIsRunning() async {
+    var pref = await Utils.initSharedPreferences();
+
+    bool? isTripStarted = pref.getBool('trip_started');
+    bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
+    setState(() {
+      isTripRunningCurrently = isTripStarted;
+    });
+
+    if (isTripRunningCurrently == null) {
+      Future.delayed(const Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() {
+            isBtnVisible = true;
+          });
+        }
+      });
+    } else if (!isTripRunningCurrently!) {
+      Future.delayed(const Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() {
+            isBtnVisible = true;
+          });
+        }
+      });
+    } else {
+      Future.delayed(Duration(seconds: 3), () {
+        if (isCalledFromNoti == null) {
+          if (mounted) {
+            setState(() {
+              isBtnVisible = true;
+            });
+          }
+        } else if (!isCalledFromNoti) {
+          if (mounted) {
+            setState(() {
+              isBtnVisible = true;
+            });
+          }
+        } else {
+          checkIfUserIsLoggedIn();
+        }
+      });
+    }
+  }
+
   checkIfUserIsLoggedIn() async {
     var pref = await Utils.initSharedPreferences();
 
     bool? isUserLoggedIn = pref.getBool('isUserLoggedIn');
     bool? isTripStarted = pref.getBool('trip_started');
+    bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
 
     debugPrint('ISUSERLOGEDIN $isUserLoggedIn');
 
@@ -205,13 +249,40 @@ class _IntroScreenState extends State<IntroScreen> {
             ModalRoute.withName(""));
       }
     } else if (isTripStarted) {
+      debugPrint('INTRO TRIP IS RUNNING $isTripStarted');
+
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(tripData: tripData ?? [])),
-          ModalRoute.withName(""));
+      if (isCalledFromNoti == null) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePage(tripData: tripData ?? [])),
+            ModalRoute.withName(""));
+      } else if (!isCalledFromNoti) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePage(tripData: tripData ?? [])),
+            ModalRoute.withName(""));
+      } else {
+        final DatabaseService _databaseService = DatabaseService();
+        final tripDetails = await _databaseService.getTrip(tripData![0]);
+
+        List<CreateVessel> vesselDetails =
+            await _databaseService.getVesselNameByID(tripData[1]);
+
+        debugPrint('INTRO TRIP ID ${tripDetails.id}');
+
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TripAnalyticsScreen(
+                    tripList: tripDetails,
+                    vessel: vesselDetails[0],
+                    tripIsRunningOrNot: isTripStarted)),
+            ModalRoute.withName(""));
+      }
     } else {
       if (isServiceRunning) {
         service.invoke("stopService");

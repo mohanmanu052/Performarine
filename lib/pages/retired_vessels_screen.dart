@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
@@ -58,7 +59,10 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(circularProgressColor),
+                ),
               );
             }
             print('HAS DATA: ${snapshot.hasData}');

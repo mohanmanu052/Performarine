@@ -322,7 +322,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       bottom: displayHeight(context) * 0.01,
                       top: displayHeight(context) * 0.02),
                   child: isBtnClicked!
-                      ? CircularProgressIndicator()
+                      ? CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              circularProgressColor),
+                        )
                       : CommonButtons.getActionButton(
                           title:
                               widget.isEdit! ? 'Update Vessel' : 'Add Vessel',

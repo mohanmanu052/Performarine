@@ -48,7 +48,10 @@ class _VesselBuilderState extends State<VesselBuilder> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(circularProgressColor),
+                ),
               );
             }
             print('HAS DATA: ${snapshot.hasData}');

@@ -268,17 +268,20 @@ class _TripWidgetState extends State<TripWidget> {
                                                 .toString());
 
                                         debugPrint(
-                                            'VESSEL DATA ${getVesselById[0].name}');
+                                            'VESSEL DATA ${getVesselById[0].imageURLs}');
 
-                                        /* Navigator.push(
+                                        Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 TripAnalyticsScreen(
-                                                    tripList: widget.tripList!,
-                                                    vessel: getVesselById[0]),
+                                              tripList: widget.tripList!,
+                                              vessel: getVesselById[0],
+                                              tripIsRunningOrNot: false,
+                                              // vessel: getVesselById[0]
+                                            ),
                                           ),
-                                        );*/
+                                        );
                                       },
                                       icon: Padding(
                                         padding:
@@ -298,8 +301,12 @@ class _TripWidgetState extends State<TripWidget> {
                                           child: SizedBox(
                                               height: 28,
                                               width: 28,
-                                              child:
-                                                  CircularProgressIndicator()))
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                            Color>(
+                                                        circularProgressColor),
+                                              )))
                                       : CommonButtons.getRichTextActionButton(
                                           buttonPrimaryColor: primaryColor,
                                           fontSize:
@@ -470,7 +477,11 @@ class _TripWidgetState extends State<TripWidget> {
                         )
                       :*/
                   commonProvider.tripStatus
-                      ? Center(child: CircularProgressIndicator())
+                      ? Center(
+                          child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              circularProgressColor),
+                        ))
                       : SizedBox(
                           height: displayHeight(context) * 0.038,
                           child: CommonButtons.getActionButton(
