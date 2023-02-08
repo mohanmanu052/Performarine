@@ -55,6 +55,17 @@ void main() async {
 const notificationChannelId = 'my_foreground';
 
 @pragma('vm:entry-point')
+onDidReceiveBackgroundNotificationResponse(
+    NotificationResponse response) async {
+  DartPluginRegistrant.ensureInitialized();
+  var pref = await SharedPreferences.getInstance();
+  pref.setBool('sp_key_called_from_noti', true);
+  print('APP RESTART 2');
+
+  /// APP RESTART
+}
+
+@pragma('vm:entry-point')
 Future<void> onStart(ServiceInstance serviceInstance) async {
   DartPluginRegistrant.ensureInitialized();
   /*Get.put<ServiceInstance>(serviceInstance,
@@ -234,7 +245,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           flutterLocalNotificationsPlugin.show(
             888,
             'PerforMarine',
-            'Dist: ${finalTripDistance}m, Duration: ${finalTripDuration / 1000}sec, Speed: ${(speed * 1.944).toStringAsFixed(2)}nm/h',
+            'Dist: ${finalTripDistance}m, Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}sec, Speed: ${(speed * 1.944).toStringAsFixed(2)}nm/h',
             /*'Trip data collection is in progress...',*/
             const NotificationDetails(
               android: AndroidNotificationDetails(
@@ -351,13 +362,6 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 onDidReceiveLocalNotification(
     int id, String? title, String? body, String? payload) {
   print('APP RESTART 3');
-
-  /// APP RESTART
-}
-
-@pragma('vm:entry-point')
-onDidReceiveBackgroundNotificationResponse(NotificationResponse response) {
-  print('APP RESTART 2');
 
   /// APP RESTART
 }

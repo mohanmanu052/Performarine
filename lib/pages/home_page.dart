@@ -36,9 +36,11 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
+
+  late TabController tabController;
 
   late CommonProvider commonProvider;
   List<Trip> trips = [];
@@ -69,6 +71,13 @@ class _HomePageState extends State<HomePage> {
     getVesselFuture = _databaseService.vessels();
 
     sharedPreferences!.remove('sp_key_called_from_noti');
+
+    tabController = TabController(initialIndex: 0, length: 2, vsync: this);
+    tabController.addListener(() {
+      setState(() {
+        currentTabIndex = tabController.index;
+      });
+    });
   }
 
   checkNotificationPermission() async {
@@ -240,6 +249,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           bottom: TabBar(
+            controller: tabController,
             padding: EdgeInsets.all(0),
             labelPadding: EdgeInsets.zero,
             isScrollable: true,
@@ -300,6 +310,7 @@ class _HomePageState extends State<HomePage> {
         ),
         drawer: const CustomDrawer(),
         body: TabBarView(
+          controller: tabController,
           children: [
             VesselBuilder(
               future: getVesselFuture,

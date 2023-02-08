@@ -28,7 +28,10 @@ class _IntroScreenState extends State<IntroScreen> {
     // TODO: implement initState
     super.initState();
 
-    checkIfTripIsRunning();
+    Future.delayed(Duration(seconds: 1), () {
+      sharedPreferences!.reload();
+      checkIfTripIsRunning();
+    });
   }
 
   @override
@@ -170,6 +173,9 @@ class _IntroScreenState extends State<IntroScreen> {
 
     bool? isTripStarted = pref.getBool('trip_started');
     bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
+
+    debugPrint('INTRO START $isTripStarted');
+
     setState(() {
       isTripRunningCurrently = isTripStarted;
     });
@@ -192,6 +198,7 @@ class _IntroScreenState extends State<IntroScreen> {
       });
     } else {
       Future.delayed(Duration(seconds: 3), () {
+        print('IS CALLED FROM NOTI: $isCalledFromNoti');
         if (isCalledFromNoti == null) {
           if (mounted) {
             setState(() {

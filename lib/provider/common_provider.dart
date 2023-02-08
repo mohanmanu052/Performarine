@@ -8,6 +8,7 @@ import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/registration_model.dart';
 import 'package:performarine/models/send_sensor_model.dart';
 import 'package:performarine/models/trip.dart';
+import 'package:performarine/models/upload_trip_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/provider/add_vessel_api_provider.dart';
 import 'package:performarine/provider/login_api_provider.dart';
@@ -22,6 +23,7 @@ class CommonProvider with ChangeNotifier {
   SendSensorDataModel? sendSensorDataModel;
   AddVesselModel? addVesselModel;
   CommonModel? commonModel;
+  UploadTripModel? uploadTripModel;
   int tripsCount = 0;
   bool tripStatus = false;
 
@@ -102,16 +104,16 @@ class CommonProvider with ChangeNotifier {
     return addVesselModel;
   }
 
-  Future<CommonModel> sendSensorInfo(
+  Future<UploadTripModel> sendSensorInfo(
       BuildContext context,
       accessToken,
       File sensorZipFiles,
       Map<String, dynamic> queryParameters,
       String tripId,
       GlobalKey<ScaffoldState> scaffoldKey) async {
-    commonModel = CommonModel();
+    uploadTripModel = UploadTripModel();
 
-    commonModel = await SendSensorInfoApiProvider().sendSensorDataInfoDio(
+    uploadTripModel = await SendSensorInfoApiProvider().sendSensorDataInfoDio(
         context,
         accessToken,
         sensorZipFiles,
@@ -124,7 +126,7 @@ class CommonProvider with ChangeNotifier {
     _databaseService.updateTripIsSyncStatus(1, queryParameters["id"]);
     notifyListeners();
 
-    return commonModel!;
+    return uploadTripModel!;
   }
 
   getTripsCount() async {

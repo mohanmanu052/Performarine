@@ -1,9 +1,13 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -15,9 +19,11 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class TripAnalyticsScreen extends StatefulWidget {
   Trip? tripList;
@@ -38,13 +44,26 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   List<CreateVessel> getVesselById = [];
   Trip? tripData;
 
-  bool tripIsRunning = false;
+  bool tripIsRunning = false, isuploadTrip = false;
 
   int tripDistance = 0;
   int tripDuration = 0;
   String tripSpeed = '0.0';
 
+  String? finalTripDuration, finalTripDistance, finalAvgSpeed;
+
   FlutterBackgroundService service = FlutterBackgroundService();
+
+  bool isTripUploaded = false, vesselIsSync = false;
+
+  int progress = 0;
+  Timer? progressTimer;
+  double finalProgress = 0;
+
+  List<File?> finalSelectedFiles = [];
+
+  late CommonProvider commonProvider;
+  late DeviceInfoPlugin deviceDetails;
 
   @override
   void initState() {
@@ -61,6 +80,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     if (tripIsRunning) {
       getRealTimeTripDetails();
     }
+
+    commonProvider = context.read<CommonProvider>();
+
+    deviceDetails = DeviceInfoPlugin();
   }
 
   getRealTimeTripDetails() async {
@@ -82,6 +105,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     return WillPopScope(
       onWillPop: () async {
         Navigator.pushReplacement(
@@ -122,10 +146,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         ),
         body: Container(
           //margin: EdgeInsets.symmetric(horizontal: 17),
-          child: Stack(
+          child: Column(
             children: [
               SizedBox(
-                height: displayHeight(context),
+                height: displayHeight(context) * 0.33,
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 17),
                   child: Column(
@@ -233,387 +257,609 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                   ),
                 ),
               ),
-              Positioned(
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
+              Expanded(
+                child: Card(
+                  color: Colors.white,
+                  elevation: 8.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(50),
+                          topRight: Radius.circular(50))),
                   child: Container(
-                    height: displayHeight(context) / 1.8,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(50),
-                            topRight: Radius.circular(50))),
-                    child: Container(
-                      margin: EdgeInsets.only(top: 40, left: 17, right: 17),
-                      child: Stack(
-                        children: [
-                          Column(
-                            children: [
-                              Container(
-                                width: displayWidth(context),
-                                padding: widget.vessel!.engineType!
-                                            .toLowerCase() ==
-                                        'combustion'
-                                    ? EdgeInsets.symmetric(horizontal: 50)
-                                    : widget.vessel!.engineType!
-                                                .toLowerCase() ==
-                                            'electric'
-                                        ? EdgeInsets.symmetric(horizontal: 0)
-                                        : EdgeInsets.symmetric(horizontal: 16),
-                                //color: Colors.red,
-                                child: widget.vessel!.engineType!
-                                            .toLowerCase() ==
-                                        'combustion'
-                                    ? Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Image.asset(
-                                                  'assets/images/fuel.png',
-                                                  width: displayWidth(context) *
-                                                      0.04,
-                                                  color: Colors.black),
-                                              SizedBox(
-                                                width: displayWidth(context) *
-                                                    0.018,
-                                              ),
-                                              commonText(
-                                                  context: context,
-                                                  text:
-                                                      '${widget.vessel!.fuelCapacity} gal',
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.black,
-                                                  textSize:
-                                                      displayWidth(context) *
-                                                          0.038,
-                                                  textAlign: TextAlign.start),
-                                            ],
-                                          ),
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Image.asset(
-                                                  widget.vessel!.engineType!
-                                                              .toLowerCase() ==
-                                                          'hybrid'
-                                                      ? 'assets/images/hybrid_engine.png'
-                                                      : widget.vessel!
-                                                                  .engineType!
-                                                                  .toLowerCase() ==
-                                                              'electric'
-                                                          ? 'assets/images/electric_engine.png'
-                                                          : 'assets/images/combustion_engine.png',
-                                                  width: displayWidth(context) *
-                                                      0.07,
-                                                  color: Colors.black),
-                                              SizedBox(
-                                                width: displayWidth(context) *
-                                                    0.02,
-                                              ),
-                                              Text(
-                                                widget.vessel!.engineType!,
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Colors.black,
-                                                    fontSize:
-                                                        displayWidth(context) *
-                                                            0.038,
-                                                    fontFamily: poppins),
-                                                softWrap: true,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      )
-                                    : widget.vessel!.engineType!
-                                                .toLowerCase() ==
-                                            'electric'
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Image.asset(
-                                                      'assets/images/battery.png',
-                                                      width: displayWidth(
-                                                              context) *
-                                                          0.04,
-                                                      color: Colors.black),
-                                                  SizedBox(
-                                                    width:
-                                                        displayWidth(context) *
-                                                            0.02,
-                                                  ),
-                                                  commonText(
-                                                      context: context,
-                                                      text:
-                                                          '${widget.vessel!.batteryCapacity} kw',
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      textColor: Colors.black,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.038,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Image.asset(
-                                                      widget.vessel!.engineType!
-                                                                  .toLowerCase() ==
-                                                              'hybrid'
-                                                          ? 'assets/images/hybrid_engine.png'
-                                                          : widget.vessel!
-                                                                      .engineType!
-                                                                      .toLowerCase() ==
-                                                                  'electric'
-                                                              ? 'assets/images/electric_engine.png'
-                                                              : 'assets/images/combustion_engine.png',
-                                                      width: displayWidth(
-                                                              context) *
-                                                          0.07,
-                                                      color: Colors.black),
-                                                  SizedBox(
-                                                    width:
-                                                        displayWidth(context) *
-                                                            0.02,
-                                                  ),
-                                                  Text(
-                                                    widget.vessel!.engineType!,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: Colors.black,
-                                                        fontSize: displayWidth(
-                                                                context) *
-                                                            0.038,
-                                                        fontFamily: poppins),
-                                                    softWrap: true,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
-                                        : Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Image.asset(
-                                                      'assets/images/fuel.png',
-                                                      width: displayWidth(
-                                                              context) *
-                                                          0.07,
-                                                      color: Colors.black),
-                                                  SizedBox(
-                                                    width:
-                                                        displayWidth(context) *
-                                                            0.02,
-                                                  ),
-                                                  commonText(
-                                                      context: context,
-                                                      text:
-                                                          '${widget.vessel!.fuelCapacity} gal',
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      textColor: Colors.black,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.038,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                width: 4,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Image.asset(
-                                                      'assets/images/battery.png',
-                                                      width: displayWidth(
-                                                              context) *
-                                                          0.045,
-                                                      color: Colors.black),
-                                                  SizedBox(
-                                                    width:
-                                                        displayWidth(context) *
-                                                            0.02,
-                                                  ),
-                                                  commonText(
-                                                      context: context,
-                                                      text:
-                                                          '${widget.vessel!.batteryCapacity} kw',
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      textColor: Colors.black,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.038,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                width: 4,
-                                              ),
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Image.asset(
-                                                      widget.vessel!.engineType!
-                                                                  .toLowerCase() ==
-                                                              'hybrid'
-                                                          ? 'assets/images/hybrid_engine.png'
-                                                          : widget.vessel!
-                                                                      .engineType!
-                                                                      .toLowerCase() ==
-                                                                  'electric'
-                                                              ? 'assets/images/electric_engine.png'
-                                                              : 'assets/images/combustion_engine.png',
-                                                      width: displayWidth(
-                                                              context) *
-                                                          0.08,
-                                                      color: Colors.black),
-                                                  SizedBox(
-                                                    width:
-                                                        displayWidth(context) *
-                                                            0.018,
-                                                  ),
-                                                  Text(
-                                                    widget.vessel!.engineType!,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        color: Colors.black,
-                                                        fontSize: displayWidth(
-                                                                context) *
-                                                            0.038,
-                                                        fontFamily: poppins),
-                                                    softWrap: true,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.04,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                    padding: EdgeInsets.only(top: 10),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Container(
+                              height: displayHeight(context) / 1.8,
+                              margin:
+                                  EdgeInsets.only(top: 20, left: 17, right: 17),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      commonText(
+                                      Container(
+                                        width: displayWidth(context),
+                                        padding: widget.vessel!.engineType!
+                                                    .toLowerCase() ==
+                                                'combustion'
+                                            ? EdgeInsets.symmetric(
+                                                horizontal: 50)
+                                            : widget.vessel!.engineType!
+                                                        .toLowerCase() ==
+                                                    'electric'
+                                                ? EdgeInsets.symmetric(
+                                                    horizontal: 0)
+                                                : EdgeInsets.symmetric(
+                                                    horizontal: 16),
+                                        //color: Colors.red,
+                                        child: widget.vessel!.engineType!
+                                                    .toLowerCase() ==
+                                                'combustion'
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Image.asset(
+                                                          'assets/images/fuel.png',
+                                                          width: displayWidth(
+                                                                  context) *
+                                                              0.04,
+                                                          color: Colors.black),
+                                                      SizedBox(
+                                                        width: displayWidth(
+                                                                context) *
+                                                            0.018,
+                                                      ),
+                                                      commonText(
+                                                          context: context,
+                                                          text:
+                                                              '${widget.vessel!.fuelCapacity} gal',
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          textColor:
+                                                              Colors.black,
+                                                          textSize:
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.038,
+                                                          textAlign:
+                                                              TextAlign.start),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Image.asset(
+                                                          widget.vessel!
+                                                                      .engineType!
+                                                                      .toLowerCase() ==
+                                                                  'hybrid'
+                                                              ? 'assets/images/hybrid_engine.png'
+                                                              : widget.vessel!
+                                                                          .engineType!
+                                                                          .toLowerCase() ==
+                                                                      'electric'
+                                                                  ? 'assets/images/electric_engine.png'
+                                                                  : 'assets/images/combustion_engine.png',
+                                                          width: displayWidth(
+                                                                  context) *
+                                                              0.07,
+                                                          color: Colors.black),
+                                                      SizedBox(
+                                                        width: displayWidth(
+                                                                context) *
+                                                            0.02,
+                                                      ),
+                                                      Text(
+                                                        widget.vessel!
+                                                            .engineType!,
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: Colors.black,
+                                                            fontSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.038,
+                                                            fontFamily:
+                                                                poppins),
+                                                        softWrap: true,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                            : widget.vessel!.engineType!
+                                                        .toLowerCase() ==
+                                                    'electric'
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Image.asset(
+                                                              'assets/images/battery.png',
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.04,
+                                                              color:
+                                                                  Colors.black),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text:
+                                                                  '${widget.vessel!.batteryCapacity} kw',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.black,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.038,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Image.asset(
+                                                              widget.vessel!
+                                                                          .engineType!
+                                                                          .toLowerCase() ==
+                                                                      'hybrid'
+                                                                  ? 'assets/images/hybrid_engine.png'
+                                                                  : widget.vessel!
+                                                                              .engineType!
+                                                                              .toLowerCase() ==
+                                                                          'electric'
+                                                                      ? 'assets/images/electric_engine.png'
+                                                                      : 'assets/images/combustion_engine.png',
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.07,
+                                                              color:
+                                                                  Colors.black),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                          Text(
+                                                            widget.vessel!
+                                                                .engineType!,
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize:
+                                                                    displayWidth(
+                                                                            context) *
+                                                                        0.038,
+                                                                fontFamily:
+                                                                    poppins),
+                                                            softWrap: true,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                                : Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Image.asset(
+                                                              'assets/images/fuel.png',
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.07,
+                                                              color:
+                                                                  Colors.black),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text:
+                                                                  '${widget.vessel!.fuelCapacity} gal',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.black,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.038,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        width: 4,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Image.asset(
+                                                              'assets/images/battery.png',
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.045,
+                                                              color:
+                                                                  Colors.black),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text:
+                                                                  '${widget.vessel!.batteryCapacity} kw',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.black,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.038,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        width: 4,
+                                                      ),
+                                                      Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Image.asset(
+                                                              widget.vessel!
+                                                                          .engineType!
+                                                                          .toLowerCase() ==
+                                                                      'hybrid'
+                                                                  ? 'assets/images/hybrid_engine.png'
+                                                                  : widget.vessel!
+                                                                              .engineType!
+                                                                              .toLowerCase() ==
+                                                                          'electric'
+                                                                      ? 'assets/images/electric_engine.png'
+                                                                      : 'assets/images/combustion_engine.png',
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.08,
+                                                              color:
+                                                                  Colors.black),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.018,
+                                                          ),
+                                                          Text(
+                                                            widget.vessel!
+                                                                .engineType!,
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize:
+                                                                    displayWidth(
+                                                                            context) *
+                                                                        0.038,
+                                                                fontFamily:
+                                                                    poppins),
+                                                            softWrap: true,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                      ),
+                                      SizedBox(
+                                        height: displayHeight(context) * 0.02,
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 12),
+                                        child: commonText(
                                           context: context,
-                                          text: tripIsRunning
+                                          text: 'Analytics',
+                                          fontWeight: FontWeight.w700,
+                                          textColor: Colors.black87,
+                                          textSize:
+                                              displayWidth(context) * 0.032,
+                                        ),
+                                      ),
+                                      vesselAnalytics(
+                                          context,
+                                          tripIsRunning
                                               ? Utils.calculateTripDuration(
                                                   (tripDuration / 1000).toInt())
                                               : '${widget.tripList!.time}',
-                                          fontWeight: FontWeight.w600,
-                                          textColor: Colors.black,
-                                          textSize:
-                                              displayWidth(context) * 0.036,
-                                          textAlign: TextAlign.start),
-                                      commonText(
-                                          context: context,
-                                          text: 'Time',
-                                          fontWeight: FontWeight.w400,
-                                          textColor: Colors.grey,
-                                          textSize:
-                                              displayWidth(context) * 0.026,
-                                          textAlign: TextAlign.start),
-                                    ],
-                                  ),
-                                  Container(
-                                      width: 1,
-                                      height: displayHeight(context) * 0.05,
-                                      color: Colors.grey),
-                                  Column(
-                                    children: [
-                                      commonText(
-                                          context: context,
-                                          text: tripIsRunning
-                                              ? '${tripSpeed.toString()} nm/h'
-                                              : '${widget.tripList!.speed}',
-                                          fontWeight: FontWeight.w600,
-                                          textColor: Colors.black,
-                                          textSize:
-                                              displayWidth(context) * 0.036,
-                                          textAlign: TextAlign.start),
-                                      commonText(
-                                          context: context,
-                                          text: 'Speed',
-                                          fontWeight: FontWeight.w400,
-                                          textColor: Colors.grey,
-                                          textSize:
-                                              displayWidth(context) * 0.026,
-                                          textAlign: TextAlign.start),
-                                    ],
-                                  ),
-                                  Container(
-                                      width: 1,
-                                      height: displayHeight(context) * 0.05,
-                                      color: Colors.grey),
-                                  Column(
-                                    children: [
-                                      commonText(
-                                          context: context,
-                                          text: tripIsRunning
+                                          tripIsRunning
                                               ? '${tripDistance.toStringAsFixed(2)} m'
                                               : '${widget.tripList!.distance} m',
-                                          fontWeight: FontWeight.w600,
-                                          textColor: Colors.black,
-                                          textSize:
-                                              displayWidth(context) * 0.036,
-                                          textAlign: TextAlign.start),
-                                      commonText(
-                                          context: context,
-                                          text: 'Distance',
-                                          fontWeight: FontWeight.w400,
-                                          textColor: Colors.grey,
-                                          textSize:
-                                              displayWidth(context) * 0.026,
-                                          textAlign: TextAlign.start),
+                                          '20',
+                                          tripIsRunning
+                                              ? '${tripSpeed.toString()} nm/h'
+                                              : '${widget.tripList!.speed}'),
                                     ],
+                                  ),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.01,
+                                  ),
+                                  Container(
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 12),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            commonText(
+                                              context: context,
+                                              text: 'Trip Details',
+                                              fontWeight: FontWeight.w700,
+                                              textColor: Colors.black87,
+                                              textSize:
+                                                  displayWidth(context) * 0.032,
+                                            ),
+                                            Row(
+                                              children: [
+                                                commonText(
+                                                  context: context,
+                                                  text: 'Trip Status:',
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.black87,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.03,
+                                                ),
+                                                SizedBox(
+                                                  width: 6,
+                                                ),
+                                                commonText(
+                                                  context: context,
+                                                  text: tripIsRunning
+                                                      ? 'Trip InProgress'
+                                                      : 'Trip Ended',
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: tripIsRunning
+                                                      ? Color(0xFFAE6827)
+                                                      : Colors.green,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.03,
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: displayHeight(context) * 0.02,
+                                        ),
+                                        Row(
+                                          children: [
+                                            commonText(
+                                              context: context,
+                                              text: 'Trip ID',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.grey,
+                                              textSize:
+                                                  displayWidth(context) * 0.03,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.1,
+                                            ),
+                                            commonText(
+                                              context: context,
+                                              text: ': ${widget.tripList!.id}',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.03,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        Row(
+                                          children: [
+                                            commonText(
+                                              context: context,
+                                              text: 'Start Date',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.grey,
+                                              textSize:
+                                                  displayWidth(context) * 0.03,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.04,
+                                            ),
+                                            commonText(
+                                              context: context,
+                                              text:
+                                                  ': ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.tripList!.createdAt!))}',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.03,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        Row(
+                                          children: [
+                                            commonText(
+                                              context: context,
+                                              text: 'Start Time',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.grey,
+                                              textSize:
+                                                  displayWidth(context) * 0.03,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.04,
+                                            ),
+                                            commonText(
+                                              context: context,
+                                              text:
+                                                  ': ${DateFormat('hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.03,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        tripIsRunning
+                                            ? Container()
+                                            : Row(
+                                                children: [
+                                                  commonText(
+                                                    context: context,
+                                                    text: 'End Date',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.grey,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        displayWidth(context) *
+                                                            0.06,
+                                                  ),
+                                                  commonText(
+                                                    context: context,
+                                                    text:
+                                                        ': ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.tripList!.updatedAt!))}',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.black,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                  ),
+                                                ],
+                                              ),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        tripIsRunning
+                                            ? Container()
+                                            : Row(
+                                                children: [
+                                                  commonText(
+                                                    context: context,
+                                                    text: 'End Time',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.grey,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        displayWidth(context) *
+                                                            0.06,
+                                                  ),
+                                                  commonText(
+                                                    context: context,
+                                                    text:
+                                                        ': ${DateFormat('hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.black,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                  ),
+                                                ],
+                                              ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                          Positioned(
-                            bottom: 10,
-                            right: 10,
-                            left: 10,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 17, vertical: 10),
                             child: tripIsRunning
                                 ? CommonButtons.getActionButton(
                                     title: 'End Trip',
@@ -640,283 +886,638 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                               setState(() {
                                                 widget.tripList = tripDetails;
                                               });
+
+                                              print(
+                                                  'TRIP ENDED DETAILS: ${tripDetails.isSync}');
+                                              print(
+                                                  'TRIP ENDED DETAILS: ${widget.tripList!.isSync}');
                                               Navigator.pop(context);
                                             });
                                       }, () {
                                         Navigator.pop(context);
                                       });
                                     })
-                                : Column(
+                                : Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      // SizedBox(height: 50,),
-                                      /*SizedBox(
-                                          height: 300,
-                                          width: 300,
-                                          child: Lottie.asset(
-                                              'assets/lottie/done.json')),*/
-                                      Center(
-                                        child: Text(
-                                          "Trip Id: ${widget.tripList!.id}",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 15,
-                                            color: primaryColor,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Center(
-                                        child: Text(
-                                          "Trip Ended Successfully!",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 35,
-                                      ),
-                                      Center(
-                                        child: Text(
-                                          "Do you want to download the trip data?",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ),
-                                      // SizedBox(height: 50,),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      CommonButtons.getDottedButton(
-                                          "Download Trip Data", context,
-                                          () async {
-                                        final androidInfo =
-                                            await DeviceInfoPlugin()
-                                                .androidInfo;
-
-                                        var isStoragePermitted =
-                                            androidInfo.version.sdkInt > 32
-                                                ? await Permission.photos.status
-                                                : await Permission
-                                                    .storage.status;
-                                        if (isStoragePermitted.isGranted) {
-                                          //File copiedFile = File('${ourDirectory!.path}.zip');
-                                          File copiedFile = File(
-                                              '${ourDirectory!.path}/${widget.tripList!.id}.zip');
-
-                                          print(
-                                              'DIR PATH R ${ourDirectory!.path}');
-
-                                          Directory directory;
-
-                                          if (Platform.isAndroid) {
-                                            directory = Directory(
-                                                "storage/emulated/0/Download/${widget.tripList!.id}.zip");
-                                          } else {
-                                            directory =
-                                                await getApplicationDocumentsDirectory();
-                                          }
-
-                                          copiedFile.copy(directory.path);
-
-                                          print(
-                                              'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                          if (copiedFile.existsSync()) {
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                    'File downloaded successfully');
-                                          }
-                                        } else {
-                                          await Utils.getStoragePermission(
-                                              context);
-                                          var isStoragePermitted =
-                                              await Permission.storage.status;
-
-                                          if (isStoragePermitted.isGranted) {
-                                            File copiedFile = File(
-                                                '${ourDirectory!.path}.zip');
-
-                                            Directory directory;
-
-                                            if (Platform.isAndroid) {
-                                              directory = Directory(
-                                                  "storage/emulated/0/Download/${widget.tripList!.id}.zip");
-                                            } else {
-                                              directory =
-                                                  await getApplicationDocumentsDirectory();
-                                            }
-
-                                            copiedFile.copy(directory.path);
-
-                                            print(
-                                                'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                            if (copiedFile.existsSync()) {
-                                              Utils.showSnackBar(context,
-                                                  scaffoldKey: scaffoldKey,
-                                                  message:
-                                                      'File downloaded successfully');
-                                            }
-                                          }
-                                        }
-                                      }, primaryColor),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
                                       CommonButtons.getActionButton(
-                                          title: 'Trip Ended',
+                                          title: 'Download Trip Data',
                                           context: context,
                                           fontSize:
-                                              displayWidth(context) * 0.042,
+                                              displayWidth(context) * 0.034,
                                           textColor: Colors.white,
-                                          buttonPrimaryColor: buttonBGColor,
-                                          borderColor: buttonBGColor,
-                                          width: displayWidth(context),
+                                          buttonPrimaryColor: Color(0xFF889BAB),
+                                          borderColor: Color(0xFF889BAB),
+                                          width: displayWidth(context) / 2.3,
                                           onTap: () async {
-                                            final androidInfo =
-                                                await DeviceInfoPlugin()
-                                                    .androidInfo;
+                                            downloadTrip(false);
+                                          }),
+                                      isTripUploaded
+                                          ? Container(
+                                              margin: EdgeInsets.only(
+                                                  right: displayWidth(context) *
+                                                      0.2),
+                                              child: Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                            Color>(
+                                                        circularProgressColor),
+                                              )),
+                                            )
+                                          : CommonButtons.getActionButton(
+                                              title: 'Upload Trip Data',
+                                              context: context,
+                                              fontSize:
+                                                  displayWidth(context) * 0.034,
+                                              textColor: Colors.white,
+                                              buttonPrimaryColor: buttonBGColor,
+                                              borderColor: buttonBGColor,
+                                              width:
+                                                  displayWidth(context) / 2.3,
+                                              onTap: () async {
+                                                Utils().check(scaffoldKey);
 
-                                            var isStoragePermitted =
-                                                androidInfo.version.sdkInt > 32
-                                                    ? await Permission
-                                                        .photos.status
-                                                    : await Permission
-                                                        .storage.status;
-                                            if (isStoragePermitted.isGranted) {
-                                              //File copiedFile = File('${ourDirectory!.path}.zip');
-                                              File copiedFile = File(
-                                                  '${ourDirectory!.path}/${widget.tripList!.id}.zip');
-
-                                              print(
-                                                  'DIR PATH R ${ourDirectory!.path}');
-
-                                              Directory directory;
-
-                                              if (Platform.isAndroid) {
-                                                directory = Directory(
-                                                    "storage/emulated/0/Download/${widget.tripList!.id}.zip");
-                                              } else {
-                                                directory =
-                                                    await getApplicationDocumentsDirectory();
-                                              }
-
-                                              copiedFile.copy(directory.path);
-
-                                              print(
-                                                  'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                              if (copiedFile.existsSync()) {
-                                                // Utils.showSnackBar(context,
-                                                //     scaffoldKey: scaffoldKey,
-                                                //     message:
-                                                //     'File downloaded successfully');
-                                              }
-                                            } else {
-                                              await Utils.getStoragePermission(
-                                                  context);
-                                              var isStoragePermitted =
-                                                  await Permission
-                                                      .storage.status;
-
-                                              if (isStoragePermitted
-                                                  .isGranted) {
-                                                File copiedFile = File(
-                                                    '${ourDirectory!.path}.zip');
-
-                                                Directory directory;
-
-                                                if (Platform.isAndroid) {
-                                                  directory = Directory(
-                                                      "storage/emulated/0/Download/${widget.tripList!.id}.zip");
-                                                } else {
-                                                  directory =
-                                                      await getApplicationDocumentsDirectory();
+                                                if (widget.tripList?.isSync !=
+                                                    0) {
+                                                  Utils.showSnackBar(
+                                                    context,
+                                                    scaffoldKey: scaffoldKey,
+                                                    message:
+                                                        'File already uploaded',
+                                                  );
+                                                  return;
                                                 }
 
-                                                copiedFile.copy(directory.path);
+                                                downloadTrip(true);
 
-                                                print(
-                                                    'DOES FILE EXIST: ${copiedFile.existsSync()}');
+                                                var connectivityResult =
+                                                    await (Connectivity()
+                                                        .checkConnectivity());
+                                                if (connectivityResult ==
+                                                    ConnectivityResult.mobile) {
+                                                  print('Mobile');
+                                                  showDialogBoxToUploadTrip();
+                                                } else if (connectivityResult ==
+                                                    ConnectivityResult.wifi) {
+                                                  setState(() {
+                                                    isTripUploaded = true;
+                                                  });
+                                                  uploadDataIfDataIsNotSync();
 
-                                                if (copiedFile.existsSync()) {
-                                                  // Utils.showSnackBar(context,
-                                                  //     scaffoldKey: scaffoldKey,
-                                                  //     message:
-                                                  //     'File downloaded successfully');
+                                                  print('WIFI');
                                                 }
-                                              }
-                                            }
-
-                                            // Get.back();
-
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      HomePage()),
-                                            );
-
-                                            // getTripId = await getTripIdFromPref();
-
-                                            // File? zipFile;
-                                            // if (timer != null) timer!.cancel();
-                                            // print(
-                                            //     'TIMER STOPPED ${ourDirectory!.path}');
-                                            // final dataDir =
-                                            // Directory(ourDirectory!.path);
-                                            //
-                                            // try {
-                                            //   zipFile =
-                                            //       File('${ourDirectory!.path}.zip');
-                                            //
-                                            //   ZipFile.createFromDirectory(
-                                            //       sourceDir: dataDir,
-                                            //       zipFile: zipFile,
-                                            //       recurseSubDirs: true);
-                                            //   print('our path is $dataDir');
-                                            // } catch (e) {
-                                            //   print(e);
-                                            // }
-                                            //
-                                            // File file = File(zipFile!.path);
-                                            // Future.delayed(Duration(seconds: 1))
-                                            //     .then((value) {
-                                            //   stateSetter(() {
-                                            //     isZipFileCreate = true;
-                                            //   });
-                                            // });
-                                            // print('FINAL PATH: ${file.path}');
-                                            // onSave(file);
-
-                                            /*File file = File(zipFile!.path);
-                                              Future.delayed(Duration(seconds: 1))
-                                                  .then((value) {
-                                                stateSetter(() {
-                                                  isZipFileCreate = true;
-                                                });
-                                              });*/
-                                          })
+                                              })
                                     ],
                                   ),
-                          )
-                        ],
-                      ),
+                          ),
+                        )
+                      ],
                     ),
-                  ))
+                  ),
+                ),
+              )
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<bool> vesselIsSyncOrNot(String vesselId) async {
+    bool result = await _databaseService.getVesselIsSyncOrNot(vesselId);
+
+    setState(() {
+      vesselIsSync = result;
+      print('Vessel isSync $vesselIsSync');
+    });
+
+    /*setState(() {
+      isEndTripButton = tripIsRunning;
+      isStartButton = !tripIsRunning;
+    });*/
+    return result;
+  }
+
+  showDialogBoxToUploadTrip() {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.3,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                      'Your carrier may charge for Data Usage to upload trip data do you want to proceed?',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.04,
+                                  textAlign: TextAlign.center),
+                              /* SizedBox(
+                                height: displayHeight(context) * 0.015,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text:
+                                      'The vessel will be visible in your vessel list and you can record trips with it again',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.grey,
+                                  textSize: displayWidth(context) * 0.036,
+                                  textAlign: TextAlign.center),*/
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey)),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Cancel', context, primaryColor, () {
+                                    Navigator.of(context).pop();
+                                  },
+                                      displayWidth(context) * 0.4,
+                                      displayHeight(context) * 0.05,
+                                      Colors.grey.shade400,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black,
+                                      displayHeight(context) * 0.018,
+                                      Colors.grey.shade400,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15.0,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'OK', context, primaryColor, () async {
+                                    setState(() {
+                                      isTripUploaded = true;
+                                    });
+                                    setDialogState(() {
+                                      uploadDataIfDataIsNotSync();
+                                    });
+
+                                    Navigator.of(context).pop();
+                                  },
+                                      displayWidth(context) * 0.4,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.018,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
+  }
+
+  startSensorFunctionality(Trip tripData) async {
+    //fileName = '$fileIndex.csv';
+
+    // flutterLocalNotificationsPlugin.cancel(9988);
+    AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
+
+    var queryParameters;
+    queryParameters = {
+      "id": tripData.id,
+      "load": tripData.currentLoad,
+      "sensorInfo": [
+        {"make": "qualicom", "name": "gps"}
+      ],
+      "deviceInfo": {
+        "deviceId": androidDeviceInfo.id,
+        "model": androidDeviceInfo.model,
+        "version": androidDeviceInfo.version.release,
+        "make": androidDeviceInfo.manufacturer,
+        "board": androidDeviceInfo.board,
+        "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
+      },
+      "lat": tripData.startPosition,
+      "long": tripData.endPosition,
+      "vesselId": tripData.vesselId,
+      "filePath": 'storage/emulated/0/Download/${widget.tripList!.id}.zip',
+      "createdAt": tripData.createdAt,
+      "updatedAt": tripData.updatedAt,
+      //"userID": commonProvider.loginModel!.userId!
+    };
+
+    debugPrint('CREATE TRIP: $queryParameters');
+
+    commonProvider
+        .sendSensorInfo(
+            context,
+            commonProvider.loginModel!.token!,
+            File('${tripData.filePath}'),
+            queryParameters,
+            tripData.id!,
+            scaffoldKey)
+        .then((value) async {
+      if (value != null) {
+        if (value.status!) {
+          await cancelOnGoingProgressNotification(tripData.id!);
+
+          setState(() {
+            isTripUploaded = false;
+          });
+          print("widget.tripList!.id: ${widget.tripList!.id}");
+          _databaseService.updateTripIsSyncStatus(1, tripData.id.toString());
+          Trip tripDetails =
+              await _databaseService.getTrip(widget.tripList!.id!);
+          print('TRIP DETAILS: ${tripDetails.toJson()}');
+          setState(() {
+            widget.tripList = tripDetails;
+          });
+
+          showSuccessNoti();
+
+          // widget.tripUploadedSuccessfully!.call();
+        } else {
+          setState(() {
+            isTripUploaded = false;
+          });
+          showFailedNoti(tripData.id!);
+        }
+      } else {
+        setState(() {
+          isTripUploaded = false;
+        });
+        showFailedNoti(tripData.id!);
+      }
+    }).catchError((onError, s) {
+      if (mounted) {
+        setState(() {
+          isTripUploaded = false;
+        });
+      }
+      // showFailedNoti(tripData.id!);
+      debugPrint('ON ERROR $onError \n $s');
+    });
+  }
+
+  Future<void> cancelOnGoingProgressNotification(String id) async {
+    //progressTimer!.cancel();
+    flutterLocalNotificationsPlugin.cancel(9989);
+    // setState(() {
+    //   progress = 100;
+    // });
+    return;
+  }
+
+  uploadDataIfDataIsNotSync() async {
+    await vesselIsSyncOrNot(widget.tripList!.vesselId.toString());
+    debugPrint('VESSEL STATUS isSync $vesselIsSync');
+
+    const int maxProgress = 10;
+    progress = 0;
+
+    /*progressTimer = Timer.periodic(Duration(milliseconds: 500), (timer) {
+      progress = progress + 100;
+      //progress = timer.tick;
+      int fileLength = 0;
+      try {
+        fileLength =
+            File('storage/emulated/0/Download/${widget.tripList!.id}.zip')
+                .lengthSync();
+      } catch (e) {
+        showFailedNoti(widget.tripList!.id!);
+        setState(() {
+          isTripUploaded = false;
+        });
+      }
+
+      var value = progress / fileLength;
+
+      finalProgress = value * 100;
+
+      finalProgress = finalProgress > 100 ? 100 : finalProgress;
+
+      if (finalProgress == 100) {
+        progressTimer!.cancel();
+      }
+
+      final AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails('progress channel', 'progress channel',
+              channelDescription: 'progress channel description',
+              channelShowBadge: false,
+              importance: Importance.max,
+              priority: Priority.high,
+              onlyAlertOnce: true,
+              showProgress: true,
+              ongoing: true,
+              indeterminate: false,
+              progress: finalProgress.toInt(),
+              maxProgress: 100);
+      final NotificationDetails platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+      flutterLocalNotificationsPlugin.show(
+          9986,
+          '${widget.tripList!.id} ${finalProgress.toStringAsFixed(0)}/100%',
+          '${finalProgress.toStringAsFixed(0)}/100%',
+          platformChannelSpecifics,
+          payload: 'item x');
+    });*/
+
+    final AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'progress channel',
+      'progress channel',
+      channelDescription: 'progress channel description',
+      channelShowBadge: false,
+      importance: Importance.max,
+      priority: Priority.high,
+      onlyAlertOnce: true,
+      showProgress: false,
+      ongoing: true,
+      indeterminate: false,
+    );
+    final NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    flutterLocalNotificationsPlugin.show(
+        9989, 'Uploading vessel details...', '', platformChannelSpecifics,
+        payload: 'item x');
+
+    commonProvider.init();
+
+    if (!vesselIsSync) {
+      CreateVessel vesselData = await _databaseService
+          .getVesselFromVesselID((widget.tripList!.vesselId.toString()));
+
+      debugPrint('VESSEL DATA ${vesselData.id}');
+
+      commonProvider.addVesselRequestModel = CreateVessel();
+      commonProvider.addVesselRequestModel!.id = vesselData.id;
+      commonProvider.addVesselRequestModel!.name = vesselData.name;
+      commonProvider.addVesselRequestModel!.model = vesselData.model;
+      commonProvider.addVesselRequestModel!.builderName =
+          vesselData.builderName;
+      commonProvider.addVesselRequestModel!.regNumber = vesselData.regNumber;
+      commonProvider.addVesselRequestModel!.mMSI = vesselData.mMSI;
+      commonProvider.addVesselRequestModel!.engineType = vesselData.engineType;
+      commonProvider.addVesselRequestModel!.fuelCapacity =
+          vesselData.fuelCapacity;
+      commonProvider.addVesselRequestModel!.weight = vesselData.weight;
+      commonProvider.addVesselRequestModel!.freeBoard = vesselData.freeBoard;
+      commonProvider.addVesselRequestModel!.lengthOverall =
+          vesselData.lengthOverall;
+      commonProvider.addVesselRequestModel!.beam = vesselData.beam;
+      commonProvider.addVesselRequestModel!.draft = vesselData.draft;
+      commonProvider.addVesselRequestModel!.vesselSize = vesselData.vesselSize;
+      commonProvider.addVesselRequestModel!.capacity = vesselData.capacity;
+      commonProvider.addVesselRequestModel!.builtYear = vesselData.builtYear;
+      commonProvider.addVesselRequestModel!.createdAt = vesselData.createdAt;
+      commonProvider.addVesselRequestModel!.batteryCapacity =
+          vesselData.batteryCapacity;
+      //commonProvider.addVesselRequestModel!.imageURLs = vesselData.imageURLs!;
+
+      if (vesselData.imageURLs!.isNotEmpty) {
+        finalSelectedFiles.add(File(vesselData.imageURLs!));
+        commonProvider.addVesselRequestModel!.selectedImages =
+            finalSelectedFiles;
+
+        debugPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
+      } else {
+        commonProvider.addVesselRequestModel!.selectedImages = [];
+      }
+
+      commonProvider
+          .addVessel(
+              context,
+              commonProvider.addVesselRequestModel,
+              commonProvider.loginModel!.userId!,
+              commonProvider.loginModel!.token!,
+              scaffoldKey)
+          .then((value) async {
+        if (value != null) {
+          if (value.status!) {
+            // print('DATA');
+            await _databaseService.updateIsSyncStatus(
+                1, widget.tripList!.vesselId.toString());
+
+            /*setState(() {
+              isTripUploaded = false;
+            });*/
+
+            startSensorFunctionality(widget.tripList!);
+          } /* else if (value.statusCode == 400) {
+            setState(() {
+              isTripUploaded = false;
+            });
+          } */
+          else {
+            await cancelOnGoingProgressNotification(widget.tripList!.id!);
+            showFailedNoti(widget.tripList!.id!);
+            setState(() {
+              isTripUploaded = false;
+            });
+          }
+        } else {
+          await cancelOnGoingProgressNotification(widget.tripList!.id!);
+          showFailedNoti(widget.tripList!.id!);
+          setState(() {
+            isTripUploaded = false;
+          });
+        }
+      });
+    } else {
+      setState(() {
+        isTripUploaded = false;
+      });
+      startSensorFunctionality(widget.tripList!);
+    }
+  }
+
+  showFailedNoti(String id) async {
+    progressTimer!.cancel();
+    final AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails('progress channel', 'progress channel',
+            channelDescription: 'progress channel description',
+            channelShowBadge: false,
+            importance: Importance.max,
+            priority: Priority.high,
+            onlyAlertOnce: true,
+            showProgress: false);
+    final NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    flutterLocalNotificationsPlugin.show(9987, id,
+        'Failed to upload. Please try again', platformChannelSpecifics,
+        payload: 'item x');
+  }
+
+  showSuccessNoti() async {
+    // progressTimer!.cancel();
+    final AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails('progress channel', 'progress channel',
+            channelDescription: 'progress channel description',
+            channelShowBadge: false,
+            importance: Importance.max,
+            priority: Priority.high,
+            onlyAlertOnce: true,
+            showProgress: true,
+            progress: 100,
+            maxProgress: 100);
+    final NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    flutterLocalNotificationsPlugin.show(
+        9989, 'Trip uploaded successfully', '', platformChannelSpecifics,
+        payload: 'item x');
+  }
+
+  downloadTrip(bool isuploadTrip) async {
+    debugPrint('DOWLOAD Started!!!');
+
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+
+    var isStoragePermitted = androidInfo.version.sdkInt > 32
+        ? await Permission.photos.status
+        : await Permission.storage.status;
+    if (isStoragePermitted.isGranted) {
+      //File copiedFile = File('${ourDirectory!.path}.zip');
+      File copiedFile =
+          File('${ourDirectory!.path}/${widget.tripList!.id}.zip');
+
+      print('DIR PATH R ${ourDirectory!.path}');
+
+      Directory directory;
+
+      if (Platform.isAndroid) {
+        directory =
+            Directory("storage/emulated/0/Download/${widget.tripList!.id}.zip");
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      copiedFile.copy(directory.path);
+
+      print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+      if (copiedFile.existsSync()) {
+        if (!isuploadTrip) {
+          Utils.showSnackBar(
+            context,
+            scaffoldKey: scaffoldKey,
+            message: 'File downloaded successfully',
+          );
+        }
+        /*Utils.showActionSnackBar(
+                                                          context,
+                                                          scaffoldKey,
+                                                          'File downloaded successfully',
+                                                          () async {
+                                                        print(
+                                                            'Open Btn clicked ttttt');
+                                                        var result =
+                                                            await OpenFile.open(
+                                                                directory.path);
+
+                                                        print(
+                                                            "dataaaaa: ${result.message} ggg ${result.type}");
+                                                      });*/
+      }
+    } else {
+      await Utils.getStoragePermission(context);
+      var isStoragePermitted = await Permission.storage.status;
+
+      if (isStoragePermitted.isGranted) {
+        File copiedFile = File('${ourDirectory!.path}.zip');
+
+        Directory directory;
+
+        if (Platform.isAndroid) {
+          directory = Directory(
+              "storage/emulated/0/Download/${widget.tripList!.id}.zip");
+        } else {
+          directory = await getApplicationDocumentsDirectory();
+        }
+
+        copiedFile.copy(directory.path);
+
+        print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+        if (copiedFile.existsSync()) {
+          Utils.showSnackBar(
+            context,
+            scaffoldKey: scaffoldKey,
+            message: 'File downloaded successfully',
+          );
+
+          /*Utils.showActionSnackBar(
+                                                            context,
+                                                            scaffoldKey,
+                                                            'File downloaded successfully',
+                                                            () {
+                                                          print(
+                                                              'Open Btn clicked');
+                                                          OpenFile.open(
+                                                                  directory.path)
+                                                              .catchError(
+                                                                  (onError) {
+                                                            print(onError);
+                                                          });
+                                                        });*/
+        }
+      }
+    }
   }
 }

@@ -12,10 +12,12 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/common_model.dart';
 import 'package:dio/dio.dart' as d;
+import 'package:performarine/models/upload_trip_model.dart';
 
 class SendSensorInfoApiProvider with ChangeNotifier {
   //CreateTripModel? createTripModel;
   CommonModel? commonModel;
+  UploadTripModel? uploadTripModel;
   // DeviceInfo? deviceInfo;
   Future<CommonModel> sendSensorInfo(
       BuildContext context,
@@ -107,7 +109,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
     return commonModel!;
   }
 
-  Future<CommonModel> sendSensorDataInfoDio(
+  Future<UploadTripModel> sendSensorDataInfoDio(
       BuildContext context,
       String? accessToken,
       File? zipFile,
@@ -169,7 +171,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         },
       ).then((response) {
         print('RESPONSE: ${response.statusCode}');
-        print('RESPONSE: ${response.data}');
+        print('RESPONSE: ${jsonEncode(response.data)}');
         var decodedData = json.decode(jsonEncode(response.data));
         if (response.statusCode == HttpStatus.ok) {
           kReleaseMode
@@ -177,9 +179,9 @@ class SendSensorInfoApiProvider with ChangeNotifier {
               : debugPrint('Register Response : ' + response.data.toString());
 
           if (decodedData['status']) {
-            commonModel = CommonModel.fromJson(decodedData);
+            uploadTripModel = UploadTripModel.fromJson(decodedData);
           }
-          return commonModel!;
+          return uploadTripModel!;
         } else if (response.statusCode == HttpStatus.gatewayTimeout) {
           kReleaseMode
               ? null
@@ -191,7 +193,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
                 scaffoldKey: scaffoldKey, message: decodedData['message']);
           }
 
-          commonModel = null;
+          uploadTripModel = null;
         } else {
           if (scaffoldKey != null) {
             Utils.showSnackBar(context,
@@ -203,25 +205,25 @@ class SendSensorInfoApiProvider with ChangeNotifier {
               : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
           kReleaseMode ? null : debugPrint('EXE RESP: $response');
         }
-        commonModel = null;
+        uploadTripModel = null;
       }).onError((error, stackTrace) {
         print('ERROR DIO: $error\n$stackTrace');
         //flutterLocalNotificationsPlugin.cancel(9989);
-        commonModel = null;
+        uploadTripModel = null;
       });
     } on SocketException catch (_) {
       Utils().check(scaffoldKey);
       kReleaseMode ? null : debugPrint('Socket Exception');
 
-      commonModel = null;
+      uploadTripModel = null;
     } catch (exception, s) {
       kReleaseMode
           ? null
           : debugPrint('error caught exception:- $exception \n $s');
-      commonModel = null;
+      uploadTripModel = null;
     }
 
-    return commonModel!;
+    return uploadTripModel!;
   }
 
   Future<CommonModel> sendSensorDataInfoStreamed(

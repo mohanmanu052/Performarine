@@ -137,10 +137,9 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       onTap: () {},
                       onChanged: (String value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Enter vessel name';
                         }
-
                         return null;
                       },
                       onSaved: (String value) {
@@ -163,7 +162,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       onTap: () {},
                       onChanged: (String value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Enter vessel model';
                         }
                         return null;
@@ -188,7 +187,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       onTap: () {},
                       onChanged: (String value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Enter vessel builder name';
                         }
 
@@ -266,7 +265,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       onTap: () {},
                       onChanged: (String value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Enter vessel weight';
                         }
 
@@ -352,7 +351,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 onTap: () {},
                                 onChanged: (String value) {},
                                 validator: (value) {
-                                  if (value!.isEmpty) {
+                                  if (value!.trim().isEmpty) {
                                     return 'Enter fuel capacity';
                                   }
 
@@ -387,7 +386,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 onTap: () {},
                                 onChanged: (String value) {},
                                 validator: (value) {
-                                  if (value!.isEmpty) {
+                                  if (value!.trim().isEmpty) {
                                     return 'Enter battery capacity';
                                   }
 

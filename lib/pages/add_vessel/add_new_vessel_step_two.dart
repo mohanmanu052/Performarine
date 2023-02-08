@@ -133,7 +133,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       onTap: () {},
                       onChanged: (String value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Enter vessel freeboard';
                         }
 
@@ -160,7 +160,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       onTap: () {},
                       onChanged: (String value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Enter vessel length overall';
                         }
 
@@ -187,7 +187,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       onTap: () {},
                       onChanged: (String value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Enter vessel beam';
                         }
 
@@ -214,7 +214,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       onTap: () {},
                       onChanged: (String value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Enter vessel draft';
                         }
 
@@ -248,7 +248,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       onTap: () {},
                       onChanged: (String value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Enter vessel size';
                         }
 
@@ -274,7 +274,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       onTap: () {},
                       onChanged: (String value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Enter vessel capacity';
                         }
 
@@ -300,7 +300,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       onTap: () {},
                       onChanged: (String value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Enter vessel built year';
                         } else if (int.parse(value) < 1947) {
                           return 'Please enter valid year';

@@ -117,8 +117,9 @@ class DatabaseService {
     final db = await _databaseService.database;
 
     // Query the table for all the trips.
-    final List<Map<String, dynamic>> maps =
-        await db.query('trips'/*, where: 'isSync = ?',whereArgs: [0]*/,orderBy: "isSync");
+    final List<Map<String, dynamic>> maps = await db.query(
+        'trips' /*, where: 'isSync = ?',whereArgs: [0]*/,
+        orderBy: "isSync");
 
     return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
   }
@@ -126,8 +127,8 @@ class DatabaseService {
   /// Method to get AllTrips data By Vessel Id
   Future<List<Trip>> getAllTripsByVesselId(String id) async {
     final db = await _databaseService.database;
-    final List<Map<String, dynamic>> maps =
-        await db.query('trips', where: 'vesselId = ?', whereArgs: [id],orderBy: 'isSync');
+    final List<Map<String, dynamic>> maps = await db.query('trips',
+        where: 'vesselId = ?', whereArgs: [id], orderBy: 'isSync');
     return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
   }
 
@@ -154,7 +155,6 @@ class DatabaseService {
         maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }
 
-
   Future<int> updateVessel(CreateVessel vessel) async {
     final db = await _databaseService.database;
     print("vessel.toMap():${vessel.toMap()}");
@@ -165,12 +165,28 @@ class DatabaseService {
     return result;
   }
 
-  Future<void> updateTripStatus(int status, String filePath, String updatedAt,String endPosition,
-      String time, String distance, String speed, String tripId) async {
+  Future<void> updateTripStatus(
+      int status,
+      String filePath,
+      String updatedAt,
+      String endPosition,
+      String time,
+      String distance,
+      String speed,
+      String tripId) async {
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
         'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ?,endPosition = ?, time = ?, distance = ?, speed = ? WHERE id = ?',
-        [status, filePath, updatedAt,endPosition, time, distance, speed, tripId]);
+        [
+          status,
+          filePath,
+          updatedAt,
+          endPosition,
+          time,
+          distance,
+          speed,
+          tripId
+        ]);
     print('updated: $count');
   }
 
@@ -248,16 +264,19 @@ class DatabaseService {
     return CreateVessel.fromMap(list[0]);
   }
 
-  Future<void> updateIsSyncStatus(int isSyncValue, String id) async {
+  Future<int> updateIsSyncStatus(int isSyncValue, String id) async {
     final db = await _databaseService.database;
-    await db.rawUpdate(
+    int update = await db.rawUpdate(
         '''UPDATE vessels SET isSync = ? WHERE id = ?''', [isSyncValue, id]);
+    print('UPDATEDDDDD: $update');
+    return update;
   }
 
   Future<void> updateTripIsSyncStatus(int isSyncValue, String id) async {
     final db = await _databaseService.database;
     await db.rawUpdate(
         '''UPDATE trips SET isSync = ? WHERE id = ?''', [isSyncValue, id]);
+    return;
   }
 
   Future<void> updateVesselName(String vesselName, String vesselId) async {
