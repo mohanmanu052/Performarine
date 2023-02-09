@@ -158,6 +158,8 @@ class CreateTrip {
     await DatabaseService().updateVesselDataWithDurationSpeedDistance(
         finalTripDuration, finalTripDistance, tripSpeed.toString(), vesselId);
 
+    await flutterLocalNotificationsPlugin.cancel(888);
+
     if (onEnded != null) onEnded.call();
   }
 }

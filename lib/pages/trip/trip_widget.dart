@@ -174,7 +174,9 @@ class _TripWidgetState extends State<TripWidget> {
                     painter: StatusTag(
                         color: widget.tripList?.isSync != 0
                             ? buttonBGColor
-                            : primaryColor),
+                            : widget.tripList?.tripStatus != 0
+                                ? primaryColor
+                                : Colors.orangeAccent),
                     child: Container(
                       margin:
                           EdgeInsets.only(left: displayWidth(context) * 0.05),
@@ -185,7 +187,9 @@ class _TripWidgetState extends State<TripWidget> {
                             context: context,
                             text: widget.tripList?.isSync != 0
                                 ? "Completed"
-                                : "Pending Upload ",
+                                : widget.tripList?.tripStatus != 0
+                                    ? "Pending Upload "
+                                    : "In Progress",
                             fontWeight: FontWeight.w500,
                             textColor: Colors.white,
                             textSize: displayWidth(context) * 0.03,
@@ -275,8 +279,8 @@ class _TripWidgetState extends State<TripWidget> {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 TripAnalyticsScreen(
-                                              tripList: widget.tripList!,
-                                              vessel: getVesselById[0],
+                                              tripId: widget.tripList!.id,
+                                              vesselId: getVesselById[0].id,
                                               tripIsRunningOrNot: false,
                                               // vessel: getVesselById[0]
                                             ),

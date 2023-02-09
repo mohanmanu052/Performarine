@@ -235,7 +235,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
       onTap(vesselData);
     },
     child: Card(
-      color: Colors.black,
+      //color: Colors.black,
       elevation: 3.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Stack(
@@ -247,13 +247,19 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                       vesselData.imageURLs == 'string'
                   ? Stack(
                       children: [
-                        Container(
-                          color: Colors.white,
-                          child: Image.asset(
-                            'assets/images/vessel_default_img.png',
-                            height: displayHeight(context) * 0.22,
-                            width: displayWidth(context),
-                            fit: BoxFit.fill,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              //color: Colors.white,
+                            ),
+                            child: Image.asset(
+                              'assets/images/vessel_default_img.png',
+                              height: displayHeight(context) * 0.22,
+                              width: displayWidth(context),
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                         /*Image.asset(
@@ -809,7 +815,8 @@ showDialogBox(BuildContext context, CreateVessel vesselData) {
 }
 
 Widget vesselAnalytics(BuildContext context, String duration, String distance,
-    String noOfTrips, String avgSpeed) {
+    String currentSpeed, String avgSpeed, bool isTripIsRunning) {
+  //double avgSpeed = int.parse(distance) / int.parse(duration);
   return Container(
     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
     child: Column(
@@ -837,7 +844,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
                       ),
                       commonText(
                           context: context,
-                          text: 'Total Trips Duration',
+                          text: 'Trips Duration',
                           fontWeight: FontWeight.w500,
                           textColor: Colors.grey,
                           textSize: displayWidth(context) * 0.03,
@@ -871,7 +878,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
                       ),
                       commonText(
                           context: context,
-                          text: 'Total Distance',
+                          text: 'Distance',
                           fontWeight: FontWeight.w500,
                           textColor: Colors.grey,
                           textSize: displayWidth(context) * 0.03,
@@ -886,44 +893,78 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
         SizedBox(
           height: 10,
         ),
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Color(0XFFE4F5F5)),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    children: [
-                      commonText(
-                          context: context,
-                          text: '$noOfTrips',
-                          fontWeight: FontWeight.w600,
-                          textColor: Colors.black,
-                          textSize: displayWidth(context) * 0.044,
-                          textAlign: TextAlign.start),
-                      SizedBox(
-                        height: 4,
+        isTripIsRunning
+            ? Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Color(0XFFE4F5F5)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          children: [
+                            commonText(
+                                context: context,
+                                text: '$currentSpeed m/s',
+                                fontWeight: FontWeight.w600,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.044,
+                                textAlign: TextAlign.start),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            commonText(
+                                context: context,
+                                text: 'Current speed',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.grey,
+                                textSize: displayWidth(context) * 0.03,
+                                textAlign: TextAlign.start),
+                          ],
+                        ),
                       ),
-                      commonText(
-                          context: context,
-                          text: 'Total no of Trips',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.grey,
-                          textSize: displayWidth(context) * 0.03,
-                          textAlign: TextAlign.start),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Container(
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Color(0XFFE4F5F5)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          children: [
+                            commonText(
+                                context: context,
+                                text: '${avgSpeed} m/s',
+                                fontWeight: FontWeight.w600,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.044,
+                                textAlign: TextAlign.start),
+                            SizedBox(
+                              height: 4,
+                            ),
+                            commonText(
+                                context: context,
+                                text: 'Avg. Speed',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.grey,
+                                textSize: displayWidth(context) * 0.03,
+                                textAlign: TextAlign.start),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Container(
+                width: displayWidth(context),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: Color(0XFFE4F5F5)),
@@ -952,9 +993,6 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
                   ),
                 ),
               ),
-            )
-          ],
-        )
       ],
     ),
   );

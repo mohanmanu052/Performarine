@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -28,10 +29,7 @@ class _IntroScreenState extends State<IntroScreen> {
     // TODO: implement initState
     super.initState();
 
-    Future.delayed(Duration(seconds: 1), () {
-      sharedPreferences!.reload();
-      checkIfTripIsRunning();
-    });
+    checkIfTripIsRunning();
   }
 
   @override
@@ -197,14 +195,48 @@ class _IntroScreenState extends State<IntroScreen> {
         }
       });
     } else {
-      Future.delayed(Duration(seconds: 3), () {
-        print('IS CALLED FROM NOTI: $isCalledFromNoti');
-        if (isCalledFromNoti == null) {
+      final NotificationAppLaunchDetails? notificationAppLaunchDetails =
+          await flutterLocalNotificationsPlugin
+              .getNotificationAppLaunchDetails();
+
+      if (notificationAppLaunchDetails == null) {
+        print('NotificationAppLaunchDetails IS NULL');
+        Future.delayed(Duration(seconds: 3), () {
           if (mounted) {
             setState(() {
               isBtnVisible = true;
             });
           }
+        });
+      } else {
+        if (!notificationAppLaunchDetails.didNotificationLaunchApp) {
+          print('NotificationAppLaunchDetails IS FALSE');
+          Future.delayed(Duration(seconds: 3), () {
+            if (mounted) {
+              setState(() {
+                isBtnVisible = true;
+              });
+            }
+          });
+        } else {
+          print('NotificationAppLaunchDetails IS TRUE');
+          List<String>? tripData =
+              sharedPreferences!.getStringList('trip_data');
+
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TripAnalyticsScreen(
+                      tripId: tripData![0],
+                      vesselId: tripData[1],
+                      tripIsRunningOrNot: isTripStarted)),
+              ModalRoute.withName(""));
+        }
+      }
+
+      /*Future.delayed(Duration(seconds: 3), () {
+        print('IS CALLED FROM NOTI: $isCalledFromNoti');
+        if (isCalledFromNoti == null) {
         } else if (!isCalledFromNoti) {
           if (mounted) {
             setState(() {
@@ -214,7 +246,7 @@ class _IntroScreenState extends State<IntroScreen> {
         } else {
           checkIfUserIsLoggedIn();
         }
-      });
+      });*/
     }
   }
 
@@ -273,20 +305,12 @@ class _IntroScreenState extends State<IntroScreen> {
                 builder: (context) => HomePage(tripData: tripData ?? [])),
             ModalRoute.withName(""));
       } else {
-        final DatabaseService _databaseService = DatabaseService();
-        final tripDetails = await _databaseService.getTrip(tripData![0]);
-
-        List<CreateVessel> vesselDetails =
-            await _databaseService.getVesselNameByID(tripData[1]);
-
-        debugPrint('INTRO TRIP ID ${tripDetails.id}');
-
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
                 builder: (context) => TripAnalyticsScreen(
-                    tripList: tripDetails,
-                    vessel: vesselDetails[0],
+                    tripId: tripData![0],
+                    vesselId: tripData[1],
                     tripIsRunningOrNot: isTripStarted)),
             ModalRoute.withName(""));
       }

@@ -26,11 +26,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class TripAnalyticsScreen extends StatefulWidget {
-  Trip? tripList;
-  final CreateVessel? vessel;
+  String? tripId;
+  final String? vesselId;
   final bool? tripIsRunningOrNot;
   TripAnalyticsScreen(
-      {Key? key, this.tripList, this.vessel, this.tripIsRunningOrNot})
+      {Key? key, this.tripId, this.vesselId, this.tripIsRunningOrNot})
       : super(key: key);
 
   @override
@@ -41,7 +41,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
 
-  List<CreateVessel> getVesselById = [];
+  CreateVessel? vesselData;
   Trip? tripData;
 
   bool tripIsRunning = false, isuploadTrip = false;
@@ -49,6 +49,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   int tripDistance = 0;
   int tripDuration = 0;
   String tripSpeed = '0.0';
+  String tripAvgSpeed = '0.0';
 
   String? finalTripDuration, finalTripDistance, finalAvgSpeed;
 
@@ -73,9 +74,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     sharedPreferences!.remove('sp_key_called_from_noti');
 
     setState(() {
-      tripData = widget.tripList;
       tripIsRunning = widget.tripIsRunningOrNot!;
     });
+
+    getData();
 
     if (tripIsRunning) {
       getRealTimeTripDetails();
@@ -86,21 +88,28 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     deviceDetails = DeviceInfoPlugin();
   }
 
+  getData() async {
+    final DatabaseService _databaseService = DatabaseService();
+    final tripDetails = await _databaseService.getTrip(widget.tripId!);
+
+    List<CreateVessel> vesselDetails =
+        await _databaseService.getVesselNameByID(widget.vesselId!);
+
+    setState(() {
+      tripData = tripDetails;
+      vesselData = vesselDetails[0];
+    });
+  }
+
   getRealTimeTripDetails() async {
     service.on('tripAnalyticsData').listen((event) {
       tripDistance = event!['tripDistance'];
       tripDuration = event['tripDuration'];
-      tripSpeed = event['tripSpeed'];
+      tripSpeed = event['tripSpeed'].toString();
+      tripAvgSpeed = event['tripAvgSpeed'].toString();
 
       if (mounted) setState(() {});
     });
-  }
-
-  getVesselDataById() async {
-    getVesselById = await _databaseService
-        .getVesselNameByID(widget.tripList!.vesselId.toString());
-
-    debugPrint('VESSEL DATA ${getVesselById[0].name}');
   }
 
   @override
@@ -137,195 +146,722 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           ),
           title: commonText(
             context: context,
-            text: 'Trip Id - ${widget.tripList!.id}',
+            text: 'Trip Id - ${widget.tripId}',
             fontWeight: FontWeight.w600,
             textColor: Colors.black87,
             textSize: displayWidth(context) * 0.032,
           ),
           //backgroundColor: Colors.white,
         ),
-        body: Container(
-          //margin: EdgeInsets.symmetric(horizontal: 17),
-          child: Column(
-            children: [
-              SizedBox(
-                height: displayHeight(context) * 0.33,
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 17),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: displayHeight(context) * 0.01,
-                      ),
-                      commonText(
-                        context: context,
-                        text: '${widget.vessel!.name}',
-                        fontWeight: FontWeight.w600,
-                        textColor: Colors.black87,
-                        textSize: displayWidth(context) * 0.045,
-                      ),
-                      SizedBox(
-                        height: displayHeight(context) * 0.01,
-                      ),
-                      dashboardRichText(
-                          modelName: '${widget.vessel!.model}',
-                          builderName: '${widget.vessel!.builderName}',
-                          context: context,
-                          color: Colors.grey),
-                      SizedBox(
-                        height: displayHeight(context) * 0.01,
-                      ),
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: widget.vessel!.imageURLs == null ||
-                                  widget.vessel!.imageURLs!.isEmpty ||
-                                  widget.vessel!.imageURLs == 'string'
-                              ? Stack(
-                                  children: [
-                                    Container(
-                                      color: Colors.white,
-                                      child: Image.asset(
-                                        'assets/images/vessel_default_img.png',
-                                        height: displayHeight(context) * 0.22,
-                                        width: displayWidth(context),
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                    /*Image.asset(
+        body: tripData == null && vesselData == null
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Container(
+                //margin: EdgeInsets.symmetric(horizontal: 17),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: displayHeight(context) * 0.33,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 17),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                            commonText(
+                              context: context,
+                              text: '${vesselData!.name}',
+                              fontWeight: FontWeight.w600,
+                              textColor: Colors.black87,
+                              textSize: displayWidth(context) * 0.045,
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                            dashboardRichText(
+                                modelName: '${vesselData!.model}',
+                                builderName: '${vesselData!.builderName}',
+                                context: context,
+                                color: Colors.grey),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                            ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: vesselData!.imageURLs == null ||
+                                        vesselData!.imageURLs!.isEmpty ||
+                                        vesselData!.imageURLs == 'string'
+                                    ? Stack(
+                                        children: [
+                                          Container(
+                                            color: Colors.white,
+                                            child: Image.asset(
+                                              'assets/images/vessel_default_img.png',
+                                              height:
+                                                  displayHeight(context) * 0.22,
+                                              width: displayWidth(context),
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                          /*Image.asset(
                                                       'assets/images/shadow_img.png',
                                                       height: displayHeight(context) * 0.22,
                                                       width: displayWidth(context),
                                                       fit: BoxFit.cover,
                                                     ),*/
 
-                                    Positioned(
-                                        bottom: 0,
-                                        right: 0,
-                                        left: 0,
-                                        child: Container(
-                                          height: displayHeight(context) * 0.14,
-                                          width: displayWidth(context),
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          decoration: BoxDecoration(boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.5),
-                                                blurRadius: 50,
-                                                spreadRadius: 5,
-                                                offset: const Offset(0, 50))
-                                          ]),
-                                        ))
-                                  ],
-                                )
-                              : Stack(
-                                  children: [
-                                    Container(
-                                      height: displayHeight(context) * 0.22,
-                                      width: displayWidth(context),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        image: DecorationImage(
-                                          image: FileImage(
-                                              File(widget.vessel!.imageURLs!)),
-                                          fit: BoxFit.cover,
+                                          Positioned(
+                                              bottom: 0,
+                                              right: 0,
+                                              left: 0,
+                                              child: Container(
+                                                height: displayHeight(context) *
+                                                    0.14,
+                                                width: displayWidth(context),
+                                                padding: const EdgeInsets.only(
+                                                    top: 20),
+                                                decoration:
+                                                    BoxDecoration(boxShadow: [
+                                                  BoxShadow(
+                                                      color: Colors.black
+                                                          .withOpacity(0.5),
+                                                      blurRadius: 50,
+                                                      spreadRadius: 5,
+                                                      offset:
+                                                          const Offset(0, 50))
+                                                ]),
+                                              ))
+                                        ],
+                                      )
+                                    : Stack(
+                                        children: [
+                                          Container(
+                                            height:
+                                                displayHeight(context) * 0.22,
+                                            width: displayWidth(context),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              image: DecorationImage(
+                                                image: FileImage(File(
+                                                    vesselData!.imageURLs!)),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                              bottom: 0,
+                                              right: 0,
+                                              left: 0,
+                                              child: Container(
+                                                height: displayHeight(context) *
+                                                    0.14,
+                                                width: displayWidth(context),
+                                                padding: const EdgeInsets.only(
+                                                    top: 20),
+                                                decoration:
+                                                    BoxDecoration(boxShadow: [
+                                                  BoxShadow(
+                                                      color: Colors.black
+                                                          .withOpacity(0.5),
+                                                      blurRadius: 50,
+                                                      spreadRadius: 5,
+                                                      offset:
+                                                          const Offset(0, 50))
+                                                ]),
+                                              ))
+                                        ],
+                                      )),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 8.0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(50),
+                                topRight: Radius.circular(50))),
+                        child: Container(
+                          padding: EdgeInsets.only(top: 10),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  child: Container(
+                                    height: displayHeight(context) / 1.8,
+                                    margin: EdgeInsets.only(
+                                        top: 20, left: 17, right: 17),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: displayWidth(context),
+                                              padding: vesselData!.engineType!
+                                                          .toLowerCase() ==
+                                                      'combustion'
+                                                  ? EdgeInsets.symmetric(
+                                                      horizontal: 50)
+                                                  : vesselData!.engineType!
+                                                              .toLowerCase() ==
+                                                          'electric'
+                                                      ? EdgeInsets.symmetric(
+                                                          horizontal: 0)
+                                                      : EdgeInsets.symmetric(
+                                                          horizontal: 16),
+                                              //color: Colors.red,
+                                              child: vesselData!.engineType!
+                                                          .toLowerCase() ==
+                                                      'combustion'
+                                                  ? Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Image.asset(
+                                                                'assets/images/fuel.png',
+                                                                width: displayWidth(
+                                                                        context) *
+                                                                    0.04,
+                                                                color: Colors
+                                                                    .black),
+                                                            SizedBox(
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.018,
+                                                            ),
+                                                            commonText(
+                                                                context:
+                                                                    context,
+                                                                text:
+                                                                    '${vesselData!.fuelCapacity} gal',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                textColor:
+                                                                    Colors
+                                                                        .black,
+                                                                textSize:
+                                                                    displayWidth(
+                                                                            context) *
+                                                                        0.038,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .start),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Image.asset(
+                                                                vesselData!.engineType!
+                                                                            .toLowerCase() ==
+                                                                        'hybrid'
+                                                                    ? 'assets/images/hybrid_engine.png'
+                                                                    : vesselData!.engineType!.toLowerCase() ==
+                                                                            'electric'
+                                                                        ? 'assets/images/electric_engine.png'
+                                                                        : 'assets/images/combustion_engine.png',
+                                                                width: displayWidth(
+                                                                        context) *
+                                                                    0.07,
+                                                                color: Colors
+                                                                    .black),
+                                                            SizedBox(
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.02,
+                                                            ),
+                                                            Text(
+                                                              vesselData!
+                                                                  .engineType!,
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.038,
+                                                                  fontFamily:
+                                                                      poppins),
+                                                              softWrap: true,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : vesselData!.engineType!
+                                                              .toLowerCase() ==
+                                                          'electric'
+                                                      ? Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          children: [
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Image.asset(
+                                                                    'assets/images/battery.png',
+                                                                    width: displayWidth(
+                                                                            context) *
+                                                                        0.04,
+                                                                    color: Colors
+                                                                        .black),
+                                                                SizedBox(
+                                                                  width: displayWidth(
+                                                                          context) *
+                                                                      0.02,
+                                                                ),
+                                                                commonText(
+                                                                    context:
+                                                                        context,
+                                                                    text:
+                                                                        '${vesselData!.batteryCapacity} kw',
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    textColor:
+                                                                        Colors
+                                                                            .black,
+                                                                    textSize:
+                                                                        displayWidth(context) *
+                                                                            0.038,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .start),
+                                                              ],
+                                                            ),
+                                                            Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Image.asset(
+                                                                    vesselData!.engineType!.toLowerCase() ==
+                                                                            'hybrid'
+                                                                        ? 'assets/images/hybrid_engine.png'
+                                                                        : vesselData!.engineType!.toLowerCase() ==
+                                                                                'electric'
+                                                                            ? 'assets/images/electric_engine.png'
+                                                                            : 'assets/images/combustion_engine.png',
+                                                                    width: displayWidth(
+                                                                            context) *
+                                                                        0.07,
+                                                                    color: Colors
+                                                                        .black),
+                                                                SizedBox(
+                                                                  width: displayWidth(
+                                                                          context) *
+                                                                      0.02,
+                                                                ),
+                                                                Text(
+                                                                  vesselData!
+                                                                      .engineType!,
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontSize:
+                                                                          displayWidth(context) *
+                                                                              0.038,
+                                                                      fontFamily:
+                                                                          poppins),
+                                                                  softWrap:
+                                                                      true,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Image.asset(
+                                                                    'assets/images/fuel.png',
+                                                                    width: displayWidth(
+                                                                            context) *
+                                                                        0.07,
+                                                                    color: Colors
+                                                                        .black),
+                                                                SizedBox(
+                                                                  width: displayWidth(
+                                                                          context) *
+                                                                      0.02,
+                                                                ),
+                                                                commonText(
+                                                                    context:
+                                                                        context,
+                                                                    text:
+                                                                        '${vesselData!.fuelCapacity} gal',
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    textColor:
+                                                                        Colors
+                                                                            .black,
+                                                                    textSize:
+                                                                        displayWidth(context) *
+                                                                            0.038,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .start),
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                              width: 4,
+                                                            ),
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Image.asset(
+                                                                    'assets/images/battery.png',
+                                                                    width: displayWidth(
+                                                                            context) *
+                                                                        0.045,
+                                                                    color: Colors
+                                                                        .black),
+                                                                SizedBox(
+                                                                  width: displayWidth(
+                                                                          context) *
+                                                                      0.02,
+                                                                ),
+                                                                commonText(
+                                                                    context:
+                                                                        context,
+                                                                    text:
+                                                                        '${vesselData!.batteryCapacity} kw',
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    textColor:
+                                                                        Colors
+                                                                            .black,
+                                                                    textSize:
+                                                                        displayWidth(context) *
+                                                                            0.038,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .start),
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                              width: 4,
+                                                            ),
+                                                            Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Image.asset(
+                                                                    vesselData!.engineType!.toLowerCase() ==
+                                                                            'hybrid'
+                                                                        ? 'assets/images/hybrid_engine.png'
+                                                                        : vesselData!.engineType!.toLowerCase() ==
+                                                                                'electric'
+                                                                            ? 'assets/images/electric_engine.png'
+                                                                            : 'assets/images/combustion_engine.png',
+                                                                    width: displayWidth(
+                                                                            context) *
+                                                                        0.08,
+                                                                    color: Colors
+                                                                        .black),
+                                                                SizedBox(
+                                                                  width: displayWidth(
+                                                                          context) *
+                                                                      0.018,
+                                                                ),
+                                                                Text(
+                                                                  vesselData!
+                                                                      .engineType!,
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontSize:
+                                                                          displayWidth(context) *
+                                                                              0.038,
+                                                                      fontFamily:
+                                                                          poppins),
+                                                                  softWrap:
+                                                                      true,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                            ),
+                                            SizedBox(
+                                              height:
+                                                  displayHeight(context) * 0.02,
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 12),
+                                              child: commonText(
+                                                context: context,
+                                                text: 'Analytics',
+                                                fontWeight: FontWeight.w700,
+                                                textColor: Colors.black87,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.032,
+                                              ),
+                                            ),
+                                            vesselAnalytics(
+                                                context,
+                                                tripIsRunning
+                                                    ? Utils
+                                                        .calculateTripDuration(
+                                                            (tripDuration /
+                                                                    1000)
+                                                                .toInt())
+                                                    : '${tripData!.time} ',
+                                                tripIsRunning
+                                                    ? '${tripDistance.toStringAsFixed(2)}'
+                                                    : '${tripData!.distance} ',
+                                                tripIsRunning
+                                                    ? '${tripSpeed.toString()} '
+                                                    : '${tripData!.speed} ',
+                                                tripIsRunning
+                                                    ? '${tripAvgSpeed.toString()} '
+                                                    : '${tripData!.speed} ',
+                                                tripIsRunning),
+                                          ],
                                         ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                        bottom: 0,
-                                        right: 0,
-                                        left: 0,
-                                        child: Container(
-                                          height: displayHeight(context) * 0.14,
-                                          width: displayWidth(context),
-                                          padding:
-                                              const EdgeInsets.only(top: 20),
-                                          decoration: BoxDecoration(boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.5),
-                                                blurRadius: 50,
-                                                spreadRadius: 5,
-                                                offset: const Offset(0, 50))
-                                          ]),
-                                        ))
-                                  ],
-                                )),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Card(
-                  color: Colors.white,
-                  elevation: 8.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(50),
-                          topRight: Radius.circular(50))),
-                  child: Container(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: Container(
-                              height: displayHeight(context) / 1.8,
-                              margin:
-                                  EdgeInsets.only(top: 20, left: 17, right: 17),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: displayWidth(context),
-                                        padding: widget.vessel!.engineType!
-                                                    .toLowerCase() ==
-                                                'combustion'
-                                            ? EdgeInsets.symmetric(
-                                                horizontal: 50)
-                                            : widget.vessel!.engineType!
-                                                        .toLowerCase() ==
-                                                    'electric'
-                                                ? EdgeInsets.symmetric(
-                                                    horizontal: 0)
-                                                : EdgeInsets.symmetric(
-                                                    horizontal: 16),
-                                        //color: Colors.red,
-                                        child: widget.vessel!.engineType!
-                                                    .toLowerCase() ==
-                                                'combustion'
-                                            ? Row(
+                                        SizedBox(
+                                          height: displayHeight(context) * 0.01,
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 12),
+                                          child: Column(
+                                            children: [
+                                              Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
+                                                  commonText(
+                                                    context: context,
+                                                    text: 'Trip Details',
+                                                    fontWeight: FontWeight.w700,
+                                                    textColor: Colors.black87,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.032,
+                                                  ),
                                                   Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
                                                     children: [
-                                                      Image.asset(
-                                                          'assets/images/fuel.png',
-                                                          width: displayWidth(
-                                                                  context) *
-                                                              0.04,
-                                                          color: Colors.black),
-                                                      SizedBox(
-                                                        width: displayWidth(
+                                                      commonText(
+                                                        context: context,
+                                                        text: 'Trip Status:',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        textColor:
+                                                            Colors.black87,
+                                                        textSize: displayWidth(
                                                                 context) *
-                                                            0.018,
+                                                            0.03,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 6,
                                                       ),
                                                       commonText(
+                                                        context: context,
+                                                        text: tripIsRunning
+                                                            ? 'Trip InProgress'
+                                                            : 'Trip Ended',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        textColor: tripIsRunning
+                                                            ? Color(0xFFAE6827)
+                                                            : Colors.green,
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.03,
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.02,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  commonText(
+                                                    context: context,
+                                                    text: 'Trip ID',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.grey,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        displayWidth(context) *
+                                                            0.1,
+                                                  ),
+                                                  commonText(
+                                                    context: context,
+                                                    text: ': ${tripData!.id}',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.black,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 4,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  commonText(
+                                                    context: context,
+                                                    text: 'Start Date',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.grey,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        displayWidth(context) *
+                                                            0.04,
+                                                  ),
+                                                  commonText(
+                                                    context: context,
+                                                    text:
+                                                        ': ${DateFormat('dd/MM/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.black,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 4,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  commonText(
+                                                    context: context,
+                                                    text: 'Start Time',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.grey,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        displayWidth(context) *
+                                                            0.04,
+                                                  ),
+                                                  commonText(
+                                                    context: context,
+                                                    text:
+                                                        ': ${DateFormat('hh:mm').format(DateTime.parse(tripData!.createdAt!))}',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.black,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 4,
+                                              ),
+                                              tripIsRunning
+                                                  ? Container()
+                                                  : Row(
+                                                      children: [
+                                                        commonText(
+                                                          context: context,
+                                                          text: 'End Date',
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          textColor:
+                                                              Colors.grey,
+                                                          textSize:
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.03,
+                                                        ),
+                                                        SizedBox(
+                                                          width: displayWidth(
+                                                                  context) *
+                                                              0.06,
+                                                        ),
+                                                        commonText(
                                                           context: context,
                                                           text:
-                                                              '${widget.vessel!.fuelCapacity} gal',
+                                                              ': ${DateFormat('dd/MM/yyyy').format(DateTime.parse(tripData!.updatedAt!))}',
                                                           fontWeight:
                                                               FontWeight.w500,
                                                           textColor:
@@ -333,655 +869,233 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                           textSize:
                                                               displayWidth(
                                                                       context) *
-                                                                  0.038,
-                                                          textAlign:
-                                                              TextAlign.start),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Image.asset(
-                                                          widget.vessel!
-                                                                      .engineType!
-                                                                      .toLowerCase() ==
-                                                                  'hybrid'
-                                                              ? 'assets/images/hybrid_engine.png'
-                                                              : widget.vessel!
-                                                                          .engineType!
-                                                                          .toLowerCase() ==
-                                                                      'electric'
-                                                                  ? 'assets/images/electric_engine.png'
-                                                                  : 'assets/images/combustion_engine.png',
+                                                                  0.03,
+                                                        ),
+                                                      ],
+                                                    ),
+                                              SizedBox(
+                                                height: 4,
+                                              ),
+                                              tripIsRunning
+                                                  ? Container()
+                                                  : Row(
+                                                      children: [
+                                                        commonText(
+                                                          context: context,
+                                                          text: 'End Time',
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          textColor:
+                                                              Colors.grey,
+                                                          textSize:
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.03,
+                                                        ),
+                                                        SizedBox(
                                                           width: displayWidth(
                                                                   context) *
-                                                              0.07,
-                                                          color: Colors.black),
-                                                      SizedBox(
-                                                        width: displayWidth(
-                                                                context) *
-                                                            0.02,
-                                                      ),
-                                                      Text(
-                                                        widget.vessel!
-                                                            .engineType!,
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color: Colors.black,
-                                                            fontSize:
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.038,
-                                                            fontFamily:
-                                                                poppins),
-                                                        softWrap: true,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              )
-                                            : widget.vessel!.engineType!
-                                                        .toLowerCase() ==
-                                                    'electric'
-                                                ? Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Image.asset(
-                                                              'assets/images/battery.png',
-                                                              width: displayWidth(
+                                                              0.06,
+                                                        ),
+                                                        commonText(
+                                                          context: context,
+                                                          text:
+                                                              ': ${DateFormat('hh:mm').format(DateTime.parse(tripData!.updatedAt!))}',
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          textColor:
+                                                              Colors.black,
+                                                          textSize:
+                                                              displayWidth(
                                                                       context) *
-                                                                  0.04,
-                                                              color:
-                                                                  Colors.black),
-                                                          SizedBox(
-                                                            width: displayWidth(
-                                                                    context) *
-                                                                0.02,
-                                                          ),
-                                                          commonText(
-                                                              context: context,
-                                                              text:
-                                                                  '${widget.vessel!.batteryCapacity} kw',
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              textColor:
-                                                                  Colors.black,
-                                                              textSize:
-                                                                  displayWidth(
-                                                                          context) *
-                                                                      0.038,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start),
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Image.asset(
-                                                              widget.vessel!
-                                                                          .engineType!
-                                                                          .toLowerCase() ==
-                                                                      'hybrid'
-                                                                  ? 'assets/images/hybrid_engine.png'
-                                                                  : widget.vessel!
-                                                                              .engineType!
-                                                                              .toLowerCase() ==
-                                                                          'electric'
-                                                                      ? 'assets/images/electric_engine.png'
-                                                                      : 'assets/images/combustion_engine.png',
-                                                              width: displayWidth(
-                                                                      context) *
-                                                                  0.07,
-                                                              color:
-                                                                  Colors.black),
-                                                          SizedBox(
-                                                            width: displayWidth(
-                                                                    context) *
-                                                                0.02,
-                                                          ),
-                                                          Text(
-                                                            widget.vessel!
-                                                                .engineType!,
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.038,
-                                                                fontFamily:
-                                                                    poppins),
-                                                            softWrap: true,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  )
-                                                : Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Image.asset(
-                                                              'assets/images/fuel.png',
-                                                              width: displayWidth(
-                                                                      context) *
-                                                                  0.07,
-                                                              color:
-                                                                  Colors.black),
-                                                          SizedBox(
-                                                            width: displayWidth(
-                                                                    context) *
-                                                                0.02,
-                                                          ),
-                                                          commonText(
-                                                              context: context,
-                                                              text:
-                                                                  '${widget.vessel!.fuelCapacity} gal',
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              textColor:
-                                                                  Colors.black,
-                                                              textSize:
-                                                                  displayWidth(
-                                                                          context) *
-                                                                      0.038,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start),
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        width: 4,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Image.asset(
-                                                              'assets/images/battery.png',
-                                                              width: displayWidth(
-                                                                      context) *
-                                                                  0.045,
-                                                              color:
-                                                                  Colors.black),
-                                                          SizedBox(
-                                                            width: displayWidth(
-                                                                    context) *
-                                                                0.02,
-                                                          ),
-                                                          commonText(
-                                                              context: context,
-                                                              text:
-                                                                  '${widget.vessel!.batteryCapacity} kw',
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              textColor:
-                                                                  Colors.black,
-                                                              textSize:
-                                                                  displayWidth(
-                                                                          context) *
-                                                                      0.038,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start),
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        width: 4,
-                                                      ),
-                                                      Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Image.asset(
-                                                              widget.vessel!
-                                                                          .engineType!
-                                                                          .toLowerCase() ==
-                                                                      'hybrid'
-                                                                  ? 'assets/images/hybrid_engine.png'
-                                                                  : widget.vessel!
-                                                                              .engineType!
-                                                                              .toLowerCase() ==
-                                                                          'electric'
-                                                                      ? 'assets/images/electric_engine.png'
-                                                                      : 'assets/images/combustion_engine.png',
-                                                              width: displayWidth(
-                                                                      context) *
-                                                                  0.08,
-                                                              color:
-                                                                  Colors.black),
-                                                          SizedBox(
-                                                            width: displayWidth(
-                                                                    context) *
-                                                                0.018,
-                                                          ),
-                                                          Text(
-                                                            widget.vessel!
-                                                                .engineType!,
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.038,
-                                                                fontFamily:
-                                                                    poppins),
-                                                            softWrap: true,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                      ),
-                                      SizedBox(
-                                        height: displayHeight(context) * 0.02,
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 12),
-                                        child: commonText(
-                                          context: context,
-                                          text: 'Analytics',
-                                          fontWeight: FontWeight.w700,
-                                          textColor: Colors.black87,
-                                          textSize:
-                                              displayWidth(context) * 0.032,
+                                                                  0.03,
+                                                        ),
+                                                      ],
+                                                    ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      vesselAnalytics(
-                                          context,
-                                          tripIsRunning
-                                              ? Utils.calculateTripDuration(
-                                                  (tripDuration / 1000).toInt())
-                                              : '${widget.tripList!.time}',
-                                          tripIsRunning
-                                              ? '${tripDistance.toStringAsFixed(2)} m'
-                                              : '${widget.tripList!.distance} m',
-                                          '20',
-                                          tripIsRunning
-                                              ? '${tripSpeed.toString()} nm/h'
-                                              : '${widget.tripList!.speed}'),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: displayHeight(context) * 0.01,
-                                  ),
-                                  Container(
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 12),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            commonText(
-                                              context: context,
-                                              text: 'Trip Details',
-                                              fontWeight: FontWeight.w700,
-                                              textColor: Colors.black87,
-                                              textSize:
-                                                  displayWidth(context) * 0.032,
-                                            ),
-                                            Row(
-                                              children: [
-                                                commonText(
-                                                  context: context,
-                                                  text: 'Trip Status:',
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.black87,
-                                                  textSize:
-                                                      displayWidth(context) *
-                                                          0.03,
-                                                ),
-                                                SizedBox(
-                                                  width: 6,
-                                                ),
-                                                commonText(
-                                                  context: context,
-                                                  text: tripIsRunning
-                                                      ? 'Trip InProgress'
-                                                      : 'Trip Ended',
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: tripIsRunning
-                                                      ? Color(0xFFAE6827)
-                                                      : Colors.green,
-                                                  textSize:
-                                                      displayWidth(context) *
-                                                          0.03,
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: displayHeight(context) * 0.02,
-                                        ),
-                                        Row(
-                                          children: [
-                                            commonText(
-                                              context: context,
-                                              text: 'Trip ID',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.grey,
-                                              textSize:
-                                                  displayWidth(context) * 0.03,
-                                            ),
-                                            SizedBox(
-                                              width:
-                                                  displayWidth(context) * 0.1,
-                                            ),
-                                            commonText(
-                                              context: context,
-                                              text: ': ${widget.tripList!.id}',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.03,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                        Row(
-                                          children: [
-                                            commonText(
-                                              context: context,
-                                              text: 'Start Date',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.grey,
-                                              textSize:
-                                                  displayWidth(context) * 0.03,
-                                            ),
-                                            SizedBox(
-                                              width:
-                                                  displayWidth(context) * 0.04,
-                                            ),
-                                            commonText(
-                                              context: context,
-                                              text:
-                                                  ': ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.tripList!.createdAt!))}',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.03,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                        Row(
-                                          children: [
-                                            commonText(
-                                              context: context,
-                                              text: 'Start Time',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.grey,
-                                              textSize:
-                                                  displayWidth(context) * 0.03,
-                                            ),
-                                            SizedBox(
-                                              width:
-                                                  displayWidth(context) * 0.04,
-                                            ),
-                                            commonText(
-                                              context: context,
-                                              text:
-                                                  ': ${DateFormat('hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.03,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                        tripIsRunning
-                                            ? Container()
-                                            : Row(
-                                                children: [
-                                                  commonText(
-                                                    context: context,
-                                                    text: 'End Date',
-                                                    fontWeight: FontWeight.w500,
-                                                    textColor: Colors.grey,
-                                                    textSize:
-                                                        displayWidth(context) *
-                                                            0.03,
-                                                  ),
-                                                  SizedBox(
-                                                    width:
-                                                        displayWidth(context) *
-                                                            0.06,
-                                                  ),
-                                                  commonText(
-                                                    context: context,
-                                                    text:
-                                                        ': ${DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.tripList!.updatedAt!))}',
-                                                    fontWeight: FontWeight.w500,
-                                                    textColor: Colors.black,
-                                                    textSize:
-                                                        displayWidth(context) *
-                                                            0.03,
-                                                  ),
-                                                ],
-                                              ),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                        tripIsRunning
-                                            ? Container()
-                                            : Row(
-                                                children: [
-                                                  commonText(
-                                                    context: context,
-                                                    text: 'End Time',
-                                                    fontWeight: FontWeight.w500,
-                                                    textColor: Colors.grey,
-                                                    textSize:
-                                                        displayWidth(context) *
-                                                            0.03,
-                                                  ),
-                                                  SizedBox(
-                                                    width:
-                                                        displayWidth(context) *
-                                                            0.06,
-                                                  ),
-                                                  commonText(
-                                                    context: context,
-                                                    text:
-                                                        ': ${DateFormat('hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}',
-                                                    fontWeight: FontWeight.w500,
-                                                    textColor: Colors.black,
-                                                    textSize:
-                                                        displayWidth(context) *
-                                                            0.03,
-                                                  ),
-                                                ],
-                                              ),
                                       ],
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 17, vertical: 10),
-                            child: tripIsRunning
-                                ? CommonButtons.getActionButton(
-                                    title: 'End Trip',
-                                    context: context,
-                                    fontSize: displayWidth(context) * 0.042,
-                                    textColor: Colors.white,
-                                    buttonPrimaryColor: buttonBGColor,
-                                    borderColor: buttonBGColor,
-                                    width: displayWidth(context),
-                                    onTap: () async {
-                                      Utils().showEndTripDialog(context,
-                                          () async {
-                                        CreateTrip().endTrip(
-                                            context: context,
-                                            scaffoldKey: scaffoldKey,
-                                            onEnded: () async {
-                                              setState(() {
-                                                tripIsRunning = false;
-                                              });
-                                              Trip tripDetails =
-                                                  await _databaseService
-                                                      .getTrip(
-                                                          widget.tripList!.id!);
-                                              setState(() {
-                                                widget.tripList = tripDetails;
-                                              });
-
-                                              print(
-                                                  'TRIP ENDED DETAILS: ${tripDetails.isSync}');
-                                              print(
-                                                  'TRIP ENDED DETAILS: ${widget.tripList!.isSync}');
-                                              Navigator.pop(context);
-                                            });
-                                      }, () {
-                                        Navigator.pop(context);
-                                      });
-                                    })
-                                : Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      CommonButtons.getActionButton(
-                                          title: 'Download Trip Data',
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 17, vertical: 10),
+                                  child: tripIsRunning
+                                      ? CommonButtons.getActionButton(
+                                          title: 'End Trip',
                                           context: context,
                                           fontSize:
-                                              displayWidth(context) * 0.034,
+                                              displayWidth(context) * 0.042,
                                           textColor: Colors.white,
-                                          buttonPrimaryColor: Color(0xFF889BAB),
-                                          borderColor: Color(0xFF889BAB),
-                                          width: displayWidth(context) / 2.3,
+                                          buttonPrimaryColor: buttonBGColor,
+                                          borderColor: buttonBGColor,
+                                          width: displayWidth(context),
                                           onTap: () async {
-                                            downloadTrip(false);
-                                          }),
-                                      isTripUploaded
-                                          ? Container(
-                                              margin: EdgeInsets.only(
-                                                  right: displayWidth(context) *
-                                                      0.2),
-                                              child: Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                            Color>(
-                                                        circularProgressColor),
-                                              )),
-                                            )
-                                          : CommonButtons.getActionButton(
-                                              title: 'Upload Trip Data',
-                                              context: context,
-                                              fontSize:
-                                                  displayWidth(context) * 0.034,
-                                              textColor: Colors.white,
-                                              buttonPrimaryColor: buttonBGColor,
-                                              borderColor: buttonBGColor,
-                                              width:
-                                                  displayWidth(context) / 2.3,
-                                              onTap: () async {
-                                                Utils().check(scaffoldKey);
+                                            Utils().showEndTripDialog(context,
+                                                () async {
+                                              CreateTrip().endTrip(
+                                                  context: context,
+                                                  scaffoldKey: scaffoldKey,
+                                                  onEnded: () async {
+                                                    setState(() {
+                                                      tripIsRunning = false;
+                                                    });
+                                                    Trip tripDetails =
+                                                        await _databaseService
+                                                            .getTrip(
+                                                                tripData!.id!);
+                                                    setState(() {
+                                                      tripData = tripDetails;
+                                                    });
 
-                                                if (widget.tripList?.isSync !=
-                                                    0) {
-                                                  Utils.showSnackBar(
-                                                    context,
-                                                    scaffoldKey: scaffoldKey,
-                                                    message:
-                                                        'File already uploaded',
-                                                  );
-                                                  return;
-                                                }
-
-                                                downloadTrip(true);
-
-                                                var connectivityResult =
-                                                    await (Connectivity()
-                                                        .checkConnectivity());
-                                                if (connectivityResult ==
-                                                    ConnectivityResult.mobile) {
-                                                  print('Mobile');
-                                                  showDialogBoxToUploadTrip();
-                                                } else if (connectivityResult ==
-                                                    ConnectivityResult.wifi) {
-                                                  setState(() {
-                                                    isTripUploaded = true;
+                                                    print(
+                                                        'TRIP ENDED DETAILS: ${tripDetails.isSync}');
+                                                    print(
+                                                        'TRIP ENDED DETAILS: ${tripData!.isSync}');
+                                                    Navigator.pop(context);
                                                   });
-                                                  uploadDataIfDataIsNotSync();
+                                            }, () {
+                                              Navigator.pop(context);
+                                            });
+                                          })
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            CommonButtons.getActionButton(
+                                                title: 'Download Trip Data',
+                                                context: context,
+                                                fontSize:
+                                                    displayWidth(context) *
+                                                        0.034,
+                                                textColor: Colors.white,
+                                                buttonPrimaryColor:
+                                                    Color(0xFF889BAB),
+                                                borderColor: Color(0xFF889BAB),
+                                                width:
+                                                    displayWidth(context) / 2.3,
+                                                onTap: () async {
+                                                  downloadTrip(false);
+                                                }),
+                                            isTripUploaded
+                                                ? Container(
+                                                    margin: EdgeInsets.only(
+                                                        right: displayWidth(
+                                                                context) *
+                                                            0.2),
+                                                    child: Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              circularProgressColor),
+                                                    )),
+                                                  )
+                                                : tripData?.isSync != 0
+                                                    ? CommonButtons
+                                                        .getActionButton(
+                                                            title: 'Home',
+                                                            context: context,
+                                                            fontSize: displayWidth(
+                                                                    context) *
+                                                                0.034,
+                                                            textColor: Colors
+                                                                .white,
+                                                            buttonPrimaryColor:
+                                                                buttonBGColor,
+                                                            borderColor:
+                                                                buttonBGColor,
+                                                            width:
+                                                                displayWidth(
+                                                                        context) /
+                                                                    2.3,
+                                                            onTap: () async {
+                                                              Navigator
+                                                                  .pushReplacement(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            HomePage()),
+                                                              );
+                                                            })
+                                                    : CommonButtons
+                                                        .getActionButton(
+                                                            title:
+                                                                'Upload Trip Data',
+                                                            context: context,
+                                                            fontSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.034,
+                                                            textColor: Colors
+                                                                .white,
+                                                            buttonPrimaryColor:
+                                                                buttonBGColor,
+                                                            borderColor:
+                                                                buttonBGColor,
+                                                            width: displayWidth(
+                                                                    context) /
+                                                                2.3,
+                                                            onTap: () async {
+                                                              Utils().check(
+                                                                  scaffoldKey);
 
-                                                  print('WIFI');
-                                                }
-                                              })
-                                    ],
-                                  ),
+                                                              if (tripData
+                                                                      ?.isSync !=
+                                                                  0) {
+                                                                Utils
+                                                                    .showSnackBar(
+                                                                  context,
+                                                                  scaffoldKey:
+                                                                      scaffoldKey,
+                                                                  message:
+                                                                      'File already uploaded',
+                                                                );
+                                                                return;
+                                                              }
+
+                                                              downloadTrip(
+                                                                  true);
+
+                                                              var connectivityResult =
+                                                                  await (Connectivity()
+                                                                      .checkConnectivity());
+                                                              if (connectivityResult ==
+                                                                  ConnectivityResult
+                                                                      .mobile) {
+                                                                print('Mobile');
+                                                                showDialogBoxToUploadTrip();
+                                                              } else if (connectivityResult ==
+                                                                  ConnectivityResult
+                                                                      .wifi) {
+                                                                setState(() {
+                                                                  isTripUploaded =
+                                                                      true;
+                                                                });
+                                                                uploadDataIfDataIsNotSync();
+
+                                                                print('WIFI');
+                                                              }
+                                                            })
+                                          ],
+                                        ),
+                                ),
+                              )
+                            ],
                           ),
-                        )
-                      ],
-                    ),
-                  ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
+              ),
       ),
     );
   }
@@ -1157,7 +1271,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       "lat": tripData.startPosition,
       "long": tripData.endPosition,
       "vesselId": tripData.vesselId,
-      "filePath": 'storage/emulated/0/Download/${widget.tripList!.id}.zip',
+      "filePath": 'storage/emulated/0/Download/${tripData.id}.zip',
       "createdAt": tripData.createdAt,
       "updatedAt": tripData.updatedAt,
       //"userID": commonProvider.loginModel!.userId!
@@ -1181,13 +1295,12 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           setState(() {
             isTripUploaded = false;
           });
-          print("widget.tripList!.id: ${widget.tripList!.id}");
+          print("tripData!.id: ${tripData.id}");
           _databaseService.updateTripIsSyncStatus(1, tripData.id.toString());
-          Trip tripDetails =
-              await _databaseService.getTrip(widget.tripList!.id!);
+          Trip tripDetails = await _databaseService.getTrip(tripData.id!);
           print('TRIP DETAILS: ${tripDetails.toJson()}');
           setState(() {
-            widget.tripList = tripDetails;
+            tripData = tripDetails;
           });
 
           showSuccessNoti();
@@ -1226,7 +1339,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   }
 
   uploadDataIfDataIsNotSync() async {
-    await vesselIsSyncOrNot(widget.tripList!.vesselId.toString());
+    await vesselIsSyncOrNot(tripData!.vesselId.toString());
     debugPrint('VESSEL STATUS isSync $vesselIsSync');
 
     const int maxProgress = 10;
@@ -1238,10 +1351,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       int fileLength = 0;
       try {
         fileLength =
-            File('storage/emulated/0/Download/${widget.tripList!.id}.zip')
+            File('storage/emulated/0/Download/${tripData!.id}.zip')
                 .lengthSync();
       } catch (e) {
-        showFailedNoti(widget.tripList!.id!);
+        showFailedNoti(tripData!.id!);
         setState(() {
           isTripUploaded = false;
         });
@@ -1273,7 +1386,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           NotificationDetails(android: androidPlatformChannelSpecifics);
       flutterLocalNotificationsPlugin.show(
           9986,
-          '${widget.tripList!.id} ${finalProgress.toStringAsFixed(0)}/100%',
+          '${tripData!.id} ${finalProgress.toStringAsFixed(0)}/100%',
           '${finalProgress.toStringAsFixed(0)}/100%',
           platformChannelSpecifics,
           payload: 'item x');
@@ -1302,7 +1415,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
     if (!vesselIsSync) {
       CreateVessel vesselData = await _databaseService
-          .getVesselFromVesselID((widget.tripList!.vesselId.toString()));
+          .getVesselFromVesselID((tripData!.vesselId.toString()));
 
       debugPrint('VESSEL DATA ${vesselData.id}');
 
@@ -1353,28 +1466,28 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           if (value.status!) {
             // print('DATA');
             await _databaseService.updateIsSyncStatus(
-                1, widget.tripList!.vesselId.toString());
+                1, tripData!.vesselId.toString());
 
             /*setState(() {
               isTripUploaded = false;
             });*/
 
-            startSensorFunctionality(widget.tripList!);
+            startSensorFunctionality(tripData!);
           } /* else if (value.statusCode == 400) {
             setState(() {
               isTripUploaded = false;
             });
           } */
           else {
-            await cancelOnGoingProgressNotification(widget.tripList!.id!);
-            showFailedNoti(widget.tripList!.id!);
+            await cancelOnGoingProgressNotification(tripData!.id!);
+            showFailedNoti(tripData!.id!);
             setState(() {
               isTripUploaded = false;
             });
           }
         } else {
-          await cancelOnGoingProgressNotification(widget.tripList!.id!);
-          showFailedNoti(widget.tripList!.id!);
+          await cancelOnGoingProgressNotification(tripData!.id!);
+          showFailedNoti(tripData!.id!);
           setState(() {
             isTripUploaded = false;
           });
@@ -1384,7 +1497,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       setState(() {
         isTripUploaded = false;
       });
-      startSensorFunctionality(widget.tripList!);
+      startSensorFunctionality(tripData!);
     }
   }
 
@@ -1434,8 +1547,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         : await Permission.storage.status;
     if (isStoragePermitted.isGranted) {
       //File copiedFile = File('${ourDirectory!.path}.zip');
-      File copiedFile =
-          File('${ourDirectory!.path}/${widget.tripList!.id}.zip');
+      File copiedFile = File('${ourDirectory!.path}/${tripData!.id}.zip');
 
       print('DIR PATH R ${ourDirectory!.path}');
 
@@ -1443,7 +1555,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
       if (Platform.isAndroid) {
         directory =
-            Directory("storage/emulated/0/Download/${widget.tripList!.id}.zip");
+            Directory("storage/emulated/0/Download/${tripData!.id}.zip");
       } else {
         directory = await getApplicationDocumentsDirectory();
       }
@@ -1485,8 +1597,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         Directory directory;
 
         if (Platform.isAndroid) {
-          directory = Directory(
-              "storage/emulated/0/Download/${widget.tripList!.id}.zip");
+          directory =
+              Directory("storage/emulated/0/Download/${tripData!.id}.zip");
         } else {
           directory = await getApplicationDocumentsDirectory();
         }

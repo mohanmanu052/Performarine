@@ -71,7 +71,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                             color: Colors.white,
                             shape: BoxShape.rectangle,
                             image: DecorationImage(
-                              fit: BoxFit.fill,
+                              fit: BoxFit.contain,
                               image: AssetImage(
                                 "assets/images/vessel_default_img.png",
                               ),

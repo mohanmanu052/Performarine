@@ -18,8 +18,10 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/intro_screen.dart';
 import 'package:get/get.dart';
 import 'package:performarine/pages/lets_get_started_screen.dart';
+import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/create_trip.dart';
+import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -27,6 +29,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:timezone/data/latest.dart' as tz;
+
+import 'models/vessel.dart';
 
 SharedPreferences? sharedPreferences;
 bool? isStart;
@@ -80,7 +84,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   List<double>? _magnetometerValues;
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   double latitude = 0.0, longitude = 0.0, speed = 0.0;
-  var tripId = '';
+  var tripId = '', vesselName = '';
   //  bool stopSending = false;
 
   // Timer? timer;
@@ -190,6 +194,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 
   serviceInstance.on('tripId').listen((event) {
     tripId = event!['tripId'];
+    vesselName = event['vesselName'];
   });
 
   /* serviceInstance.on("stopSending").listen((event) {
@@ -204,7 +209,8 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
     Position startTripPosition = await Geolocator.getCurrentPosition();
     int finalTripDistance = 0;
     int finalTripDuration = 0;
-    int finalTripSpeed = 0;
+    double finalTripSpeed = 0;
+    double finalTripAvgSpeed = 0;
 
     /*Geolocator.getPositionStream(locationSettings: locationSettings)
         .listen((Position event) {
@@ -236,37 +242,73 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           ? tripDistance.toInt()
           : finalTripDistance;
 
+      finalTripSpeed = (speed * 1.944);
+
+      finalTripAvgSpeed = finalTripDistance / finalTripDuration;
+
       print('TRIP DISTANCE: $finalTripDistance');
       print('TRIP DURATION: $finalTripDuration');
-      print('TRIP SPEED: $finalTripSpeed');
+      print('TRIP SPEED 1212: $finalTripSpeed');
+      print('AVG SPEED: ${finalTripDistance}/${finalTripDuration}');
 
       if (serviceInstance is AndroidServiceInstance) {
         if (await serviceInstance.isForegroundService()) {
           flutterLocalNotificationsPlugin.show(
             888,
             'PerforMarine',
-            'Dist: ${finalTripDistance}m, Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}sec, Speed: ${(speed * 1.944).toStringAsFixed(2)}nm/h',
+            '$vesselName',
+            // 'Dist: ${finalTripDistance}m, Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}sec, Speed: ${(speed * 1.944).toStringAsFixed(2)}nm/h',
             /*'Trip data collection is in progress...',*/
-            const NotificationDetails(
+            NotificationDetails(
               android: AndroidNotificationDetails(
-                notificationChannelId,
-                'MY FOREGROUND SERVICE',
-                icon: '@drawable/logo',
-                ongoing: true,
-              ),
+                  notificationChannelId, 'MY FOREGROUND SERVICE',
+                  icon: '@drawable/logo',
+                  ongoing: true,
+                  styleInformation: BigTextStyleInformation(
+                      'Trip Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}sec\nDistance: ${finalTripDistance}m\nCurrent Speed: ${(speed * 1.944).toStringAsFixed(2)}nm/h',
+                      contentTitle:
+                          '<font size="10" color="blue">$vesselName</font>',
+                      htmlFormatContentTitle: true,
+                      summaryText: '$tripId')
+                  /*styleInformation: BigTextStyleInformation('''
+                  <table width=100%>
+                    <tr>
+                      <th align="center">${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}</th>
+                      <th align="center">${finalTripDistance.toStringAsFixed(2)}</th>
+                      <th align="center">${finalTripSpeed.toStringAsFixed(2)}</th>
+                      <th align="center">${finalTripAvgSpeed.toStringAsFixed(2)}</th>
+                    </tr>
+                    <br>
+                    <tr>
+                      <td align="center">Trip Duration&nbsp&nbsp</td>
+                      <td align="center">Distance&nbsp&nbsp</td>
+                      <td align="center">Current Speed&nbsp&nbsp</td>
+                      <td align="center">Avg. Speed&nbsp&nbsp</td>
+                    </tr>
+                  </table>
+                  ''',
+                      htmlFormatBigText: true,
+                      contentTitle: '<font size="6" color="blue">Name</font>',
+                      htmlFormatContentTitle: true,
+                      summaryText: '$tripId')*/
+                  ),
             ),
           );
+
+          debugPrint('AVG SPEED 12 ${finalTripAvgSpeed.toStringAsFixed(2)}');
 
           serviceInstance.invoke('tripAnalyticsData', {
             "tripDistance": finalTripDistance,
             "tripDuration": finalTripDuration,
-            "tripSpeed": (speed * 1.944).toStringAsFixed(2)
+            "tripSpeed": finalTripSpeed.toStringAsFixed(2),
+            "tripAvgSpeed": finalTripAvgSpeed.toStringAsFixed(2)
           });
 
           pref.setInt('tripDistance', finalTripDistance);
           pref.setInt('tripDuration', finalTripDuration);
           // To get values in Km/h
           pref.setString('tripSpeed', (speed * 1.944).toStringAsFixed(2));
+          pref.setString('tripAvgSpeed', finalTripAvgSpeed.toStringAsFixed(2));
 
           /*if (timer.tick % 5 == 0) {
 
@@ -394,11 +436,22 @@ Future<void> initializeService() async {
   flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onDidReceiveNotificationResponse: (value) async {
     print('APP RESTART 1');
+
+    var pref = await SharedPreferences.getInstance();
+    pref.setBool('sp_key_called_from_noti', true);
+    List<String>? tripData = pref.getStringList('trip_data');
+    bool? isTripStarted = pref.getBool('trip_started');
+
+    Get.to(TripAnalyticsScreen(
+        tripId: tripData![0],
+        vesselId: tripData[1],
+        tripIsRunningOrNot: isTripStarted));
+
+    return;
+
     await Get.deleteAll(force: true);
     Phoenix.rebirth(Get.context!);
     Get.reset();
-    var pref = await SharedPreferences.getInstance();
-    pref.setBool('sp_key_called_from_noti', true);
 
     /// APP RESTART
   },
@@ -418,7 +471,7 @@ Future<void> initializeService() async {
     androidConfiguration: AndroidConfiguration(
       initialNotificationTitle: 'PerforMarine',
       onStart: onStart,
-      autoStart: true,
+      autoStart: false,
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
       initialNotificationContent: 'PerforMarine consuming background services.',

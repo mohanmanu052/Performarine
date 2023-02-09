@@ -590,7 +590,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               service.on('tripAnalyticsData').listen((event) {
                 tripDistance = event!['tripDistance'];
                 tripDuration = event['tripDuration'];
-                tripSpeed = event['tripSpeed'];
+                tripSpeed = event['tripSpeed'].toString();
 
                 if (isBottomSheetOpened) {
                   if (mounted) stateSetter(() {});
@@ -615,7 +615,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        isEndTripButton
+                        /*isEndTripButton
                             ? Container(
                                 child: Column(
                                 mainAxisAlignment:
@@ -852,979 +852,795 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       ),
                                     ],
                                   )
-                                : Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                : */
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TweenAnimationBuilder(
+                                duration: const Duration(seconds: 3),
+                                tween:
+                                    Tween(begin: progressBegin, end: progress),
+                                builder: (context, double value, _) {
+                                  return SizedBox(
+                                    height: 80,
+                                    width: 80,
+                                    child: Stack(
+                                      fit: StackFit.expand,
                                       children: [
-                                        TweenAnimationBuilder(
-                                          duration: const Duration(seconds: 3),
-                                          tween: Tween(
-                                              begin: progressBegin,
-                                              end: progress),
-                                          builder: (context, double value, _) {
-                                            return SizedBox(
-                                              height: 80,
-                                              width: 80,
-                                              child: Stack(
-                                                fit: StackFit.expand,
-                                                children: [
-                                                  CircularProgressIndicator(
-                                                    value: value,
-                                                    backgroundColor:
-                                                        Colors.grey.shade200,
-                                                    strokeWidth: 3,
-                                                    color: Colors.green,
-                                                  ),
-                                                  Center(
-                                                    child: buildProgress(
-                                                        value, 60),
-                                                  )
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                          onEnd: () {
-                                            debugPrint('END');
-                                            stateSetter(() {
-                                              isStartButton = true;
-                                            });
-                                          },
+                                        CircularProgressIndicator(
+                                          value: value,
+                                          backgroundColor: Colors.grey.shade200,
+                                          strokeWidth: 3,
+                                          color: Colors.green,
                                         ),
-                                        const SizedBox(
-                                          height: 40,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  displayWidth(context) * 0.08),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              commonText(
-                                                  context: context,
-                                                  text:
-                                                      'Fetching your device details',
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.black,
-                                                  textSize:
-                                                      displayWidth(context) *
-                                                          0.032,
-                                                  textAlign: TextAlign.start),
-                                              const SizedBox(
-                                                width: 20,
-                                              ),
-                                              TweenAnimationBuilder(
-                                                  duration: const Duration(
-                                                      seconds: 3),
-                                                  tween: Tween(
-                                                      begin:
-                                                          deviceProgressBegin,
-                                                      end: deviceProgress),
-                                                  builder: (context,
-                                                      double value, _) {
-                                                    return SizedBox(
-                                                      height: 20,
-                                                      width: 20,
-                                                      child: Stack(
-                                                        fit: StackFit.expand,
-                                                        children: [
-                                                          CircularProgressIndicator(
-                                                            color:
-                                                                circularProgressColor,
-                                                            value: value,
-                                                            backgroundColor:
-                                                                Colors.grey
-                                                                    .shade200,
-                                                            strokeWidth: 2,
-                                                            valueColor:
-                                                                const AlwaysStoppedAnimation(
-                                                                    Colors
-                                                                        .green),
-                                                          ),
-                                                          Center(
-                                                            child: subTitleProgress(
-                                                                value,
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.035),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    );
-                                                  }),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  displayWidth(context) * 0.08),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  commonText(
-                                                      context: context,
-                                                      text: isLocationPermission
-                                                          ? 'Location permission granted'
-                                                          : 'Location permission is required',
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      textColor: Colors.black,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.032,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                                  const SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  !isLocationPermission
-                                                      ? SizedBox(
-                                                          height: 20,
-                                                          width: 20,
-                                                          child: Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            decoration: BoxDecoration(
-                                                                border: Border.all(
-                                                                    color: Colors
-                                                                        .red,
-                                                                    width: 2),
-                                                                shape: BoxShape
-                                                                    .circle),
-                                                            child: Center(
-                                                              child: Icon(
-                                                                Icons.close,
-                                                                color:
-                                                                    Colors.red,
-                                                                size: 14,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : TweenAnimationBuilder(
-                                                          duration:
-                                                              const Duration(
-                                                                  seconds: 3),
-                                                          tween: Tween(
-                                                              begin:
-                                                                  sensorProgressBegin,
-                                                              end:
-                                                                  sensorProgress),
-                                                          builder: (context,
-                                                              double value, _) {
-                                                            return SizedBox(
-                                                              height: 20,
-                                                              width: 20,
-                                                              child: Stack(
-                                                                fit: StackFit
-                                                                    .expand,
-                                                                children: [
-                                                                  CircularProgressIndicator(
-                                                                    color:
-                                                                        circularProgressColor,
-                                                                    value:
-                                                                        value,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .grey
-                                                                            .shade200,
-                                                                    strokeWidth:
-                                                                        2,
-                                                                    valueColor:
-                                                                        const AlwaysStoppedAnimation(
-                                                                            Colors.green),
-                                                                  ),
-                                                                  Center(
-                                                                    child: subTitleProgress(
-                                                                        value,
-                                                                        displayWidth(context) *
-                                                                            0.035),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            );
-                                                          }),
-                                                ],
-                                              ),
-                                              isLocationPermission
-                                                  ? SizedBox()
-                                                  : commonText(
-                                                      context: context,
-                                                      text:
-                                                          'Permission Denied!',
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      textColor: Colors.red,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.028,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  displayWidth(context) * 0.08),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  commonText(
-                                                      context: context,
-                                                      text:
-                                                          'Accelerometer sensor',
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      textColor: Colors.black,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.032,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                                  const SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  accelerometerAvailable!
-                                                      ? TweenAnimationBuilder(
-                                                          duration:
-                                                              const Duration(
-                                                                  seconds: 3),
-                                                          tween: Tween(
-                                                              begin:
-                                                                  accSensorProgressBegin,
-                                                              end:
-                                                                  accSensorProgress),
-                                                          builder: (context,
-                                                              double value, _) {
-                                                            return SizedBox(
-                                                              height: 20,
-                                                              width: 20,
-                                                              child: Stack(
-                                                                fit: StackFit
-                                                                    .expand,
-                                                                children: [
-                                                                  CircularProgressIndicator(
-                                                                    color:
-                                                                        circularProgressColor,
-                                                                    value:
-                                                                        value,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .grey
-                                                                            .shade200,
-                                                                    strokeWidth:
-                                                                        2,
-                                                                    valueColor:
-                                                                        const AlwaysStoppedAnimation(
-                                                                            Colors.green),
-                                                                  ),
-                                                                  Center(
-                                                                    child: subTitleProgress(
-                                                                        value,
-                                                                        displayWidth(context) *
-                                                                            0.035),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            );
-                                                          })
-                                                      : SizedBox(
-                                                          height: 20,
-                                                          width: 20,
-                                                          child: Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            decoration: BoxDecoration(
-                                                                border: Border.all(
-                                                                    color: Colors
-                                                                        .red,
-                                                                    width: 2),
-                                                                shape: BoxShape
-                                                                    .circle),
-                                                            child: Center(
-                                                              child: Icon(
-                                                                Icons.close,
-                                                                color:
-                                                                    Colors.red,
-                                                                size: 14,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                ],
-                                              ),
-                                              accelerometerAvailable!
-                                                  ? Container()
-                                                  : commonText(
-                                                      context: context,
-                                                      text:
-                                                          'Permission Denied!',
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      textColor: Colors.red,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.028,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  displayWidth(context) * 0.08),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  commonText(
-                                                      context: context,
-                                                      text:
-                                                          'User Accelerometer Sensor',
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      textColor: Colors.black,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.032,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                                  const SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  userAccelerometerAvailable!
-                                                      ? TweenAnimationBuilder(
-                                                          duration:
-                                                              const Duration(
-                                                                  seconds: 3),
-                                                          tween: Tween(
-                                                              begin:
-                                                                  uaccSensorProgressBegin,
-                                                              end:
-                                                                  uaccSensorProgress),
-                                                          builder: (context,
-                                                              double value, _) {
-                                                            return SizedBox(
-                                                              height: 20,
-                                                              width: 20,
-                                                              child: Stack(
-                                                                fit: StackFit
-                                                                    .expand,
-                                                                children: [
-                                                                  CircularProgressIndicator(
-                                                                    color:
-                                                                        circularProgressColor,
-                                                                    value:
-                                                                        value,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .grey
-                                                                            .shade200,
-                                                                    strokeWidth:
-                                                                        2,
-                                                                    valueColor:
-                                                                        const AlwaysStoppedAnimation(
-                                                                            Colors.green),
-                                                                  ),
-                                                                  Center(
-                                                                    child: subTitleProgress(
-                                                                        value,
-                                                                        displayWidth(context) *
-                                                                            0.035),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            );
-                                                          })
-                                                      : SizedBox(
-                                                          height: 20,
-                                                          width: 20,
-                                                          child: Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            decoration: BoxDecoration(
-                                                                border: Border.all(
-                                                                    color: Colors
-                                                                        .red,
-                                                                    width: 2),
-                                                                shape: BoxShape
-                                                                    .circle),
-                                                            child: Center(
-                                                              child: Icon(
-                                                                Icons.close,
-                                                                color:
-                                                                    Colors.red,
-                                                                size: 14,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                ],
-                                              ),
-                                              userAccelerometerAvailable!
-                                                  ? Container()
-                                                  : commonText(
-                                                      context: context,
-                                                      text:
-                                                          'Permission Denied!',
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      textColor: Colors.red,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.028,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  displayWidth(context) * 0.08),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  commonText(
-                                                      context: context,
-                                                      text: 'Gyroscope',
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      textColor: Colors.black,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.032,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                                  const SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  gyroscopeAvailable!
-                                                      ? TweenAnimationBuilder(
-                                                          duration:
-                                                              const Duration(
-                                                                  seconds: 3),
-                                                          tween: Tween(
-                                                              begin:
-                                                                  gyroSensorProgressBegin,
-                                                              end:
-                                                                  gyroSensorProgress),
-                                                          builder: (context,
-                                                              double value, _) {
-                                                            return SizedBox(
-                                                              height: 20,
-                                                              width: 20,
-                                                              child: Stack(
-                                                                fit: StackFit
-                                                                    .expand,
-                                                                children: [
-                                                                  CircularProgressIndicator(
-                                                                    color:
-                                                                        circularProgressColor,
-                                                                    value:
-                                                                        value,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .grey
-                                                                            .shade200,
-                                                                    strokeWidth:
-                                                                        2,
-                                                                    valueColor:
-                                                                        const AlwaysStoppedAnimation(
-                                                                            Colors.green),
-                                                                  ),
-                                                                  Center(
-                                                                    child: subTitleProgress(
-                                                                        value,
-                                                                        displayWidth(context) *
-                                                                            0.035),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            );
-                                                          })
-                                                      : SizedBox(
-                                                          height: 20,
-                                                          width: 20,
-                                                          child: Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            decoration: BoxDecoration(
-                                                                border: Border.all(
-                                                                    color: Colors
-                                                                        .red,
-                                                                    width: 2),
-                                                                shape: BoxShape
-                                                                    .circle),
-                                                            child: Center(
-                                                              child: Icon(
-                                                                Icons.close,
-                                                                color:
-                                                                    Colors.red,
-                                                                size: 14,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                ],
-                                              ),
-                                              gyroscopeAvailable!
-                                                  ? Container()
-                                                  : commonText(
-                                                      context: context,
-                                                      text:
-                                                          'Permission Denied!',
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      textColor: Colors.red,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.028,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  displayWidth(context) * 0.08),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  commonText(
-                                                      context: context,
-                                                      text: 'Magnetometer',
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      textColor: Colors.black,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.032,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                                  const SizedBox(
-                                                    width: 20,
-                                                  ),
-                                                  magnetometerAvailable!
-                                                      ? TweenAnimationBuilder(
-                                                          duration:
-                                                              const Duration(
-                                                                  seconds: 3),
-                                                          tween: Tween(
-                                                              begin:
-                                                                  magnSensorProgressBegin,
-                                                              end:
-                                                                  magnSensorProgress),
-                                                          builder: (context,
-                                                              double value, _) {
-                                                            return SizedBox(
-                                                              height: 20,
-                                                              width: 20,
-                                                              child: Stack(
-                                                                fit: StackFit
-                                                                    .expand,
-                                                                children: [
-                                                                  CircularProgressIndicator(
-                                                                    color:
-                                                                        circularProgressColor,
-                                                                    value:
-                                                                        value,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .grey
-                                                                            .shade200,
-                                                                    strokeWidth:
-                                                                        2,
-                                                                    valueColor:
-                                                                        const AlwaysStoppedAnimation(
-                                                                            Colors.green),
-                                                                  ),
-                                                                  Center(
-                                                                    child: subTitleProgress(
-                                                                        value,
-                                                                        displayWidth(context) *
-                                                                            0.035),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            );
-                                                          })
-                                                      : SizedBox(
-                                                          height: 20,
-                                                          width: 20,
-                                                          child: Container(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            decoration: BoxDecoration(
-                                                                border: Border.all(
-                                                                    color: Colors
-                                                                        .red,
-                                                                    width: 2),
-                                                                shape: BoxShape
-                                                                    .circle),
-                                                            child: Center(
-                                                              child: Icon(
-                                                                Icons.close,
-                                                                color:
-                                                                    Colors.red,
-                                                                size: 14,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                ],
-                                              ),
-                                              magnetometerAvailable!
-                                                  ? Container()
-                                                  : commonText(
-                                                      context: context,
-                                                      text:
-                                                          'Permission Denied!',
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      textColor: Colors.red,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.028,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        isZipFileCreate
-                                            ? InkWell(
-                                                onTap: () async {
-                                                  // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
-                                                  File copiedFile = File(
-                                                      '${ourDirectory!.path}.zip');
-
-                                                  Directory directory;
-
-                                                  if (Platform.isAndroid) {
-                                                    directory = Directory(
-                                                        "storage/emulated/0/Download/${widget.vessel!.id}.zip");
-                                                  } else {
-                                                    directory =
-                                                        await getApplicationDocumentsDirectory();
-                                                  }
-
-                                                  copiedFile
-                                                      .copy(directory.path);
-
-                                                  print(
-                                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                                  if (copiedFile.existsSync()) {
-                                                    Utils.showSnackBar(context,
-                                                        scaffoldKey:
-                                                            scaffoldKey,
-                                                        message:
-                                                            'File downloaded successfully');
-                                                  }
-
-                                                  // Utils.download(context, scaffoldKey,ourDirectory!.path);
-                                                },
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    commonText(
-                                                        context: context,
-                                                        text: 'Download File',
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        textColor: Colors.black,
-                                                        textSize: displayWidth(
-                                                                context) *
-                                                            0.038,
-                                                        textAlign:
-                                                            TextAlign.start),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Icon(Icons
-                                                          .file_download_outlined),
-                                                    )
-                                                  ],
-                                                ),
-                                              )
-                                            : SizedBox(),
-                                        const SizedBox(
-                                          height: 40,
-                                        ),
-                                        isEndTripButton
-                                            ? Container()
-                                            : StatefulBuilder(
-                                                builder: (context,
-                                                    StateSetter stateSetter) {
-                                                  return Column(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 20,
-                                                                right: 20),
-                                                        child: Container(
-                                                          height: displayHeight(context) >=
-                                                                  680
-                                                              ? displayHeight(
-                                                                      context) *
-                                                                  0.056
-                                                              : displayHeight(
-                                                                      context) *
-                                                                  0.07,
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          color:
-                                                              Color(0xFFECF3F9),
-                                                          child: InputDecorator(
-                                                            decoration:
-                                                                const InputDecoration(
-                                                              enabledBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              border: OutlineInputBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              0.0))),
-                                                              contentPadding:
-                                                                  EdgeInsets.only(
-                                                                      left: 20,
-                                                                      right: 20,
-                                                                      top: 5,
-                                                                      bottom:
-                                                                          5),
-                                                            ),
-
-                                                            child: commonText(
-                                                                context:
-                                                                    context,
-                                                                text:
-                                                                    vesselName,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                textColor: Colors
-                                                                    .black54,
-                                                                textSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.032,
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .start),
-
-                                                            //Text(vesselName)
-                                                            //     DropdownButtonHideUnderline(
-                                                            //   child: DropdownButton<dynamic>(
-                                                            //     value: null,
-                                                            //     isDense: true,
-                                                            //     hint:
-                                                            //         Text(selectedVesselName),
-                                                            //     isExpanded: true,
-                                                            //     items: [
-                                                            //       DropdownMenuItem(
-                                                            //           value: '1',
-                                                            //           child:
-                                                            //               Text(vesselName)),
-                                                            //     ],
-                                                            //     onChanged: (newValue) {
-                                                            //       stateSetter(() =>
-                                                            //           selectedVesselName =
-                                                            //               vesselName);
-                                                            //       print(selectedVesselName);
-                                                            //     },
-                                                            //   ),
-                                                            // ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 20,
-                                                                right: 20,
-                                                                top: 10),
-                                                        child: Container(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          height: displayHeight(context) >=
-                                                                  680
-                                                              ? displayHeight(
-                                                                      context) *
-                                                                  0.056
-                                                              : displayHeight(
-                                                                      context) *
-                                                                  0.07,
-                                                          color:
-                                                              Color(0xFFECF3F9),
-                                                          child: InputDecorator(
-                                                            decoration:
-                                                                const InputDecoration(
-                                                              enabledBorder:
-                                                                  InputBorder
-                                                                      .none,
-                                                              border: OutlineInputBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              0.0))),
-                                                              contentPadding:
-                                                                  EdgeInsets.only(
-                                                                      left: 20,
-                                                                      right: 20,
-                                                                      top: 10,
-                                                                      bottom:
-                                                                          10),
-                                                            ),
-                                                            child:
-                                                                DropdownButtonHideUnderline(
-                                                              child:
-                                                                  DropdownButton<
-                                                                      dynamic>(
-                                                                value: null,
-                                                                isDense: true,
-                                                                hint: commonText(
-                                                                    context:
-                                                                        context,
-                                                                    text:
-                                                                        selectedVesselWeight,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    textColor:
-                                                                        Colors
-                                                                            .black54,
-                                                                    textSize:
-                                                                        displayWidth(context) *
-                                                                            0.032,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start),
-                                                                //  Text(
-                                                                //     '${selectedVesselWeight}'),
-                                                                isExpanded:
-                                                                    true,
-                                                                items: [
-                                                                  DropdownMenuItem(
-                                                                      value:
-                                                                          '1',
-                                                                      child: Text(
-                                                                          'Empty')),
-                                                                  DropdownMenuItem(
-                                                                      value:
-                                                                          '2',
-                                                                      child: Text(
-                                                                          'Half')),
-                                                                  DropdownMenuItem(
-                                                                      value:
-                                                                          '3',
-                                                                      child: Text(
-                                                                          'Full')),
-                                                                  DropdownMenuItem(
-                                                                      value:
-                                                                          '4',
-                                                                      child: Text(
-                                                                          'Variable')),
-                                                                ],
-                                                                onChanged:
-                                                                    (weightValue) {
-                                                                  stateSetter(
-                                                                      () {
-                                                                    if (int.parse(
-                                                                            weightValue) ==
-                                                                        1) {
-                                                                      selectedVesselWeight =
-                                                                          'Empty';
-                                                                    } else if (int.parse(
-                                                                            weightValue) ==
-                                                                        2) {
-                                                                      selectedVesselWeight =
-                                                                          'Half';
-                                                                    } else if (int.parse(
-                                                                            weightValue) ==
-                                                                        3) {
-                                                                      selectedVesselWeight =
-                                                                          'Full';
-                                                                    } else {
-                                                                      selectedVesselWeight =
-                                                                          'Variable';
-                                                                    }
-                                                                  });
-                                                                },
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              )
+                                        Center(
+                                          child: buildProgress(value, 60),
+                                        )
                                       ],
                                     ),
-                                  ),
+                                  );
+                                },
+                                onEnd: () {
+                                  debugPrint('END');
+                                  stateSetter(() {
+                                    isStartButton = true;
+                                  });
+                                },
+                              ),
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: displayWidth(context) * 0.08),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    commonText(
+                                        context: context,
+                                        text: 'Fetching your device details',
+                                        fontWeight: FontWeight.w500,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.032,
+                                        textAlign: TextAlign.start),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    TweenAnimationBuilder(
+                                        duration: const Duration(seconds: 3),
+                                        tween: Tween(
+                                            begin: deviceProgressBegin,
+                                            end: deviceProgress),
+                                        builder: (context, double value, _) {
+                                          return SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: Stack(
+                                              fit: StackFit.expand,
+                                              children: [
+                                                CircularProgressIndicator(
+                                                  color: circularProgressColor,
+                                                  value: value,
+                                                  backgroundColor:
+                                                      Colors.grey.shade200,
+                                                  strokeWidth: 2,
+                                                  valueColor:
+                                                      const AlwaysStoppedAnimation(
+                                                          Colors.green),
+                                                ),
+                                                Center(
+                                                  child: subTitleProgress(
+                                                      value,
+                                                      displayWidth(context) *
+                                                          0.035),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        }),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: displayWidth(context) * 0.08),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        commonText(
+                                            context: context,
+                                            text: isLocationPermission
+                                                ? 'Location permission granted'
+                                                : 'Location permission is required',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize:
+                                                displayWidth(context) * 0.032,
+                                            textAlign: TextAlign.start),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        !isLocationPermission
+                                            ? SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors.red,
+                                                          width: 2),
+                                                      shape: BoxShape.circle),
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                      size: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            : TweenAnimationBuilder(
+                                                duration:
+                                                    const Duration(seconds: 3),
+                                                tween: Tween(
+                                                    begin: sensorProgressBegin,
+                                                    end: sensorProgress),
+                                                builder:
+                                                    (context, double value, _) {
+                                                  return SizedBox(
+                                                    height: 20,
+                                                    width: 20,
+                                                    child: Stack(
+                                                      fit: StackFit.expand,
+                                                      children: [
+                                                        CircularProgressIndicator(
+                                                          color:
+                                                              circularProgressColor,
+                                                          value: value,
+                                                          backgroundColor:
+                                                              Colors.grey
+                                                                  .shade200,
+                                                          strokeWidth: 2,
+                                                          valueColor:
+                                                              const AlwaysStoppedAnimation(
+                                                                  Colors.green),
+                                                        ),
+                                                        Center(
+                                                          child: subTitleProgress(
+                                                              value,
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.035),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  );
+                                                }),
+                                      ],
+                                    ),
+                                    isLocationPermission
+                                        ? SizedBox()
+                                        : commonText(
+                                            context: context,
+                                            text: 'Permission Denied!',
+                                            fontWeight: FontWeight.w400,
+                                            textColor: Colors.red,
+                                            textSize:
+                                                displayWidth(context) * 0.028,
+                                            textAlign: TextAlign.start),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: displayWidth(context) * 0.08),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        commonText(
+                                            context: context,
+                                            text: 'Accelerometer sensor',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize:
+                                                displayWidth(context) * 0.032,
+                                            textAlign: TextAlign.start),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        accelerometerAvailable!
+                                            ? TweenAnimationBuilder(
+                                                duration:
+                                                    const Duration(seconds: 3),
+                                                tween: Tween(
+                                                    begin:
+                                                        accSensorProgressBegin,
+                                                    end: accSensorProgress),
+                                                builder:
+                                                    (context, double value, _) {
+                                                  return SizedBox(
+                                                    height: 20,
+                                                    width: 20,
+                                                    child: Stack(
+                                                      fit: StackFit.expand,
+                                                      children: [
+                                                        CircularProgressIndicator(
+                                                          color:
+                                                              circularProgressColor,
+                                                          value: value,
+                                                          backgroundColor:
+                                                              Colors.grey
+                                                                  .shade200,
+                                                          strokeWidth: 2,
+                                                          valueColor:
+                                                              const AlwaysStoppedAnimation(
+                                                                  Colors.green),
+                                                        ),
+                                                        Center(
+                                                          child: subTitleProgress(
+                                                              value,
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.035),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  );
+                                                })
+                                            : SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors.red,
+                                                          width: 2),
+                                                      shape: BoxShape.circle),
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                      size: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                    accelerometerAvailable!
+                                        ? Container()
+                                        : commonText(
+                                            context: context,
+                                            text: 'Permission Denied!',
+                                            fontWeight: FontWeight.w400,
+                                            textColor: Colors.red,
+                                            textSize:
+                                                displayWidth(context) * 0.028,
+                                            textAlign: TextAlign.start),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: displayWidth(context) * 0.08),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        commonText(
+                                            context: context,
+                                            text: 'User Accelerometer Sensor',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize:
+                                                displayWidth(context) * 0.032,
+                                            textAlign: TextAlign.start),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        userAccelerometerAvailable!
+                                            ? TweenAnimationBuilder(
+                                                duration:
+                                                    const Duration(seconds: 3),
+                                                tween: Tween(
+                                                    begin:
+                                                        uaccSensorProgressBegin,
+                                                    end: uaccSensorProgress),
+                                                builder:
+                                                    (context, double value, _) {
+                                                  return SizedBox(
+                                                    height: 20,
+                                                    width: 20,
+                                                    child: Stack(
+                                                      fit: StackFit.expand,
+                                                      children: [
+                                                        CircularProgressIndicator(
+                                                          color:
+                                                              circularProgressColor,
+                                                          value: value,
+                                                          backgroundColor:
+                                                              Colors.grey
+                                                                  .shade200,
+                                                          strokeWidth: 2,
+                                                          valueColor:
+                                                              const AlwaysStoppedAnimation(
+                                                                  Colors.green),
+                                                        ),
+                                                        Center(
+                                                          child: subTitleProgress(
+                                                              value,
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.035),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  );
+                                                })
+                                            : SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors.red,
+                                                          width: 2),
+                                                      shape: BoxShape.circle),
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                      size: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                    userAccelerometerAvailable!
+                                        ? Container()
+                                        : commonText(
+                                            context: context,
+                                            text: 'Permission Denied!',
+                                            fontWeight: FontWeight.w400,
+                                            textColor: Colors.red,
+                                            textSize:
+                                                displayWidth(context) * 0.028,
+                                            textAlign: TextAlign.start),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: displayWidth(context) * 0.08),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        commonText(
+                                            context: context,
+                                            text: 'Gyroscope',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize:
+                                                displayWidth(context) * 0.032,
+                                            textAlign: TextAlign.start),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        gyroscopeAvailable!
+                                            ? TweenAnimationBuilder(
+                                                duration:
+                                                    const Duration(seconds: 3),
+                                                tween: Tween(
+                                                    begin:
+                                                        gyroSensorProgressBegin,
+                                                    end: gyroSensorProgress),
+                                                builder:
+                                                    (context, double value, _) {
+                                                  return SizedBox(
+                                                    height: 20,
+                                                    width: 20,
+                                                    child: Stack(
+                                                      fit: StackFit.expand,
+                                                      children: [
+                                                        CircularProgressIndicator(
+                                                          color:
+                                                              circularProgressColor,
+                                                          value: value,
+                                                          backgroundColor:
+                                                              Colors.grey
+                                                                  .shade200,
+                                                          strokeWidth: 2,
+                                                          valueColor:
+                                                              const AlwaysStoppedAnimation(
+                                                                  Colors.green),
+                                                        ),
+                                                        Center(
+                                                          child: subTitleProgress(
+                                                              value,
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.035),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  );
+                                                })
+                                            : SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors.red,
+                                                          width: 2),
+                                                      shape: BoxShape.circle),
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                      size: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                    gyroscopeAvailable!
+                                        ? Container()
+                                        : commonText(
+                                            context: context,
+                                            text: 'Permission Denied!',
+                                            fontWeight: FontWeight.w400,
+                                            textColor: Colors.red,
+                                            textSize:
+                                                displayWidth(context) * 0.028,
+                                            textAlign: TextAlign.start),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: displayWidth(context) * 0.08),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        commonText(
+                                            context: context,
+                                            text: 'Magnetometer',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize:
+                                                displayWidth(context) * 0.032,
+                                            textAlign: TextAlign.start),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        magnetometerAvailable!
+                                            ? TweenAnimationBuilder(
+                                                duration:
+                                                    const Duration(seconds: 3),
+                                                tween: Tween(
+                                                    begin:
+                                                        magnSensorProgressBegin,
+                                                    end: magnSensorProgress),
+                                                builder:
+                                                    (context, double value, _) {
+                                                  return SizedBox(
+                                                    height: 20,
+                                                    width: 20,
+                                                    child: Stack(
+                                                      fit: StackFit.expand,
+                                                      children: [
+                                                        CircularProgressIndicator(
+                                                          color:
+                                                              circularProgressColor,
+                                                          value: value,
+                                                          backgroundColor:
+                                                              Colors.grey
+                                                                  .shade200,
+                                                          strokeWidth: 2,
+                                                          valueColor:
+                                                              const AlwaysStoppedAnimation(
+                                                                  Colors.green),
+                                                        ),
+                                                        Center(
+                                                          child: subTitleProgress(
+                                                              value,
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.035),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  );
+                                                })
+                                            : SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors.red,
+                                                          width: 2),
+                                                      shape: BoxShape.circle),
+                                                  child: Center(
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                      size: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                    magnetometerAvailable!
+                                        ? Container()
+                                        : commonText(
+                                            context: context,
+                                            text: 'Permission Denied!',
+                                            fontWeight: FontWeight.w400,
+                                            textColor: Colors.red,
+                                            textSize:
+                                                displayWidth(context) * 0.028,
+                                            textAlign: TextAlign.start),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              isZipFileCreate
+                                  ? InkWell(
+                                      onTap: () async {
+                                        // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
+                                        File copiedFile =
+                                            File('${ourDirectory!.path}.zip');
+
+                                        Directory directory;
+
+                                        if (Platform.isAndroid) {
+                                          directory = Directory(
+                                              "storage/emulated/0/Download/${widget.vessel!.id}.zip");
+                                        } else {
+                                          directory =
+                                              await getApplicationDocumentsDirectory();
+                                        }
+
+                                        copiedFile.copy(directory.path);
+
+                                        print(
+                                            'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                        if (copiedFile.existsSync()) {
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'File downloaded successfully');
+                                        }
+
+                                        // Utils.download(context, scaffoldKey,ourDirectory!.path);
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          commonText(
+                                              context: context,
+                                              text: 'Download File',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.038,
+                                              textAlign: TextAlign.start),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Icon(
+                                                Icons.file_download_outlined),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  : SizedBox(),
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              StatefulBuilder(
+                                builder: (context, StateSetter stateSetter) {
+                                  return Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 20, right: 20),
+                                        child: Container(
+                                          height: displayHeight(context) >= 680
+                                              ? displayHeight(context) * 0.056
+                                              : displayHeight(context) * 0.07,
+                                          alignment: Alignment.centerLeft,
+                                          color: Color(0xFFECF3F9),
+                                          child: InputDecorator(
+                                            decoration: const InputDecoration(
+                                              enabledBorder: InputBorder.none,
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              0.0))),
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 20,
+                                                  right: 20,
+                                                  top: 5,
+                                                  bottom: 5),
+                                            ),
+
+                                            child: commonText(
+                                                context: context,
+                                                text: vesselName,
+                                                fontWeight: FontWeight.w500,
+                                                textColor: Colors.black54,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.032,
+                                                textAlign: TextAlign.start),
+
+                                            //Text(vesselName)
+                                            //     DropdownButtonHideUnderline(
+                                            //   child: DropdownButton<dynamic>(
+                                            //     value: null,
+                                            //     isDense: true,
+                                            //     hint:
+                                            //         Text(selectedVesselName),
+                                            //     isExpanded: true,
+                                            //     items: [
+                                            //       DropdownMenuItem(
+                                            //           value: '1',
+                                            //           child:
+                                            //               Text(vesselName)),
+                                            //     ],
+                                            //     onChanged: (newValue) {
+                                            //       stateSetter(() =>
+                                            //           selectedVesselName =
+                                            //               vesselName);
+                                            //       print(selectedVesselName);
+                                            //     },
+                                            //   ),
+                                            // ),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 20, right: 20, top: 10),
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          height: displayHeight(context) >= 680
+                                              ? displayHeight(context) * 0.056
+                                              : displayHeight(context) * 0.07,
+                                          color: Color(0xFFECF3F9),
+                                          child: InputDecorator(
+                                            decoration: const InputDecoration(
+                                              enabledBorder: InputBorder.none,
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              0.0))),
+                                              contentPadding: EdgeInsets.only(
+                                                  left: 20,
+                                                  right: 20,
+                                                  top: 10,
+                                                  bottom: 10),
+                                            ),
+                                            child: DropdownButtonHideUnderline(
+                                              child: DropdownButton<dynamic>(
+                                                value: null,
+                                                isDense: true,
+                                                hint: commonText(
+                                                    context: context,
+                                                    text: selectedVesselWeight,
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.black54,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.032,
+                                                    textAlign: TextAlign.start),
+                                                //  Text(
+                                                //     '${selectedVesselWeight}'),
+                                                isExpanded: true,
+                                                items: [
+                                                  DropdownMenuItem(
+                                                      value: '1',
+                                                      child: Text('Empty')),
+                                                  DropdownMenuItem(
+                                                      value: '2',
+                                                      child: Text('Half')),
+                                                  DropdownMenuItem(
+                                                      value: '3',
+                                                      child: Text('Full')),
+                                                  DropdownMenuItem(
+                                                      value: '4',
+                                                      child: Text('Variable')),
+                                                ],
+                                                onChanged: (weightValue) {
+                                                  stateSetter(() {
+                                                    if (int.parse(
+                                                            weightValue) ==
+                                                        1) {
+                                                      selectedVesselWeight =
+                                                          'Empty';
+                                                    } else if (int.parse(
+                                                            weightValue) ==
+                                                        2) {
+                                                      selectedVesselWeight =
+                                                          'Half';
+                                                    } else if (int.parse(
+                                                            weightValue) ==
+                                                        3) {
+                                                      selectedVesselWeight =
+                                                          'Full';
+                                                    } else {
+                                                      selectedVesselWeight =
+                                                          'Variable';
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              )
+                            ],
+                          ),
+                        ),
                         SizedBox(
                           //height: 50,
                           width: displayWidth(context),
@@ -2949,8 +2765,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
           scaffoldKey.currentContext!,
           MaterialPageRoute(
               builder: (context) => TripAnalyticsScreen(
-                    tripList: tripDetails,
-                    vessel: widget.vessel,
+                    tripId: tripDetails.id,
+                    vesselId: widget.vessel!.id,
                     tripIsRunningOrNot: tripIsRunning,
                   )),
         );
@@ -3042,7 +2858,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     // await tripIsRunningOrNot();
 
-    service.invoke('tripId', {'tripId': getTripId});
+    service.invoke(
+        'tripId', {'tripId': getTripId, 'vesselName': widget.vessel!.name});
 
     service.invoke("setAsForeground");
 
