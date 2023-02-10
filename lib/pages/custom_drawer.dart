@@ -14,7 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomDrawer extends StatefulWidget {
-  const CustomDrawer({Key? key}) : super(key: key);
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  const CustomDrawer({Key? key, this.scaffoldKey}) : super(key: key);
 
   @override
   State<CustomDrawer> createState() => _CustomDrawerState();
@@ -167,21 +168,23 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 children: [
                   InkWell(
                     onTap: () {
-                      sharedPreferences!.clear();
-                      GoogleSignIn googleSignIn = GoogleSignIn(
-                        scopes: <String>[
-                          'email',
-                          'https://www.googleapis.com/auth/userinfo.profile',
-                        ],
-                      );
+                      bool? isTripStarted =
+                          sharedPreferences!.getBool('trip_started');
 
-                      googleSignIn.signOut();
+                      if (isTripStarted != null) {
+                        if (isTripStarted) {
+                          Navigator.of(context).pop();
 
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignInScreen()),
-                          ModalRoute.withName(""));
+                          Utils.showSnackBar(context,
+                              scaffoldKey: widget.scaffoldKey,
+                              message:
+                                  'Please end the trip which is already running');
+                        } else {
+                          signOut();
+                        }
+                      } else {
+                        signOut();
+                      }
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -247,5 +250,22 @@ class _CustomDrawerState extends State<CustomDrawer> {
     setState(() {
       currentVersion = packageInfo.version;
     });
+  }
+
+  signOut() {
+    sharedPreferences!.clear();
+    GoogleSignIn googleSignIn = GoogleSignIn(
+      scopes: <String>[
+        'email',
+        'https://www.googleapis.com/auth/userinfo.profile',
+      ],
+    );
+
+    googleSignIn.signOut();
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const SignInScreen()),
+        ModalRoute.withName(""));
   }
 }

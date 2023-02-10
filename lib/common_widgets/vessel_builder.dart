@@ -7,6 +7,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
@@ -14,6 +15,7 @@ import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VesselBuilder extends StatefulWidget {
   const VesselBuilder({
@@ -33,10 +35,32 @@ class VesselBuilder extends StatefulWidget {
 }
 
 class _VesselBuilderState extends State<VesselBuilder> {
+  final DatabaseService _databaseService = DatabaseService();
+
   Future<String> getTripName(String id) async {
     final DatabaseService _databaseService = DatabaseService();
     final Trip = await _databaseService.getTrip(id);
     return Trip.vesselId!;
+  }
+
+  bool? isTripStarted = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tripIsRunningOrNot();
+  }
+
+  Future<bool> tripIsRunningOrNot() async {
+    bool result = await _databaseService.tripIsRunning();
+
+    setState(() {
+      isTripStarted = result;
+      print('Trip is Running $isTripStarted');
+    });
+
+    return result;
   }
 
   @override
@@ -60,17 +84,27 @@ class _VesselBuilderState extends State<VesselBuilder> {
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
                 return Center(
-                  child: commonText(
-                      context: context,
-                      text: 'No vessels available'.toString(),
-                      fontWeight: FontWeight.w500,
-                      textColor: Colors.black,
-                      textSize: displayWidth(context) * 0.04,
-                      textAlign: TextAlign.start),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/images/vessel_default_img.png',
+                        height: displayHeight(context) * 0.28,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'No vessels available'.toString(),
+                          fontWeight: FontWeight.w500,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.04,
+                          textAlign: TextAlign.start),
+                    ],
+                  ),
                 );
               } else {
                 return Container(
-                  color: Colors.transparent,
+                  color: Colors.white,
                   padding: const EdgeInsets.only(
                       left: 8.0, right: 8.0, top: 8, bottom: 70),
                   child: ListView.builder(
@@ -81,7 +115,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                           ? vesselSingleViewCard(context, vessel,
                               (CreateVessel value) {
                               widget.onTap(value);
-                            })
+                            }, isTripIsRunning: isTripStarted!)
                           : SizedBox();
 
                       /*  ExpansionCard(

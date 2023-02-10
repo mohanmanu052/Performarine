@@ -66,16 +66,12 @@ class _ExpansionCardState extends State<ExpansionCard> {
                           widget.vessel!.imageURLs!.isEmpty ||
                           widget.vessel!.imageURLs == 'string'
                       ? Container(
-                          decoration: BoxDecoration(
-                            // color: Colors.orange,
-                            color: Colors.white,
-                            shape: BoxShape.rectangle,
-                            image: DecorationImage(
-                              fit: BoxFit.contain,
-                              image: AssetImage(
-                                "assets/images/vessel_default_img.png",
-                              ),
-                              // fit: BoxFit.cover
+                          height: displayHeight(context) * 0.22,
+                          child: Center(
+                            child: Image.asset(
+                              'assets/images/vessel_default_img.png',
+                              width: displayWidth(context) * 0.65,
+                              fit: BoxFit.cover,
                             ),
                           ),
                         )

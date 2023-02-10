@@ -574,12 +574,11 @@ class Utils {
   }
 
   static String calculateTripDuration(int seconds) {
-    const secondsPerMinute = 60;
-    const secondsPerHour = 60 * 60;
-
-    //print('SPEED ${location!.speed.toString()}');
-
-    return '${(seconds / secondsPerHour).toStringAsFixed(0)}:${(seconds / secondsPerMinute).toStringAsFixed(0)}:$seconds';
+    Duration duration = Duration(seconds: seconds);
+    String twoDigit(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigit(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigit(duration.inSeconds.remainder(60));
+    return "${twoDigit(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 
   static Future<void> launchURL(String url) async {

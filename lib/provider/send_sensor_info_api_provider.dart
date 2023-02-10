@@ -109,7 +109,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
     return commonModel!;
   }
 
-  Future<UploadTripModel> sendSensorDataInfoDio(
+  Future<UploadTripModel?> sendSensorDataInfoDio(
       BuildContext context,
       String? accessToken,
       File? zipFile,
@@ -180,8 +180,14 @@ class SendSensorInfoApiProvider with ChangeNotifier {
 
           if (decodedData['status']) {
             uploadTripModel = UploadTripModel.fromJson(decodedData);
+          } else {
+            if (scaffoldKey != null) {
+              Utils.showSnackBar(context,
+                  scaffoldKey: scaffoldKey, message: decodedData['message']);
+            }
+            uploadTripModel = UploadTripModel.fromJson(decodedData);
           }
-          return uploadTripModel!;
+          return uploadTripModel;
         } else if (response.statusCode == HttpStatus.gatewayTimeout) {
           kReleaseMode
               ? null
@@ -208,7 +214,13 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         uploadTripModel = null;
       }).onError((error, stackTrace) {
         print('ERROR DIO: $error\n$stackTrace');
-        //flutterLocalNotificationsPlugin.cancel(9989);
+        if (scaffoldKey != null) {
+          Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey,
+              message:
+                  'Failed to upload trip. Please check internet connection and try again.');
+        }
+        flutterLocalNotificationsPlugin.cancel(9989);
         uploadTripModel = null;
       });
     } on SocketException catch (_) {
@@ -223,7 +235,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       uploadTripModel = null;
     }
 
-    return uploadTripModel!;
+    return uploadTripModel;
   }
 
   Future<CommonModel> sendSensorDataInfoStreamed(

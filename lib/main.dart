@@ -74,6 +74,11 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
   DartPluginRegistrant.ensureInitialized();
   /*Get.put<ServiceInstance>(serviceInstance,
       permanent: true, tag: 'serviceInstance');*/
+
+  CreateTrip().startTrip(serviceInstance);
+
+  return;
+
   print('Background task is running');
 
   var pref = await SharedPreferences.getInstance();
@@ -255,21 +260,23 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
         if (await serviceInstance.isForegroundService()) {
           flutterLocalNotificationsPlugin.show(
             888,
-            'PerforMarine',
-            '$vesselName',
-            // 'Dist: ${finalTripDistance}m, Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}sec, Speed: ${(speed * 1.944).toStringAsFixed(2)}nm/h',
+            '',
+            // '$vesselName',
+            'Dist: ${finalTripDistance}m, Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}sec, Speed: ${(speed * 1.944).toStringAsFixed(2)}nm',
             /*'Trip data collection is in progress...',*/
             NotificationDetails(
               android: AndroidNotificationDetails(
                   notificationChannelId, 'MY FOREGROUND SERVICE',
                   icon: '@drawable/logo',
                   ongoing: true,
-                  styleInformation: BigTextStyleInformation(
-                      'Trip Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}sec\nDistance: ${finalTripDistance}m\nCurrent Speed: ${(speed * 1.944).toStringAsFixed(2)}nm/h',
+                  styleInformation:
+                      BigTextStyleInformation('', summaryText: '$tripId')
+                  /*styleInformation: BigTextStyleInformation(
+                      'Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}hr, Distance: ${finalTripDistance}m, Speed: ${(speed * 1.944).toStringAsFixed(2)}nm',
                       contentTitle:
                           '<font size="10" color="blue">$vesselName</font>',
                       htmlFormatContentTitle: true,
-                      summaryText: '$tripId')
+                      summaryText: '$tripId')*/
                   /*styleInformation: BigTextStyleInformation('''
                   <table width=100%>
                     <tr>
@@ -297,6 +304,10 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 
           debugPrint('AVG SPEED 12 ${finalTripAvgSpeed.toStringAsFixed(2)}');
 
+          if (finalTripAvgSpeed.isNaN) {
+            finalTripAvgSpeed = 0.0;
+          }
+
           serviceInstance.invoke('tripAnalyticsData', {
             "tripDistance": finalTripDistance,
             "tripDuration": finalTripDuration,
@@ -309,10 +320,6 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
           // To get values in Km/h
           pref.setString('tripSpeed', (speed * 1.944).toStringAsFixed(2));
           pref.setString('tripAvgSpeed', finalTripAvgSpeed.toStringAsFixed(2));
-
-          /*if (timer.tick % 5 == 0) {
-
-          }*/
 
           String filePath = await CreateTrip().getFile(tripId, fileName);
           File file = File(filePath);

@@ -267,8 +267,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     color: currentTabIndex == 0 ? buttonBGColor : Colors.white,
                     border: Border.all(color: buttonBGColor),
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        bottomLeft: Radius.circular(25))),
+                        topLeft: Radius.circular(20),
+                        bottomLeft: Radius.circular(20))),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 9.0),
                   child: commonText(
@@ -289,8 +289,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     color: currentTabIndex == 1 ? buttonBGColor : Colors.white,
                     border: Border.all(color: buttonBGColor),
                     borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(25),
-                        bottomRight: Radius.circular(25))),
+                        topRight: Radius.circular(20),
+                        bottomRight: Radius.circular(20))),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 9.0),
                   child: commonText(
@@ -308,7 +308,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           backgroundColor: Colors.white,
         ),
-        drawer: const CustomDrawer(),
+        drawer: CustomDrawer(
+          scaffoldKey: scaffoldKey,
+        ),
         body: TabBarView(
           controller: tabController,
           children: [

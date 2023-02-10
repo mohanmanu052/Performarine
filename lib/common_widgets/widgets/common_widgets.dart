@@ -12,6 +12,7 @@ import 'package:path/path.dart' as path;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
+import 'package:performarine/common_widgets/widgets/status_tage.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
@@ -203,7 +204,7 @@ Widget dashboardRichText(
       ),
       Container(
         height: displayHeight(context) * 0.02,
-        color: Colors.white,
+        color: Colors.grey,
         width: displayWidth(context) * 0.0045,
       ),
       SizedBox(
@@ -228,8 +229,9 @@ Widget dashboardRichText(
   );
 }
 
-Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
-    Function(CreateVessel) onTap) {
+Widget vesselSingleViewCard(
+    BuildContext context, CreateVessel vesselData, Function(CreateVessel) onTap,
+    {bool isTripIsRunning = false}) {
   return GestureDetector(
     onTap: () {
       onTap(vesselData);
@@ -240,121 +242,126 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Stack(
         children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: vesselData.imageURLs == null ||
-                      vesselData.imageURLs!.isEmpty ||
-                      vesselData.imageURLs == 'string'
-                  ? Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              //color: Colors.white,
-                            ),
-                            child: Image.asset(
-                              'assets/images/vessel_default_img.png',
+          SizedBox(
+            width: displayWidth(context),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: vesselData.imageURLs == null ||
+                        vesselData.imageURLs!.isEmpty ||
+                        vesselData.imageURLs == 'string'
+                    ? Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
                               height: displayHeight(context) * 0.22,
-                              width: displayWidth(context),
-                              fit: BoxFit.contain,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                //color: Colors.white,
+                              ),
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/images/vessel_default_img.png',
+                                  width: displayWidth(context) * 0.65,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                        /*Image.asset(
-                            'assets/images/shadow_img.png',
+                          /*Image.asset(
+                              'assets/images/shadow_img.png',
+                              height: displayHeight(context) * 0.22,
+                              width: displayWidth(context),
+                              fit: BoxFit.cover,
+                            ),*/
+
+                          Positioned(
+                              bottom: 0,
+                              right: 0,
+                              left: 0,
+                              child: Container(
+                                height: displayHeight(context) * 0.14,
+                                width: displayWidth(context),
+                                padding: const EdgeInsets.only(top: 20),
+                                decoration: BoxDecoration(boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.5),
+                                      blurRadius: 50,
+                                      spreadRadius: 5,
+                                      offset: const Offset(0, 50))
+                                ]),
+                              ))
+                        ],
+                      )
+                    : Stack(
+                        children: [
+                          Image.file(
+                            File(vesselData.imageURLs!),
+                            fit: BoxFit.cover,
                             height: displayHeight(context) * 0.22,
                             width: displayWidth(context),
-                            fit: BoxFit.cover,
-                          ),*/
-
-                        Positioned(
-                            bottom: 0,
-                            right: 0,
-                            left: 0,
-                            child: Container(
-                              height: displayHeight(context) * 0.14,
-                              width: displayWidth(context),
-                              padding: const EdgeInsets.only(top: 20),
-                              decoration: BoxDecoration(boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.5),
-                                    blurRadius: 50,
-                                    spreadRadius: 5,
-                                    offset: const Offset(0, 50))
-                              ]),
-                            ))
-                      ],
-                    )
-                  : Stack(
-                      children: [
-                        Image.file(
-                          File(vesselData.imageURLs!),
-                          fit: BoxFit.cover,
-                          height: displayHeight(context) * 0.22,
-                          width: displayWidth(context),
-                        ),
-                        Positioned(
-                            bottom: 0,
-                            right: 0,
-                            left: 0,
-                            child: Container(
-                              height: displayHeight(context) * 0.14,
-                              width: displayWidth(context),
-                              padding: const EdgeInsets.only(top: 20),
-                              decoration: BoxDecoration(boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.5),
-                                    blurRadius: 50,
-                                    spreadRadius: 5,
-                                    offset: const Offset(0, 50))
-                              ]),
-                            ))
-                      ],
-                    )
-              // CachedNetworkImage(
-              //         height: displayHeight(context) * 0.22,
-              //         width: displayWidth(context),
-              //         imageUrl: vesselData.imageURLs!,
-              //
-              //         imageBuilder: (context, imageProvider) => Stack(
-              //           children: [
-              //             Container(
-              //               decoration: BoxDecoration(
-              //                 borderRadius: BorderRadius.circular(14),
-              //                 image: DecorationImage(
-              //                   image: imageProvider,
-              //                   fit: BoxFit.fill,
-              //                 ),
-              //               ),
-              //             ),
-              //             Positioned(
-              //                 bottom: 0,
-              //                 right: 0,
-              //                 left: 0,
-              //                 child: Container(
-              //                   height: displayHeight(context) * 0.14,
-              //                   width: displayWidth(context),
-              //                   padding: const EdgeInsets.only(top: 20),
-              //                   decoration: BoxDecoration(boxShadow: [
-              //                     BoxShadow(
-              //                         color: Colors.black.withOpacity(0.5),
-              //                         blurRadius: 50,
-              //                         spreadRadius: 5,
-              //                         offset: const Offset(0, 50))
-              //                   ]),
-              //                 ))
-              //           ],
-              //         ),
-              //         progressIndicatorBuilder:
-              //             (context, url, downloadProgress) => Center(
-              //           child: CircularProgressIndicator(
-              //               value: downloadProgress.progress),
-              //         ),
-              //         errorWidget: (context, url, error) => Icon(Icons.error),
-              //       ),
-              ),
+                          ),
+                          Positioned(
+                              bottom: 0,
+                              right: 0,
+                              left: 0,
+                              child: Container(
+                                height: displayHeight(context) * 0.14,
+                                width: displayWidth(context),
+                                padding: const EdgeInsets.only(top: 20),
+                                decoration: BoxDecoration(boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.5),
+                                      blurRadius: 50,
+                                      spreadRadius: 5,
+                                      offset: const Offset(0, 50))
+                                ]),
+                              ))
+                        ],
+                      )
+                // CachedNetworkImage(
+                //         height: displayHeight(context) * 0.22,
+                //         width: displayWidth(context),
+                //         imageUrl: vesselData.imageURLs!,
+                //
+                //         imageBuilder: (context, imageProvider) => Stack(
+                //           children: [
+                //             Container(
+                //               decoration: BoxDecoration(
+                //                 borderRadius: BorderRadius.circular(14),
+                //                 image: DecorationImage(
+                //                   image: imageProvider,
+                //                   fit: BoxFit.fill,
+                //                 ),
+                //               ),
+                //             ),
+                //             Positioned(
+                //                 bottom: 0,
+                //                 right: 0,
+                //                 left: 0,
+                //                 child: Container(
+                //                   height: displayHeight(context) * 0.14,
+                //                   width: displayWidth(context),
+                //                   padding: const EdgeInsets.only(top: 20),
+                //                   decoration: BoxDecoration(boxShadow: [
+                //                     BoxShadow(
+                //                         color: Colors.black.withOpacity(0.5),
+                //                         blurRadius: 50,
+                //                         spreadRadius: 5,
+                //                         offset: const Offset(0, 50))
+                //                   ]),
+                //                 ))
+                //           ],
+                //         ),
+                //         progressIndicatorBuilder:
+                //             (context, url, downloadProgress) => Center(
+                //           child: CircularProgressIndicator(
+                //               value: downloadProgress.progress),
+                //         ),
+                //         errorWidget: (context, url, error) => Icon(Icons.error),
+                //       ),
+                ),
+          ),
           vesselData.vesselStatus == 0
               ? Positioned(
                   top: 5,
@@ -379,7 +386,31 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                     ),
                   ),
                 )
-              : SizedBox(),
+              : isTripIsRunning
+                  ? Positioned(
+                      top: 15,
+                      right: 0,
+                      child: CustomPaint(
+                        painter: StatusTag(color: Colors.blue),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              left: displayWidth(context) * 0.05),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: commonText(
+                                context: context,
+                                text: "In Progress",
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.white,
+                                textSize: displayWidth(context) * 0.03,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
           Positioned(
             bottom: 0,
             left: 0,
@@ -693,7 +724,7 @@ showDialogBox(BuildContext context, CreateVessel vesselData) {
           child: StatefulBuilder(
             builder: (ctx, setDialogState) {
               return Container(
-                height: displayHeight(context) * 0.3,
+                height: displayHeight(context) * 0.32,
                 width: MediaQuery.of(context).size.width,
                 child: Padding(
                   padding: const EdgeInsets.only(

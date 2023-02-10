@@ -13,7 +13,7 @@ class Trip {
   final String? endPosition;
   final String? createdAt;
   final String? updatedAt;
-  final int? isSync;
+  int? isSync;
   int? tripStatus;
   String? deviceInfo;
   final String? time;

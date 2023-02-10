@@ -674,7 +674,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                 .toInt())
                                                     : '${tripData!.time} ',
                                                 tripIsRunning
-                                                    ? '${tripDistance.toStringAsFixed(2)}'
+                                                    ? '${(tripDistance / 1852).toStringAsFixed(2)}'
                                                     : '${tripData!.distance} ',
                                                 tripIsRunning
                                                     ? '${tripSpeed.toString()} '
@@ -1050,6 +1050,11 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                               if (tripData
                                                                       ?.isSync !=
                                                                   0) {
+                                                                debugPrint(
+                                                                    'UPLOADED ${tripData?.isSync != 0}');
+                                                                debugPrint(
+                                                                    'UPLOADED 1 ${isTripUploaded}');
+
                                                                 Utils
                                                                     .showSnackBar(
                                                                   context,
@@ -1300,7 +1305,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           Trip tripDetails = await _databaseService.getTrip(tripData.id!);
           print('TRIP DETAILS: ${tripDetails.toJson()}');
           setState(() {
-            tripData = tripDetails;
+            this.tripData = tripDetails;
+            debugPrint('TRIP STATUS ${tripData.isSync}');
           });
 
           showSuccessNoti();
@@ -1479,6 +1485,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             });
           } */
           else {
+            print('UPLOADEDDDD: ${value.message}');
             await cancelOnGoingProgressNotification(tripData!.id!);
             showFailedNoti(tripData!.id!);
             setState(() {
@@ -1502,7 +1509,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   }
 
   showFailedNoti(String id) async {
-    progressTimer!.cancel();
+    // progressTimer!.cancel();
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('progress channel', 'progress channel',
             channelDescription: 'progress channel description',

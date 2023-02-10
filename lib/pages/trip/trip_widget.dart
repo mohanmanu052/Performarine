@@ -98,410 +98,451 @@ class _TripWidgetState extends State<TripWidget> {
     commonProvider = context.watch<CommonProvider>();
     // double height = 150;
     Size size = MediaQuery.of(context).size;
-    return Container(
-      margin: EdgeInsets.only(left: 10, right: 10, top: 6),
-      child: Card(
-        elevation: 3,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Container(
-          width: size.width - 60,
-          //height: 110,
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              //  borderRadius: BorderRadius.circular(8),
-              //color: Colors.white,
-              boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.09), blurRadius: 2)
-              ]),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  commonText(
-                      context: context,
-                      text: 'Trip ID - ${widget.tripList?.id ?? ''}',
-                      fontWeight: FontWeight.w500,
-                      textColor: Colors.black,
-                      textSize: displayWidth(context) * 0.022,
-                      textAlign: TextAlign.start),
-                  widget.tripList?.tripStatus == 0
-                      ? commonText(
-                          context: context,
-                          text:
-                              '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.black,
-                          textSize: displayWidth(context) * 0.018,
-                        )
-                      : commonText(
-                          context: context,
-                          text:
-                              '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.black,
-                          textSize: displayWidth(context) * 0.018,
-                        ),
-                ],
-              ),
+    return InkWell(
+      onTap: () async {
+        getVesselById = await _databaseService
+            .getVesselNameByID(widget.tripList!.vesselId.toString());
 
-              const SizedBox(
-                height: 2,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      '${widget.tripList!.vesselName}',
-                      style: TextStyle(
-                        color: Colors.black,
+        debugPrint('VESSEL DATA ${getVesselById[0].imageURLs}');
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TripAnalyticsScreen(
+              tripId: widget.tripList!.id,
+              vesselId: getVesselById[0].id,
+              tripIsRunningOrNot: false,
+              // vessel: getVesselById[0]
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(left: 10, right: 10, top: 6),
+        child: Card(
+          elevation: 3,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Container(
+            width: size.width - 60,
+            //height: 110,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                //  borderRadius: BorderRadius.circular(8),
+                //color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.09), blurRadius: 2)
+                ]),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    commonText(
+                        context: context,
+                        text: 'Trip ID - ${widget.tripList?.id ?? ''}',
                         fontWeight: FontWeight.w500,
-                        fontSize: displayWidth(context) * 0.034,
-                        fontFamily: poppins,
-                      ),
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.clip,
-                      softWrap: true,
-                    ),
-                  ),
-                  CustomPaint(
-                    painter: StatusTag(
-                        color: widget.tripList?.isSync != 0
-                            ? buttonBGColor
-                            : widget.tripList?.tripStatus != 0
-                                ? primaryColor
-                                : Colors.orangeAccent),
-                    child: Container(
-                      margin:
-                          EdgeInsets.only(left: displayWidth(context) * 0.05),
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: commonText(
+                        textColor: Colors.black,
+                        textSize: displayWidth(context) * 0.022,
+                        textAlign: TextAlign.start),
+                    widget.tripList?.tripStatus == 0
+                        ? commonText(
                             context: context,
-                            text: widget.tripList?.isSync != 0
-                                ? "Completed"
-                                : widget.tripList?.tripStatus != 0
-                                    ? "Pending Upload "
-                                    : "In Progress",
+                            text:
+                                '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
                             fontWeight: FontWeight.w500,
-                            textColor: Colors.white,
-                            textSize: displayWidth(context) * 0.03,
+                            textColor: Colors.black,
+                            textSize: displayWidth(context) * 0.018,
+                          )
+                        : commonText(
+                            context: context,
+                            text:
+                                '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.black,
+                            textSize: displayWidth(context) * 0.018,
+                          ),
+                  ],
+                ),
+
+                const SizedBox(
+                  height: 2,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        '${widget.tripList!.vesselName}',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: displayWidth(context) * 0.034,
+                          fontFamily: poppins,
+                        ),
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        softWrap: true,
+                      ),
+                    ),
+                    CustomPaint(
+                      painter: StatusTag(
+                          color: widget.tripList?.isSync != 0
+                              ? buttonBGColor
+                              : widget.tripList?.tripStatus != 0
+                                  ? primaryColor
+                                  : Colors.orangeAccent),
+                      child: Container(
+                        margin:
+                            EdgeInsets.only(left: displayWidth(context) * 0.05),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: commonText(
+                              context: context,
+                              text: widget.tripList?.isSync != 0
+                                  ? "Completed"
+                                  : widget.tripList?.tripStatus != 0
+                                      ? "Pending Upload "
+                                      : "In Progress",
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.white,
+                              textSize: displayWidth(context) * 0.03,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              /*const SizedBox(
-                        height: 4,
-                      ),
-                      Row(
+                  ],
+                ),
+                /*const SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          children: [
+                            dashboardRichText(
+                                modelName: widget.tripList,
+                                builderName: vesselData.builderName,
+                                context: context,
+                                color: Colors.white.withOpacity(0.8))
+                          ],
+                        ),*/
+
+                // const SizedBox(
+                //   height: 4,
+                // ),
+                // commonText(
+                //     context: context,
+                //     text: '${widget.tripList!.currentLoad}',
+                //     fontWeight: FontWeight.w500,
+                //     textColor: Colors.grey,
+                //     textSize: displayWidth(context) * 0.034,
+                //     textAlign: TextAlign.start),
+                // SizedBox(
+                //   width: displayWidth(context) * 0.0,
+                // ),
+                /*Row(
+                          children: [
+                            commonText(
+                                context: context,
+                                text: 'widget.tripList.model',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.grey,
+                                textSize: displayWidth(context) * 0.034,
+                                textAlign: TextAlign.start),
+                            SizedBox(
+                              width: displayWidth(context) * 0.05,
+                            ),
+                            commonText(
+                                context: context,
+                                text: */
+                /*widget.tripList?.deviceInfo?.make == null
+                                    ? 'Empty'
+                                    :*/ /*
+                                    'widget.tripList?.deviceInfo?.make',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.grey,
+                                textSize: displayWidth(context) * 0.034,
+                                textAlign: TextAlign.start),
+                          ],
+                        ),*/
+                const SizedBox(
+                  height: 12,
+                ),
+                widget.tripList?.tripStatus != 0
+                    ? Row(
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          dashboardRichText(
-                              modelName: widget.tripList,
-                              builderName: vesselData.builderName,
-                              context: context,
-                              color: Colors.white.withOpacity(0.8))
-                        ],
-                      ),*/
+                          Expanded(
+                            child: SizedBox(
+                                height: displayHeight(context) * 0.038,
+                                child: CommonButtons.getRichTextActionButton(
+                                    buttonPrimaryColor: buttonBGColor,
+                                    fontSize: displayWidth(context) * 0.026,
+                                    onTap: () async {
+                                      getVesselById = await _databaseService
+                                          .getVesselNameByID(widget
+                                              .tripList!.vesselId
+                                              .toString());
 
-              // const SizedBox(
-              //   height: 4,
-              // ),
-              // commonText(
-              //     context: context,
-              //     text: '${widget.tripList!.currentLoad}',
-              //     fontWeight: FontWeight.w500,
-              //     textColor: Colors.grey,
-              //     textSize: displayWidth(context) * 0.034,
-              //     textAlign: TextAlign.start),
-              // SizedBox(
-              //   width: displayWidth(context) * 0.0,
-              // ),
-              /*Row(
-                        children: [
-                          commonText(
-                              context: context,
-                              text: 'widget.tripList.model',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.grey,
-                              textSize: displayWidth(context) * 0.034,
-                              textAlign: TextAlign.start),
-                          SizedBox(
-                            width: displayWidth(context) * 0.05,
-                          ),
-                          commonText(
-                              context: context,
-                              text: */
-              /*widget.tripList?.deviceInfo?.make == null
-                                  ? 'Empty'
-                                  :*/ /*
-                                  'widget.tripList?.deviceInfo?.make',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.grey,
-                              textSize: displayWidth(context) * 0.034,
-                              textAlign: TextAlign.start),
-                        ],
-                      ),*/
-              const SizedBox(
-                height: 12,
-              ),
-              widget.tripList?.tripStatus != 0
-                  ? Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: widget.tripList?.isSync != 0
-                              ? SizedBox(
-                                  height: displayHeight(context) * 0.038,
-                                  child: CommonButtons.getRichTextActionButton(
-                                      buttonPrimaryColor: buttonBGColor,
-                                      fontSize: displayWidth(context) * 0.026,
-                                      onTap: () async {
-                                        getVesselById = await _databaseService
-                                            .getVesselNameByID(widget
-                                                .tripList!.vesselId
-                                                .toString());
+                                      debugPrint(
+                                          'VESSEL DATA ${getVesselById[0].imageURLs}');
 
-                                        debugPrint(
-                                            'VESSEL DATA ${getVesselById[0].imageURLs}');
-
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                TripAnalyticsScreen(
-                                              tripId: widget.tripList!.id,
-                                              vesselId: getVesselById[0].id,
-                                              tripIsRunningOrNot: false,
-                                              // vessel: getVesselById[0]
-                                            ),
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              TripAnalyticsScreen(
+                                            tripId: widget.tripList!.id,
+                                            vesselId: getVesselById[0].id,
+                                            tripIsRunningOrNot: false,
+                                            // vessel: getVesselById[0]
                                           ),
-                                        );
-                                      },
-                                      icon: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 8),
-                                        child: Icon(
-                                          Icons.analytics_outlined,
-                                          size: 18,
                                         ),
+                                      );
+                                    },
+                                    icon: Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: Icon(
+                                        Icons.analytics_outlined,
+                                        size: 18,
                                       ),
-                                      context: context,
-                                      width: displayWidth(context) * 0.38,
-                                      title: 'Trip Analytics'))
-                              : SizedBox(
-                                  height: displayHeight(context) * 0.038,
-                                  child: isTripUploaded
-                                      ? Center(
-                                          child: SizedBox(
-                                              height: 28,
-                                              width: 28,
-                                              child: CircularProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                            Color>(
-                                                        circularProgressColor),
-                                              )))
-                                      : CommonButtons.getRichTextActionButton(
-                                          buttonPrimaryColor: primaryColor,
-                                          fontSize:
-                                              displayWidth(context) * 0.026,
-                                          onTap: () async {
-                                            Utils().check(widget.scaffoldKey!);
-
-                                            var connectivityResult =
-                                                await (Connectivity()
-                                                    .checkConnectivity());
-                                            if (connectivityResult ==
-                                                ConnectivityResult.mobile) {
-                                              print('Mobile');
-                                              showDialogBox();
-                                            } else if (connectivityResult ==
-                                                ConnectivityResult.wifi) {
-                                              setState(() {
-                                                isTripUploaded = true;
-                                              });
-                                              uploadDataIfDataIsNotSync();
-
-                                              print('WIFI');
-                                            }
-                                          },
-                                          icon: Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 8),
-                                            child: Icon(
-                                              Icons.cloud_upload_outlined,
-                                              size: 18,
-                                            ),
-                                          ),
-                                          context: context,
-                                          width: displayWidth(context) * 0.38,
-                                          title: 'Upload Trip')),
-                        ),
-                        SizedBox(
-                          width: 14,
-                        ),
-                        Expanded(
-                          child: SizedBox(
-                              height: displayHeight(context) * 0.038,
-                              child: CommonButtons.getRichTextActionButton(
-                                  buttonPrimaryColor:
-                                      buttonBGColor.withOpacity(.5),
-                                  borderColor: buttonBGColor.withOpacity(.5),
-                                  icon: Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: Icon(
-                                      Icons.download_for_offline_outlined,
-                                      size: 18,
                                     ),
-                                  ),
-                                  fontSize: displayWidth(context) * 0.026,
-                                  onTap: () async {
-                                    debugPrint('DOWLOAD Started!!!');
+                                    context: context,
+                                    width: displayWidth(context) * 0.38,
+                                    title: 'Trip Analytics')),
+                          ),
+                          SizedBox(
+                            width: 14,
+                          ),
+                          Expanded(
+                            child: widget.tripList?.isSync != 0
+                                ? SizedBox(
+                                    height: displayHeight(context) * 0.038,
+                                    child:
+                                        CommonButtons.getRichTextActionButton(
+                                            buttonPrimaryColor:
+                                                buttonBGColor.withOpacity(.5),
+                                            borderColor:
+                                                buttonBGColor.withOpacity(.5),
+                                            icon: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 8),
+                                              child: Icon(
+                                                Icons
+                                                    .download_for_offline_outlined,
+                                                size: 18,
+                                              ),
+                                            ),
+                                            fontSize:
+                                                displayWidth(context) * 0.026,
+                                            onTap: () async {
+                                              debugPrint('DOWLOAD Started!!!');
 
-                                    final androidInfo =
-                                        await DeviceInfoPlugin().androidInfo;
+                                              final androidInfo =
+                                                  await DeviceInfoPlugin()
+                                                      .androidInfo;
 
-                                    var isStoragePermitted =
-                                        androidInfo.version.sdkInt > 32
-                                            ? await Permission.photos.status
-                                            : await Permission.storage.status;
-                                    if (isStoragePermitted.isGranted) {
-                                      //File copiedFile = File('${ourDirectory!.path}.zip');
-                                      File copiedFile = File(
-                                          '${ourDirectory!.path}/${widget.tripList!.id}.zip');
+                                              var isStoragePermitted =
+                                                  androidInfo.version.sdkInt >
+                                                          32
+                                                      ? await Permission
+                                                          .photos.status
+                                                      : await Permission
+                                                          .storage.status;
+                                              if (isStoragePermitted
+                                                  .isGranted) {
+                                                //File copiedFile = File('${ourDirectory!.path}.zip');
+                                                File copiedFile = File(
+                                                    '${ourDirectory!.path}/${widget.tripList!.id}.zip');
 
-                                      print('DIR PATH R ${ourDirectory!.path}');
+                                                print(
+                                                    'DIR PATH R ${ourDirectory!.path}');
 
-                                      Directory directory;
+                                                Directory directory;
 
-                                      if (Platform.isAndroid) {
-                                        directory = Directory(
-                                            "storage/emulated/0/Download/${widget.tripList!.id}.zip");
-                                      } else {
-                                        directory =
-                                            await getApplicationDocumentsDirectory();
-                                      }
+                                                if (Platform.isAndroid) {
+                                                  directory = Directory(
+                                                      "storage/emulated/0/Download/${widget.tripList!.id}.zip");
+                                                } else {
+                                                  directory =
+                                                      await getApplicationDocumentsDirectory();
+                                                }
 
-                                      copiedFile.copy(directory.path);
+                                                copiedFile.copy(directory.path);
 
-                                      print(
-                                          'DOES FILE EXIST: ${copiedFile.existsSync()}');
+                                                print(
+                                                    'DOES FILE EXIST: ${copiedFile.existsSync()}');
 
-                                      if (copiedFile.existsSync()) {
-                                        Utils.showSnackBar(
-                                          context,
-                                          scaffoldKey: widget.scaffoldKey,
-                                          message:
-                                              'File downloaded successfully',
-                                        );
-                                        /*Utils.showActionSnackBar(
-                                                        context,
-                                                        scaffoldKey,
+                                                if (copiedFile.existsSync()) {
+                                                  Utils.showSnackBar(
+                                                    context,
+                                                    scaffoldKey:
+                                                        widget.scaffoldKey,
+                                                    message:
                                                         'File downloaded successfully',
-                                                        () async {
-                                                      print(
-                                                          'Open Btn clicked ttttt');
-                                                      var result =
-                                                          await OpenFile.open(
-                                                              directory.path);
-
-                                                      print(
-                                                          "dataaaaa: ${result.message} ggg ${result.type}");
-                                                    });*/
-                                      }
-                                    } else {
-                                      await Utils.getStoragePermission(context);
-                                      var isStoragePermitted =
-                                          await Permission.storage.status;
-
-                                      if (isStoragePermitted.isGranted) {
-                                        File copiedFile =
-                                            File('${ourDirectory!.path}.zip');
-
-                                        Directory directory;
-
-                                        if (Platform.isAndroid) {
-                                          directory = Directory(
-                                              "storage/emulated/0/Download/${widget.tripList!.id}.zip");
-                                        } else {
-                                          directory =
-                                              await getApplicationDocumentsDirectory();
-                                        }
-
-                                        copiedFile.copy(directory.path);
-
-                                        print(
-                                            'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                        if (copiedFile.existsSync()) {
-                                          Utils.showSnackBar(
-                                            context,
-                                            scaffoldKey: widget.scaffoldKey,
-                                            message:
-                                                'File downloaded successfully',
-                                          );
-
-                                          /*Utils.showActionSnackBar(
+                                                  );
+                                                  /*Utils.showActionSnackBar(
                                                           context,
                                                           scaffoldKey,
                                                           'File downloaded successfully',
-                                                          () {
+                                                          () async {
                                                         print(
-                                                            'Open Btn clicked');
-                                                        OpenFile.open(
-                                                                directory.path)
-                                                            .catchError(
-                                                                (onError) {
-                                                          print(onError);
-                                                        });
-                                                      });*/
-                                        }
-                                      }
-                                    }
-                                  },
-                                  context: context,
-                                  width: displayWidth(context) * 0.38,
-                                  title: 'Download Trip')),
-                        )
-                      ],
-                    )
-                  : /*widget.tripList!.isEndTripClicked!
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      :*/
-                  commonProvider.tripStatus
-                      ? Center(
-                          child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              circularProgressColor),
-                        ))
-                      : SizedBox(
-                          height: displayHeight(context) * 0.038,
-                          child: CommonButtons.getActionButton(
-                              buttonPrimaryColor: buttonBGColor.withOpacity(.7),
-                              borderColor: buttonBGColor.withOpacity(.7),
-                              fontSize: displayWidth(context) * 0.03,
-                              onTap: () {
-                                widget.onTap!.call();
+                                                            'Open Btn clicked ttttt');
+                                                        var result =
+                                                            await OpenFile.open(
+                                                                directory.path);
 
-                                debugPrint(
-                                    'TRIP STATUS ${commonProvider.tripStatus}');
-                              },
-                              context: context,
-                              width: displayWidth(context) * 0.8,
-                              title: 'End Trip'))
-            ],
+                                                        print(
+                                                            "dataaaaa: ${result.message} ggg ${result.type}");
+                                                      });*/
+                                                }
+                                              } else {
+                                                await Utils
+                                                    .getStoragePermission(
+                                                        context);
+                                                var isStoragePermitted =
+                                                    await Permission
+                                                        .storage.status;
+
+                                                if (isStoragePermitted
+                                                    .isGranted) {
+                                                  File copiedFile = File(
+                                                      '${ourDirectory!.path}.zip');
+
+                                                  Directory directory;
+
+                                                  if (Platform.isAndroid) {
+                                                    directory = Directory(
+                                                        "storage/emulated/0/Download/${widget.tripList!.id}.zip");
+                                                  } else {
+                                                    directory =
+                                                        await getApplicationDocumentsDirectory();
+                                                  }
+
+                                                  copiedFile
+                                                      .copy(directory.path);
+
+                                                  print(
+                                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+                                                  if (copiedFile.existsSync()) {
+                                                    Utils.showSnackBar(
+                                                      context,
+                                                      scaffoldKey:
+                                                          widget.scaffoldKey,
+                                                      message:
+                                                          'File downloaded successfully',
+                                                    );
+
+                                                    /*Utils.showActionSnackBar(
+                                                            context,
+                                                            scaffoldKey,
+                                                            'File downloaded successfully',
+                                                            () {
+                                                          print(
+                                                              'Open Btn clicked');
+                                                          OpenFile.open(
+                                                                  directory.path)
+                                                              .catchError(
+                                                                  (onError) {
+                                                            print(onError);
+                                                          });
+                                                        });*/
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            context: context,
+                                            width: displayWidth(context) * 0.38,
+                                            title: 'Download Trip'))
+                                : SizedBox(
+                                    height: displayHeight(context) * 0.038,
+                                    child: isTripUploaded
+                                        ? Center(
+                                            child: SizedBox(
+                                                height: 28,
+                                                width: 28,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                              Color>(
+                                                          circularProgressColor),
+                                                )))
+                                        : CommonButtons.getRichTextActionButton(
+                                            buttonPrimaryColor: primaryColor,
+                                            fontSize:
+                                                displayWidth(context) * 0.026,
+                                            onTap: () async {
+                                              Utils()
+                                                  .check(widget.scaffoldKey!);
+
+                                              var connectivityResult =
+                                                  await (Connectivity()
+                                                      .checkConnectivity());
+                                              if (connectivityResult ==
+                                                  ConnectivityResult.mobile) {
+                                                print('Mobile');
+                                                showDialogBox();
+                                              } else if (connectivityResult ==
+                                                  ConnectivityResult.wifi) {
+                                                setState(() {
+                                                  isTripUploaded = true;
+                                                });
+                                                uploadDataIfDataIsNotSync();
+
+                                                print('WIFI');
+                                              }
+                                            },
+                                            icon: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 8),
+                                              child: Icon(
+                                                Icons.cloud_upload_outlined,
+                                                size: 18,
+                                              ),
+                                            ),
+                                            context: context,
+                                            width: displayWidth(context) * 0.38,
+                                            title: 'Upload Trip')),
+                          )
+                        ],
+                      )
+                    : /*widget.tripList!.isEndTripClicked!
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        :*/
+                    commonProvider.tripStatus
+                        ? Center(
+                            child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                circularProgressColor),
+                          ))
+                        : SizedBox(
+                            height: displayHeight(context) * 0.038,
+                            child: CommonButtons.getActionButton(
+                                buttonPrimaryColor:
+                                    buttonBGColor.withOpacity(.7),
+                                borderColor: buttonBGColor.withOpacity(.7),
+                                fontSize: displayWidth(context) * 0.03,
+                                onTap: () {
+                                  widget.onTap!.call();
+
+                                  debugPrint(
+                                      'TRIP STATUS ${commonProvider.tripStatus}');
+                                },
+                                context: context,
+                                width: displayWidth(context) * 0.8,
+                                title: 'End Trip'))
+              ],
+            ),
           ),
         ),
       ),
@@ -634,12 +675,16 @@ class _TripWidgetState extends State<TripWidget> {
           setState(() {
             isTripUploaded = false;
           });
-          showFailedNoti(tripData.id!);
+          _databaseService.updateTripIsSyncStatus(0, tripData.id.toString());
+          await cancelOnGoingProgressNotification(tripData.id!);
+          showFailedNoti(tripData.id!, value.message);
         }
       } else {
         setState(() {
           isTripUploaded = false;
         });
+        _databaseService.updateTripIsSyncStatus(0, tripData.id.toString());
+        await cancelOnGoingProgressNotification(tripData.id!);
         showFailedNoti(tripData.id!);
       }
     }).catchError((onError, s) {
@@ -662,8 +707,8 @@ class _TripWidgetState extends State<TripWidget> {
     return;
   }
 
-  showFailedNoti(String id) async {
-    progressTimer!.cancel();
+  showFailedNoti(String id, [String? message]) async {
+    // progressTimer!.cancel();
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('progress channel', 'progress channel',
             channelDescription: 'progress channel description',
@@ -674,8 +719,11 @@ class _TripWidgetState extends State<TripWidget> {
             showProgress: false);
     final NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
-    flutterLocalNotificationsPlugin.show(9987, id,
-        'Failed to upload. Please try again', platformChannelSpecifics,
+    flutterLocalNotificationsPlugin.show(
+        9987,
+        id,
+        message ?? 'Failed to upload. Please try again',
+        platformChannelSpecifics,
         payload: 'item x');
   }
 

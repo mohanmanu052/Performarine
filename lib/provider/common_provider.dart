@@ -104,7 +104,7 @@ class CommonProvider with ChangeNotifier {
     return addVesselModel;
   }
 
-  Future<UploadTripModel> sendSensorInfo(
+  Future<UploadTripModel?> sendSensorInfo(
       BuildContext context,
       accessToken,
       File sensorZipFiles,
@@ -126,7 +126,7 @@ class CommonProvider with ChangeNotifier {
     _databaseService.updateTripIsSyncStatus(1, queryParameters["id"]);
     notifyListeners();
 
-    return uploadTripModel!;
+    return uploadTripModel;
   }
 
   getTripsCount() async {
