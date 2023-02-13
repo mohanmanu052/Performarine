@@ -108,12 +108,12 @@ class CreateTrip {
     String vesselId = tripData[1];
 
     int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
-    int? tripDistance = sharedPreferences!.getInt("tripDistance") ?? 1;
+    String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
 
     String finalTripDuration =
         Utils.calculateTripDuration((tripDuration / 1000).toInt());
-    String finalTripDistance = tripDistance.toStringAsFixed(2);
+    String finalTripDistance = tripDistance;
 
     service.invoke('stopService');
 
@@ -302,7 +302,7 @@ class CreateTrip {
       print('ON START TRIP');
 
       Position startTripPosition = await Geolocator.getCurrentPosition();
-      int finalTripDistance = 0;
+      double finalTripDistance = 0;
       int finalTripDuration = 0;
       double finalTripSpeed = 0;
       double finalTripAvgSpeed = 0;
@@ -333,40 +333,40 @@ class CreateTrip {
             endTripPosition.latitude,
             endTripPosition.longitude);
 
-        finalTripDistance = finalTripDistance < tripDistance.toInt()
-            ? tripDistance.toInt()
-            : finalTripDistance;
+        finalTripDistance =
+            finalTripDistance < tripDistance ? tripDistance : finalTripDistance;
 
-        finalTripSpeed = (speed * 1.944);
+        finalTripSpeed = (speed * 2.237);
 
-        finalTripAvgSpeed = finalTripDistance / finalTripDuration;
+        finalTripAvgSpeed =
+            (((finalTripDistance / 1852) / finalTripDuration) * 1.944);
 
-        print('TRIP DISTANCE: $finalTripDistance');
+        print(
+            'TRIP DISTANCE: ${(finalTripDistance / 1852).toStringAsFixed(2)}');
         print('TRIP DURATION: $finalTripDuration');
         print('TRIP SPEED 1212: $finalTripSpeed');
-        print('AVG SPEED: ${finalTripDistance}/${finalTripDuration}');
+        print('AVG SPEED: $finalTripAvgSpeed');
 
         if (serviceInstance is AndroidServiceInstance) {
           if (await serviceInstance.isForegroundService()) {
             flutterLocalNotificationsPlugin.show(
               888,
               '',
+              '',
               // '$vesselName',
-              'Dist: ${(finalTripDistance / 1852).toStringAsFixed(2)}nm, Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}hr, Speed: ${speed.toStringAsFixed(2)}m/s',
+              // 'Dist: ${(finalTripDistance / 1852).toStringAsFixed(2)}nm, Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}hr, Speed: ${finalTripSpeed.toStringAsFixed(2)}m/h',
               /*'Trip data collection is in progress...',*/
               NotificationDetails(
                 android: AndroidNotificationDetails(
                     notificationChannelId, 'MY FOREGROUND SERVICE',
                     icon: '@drawable/logo',
                     ongoing: true,
-                    styleInformation:
-                        BigTextStyleInformation('', summaryText: '$tripId')
-                    /*styleInformation: BigTextStyleInformation(
-                      'Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}hr, Distance: ${finalTripDistance}m, Speed: ${(speed * 1.944).toStringAsFixed(2)}nm',
-                      contentTitle:
-                          '<font size="10" color="blue">$vesselName</font>',
-                      htmlFormatContentTitle: true,
-                      summaryText: '$tripId')*/
+                    /*styleInformation:
+                        BigTextStyleInformation('', summaryText: '$tripId')*/
+                    styleInformation: BigTextStyleInformation(
+                        'Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}    Distance: ${(finalTripDistance / 1852).toStringAsFixed(2)} nm\nSpeed: ${finalTripSpeed.toStringAsFixed(2)}m/h        Avg Speed: ${(finalTripAvgSpeed).toStringAsFixed(2)} m/s',
+                        htmlFormatContentTitle: true,
+                        summaryText: '$tripId')
                     /*styleInformation: BigTextStyleInformation('''
                   <table width=100%>
                     <tr>
@@ -399,16 +399,18 @@ class CreateTrip {
             }
 
             serviceInstance.invoke('tripAnalyticsData', {
-              "tripDistance": finalTripDistance,
+              "tripDistance":
+                  double.parse((finalTripDistance / 1852).toString()),
               "tripDuration": finalTripDuration,
               "tripSpeed": finalTripSpeed.toStringAsFixed(2),
               "tripAvgSpeed": finalTripAvgSpeed.toStringAsFixed(2)
             });
 
-            pref.setInt('tripDistance', (finalTripDistance / 1852).toInt());
+            pref.setString(
+                'tripDistance', (finalTripDistance / 1852).toStringAsFixed(2));
             pref.setInt('tripDuration', finalTripDuration);
             // To get values in Km/h
-            pref.setString('tripSpeed', speed.toStringAsFixed(2));
+            pref.setString('tripSpeed', finalTripSpeed.toStringAsFixed(2));
             pref.setString(
                 'tripAvgSpeed', finalTripAvgSpeed.toStringAsFixed(2));
 

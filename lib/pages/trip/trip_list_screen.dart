@@ -368,9 +368,9 @@ class _TripListScreenState extends State<TripListScreen> {
                                 int? tripDuration =
                                     sharedPreferences!.getInt("tripDuration") ??
                                         1;
-                                int? tripDistance =
-                                    sharedPreferences!.getInt("tripDistance") ??
-                                        1;
+                                String? tripDistance = sharedPreferences!
+                                        .getString("tripDistance") ??
+                                    '1';
                                 String? tripSpeed =
                                     sharedPreferences!.getString("tripSpeed") ??
                                         '1';
@@ -378,8 +378,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                 String finalTripDuration =
                                     Utils.calculateTripDuration(
                                         (tripDuration / 1000).toInt());
-                                String finalTripDistance =
-                                    tripDistance.toStringAsFixed(2);
+                                String finalTripDistance = tripDistance;
                                 Position? locationData =
                                     await Utils.getLocationPermission(
                                         context, scaffoldKey);

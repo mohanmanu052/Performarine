@@ -111,7 +111,8 @@ class _TripWidgetState extends State<TripWidget> {
             builder: (context) => TripAnalyticsScreen(
               tripId: widget.tripList!.id,
               vesselId: getVesselById[0].id,
-              tripIsRunningOrNot: false,
+              tripIsRunningOrNot:
+                  widget.tripList!.tripStatus == 0 ? true : false,
               // vessel: getVesselById[0]
             ),
           ),
@@ -577,12 +578,12 @@ class _TripWidgetState extends State<TripWidget> {
         deviceInfo: deviceDetails!.toJson().toString()));*/
 
     int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
-    int? tripDistance = sharedPreferences!.getInt("tripDistance") ?? 1;
+    String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
 
     String finalTripDuration =
         Utils.calculateTripDuration((tripDuration / 1000).toInt());
-    String finalTripDistance = tripDistance.toStringAsFixed(2);
+    String finalTripDistance = tripDistance;
     Position? currentLocationData =
         await Utils.getLocationPermission(context, widget.scaffoldKey!);
 

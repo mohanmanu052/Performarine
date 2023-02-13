@@ -13,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/status_tage.dart';
+import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
@@ -938,7 +939,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
                           children: [
                             commonText(
                                 context: context,
-                                text: '$currentSpeed m/s',
+                                text: '$currentSpeed m/h',
                                 fontWeight: FontWeight.w600,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.044,
@@ -972,7 +973,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
                           children: [
                             commonText(
                                 context: context,
-                                text: '${avgSpeed} m/s',
+                                text: '$avgSpeed nm',
                                 fontWeight: FontWeight.w600,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.044,

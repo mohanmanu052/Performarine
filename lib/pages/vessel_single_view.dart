@@ -72,7 +72,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isZipFileCreate = false,
       isSensorDataUploaded = false,
       addingDataToDB = false,
-      isLocationDialogBoxOpen = false;
+      isLocationDialogBoxOpen = false,
+      tripIsEnded = false;
 
   // Timer? timer;
   Timer? locationTimer;
@@ -244,7 +245,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (widget.isCalledFromSuccessScreen!) {
+        if (widget.isCalledFromSuccessScreen! || tripIsEnded) {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -274,7 +275,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               onPressed: () async {
                 await tripIsRunningOrNot();
 
-                if (widget.isCalledFromSuccessScreen!) {
+                if (widget.isCalledFromSuccessScreen! || tripIsEnded) {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -366,7 +367,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               scaffoldKey: scaffoldKey,
                               vesselId: widget.vessel!.id,
                               onTripEnded: () async {
+                                debugPrint('SINGLE VIEW TRIP END');
                                 await tripIsRunningOrNot();
+                                setState(() {
+                                  tripIsEnded = true;
+                                });
                               },
                             ),
                           )
@@ -421,6 +426,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       print('TRIPPPPPP ENDEDDD:');
                                       setState(() {
                                         isEndTripButton = false;
+                                        tripIsEnded = true;
                                         // isZipFileCreate = true;
                                       });
                                       await tripIsRunningOrNot();
@@ -566,7 +572,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}');
-    int tripDistance = 0;
+    double tripDistance = 0.0;
     int tripDuration = 0;
     String tripSpeed = '0.0';
 
@@ -1697,175 +1703,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 await DeviceInfoPlugin()
                                                     .androidInfo;
 
-                                            var isStoragePermitted =
-                                                androidInfo.version.sdkInt > 32
-                                                    ? await Permission
-                                                        .photos.status
-                                                    : await Permission
-                                                        .storage.status;
-                                            if (isStoragePermitted.isGranted) {
-                                              bool isNotificationPermitted =
-                                                  await Permission
-                                                      .notification.isGranted;
-
-                                              if (isNotificationPermitted) {
-                                                startWritingDataToDB(
-                                                    bottomSheetContext,
-                                                    stateSetter);
-
-                                                /*bool isServiceRunning =
-                                                await service.isRunning();
-
-                                            print(
-                                                'ISSSSS XXXXXXX: $isServiceRunning');
-
-                                            if (!isServiceRunning) {
-                                              service.startService();
-                                              print(
-                                                  'View Single: $isServiceRunning');
-                                            }
-
-                                            getTripId = ObjectId();
-
-                                            onSave(
-                                                '', bottomSheetContext, true);
-
-                                            await Future.delayed(
-                                                Duration(seconds: 3), () {});
-
-                                            bool isServiceRunning2 =
-                                                await service.isRunning();
-                                            print(
-                                                'View Single: $isServiceRunning2');
-
-                                            service.invoke("onStartTrip");
-
-                                            service.invoke("setAsForeground");
-
-                                            service.invoke('tripId',
-                                                {'tripId': getTripId});
-
-                                            Timer.periodic(Duration(seconds: 1),
-                                                (timer) async {
-                                              LocationData? locationData =
-                                                  await Utils
-                                                      .getCurrentLocation();
-                                              service.invoke('location', {
-                                                'lat': locationData!.latitude,
-                                                'long': locationData.longitude,
-                                              });
-                                            });
-
-                                            sharedPreferences!
-                                                .setBool('trip_started', true);
-                                            sharedPreferences!.setStringList(
-                                                'trip_data', [
-                                              getTripId,
-                                              widget.vessel!.id!,
-                                              widget.vessel!.name!,
-                                              selectedVesselWeight
-                                            ]);
-
-                                            */ /*onSave(
-                                                '', bottomSheetContext, true);*/ /*
-
-                                            stateSetter(() {
-                                              isStartButton = false;
-                                              isEndTripButton = true;
-                                            });*/
-
-                                                // await Permission.storage.request();
-                                              } else {
-                                                await Utils
-                                                    .getNotificationPermission(
-                                                        context);
-                                                bool isNotificationPermitted =
-                                                    await Permission
-                                                        .notification.isGranted;
-                                                if (isNotificationPermitted) {
-                                                  /*bool isServiceRunning =
-                                                  await service.isRunning();
-
-                                              print(
-                                                  'ISSSSS: $isServiceRunning');
-
-                                              if (!isServiceRunning) {
-                                                service.startService();
-                                                print(
-                                                    'View Single: $isServiceRunning');
-                                              }
-
-                                              getTripId = ObjectId();
-
-                                              onSave(
-                                                  '', bottomSheetContext, true);
-
-                                              await Future.delayed(
-                                                  Duration(seconds: 3), () {});
-
-                                              bool isServiceRunning2 =
-                                                  await service.isRunning();
-                                              print(
-                                                  'View Single: $isServiceRunning2');
-
-                                              service.invoke("onStartTrip");
-
-                                              service.invoke("setAsForeground");
-
-                                              service.invoke('tripId',
-                                                  {'tripId': getTripId});
-
-                                              Timer.periodic(
-                                                  Duration(seconds: 1),
-                                                  (timer) async {
-                                                LocationData? locationData =
-                                                    await Utils
-                                                        .getCurrentLocation();
-                                                service.invoke('location', {
-                                                  'lat': locationData!.latitude,
-                                                  'long':
-                                                      locationData.longitude,
-                                                });
-                                              });
-
-                                              sharedPreferences!.setBool(
-                                                  'trip_started', true);
-                                              sharedPreferences!.setStringList(
-                                                  'trip_data', [
-                                                getTripId,
-                                                widget.vessel!.id!,
-                                                widget.vessel!.name!,
-                                                selectedVesselWeight
-                                              ]);
-
-                                              stateSetter(() {
-                                                isStartButton = false;
-                                                isEndTripButton = true;
-                                              });*/
-                                                  // await tripIsRunningOrNot();
-
-                                                  // await Permission.storage.request();
-
-                                                  startWritingDataToDB(
-                                                      bottomSheetContext,
-                                                      stateSetter);
-                                                }
-                                              }
-                                            } else {
-                                              await Utils.getStoragePermission(
-                                                  context);
-                                              final androidInfo =
-                                                  await DeviceInfoPlugin()
-                                                      .androidInfo;
-
+                                            if (androidInfo.version.sdkInt <
+                                                29) {
                                               var isStoragePermitted =
-                                                  androidInfo.version.sdkInt >
-                                                          32
-                                                      ? await Permission
-                                                          .photos.status
-                                                      : await Permission
-                                                          .storage.status;
-
+                                                  await Permission
+                                                      .storage.status;
                                               if (isStoragePermitted
                                                   .isGranted) {
                                                 bool isNotificationPermitted =
@@ -1873,69 +1715,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         .notification.isGranted;
 
                                                 if (isNotificationPermitted) {
-                                                  /* bool isServiceRunning =
-                                                  await service.isRunning();
-
-                                              print(
-                                                  'ISSSSS: $isServiceRunning');
-
-                                              if (!isServiceRunning) {
-                                                service.startService();
-                                                print(
-                                                    'View Single: $isServiceRunning');
-                                              }
-
-                                              getTripId = ObjectId();
-
-                                              onSave(
-                                                  '', bottomSheetContext, true);
-
-                                              await Future.delayed(
-                                                  Duration(seconds: 3), () {});
-
-                                              bool isServiceRunning2 =
-                                                  await service.isRunning();
-                                              print(
-                                                  'View Single: $isServiceRunning2');
-
-                                              service.invoke("onStartTrip");
-
-                                              service.invoke("setAsForeground");
-
-                                              service.invoke('tripId',
-                                                  {'tripId': getTripId});
-
-                                              Timer.periodic(
-                                                  Duration(seconds: 1),
-                                                  (timer) async {
-                                                LocationData? locationData =
-                                                    await Utils
-                                                        .getCurrentLocation();
-                                                service.invoke('location', {
-                                                  'lat': locationData!.latitude,
-                                                  'long':
-                                                      locationData.longitude,
-                                                });
-                                              });
-
-                                              sharedPreferences!.setBool(
-                                                  'trip_started', true);
-                                              sharedPreferences!.setStringList(
-                                                  'trip_data', [
-                                                getTripId,
-                                                widget.vessel!.id!,
-                                                widget.vessel!.name!,
-                                                selectedVesselWeight
-                                              ]);
-
-                                              stateSetter(() {
-                                                isStartButton = false;
-                                                isEndTripButton = true;
-                                              });*/
-                                                  // await tripIsRunningOrNot();
-
-                                                  // await Permission.storage.request();
-
                                                   startWritingDataToDB(
                                                       bottomSheetContext,
                                                       stateSetter);
@@ -1948,78 +1727,71 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           .notification
                                                           .isGranted;
                                                   if (isNotificationPermitted) {
-                                                    /*bool isServiceRunning =
-                                                    await service.isRunning();
-
-                                                print(
-                                                    'ISSSSS: $isServiceRunning');
-
-                                                if (!isServiceRunning) {
-                                                  service.startService();
-                                                  print(
-                                                      'View Single: $isServiceRunning');
-                                                }
-
-                                                getTripId = ObjectId();
-
-                                                onSave('', bottomSheetContext,
-                                                    true);
-
-                                                await Future.delayed(
-                                                    Duration(seconds: 3),
-                                                    () {});
-
-                                                bool isServiceRunning2 =
-                                                    await service.isRunning();
-                                                print(
-                                                    'View Single: $isServiceRunning2');
-
-                                                service.invoke("onStartTrip");
-
-                                                service
-                                                    .invoke("setAsForeground");
-
-                                                service.invoke('tripId',
-                                                    {'tripId': getTripId});
-
-                                                Timer.periodic(
-                                                    Duration(seconds: 1),
-                                                    (timer) async {
-                                                  LocationData? locationData =
-                                                      await Utils
-                                                          .getCurrentLocation();
-                                                  service.invoke('location', {
-                                                    'lat':
-                                                        locationData!.latitude,
-                                                    'long':
-                                                        locationData.longitude,
-                                                  });
-                                                });
-
-                                                sharedPreferences!.setBool(
-                                                    'trip_started', true);
-                                                sharedPreferences!
-                                                    .setStringList(
-                                                        'trip_data', [
-                                                  getTripId,
-                                                  widget.vessel!.id!,
-                                                  widget.vessel!.name!,
-                                                  selectedVesselWeight
-                                                ]);
-
-                                                stateSetter(() {
-                                                  isStartButton = false;
-                                                  isEndTripButton = true;
-                                                });*/
-
                                                     startWritingDataToDB(
                                                         bottomSheetContext,
                                                         stateSetter);
-
-                                                    // await tripIsRunningOrNot();
-
-                                                    // await Permission.storage.request();
                                                   }
+                                                }
+                                              } else {
+                                                await Utils
+                                                    .getStoragePermission(
+                                                        context);
+                                                final androidInfo =
+                                                    await DeviceInfoPlugin()
+                                                        .androidInfo;
+
+                                                var isStoragePermitted =
+                                                    await Permission
+                                                        .storage.status;
+
+                                                if (isStoragePermitted
+                                                    .isGranted) {
+                                                  bool isNotificationPermitted =
+                                                      await Permission
+                                                          .notification
+                                                          .isGranted;
+
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        bottomSheetContext,
+                                                        stateSetter);
+                                                  } else {
+                                                    await Utils
+                                                        .getNotificationPermission(
+                                                            context);
+                                                    bool
+                                                        isNotificationPermitted =
+                                                        await Permission
+                                                            .notification
+                                                            .isGranted;
+                                                    if (isNotificationPermitted) {
+                                                      startWritingDataToDB(
+                                                          bottomSheetContext,
+                                                          stateSetter);
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            } else {
+                                              bool isNotificationPermitted =
+                                                  await Permission
+                                                      .notification.isGranted;
+
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    bottomSheetContext,
+                                                    stateSetter);
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                        context);
+                                                bool isNotificationPermitted =
+                                                    await Permission
+                                                        .notification.isGranted;
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
                                                 }
                                               }
                                             }
@@ -2040,236 +1812,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   await DeviceInfoPlugin()
                                                       .androidInfo;
 
-                                              var isStoragePermitted =
-                                                  androidInfo.version.sdkInt >
-                                                          32
-                                                      ? await Permission
-                                                          .photos.status
-                                                      : await Permission
-                                                          .storage.status;
-                                              if (isStoragePermitted
-                                                  .isGranted) {
-                                                bool isNotificationPermitted =
-                                                    await Permission
-                                                        .notification.isGranted;
-
-                                                if (isNotificationPermitted) {
-                                                  /*bool isServiceRunning =
-                                                  await service.isRunning();
-
-                                              print(
-                                                  'ISSSSS: $isServiceRunning');
-
-                                              if (!isServiceRunning) {
-                                                service.startService();
-                                                print(
-                                                    'View Single: $isServiceRunning');
-                                              }
-
-                                              getTripId = ObjectId();
-
-                                              onSave(
-                                                  '', bottomSheetContext, true);
-
-                                              await Future.delayed(
-                                                  Duration(seconds: 3), () {});
-
-                                              bool isServiceRunning2 =
-                                                  await service.isRunning();
-                                              print(
-                                                  'View Single: $isServiceRunning2');
-
-                                              service.invoke("onStartTrip");
-
-                                              service.invoke("setAsForeground");
-
-                                              service.invoke('tripId',
-                                                  {'tripId': getTripId});
-
-                                              Timer.periodic(
-                                                  Duration(seconds: 1),
-                                                  (timer) async {
-                                                LocationData? locationData =
-                                                    await Utils
-                                                        .getCurrentLocation();
-                                                service.invoke('location', {
-                                                  'lat': locationData!.latitude,
-                                                  'long':
-                                                      locationData.longitude,
-                                                });
-                                              });
-
-                                              sharedPreferences!.setBool(
-                                                  'trip_started', true);
-                                              sharedPreferences!.setStringList(
-                                                  'trip_data', [
-                                                getTripId,
-                                                widget.vessel!.id!,
-                                                widget.vessel!.name!,
-                                                selectedVesselWeight
-                                              ]);
-
-                                              stateSetter(() {
-                                                isStartButton = false;
-                                                isEndTripButton = true;
-                                              });*/
-
-                                                  startWritingDataToDB(
-                                                      bottomSheetContext,
-                                                      stateSetter);
-
-                                                  // await tripIsRunningOrNot();
-
-                                                  // await Permission.storage.request();
-                                                } else {
-                                                  await Utils
-                                                      .getNotificationPermission(
-                                                          context);
-                                                  bool isNotificationPermitted =
-                                                      await Permission
-                                                          .notification
-                                                          .isGranted;
-                                                  if (isNotificationPermitted) {
-                                                    /*bool isServiceRunning =
-                                                    await service.isRunning();
-
-                                                print(
-                                                    'ISSSSS: $isServiceRunning');
-
-                                                if (!isServiceRunning) {
-                                                  service.startService();
-                                                  print(
-                                                      'View Single: $isServiceRunning');
-                                                }
-
-                                                getTripId = ObjectId();
-
-                                                onSave('', bottomSheetContext,
-                                                    true);
-
-                                                await Future.delayed(
-                                                    Duration(seconds: 3),
-                                                    () {});
-
-                                                bool isServiceRunning2 =
-                                                    await service.isRunning();
-                                                print(
-                                                    'View Single: $isServiceRunning2');
-
-                                                service.invoke("onStartTrip");
-
-                                                service
-                                                    .invoke("setAsForeground");
-
-                                                service.invoke('tripId',
-                                                    {'tripId': getTripId});
-
-                                                Timer.periodic(
-                                                    Duration(seconds: 1),
-                                                    (timer) async {
-                                                  LocationData? locationData =
-                                                      await Utils
-                                                          .getCurrentLocation();
-                                                  service.invoke('location', {
-                                                    'lat':
-                                                        locationData!.latitude,
-                                                    'long':
-                                                        locationData.longitude,
-                                                  });
-                                                });
-
-                                                sharedPreferences!.setBool(
-                                                    'trip_started', true);
-                                                sharedPreferences!
-                                                    .setStringList(
-                                                        'trip_data', [
-                                                  getTripId,
-                                                  widget.vessel!.id!,
-                                                  widget.vessel!.name!,
-                                                  selectedVesselWeight
-                                                ]);
-                                                stateSetter(() {
-                                                  isStartButton = false;
-                                                  isEndTripButton = true;
-                                                });*/
-
-                                                    // await tripIsRunningOrNot();
-
-                                                    // await Permission.storage.request();
-
-                                                    startWritingDataToDB(
-                                                        bottomSheetContext,
-                                                        stateSetter);
-                                                  }
-                                                }
-
-                                                /*bool isServiceRunning =
-                                                    await service.isRunning();
-
-                                                if (!isServiceRunning) {
-                                                  service.startService();
-                                                }
-
-                                                await Future.delayed(
-                                                    Duration(seconds: 3), () {});
-
-                                                service.invoke("onStartTrip");
-
-                                                service.invoke("setAsForeground");
-
-                                                getTripId = ObjectId();
-
-                                                service.invoke(
-                                                    'tripId', {'tripId': getTripId});
-
-                                                Future.delayed(Duration(seconds: 2),
-                                                    () {
-                                                  Timer.periodic(Duration(seconds: 1),
-                                                      (timer) async {
-                                                    LocationData? locationData =
-                                                        await Utils
-                                                            .getCurrentLocation();
-                                                    service.invoke('location', {
-                                                      'lat': locationData!.latitude,
-                                                      'long': locationData.longitude,
-                                                    });
-                                                  });
-                                                });
-
-                                                stateSetter(() {
-                                                  isStartButton = false;
-                                                  isEndTripButton = true;
-                                                });
-
-                                                sharedPreferences!
-                                                    .setBool('trip_started', true);
-                                                sharedPreferences!.setStringList(
-                                                    'trip_data', [
-                                                  getTripId,
-                                                  widget.vessel!.id!,
-                                                  widget.vessel!.name!,
-                                                  selectedVesselWeight
-                                                ]);
-
-                                                onSave('', bottomSheetContext, true);*/
-
-                                                // await Permission.storage.request();
-                                              } else {
-                                                await Utils
-                                                    .getStoragePermission(
-                                                        context);
-                                                final androidInfo =
-                                                    await DeviceInfoPlugin()
-                                                        .androidInfo;
-
+                                              if (androidInfo.version.sdkInt <
+                                                  29) {
                                                 var isStoragePermitted =
-                                                    androidInfo.version.sdkInt >
-                                                            32
-                                                        ? await Permission
-                                                            .photos.status
-                                                        : await Permission
-                                                            .storage.status;
-
+                                                    await Permission
+                                                        .storage.status;
                                                 if (isStoragePermitted
                                                     .isGranted) {
                                                   bool isNotificationPermitted =
@@ -2278,75 +1825,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           .isGranted;
 
                                                   if (isNotificationPermitted) {
-                                                    /*bool isServiceRunning =
-                                                    await service.isRunning();
-
-                                                print(
-                                                    'ISSSSS: $isServiceRunning');
-
-                                                if (!isServiceRunning) {
-                                                  service.startService();
-                                                  print(
-                                                      'View Single: $isServiceRunning');
-                                                }
-
-                                                getTripId = ObjectId();
-
-                                                onSave('', bottomSheetContext,
-                                                    true);
-
-                                                await Future.delayed(
-                                                    Duration(seconds: 3),
-                                                    () {});
-
-                                                bool isServiceRunning2 =
-                                                    await service.isRunning();
-                                                print(
-                                                    'View Single: $isServiceRunning2');
-
-                                                service.invoke("onStartTrip");
-
-                                                service
-                                                    .invoke("setAsForeground");
-
-                                                service.invoke('tripId',
-                                                    {'tripId': getTripId});
-
-                                                Timer.periodic(
-                                                    Duration(seconds: 1),
-                                                    (timer) async {
-                                                  LocationData? locationData =
-                                                      await Utils
-                                                          .getCurrentLocation();
-                                                  service.invoke('location', {
-                                                    'lat':
-                                                        locationData!.latitude,
-                                                    'long':
-                                                        locationData.longitude,
-                                                  });
-                                                });
-
-                                                sharedPreferences!.setBool(
-                                                    'trip_started', true);
-                                                sharedPreferences!
-                                                    .setStringList(
-                                                        'trip_data', [
-                                                  getTripId,
-                                                  widget.vessel!.id!,
-                                                  widget.vessel!.name!,
-                                                  selectedVesselWeight
-                                                ]);
-
-                                                stateSetter(() {
-                                                  isStartButton = false;
-                                                  isEndTripButton = true;
-                                                });*/
                                                     startWritingDataToDB(
                                                         bottomSheetContext,
                                                         stateSetter);
-                                                    // await tripIsRunningOrNot();
-
-                                                    // await Permission.storage.request();
                                                   } else {
                                                     await Utils
                                                         .getNotificationPermission(
@@ -2357,126 +1838,74 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                             .notification
                                                             .isGranted;
                                                     if (isNotificationPermitted) {
-                                                      /*bool isServiceRunning =
-                                                      await service.isRunning();
-
-                                                  print(
-                                                      'ISSSSS: $isServiceRunning');
-
-                                                  if (!isServiceRunning) {
-                                                    service.startService();
-                                                    print(
-                                                        'View Single: $isServiceRunning');
-                                                  }
-
-                                                  getTripId = ObjectId();
-
-                                                  onSave('', bottomSheetContext,
-                                                      true);
-
-                                                  await Future.delayed(
-                                                      Duration(seconds: 3),
-                                                      () {});
-
-                                                  bool isServiceRunning2 =
-                                                      await service.isRunning();
-                                                  print(
-                                                      'View Single: $isServiceRunning2');
-
-                                                  service.invoke("onStartTrip");
-
-                                                  service.invoke(
-                                                      "setAsForeground");
-
-                                                  service.invoke('tripId',
-                                                      {'tripId': getTripId});
-
-                                                  Timer.periodic(
-                                                      Duration(seconds: 1),
-                                                      (timer) async {
-                                                    LocationData? locationData =
-                                                        await Utils
-                                                            .getCurrentLocation();
-                                                    service.invoke('location', {
-                                                      'lat': locationData!
-                                                          .latitude,
-                                                      'long': locationData
-                                                          .longitude,
-                                                    });
-                                                  });
-
-                                                  sharedPreferences!.setBool(
-                                                      'trip_started', true);
-                                                  sharedPreferences!
-                                                      .setStringList(
-                                                          'trip_data', [
-                                                    getTripId,
-                                                    widget.vessel!.id!,
-                                                    widget.vessel!.name!,
-                                                    selectedVesselWeight
-                                                  ]);
-
-                                                  stateSetter(() {
-                                                    isStartButton = false;
-                                                    isEndTripButton = true;
-                                                  });*/
-                                                      // await tripIsRunningOrNot();
                                                       startWritingDataToDB(
                                                           bottomSheetContext,
                                                           stateSetter);
-                                                      // await Permission.storage.request();
                                                     }
                                                   }
+                                                } else {
+                                                  await Utils
+                                                      .getStoragePermission(
+                                                          context);
+                                                  final androidInfo =
+                                                      await DeviceInfoPlugin()
+                                                          .androidInfo;
 
-                                                  /*bool isServiceRunning =
-                                                      await service.isRunning();
+                                                  var isStoragePermitted =
+                                                      await Permission
+                                                          .storage.status;
 
-                                                  if (!isServiceRunning) {
-                                                    service.startService();
+                                                  if (isStoragePermitted
+                                                      .isGranted) {
+                                                    bool
+                                                        isNotificationPermitted =
+                                                        await Permission
+                                                            .notification
+                                                            .isGranted;
+
+                                                    if (isNotificationPermitted) {
+                                                      startWritingDataToDB(
+                                                          bottomSheetContext,
+                                                          stateSetter);
+                                                    } else {
+                                                      await Utils
+                                                          .getNotificationPermission(
+                                                              context);
+                                                      bool
+                                                          isNotificationPermitted =
+                                                          await Permission
+                                                              .notification
+                                                              .isGranted;
+                                                      if (isNotificationPermitted) {
+                                                        startWritingDataToDB(
+                                                            bottomSheetContext,
+                                                            stateSetter);
+                                                      }
+                                                    }
                                                   }
+                                                }
+                                              } else {
+                                                bool isNotificationPermitted =
+                                                    await Permission
+                                                        .notification.isGranted;
 
-                                                  await Future.delayed(
-                                                      Duration(seconds: 3), () {});
-
-                                                  service.invoke("onStartTrip");
-
-                                                  service.invoke("setAsForeground");
-
-                                                  getTripId = ObjectId();
-
-                                                  service.invoke(
-                                                      'tripId', {'tripId': getTripId});
-
-                                                  Future.delayed(Duration(seconds: 2),
-                                                      () {
-                                                    Timer.periodic(Duration(seconds: 1),
-                                                        (timer) async {
-                                                      LocationData? locationData =
-                                                          await Utils
-                                                              .getCurrentLocation();
-                                                      service.invoke('location', {
-                                                        'lat': locationData!.latitude,
-                                                        'long': locationData.longitude,
-                                                      });
-                                                    });
-                                                  });
-
-                                                  stateSetter(() {
-                                                    isStartButton = false;
-                                                    isEndTripButton = true;
-                                                  });
-
-                                                  sharedPreferences!
-                                                      .setBool('trip_started', true);
-                                                  sharedPreferences!.setStringList(
-                                                      'trip_data', [
-                                                    getTripId,
-                                                    widget.vessel!.id!,
-                                                    widget.vessel!.name!,
-                                                    selectedVesselWeight
-                                                  ]);
-
-                                                  onSave('', bottomSheetContext, true);*/
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
+                                                } else {
+                                                  await Utils
+                                                      .getNotificationPermission(
+                                                          context);
+                                                  bool isNotificationPermitted =
+                                                      await Permission
+                                                          .notification
+                                                          .isGranted;
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        bottomSheetContext,
+                                                        stateSetter);
+                                                  }
                                                 }
                                               }
 

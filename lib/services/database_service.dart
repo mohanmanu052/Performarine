@@ -147,6 +147,13 @@ class DatabaseService {
     return Trip.fromMap(maps[0]);
   }
 
+  Future<Trip> getTripByVesselId(String id) async {
+    final db = await _databaseService.database;
+    final List<Map<String, dynamic>> maps =
+        await db.query('trips', where: 'vesselId = ?', whereArgs: [id]);
+    return Trip.fromMap(maps[0]);
+  }
+
   Future<List<CreateVessel>> vessels() async {
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps =
@@ -231,6 +238,16 @@ class DatabaseService {
     final db = await _databaseService.database;
     var result = await db.rawQuery(
       'SELECT EXISTS(SELECT 1 FROM trips WHERE tripStatus="0")',
+    );
+    int? exists = Sqflite.firstIntValue(result);
+    print('EXIST $exists');
+    return exists == 1;
+  }
+
+  Future<bool> checkIfTripIsRunningForSpecificVessel(String vesselId) async {
+    final db = await _databaseService.database;
+    var result = await db.rawQuery(
+      'SELECT EXISTS(SELECT 1 FROM trips WHERE vesselId="$vesselId" AND tripStatus="0")',
     );
     int? exists = Sqflite.firstIntValue(result);
     print('EXIST $exists');

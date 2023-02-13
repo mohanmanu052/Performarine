@@ -46,7 +46,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   bool tripIsRunning = false, isuploadTrip = false;
 
-  int tripDistance = 0;
+  double tripDistance = 0;
   int tripDuration = 0;
   String tripSpeed = '0.0';
   String tripAvgSpeed = '0.0';
@@ -674,7 +674,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                 .toInt())
                                                     : '${tripData!.time} ',
                                                 tripIsRunning
-                                                    ? '${(tripDistance / 1852).toStringAsFixed(2)}'
+                                                    ? '${(tripDistance).toStringAsFixed(2)}'
                                                     : '${tripData!.distance} ',
                                                 tripIsRunning
                                                     ? '${tripSpeed.toString()} '

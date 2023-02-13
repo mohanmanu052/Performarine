@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/models/vessel.dart';
+import 'package:performarine/services/database_service.dart';
+
+class SingleVesselCard extends StatefulWidget {
+  final CreateVessel? vessel;
+  final Function(CreateVessel)? onTap;
+  const SingleVesselCard(this.vessel, this.onTap, {Key? key}) : super(key: key);
+
+  @override
+  State<SingleVesselCard> createState() => _SingleVesselCardState();
+}
+
+class _SingleVesselCardState extends State<SingleVesselCard> {
+  DatabaseService databaseService = DatabaseService();
+
+  bool isTripRunning = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    checkTripRunning();
+  }
+
+  checkTripRunning() async {
+    bool result = await databaseService
+        .checkIfTripIsRunningForSpecificVessel(widget.vessel!.id!);
+    setState(() {
+      isTripRunning = result;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return vesselSingleViewCard(
+      context,
+      widget.vessel!,
+      (CreateVessel value) {
+        widget.onTap!(value);
+      },
+      isTripIsRunning: isTripRunning,
+    );
+  }
+}

@@ -136,12 +136,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     await sharedPreferences!.reload();
 
     int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
-    int? tripDistance = sharedPreferences!.getInt("tripDistance") ?? 1;
+    String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
 
     String finalTripDuration =
         Utils.calculateTripDuration((tripDuration / 1000).toInt());
-    String finalTripDistance = tripDistance.toStringAsFixed(2);
+    String finalTripDistance = tripDistance;
     Position? currentLocationData =
         await Utils.getLocationPermission(context, scaffoldKey);
     await _databaseService.updateTripStatus(
