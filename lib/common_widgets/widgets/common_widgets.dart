@@ -230,8 +230,8 @@ Widget dashboardRichText(
   );
 }
 
-Widget vesselSingleViewCard(
-    BuildContext context, CreateVessel vesselData, Function(CreateVessel) onTap,
+Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
+    Function(CreateVessel) onTap, GlobalKey<ScaffoldState> scaffoldKey,
     {bool isTripIsRunning = false}) {
   return GestureDetector(
     onTap: () {
@@ -374,7 +374,7 @@ Widget vesselSingleViewCard(
                     child: Center(
                       child: CommonButtons.getAcceptButton(
                           'Unretire', context, primaryColor, () async {
-                        showDialogBox(context, vesselData);
+                        showDialogBox(context, vesselData, scaffoldKey);
                       },
                           displayWidth(context) * 0.18,
                           displayHeight(context) * 0.04,
@@ -392,7 +392,7 @@ Widget vesselSingleViewCard(
                       top: 15,
                       right: 0,
                       child: CustomPaint(
-                        painter: StatusTag(color: Colors.blue),
+                        painter: StatusTag(color: Color(0XFF41C1C8)),
                         child: Container(
                           margin: EdgeInsets.only(
                               left: displayWidth(context) * 0.05),
@@ -713,7 +713,8 @@ Widget vesselSingleViewCard(
   );
 }
 
-showDialogBox(BuildContext context, CreateVessel vesselData) {
+showDialogBox(BuildContext context, CreateVessel vesselData,
+    GlobalKey<ScaffoldState> scaffoldKey) {
   return showDialog(
       barrierDismissible: false,
       context: context,
@@ -812,12 +813,20 @@ showDialogBox(BuildContext context, CreateVessel vesselData) {
                                   await DatabaseService()
                                       .updateVesselStatus(1, vesselData.id!)
                                       .then((value) {
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => HomePage(),
-                                        ),
-                                        ModalRoute.withName(""));
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message:
+                                            'Vessel unretired successfully.');
+                                    Navigator.of(dialogContext).pop();
+
+                                    Future.delayed(Duration(seconds: 2), () {
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => HomePage(),
+                                          ),
+                                          ModalRoute.withName(""));
+                                    });
                                   });
                                 },
                                     displayWidth(context) * 0.4,
@@ -1006,7 +1015,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
                     children: [
                       commonText(
                           context: context,
-                          text: '${avgSpeed}m/s',
+                          text: '${avgSpeed}nm',
                           fontWeight: FontWeight.w600,
                           textColor: Colors.black,
                           textSize: displayWidth(context) * 0.044,

@@ -3,6 +3,7 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/services/database_service.dart';
 
 class RetiredVesselsScreen extends StatefulWidget {
@@ -50,6 +51,23 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
           textColor: Colors.black87,
           textSize: displayWidth(context) * 0.045,
         ),
+        actions: [
+          Container(
+            margin: EdgeInsets.only(right: 8),
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                    ModalRoute.withName(""));
+              },
+              icon: Image.asset('assets/images/home.png'),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+          ),
+        ],
         backgroundColor: Colors.white,
       ),
       body: Container(
@@ -89,8 +107,8 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                     itemBuilder: (context, index) {
                       final vessel = snapshot.data![index];
                       return snapshot.data![index].vesselStatus == 0
-                          ? vesselSingleViewCard(
-                              context, vessel, (CreateVessel value) {})
+                          ? vesselSingleViewCard(context, vessel,
+                              (CreateVessel value) {}, scaffoldKey)
                           : SizedBox();
                     },
                   ),

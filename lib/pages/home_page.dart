@@ -138,6 +138,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
     String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
+    String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
 
     String finalTripDuration =
         Utils.calculateTripDuration((tripDuration / 1000).toInt());
@@ -152,10 +153,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),
+        tripAvgSpeed,
         tripId);
 
     _databaseService.updateVesselDataWithDurationSpeedDistance(
-        finalTripDuration, finalTripDistance, tripSpeed.toString(), vesselId);
+        finalTripDuration,
+        finalTripDistance,
+        tripSpeed.toString(),
+        tripAvgSpeed,
+        vesselId);
 
     Navigator.pop(context);
   }
@@ -352,6 +358,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 }
               },
               onDelete: _onVesselDelete,
+              scaffoldKey: scaffoldKey,
             ),
             SingleChildScrollView(
               child: TripViewListing(

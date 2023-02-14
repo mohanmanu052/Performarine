@@ -105,18 +105,20 @@ class _TripWidgetState extends State<TripWidget> {
 
         debugPrint('VESSEL DATA ${getVesselById[0].imageURLs}');
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TripAnalyticsScreen(
-              tripId: widget.tripList!.id,
-              vesselId: getVesselById[0].id,
-              tripIsRunningOrNot:
-                  widget.tripList!.tripStatus == 0 ? true : false,
-              // vessel: getVesselById[0]
+        if (!commonProvider.tripStatus) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TripAnalyticsScreen(
+                tripId: widget.tripList!.id,
+                vesselId: getVesselById[0].id,
+                tripIsRunningOrNot:
+                    widget.tripList!.tripStatus == 0 ? true : false,
+                // vessel: getVesselById[0]
+              ),
             ),
-          ),
-        );
+          );
+        }
       },
       child: Container(
         margin: EdgeInsets.only(left: 10, right: 10, top: 6),
@@ -197,7 +199,7 @@ class _TripWidgetState extends State<TripWidget> {
                               ? buttonBGColor
                               : widget.tripList?.tripStatus != 0
                                   ? primaryColor
-                                  : Colors.orangeAccent),
+                                  : Color(0xFF41C1C8)),
                       child: Container(
                         margin:
                             EdgeInsets.only(left: displayWidth(context) * 0.05),
@@ -515,12 +517,7 @@ class _TripWidgetState extends State<TripWidget> {
                           )
                         ],
                       )
-                    : /*widget.tripList!.isEndTripClicked!
-                        ? Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        :*/
-                    commonProvider.tripStatus
+                    : commonProvider.tripStatus
                         ? Center(
                             child: CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
@@ -580,6 +577,7 @@ class _TripWidgetState extends State<TripWidget> {
     int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
     String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
+    String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
 
     String finalTripDuration =
         Utils.calculateTripDuration((tripDuration / 1000).toInt());
@@ -596,10 +594,15 @@ class _TripWidgetState extends State<TripWidget> {
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),
+        tripAvgSpeed,
         tripId);
 
     _databaseService.updateVesselDataWithDurationSpeedDistance(
-        finalTripDuration, finalTripDistance, tripSpeed.toString(), vesselId!);
+        finalTripDuration,
+        finalTripDistance,
+        tripSpeed.toString(),
+        tripAvgSpeed,
+        vesselId!);
     //Navigator.pop(context);
   }
 

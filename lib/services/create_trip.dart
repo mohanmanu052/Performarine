@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -110,6 +111,7 @@ class CreateTrip {
     int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
     String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
+    String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
 
     String finalTripDuration =
         Utils.calculateTripDuration((tripDuration / 1000).toInt());
@@ -133,7 +135,10 @@ class CreateTrip {
       zipFile = File('${ourDirectory!.path}/$tripId.zip');
 
       ZipFile.createFromDirectory(
-          sourceDir: dataDir, zipFile: zipFile, recurseSubDirs: true);
+              sourceDir: dataDir, zipFile: zipFile, recurseSubDirs: true)
+          .then((value) {
+        downloadTrip(context!, tripId);
+      });
       print('our path is $dataDir');
     } catch (e) {
       print(e);
@@ -141,6 +146,8 @@ class CreateTrip {
 
     File file = File(zipFile!.path);
 
+    ///Download
+    //  downloadTrip(context!, tripId);
     var pref = await SharedPreferences.getInstance();
     print('FINAL PATH: ${file.path}');
     print('FINAL PATH: ${pref.getInt("tripDuration")}');
@@ -158,10 +165,15 @@ class CreateTrip {
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),
+        tripAvgSpeed,
         tripId);
 
     await DatabaseService().updateVesselDataWithDurationSpeedDistance(
-        finalTripDuration, finalTripDistance, tripSpeed.toString(), vesselId);
+        finalTripDuration,
+        finalTripDistance,
+        tripSpeed.toString(),
+        tripAvgSpeed,
+        vesselId);
 
     await flutterLocalNotificationsPlugin.cancel(888);
 
@@ -339,20 +351,34 @@ class CreateTrip {
         finalTripSpeed = (speed * 2.237);
 
         finalTripAvgSpeed =
-            (((finalTripDistance / 1852) / finalTripDuration) * 1.944);
+            (((finalTripDistance / 1852) / (finalTripDuration / 1000)) * 1.944);
 
         print(
             'TRIP DISTANCE: ${(finalTripDistance / 1852).toStringAsFixed(2)}');
         print('TRIP DURATION: $finalTripDuration');
         print('TRIP SPEED 1212: $finalTripSpeed');
-        print('AVG SPEED: $finalTripAvgSpeed');
+        print('AVG SPEED: ${finalTripAvgSpeed.toStringAsFixed(2)}');
+
+        debugPrint('AVG SPEED 12 ${finalTripAvgSpeed.toStringAsFixed(2)}');
+
+        if (finalTripAvgSpeed.isNaN) {
+          finalTripAvgSpeed = 0.0;
+        }
+
+        serviceInstance.invoke('tripAnalyticsData', {
+          "tripDistance":
+              (finalTripDistance / 1852).toDouble().toStringAsFixed(2),
+          "tripDuration": finalTripDuration,
+          "tripSpeed": finalTripSpeed.toStringAsFixed(2),
+          "tripAvgSpeed": finalTripAvgSpeed.toStringAsFixed(2)
+        });
 
         if (serviceInstance is AndroidServiceInstance) {
           if (await serviceInstance.isForegroundService()) {
             flutterLocalNotificationsPlugin.show(
               888,
               '',
-              '',
+              'Trip is in progress',
               // '$vesselName',
               // 'Dist: ${(finalTripDistance / 1852).toStringAsFixed(2)}nm, Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}hr, Speed: ${finalTripSpeed.toStringAsFixed(2)}m/h',
               /*'Trip data collection is in progress...',*/
@@ -364,7 +390,7 @@ class CreateTrip {
                     /*styleInformation:
                         BigTextStyleInformation('', summaryText: '$tripId')*/
                     styleInformation: BigTextStyleInformation(
-                        'Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}    Distance: ${(finalTripDistance / 1852).toStringAsFixed(2)} nm\nSpeed: ${finalTripSpeed.toStringAsFixed(2)}m/h        Avg Speed: ${(finalTripAvgSpeed).toStringAsFixed(2)} m/s',
+                        'Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}    Distance: ${(finalTripDistance / 1852).toStringAsFixed(2)} nm\nSpeed: ${finalTripSpeed.toStringAsFixed(2)} m/h        Avg Speed: ${(finalTripAvgSpeed).toStringAsFixed(2)} nm',
                         htmlFormatContentTitle: true,
                         summaryText: '$tripId')
                     /*styleInformation: BigTextStyleInformation('''
@@ -391,20 +417,6 @@ class CreateTrip {
                     ),
               ),
             );
-
-            debugPrint('AVG SPEED 12 ${finalTripAvgSpeed.toStringAsFixed(2)}');
-
-            if (finalTripAvgSpeed.isNaN) {
-              finalTripAvgSpeed = 0.0;
-            }
-
-            serviceInstance.invoke('tripAnalyticsData', {
-              "tripDistance":
-                  double.parse((finalTripDistance / 1852).toString()),
-              "tripDuration": finalTripDuration,
-              "tripSpeed": finalTripSpeed.toStringAsFixed(2),
-              "tripAvgSpeed": finalTripAvgSpeed.toStringAsFixed(2)
-            });
 
             pref.setString(
                 'tripDistance', (finalTripDistance / 1852).toStringAsFixed(2));
@@ -499,5 +511,84 @@ class CreateTrip {
         }
       });
     });
+  }
+
+  downloadTrip(BuildContext context, String tripId) async {
+    debugPrint('DOWLOAD Started!!!');
+
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+
+    var isStoragePermitted;
+    if (androidInfo.version.sdkInt < 29) {
+      isStoragePermitted = await Permission.storage.status;
+
+      if (isStoragePermitted.isGranted) {
+        //File copiedFile = File('${ourDirectory!.path}.zip');
+        File copiedFile = File('${ourDirectory!.path}/${tripId}.zip');
+
+        print('DIR PATH R ${ourDirectory!.path}');
+
+        Directory directory;
+
+        if (Platform.isAndroid) {
+          directory = Directory("storage/emulated/0/Download/${tripId}.zip");
+        } else {
+          directory = await getApplicationDocumentsDirectory();
+        }
+
+        copiedFile.copy(directory.path);
+
+        print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+        if (copiedFile.existsSync()) {
+          print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+        }
+      } else {
+        await Utils.getStoragePermission(context);
+        var isStoragePermitted = await Permission.storage.status;
+
+        if (isStoragePermitted.isGranted) {
+          File copiedFile = File('${ourDirectory!.path}.zip');
+
+          Directory directory;
+
+          if (Platform.isAndroid) {
+            directory = Directory("storage/emulated/0/Download/${tripId}.zip");
+          } else {
+            directory = await getApplicationDocumentsDirectory();
+          }
+
+          copiedFile.copy(directory.path);
+
+          print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+          if (copiedFile.existsSync()) {
+            print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+          }
+        }
+      }
+    } else {
+      //File copiedFile = File('${ourDirectory!.path}.zip');
+      File copiedFile = File('${ourDirectory!.path}/${tripId}.zip');
+
+      print('DIR PATH RT ${copiedFile.path}');
+      print('DIR PATH RT ${copiedFile.existsSync()}');
+
+      Directory directory;
+
+      if (Platform.isAndroid) {
+        directory = Directory("storage/emulated/0/Download/${tripId}.zip");
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      copiedFile.copy(directory.path);
+
+      print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+      if (copiedFile.existsSync()) {
+        print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+      }
+    }
   }
 }

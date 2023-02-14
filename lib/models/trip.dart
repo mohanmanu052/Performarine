@@ -19,6 +19,7 @@ class Trip {
   final String? time;
   final String? distance;
   final String? speed;
+  final String? avgSpeed;
   bool? isEndTripClicked;
 
   Trip(
@@ -37,6 +38,7 @@ class Trip {
       this.time,
       this.distance,
       this.speed,
+      this.avgSpeed,
       this.isEndTripClicked});
 
   // Convert a Trip into a Map. The keys must correspond to the vesselNames of the
@@ -58,6 +60,7 @@ class Trip {
       'time': time,
       'distance': distance,
       'speed': speed,
+      'avgSpeed': avgSpeed,
     };
   }
 
@@ -78,6 +81,7 @@ class Trip {
       time: map['time'] ?? '',
       distance: map['distance'] ?? '',
       speed: map['speed'] ?? '',
+      avgSpeed: map['avgSpeed'] ?? '',
       isEndTripClicked: false,
     );
   }

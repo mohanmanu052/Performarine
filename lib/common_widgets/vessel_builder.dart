@@ -18,11 +18,13 @@ class VesselBuilder extends StatefulWidget {
     required this.onEdit,
     required this.onTap,
     required this.onDelete,
+    required this.scaffoldKey,
   }) : super(key: key);
   final Future<List<CreateVessel>> future;
   final Function(CreateVessel) onEdit;
   final Function(CreateVessel) onTap;
   final Function(CreateVessel) onDelete;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
 
   @override
   State<VesselBuilder> createState() => _VesselBuilderState();
@@ -78,12 +80,9 @@ class _VesselBuilderState extends State<VesselBuilder> {
                     itemBuilder: (context, index) {
                       final vessel = snapshot.data![index];
                       return vessel.vesselStatus == 1
-                          ? SingleVesselCard(
-                              vessel,
-                              (CreateVessel value) {
-                                widget.onTap(value);
-                              },
-                            )
+                          ? SingleVesselCard(vessel, (CreateVessel value) {
+                              widget.onTap(value);
+                            }, widget.scaffoldKey!)
                           : SizedBox();
 
                       /*  ExpansionCard(

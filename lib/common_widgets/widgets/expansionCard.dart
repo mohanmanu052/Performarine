@@ -122,9 +122,11 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                       color: Colors.white,
                                     ),
                                     onPressed: () async {
-                                      bool value = await tripIsRunningOrNot();
+                                      bool result = await _databaseService
+                                          .checkIfTripIsRunningForSpecificVessel(
+                                              widget.vessel!.id!);
 
-                                      if (value) {
+                                      if (result) {
                                         Utils.showSnackBar(context,
                                             scaffoldKey: widget.scaffoldKey,
                                             message:
@@ -1510,7 +1512,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
 
                                     Utils.showSnackBar(context,
                                         scaffoldKey: widget.scaffoldKey,
-                                        message: 'Vessel Deleted Successfully');
+                                        message:
+                                            'Vessel retired successfully.');
 
                                     Navigator.of(dialogContext).pop();
 

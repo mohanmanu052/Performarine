@@ -25,6 +25,8 @@ class SuccessfullyAddedScreen extends StatefulWidget {
 }
 
 class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -51,6 +53,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
         return false;
       },
       child: Scaffold(
+        key: scaffoldKey,
         backgroundColor: Colors.white,
         bottomNavigationBar: Container(
           margin: EdgeInsets.symmetric(
@@ -144,7 +147,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                               isCalledFromSuccessScreen: true,
                             )),
                   );
-                }),
+                }, scaffoldKey),
                 Column(
                   children: [
                     SizedBox(

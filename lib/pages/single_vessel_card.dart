@@ -6,7 +6,10 @@ import 'package:performarine/services/database_service.dart';
 class SingleVesselCard extends StatefulWidget {
   final CreateVessel? vessel;
   final Function(CreateVessel)? onTap;
-  const SingleVesselCard(this.vessel, this.onTap, {Key? key}) : super(key: key);
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  const SingleVesselCard(this.vessel, this.onTap, this.scaffoldKey, {Key? key})
+      : super(key: key);
 
   @override
   State<SingleVesselCard> createState() => _SingleVesselCardState();
@@ -41,6 +44,7 @@ class _SingleVesselCardState extends State<SingleVesselCard> {
       (CreateVessel value) {
         widget.onTap!(value);
       },
+      widget.scaffoldKey,
       isTripIsRunning: isTripRunning,
     );
   }

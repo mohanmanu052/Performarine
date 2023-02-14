@@ -44,9 +44,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   CreateVessel? vesselData;
   Trip? tripData;
 
-  bool tripIsRunning = false, isuploadTrip = false;
+  bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false;
 
-  double tripDistance = 0;
+  String tripDistance = '0';
   int tripDuration = 0;
   String tripSpeed = '0.0';
   String tripAvgSpeed = '0.0';
@@ -151,6 +151,23 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             textColor: Colors.black87,
             textSize: displayWidth(context) * 0.032,
           ),
+          actions: [
+            Container(
+              margin: EdgeInsets.only(right: 8),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                      ModalRoute.withName(""));
+                },
+                icon: Image.asset('assets/images/home.png'),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+            ),
+          ],
           //backgroundColor: Colors.white,
         ),
         body: tripData == null && vesselData == null
@@ -674,14 +691,14 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                 .toInt())
                                                     : '${tripData!.time} ',
                                                 tripIsRunning
-                                                    ? '${(tripDistance).toStringAsFixed(2)}'
+                                                    ? '${(tripDistance)}'
                                                     : '${tripData!.distance} ',
                                                 tripIsRunning
                                                     ? '${tripSpeed.toString()} '
                                                     : '${tripData!.speed} ',
                                                 tripIsRunning
                                                     ? '${tripAvgSpeed.toString()} '
-                                                    : '${tripData!.speed} ',
+                                                    : '${tripData!.avgSpeed} ',
                                                 tripIsRunning),
                                           ],
                                         ),
@@ -926,43 +943,56 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                   margin: EdgeInsets.symmetric(
                                       horizontal: 17, vertical: 10),
                                   child: tripIsRunning
-                                      ? CommonButtons.getActionButton(
-                                          title: 'End Trip',
-                                          context: context,
-                                          fontSize:
-                                              displayWidth(context) * 0.042,
-                                          textColor: Colors.white,
-                                          buttonPrimaryColor: buttonBGColor,
-                                          borderColor: buttonBGColor,
-                                          width: displayWidth(context),
-                                          onTap: () async {
-                                            Utils().showEndTripDialog(context,
-                                                () async {
-                                              CreateTrip().endTrip(
-                                                  context: context,
-                                                  scaffoldKey: scaffoldKey,
-                                                  onEnded: () async {
-                                                    setState(() {
-                                                      tripIsRunning = false;
-                                                    });
-                                                    Trip tripDetails =
-                                                        await _databaseService
-                                                            .getTrip(
-                                                                tripData!.id!);
-                                                    setState(() {
-                                                      tripData = tripDetails;
-                                                    });
-
-                                                    print(
-                                                        'TRIP ENDED DETAILS: ${tripDetails.isSync}');
-                                                    print(
-                                                        'TRIP ENDED DETAILS: ${tripData!.isSync}');
-                                                    Navigator.pop(context);
+                                      ? isTripEnded
+                                          ? Center(
+                                              child: CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      circularProgressColor),
+                                            ))
+                                          : CommonButtons.getActionButton(
+                                              title: 'End Trip',
+                                              context: context,
+                                              fontSize:
+                                                  displayWidth(context) * 0.042,
+                                              textColor: Colors.white,
+                                              buttonPrimaryColor: buttonBGColor,
+                                              borderColor: buttonBGColor,
+                                              width: displayWidth(context),
+                                              onTap: () async {
+                                                Utils().showEndTripDialog(
+                                                    context, () async {
+                                                  setState(() {
+                                                    isTripEnded = true;
                                                   });
-                                            }, () {
-                                              Navigator.pop(context);
-                                            });
-                                          })
+                                                  CreateTrip().endTrip(
+                                                      context: context,
+                                                      scaffoldKey: scaffoldKey,
+                                                      onEnded: () async {
+                                                        setState(() {
+                                                          tripIsRunning = false;
+                                                          isTripEnded = true;
+                                                        });
+                                                        Trip tripDetails =
+                                                            await _databaseService
+                                                                .getTrip(
+                                                                    tripData!
+                                                                        .id!);
+                                                        setState(() {
+                                                          tripData =
+                                                              tripDetails;
+                                                        });
+
+                                                        print(
+                                                            'TRIP ENDED DETAILS: ${tripDetails.isSync}');
+                                                        print(
+                                                            'TRIP ENDED DETAILS: ${tripData!.isSync}');
+                                                        Navigator.pop(context);
+                                                      });
+                                                }, () {
+                                                  Navigator.pop(context);
+                                                });
+                                              })
                                       : Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -1282,7 +1312,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       //"userID": commonProvider.loginModel!.userId!
     };
 
-    debugPrint('CREATE TRIP: $queryParameters');
+    debugPrint('Send Sensor Data: $queryParameters');
 
     commonProvider
         .sendSensorInfo(
@@ -1350,53 +1380,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
     const int maxProgress = 10;
     progress = 0;
-
-    /*progressTimer = Timer.periodic(Duration(milliseconds: 500), (timer) {
-      progress = progress + 100;
-      //progress = timer.tick;
-      int fileLength = 0;
-      try {
-        fileLength =
-            File('storage/emulated/0/Download/${tripData!.id}.zip')
-                .lengthSync();
-      } catch (e) {
-        showFailedNoti(tripData!.id!);
-        setState(() {
-          isTripUploaded = false;
-        });
-      }
-
-      var value = progress / fileLength;
-
-      finalProgress = value * 100;
-
-      finalProgress = finalProgress > 100 ? 100 : finalProgress;
-
-      if (finalProgress == 100) {
-        progressTimer!.cancel();
-      }
-
-      final AndroidNotificationDetails androidPlatformChannelSpecifics =
-          AndroidNotificationDetails('progress channel', 'progress channel',
-              channelDescription: 'progress channel description',
-              channelShowBadge: false,
-              importance: Importance.max,
-              priority: Priority.high,
-              onlyAlertOnce: true,
-              showProgress: true,
-              ongoing: true,
-              indeterminate: false,
-              progress: finalProgress.toInt(),
-              maxProgress: 100);
-      final NotificationDetails platformChannelSpecifics =
-          NotificationDetails(android: androidPlatformChannelSpecifics);
-      flutterLocalNotificationsPlugin.show(
-          9986,
-          '${tripData!.id} ${finalProgress.toStringAsFixed(0)}/100%',
-          '${finalProgress.toStringAsFixed(0)}/100%',
-          platformChannelSpecifics,
-          payload: 'item x');
-    });*/
 
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
@@ -1549,10 +1532,97 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
 
-    var isStoragePermitted = androidInfo.version.sdkInt > 32
-        ? await Permission.photos.status
-        : await Permission.storage.status;
-    if (isStoragePermitted.isGranted) {
+    var isStoragePermitted;
+    if (androidInfo.version.sdkInt < 29) {
+      isStoragePermitted = await Permission.storage.status;
+
+      if (isStoragePermitted.isGranted) {
+        //File copiedFile = File('${ourDirectory!.path}.zip');
+        File copiedFile = File('${ourDirectory!.path}/${tripData!.id}.zip');
+
+        print('DIR PATH R ${ourDirectory!.path}');
+
+        Directory directory;
+
+        if (Platform.isAndroid) {
+          directory =
+              Directory("storage/emulated/0/Download/${tripData!.id}.zip");
+        } else {
+          directory = await getApplicationDocumentsDirectory();
+        }
+
+        copiedFile.copy(directory.path);
+
+        print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+        if (copiedFile.existsSync()) {
+          if (!isuploadTrip) {
+            Utils.showSnackBar(
+              context,
+              scaffoldKey: scaffoldKey,
+              message: 'File downloaded successfully',
+            );
+          }
+          /*Utils.showActionSnackBar(
+                                                          context,
+                                                          scaffoldKey,
+                                                          'File downloaded successfully',
+                                                          () async {
+                                                        print(
+                                                            'Open Btn clicked ttttt');
+                                                        var result =
+                                                            await OpenFile.open(
+                                                                directory.path);
+
+                                                        print(
+                                                            "dataaaaa: ${result.message} ggg ${result.type}");
+                                                      });*/
+        }
+      } else {
+        await Utils.getStoragePermission(context);
+        var isStoragePermitted = await Permission.storage.status;
+
+        if (isStoragePermitted.isGranted) {
+          File copiedFile = File('${ourDirectory!.path}.zip');
+
+          Directory directory;
+
+          if (Platform.isAndroid) {
+            directory =
+                Directory("storage/emulated/0/Download/${tripData!.id}.zip");
+          } else {
+            directory = await getApplicationDocumentsDirectory();
+          }
+
+          copiedFile.copy(directory.path);
+
+          print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+          if (copiedFile.existsSync()) {
+            Utils.showSnackBar(
+              context,
+              scaffoldKey: scaffoldKey,
+              message: 'File downloaded successfully',
+            );
+
+            /*Utils.showActionSnackBar(
+                                                            context,
+                                                            scaffoldKey,
+                                                            'File downloaded successfully',
+                                                            () {
+                                                          print(
+                                                              'Open Btn clicked');
+                                                          OpenFile.open(
+                                                                  directory.path)
+                                                              .catchError(
+                                                                  (onError) {
+                                                            print(onError);
+                                                          });
+                                                        });*/
+          }
+        }
+      }
+    } else {
       //File copiedFile = File('${ourDirectory!.path}.zip');
       File copiedFile = File('${ourDirectory!.path}/${tripData!.id}.zip');
 
@@ -1578,63 +1648,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             scaffoldKey: scaffoldKey,
             message: 'File downloaded successfully',
           );
-        }
-        /*Utils.showActionSnackBar(
-                                                          context,
-                                                          scaffoldKey,
-                                                          'File downloaded successfully',
-                                                          () async {
-                                                        print(
-                                                            'Open Btn clicked ttttt');
-                                                        var result =
-                                                            await OpenFile.open(
-                                                                directory.path);
-
-                                                        print(
-                                                            "dataaaaa: ${result.message} ggg ${result.type}");
-                                                      });*/
-      }
-    } else {
-      await Utils.getStoragePermission(context);
-      var isStoragePermitted = await Permission.storage.status;
-
-      if (isStoragePermitted.isGranted) {
-        File copiedFile = File('${ourDirectory!.path}.zip');
-
-        Directory directory;
-
-        if (Platform.isAndroid) {
-          directory =
-              Directory("storage/emulated/0/Download/${tripData!.id}.zip");
-        } else {
-          directory = await getApplicationDocumentsDirectory();
-        }
-
-        copiedFile.copy(directory.path);
-
-        print('DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-        if (copiedFile.existsSync()) {
-          Utils.showSnackBar(
-            context,
-            scaffoldKey: scaffoldKey,
-            message: 'File downloaded successfully',
-          );
-
-          /*Utils.showActionSnackBar(
-                                                            context,
-                                                            scaffoldKey,
-                                                            'File downloaded successfully',
-                                                            () {
-                                                          print(
-                                                              'Open Btn clicked');
-                                                          OpenFile.open(
-                                                                  directory.path)
-                                                              .catchError(
-                                                                  (onError) {
-                                                            print(onError);
-                                                          });
-                                                        });*/
         }
       }
     }

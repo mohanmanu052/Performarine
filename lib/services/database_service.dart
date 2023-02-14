@@ -44,7 +44,7 @@ class DatabaseService {
     await db.execute(
       'CREATE TABLE trips(id Text PRIMARY KEY,vesselId Text,vesselName Text, currentLoad TEXT,filePath Text,isSync INTEGER DEFAULT 0,'
       'tripStatus INTEGER  DEFAULT 0,deviceInfo Text, startPosition Text,endPosition Text,'
-      ' createdAt TEXT,updatedAt TEXT,time TEXT,distance TEXT,speed TEXT,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL)',
+      ' createdAt TEXT,updatedAt TEXT,time TEXT,distance TEXT,speed TEXT,avgSpeed TEXT,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL)',
     );
     // Run the CREATE {dogs} TABLE statement on the database.
     // await db.execute(
@@ -78,7 +78,8 @@ class DatabaseService {
       'updatedBy TEXT, '
       'time TEXT, '
       'distance TEXT, '
-      'speed TEXT '
+      'speed TEXT, '
+      'avgSpeed TEXT '
       ')',
     );
     //  ToDo: Foreign Key mapping
@@ -180,10 +181,11 @@ class DatabaseService {
       String time,
       String distance,
       String speed,
+      String avgSpeed,
       String tripId) async {
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
-        'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ?,endPosition = ?, time = ?, distance = ?, speed = ? WHERE id = ?',
+        'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ?,endPosition = ?, time = ?, distance = ?, speed = ?, avgSpeed = ? WHERE id = ?',
         [
           status,
           filePath,
@@ -192,6 +194,7 @@ class DatabaseService {
           time,
           distance,
           speed,
+          avgSpeed,
           tripId
         ]);
     print('updated: $count');
@@ -302,12 +305,12 @@ class DatabaseService {
         [vesselName, vesselId]);
   }
 
-  Future<void> updateVesselDataWithDurationSpeedDistance(
-      String time, String distance, String speed, String vesselId) async {
+  Future<void> updateVesselDataWithDurationSpeedDistance(String time,
+      String distance, String speed, String avgSpeed, String vesselId) async {
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
-        'UPDATE vessels SET time = ?, distance = ?, speed = ? WHERE id = ?',
-        [time, distance, speed, vesselId]);
+        'UPDATE vessels SET time = ?, distance = ?, speed = ?, avgSpeed = ? WHERE id = ?',
+        [time, distance, speed, avgSpeed, vesselId]);
     print('updated: $count');
   }
 }

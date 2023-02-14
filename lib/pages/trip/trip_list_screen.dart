@@ -374,6 +374,9 @@ class _TripListScreenState extends State<TripListScreen> {
                                 String? tripSpeed =
                                     sharedPreferences!.getString("tripSpeed") ??
                                         '1';
+                                String? tripAvgSpeed = sharedPreferences!
+                                        .getString("tripAvgSpeed") ??
+                                    '1';
 
                                 String finalTripDuration =
                                     Utils.calculateTripDuration(
@@ -394,6 +397,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                     finalTripDuration,
                                     finalTripDistance,
                                     tripSpeed.toString(),
+                                    tripAvgSpeed,
                                     snapshot.data![index].id!);
 
                                 _databaseService
@@ -401,6 +405,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                         finalTripDuration,
                                         finalTripDistance,
                                         tripSpeed.toString(),
+                                        tripAvgSpeed,
                                         snapshot.data![index].vesselId!);
 
                                 sharedPreferences!.remove('trip_data');
