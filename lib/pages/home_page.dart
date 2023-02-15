@@ -203,169 +203,177 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        key: scaffoldKey,
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          leading: InkWell(
-            onTap: () {
-              scaffoldKey.currentState!.openDrawer();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(19),
-              child: Image.asset(
-                'assets/images/menu.png',
-              ),
-            ),
-          ),
-          title: Container(
-            width: MediaQuery.of(context).size.width / 2,
-            // color: Colors.yellow,
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                children: [
-                  WidgetSpan(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        "assets/images/lognotitle.png",
-                        height: 50,
-                        width: 50,
-                      ),
-                      commonText(
-                        context: context,
-                        text: 'PerforMarine',
-                        fontWeight: FontWeight.w600,
-                        textColor: Colors.black87,
-                        textSize: displayWidth(context) * 0.045,
-                      ),
-                    ],
-                  )),
-                  // TextSpan(
-                  //   text: " to add",
-                  // ),
-                ],
-              ),
-            ),
-          ),
-          bottom: TabBar(
-            controller: tabController,
-            padding: EdgeInsets.all(0),
-            labelPadding: EdgeInsets.zero,
-            isScrollable: true,
-            indicatorColor: Colors.white,
-            onTap: (int value) {
-              setState(() {
-                currentTabIndex = value;
-              });
-            },
-            tabs: [
-              Container(
-                margin: EdgeInsets.only(right: 2),
-                width: displayWidth(context) * 0.45,
-                decoration: BoxDecoration(
-                    color: currentTabIndex == 0 ? buttonBGColor : Colors.white,
-                    border: Border.all(color: buttonBGColor),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        bottomLeft: Radius.circular(20))),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 9.0),
-                  child: commonText(
-                    context: context,
-                    text: 'Vessels',
-                    fontWeight: FontWeight.w500,
-                    textColor:
-                        currentTabIndex == 0 ? Colors.white : Colors.black,
-                    textSize: displayWidth(context) * 0.036,
-                  ),
-                  // Text('Vessels'),
+    return WillPopScope(
+      onWillPop: () async {
+        return Utils.onAppExitCallBack(context, scaffoldKey);
+      },
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          key: scaffoldKey,
+          appBar: AppBar(
+            elevation: 0,
+            centerTitle: true,
+            leading: InkWell(
+              onTap: () {
+                scaffoldKey.currentState!.openDrawer();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(19),
+                child: Image.asset(
+                  'assets/images/menu.png',
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(left: 2),
-                width: displayWidth(context) * 0.45,
-                decoration: BoxDecoration(
-                    color: currentTabIndex == 1 ? buttonBGColor : Colors.white,
-                    border: Border.all(color: buttonBGColor),
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(20),
-                        bottomRight: Radius.circular(20))),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 9.0),
-                  child: commonText(
-                    context: context,
-                    text: 'Activity (${commonProvider.tripsCount.toString()})',
-                    fontWeight: FontWeight.w500,
-                    textColor:
-                        currentTabIndex == 1 ? Colors.white : Colors.black,
-                    textSize: displayWidth(context) * 0.036,
+            ),
+            title: Container(
+              width: MediaQuery.of(context).size.width / 2,
+              // color: Colors.yellow,
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  children: [
+                    WidgetSpan(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/images/lognotitle.png",
+                          height: 50,
+                          width: 50,
+                        ),
+                        commonText(
+                          context: context,
+                          text: 'PerforMarine',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black87,
+                          textSize: displayWidth(context) * 0.045,
+                        ),
+                      ],
+                    )),
+                    // TextSpan(
+                    //   text: " to add",
+                    // ),
+                  ],
+                ),
+              ),
+            ),
+            bottom: TabBar(
+              controller: tabController,
+              padding: EdgeInsets.all(0),
+              labelPadding: EdgeInsets.zero,
+              isScrollable: true,
+              indicatorColor: Colors.white,
+              onTap: (int value) {
+                setState(() {
+                  currentTabIndex = value;
+                });
+              },
+              tabs: [
+                Container(
+                  margin: EdgeInsets.only(right: 2),
+                  width: displayWidth(context) * 0.45,
+                  decoration: BoxDecoration(
+                      color:
+                          currentTabIndex == 0 ? buttonBGColor : Colors.white,
+                      border: Border.all(color: buttonBGColor),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          bottomLeft: Radius.circular(20))),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 9.0),
+                    child: commonText(
+                      context: context,
+                      text: 'Vessels',
+                      fontWeight: FontWeight.w500,
+                      textColor:
+                          currentTabIndex == 0 ? Colors.white : Colors.black,
+                      textSize: displayWidth(context) * 0.036,
+                    ),
+                    // Text('Vessels'),
                   ),
-                  // Text('Activity (${tripsCount.toString()})'),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 2),
+                  width: displayWidth(context) * 0.45,
+                  decoration: BoxDecoration(
+                      color:
+                          currentTabIndex == 1 ? buttonBGColor : Colors.white,
+                      border: Border.all(color: buttonBGColor),
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          bottomRight: Radius.circular(20))),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 9.0),
+                    child: commonText(
+                      context: context,
+                      text:
+                          'Activity (${commonProvider.tripsCount.toString()})',
+                      fontWeight: FontWeight.w500,
+                      textColor:
+                          currentTabIndex == 1 ? Colors.white : Colors.black,
+                      textSize: displayWidth(context) * 0.036,
+                    ),
+                    // Text('Activity (${tripsCount.toString()})'),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.white,
+          ),
+          drawer: CustomDrawer(
+            scaffoldKey: scaffoldKey,
+          ),
+          body: TabBarView(
+            controller: tabController,
+            children: [
+              VesselBuilder(
+                future: getVesselFuture,
+                onEdit: (value) async {
+                  {
+                    Navigator.of(context)
+                        .push(
+                          MaterialPageRoute(
+                            builder: (_) => VesselFormPage(vessel: value),
+                            fullscreenDialog: true,
+                          ),
+                        )
+                        .then((_) => setState(() {}));
+                  }
+                },
+                onTap: (value) async {
+                  {
+                    var result = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => VesselSingleView(
+                          vessel: value,
+                        ),
+                        fullscreenDialog: true,
+                      ),
+                    );
+                    commonProvider.getTripsCount();
+                    if (result != null) {
+                      print('RESULT HOME PAGE $result');
+                      if (result) {
+                        setState(() {
+                          getVesselFuture = _databaseService.vessels();
+                          // _getTripsCount();
+                          // setState(() {});
+                        });
+                      }
+                    }
+                  }
+                },
+                onDelete: _onVesselDelete,
+                scaffoldKey: scaffoldKey,
+              ),
+              SingleChildScrollView(
+                child: TripViewListing(
+                  scaffoldKey: scaffoldKey,
                 ),
               ),
             ],
           ),
-          backgroundColor: Colors.white,
-        ),
-        drawer: CustomDrawer(
-          scaffoldKey: scaffoldKey,
-        ),
-        body: TabBarView(
-          controller: tabController,
-          children: [
-            VesselBuilder(
-              future: getVesselFuture,
-              onEdit: (value) async {
-                {
-                  Navigator.of(context)
-                      .push(
-                        MaterialPageRoute(
-                          builder: (_) => VesselFormPage(vessel: value),
-                          fullscreenDialog: true,
-                        ),
-                      )
-                      .then((_) => setState(() {}));
-                }
-              },
-              onTap: (value) async {
-                {
-                  var result = await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => VesselSingleView(
-                        vessel: value,
-                      ),
-                      fullscreenDialog: true,
-                    ),
-                  );
-                  commonProvider.getTripsCount();
-                  if (result != null) {
-                    print('RESULT HOME PAGE $result');
-                    if (result) {
-                      setState(() {
-                        getVesselFuture = _databaseService.vessels();
-                        // _getTripsCount();
-                        // setState(() {});
-                      });
-                    }
-                  }
-                }
-              },
-              onDelete: _onVesselDelete,
-              scaffoldKey: scaffoldKey,
-            ),
-            SingleChildScrollView(
-              child: TripViewListing(
-                scaffoldKey: scaffoldKey,
-              ),
-            ),
-          ],
         ),
       ),
     );

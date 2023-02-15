@@ -220,17 +220,28 @@ class _IntroScreenState extends State<IntroScreen> {
           });
         } else {
           print('NotificationAppLaunchDetails IS TRUE');
-          List<String>? tripData =
-              sharedPreferences!.getStringList('trip_data');
 
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => TripAnalyticsScreen(
-                      tripId: tripData![0],
-                      vesselId: tripData[1],
-                      tripIsRunningOrNot: isTripStarted)),
-              ModalRoute.withName(""));
+          if (notificationAppLaunchDetails.notificationResponse!.id == 888) {
+            List<String>? tripData =
+                sharedPreferences!.getStringList('trip_data');
+
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TripAnalyticsScreen(
+                        tripId: tripData![0],
+                        vesselId: tripData[1],
+                        tripIsRunningOrNot: isTripStarted)),
+                ModalRoute.withName(""));
+          } else {
+            Future.delayed(Duration(seconds: 3), () {
+              if (mounted) {
+                setState(() {
+                  isBtnVisible = true;
+                });
+              }
+            });
+          }
         }
       }
 

@@ -265,9 +265,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
       },
       child: Scaffold(
         key: scaffoldKey,
+        backgroundColor: Color(0xfff2fffb),
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Colors.white,
+          backgroundColor: Color(0xfff2fffb),
           centerTitle: true,
           title: Text(
             "${widget.vessel!.name}",
@@ -311,254 +312,268 @@ class VesselSingleViewState extends State<VesselSingleView> {
             ),
           ],
         ),
-        body: Stack(
-          children: [
-            SizedBox(
-              height: displayHeight(context),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    // your widgets,
-                    // Container(height: 900,color: Colors.red,),
-                    ExpansionCard(
-                        scaffoldKey,
-                        widget.vessel,
-                        (value) async {
-                          var result = await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => AddNewVesselScreen(
-                                isEdit: true,
-                                createVessel: widget.vessel,
+        body: Container(
+          color: Colors.white,
+          child: Stack(
+            children: [
+              SizedBox(
+                height: displayHeight(context),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      // your widgets,
+                      // Container(height: 900,color: Colors.red,),
+                      ExpansionCard(
+                          scaffoldKey,
+                          widget.vessel,
+                          (value) async {
+                            var result = await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => AddNewVesselScreen(
+                                  isEdit: true,
+                                  createVessel: widget.vessel,
+                                ),
+                                fullscreenDialog: true,
                               ),
-                              fullscreenDialog: true,
-                            ),
-                          );
+                            );
 
-                          if (result != null) {
-                            print('RESULT 1 ${result[0]}');
-                            print('RESULT 1 ${result[1] as CreateVessel}');
-                            setState(() {
-                              widget.vessel = result[1] as CreateVessel?;
-                              isDataUpdated = result[0];
-                            });
-                          }
-                        },
-                        (value) {},
-                        (value) {
-                          _onDeleteTripsByVesselID(value.id!);
-                          _onVesselDelete(value);
-                        },
-                        false),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    /*Card(
-                      child: ExpansionTile(
-                        textColor: Colors.black,
-                        iconColor: Colors.black,
-                        title: Text(
-                          "VESSEL ANALYTICS",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        children: [
-                          Padding(
-                              padding: const EdgeInsets.only(bottom: 0.0),
-                              child: vesselAnalytics(context))
-                        ],
+                            if (result != null) {
+                              print('RESULT 1 ${result[0]}');
+                              print('RESULT 1 ${result[1] as CreateVessel}');
+                              setState(() {
+                                widget.vessel = result[1] as CreateVessel?;
+                                isDataUpdated = result[0];
+                              });
+                            }
+                          },
+                          (value) {},
+                          (value) {
+                            _onDeleteTripsByVesselID(value.id!);
+                            _onVesselDelete(value);
+                          },
+                          false),
+                      SizedBox(
+                        height: 10,
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),*/
-                    Card(
-                      child: ExpansionTile(
-                        textColor: Colors.black,
-                        iconColor: Colors.black,
-                        title: Text(
-                          "Trip History:",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                      /*Card(
+                        child: ExpansionTile(
+                          textColor: Colors.black,
+                          iconColor: Colors.black,
+                          title: Text(
+                            "VESSEL ANALYTICS",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.only(bottom: 0.0),
+                                child: vesselAnalytics(context))
+                          ],
                         ),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 0.0),
-                            child: TripViewListing(
-                              scaffoldKey: scaffoldKey,
-                              vesselId: widget.vessel!.id,
-                              onTripEnded: () async {
-                                debugPrint('SINGLE VIEW TRIP END');
-                                await tripIsRunningOrNot();
-                                setState(() {
-                                  tripIsEnded = true;
-                                });
-                              },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),*/
+                      Theme(
+                        data: Theme.of(context).copyWith(
+                            colorScheme: ColorScheme.light(
+                              primary: Colors.black,
                             ),
-                          )
-                        ],
+                            dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          textColor: Colors.black,
+                          iconColor: Colors.black,
+                          title: commonText(
+                              context: context,
+                              text: 'Trip History',
+                              fontWeight: FontWeight.w600,
+                              textColor: Colors.black,
+                              textSize: displayWidth(context) * 0.038,
+                              textAlign: TextAlign.start),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 0.0),
+                              child: TripViewListing(
+                                scaffoldKey: scaffoldKey,
+                                vesselId: widget.vessel!.id,
+                                onTripEnded: () async {
+                                  debugPrint('SINGLE VIEW TRIP END');
+                                  await tripIsRunningOrNot();
+                                  setState(() {
+                                    tripIsEnded = true;
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 50,
-                    ),
-                  ],
+                      SizedBox(
+                        height: 50,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              left: 0,
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
-                child: tripIsRunning
-                    ? isTripEndedOrNot
-                        ? Center(
-                            child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                circularProgressColor),
-                          ))
-                        : CommonButtons.getActionButton(
-                            title: 'End Trip',
-                            context: context,
-                            fontSize: displayWidth(context) * 0.042,
-                            textColor: Colors.white,
-                            buttonPrimaryColor: buttonBGColor,
-                            borderColor: buttonBGColor,
-                            width: displayWidth(context),
-                            onTap: () async {
-                              print('time stamp:' +
-                                  DateTime.now().toUtc().toString());
-                              Utils().showEndTripDialog(context, () async {
-                                setState(() {
-                                  isTripEndedOrNot = true;
-                                });
+              Positioned(
+                bottom: 0,
+                right: 0,
+                left: 0,
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
+                  child: tripIsRunning
+                      ? isTripEndedOrNot
+                          ? Center(
+                              child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  circularProgressColor),
+                            ))
+                          : CommonButtons.getActionButton(
+                              title: 'End Trip',
+                              context: context,
+                              fontSize: displayWidth(context) * 0.042,
+                              textColor: Colors.white,
+                              buttonPrimaryColor: buttonBGColor,
+                              borderColor: buttonBGColor,
+                              width: displayWidth(context),
+                              onTap: () async {
+                                print('time stamp:' +
+                                    DateTime.now().toUtc().toString());
+                                Utils().showEndTripDialog(context, () async {
+                                  setState(() {
+                                    isTripEndedOrNot = true;
+                                  });
 
-                                Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
 
-                                print(
-                                    'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+                                  print(
+                                      'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
 
-                                CreateTrip().endTrip(
-                                    context: context,
-                                    scaffoldKey: scaffoldKey,
-                                    onEnded: () async {
-                                      print('TRIPPPPPP ENDEDDD:');
-                                      setState(() {
-                                        isEndTripButton = false;
-                                        tripIsEnded = true;
-                                        // isZipFileCreate = true;
+                                  CreateTrip().endTrip(
+                                      context: context,
+                                      scaffoldKey: scaffoldKey,
+                                      onEnded: () async {
+                                        print('TRIPPPPPP ENDEDDD:');
+                                        setState(() {
+                                          isEndTripButton = false;
+                                          tripIsEnded = true;
+                                          // isZipFileCreate = true;
+                                        });
+                                        await tripIsRunningOrNot();
                                       });
-                                      await tripIsRunningOrNot();
-                                    });
-                              }, () {
-                                Navigator.of(context).pop();
-                              });
-                            })
-                    : CommonButtons.getActionButton(
-                        title: 'Start Trip',
-                        context: context,
-                        fontSize: displayWidth(context) * 0.042,
-                        textColor: Colors.white,
-                        buttonPrimaryColor: buttonBGColor,
-                        borderColor: buttonBGColor,
-                        width: displayWidth(context),
-                        onTap: () async {
-                          bool? isTripStarted =
-                              sharedPreferences!.getBool('trip_started');
+                                }, () {
+                                  Navigator.of(context).pop();
+                                });
+                              })
+                      : CommonButtons.getActionButton(
+                          title: 'Start Trip',
+                          context: context,
+                          fontSize: displayWidth(context) * 0.042,
+                          textColor: Colors.white,
+                          buttonPrimaryColor: buttonBGColor,
+                          borderColor: buttonBGColor,
+                          width: displayWidth(context),
+                          onTap: () async {
+                            bool? isTripStarted =
+                                sharedPreferences!.getBool('trip_started');
 
-                          if (isTripStarted != null) {
-                            if (isTripStarted) {
-                              List<String>? tripData =
-                                  sharedPreferences!.getStringList('trip_data');
-                              Trip tripDetails =
-                                  await _databaseService.getTrip(tripData![0]);
+                            if (isTripStarted != null) {
+                              if (isTripStarted) {
+                                List<String>? tripData = sharedPreferences!
+                                    .getStringList('trip_data');
+                                Trip tripDetails = await _databaseService
+                                    .getTrip(tripData![0]);
 
-                              if (tripDetails.vesselId != widget.vessel!.id) {
-                                showDialogBox();
-                                return;
+                                if (tripDetails.vesselId != widget.vessel!.id) {
+                                  showDialogBox();
+                                  return;
+                                }
                               }
                             }
-                          }
 
-                          bool isLocationPermitted =
-                              await Permission.locationAlways.isGranted;
-
-                          if (isLocationPermitted) {
-                            vessel!.add(widget.vessel!);
-                            await locationPermissions(
-                                widget.vessel!.vesselSize!,
-                                widget.vessel!.name!,
-                                widget.vessel!.id!);
-                          } else {
-                            /// WIU
-                            bool isWIULocationPermitted =
-                                await Permission.locationWhenInUse.isGranted;
-
-                            if (!isWIULocationPermitted) {
-                              await Utils.getLocationPermission(
-                                  context, scaffoldKey);
-                            }
-                            /*setState(() {
-                                  isLocationDialogBoxOpen = true;
-                                });*/
                             bool isLocationPermitted =
                                 await Permission.locationAlways.isGranted;
+
                             if (isLocationPermitted) {
-                              /*setState(() {
-                                    isLocationDialogBoxOpen = false;
-                                  });*/
                               vessel!.add(widget.vessel!);
                               await locationPermissions(
                                   widget.vessel!.vesselSize!,
                                   widget.vessel!.name!,
                                   widget.vessel!.id!);
                             } else {
-                              /*setState(() {
-                                    isLocationDialogBoxOpen = false;
-                                  });*/
+                              /// WIU
+                              bool isWIULocationPermitted =
+                                  await Permission.locationWhenInUse.isGranted;
 
-                              if (!isLocationDialogBoxOpen) {
-                                showDialog(
-                                    context: scaffoldKey.currentContext!,
-                                    builder: (BuildContext context) {
-                                      isLocationDialogBoxOpen = true;
-                                      return LocationPermissionCustomDialog(
-                                        text:
-                                            'Always Allow Access to “Location”',
-                                        subText:
-                                            "To track your trip while you use other apps we need background access to your location",
-                                        buttonText: 'Ok',
-                                        buttonOnTap: () async {
-                                          //Navigator.pop(context);
-
-                                          Get.back();
-
-                                          /* var status = await Permission
-                                            .locationWhenInUse.status;
-
-                                        if (status ==
-                                            PermissionStatus.granted) {
-                                          Permission.locationAlways.request();
-                                        }*/
-
-                                          //  AppSettings.openLocationSettings(asAnotherTask: true);
-                                          await openAppSettings();
-                                          // Navigator.pop(context);
-                                          // await Geolocator.openAppSettings();
-                                        },
-                                      );
-                                    }).then((value) {
-                                  isLocationDialogBoxOpen = false;
-                                });
+                              if (!isWIULocationPermitted) {
+                                await Utils.getLocationPermission(
+                                    context, scaffoldKey);
                               }
-                              // await Permission.locationAlways.request();
+                              /*setState(() {
+                                    isLocationDialogBoxOpen = true;
+                                  });*/
+                              bool isLocationPermitted =
+                                  await Permission.locationAlways.isGranted;
+                              if (isLocationPermitted) {
+                                /*setState(() {
+                                      isLocationDialogBoxOpen = false;
+                                    });*/
+                                vessel!.add(widget.vessel!);
+                                await locationPermissions(
+                                    widget.vessel!.vesselSize!,
+                                    widget.vessel!.name!,
+                                    widget.vessel!.id!);
+                              } else {
+                                /*setState(() {
+                                      isLocationDialogBoxOpen = false;
+                                    });*/
+
+                                if (!isLocationDialogBoxOpen) {
+                                  showDialog(
+                                      context: scaffoldKey.currentContext!,
+                                      builder: (BuildContext context) {
+                                        isLocationDialogBoxOpen = true;
+                                        return LocationPermissionCustomDialog(
+                                          text:
+                                              'Always Allow Access to “Location”',
+                                          subText:
+                                              "To track your trip while you use other apps we need background access to your location",
+                                          buttonText: 'Ok',
+                                          buttonOnTap: () async {
+                                            //Navigator.pop(context);
+
+                                            Get.back();
+
+                                            /* var status = await Permission
+                                              .locationWhenInUse.status;
+
+                                          if (status ==
+                                              PermissionStatus.granted) {
+                                            Permission.locationAlways.request();
+                                          }*/
+
+                                            //  AppSettings.openLocationSettings(asAnotherTask: true);
+                                            await openAppSettings();
+                                            // Navigator.pop(context);
+                                            // await Geolocator.openAppSettings();
+                                          },
+                                        );
+                                      }).then((value) {
+                                    isLocationDialogBoxOpen = false;
+                                  });
+                                }
+                                // await Permission.locationAlways.request();
+                              }
                             }
-                          }
-                        }),
-              ),
-            )
-          ],
+                          }),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -1985,184 +2000,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             }
                                             // startTripService(stateSetter);
                                           })
-                                  /*: isEndTripButton
-                                      ? addingDataToDB
-                                          ? Center(
-                                              child: CircularProgressIndicator(
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                              Color>(
-                                                          circularProgressColor)))
-                                          : CommonButtons.getActionButton(
-                                              title: 'End Trip ',
-                                              context: context,
-                                              fontSize:
-                                                  displayWidth(context) * 0.042,
-                                              textColor: Colors.white,
-                                              buttonPrimaryColor: buttonBGColor,
-                                              borderColor: buttonBGColor,
-                                              width: displayWidth(context),
-                                              onTap: () async {
-                                                stateSetter(() {
-                                                  addingDataToDB = true;
-                                                });
-
-                                                CreateTrip().endTrip(
-                                                    context: context,
-                                                    scaffoldKey: scaffoldKey,
-                                                    onEnded: () {
-                                                      Future.delayed(Duration(
-                                                              seconds: 3))
-                                                          .then((value) {
-                                                        if (mounted) {
-                                                          stateSetter(() {
-                                                            addingDataToDB =
-                                                                false;
-                                                            isEndTripButton =
-                                                                false;
-                                                            isZipFileCreate =
-                                                                true;
-                                                          });
-                                                        }
-                                                      });
-                                                    });
-                                              })
-                                      : isZipFileCreate
-                                          ? CommonButtons.getActionButton(
-                                              title: 'Trip Ended',
-                                              context: context,
-                                              fontSize:
-                                                  displayWidth(context) * 0.042,
-                                              textColor: Colors.white,
-                                              buttonPrimaryColor: buttonBGColor,
-                                              borderColor: buttonBGColor,
-                                              width: displayWidth(context),
-                                              onTap: () async {
-                                                await tripIsRunningOrNot();
-
-                                                commonProvider.getTripsCount();
-
-                                                final androidInfo =
-                                                    await DeviceInfoPlugin()
-                                                        .androidInfo;
-
-                                                var isStoragePermitted =
-                                                    androidInfo.version.sdkInt >
-                                                            32
-                                                        ? await Permission
-                                                            .photos.status
-                                                        : await Permission
-                                                            .storage.status;
-                                                if (isStoragePermitted
-                                                    .isGranted) {
-                                                  //File copiedFile = File('${ourDirectory!.path}.zip');
-                                                  File copiedFile = File(
-                                                      '${ourDirectory!.path}/$getTripId.zip');
-
-                                                  print(
-                                                      'DIR PATH R ${ourDirectory!.path}');
-
-                                                  Directory directory;
-
-                                                  if (Platform.isAndroid) {
-                                                    directory = Directory(
-                                                        "storage/emulated/0/Download/$getTripId.zip");
-                                                  } else {
-                                                    directory =
-                                                        await getApplicationDocumentsDirectory();
-                                                  }
-
-                                                  copiedFile.copy(directory.path);
-
-                                                  print(
-                                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                                  if (copiedFile.existsSync()) {
-                                                    // Utils.showSnackBar(context,
-                                                    //     scaffoldKey: scaffoldKey,
-                                                    //     message:
-                                                    //     'File downloaded successfully');
-                                                  }
-                                                } else {
-                                                  await Utils
-                                                      .getStoragePermission(
-                                                          context);
-                                                  var isStoragePermitted =
-                                                      await Permission
-                                                          .storage.status;
-
-                                                  if (isStoragePermitted
-                                                      .isGranted) {
-                                                    File copiedFile = File(
-                                                        '${ourDirectory!.path}.zip');
-
-                                                    Directory directory;
-
-                                                    if (Platform.isAndroid) {
-                                                      directory = Directory(
-                                                          "storage/emulated/0/Download/$getTripId.zip");
-                                                    } else {
-                                                      directory =
-                                                          await getApplicationDocumentsDirectory();
-                                                    }
-
-                                                    copiedFile
-                                                        .copy(directory.path);
-
-                                                    print(
-                                                        'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                                    if (copiedFile.existsSync()) {
-                                                      // Utils.showSnackBar(context,
-                                                      //     scaffoldKey: scaffoldKey,
-                                                      //     message:
-                                                      //     'File downloaded successfully');
-                                                    }
-                                                  }
-                                                }
-
-                                                Get.back();
-
-                                                // getTripId = await getTripIdFromPref();
-
-                                                // File? zipFile;
-                                                // if (timer != null) timer!.cancel();
-                                                // print(
-                                                //     'TIMER STOPPED ${ourDirectory!.path}');
-                                                // final dataDir =
-                                                // Directory(ourDirectory!.path);
-                                                //
-                                                // try {
-                                                //   zipFile =
-                                                //       File('${ourDirectory!.path}.zip');
-                                                //
-                                                //   ZipFile.createFromDirectory(
-                                                //       sourceDir: dataDir,
-                                                //       zipFile: zipFile,
-                                                //       recurseSubDirs: true);
-                                                //   print('our path is $dataDir');
-                                                // } catch (e) {
-                                                //   print(e);
-                                                // }
-                                                //
-                                                // File file = File(zipFile!.path);
-                                                // Future.delayed(Duration(seconds: 1))
-                                                //     .then((value) {
-                                                //   stateSetter(() {
-                                                //     isZipFileCreate = true;
-                                                //   });
-                                                // });
-                                                // print('FINAL PATH: ${file.path}');
-                                                // onSave(file);
-
-                                                */ /*File file = File(zipFile!.path);
-                                                Future.delayed(Duration(seconds: 1))
-                                                    .then((value) {
-                                                  stateSetter(() {
-                                                    isZipFileCreate = true;
-                                                  });
-                                                });*/ /*
-                                              })*/
                                   : Container(
                                       margin: EdgeInsets.only(bottom: 8),
                                       child: CommonButtons.getActionButton(

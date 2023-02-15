@@ -112,16 +112,18 @@ Future<void> initializeService() async {
       onDidReceiveNotificationResponse: (value) async {
     print('APP RESTART 1');
 
-    var pref = await SharedPreferences.getInstance();
-    pref.setBool('sp_key_called_from_noti', true);
-    List<String>? tripData = pref.getStringList('trip_data');
-    bool? isTripStarted = pref.getBool('trip_started');
+    if (value.id == 888) {
+      print('NOTIFICATION ID: ${value.id}');
+      var pref = await SharedPreferences.getInstance();
+      pref.setBool('sp_key_called_from_noti', true);
+      List<String>? tripData = pref.getStringList('trip_data');
+      bool? isTripStarted = pref.getBool('trip_started');
 
-    Get.to(TripAnalyticsScreen(
-        tripId: tripData![0],
-        vesselId: tripData[1],
-        tripIsRunningOrNot: isTripStarted));
-
+      Get.to(TripAnalyticsScreen(
+          tripId: tripData![0],
+          vesselId: tripData[1],
+          tripIsRunningOrNot: isTripStarted));
+    }
     return;
 
     await Get.deleteAll(force: true);

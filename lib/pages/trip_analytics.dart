@@ -117,10 +117,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     commonProvider = context.watch<CommonProvider>();
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+            ModalRoute.withName(""));
         return false;
       },
       child: Scaffold(
@@ -134,10 +134,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             onPressed: () {
               // Navigator.of(context).pop();
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                  ModalRoute.withName(""));
             },
             icon: const Icon(Icons.arrow_back),
             color: Theme.of(context).brightness == Brightness.dark
@@ -965,6 +965,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                   setState(() {
                                                     isTripEnded = true;
                                                   });
+                                                  Navigator.pop(context);
                                                   CreateTrip().endTrip(
                                                       context: context,
                                                       scaffoldKey: scaffoldKey,
@@ -987,7 +988,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                             'TRIP ENDED DETAILS: ${tripDetails.isSync}');
                                                         print(
                                                             'TRIP ENDED DETAILS: ${tripData!.isSync}');
-                                                        Navigator.pop(context);
+                                                        // Navigator.pop(context);
                                                       });
                                                 }, () {
                                                   Navigator.pop(context);
@@ -1047,13 +1048,16 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                     2.3,
                                                             onTap: () async {
                                                               Navigator
-                                                                  .pushReplacement(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            HomePage()),
-                                                              );
+                                                                  .pushAndRemoveUntil(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                HomePage(),
+                                                                      ),
+                                                                      ModalRoute
+                                                                          .withName(
+                                                                              ""));
                                                             })
                                                     : CommonButtons
                                                         .getActionButton(

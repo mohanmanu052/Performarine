@@ -369,8 +369,8 @@ class CreateTrip {
           "tripDistance":
               (finalTripDistance / 1852).toDouble().toStringAsFixed(2),
           "tripDuration": finalTripDuration,
-          "tripSpeed": finalTripSpeed.toStringAsFixed(2),
-          "tripAvgSpeed": finalTripAvgSpeed.toStringAsFixed(2)
+          "tripSpeed": finalTripSpeed.toStringAsFixed(1),
+          "tripAvgSpeed": finalTripAvgSpeed.toStringAsFixed(1)
         });
 
         if (serviceInstance is AndroidServiceInstance) {
@@ -390,7 +390,7 @@ class CreateTrip {
                     /*styleInformation:
                         BigTextStyleInformation('', summaryText: '$tripId')*/
                     styleInformation: BigTextStyleInformation(
-                        'Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}    Distance: ${(finalTripDistance / 1852).toStringAsFixed(2)} nm\nSpeed: ${finalTripSpeed.toStringAsFixed(2)} m/h        Avg Speed: ${(finalTripAvgSpeed).toStringAsFixed(2)} nm',
+                        'Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}    Distance: ${(finalTripDistance / 1852).toStringAsFixed(2)} nm\nSpeed: ${finalTripSpeed.toStringAsFixed(1)} m/h        Avg Speed: ${(finalTripAvgSpeed).toStringAsFixed(1)} nm',
                         htmlFormatContentTitle: true,
                         summaryText: '$tripId')
                     /*styleInformation: BigTextStyleInformation('''
@@ -422,9 +422,9 @@ class CreateTrip {
                 'tripDistance', (finalTripDistance / 1852).toStringAsFixed(2));
             pref.setInt('tripDuration', finalTripDuration);
             // To get values in Km/h
-            pref.setString('tripSpeed', finalTripSpeed.toStringAsFixed(2));
+            pref.setString('tripSpeed', finalTripSpeed.toStringAsFixed(1));
             pref.setString(
-                'tripAvgSpeed', finalTripAvgSpeed.toStringAsFixed(2));
+                'tripAvgSpeed', finalTripAvgSpeed.toStringAsFixed(1));
 
             String filePath = await CreateTrip().getFile(tripId, fileName);
             File file = File(filePath);

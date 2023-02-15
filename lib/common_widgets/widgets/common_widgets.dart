@@ -371,19 +371,24 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                     margin: EdgeInsets.only(
                       top: 8.0,
                     ),
-                    child: Center(
-                      child: CommonButtons.getAcceptButton(
-                          'Unretire', context, primaryColor, () async {
-                        showDialogBox(context, vesselData, scaffoldKey);
-                      },
-                          displayWidth(context) * 0.18,
-                          displayHeight(context) * 0.04,
-                          primaryColor,
-                          Colors.white,
-                          displayHeight(context) * 0.014,
-                          buttonBGColor,
-                          '',
-                          fontWeight: FontWeight.w500),
+                    child: Card(
+                      color: primaryColor,
+                      elevation: 6,
+                      shadowColor: Colors.black,
+                      child: Center(
+                        child: CommonButtons.getAcceptButton(
+                            'Unretire', context, primaryColor, () async {
+                          showDialogBox(context, vesselData, scaffoldKey);
+                        },
+                            displayWidth(context) * 0.18,
+                            displayHeight(context) * 0.04,
+                            primaryColor,
+                            Colors.white,
+                            displayHeight(context) * 0.014,
+                            buttonBGColor,
+                            '',
+                            fontWeight: FontWeight.w500),
+                      ),
                     ),
                   ),
                 )
@@ -818,15 +823,12 @@ showDialogBox(BuildContext context, CreateVessel vesselData,
                                         message:
                                             'Vessel unretired successfully.');
                                     Navigator.of(dialogContext).pop();
-
-                                    Future.delayed(Duration(seconds: 2), () {
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => HomePage(),
-                                          ),
-                                          ModalRoute.withName(""));
-                                    });
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => HomePage(),
+                                        ),
+                                        ModalRoute.withName(""));
                                   });
                                 },
                                     displayWidth(context) * 0.4,
