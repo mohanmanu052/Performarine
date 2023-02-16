@@ -148,7 +148,7 @@ Future<void> initializeService() async {
     androidConfiguration: AndroidConfiguration(
       initialNotificationTitle: 'PerforMarine',
       onStart: onStart,
-      autoStart: false,
+      autoStart: true,
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
       initialNotificationContent: 'PerforMarine consuming background services.',

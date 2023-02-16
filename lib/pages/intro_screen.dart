@@ -172,6 +172,11 @@ class _IntroScreenState extends State<IntroScreen> {
     bool? isTripStarted = pref.getBool('trip_started');
     bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
 
+    var service = FlutterBackgroundService();
+    bool isServiceRunning = await service.isRunning();
+
+    print('IS SERVICE RUNNING:$isServiceRunning');
+
     debugPrint('INTRO START $isTripStarted');
 
     setState(() {
@@ -179,6 +184,16 @@ class _IntroScreenState extends State<IntroScreen> {
     });
 
     if (isTripRunningCurrently == null) {
+      if (isServiceRunning) {
+        service.invoke("setAsBackground");
+        if (positionStream != null) {
+          positionStream!.cancel();
+        }
+        //var service2 = FlutterBackgroundService();
+        bool isServiceRunning = await service.isRunning();
+
+        print('IS SERVICE RUNNING 222:$isServiceRunning');
+      }
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) {
           setState(() {
@@ -187,6 +202,12 @@ class _IntroScreenState extends State<IntroScreen> {
         }
       });
     } else if (!isTripRunningCurrently!) {
+      if (isServiceRunning) {
+        service.invoke("setAsBackground");
+        if (positionStream != null) {
+          positionStream!.cancel();
+        }
+      }
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) {
           setState(() {

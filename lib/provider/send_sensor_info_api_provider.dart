@@ -118,13 +118,15 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       GlobalKey<ScaffoldState> scaffoldKey) async {
     d.Dio dio = d.Dio();
     var formData = d.FormData.fromMap({
-      'tripData': jsonEncode(tripData),
+      'tripData': tripData,
       'sensorZipFiles': await d.MultipartFile.fromFile(
         zipFile!.path,
         filename: zipFile.path.split('/').last,
         contentType: new MediaType("image", "jpeg"),
       ),
     });
+
+    debugPrint('SENSOR DATA ${jsonEncode(tripData)}');
 
     Uri uri = Uri.https(Urls.baseUrl, Urls.SendSensorData);
 

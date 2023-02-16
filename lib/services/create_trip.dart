@@ -160,8 +160,8 @@ class CreateTrip {
         1,
         file.path,
         DateTime.now().toUtc().toString(),
-        json.encode(
-            [currentLocationData!.latitude, currentLocationData.longitude]),
+        [currentLocationData!.latitude, currentLocationData.longitude]
+            .toString(),
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),
@@ -274,8 +274,13 @@ class CreateTrip {
     }
 
     if (serviceInstance is AndroidServiceInstance) {
-      serviceInstance.on('setAsForeground').listen((event) {
+      serviceInstance.on('setAsForeground').listen((event) async {
         serviceInstance.setAsForegroundService();
+        // bool vaslue = await serviceInstance.isForegroundService();
+        // print('IS FOREGROUND SERVICE: $vaslue');
+        // serviceInstance.setForegroundNotificationInfo(
+        //     title: 'PerforMarine',
+        //     content: 'PerforMarine consuming background services.');
       });
 
       serviceInstance.on('setAsBackground').listen((event) {
@@ -392,29 +397,7 @@ class CreateTrip {
                     styleInformation: BigTextStyleInformation(
                         'Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}    Distance: ${(finalTripDistance / 1852).toStringAsFixed(2)} nm\nSpeed: ${finalTripSpeed.toStringAsFixed(1)} m/h        Avg Speed: ${(finalTripAvgSpeed).toStringAsFixed(1)} nm',
                         htmlFormatContentTitle: true,
-                        summaryText: '$tripId')
-                    /*styleInformation: BigTextStyleInformation('''
-                  <table width=100%>
-                    <tr>
-                      <th align="center">${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}</th>
-                      <th align="center">${finalTripDistance.toStringAsFixed(2)}</th>
-                      <th align="center">${finalTripSpeed.toStringAsFixed(2)}</th>
-                      <th align="center">${finalTripAvgSpeed.toStringAsFixed(2)}</th>
-                    </tr>
-                    <br>
-                    <tr>
-                      <td align="center">Trip Duration&nbsp&nbsp</td>
-                      <td align="center">Distance&nbsp&nbsp</td>
-                      <td align="center">Current Speed&nbsp&nbsp</td>
-                      <td align="center">Avg. Speed&nbsp&nbsp</td>
-                    </tr>
-                  </table>
-                  ''',
-                      htmlFormatBigText: true,
-                      contentTitle: '<font size="6" color="blue">Name</font>',
-                      htmlFormatContentTitle: true,
-                      summaryText: '$tripId')*/
-                    ),
+                        summaryText: '$tripId')),
               ),
             );
 

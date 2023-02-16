@@ -44,7 +44,7 @@ class DatabaseService {
     await db.execute(
       'CREATE TABLE trips(id Text PRIMARY KEY,vesselId Text,vesselName Text, currentLoad TEXT,filePath Text,isSync INTEGER DEFAULT 0,'
       'tripStatus INTEGER  DEFAULT 0,deviceInfo Text, startPosition Text,endPosition Text,'
-      ' createdAt TEXT,updatedAt TEXT,time TEXT,distance TEXT,speed TEXT,avgSpeed TEXT,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL)',
+      ' createdAt TEXT,updatedAt TEXT,duration TEXT,distance TEXT,speed TEXT,avgSpeed TEXT,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL)',
     );
     // Run the CREATE {dogs} TABLE statement on the database.
     // await db.execute(
@@ -76,7 +76,7 @@ class DatabaseService {
       'createdBy TEXT,'
       'updatedAt TEXT, '
       'updatedBy TEXT, '
-      'time TEXT, '
+      'duration TEXT, '
       'distance TEXT, '
       'speed TEXT, '
       'avgSpeed TEXT '
@@ -185,7 +185,7 @@ class DatabaseService {
       String tripId) async {
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
-        'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ?,endPosition = ?, time = ?, distance = ?, speed = ?, avgSpeed = ? WHERE id = ?',
+        'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ?,endPosition = ?, duration = ?, distance = ?, speed = ?, avgSpeed = ? WHERE id = ?',
         [
           status,
           filePath,
@@ -309,7 +309,7 @@ class DatabaseService {
       String distance, String speed, String avgSpeed, String vesselId) async {
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
-        'UPDATE vessels SET time = ?, distance = ?, speed = ?, avgSpeed = ? WHERE id = ?',
+        'UPDATE vessels SET duration = ?, distance = ?, speed = ?, avgSpeed = ? WHERE id = ?',
         [time, distance, speed, avgSpeed, vesselId]);
     print('updated: $count');
   }

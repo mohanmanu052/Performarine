@@ -7,6 +7,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
 import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
@@ -2091,6 +2092,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isEndTripButton = true;
 
       if (tripIsRunning) {
+        service.invoke("setAsForeground");
         List<String>? tripData = sharedPreferences!.getStringList('trip_data');
         final tripDetails = await _databaseService.getTrip(tripData![0]);
 
@@ -2156,8 +2158,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
           tripStatus: 0,
           createdAt: Utils.getCurrentTZDateTime(),
           updatedAt: Utils.getCurrentTZDateTime(),
-          startPosition: json.encode([latitude, longitude]),
-          endPosition: json.encode([latitude, longitude]),
+          startPosition: [latitude, longitude].toString(),
+          endPosition: [latitude, longitude].toString(),
           deviceInfo: deviceDetails!.toJson().toString()));
     } on Exception catch (e) {
       print('ON SAVE EXE: $e');
@@ -2177,13 +2179,34 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     if (!isServiceRunning) {
       await service.startService();
+      // service.invoke("setAsForeground");
       // initializeService();
       print('View Single: $isServiceRunning');
     }
 
+    // service.invoke("setAsForeground");
+
     getTripId = ObjectId().toString();
 
     await onSave('', bottomSheetContext, true);
+
+    /* await service.configure(
+      androidConfiguration: AndroidConfiguration(
+        initialNotificationTitle: 'PerforMarine',
+        onStart: onStart,
+        autoStart: false,
+        isForegroundMode: true,
+        notificationChannelId: notificationChannelId,
+        initialNotificationContent:
+            'PerforMarine consuming background services.',
+        */ /*'Trip Data Collection in progress...',*/ /*
+        foregroundServiceNotificationId: notificationId,
+      ),
+      iosConfiguration: IosConfiguration(
+        autoStart: true,
+        onForeground: (service) {},
+      ),
+    );*/
 
     await Future.delayed(Duration(seconds: 4), () {
       print('Future delayed duration Ended');
@@ -2194,7 +2217,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     service.invoke(
         'tripId', {'tripId': getTripId, 'vesselName': widget.vessel!.name});
 
-    service.invoke("setAsForeground");
+    //service.invoke("setAsForeground");
 
     service.invoke("onStartTrip");
 

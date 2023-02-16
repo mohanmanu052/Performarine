@@ -381,7 +381,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 textCapitalization: TextCapitalization.words,
                                 maxLength: 6,
                                 prefixIcon: null,
-                                requestFocusNode: weightFocusNode,
+                                requestFocusNode: null,
                                 obscureText: false,
                                 onTap: () {},
                                 onChanged: (String value) {},

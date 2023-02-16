@@ -627,6 +627,11 @@ class _TripWidgetState extends State<TripWidget> {
     // flutterLocalNotificationsPlugin.cancel(9988);
     AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
 
+    int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
+    String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
+    String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
+    String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
+
     var queryParameters;
     queryParameters = {
       "id": tripData.id,
@@ -642,12 +647,16 @@ class _TripWidgetState extends State<TripWidget> {
         "board": androidDeviceInfo.board,
         "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
       },
-      "lat": tripData.startPosition,
-      "long": tripData.endPosition,
+      "startPosition": tripData.startPosition,
+      "endPosition": tripData.endPosition,
       "vesselId": tripData.vesselId,
       "filePath": 'storage/emulated/0/Download/${widget.tripList!.id}.zip',
       "createdAt": tripData.createdAt,
       "updatedAt": tripData.updatedAt,
+      "duration": Utils.calculateTripDuration((tripDuration / 1000).toInt()),
+      "distance": double.parse(tripDistance),
+      "speed": double.parse(tripSpeed),
+      "avgSpeed": double.parse(tripAvgSpeed),
       //"userID": commonProvider.loginModel!.userId!
     };
 
