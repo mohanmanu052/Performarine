@@ -1458,8 +1458,8 @@ class _TripListScreenState extends State<TripListScreen> {
         tripStatus: 0,
         createdAt: DateTime.now().toUtc().toString(),
         updatedAt: DateTime.now().toUtc().toString(),
-        startPosition: json.encode([latitude, longitude]),
-        endPosition: json.encode([latitude, longitude]),
+        startPosition: [latitude.toString(), longitude.toString()].toString(),
+        endPosition: [latitude.toString(), longitude.toString()].toString(),
         deviceInfo: deviceDetails!.toJson().toString()));
 
     /*if (Platform.isAndroid) {

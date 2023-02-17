@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -1297,8 +1298,17 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
     String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
 
-    debugPrint('TRIP DURATION ${tripData.startPosition}');
-    debugPrint('TRIP DURATION ${tripData.endPosition}');
+    //debugPrint('TRIP DURATION ${tripData.startPosition}');
+    //debugPrint('TRIP DURATION ${tripData.endPosition}');
+
+    //storage/emulated/0/Download/${tripData.id}.zip
+
+    String startPosition1 = tripData.startPosition!;
+    var split = startPosition1.split(",");
+
+    //String startLat = startPosition[0];
+    debugPrint('START POSITION ${split[0]}');
+    //String startLong = ;
 
     var queryParameters;
     queryParameters = {
@@ -1315,8 +1325,16 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         "board": androidDeviceInfo.board,
         "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
       },
-      "startPosition": tripData.startPosition,
-      "endPosition": tripData.endPosition,
+      "startPosition": json.decode([
+        "17.3998932",
+        "78.3850515"
+      ].toString()) /*json
+          .decode(tripData.startPosition!.toString())
+          .cast<String>()
+          .toList()*/
+      ,
+      "endPosition": json.decode(["17.3998932", "78.3850515"].toString()),
+      /*json.decode(tripData.endPosition!.toString()).cast<String>().toList()*/
       "vesselId": tripData.vesselId,
       "filePath": 'storage/emulated/0/Download/${tripData.id}.zip',
       "createdAt": tripData.createdAt,

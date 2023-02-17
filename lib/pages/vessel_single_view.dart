@@ -2146,6 +2146,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     debugPrint("current PATH:$file");
 
     debugPrint("ON SAVE FIRST INSERT :$getTripId");
+    debugPrint("ON SAVE FIRST INSERT :$getTripId");
 
     try {
       await _databaseService.insertTrip(Trip(
@@ -2158,8 +2159,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
           tripStatus: 0,
           createdAt: Utils.getCurrentTZDateTime(),
           updatedAt: Utils.getCurrentTZDateTime(),
-          startPosition: [latitude, longitude].toString(),
-          endPosition: [latitude, longitude].toString(),
+          startPosition: [latitude.toString(), longitude.toString()].toString(),
+          endPosition: [latitude.toString(), longitude.toString()].toString(),
           deviceInfo: deviceDetails!.toJson().toString()));
     } on Exception catch (e) {
       print('ON SAVE EXE: $e');

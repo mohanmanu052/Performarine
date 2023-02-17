@@ -123,7 +123,9 @@ class CommonProvider with ChangeNotifier {
     final DatabaseService _databaseService = DatabaseService();
     print(
         'queryParameters["id"].toString(): ${queryParameters["id"].toString()}');
-    _databaseService.updateTripIsSyncStatus(1, queryParameters["id"]);
+    if (uploadTripModel!.status!) {
+      _databaseService.updateTripIsSyncStatus(1, queryParameters["id"]);
+    }
     notifyListeners();
 
     return uploadTripModel;

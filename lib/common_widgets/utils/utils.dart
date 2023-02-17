@@ -76,7 +76,7 @@ class Utils {
 
   static Future<List<File>> pickImages() async {
     FilePickerResult? result = await FilePicker.platform
-        .pickFiles(allowMultiple: true, type: FileType.image);
+        .pickFiles(allowMultiple: false, type: FileType.image);
     List<File> files = [];
     List<File> croppedFileList = [];
     if (result != null) {
