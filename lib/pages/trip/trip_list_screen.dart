@@ -393,7 +393,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                     json.encode([
                                       locationData!.latitude,
                                       locationData.longitude
-                                    ].join(',')),
+                                    ]),
                                     finalTripDuration,
                                     finalTripDistance,
                                     tripSpeed.toString(),
@@ -1458,8 +1458,8 @@ class _TripListScreenState extends State<TripListScreen> {
         tripStatus: 0,
         createdAt: DateTime.now().toUtc().toString(),
         updatedAt: DateTime.now().toUtc().toString(),
-        startPosition: [latitude, longitude].join(','),
-        endPosition: [latitude, longitude].join(','),
+        startPosition: [latitude, longitude].toString(),
+        endPosition: [latitude, longitude].toString(),
         deviceInfo: deviceDetails!.toJson().toString()));
 
     /*if (Platform.isAndroid) {
