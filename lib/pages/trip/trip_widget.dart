@@ -589,8 +589,10 @@ class _TripWidgetState extends State<TripWidget> {
         1,
         file.path,
         DateTime.now().toUtc().toString(),
-        json.encode(
-            [currentLocationData!.latitude, currentLocationData.longitude]),
+        json.encode([
+          currentLocationData!.latitude,
+          currentLocationData.longitude
+        ].join(",")),
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),
@@ -632,21 +634,9 @@ class _TripWidgetState extends State<TripWidget> {
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
     String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
 
-    String startPosition1 = tripData.startPosition!;
-    String startSplit = startPosition1.splitMapJoin(",").toString();
-    var startTest = startSplit.replaceFirst("[", "");
-    var startTest2 = startTest.replaceAll("]", "");
-    var startTest3 = startTest2.split(',');
-    String startLat = startTest3[0];
-    String startLong = startTest3[1];
-
-    String endPosition = tripData.endPosition!;
-    String endSplit = endPosition.splitMapJoin(",").toString();
-    var test = endSplit.replaceFirst("[", "");
-    var test2 = test.replaceAll("]", "");
-    var test3 = test2.split(',');
-    String endLat = test3[0];
-    String endLong = test3[1];
+    var startPosition = tripData.startPosition!.split(",");
+    var endPosition = tripData.endPosition!.split(",");
+    debugPrint('START POSITION 0 ${startPosition}');
 
     var queryParameters;
     queryParameters = {
@@ -663,8 +653,8 @@ class _TripWidgetState extends State<TripWidget> {
         "board": androidDeviceInfo.board,
         "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
       },
-      "startPosition": ["$startLat", "$startLong"],
-      "endPosition": ["$endLat", "$endLong"],
+      "startPosition": startPosition,
+      "endPosition": endPosition,
       "vesselId": tripData.vesselId,
       "filePath": 'storage/emulated/0/Download/${widget.tripList!.id}.zip',
       "createdAt": tripData.createdAt,

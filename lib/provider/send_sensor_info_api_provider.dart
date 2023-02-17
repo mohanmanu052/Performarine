@@ -118,41 +118,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       GlobalKey<ScaffoldState> scaffoldKey) async {
     d.Dio dio = d.Dio();
     var formData = d.FormData.fromMap({
-      "tripData":jsonEncode(tripData),
-      // 'tripData': {
-      //   "id":"63ef30b8b73483799690df71",
-      //   "load":"101 kg",
-      //   "sensorInfo":[
-      //     {
-      //       "make":"qualicom",
-      //       "name":"gps"
-      //     }
-      //   ],
-      //   "deviceInfo":{
-      //     "deviceId":"",
-      //     "model":"",
-      //     "version":"",
-      //     "make":"",
-      //     "board":"",
-      //     "deviceType":"IOS/Android"
-      //   },
-      //   "startPosition":[
-      //     "17.3998932",
-      //     "78.3850515"
-      //   ],
-      //   "endPosition":[
-      //     "17.3998932",
-      //     "78.3850515"
-      //   ],
-      //   "vesselId":"63ef309fb73483799690df70",
-      //   "filePath":"",
-      //   "createdAt":"2023-01-11 20:40:22.597Z",
-      //   "updatedAt":"2023-01-12 20:40:22.597Z",
-      //   "duration":"00:00:00",
-      //   "distance":0.6,
-      //   "speed":0.6,
-      //   "avgSpeed":12.01
-      // },
+      "tripData": jsonEncode(tripData),
       'sensorZipFiles': await d.MultipartFile.fromFile(
         zipFile!.path,
         filename: zipFile.path.split('/').last,
@@ -160,7 +126,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       ),
     });
 
-    // debugPrint('SENSOR DATA $tripData');
+    debugPrint('SENSOR DATA $tripData');
     //debugPrint('SENSOR DATA ');
 
     Uri uri = Uri.https(Urls.baseUrl, Urls.SendSensorData);

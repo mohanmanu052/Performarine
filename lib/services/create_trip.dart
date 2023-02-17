@@ -161,7 +161,7 @@ class CreateTrip {
         file.path,
         DateTime.now().toUtc().toString(),
         [currentLocationData!.latitude, currentLocationData.longitude]
-            .toString(),
+            .join(","),
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),

@@ -1295,34 +1295,15 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
     String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
 
-    String startPosition1 = tripData.startPosition!;
-    String startSplit = startPosition1.splitMapJoin(",").toString();
-    var startTest = startSplit.replaceFirst("[", "");
-    var startTest2 = startTest.replaceAll("]", "");
-    var startTest3 = startTest2.split(',');
-    String startLat = startTest3[0];
-    String startLong = startTest3[1];
-
-    String endPosition = tripData.endPosition!;
-    String endSplit = endPosition.splitMapJoin(",").toString();
-    var test = endSplit.replaceFirst("[", "");
-    var test2 = test.replaceAll("]", "");
-    var test3 = test2.split(',');
-    String endLat = test3[0];
-    String endLong = test3[1];
-
-    debugPrint('START POSITION 1 $test');
-    debugPrint('START POSITION 2 $test2');
-    debugPrint('START POSITION 3 ${test3[0]}');
-    debugPrint('START POSITION 4 $endLat');
-    debugPrint('START POSITION 5 $endLong');
-    //String startLat = startPosition[0];
-    debugPrint('START POSITION 0 ${endPosition}');
+    var startPosition = tripData.startPosition!.split(",");
+    var endPosition = tripData.endPosition!.split(",");
+    debugPrint('START POSITION 0 ${startPosition}');
 
     //TODO remove below code
     /*setState(() {
       isTripUploaded = false;
-    });*/
+    });
+    return;*/
     //String startLong = ;
 
     var queryParameters;
@@ -1340,13 +1321,13 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         "board": androidDeviceInfo.board,
         "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
       },
-      "startPosition": ["$startLat", "$startLong"]
+      "startPosition": startPosition
       /*json
           .decode(tripData.startPosition!.toString())
           .cast<String>()
           .toList()*/
       ,
-      "endPosition": ["$endLat", "$endLong"],
+      "endPosition": endPosition,
       /*json.decode(tripData.endPosition!.toString()).cast<String>().toList()*/
       "vesselId": tripData.vesselId,
       "filePath": 'storage/emulated/0/Download/${tripData.id}.zip',
