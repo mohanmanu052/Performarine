@@ -1288,20 +1288,13 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   }
 
   startSensorFunctionality(Trip tripData) async {
-    //fileName = '$fileIndex.csv';
 
-    // flutterLocalNotificationsPlugin.cancel(9988);
     AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
 
     int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
     String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
     String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
-
-    //debugPrint('TRIP DURATION ${tripData.startPosition}');
-    //debugPrint('TRIP DURATION ${tripData.endPosition}');
-
-    //storage/emulated/0/Download/${tripData.id}.zip
 
     String startPosition1 = tripData.startPosition!;
     var split = startPosition1.split(",");
@@ -1325,15 +1318,16 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         "board": androidDeviceInfo.board,
         "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
       },
-      "startPosition": json.decode([
+      "startPosition": [
         "17.3998932",
         "78.3850515"
-      ].toString()) /*json
+      ]
+      /*json
           .decode(tripData.startPosition!.toString())
           .cast<String>()
           .toList()*/
       ,
-      "endPosition": json.decode(["17.3998932", "78.3850515"].toString()),
+      "endPosition": ["17.3998932", "78.3850515"],
       /*json.decode(tripData.endPosition!.toString()).cast<String>().toList()*/
       "vesselId": tripData.vesselId,
       "filePath": 'storage/emulated/0/Download/${tripData.id}.zip',
