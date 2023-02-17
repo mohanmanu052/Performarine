@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -18,10 +19,11 @@ import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 
 class TripViewListing extends StatefulWidget {
-  String? vesselId;
+  String? vesselId, calledFrom;
   VoidCallback? onTripEnded;
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  TripViewListing({this.vesselId, this.onTripEnded, this.scaffoldKey});
+  TripViewListing(
+      {this.vesselId, this.calledFrom, this.onTripEnded, this.scaffoldKey});
 
   @override
   State<TripViewListing> createState() => _TripViewListingState();
@@ -35,13 +37,13 @@ class _TripViewListingState extends State<TripViewListing> {
   bool tripIsRunning = false;
 
   late Future<List<Trip>> future;
-  List<Trip> getTripsByIdFuture = [];
-  Future<List<Trip>> getTripsByVesselId() async {
+  late Future<List<Trip>> getTripsByIdFuture;
+  Future<List<Trip>> getTripsByVesselId() {
     if (widget.vesselId == null || widget.vesselId == "") {
-      getTripsByIdFuture = await _databaseService.trips();
+      getTripsByIdFuture = _databaseService.trips();
     } else {
-      getTripsByIdFuture = await _databaseService
-          .getAllTripsByVesselId(widget.vesselId.toString());
+      getTripsByIdFuture =
+          _databaseService.getAllTripsByVesselId(widget.vesselId.toString());
     }
     return getTripsByIdFuture;
   }
@@ -52,6 +54,7 @@ class _TripViewListingState extends State<TripViewListing> {
     super.initState();
 
     commonProvider = context.read<CommonProvider>();
+    getTripsByVesselId();
   }
 
   @override
@@ -59,8 +62,20 @@ class _TripViewListingState extends State<TripViewListing> {
     commonProvider = context.watch<CommonProvider>();
 
     return FutureBuilder<List<Trip>>(
-      future: getTripsByVesselId(),
+      future: getTripsByIdFuture,
       builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return SizedBox(
+            height: displayHeight(context),
+            child: Center(
+              child: CircularProgressIndicator(
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(circularProgressColor),
+              ),
+            ),
+          );
+        }
+
         return snapshot.data != null
             ? StatefulBuilder(
                 builder: (BuildContext context, StateSetter setter) {
@@ -76,8 +91,10 @@ class _TripViewListingState extends State<TripViewListing> {
                           ? TripWidget(
                               scaffoldKey: widget.scaffoldKey,
                               tripList: snapshot.data![index],
+                              calledFrom: widget.calledFrom,
                               tripUploadedSuccessfully: () {
                                 setState(() {
+                                  getTripsByVesselId();
                                   future = _databaseService.trips();
                                   //snapshot.data![index].tripStatus = 1;
                                 });

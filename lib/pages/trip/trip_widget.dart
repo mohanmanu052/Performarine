@@ -40,7 +40,7 @@ import '../../common_widgets/widgets/status_tage.dart';
 class TripWidget extends StatefulWidget {
   //final Color? statusColor;
   //final String? status;
-  //final String? vesselName;
+  final String? calledFrom;
   final VoidCallback? onTap;
   final VoidCallback? tripUploadedSuccessfully;
   final Trip? tripList;
@@ -49,7 +49,7 @@ class TripWidget extends StatefulWidget {
   const TripWidget(
       {super.key,
       //this.statusColor,
-      //this.status,
+      this.calledFrom,
       this.tripList,
       this.onTap,
       this.tripUploadedSuccessfully,
@@ -73,7 +73,8 @@ class _TripWidgetState extends State<TripWidget> {
   bool vesselIsSync = false,
       isTripUploaded = false,
       isTripEndedOrNot = false,
-      tripIsRunning = false;
+      tripIsRunning = false,
+      tripIsUploading = false;
   late DeviceInfoPlugin deviceDetails;
 
   int progress = 0;
@@ -104,9 +105,10 @@ class _TripWidgetState extends State<TripWidget> {
             .getVesselNameByID(widget.tripList!.vesselId.toString());
 
         debugPrint('VESSEL DATA ${getVesselById[0].imageURLs}');
+        debugPrint('VESSEL DATA 1212 ${commonProvider.tripStatus}');
 
-        if (!commonProvider.tripStatus) {
-          Navigator.push(
+        if (!isTripUploaded) {
+          var result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => TripAnalyticsScreen(
@@ -114,10 +116,17 @@ class _TripWidgetState extends State<TripWidget> {
                 vesselId: getVesselById[0].id,
                 tripIsRunningOrNot:
                     widget.tripList!.tripStatus == 0 ? true : false,
+                calledFrom: widget.calledFrom,
                 // vessel: getVesselById[0]
               ),
             ),
           );
+
+          if (result != null) {
+            if (result) {
+              widget.tripUploadedSuccessfully!.call();
+            }
+          }
         }
       },
       child: Container(
@@ -301,11 +310,12 @@ class _TripWidgetState extends State<TripWidget> {
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               TripAnalyticsScreen(
-                                            tripId: widget.tripList!.id,
-                                            vesselId: getVesselById[0].id,
-                                            tripIsRunningOrNot: false,
-                                            // vessel: getVesselById[0]
-                                          ),
+                                                  tripId: widget.tripList!.id,
+                                                  vesselId: getVesselById[0].id,
+                                                  tripIsRunningOrNot: false,
+                                                  calledFrom: widget.calledFrom
+                                                  // vessel: getVesselById[0]
+                                                  ),
                                         ),
                                       );
                                     },
@@ -1061,13 +1071,15 @@ class _TripWidgetState extends State<TripWidget> {
   Future<bool> tripIsRunningOrNot() async {
     bool result = await _databaseService.tripIsRunning();
 
-    setState(() {
-      tripIsRunning = result;
-      print('Trip is Running $tripIsRunning');
+    if (mounted) {
       setState(() {
-        isTripEndedOrNot = false;
+        tripIsRunning = result;
+        print('Trip is Running $tripIsRunning');
+        setState(() {
+          isTripEndedOrNot = false;
+        });
       });
-    });
+    }
 
     /*setState(() {
       isEndTripButton = tripIsRunning;

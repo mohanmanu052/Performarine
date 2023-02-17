@@ -403,6 +403,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                     child: CommonButtons.getDottedButton(
                         'Upload Images', context, () {
                       uploadImageFunction();
+                      print('FIIALLL: ${finalSelectedFiles.length}');
                     }, Colors.grey),
                   ),
                   SizedBox(height: displayHeight(context) * 0.01),
@@ -505,10 +506,14 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                           top: 0,
                                           child: InkWell(
                                             onTap: () {
+                                              print(
+                                                  'FIIALLL: ${finalSelectedFiles.length}');
                                               setState(() {
                                                 finalSelectedFiles
                                                     .removeAt(index);
                                               });
+                                              print(
+                                                  'FIIALLL: ${finalSelectedFiles.length}');
                                             },
                                             child: Icon(
                                               Icons.close,
@@ -621,17 +626,19 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
       if (isStoragePermissionGranted) {
         await selectImage(context, Colors.red,
             (List<File?> selectedImageFileList) {
-          setState(() {
-            finalSelectedFiles.clear();
-            finalSelectedFiles.addAll(selectedImageFileList);
-            kReleaseMode
-                ? null
-                : debugPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
+          if (selectedImageFileList.isNotEmpty) {
+            setState(() {
+              finalSelectedFiles.clear();
+              finalSelectedFiles.addAll(selectedImageFileList);
+              kReleaseMode
+                  ? null
+                  : debugPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
 
-            /* setState(() {
+              /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
             });*/
-          });
+            });
+          }
         });
       } else {
         await Utils.getStoragePermission(context);
@@ -647,16 +654,19 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
         if (isStoragePermissionGranted) {
           await selectImage(context, Colors.red,
               (List<File?> selectedImageFileList) {
-            setState(() {
-              finalSelectedFiles.clear();
-              finalSelectedFiles.addAll(selectedImageFileList);
-              kReleaseMode
-                  ? null
-                  : debugPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
-              /*setState(() {
-                finalSelectedFiles.addAll(finalSelectedFiles);
-              });*/
-            });
+            if (selectedImageFileList.isNotEmpty) {
+              setState(() {
+                finalSelectedFiles.clear();
+                finalSelectedFiles.addAll(selectedImageFileList);
+                kReleaseMode
+                    ? null
+                    : debugPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
+
+                /* setState(() {
+              finalSelectedFiles.addAll(finalSelectedFiles);
+            });*/
+              });
+            }
           });
         }
       }
@@ -664,17 +674,19 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
       debugPrint('OTHER ELSE');
       await selectImage(context, Colors.red,
           (List<File?> selectedImageFileList) {
-        setState(() {
-          finalSelectedFiles.clear();
-          finalSelectedFiles.addAll(selectedImageFileList);
-          kReleaseMode
-              ? null
-              : debugPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
+        if (selectedImageFileList.isNotEmpty) {
+          setState(() {
+            finalSelectedFiles.clear();
+            finalSelectedFiles.addAll(selectedImageFileList);
+            kReleaseMode
+                ? null
+                : debugPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
 
-          /*setState(() {
-            finalSelectedFiles.addAll(finalSelectedFiles);
-          });*/
-        });
+            /* setState(() {
+              finalSelectedFiles.addAll(finalSelectedFiles);
+            });*/
+          });
+        }
       });
     }
   }

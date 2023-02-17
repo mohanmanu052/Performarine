@@ -122,6 +122,9 @@ class DatabaseService {
         'trips' /*, where: 'isSync = ?',whereArgs: [0]*/,
         orderBy: "isSync");
 
+    List<Trip> tempList =
+        List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
+
     return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
   }
 

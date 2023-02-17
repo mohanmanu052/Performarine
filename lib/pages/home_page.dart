@@ -30,7 +30,9 @@ import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   List<String> tripData;
-  HomePage({Key? key, this.tripData = const []}) : super(key: key);
+  final int tabIndex;
+  HomePage({Key? key, this.tripData = const [], this.tabIndex = 0})
+      : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -72,7 +74,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     sharedPreferences!.remove('sp_key_called_from_noti');
 
-    tabController = TabController(initialIndex: 0, length: 2, vsync: this);
+    tabController =
+        TabController(initialIndex: widget.tabIndex, length: 2, vsync: this);
+    currentTabIndex = widget.tabIndex;
     tabController.addListener(() {
       setState(() {
         currentTabIndex = tabController.index;
@@ -370,6 +374,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               SingleChildScrollView(
                 child: TripViewListing(
                   scaffoldKey: scaffoldKey,
+                  calledFrom: 'HomePage',
                 ),
               ),
             ],

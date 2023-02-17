@@ -398,6 +398,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               child: TripViewListing(
                                 scaffoldKey: scaffoldKey,
                                 vesselId: widget.vessel!.id,
+                                calledFrom: 'VesselSingleView',
                                 onTripEnded: () async {
                                   debugPrint('SINGLE VIEW TRIP END');
                                   await tripIsRunningOrNot();

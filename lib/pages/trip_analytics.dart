@@ -28,10 +28,14 @@ import 'package:provider/provider.dart';
 
 class TripAnalyticsScreen extends StatefulWidget {
   String? tripId;
-  final String? vesselId;
+  final String? vesselId, calledFrom;
   final bool? tripIsRunningOrNot;
   TripAnalyticsScreen(
-      {Key? key, this.tripId, this.vesselId, this.tripIsRunningOrNot})
+      {Key? key,
+      this.tripId,
+      this.vesselId,
+      this.tripIsRunningOrNot,
+      this.calledFrom})
       : super(key: key);
 
   @override
@@ -56,7 +60,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   FlutterBackgroundService service = FlutterBackgroundService();
 
-  bool isTripUploaded = false, vesselIsSync = false;
+  bool isTripUploaded = false, vesselIsSync = false, isDataUpdated = false;
 
   int progress = 0;
   Timer? progressTimer;
@@ -118,10 +122,29 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     commonProvider = context.watch<CommonProvider>();
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-            ModalRoute.withName(""));
+        if (widget.calledFrom == null) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+              ModalRoute.withName(""));
+          return false;
+        } else if (widget.calledFrom! == 'HomePage') {
+          if (isDataUpdated) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => HomePage(
+                          tabIndex: 1,
+                        )),
+                ModalRoute.withName(""));
+            return false;
+          } else {
+            Navigator.of(context).pop();
+          }
+        } else if (widget.calledFrom == 'VesselSingleView') {
+          Navigator.of(context).pop(isDataUpdated);
+          return false;
+        }
         return false;
       },
       child: Scaffold(
@@ -135,10 +158,34 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             onPressed: () {
               // Navigator.of(context).pop();
 
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                  ModalRoute.withName(""));
+              if (widget.calledFrom == null) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                    ModalRoute.withName(""));
+              } else if (widget.calledFrom! == 'HomePage') {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomePage(
+                              tabIndex: 1,
+                            )),
+                    ModalRoute.withName(""));
+              } else if (widget.calledFrom! == 'HomePage') {
+                if (isDataUpdated) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(
+                                tabIndex: 1,
+                              )),
+                      ModalRoute.withName(""));
+                } else {
+                  Navigator.of(context).pop();
+                }
+              } else if (widget.calledFrom == 'VesselSingleView') {
+                Navigator.of(context).pop(isDataUpdated);
+              }
             },
             icon: const Icon(Icons.arrow_back),
             color: Theme.of(context).brightness == Brightness.dark
@@ -989,6 +1036,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                             'TRIP ENDED DETAILS: ${tripDetails.isSync}');
                                                         print(
                                                             'TRIP ENDED DETAILS: ${tripData!.isSync}');
+
+                                                        isDataUpdated = true;
                                                         // Navigator.pop(context);
                                                       });
                                                 }, () {
@@ -1368,6 +1417,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           });
 
           showSuccessNoti();
+
+          isDataUpdated = true;
 
           // widget.tripUploadedSuccessfully!.call();
         } else {
