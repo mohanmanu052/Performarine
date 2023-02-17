@@ -589,8 +589,10 @@ class _TripWidgetState extends State<TripWidget> {
         1,
         file.path,
         DateTime.now().toUtc().toString(),
-        json.encode(
-            [currentLocationData!.latitude, currentLocationData.longitude]),
+        json.encode([
+          currentLocationData!.latitude,
+          currentLocationData.longitude
+        ].join(',')),
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),

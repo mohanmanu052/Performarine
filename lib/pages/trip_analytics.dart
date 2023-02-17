@@ -1325,15 +1325,13 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         "board": androidDeviceInfo.board,
         "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
       },
-      "startPosition": json.decode([
-        "17.3998932",
-        "78.3850515"
-      ].toString()) /*json
+      "startPosition": tripData.startPosition.toString()
+      /*json
           .decode(tripData.startPosition!.toString())
           .cast<String>()
           .toList()*/
       ,
-      "endPosition": json.decode(["17.3998932", "78.3850515"].toString()),
+      "endPosition": tripData.endPosition.toString(),
       /*json.decode(tripData.endPosition!.toString()).cast<String>().toList()*/
       "vesselId": tripData.vesselId,
       "filePath": 'storage/emulated/0/Download/${tripData.id}.zip',

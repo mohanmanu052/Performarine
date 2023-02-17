@@ -126,7 +126,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       ),
     });
 
-    debugPrint('SENSOR DATA $tripData');
+    debugPrint('SENSOR DATA ${formData.fields}');
     //debugPrint('SENSOR DATA ');
 
     Uri uri = Uri.https(Urls.baseUrl, Urls.SendSensorData);

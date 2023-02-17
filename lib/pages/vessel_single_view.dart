@@ -2159,8 +2159,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
           tripStatus: 0,
           createdAt: Utils.getCurrentTZDateTime(),
           updatedAt: Utils.getCurrentTZDateTime(),
-          startPosition: [latitude.toString(), longitude.toString()].toString(),
-          endPosition: [latitude.toString(), longitude.toString()].toString(),
+          startPosition: [latitude.toString(), longitude.toString()].join(','),
+          endPosition: [latitude.toString(), longitude.toString()].join(''),
           deviceInfo: deviceDetails!.toJson().toString()));
     } on Exception catch (e) {
       print('ON SAVE EXE: $e');

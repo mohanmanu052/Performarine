@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         1,
         file.path,
         DateTime.now().toUtc().toString(),
-        json.encode([locationData!.latitude, locationData.longitude]),
+        json.encode([locationData!.latitude, locationData.longitude].join(',')),
         finalTripDuration,
         finalTripDistance,
         tripSpeed.toString(),
