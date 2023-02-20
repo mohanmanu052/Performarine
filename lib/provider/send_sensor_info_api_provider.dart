@@ -122,7 +122,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       'sensorZipFiles': await d.MultipartFile.fromFile(
         zipFile!.path,
         filename: zipFile.path.split('/').last,
-        contentType: new MediaType("image", "jpeg"),
+        contentType: new MediaType("application", "zip"),
       ),
     });
 
