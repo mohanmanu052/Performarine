@@ -638,7 +638,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                             isVesselParticularExpanded = newState;
                           });
 
-                          debugPrint(
+                          Utils.customPrint(
                               'EXPANSION CHANGE $isVesselParticularExpanded');
                         }),
                         tilePadding: EdgeInsets.zero,
@@ -1213,7 +1213,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                   onTap: () async {
                                     // final DatabaseService _databaseService = DatabaseService();
                                     vessel!.add(widget.vessel!);
-                                    // print(vessel[0].vesselName);
+                                    // prUtils.customPrintint(vessel[0].vesselName);
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (_) => StartTrip(
@@ -1906,7 +1906,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                     isVesselParticularExpanded = newState;
                   });
 
-                  debugPrint('EXPANSION CHANGE $isVesselParticularExpanded');
+                  Utils.customPrint(
+                      'EXPANSION CHANGE $isVesselParticularExpanded');
 
                   /*if (newState)
                     setState(() {
@@ -2251,7 +2252,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
 
     setState(() {
       tripIsRunning = result;
-      print('Trip is Running $tripIsRunning');
+      Utils.customPrint('Trip is Running $tripIsRunning');
     });
 
     /*setState(() {

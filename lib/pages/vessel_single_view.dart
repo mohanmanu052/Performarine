@@ -115,7 +115,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   getIfServiceIsRunning() async {
     bool data = await service.isRunning();
-    print('IS SERVICE RUNNING: $data');
+    Utils.customPrint('IS SERVICE RUNNING: $data');
     setState(() {
       isServiceRunning = data;
     });
@@ -155,7 +155,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             make: iosDeviceInfo?.utsname.machine,
             model: iosDeviceInfo?.model,
             version: iosDeviceInfo?.utsname.release);
-    debugPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
+    Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
   }
 
   Future<void> _onVesselDelete(CreateVessel vessel) async {
@@ -190,7 +190,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     commonProvider = context.read<CommonProvider>();
 
-    print('VESSEL Image ${isTripEndedOrNot}');
+    Utils.customPrint('VESSEL Image ${isTripEndedOrNot}');
 
     checkSensorAvailabelOrNot();
   }
@@ -199,7 +199,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
     Trip tripDetails = await _databaseService.getTrip(tripData![0]);
     if (tripIsRunning)
-      debugPrint('VESSEL SINGLE VIEW TRIP ID ${tripDetails.id}');
+      Utils.customPrint('VESSEL SINGLE VIEW TRIP ID ${tripDetails.id}');
 
     if (tripIsRunning) {
       if (tripDetails.vesselId != widget.vessel!.id) {
@@ -226,7 +226,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     setState(() {
       tripIsRunning = result;
-      print('Trip is Running $tripIsRunning');
+      Utils.customPrint('Trip is Running $tripIsRunning');
 
       if (tripIsRunning) {
         getRunningTripDetails();
@@ -246,9 +246,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        print('yyyyy');
         if (widget.isCalledFromSuccessScreen! || tripIsEnded) {
-          print('zzzzzz');
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -258,8 +256,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
           return false;
         } else {
-          print('hhhhh');
-
           Navigator.of(context).pop(true);
           return false;
         }
@@ -341,8 +337,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             );
 
                             if (result != null) {
-                              print('RESULT 1 ${result[0]}');
-                              print('RESULT 1 ${result[1] as CreateVessel}');
+                              Utils.customPrint('RESULT 1 ${result[0]}');
+                              Utils.customPrint(
+                                  'RESULT 1 ${result[1] as CreateVessel}');
                               setState(() {
                                 widget.vessel = result[1] as CreateVessel?;
                                 isDataUpdated = result[0];
@@ -400,7 +397,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 vesselId: widget.vessel!.id,
                                 calledFrom: 'VesselSingleView',
                                 onTripEnded: () async {
-                                  debugPrint('SINGLE VIEW TRIP END');
+                                  Utils.customPrint('SINGLE VIEW TRIP END');
                                   await tripIsRunningOrNot();
                                   setState(() {
                                     tripIsEnded = true;
@@ -443,7 +440,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               borderColor: buttonBGColor,
                               width: displayWidth(context),
                               onTap: () async {
-                                print('time stamp:' +
+                                Utils.customPrint('time stamp:' +
                                     DateTime.now().toUtc().toString());
                                 Utils().showEndTripDialog(context, () async {
                                   setState(() {
@@ -452,14 +449,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                   Navigator.of(context).pop();
 
-                                  print(
+                                  Utils.customPrint(
                                       'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
 
                                   CreateTrip().endTrip(
                                       context: context,
                                       scaffoldKey: scaffoldKey,
                                       onEnded: () async {
-                                        print('TRIPPPPPP ENDEDDD:');
+                                        Utils.customPrint('TRIPPPPPP ENDEDDD:');
                                         setState(() {
                                           isEndTripButton = false;
                                           tripIsEnded = true;
@@ -624,11 +621,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
         return WillPopScope(
           onWillPop: () async {
             if (!addingDataToDB) {
-              print('gggg');
               Navigator.pop(context);
               return false;
             } else {
-              print('rrr');
               return false;
             }
           },
@@ -669,244 +664,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          /*isEndTripButton
-                              ? Container(
-                                  child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      height: 50,
-                                    ),
-                                    Center(
-                                      child: Text(
-                                        "Reading sensor data...",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    SizedBox(
-                                        height: 300,
-                                        width: 200,
-                                        child: Lottie.asset(
-                                            'assets/lottie/dataFetch.json')),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            commonText(
-                                                context: context,
-                                                text: Utils.calculateTripDuration(
-                                                    (tripDuration / 1000)
-                                                        .toInt()),
-                                                fontWeight: FontWeight.w600,
-                                                textColor: Colors.black,
-                                                textSize:
-                                                    displayWidth(context) * 0.036,
-                                                textAlign: TextAlign.start),
-                                            commonText(
-                                                context: context,
-                                                text: 'Time',
-                                                fontWeight: FontWeight.w400,
-                                                textColor: Colors.grey,
-                                                textSize:
-                                                    displayWidth(context) * 0.026,
-                                                textAlign: TextAlign.start),
-                                          ],
-                                        ),
-                                        Container(
-                                            width: 1,
-                                            height: displayHeight(context) * 0.05,
-                                            color: Colors.grey),
-                                        Column(
-                                          children: [
-                                            commonText(
-                                                context: context,
-                                                text: '$tripSpeed nm/h',
-                                                fontWeight: FontWeight.w600,
-                                                textColor: Colors.black,
-                                                textSize:
-                                                    displayWidth(context) * 0.036,
-                                                textAlign: TextAlign.start),
-                                            commonText(
-                                                context: context,
-                                                text: 'Speed',
-                                                fontWeight: FontWeight.w400,
-                                                textColor: Colors.grey,
-                                                textSize:
-                                                    displayWidth(context) * 0.026,
-                                                textAlign: TextAlign.start),
-                                          ],
-                                        ),
-                                        Container(
-                                            width: 1,
-                                            height: displayHeight(context) * 0.05,
-                                            color: Colors.grey),
-                                        Column(
-                                          children: [
-                                            commonText(
-                                                context: context,
-                                                text:
-                                                    '${tripDistance.toStringAsFixed(2)}m',
-                                                fontWeight: FontWeight.w600,
-                                                textColor: Colors.black,
-                                                textSize:
-                                                    displayWidth(context) * 0.036,
-                                                textAlign: TextAlign.start),
-                                            commonText(
-                                                context: context,
-                                                text: 'Distance',
-                                                fontWeight: FontWeight.w400,
-                                                textColor: Colors.grey,
-                                                textSize:
-                                                    displayWidth(context) * 0.026,
-                                                textAlign: TextAlign.start),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                  ],
-                                ))
-                              : isZipFileCreate
-                                  ? Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        // SizedBox(height: 50,),
-                                        SizedBox(
-                                            height: 300,
-                                            width: 300,
-                                            child: Lottie.asset(
-                                                'assets/lottie/done.json')),
-                                        Center(
-                                          child: Text(
-                                            "TripId: $getTripId",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 15,
-                                              color: primaryColor,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Center(
-                                          child: Text(
-                                            "Trip Ended Successfully!",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 35,
-                                        ),
-                                        Center(
-                                          child: Text(
-                                            "Do you want to download the trip data?",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                        // SizedBox(height: 50,),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        CommonButtons.getDottedButton(
-                                            "Download Trip Data", context,
-                                            () async {
-                                          final androidInfo =
-                                              await DeviceInfoPlugin()
-                                                  .androidInfo;
-
-                                          var isStoragePermitted =
-                                              androidInfo.version.sdkInt > 32
-                                                  ? await Permission.photos.status
-                                                  : await Permission
-                                                      .storage.status;
-                                          if (isStoragePermitted.isGranted) {
-                                            //File copiedFile = File('${ourDirectory!.path}.zip');
-                                            File copiedFile = File(
-                                                '${ourDirectory!.path}/$getTripId.zip');
-
-                                            print(
-                                                'DIR PATH R ${ourDirectory!.path}');
-
-                                            Directory directory;
-
-                                            if (Platform.isAndroid) {
-                                              directory = Directory(
-                                                  "storage/emulated/0/Download/$getTripId.zip");
-                                            } else {
-                                              directory =
-                                                  await getApplicationDocumentsDirectory();
-                                            }
-
-                                            copiedFile.copy(directory.path);
-
-                                            print(
-                                                'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                            if (copiedFile.existsSync()) {
-                                              Utils.showSnackBar(context,
-                                                  scaffoldKey: scaffoldKey,
-                                                  message:
-                                                      'File downloaded successfully');
-                                            }
-                                          } else {
-                                            await Utils.getStoragePermission(
-                                                context);
-                                            var isStoragePermitted =
-                                                await Permission.storage.status;
-
-                                            if (isStoragePermitted.isGranted) {
-                                              File copiedFile = File(
-                                                  '${ourDirectory!.path}.zip');
-
-                                              Directory directory;
-
-                                              if (Platform.isAndroid) {
-                                                directory = Directory(
-                                                    "storage/emulated/0/Download/$getTripId.zip");
-                                              } else {
-                                                directory =
-                                                    await getApplicationDocumentsDirectory();
-                                              }
-
-                                              copiedFile.copy(directory.path);
-
-                                              print(
-                                                  'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                              if (copiedFile.existsSync()) {
-                                                Utils.showSnackBar(context,
-                                                    scaffoldKey: scaffoldKey,
-                                                    message:
-                                                        'File downloaded successfully');
-                                              }
-                                            }
-                                          }
-                                        }, primaryColor),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                      ],
-                                    )
-                                  : */
                           Expanded(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -937,7 +694,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     );
                                   },
                                   onEnd: () {
-                                    debugPrint('END');
+                                    Utils.customPrint('END');
                                     stateSetter(() {
                                       isStartButton = true;
                                     });
@@ -1107,6 +864,60 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   height: 15,
                                 ),
                                 Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: displayWidth(context) * 0.08),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      commonText(
+                                          context: context,
+                                          text: 'Connecting with sensors',
+                                          fontWeight: FontWeight.w500,
+                                          textColor: Colors.black,
+                                          textSize:
+                                              displayWidth(context) * 0.032,
+                                          textAlign: TextAlign.start),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      TweenAnimationBuilder(
+                                          duration: const Duration(seconds: 3),
+                                          tween: Tween(
+                                              begin: accSensorProgressBegin,
+                                              end: accSensorProgress),
+                                          builder: (context, double value, _) {
+                                            return SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: Stack(
+                                                fit: StackFit.expand,
+                                                children: [
+                                                  CircularProgressIndicator(
+                                                    color:
+                                                        circularProgressColor,
+                                                    value: value,
+                                                    backgroundColor:
+                                                        Colors.grey.shade200,
+                                                    strokeWidth: 2,
+                                                    valueColor:
+                                                        const AlwaysStoppedAnimation(
+                                                            Colors.green),
+                                                  ),
+                                                  Center(
+                                                    child: subTitleProgress(
+                                                        value,
+                                                        displayWidth(context) *
+                                                            0.035),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                /* Padding(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: displayWidth(context) * 0.08),
                                   child: Column(
@@ -1502,7 +1313,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               textAlign: TextAlign.start),
                                     ],
                                   ),
-                                ),
+                                ),*/
                                 const SizedBox(
                                   height: 15,
                                 ),
@@ -1525,9 +1336,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                           copiedFile.copy(directory.path);
 
-                                          print(
+                                          Utils.customPrint(
                                               'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
                                           if (copiedFile.existsSync()) {
                                             Utils.showSnackBar(context,
                                                 scaffoldKey: scaffoldKey,
@@ -1622,7 +1432,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               //       stateSetter(() =>
                                               //           selectedVesselName =
                                               //               vesselName);
-                                              //       print(selectedVesselName);
+                                              //       Utils.customPrint(selectedVesselName);
                                               //     },
                                               //   ),
                                               // ),
@@ -1749,11 +1559,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           borderColor: buttonBGColor,
                                           width: displayWidth(context),
                                           onTap: () async {
-                                            debugPrint(
+                                            Utils.customPrint(
                                                 'SELECTED VESSEL WEIGHT $selectedVesselWeight');
                                             if (selectedVesselWeight ==
                                                 'Select Current Load') {
-                                              debugPrint(
+                                              Utils.customPrint(
                                                   'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(
@@ -2077,7 +1887,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       enableDrag: false,
     ).then((value) async {
       await tripIsRunningOrNot();
-      print('BACK PRESSED');
+      Utils.customPrint('BACK PRESSED');
       isBottomSheetOpened = false;
       /* Navigator.pushReplacement(
         context,
@@ -2138,16 +1948,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
         await Utils.getLocationPermission(context, scaffoldKey);
     await fetchDeviceData();
 
-    debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
-    // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
+    Utils.customPrint(
+        'hello device details: ${deviceDetails!.toJson().toString()}');
+    // Utils.customPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
     String latitude = locationData!.latitude.toString();
     String longitude = locationData.longitude.toString();
 
-    debugPrint("current lod:$currentLoad");
-    debugPrint("current PATH:$file");
+    Utils.customPrint("current lod:$currentLoad");
+    Utils.customPrint("current PATH:$file");
 
-    debugPrint("ON SAVE FIRST INSERT :$getTripId");
-    debugPrint("ON SAVE FIRST INSERT :$getTripId");
+    Utils.customPrint("ON SAVE FIRST INSERT :$getTripId");
+    Utils.customPrint("ON SAVE FIRST INSERT :$getTripId");
 
     try {
       await _databaseService.insertTrip(Trip(
@@ -2164,7 +1975,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
           endPosition: [latitude, longitude].join(","),
           deviceInfo: deviceDetails!.toJson().toString()));
     } on Exception catch (e) {
-      print('ON SAVE EXE: $e');
+      Utils.customPrint('ON SAVE EXE: $e');
     }
     return;
   }
@@ -2173,7 +1984,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       BuildContext bottomSheetContext, StateSetter stateSetter) async {
     bool isServiceRunning = await service.isRunning();
 
-    print('ISSSSS XXXXXXX: $isServiceRunning');
+    Utils.customPrint('ISSSSS XXXXXXX: $isServiceRunning');
 
     stateSetter(() {
       addingDataToDB = true;
@@ -2183,7 +1994,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       await service.startService();
       // service.invoke("setAsForeground");
       // initializeService();
-      print('View Single: $isServiceRunning');
+      Utils.customPrint('View Single: $isServiceRunning');
     }
 
     // service.invoke("setAsForeground");
@@ -2211,7 +2022,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     );*/
 
     await Future.delayed(Duration(seconds: 4), () {
-      print('Future delayed duration Ended');
+      Utils.customPrint('Future delayed duration Ended');
     });
 
     // await tripIsRunningOrNot();
@@ -2229,7 +2040,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       // location = Location();
       //
       // location!.onLocationChanged.listen((LocationData currentLocation) {
-      //   print("${currentLocation.latitude} : ${currentLocation.longitude}");
+      //   Utils.customPrint("${currentLocation.latitude} : ${currentLocation.longitude}");
       //   setState(() {
       //     locationData = currentLocation;
       //   });
@@ -2239,7 +2050,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         'lat': locationData.latitude,
         'long': locationData.longitude,
       });
-      // print(
+      // Utils.customPrint(
       //     'SINGLE VIEW LAT LONG ${locationData.latitude} ${locationData.longitude}');
     });*/
 

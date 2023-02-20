@@ -8,6 +8,7 @@ import 'package:location/location.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_dropdown.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
@@ -98,8 +99,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     latitude = locationData!.latitude!.toString();
     longitude = locationData.longitude!.toString();
 
-    debugPrint('LAT ${latitude}');
-    debugPrint('LONG ${longitude}');
+    Utils.customPrint('LAT ${latitude}');
+    Utils.customPrint('LONG ${longitude}');
 
     return locationData;
   }
@@ -203,18 +204,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     });
                                   } else {
                                     try {
-                                      print('NAME: ${googleSignInAccount.id}');
-                                      print(
+                                      Utils.customPrint(
+                                          'NAME: ${googleSignInAccount.id}');
+                                      Utils.customPrint(
                                           'NAME: ${googleSignInAccount.email}');
-                                      print(
+                                      Utils.customPrint(
                                           'NAME: ${googleSignInAccount.displayName}');
-                                      print(
+                                      Utils.customPrint(
                                           'NAME: ${googleSignInAccount.photoUrl}');
-                                      print(
+                                      Utils.customPrint(
                                           'NAME: ${googleSignInAccount.serverAuthCode}');
-                                      print(
+                                      Utils.customPrint(
                                           'NAME: ${googleSignInAccount.authHeaders}');
-                                      print(
+                                      Utils.customPrint(
                                           'NAME: ${googleSignInAccount.toString()}');
 
                                       setState(() {
@@ -278,7 +280,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                                       //getAuthenticatedClient(context);
                                     } catch (e) {
-                                      print('EXE: $e');
+                                      Utils.customPrint('EXE: $e');
                                       // TODO handle
                                     }
                                   }
@@ -335,7 +337,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 'Please enter a valid postal code like B3J 4B2');
                                         return null;
                                       } else if (!isCanada) {
-                                        debugPrint('IS CANADA $isCanada');
+                                        Utils.customPrint('IS CANADA $isCanada');
                                         Utils.showSnackBar(context,
                                             scaffoldKey: scaffoldKey,
                                             message:
@@ -363,19 +365,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       });
                                     } else {
                                       try {
-                                        print(
+                                        Utils.customPrint(
                                             'NAME: ${googleSignInAccount.id}');
-                                        print(
+                                        Utils.customPrint(
                                             'NAME: ${googleSignInAccount.email}');
-                                        print(
+                                        Utils.customPrint(
                                             'NAME: ${googleSignInAccount.displayName}');
-                                        print(
+                                        Utils.customPrint(
                                             'NAME: ${googleSignInAccount.photoUrl}');
-                                        print(
+                                        Utils.customPrint(
                                             'NAME: ${googleSignInAccount.serverAuthCode}');
-                                        print(
+                                        Utils.customPrint(
                                             'NAME: ${googleSignInAccount.authHeaders}');
-                                        print(
+                                        Utils.customPrint(
                                             'NAME: ${googleSignInAccount.toString()}');
 
                                         setState(() {
@@ -430,7 +432,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                                         //getAuthenticatedClient(context);
                                       } catch (e) {
-                                        print('EXE: $e');
+                                        Utils.customPrint('EXE: $e');
                                         // TODO handle
                                       }
                                     }
@@ -498,19 +500,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         // TODO handle
                                       } else {
                                         try {
-                                          print(
+                                          Utils.customPrint(
                                               'NAME: ${googleSignInAccount!.id}');
-                                          print(
+                                          Utils.customPrint(
                                               'NAME: ${googleSignInAccount!.email}');
-                                          print(
+                                          Utils.customPrint(
                                               'NAME: ${googleSignInAccount!.displayName}');
-                                          print(
+                                          Utils.customPrint(
                                               'NAME: ${googleSignInAccount!.photoUrl}');
-                                          print(
+                                          Utils.customPrint(
                                               'NAME: ${googleSignInAccount!.serverAuthCode}');
-                                          print(
+                                          Utils.customPrint(
                                               'NAME: ${googleSignInAccount!.authHeaders}');
-                                          print(
+                                          Utils.customPrint(
                                               'NAME: ${googleSignInAccount!.toString()}');
 
                                           commonProvider
@@ -559,7 +561,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                                           //getAuthenticatedClient(context);
                                         } catch (e) {
-                                          print('EXE: $e');
+                                          Utils.customPrint('EXE: $e');
                                           // TODO handle
                                         }
                                       }
@@ -591,7 +593,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           setState(() {
                             selectedCountry = value;
 
-                            print('country $selectedCountry');
+                            Utils.customPrint('country $selectedCountry');
                           });
                         },
                         dataSource: [
@@ -645,7 +647,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return null;
                         },
                         onSaved: (String value) {
-                          print(value);
+                          Utils.customPrint(value) ;
                         }),*/
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
@@ -684,7 +686,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return null;
                         },
                         onSaved: (String value) {
-                          print(value);
+                          Utils.customPrint(value);
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
@@ -725,7 +727,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return null;
                         },
                         onSaved: (String value) {
-                          print(value);
+                          Utils.customPrint(value);
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     /*   Row(
@@ -821,7 +823,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 return null;
                               },
                               onSaved: (String value) {
-                                print(value);
+                                Utils.customPrint(value) ;
                               }),
                         ),
                         const SizedBox(
@@ -854,7 +856,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 return null;
                               },
                               onSaved: (String value) {
-                                print(value);
+                                Utils.customPrint(value) ;
                               }),
                         ),*/ /*
 
@@ -884,7 +886,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               return null;
                             },
                             onSaved: (String value) {
-                              print(value);
+                              Utils.customPrint(value) ;
                             }),
                       ],
                     ),*/
@@ -921,7 +923,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return null;
                         },
                         onSaved: (String value) {
-                          print(value);
+                          Utils.customPrint(value);
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
@@ -958,7 +960,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return null;
                         },
                         onSaved: (String value) {
-                          print(value);
+                          Utils.customPrint(value);
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
@@ -997,7 +999,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return null;
                         },
                         onSaved: (String value) {
-                          print(value);
+                          Utils.customPrint(value);
                         }),
                     SizedBox(height: displayHeight(context) * 0.03),
                     isRegistrationBtnClicked

@@ -1,4 +1,5 @@
 // import 'package:performarine/models/Trip.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:path/path.dart';
@@ -104,7 +105,7 @@ class DatabaseService {
 
   Future<void> insertVessel(CreateVessel vessel) async {
     final db = await _databaseService.database;
-    print("vessel.toMap():${vessel.toMap()}");
+    Utils.customPrint("vessel.toMap():${vessel.toMap()}");
     await db.insert(
       'vessels',
       vessel.toMap(),
@@ -168,10 +169,10 @@ class DatabaseService {
 
   Future<int> updateVessel(CreateVessel vessel) async {
     final db = await _databaseService.database;
-    print("vessel.toMap():${vessel.toMap()}");
+    Utils.customPrint("vessel.toMap():${vessel.toMap()}");
     int result = await db.update('vessels', vessel.toMap(),
         where: 'id = ?', whereArgs: [vessel.id]);
-    print('UPDATE: $result');
+    Utils.customPrint('UPDATE: $result');
 
     return result;
   }
@@ -200,7 +201,7 @@ class DatabaseService {
           avgSpeed,
           tripId
         ]);
-    print('updated: $count');
+    Utils.customPrint('updated: $count');
   }
 
   Future<void> deleteVessel(String id) async {
@@ -223,7 +224,7 @@ class DatabaseService {
     final db = await _databaseService.database;
     int count = await db
         .rawUpdate('UPDATE vessels SET imageURLs = ? WHERE id = ?', ['', id]);
-    print('updated: $count');
+    Utils.customPrint('updated: $count');
   }
 
   Future<void> deleteTripBasedOnVesselId(String vesselId) async {
@@ -246,7 +247,7 @@ class DatabaseService {
       'SELECT EXISTS(SELECT 1 FROM trips WHERE tripStatus="0")',
     );
     int? exists = Sqflite.firstIntValue(result);
-    print('EXIST $exists');
+    Utils.customPrint('EXIST $exists');
     return exists == 1;
   }
 
@@ -256,7 +257,7 @@ class DatabaseService {
       'SELECT EXISTS(SELECT 1 FROM trips WHERE vesselId="$vesselId" AND tripStatus="0")',
     );
     int? exists = Sqflite.firstIntValue(result);
-    print('EXIST $exists');
+    Utils.customPrint('EXIST $exists');
     return exists == 1;
   }
 
@@ -276,7 +277,7 @@ class DatabaseService {
         'SELECT * FROM vessels WHERE id LIKE ? AND isSync LIKE ?',
         [vesselId, 0]);
     int? exists = Sqflite.firstIntValue(list);
-    print('IS SYNC EXIST $exists');
+    Utils.customPrint('IS SYNC EXIST $exists');
     return exists == 1;
   }
 
@@ -291,7 +292,7 @@ class DatabaseService {
     final db = await _databaseService.database;
     int update = await db.rawUpdate(
         '''UPDATE vessels SET isSync = ? WHERE id = ?''', [isSyncValue, id]);
-    print('UPDATEDDDDD: $update');
+    Utils.customPrint('UPDATEDDDDD: $update');
     return update;
   }
 
@@ -314,6 +315,6 @@ class DatabaseService {
     int count = await db.rawUpdate(
         'UPDATE vessels SET duration = ?, distance = ?, speed = ?, avgSpeed = ? WHERE id = ?',
         [time, distance, speed, avgSpeed, vesselId]);
-    print('updated: $count');
+    Utils.customPrint('updated: $count');
   }
 }

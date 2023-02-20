@@ -64,7 +64,7 @@ onDidReceiveBackgroundNotificationResponse(
   DartPluginRegistrant.ensureInitialized();
   var pref = await SharedPreferences.getInstance();
   pref.setBool('sp_key_called_from_noti', true);
-  print('APP RESTART 2');
+  Utils.customPrint('APP RESTART 2');
 
   /// APP RESTART
 }
@@ -78,7 +78,7 @@ Future<void> onStart(ServiceInstance serviceInstance) async {
 
 onDidReceiveLocalNotification(
     int id, String? title, String? body, String? payload) {
-  print('APP RESTART 3');
+  Utils.customPrint('APP RESTART 3');
 
   /// APP RESTART
 }
@@ -110,10 +110,10 @@ Future<void> initializeService() async {
 
   flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onDidReceiveNotificationResponse: (value) async {
-    print('APP RESTART 1');
+    Utils.customPrint('APP RESTART 1');
 
     if (value.id == 888) {
-      print('NOTIFICATION ID: ${value.id}');
+      Utils.customPrint('NOTIFICATION ID: ${value.id}');
       var pref = await SharedPreferences.getInstance();
       pref.setBool('sp_key_called_from_noti', true);
       List<String>? tripData = pref.getStringList('trip_data');
@@ -173,7 +173,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    print('APP IN BG INIT');
+    Utils.customPrint('APP IN BG INIT');
   }
 
   @override
@@ -181,7 +181,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     // positionStream!.cancle
     super.dispose();
-    print('APP IN BG DISPOSE');
+    Utils.customPrint('APP IN BG DISPOSE');
   }
 
   @override

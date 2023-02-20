@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -69,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   search(value) {
-    print('hello world from search . the value is $value');
+    Utils.customPrint('hello world from search . the value is $value');
   }
 
   @override
@@ -202,7 +203,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 .requestFocus(passwordFocusNode);*/
                           },
                           onSaved: (String value) {
-                            print(value);
+                            Utils.customPrint(value);
                           }),
                       SizedBox(height: displayHeight(context) * 0.03),
                       CommonTextField(
@@ -237,7 +238,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             return null;
                           },
                           onSaved: (String value) {
-                            print(value);
+                            Utils.customPrint(value);
                           }),
                       SizedBox(height: displayHeight(context) * 0.04),
                       Row(
@@ -285,19 +286,19 @@ class _SignInScreenState extends State<SignInScreen> {
                                           });
                                         } else {
                                           try {
-                                            // print(
+                                            // Utils.customPrint(
                                             //     'NAME: ${googleSignInAccount!.id}');
-                                            // print(
+                                            // Utils.customPrint(
                                             //     'NAME: ${googleSignInAccount!.email}');
-                                            // print(
+                                            // Utils.customPrint(
                                             //     'NAME: ${googleSignInAccount!.displayName}');
-                                            // print(
+                                            // Utils.customPrint(
                                             //     'NAME: ${googleSignInAccount!.photoUrl}');
-                                            // print(
+                                            // Utils.customPrint(
                                             //     'NAME: ${googleSignInAccount!.serverAuthCode}');
-                                            // print(
+                                            // Utils.customPrint(
                                             //     'NAME: ${googleSignInAccount!.authHeaders}');
-                                            // print(
+                                            // Utils.customPrint(
                                             //     'NAME: ${googleSignInAccount!.toString()}');
 
                                             setState(() {
@@ -342,7 +343,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
                                             //getAuthenticatedClient(context);
                                           } catch (e) {
-                                            print('EXE: $e');
+                                            Utils.customPrint('EXE: $e');
                                             // TODO handle
                                           }
                                         }

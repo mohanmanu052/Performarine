@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/trip.dart';
@@ -46,9 +47,9 @@ class _VesselBuilderState extends State<VesselBuilder> {
                 ),
               );
             }
-            print('HAS DATA: ${snapshot.hasData}');
-            print('HAS DATA: ${snapshot.error}');
-            print('HAS DATA: ${snapshot.hasError}');
+            Utils.customPrint('HAS DATA: ${snapshot.hasData}');
+            Utils.customPrint('HAS DATA: ${snapshot.error}');
+            Utils.customPrint('HAS DATA: ${snapshot.hasError}');
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
                 return Center(
@@ -96,7 +97,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                 );
               }
               // CreateVessel vessel= snapshot.data![0];
-              // print("hello world: ${vessel.model.toString()}");
+              // Utils.customPrint("hello world: ${vessel.model.toString()}");
 
             }
             return Container();

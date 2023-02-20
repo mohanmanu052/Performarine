@@ -60,19 +60,17 @@ class RegistrationApiProvider with ChangeNotifier {
     }
 
     try {
-      debugPrint('REGISTER REQ ${jsonEncode(queryParameters)}');
+      Utils.customPrint('REGISTER REQ ${jsonEncode(queryParameters)}');
 
       final response = await http.post(uri,
           body: jsonEncode(queryParameters), headers: headers);
 
-      kReleaseMode ? null : debugPrint('REGISTER REQ : ' + response.body);
+      Utils.customPrint('REGISTER REQ : ' + response.body);
 
       var decodedData = json.decode(response.body);
 
       if (response.statusCode == HttpStatus.ok) {
-        kReleaseMode
-            ? null
-            : debugPrint('Register Response : ' + response.body);
+        Utils.customPrint('Register Response : ' + response.body);
 
         registrationModel =
             RegistrationModel.fromJson(json.decode(response.body));
@@ -82,10 +80,8 @@ class RegistrationApiProvider with ChangeNotifier {
 
         return registrationModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
-        kReleaseMode
-            ? null
-            : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $response');
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+        Utils.customPrint('EXE RESP: $response');
 
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -99,10 +95,8 @@ class RegistrationApiProvider with ChangeNotifier {
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        kReleaseMode
-            ? null
-            : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $response');
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+        Utils.customPrint('EXE RESP: $response');
       }
       registrationModel = null;
     } on SocketException catch (_) {
@@ -123,11 +117,11 @@ class RegistrationApiProvider with ChangeNotifier {
               },
             );
           });*/
-      kReleaseMode ? null : debugPrint('Socket Exception');
+      Utils.customPrint('Socket Exception');
 
       registrationModel = null;
     } catch (exception, s) {
-      kReleaseMode ? null : debugPrint('error caught login:- $exception \n $s');
+      Utils.customPrint('error caught login:- $exception \n $s');
       registrationModel = null;
     }
 

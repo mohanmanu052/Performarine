@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/add_vessel_model.dart';
 import 'package:performarine/models/common_model.dart';
@@ -29,7 +30,7 @@ class CommonProvider with ChangeNotifier {
 
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
-    print('LOGIN DATA: $loginData');
+    Utils.customPrint('LOGIN DATA: $loginData');
     if (loginData != null) {
       loginModel = LoginModel.fromJson(json.decode(loginData));
       // notifyListeners();
@@ -121,7 +122,7 @@ class CommonProvider with ChangeNotifier {
         tripId,
         scaffoldKey);
     final DatabaseService _databaseService = DatabaseService();
-    print(
+    Utils.customPrint(
         'queryParameters["id"].toString(): ${queryParameters["id"].toString()}');
     if (uploadTripModel!.status!) {
       _databaseService.updateTripIsSyncStatus(1, queryParameters["id"]);

@@ -181,10 +181,10 @@ class Utils {
 
       if (permission == LocationPermission.deniedForever) {
         isPermissionGranted = false;
-        print('PD');
+        Utils.customPrint('PD');
 
         isPermissionGranted = await openAppSettings();
-        debugPrint("isPermissionGranted:$isPermissionGranted");
+        Utils.customPrint("isPermissionGranted:$isPermissionGranted");
         /* Utils.showActionSnackBar(context, scaffoldKey,
             'Location permissions are denied without permissions we are unable to start the trip',
             () {
@@ -210,14 +210,14 @@ class Utils {
     //   if (await Permission.locationAlways.request().isGranted) {
     //     // if (ModalRoute.of(context)?.isCurrent != null) {
     //     //   if (ModalRoute.of(context)?.isCurrent != true) {
-    //     //     // debugPrint("im in the loop:$locationData");
+    //     //     // Utils.customPrint("im in the loop:$locationData");
     //     //     // Get.back();
     //     //   }
     //     // }
     //     //ModalRoute.of(context)?.isCurrent != true;
     //     isPermissionGranted = true;
     //     locationData = await Utils.getCurrentLocation();
-    //     debugPrint("im in the loop assigned getCurrentLocation:$locationData");
+    //     Utils.customPrint("im in the loop assigned getCurrentLocation:$locationData");
     //   } else if (
     //
     //   // await Geolocator.checkPermission().then((value) => null);
@@ -226,10 +226,10 @@ class Utils {
     //       .request()
     //       .isPermanentlyDenied) {
     //     isPermissionGranted = false;
-    //     print('PD');
+    //     Utils.customPrint('PD');
     //
     //     isPermissionGranted = await openAppSettings();
-    //     debugPrint("isPermissionGranted:$isPermissionGranted");
+    //     Utils.customPrint("isPermissionGranted:$isPermissionGranted");
     //     /* Utils.showActionSnackBar(context, scaffoldKey,
     //         'Location permissions are denied without permissions we are unable to start the trip',
     //         () {
@@ -240,7 +240,7 @@ class Utils {
     //         message:
     //             'Location permissions are denied without permissions we are unable to start the trip');
     //   } else if (await Permission.locationAlways.request().isDenied) {
-    //     // print('D');
+    //     // Utils.customPrint('D');
     //     isPermissionGranted = false;
     //     /*Utils.showActionSnackBar(context, scaffoldKey,
     //         'Location permissions are denied without permissions we are unable to start the trip',
@@ -308,7 +308,7 @@ class Utils {
         } else {
           isPermissionGranted = false;
         }
-        print('PD');
+        Utils.customPrint('PD');
 
         /*showDialog(
             context: scaffoldKey.currentContext!,
@@ -331,7 +331,7 @@ class Utils {
 
         isPermissionGranted = await openAppSettings();
       } else if (await Permission.locationAlways.request().isDenied) {
-        print('D');
+        Utils.customPrint('D');
         isPermissionGranted = false;
         //getStoragePermission(context, scaffoldKey);
 
@@ -368,7 +368,7 @@ class Utils {
         return true;
       }
     } on SocketException catch (_) {
-      debugPrint('No Internet');
+      Utils.customPrint('No Internet');
       showDialog(
           context: scaffoldKey.currentContext!,
           builder: (BuildContext context) {
@@ -435,11 +435,11 @@ class Utils {
         isPermissionGranted = true;
       } else if (await permission.request().isPermanentlyDenied) {
         isPermissionGranted = false;
-        print('PD');
+        Utils.customPrint('PD');
 
         isPermissionGranted = await openAppSettings();
       } else if (await Permission.notification.request().isDenied) {
-        print('D');
+        Utils.customPrint('D');
         isPermissionGranted = false;
         //getStoragePermission(context, scaffoldKey);
       }
@@ -559,22 +559,22 @@ class Utils {
   static String getCurrentTZDateTime() {
     /*var locations = tz.timeZoneDatabase.locations;
     locations.forEach((key, value) {
-      print('$key: $value');
+      Utils.customPrint('$key: $value');
     });*/
     var canada = tz.getLocation('Canada/Pacific');
     var now = tz.TZDateTime.now(canada).toUtc();
     var localNow = DateTime.now();
-    print(DateFormat('dd-MM-yyyy hh:mm a').format(now));
+    Utils.customPrint(DateFormat('dd-MM-yyyy hh:mm a').format(now));
 
     /// TZ
-    print(DateFormat('dd-MM-yyyy hh:mm a').format(localNow));
+    Utils.customPrint(DateFormat('dd-MM-yyyy hh:mm a').format(localNow));
 
     /// LOCAL
     return now.toString();
   }
 
   static String calculateTripDuration(int seconds) {
-    Duration duration = Duration(seconds: seconds);
+    Duration duration = Duration(seconds: seconds); // 00:00:00
     String twoDigit(int n) => n.toString().padLeft(2, "0");
     String twoDigitMinutes = twoDigit(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigit(duration.inSeconds.remainder(60));
@@ -584,5 +584,9 @@ class Utils {
   static Future<void> launchURL(String url) async {
     await launchUrl(Uri.parse(url));
     return;
+  }
+
+  static customPrint(String text) {
+    kReleaseMode ? null : debugPrint('$text');
   }
 }

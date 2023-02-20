@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       String vesselName = tripData[2];
       String vesselWeight = tripData[3];
 
-      print('TRIP DATA: $tripId * $vesselId * $vesselName');
+      Utils.customPrint('TRIP DATA: $tripId * $vesselId * $vesselName');
 
       widget.tripData = [];
       Future.delayed(Duration(milliseconds: 300), () {
@@ -127,49 +127,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }*/
 
-  Future<void> onSave(File file, BuildContext context, String tripId, vesselId,
-      vesselName, vesselWeight) async {
-    pos.Position? locationData =
-        await Utils.getLocationPermission(context, scaffoldKey);
-    await fetchDeviceData();
-
-    debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
-
-    debugPrint("current lod:$vesselWeight");
-
-    await sharedPreferences!.reload();
-
-    int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
-    String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
-    String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
-    String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
-
-    String finalTripDuration =
-        Utils.calculateTripDuration((tripDuration / 1000).toInt());
-    String finalTripDistance = tripDistance;
-    Position? currentLocationData =
-        await Utils.getLocationPermission(context, scaffoldKey);
-    await _databaseService.updateTripStatus(
-        1,
-        file.path,
-        DateTime.now().toUtc().toString(),
-        json.encode([locationData!.latitude, locationData.longitude].join(",")),
-        finalTripDuration,
-        finalTripDistance,
-        tripSpeed.toString(),
-        tripAvgSpeed,
-        tripId);
-
-    _databaseService.updateVesselDataWithDurationSpeedDistance(
-        finalTripDuration,
-        finalTripDistance,
-        tripSpeed.toString(),
-        tripAvgSpeed,
-        vesselId);
-
-    Navigator.pop(context);
-  }
-
   fetchDeviceData() async {
     await fetchDeviceInfo();
     // Platform.isAndroid
@@ -190,7 +147,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             make: iosDeviceInfo?.utsname.machine,
             model: iosDeviceInfo?.model,
             version: iosDeviceInfo?.utsname.release);
-    debugPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
+    Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
   }
 
   fetchDeviceInfo() async {
@@ -357,7 +314,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     );
                     commonProvider.getTripsCount();
                     if (result != null) {
-                      print('RESULT HOME PAGE $result');
+                      Utils.customPrint('RESULT HOME PAGE $result');
                       if (result) {
                         setState(() {
                           getVesselFuture = _databaseService.vessels();

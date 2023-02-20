@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_step_one.dart';
@@ -111,7 +112,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                     setState(() {
                       pageIndex = value;
                     });
-                    debugPrint('PAGEVIEW INDEX $pageIndex');
+                    Utils.customPrint('PAGEVIEW INDEX $pageIndex');
                   },
                   children: [
                     AddVesselStepOne(

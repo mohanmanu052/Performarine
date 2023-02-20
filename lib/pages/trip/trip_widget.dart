@@ -104,8 +104,8 @@ class _TripWidgetState extends State<TripWidget> {
         getVesselById = await _databaseService
             .getVesselNameByID(widget.tripList!.vesselId.toString());
 
-        debugPrint('VESSEL DATA ${getVesselById[0].imageURLs}');
-        debugPrint('VESSEL DATA 1212 ${commonProvider.tripStatus}');
+        Utils.customPrint('VESSEL DATA ${getVesselById[0].imageURLs}');
+        Utils.customPrint('VESSEL DATA 1212 ${commonProvider.tripStatus}');
 
         if (!isTripUploaded) {
           var result = await Navigator.push(
@@ -302,22 +302,26 @@ class _TripWidgetState extends State<TripWidget> {
                                               .tripList!.vesselId
                                               .toString());
 
-                                      debugPrint(
+                                      Utils.customPrint(
                                           'VESSEL DATA ${getVesselById[0].imageURLs}');
 
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              TripAnalyticsScreen(
-                                                  tripId: widget.tripList!.id,
-                                                  vesselId: getVesselById[0].id,
-                                                  tripIsRunningOrNot: false,
-                                                  calledFrom: widget.calledFrom
-                                                  // vessel: getVesselById[0]
-                                                  ),
-                                        ),
-                                      );
+                                      if (!isTripUploaded) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TripAnalyticsScreen(
+                                                    tripId: widget.tripList!.id,
+                                                    vesselId:
+                                                        getVesselById[0].id,
+                                                    tripIsRunningOrNot: false,
+                                                    calledFrom:
+                                                        widget.calledFrom
+                                                    // vessel: getVesselById[0]
+                                                    ),
+                                          ),
+                                        );
+                                      }
                                     },
                                     icon: Padding(
                                       padding: const EdgeInsets.only(right: 8),
@@ -355,7 +359,8 @@ class _TripWidgetState extends State<TripWidget> {
                                             fontSize:
                                                 displayWidth(context) * 0.026,
                                             onTap: () async {
-                                              debugPrint('DOWLOAD Started!!!');
+                                              Utils.customPrint(
+                                                  'DOWLOAD Started!!!');
 
                                               final androidInfo =
                                                   await DeviceInfoPlugin()
@@ -374,7 +379,7 @@ class _TripWidgetState extends State<TripWidget> {
                                                 File copiedFile = File(
                                                     '${ourDirectory!.path}/${widget.tripList!.id}.zip');
 
-                                                print(
+                                                Utils.customPrint(
                                                     'DIR PATH R ${ourDirectory!.path}');
 
                                                 Directory directory;
@@ -389,7 +394,7 @@ class _TripWidgetState extends State<TripWidget> {
 
                                                 copiedFile.copy(directory.path);
 
-                                                print(
+                                                Utils.customPrint(
                                                     'DOES FILE EXIST: ${copiedFile.existsSync()}');
 
                                                 if (copiedFile.existsSync()) {
@@ -405,13 +410,13 @@ class _TripWidgetState extends State<TripWidget> {
                                                           scaffoldKey,
                                                           'File downloaded successfully',
                                                           () async {
-                                                        print(
+                                                        Utils.customPrint(
                                                             'Open Btn clicked ttttt');
                                                         var result =
                                                             await OpenFile.open(
                                                                 directory.path);
 
-                                                        print(
+                                                        Utils.customPrint(
                                                             "dataaaaa: ${result.message} ggg ${result.type}");
                                                       });*/
                                                 }
@@ -441,7 +446,7 @@ class _TripWidgetState extends State<TripWidget> {
                                                   copiedFile
                                                       .copy(directory.path);
 
-                                                  print(
+                                                  Utils.customPrint(
                                                       'DOES FILE EXIST: ${copiedFile.existsSync()}');
 
                                                   if (copiedFile.existsSync()) {
@@ -458,13 +463,13 @@ class _TripWidgetState extends State<TripWidget> {
                                                             scaffoldKey,
                                                             'File downloaded successfully',
                                                             () {
-                                                          print(
+                                                          Utils.customPrint(
                                                               'Open Btn clicked');
                                                           OpenFile.open(
                                                                   directory.path)
                                                               .catchError(
                                                                   (onError) {
-                                                            print(onError);
+                                                            Utils.customPrint(onError);
                                                           });
                                                         });*/
                                                   }
@@ -501,7 +506,7 @@ class _TripWidgetState extends State<TripWidget> {
                                                       .checkConnectivity());
                                               if (connectivityResult ==
                                                   ConnectivityResult.mobile) {
-                                                print('Mobile');
+                                                Utils.customPrint('Mobile');
                                                 showDialogBox();
                                               } else if (connectivityResult ==
                                                   ConnectivityResult.wifi) {
@@ -510,7 +515,7 @@ class _TripWidgetState extends State<TripWidget> {
                                                 });
                                                 uploadDataIfDataIsNotSync();
 
-                                                print('WIFI');
+                                                Utils.customPrint('WIFI');
                                               }
                                             },
                                             icon: Padding(
@@ -543,7 +548,7 @@ class _TripWidgetState extends State<TripWidget> {
                                 onTap: () {
                                   widget.onTap!.call();
 
-                                  debugPrint(
+                                  Utils.customPrint(
                                       'TRIP STATUS ${commonProvider.tripStatus}');
                                 },
                                 context: context,
@@ -557,73 +562,12 @@ class _TripWidgetState extends State<TripWidget> {
     );
   }
 
-  Future<void> onSave(File file, BuildContext context, String tripId, vesselId,
-      vesselName, vesselWeight) async {
-    pos.Position? locationData =
-        await Utils.getLocationPermission(context, widget.scaffoldKey!);
-    // await fetchDeviceInfo();
-
-    //debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
-    // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
-    String latitude = locationData!.latitude.toString();
-    String longitude = locationData.longitude.toString();
-
-    debugPrint("current lod:$tripId");
-
-    /*await _databaseService.insertTrip(Trip(
-        id: tripId,
-        vesselId: vesselId,
-        vesselName: vesselName,
-        currentLoad: vesselWeight,
-        filePath: file.path,
-        isSync: 0,
-        tripStatus: 0,
-        createdAt: DateTime.now().toUtc().toString(),
-        updatedAt: DateTime.now().toUtc().toString(),
-        lat: latitude,
-        long: longitude,
-        deviceInfo: deviceDetails!.toJson().toString()));*/
-
-    int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
-    String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
-    String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
-    String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
-
-    String finalTripDuration =
-        Utils.calculateTripDuration((tripDuration / 1000).toInt());
-    String finalTripDistance = tripDistance;
-    Position? currentLocationData =
-        await Utils.getLocationPermission(context, widget.scaffoldKey!);
-
-    await _databaseService.updateTripStatus(
-        1,
-        file.path,
-        DateTime.now().toUtc().toString(),
-        json.encode([
-          currentLocationData!.latitude,
-          currentLocationData.longitude
-        ].join(",")),
-        finalTripDuration,
-        finalTripDistance,
-        tripSpeed.toString(),
-        tripAvgSpeed,
-        tripId);
-
-    _databaseService.updateVesselDataWithDurationSpeedDistance(
-        finalTripDuration,
-        finalTripDistance,
-        tripSpeed.toString(),
-        tripAvgSpeed,
-        vesselId!);
-    //Navigator.pop(context);
-  }
-
   Future<bool> vesselIsSyncOrNot(String vesselId) async {
     bool result = await _databaseService.getVesselIsSyncOrNot(vesselId);
 
     setState(() {
       vesselIsSync = result;
-      print('Vessel isSync $vesselIsSync');
+      Utils.customPrint('Vessel isSync $vesselIsSync');
     });
 
     /*setState(() {
@@ -639,14 +583,15 @@ class _TripWidgetState extends State<TripWidget> {
     // flutterLocalNotificationsPlugin.cancel(9988);
     AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
 
-    int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
+    String? tripDuration =
+        sharedPreferences!.getString("tripDuration") ?? '00:00:00';
     String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
     String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
 
     var startPosition = tripData.startPosition!.split(",");
     var endPosition = tripData.endPosition!.split(",");
-    debugPrint('START POSITION 0 ${startPosition}');
+    Utils.customPrint('START POSITION 0 ${startPosition}');
 
     var queryParameters;
     queryParameters = {
@@ -669,14 +614,14 @@ class _TripWidgetState extends State<TripWidget> {
       "filePath": 'storage/emulated/0/Download/${widget.tripList!.id}.zip',
       "createdAt": tripData.createdAt,
       "updatedAt": tripData.updatedAt,
-      "duration": Utils.calculateTripDuration((tripDuration / 1000).toInt()),
+      "duration": tripDuration,
       "distance": double.parse(tripDistance),
       "speed": double.parse(tripSpeed),
       "avgSpeed": double.parse(tripAvgSpeed),
       //"userID": commonProvider.loginModel!.userId!
     };
 
-    debugPrint('CREATE TRIP: $queryParameters');
+    Utils.customPrint('CREATE TRIP: $queryParameters');
 
     commonProvider
         .sendSensorInfo(
@@ -694,7 +639,7 @@ class _TripWidgetState extends State<TripWidget> {
           setState(() {
             isTripUploaded = false;
           });
-          print("widget.tripList!.id: ${widget.tripList!.id}");
+          Utils.customPrint("widget.tripList!.id: ${widget.tripList!.id}");
           _databaseService.updateTripIsSyncStatus(1, tripData.id.toString());
 
           showSuccessNoti();
@@ -723,7 +668,7 @@ class _TripWidgetState extends State<TripWidget> {
         });
       }
       // showFailedNoti(tripData.id!);
-      debugPrint('ON ERROR $onError \n $s');
+      Utils.customPrint('ON ERROR $onError \n $s');
     });
   }
 
@@ -909,7 +854,7 @@ class _TripWidgetState extends State<TripWidget> {
 
   uploadDataIfDataIsNotSync() async {
     await vesselIsSyncOrNot(widget.tripList!.vesselId.toString());
-    debugPrint('VESSEL STATUS isSync $vesselIsSync');
+    Utils.customPrint('VESSEL STATUS isSync $vesselIsSync');
 
     const int maxProgress = 10;
     progress = 0;
@@ -984,7 +929,7 @@ class _TripWidgetState extends State<TripWidget> {
       CreateVessel vesselData = await _databaseService
           .getVesselFromVesselID((widget.tripList!.vesselId.toString()));
 
-      debugPrint('VESSEL DATA ${vesselData.id}');
+      Utils.customPrint('VESSEL DATA ${vesselData.id}');
 
       commonProvider.addVesselRequestModel = CreateVessel();
       commonProvider.addVesselRequestModel!.id = vesselData.id;
@@ -1016,7 +961,7 @@ class _TripWidgetState extends State<TripWidget> {
         commonProvider.addVesselRequestModel!.selectedImages =
             finalSelectedFiles;
 
-        debugPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
+        Utils.customPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
       } else {
         commonProvider.addVesselRequestModel!.selectedImages = [];
       }
@@ -1031,7 +976,7 @@ class _TripWidgetState extends State<TripWidget> {
           .then((value) async {
         if (value != null) {
           if (value.status!) {
-            // print('DATA');
+            // Utils.customPrint('DATA');
             _databaseService.updateIsSyncStatus(
                 1, widget.tripList!.vesselId.toString());
 
@@ -1074,7 +1019,7 @@ class _TripWidgetState extends State<TripWidget> {
     if (mounted) {
       setState(() {
         tripIsRunning = result;
-        print('Trip is Running $tripIsRunning');
+        Utils.customPrint('Trip is Running $tripIsRunning');
         setState(() {
           isTripEndedOrNot = false;
         });

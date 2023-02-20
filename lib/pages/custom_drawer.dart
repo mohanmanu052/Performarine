@@ -39,7 +39,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   @override
   Widget build(BuildContext context) {
     textSize = displayWidth(context) * 0.038;
-    // debugPrint('X-TOKEN ${commonProvider.loginModel!.userEmail}');
+    // Utils.customPrint('X-TOKEN ${commonProvider.loginModel!.userEmail}');
 
     return Drawer(
       child: Container(

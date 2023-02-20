@@ -19,6 +19,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
+import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:get/get.dart';
 // import 'package:location/location.dart';
@@ -116,7 +117,7 @@ class _TripListScreenState extends State<TripListScreen> {
             make: iosDeviceInfo?.utsname.machine,
             model: iosDeviceInfo?.model,
             version: iosDeviceInfo?.utsname.release);
-    debugPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
+    Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
   }
 
   @override
@@ -328,21 +329,34 @@ class _TripListScreenState extends State<TripListScreen> {
                                   snapshot.data![index].isEndTripClicked = true;
                                 });
 
+                                CreateTrip().endTrip(
+                                    context: context,
+                                    scaffoldKey: scaffoldKey,
+                                    onEnded: () {
+                                      setState(() {
+                                        future = _databaseService
+                                            .getAllTripsByVesselId(
+                                                widget.vesselId.toString());
+                                      });
+                                    });
+                                return;
+
                                 bool isServiceRunning =
                                     await service.isRunning();
 
-                                print('IS SERVICE RUNNING: $isServiceRunning');
+                                Utils.customPrint(
+                                    'IS SERVICE RUNNING: $isServiceRunning');
 
                                 try {
                                   service.invoke('stopService');
                                   // instan.stopSelf();
                                 } on Exception catch (e) {
-                                  print('SERVICE STOP BG EXE: $e');
+                                  Utils.customPrint('SERVICE STOP BG EXE: $e');
                                 }
 
                                 File? zipFile;
                                 if (timer != null) timer!.cancel();
-                                print(
+                                Utils.customPrint(
                                     'TIMER STOPPED ${ourDirectory!.path}/${snapshot.data![index].id}');
                                 final dataDir = Directory(
                                     '${ourDirectory!.path}/${snapshot.data![index].id}');
@@ -355,13 +369,13 @@ class _TripListScreenState extends State<TripListScreen> {
                                       sourceDir: dataDir,
                                       zipFile: zipFile,
                                       recurseSubDirs: true);
-                                  print('our path is $dataDir');
+                                  Utils.customPrint('our path is $dataDir');
                                 } catch (e) {
-                                  print(e);
+                                  Utils.customPrint('$e');
                                 }
 
                                 File file = File(zipFile!.path);
-                                print('FINAL PATH: ${file.path}');
+                                Utils.customPrint('FINAL PATH: ${file.path}');
 
                                 await sharedPreferences!.reload();
 
@@ -409,12 +423,6 @@ class _TripListScreenState extends State<TripListScreen> {
                                         snapshot.data![index].vesselId!);
 
                                 sharedPreferences!.remove('trip_data');
-
-                                setState(() {
-                                  future =
-                                      _databaseService.getAllTripsByVesselId(
-                                          widget.vesselId.toString());
-                                });
                               })
                           : commonText(
                               text: 'oops! No Trips are added yet',
@@ -521,7 +529,7 @@ class _TripListScreenState extends State<TripListScreen> {
                               );
                             },
                             onEnd: () {
-                              debugPrint('END');
+                              Utils.customPrint('END');
                               stateSetter(() {
                                 isStartButton = true;
                               });
@@ -733,7 +741,7 @@ class _TripListScreenState extends State<TripListScreen> {
 
                                     copiedFile.copy(directory.path);
 
-                                    print(
+                                    Utils.customPrint(
                                         'DOES FILE EXIST: ${copiedFile.existsSync()}');
 
                                     if (copiedFile.existsSync()) {
@@ -829,7 +837,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                               //       stateSetter(() =>
                                               //           selectedVesselName =
                                               //               vesselName);
-                                              //       print(selectedVesselName);
+                                              //       Utils.customPrint(selectedVesselName);
                                               //     },
                                               //   ),
                                               // ),
@@ -979,7 +987,7 @@ class _TripListScreenState extends State<TripListScreen> {
 
                                       File? zipFile;
                                       if (timer != null) timer!.cancel();
-                                      print(
+                                      Utils.customPrint(
                                           'TIMER STOPPED ${ourDirectory!.path}');
                                       final dataDir =
                                           Directory(ourDirectory!.path);
@@ -992,9 +1000,10 @@ class _TripListScreenState extends State<TripListScreen> {
                                             sourceDir: dataDir,
                                             zipFile: zipFile,
                                             recurseSubDirs: true);
-                                        print('our path is $dataDir');
+                                        Utils.customPrint(
+                                            'our path is $dataDir');
                                       } catch (e) {
-                                        print(e);
+                                        Utils.customPrint('$e');
                                       }
 
                                       File file = File(zipFile!.path);
@@ -1004,7 +1013,8 @@ class _TripListScreenState extends State<TripListScreen> {
                                           isZipFileCreate = true;
                                         });
                                       });
-                                      print('FINAL PATH: ${file.path}');
+                                      Utils.customPrint(
+                                          'FINAL PATH: ${file.path}');
                                       onSave(file);
 
                                       /*File file = File(zipFile!.path);
@@ -1112,7 +1122,7 @@ class _TripListScreenState extends State<TripListScreen> {
                         );
                       },
                       onEnd: () {
-                        debugPrint('END');
+                        Utils.customPrint('END');
 
                         stateSetter(() {
                           isStartButton = true;
@@ -1288,8 +1298,8 @@ class _TripListScreenState extends State<TripListScreen> {
     latitude = locationData!.latitude.toString();
     longitude = locationData.longitude.toString();
 
-    debugPrint('LAT ${latitude}');
-    debugPrint('LONG ${longitude}');
+    Utils.customPrint('LAT ${latitude}');
+    Utils.customPrint('LONG ${longitude}');
 
     return locationData;
   }
@@ -1297,11 +1307,11 @@ class _TripListScreenState extends State<TripListScreen> {
   startSensorFunctionality(StateSetter stateSetter) async {
     fileName = '$fileIndex.csv';
 
-    debugPrint('CREATE TRIP $fileName');
+    Utils.customPrint('CREATE TRIP $fileName');
 
     String? tripId;
     //getTripId = await getTripIdFromPref();
-    print(widget.vesselId);
+    Utils.customPrint(widget.vesselId.toString());
     writeSensorDataToFile(widget.vesselId!);
     stateSetter(() {
       isStartButton = false;
@@ -1323,23 +1333,23 @@ class _TripListScreenState extends State<TripListScreen> {
 
     /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
     if (fileSize >= 10) {
-      print('STOPPED WRITING');
-      print('CREATING NEW FILE');
+      Utils.customPrint('STOPPED WRITING');
+      Utils.customPrint('CREATING NEW FILE');
       // if (timer != null) timer!.cancel();
-      // print('TIMER STOPPED');
+      // Utils.customPrint('TIMER STOPPED');
 
       setState(() {
         fileIndex = fileIndex + 1;
 
         fileName = '$fileIndex.csv';
 
-        print('FILE NAME: $fileName');
+        Utils.customPrint('FILE NAME: $fileName');
       });
-      print('NEW FILE CREATED');
+      Utils.customPrint('NEW FILE CREATED');
 
       /// STOP WRITING & CREATE NEW FILE
     } else {
-      print('WRITING');
+      Utils.customPrint('WRITING');
 
       pos.Position? locationData =
           await Utils.getLocationPermission(context, scaffoldKey);
@@ -1347,8 +1357,8 @@ class _TripListScreenState extends State<TripListScreen> {
       latitude = locationData!.latitude.toString();
       longitude = locationData.longitude.toString();
 
-      debugPrint('LAT ${latitude}');
-      debugPrint('LONG ${longitude}');
+      Utils.customPrint('LAT ${latitude}');
+      Utils.customPrint('LONG ${longitude}');
 
       String acc = convertDataToString('AAC', _accelerometerValues ?? []);
       String uacc = convertDataToString('UACC', _userAccelerometerValues ?? []);
@@ -1361,7 +1371,7 @@ class _TripListScreenState extends State<TripListScreen> {
 
       file.writeAsString('$finalString\n', mode: FileMode.append);
 
-      // debugPrint('DATE ${finalString}');
+      // Utils.customPrint('DATE ${finalString}');
     }
   }
 
@@ -1379,9 +1389,9 @@ class _TripListScreenState extends State<TripListScreen> {
       double sizeInMB = sizeInKB / 1024;
 
       int finalSizeInMB = sizeInMB.toInt();
-      print('FILE SIZE: $sizeInMB');
-      print('FILE SIZE KB: $sizeInKB');
-      print('FINAL FILE SIZE: $finalSizeInMB');
+      Utils.customPrint('FILE SIZE: $sizeInMB');
+      Utils.customPrint('FILE SIZE KB: $sizeInKB');
+      Utils.customPrint('FINAL FILE SIZE: $finalSizeInMB');
       return sizeInKB.toInt();
     } else {
       return -1;
@@ -1408,7 +1418,7 @@ class _TripListScreenState extends State<TripListScreen> {
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}/$tripId');
 
-    debugPrint('FOLDER PATHH $ourDirectory');
+    Utils.customPrint('FOLDER PATHH $ourDirectory');
     var status = await Permission.storage.status;
     if (!status.isGranted) {
       await Permission.storage.request();
@@ -1428,7 +1438,7 @@ class _TripListScreenState extends State<TripListScreen> {
     if (await ourDirectory.exists()) {
       Directory('${appDirectory.path}/sensor').delete(recursive: true);
     } else {
-      debugPrint('Custom Direcotry deleted');
+      Utils.customPrint('Custom Direcotry deleted');
     }
   }
 
@@ -1440,12 +1450,13 @@ class _TripListScreenState extends State<TripListScreen> {
     // await fetchDeviceInfo();
     await fetchDeviceData();
 
-    debugPrint('hello device details: ${deviceDetails!.toJson().toString()}');
-    // debugPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
+    Utils.customPrint(
+        'hello device details: ${deviceDetails!.toJson().toString()}');
+    // Utils.customPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
     String latitude = locationData!.latitude.toString();
     String longitude = locationData.longitude.toString();
 
-    debugPrint("current lod:$currentLoad");
+    Utils.customPrint("current lod:$currentLoad");
     var uuid = Uuid();
     final String getTripId = ObjectId().toString();
     await _databaseService.insertTrip(Trip(
@@ -1465,7 +1476,7 @@ class _TripListScreenState extends State<TripListScreen> {
     /*if (Platform.isAndroid) {
       bool isPermitted =
           await Utils.getLocationPermissions(context, scaffoldKey);
-      print('ISPermitted: $isPermitted');
+      Utils.customPrint('ISPermitted: $isPermitted');
       if (isPermitted) {
         bool isGranted = await Permission.location.isGranted;
         // onPressed: () {
@@ -1530,7 +1541,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                         );
                                       },
                                       onEnd: () {
-                                        debugPrint('END here');
+                                        Utils.customPrint('END here');
                                         stateSetter(() {
                                           isStartButton = true;
                                         });
@@ -1685,7 +1696,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                                   copiedFile
                                                       .copy(directory.path);
 
-                                                  print(
+                                                  Utils.customPrint(
                                                       'DOES FILE EXIST: ${copiedFile.existsSync()}');
 
                                                   // Utils.download(context, scaffoldKey,ourDirectory!.path);
@@ -1816,7 +1827,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                                 File? zipFile;
                                                 if (timer != null)
                                                   timer!.cancel();
-                                                print(
+                                                Utils.customPrint(
                                                     'TIMER STOPPED ${ourDirectory!.path}');
                                                 final dataDir = Directory(
                                                     ourDirectory!.path);
@@ -1829,13 +1840,13 @@ class _TripListScreenState extends State<TripListScreen> {
                                                       sourceDir: dataDir,
                                                       zipFile: zipFile,
                                                       recurseSubDirs: true);
-                                                  print('our path is $dataDir');
+                                                  Utils.customPrint('our path is $dataDir');
                                                   Get.back();
                                                 } catch (e) {
-                                                  print('EXEEE: $e');
+                                                  Utils.customPrint('EXEEE: $e');
                                                 }
                                                 File file = File(zipFile!.path);
-                                                print(
+                                                Utils.customPrint(
                                                     'FINAL PATH: ${file.path}');
                                                 // onSave(file);
                                               })

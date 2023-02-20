@@ -140,7 +140,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                         return null;
                       },
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -167,7 +167,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                         return null;
                       },
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -194,7 +194,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                         return null;
                       },
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -221,7 +221,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                         return null;
                       },
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.025),
                   commonText(
@@ -255,7 +255,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                         return null;
                       },
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -281,7 +281,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                         return null;
                       },
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -311,7 +311,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                         return null;
                       },
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                 ],
               ),
@@ -380,7 +380,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                   .selectedImages!.isNotEmpty) {
                                 String vesselImagesDirPath = await CreateTrip()
                                     .getOrCreateFolderForAddVessel();
-                                print('FOLDER PATH: $vesselImagesDirPath');
+                                Utils.customPrint(
+                                    'FOLDER PATH: $vesselImagesDirPath');
 
                                 File copiedFile = File(commonProvider
                                     .addVesselRequestModel!
@@ -401,12 +402,14 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
 
                                 copiedFile.copy(directory.path);
 
-                                print(
+                                Utils.customPrint(
                                     'DOES FILE EXIST: ${copiedFile.existsSync()}');
 
-                                print('COPIED FILE PATH: ${copiedFile.path}');
-                                print('COPIED FILE PATH: ${directory.path}');
-                                print(
+                                Utils.customPrint(
+                                    'COPIED FILE PATH: ${copiedFile.path}');
+                                Utils.customPrint(
+                                    'COPIED FILE PATH: ${directory.path}');
+                                Utils.customPrint(
                                     'COPIED FILE PATH EXISTS: ${File(directory.path).existsSync()}');
 
                                 commonProvider.addVesselRequestModel!
@@ -424,9 +427,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                               return;*/
 
                               if (widget.isEdit!) {
-                                print(
+                                Utils.customPrint(
                                     'VESSEL NAME: ${widget.addVesselData!.name}');
-                                print(
+                                Utils.customPrint(
                                     'VESSEL NAME: ${commonProvider.addVesselRequestModel!.toMap()}');
 
                                 await _databaseService

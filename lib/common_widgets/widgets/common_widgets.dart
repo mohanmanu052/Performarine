@@ -107,7 +107,8 @@ Widget? selectImage(
                       bool isCameraPermissionGranted =
                           await Permission.camera.isGranted;
 
-                      debugPrint(' CAM PERMISSION $isCameraPermissionGranted');
+                      Utils.customPrint(
+                          ' CAM PERMISSION $isCameraPermissionGranted');
 
                       if (!isCameraPermissionGranted) {
                         await Utils.getStoragePermission(
@@ -911,7 +912,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
                     children: [
                       commonText(
                           context: context,
-                          text: '$distance nm',
+                          text: '$distance $nauticalMile',
                           fontWeight: FontWeight.w600,
                           textColor: Colors.black,
                           textSize: displayWidth(context) * 0.044,
@@ -950,7 +951,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
                           children: [
                             commonText(
                                 context: context,
-                                text: '$currentSpeed m/h',
+                                text: '$currentSpeed $knot',
                                 fontWeight: FontWeight.w600,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.044,
@@ -984,7 +985,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
                           children: [
                             commonText(
                                 context: context,
-                                text: '$avgSpeed nm',
+                                text: '$avgSpeed $knot',
                                 fontWeight: FontWeight.w600,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.044,
@@ -1017,7 +1018,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
                     children: [
                       commonText(
                           context: context,
-                          text: '${avgSpeed}nm',
+                          text: '${avgSpeed}$knot',
                           fontWeight: FontWeight.w600,
                           textColor: Colors.black,
                           textSize: displayWidth(context) * 0.044,

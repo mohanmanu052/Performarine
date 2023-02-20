@@ -71,7 +71,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
       _capacityController.text = widget.vessel!.capacity.toString();
       _builtyearController.text = widget.vessel!.builtYear.toString();
     }
-    // debugPrint("freeboard: ${_freeboardController.text.runtimeType}");
+    // Utils.customPrint("freeboard: ${_freeboardController.text.runtimeType}");
   }
 
   Future<List<Trip>> _gettrips() async {
@@ -124,8 +124,8 @@ class _VesselFormPageState extends State<VesselFormPage> {
     final builtYear = _builtyearController.text;
     var uuid = Uuid();
     // Add save code here
-    // debugPrint('widget.vessel!.freeboard.toString():${widget.vessel!.freeboard.toString()}');
-    // debugPrint('widget.vessel!.freeboard.toString():${_freeboardController.text}');
+    // Utils.customPrint('widget.vessel!.freeboard.toString():${widget.vessel!.freeboard.toString()}');
+    // Utils.customPrint('widget.vessel!.freeboard.toString():${_freeboardController.text}');
     widget.vessel == null
         ? await _databaseService.insertVessel(
             // Dog(name: name, age: age, breedId: breed.id!),

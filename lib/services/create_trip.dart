@@ -10,6 +10,7 @@ import 'package:flutter_background_service_android/flutter_background_service_an
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/services/database_service.dart';
@@ -24,7 +25,7 @@ class CreateTrip {
   Future<String> getOrCreateFolderForAddVessel() async {
     final appDirectory = await getApplicationDocumentsDirectory();
     Directory directory = Directory('${appDirectory.path}/vesselImages');
-    debugPrint('FOLDER PATH $directory');
+    Utils.customPrint('FOLDER PATH $directory');
     var status = await Permission.storage.status;
     if (!status.isGranted) {
       await Permission.storage.request();
@@ -62,7 +63,7 @@ class CreateTrip {
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}/$tripId');
 
-    debugPrint('FOLDER PATH $ourDirectory');
+    Utils.customPrint('FOLDER PATH $ourDirectory');
     if ((await ourDirectory.exists())) {
       return ourDirectory.path;
     } else {
@@ -85,9 +86,9 @@ class CreateTrip {
       double sizeInMB = sizeInKB / 1024;
 
       int finalSizeInMB = sizeInMB.toInt();
-      // print('FILE SIZE: $sizeInMB');
-      //print('FILE SIZE KB: $sizeInKB');
-      // print('FINAL FILE SIZE: $finalSizeInMB');
+      // Utils.customPrint('FILE SIZE: $sizeInMB');
+      //Utils.customPrint('FILE SIZE KB: $sizeInKB');
+      // Utils.customPrint('FINAL FILE SIZE: $finalSizeInMB');
       return sizeInKB.toInt();
     } else {
       return -1;
@@ -102,20 +103,20 @@ class CreateTrip {
 
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
-    print(
+    Utils.customPrint(
         'TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')}');
 
     String tripId = tripData![0];
     String vesselId = tripData[1];
 
-    int? tripDuration = sharedPreferences!.getInt("tripDuration") ?? 1;
+    String? tripDuration =
+        sharedPreferences!.getString("tripDuration") ?? '00:00:00';
     String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
     String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
     String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
 
-    String finalTripDuration =
-        Utils.calculateTripDuration((tripDuration / 1000).toInt());
-    String finalTripDistance = tripDistance;
+    // String finalTripDuration = tripDuration;
+    // String finalTripDistance = tripDistance;
 
     service.invoke('stopService');
 
@@ -128,7 +129,7 @@ class CreateTrip {
 
     File? zipFile;
     if (timer != null) timer!.cancel();
-    print('TIMER STOPPED ${ourDirectory!.path}/$tripId');
+    Utils.customPrint('TIMER STOPPED ${ourDirectory!.path}/$tripId');
     final dataDir = Directory('${ourDirectory!.path}/$tripId');
 
     try {
@@ -139,9 +140,9 @@ class CreateTrip {
           .then((value) {
         downloadTrip(context!, tripId);
       });
-      print('our path is $dataDir');
+      Utils.customPrint('our path is $dataDir');
     } catch (e) {
-      print(e);
+      Utils.customPrint('$e');
     }
 
     File file = File(zipFile!.path);
@@ -149,31 +150,27 @@ class CreateTrip {
     ///Download
     //  downloadTrip(context!, tripId);
     var pref = await SharedPreferences.getInstance();
-    print('FINAL PATH: ${file.path}');
-    print('FINAL PATH: ${pref.getInt("tripDuration")}');
+    Utils.customPrint('FINAL PATH: ${file.path}');
 
     sharedPreferences!.remove('trip_data');
     sharedPreferences!.remove('trip_started');
     Position? currentLocationData =
         await Utils.getLocationPermission(context!, scaffoldKey!);
+
     await DatabaseService().updateTripStatus(
         1,
         file.path,
         DateTime.now().toUtc().toString(),
         [currentLocationData!.latitude, currentLocationData.longitude]
             .join(","),
-        finalTripDuration,
-        finalTripDistance,
-        tripSpeed.toString(),
+        tripDuration,
+        tripDistance,
+        tripSpeed,
         tripAvgSpeed,
         tripId);
 
     await DatabaseService().updateVesselDataWithDurationSpeedDistance(
-        finalTripDuration,
-        finalTripDistance,
-        tripSpeed.toString(),
-        tripAvgSpeed,
-        vesselId);
+        tripDuration, tripDistance, tripSpeed, tripAvgSpeed, vesselId);
 
     await flutterLocalNotificationsPlugin.cancel(888);
 
@@ -181,7 +178,7 @@ class CreateTrip {
   }
 
   startTrip(ServiceInstance serviceInstance) async {
-    print('Background task is running');
+    Utils.customPrint('Background task is running');
 
     var pref = await SharedPreferences.getInstance();
 
@@ -210,11 +207,11 @@ class CreateTrip {
       if (value == LocationPermission.always) {
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position event) {
-          print(event == null
+          Utils.customPrint(event == null
               ? 'Unknown'
               : '${event.latitude.toString()}, ${event.longitude.toString()}');
 
-          debugPrint('SPEED SPEED ${event.speed}');
+          Utils.customPrint('SPEED SPEED ${event.speed}');
           latitude = event.latitude;
           longitude = event.longitude;
           speed = event.speed;
@@ -231,7 +228,7 @@ class CreateTrip {
     bool userAccelerometerAvailable = await s.SensorManager()
         .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
 
-    debugPrint('GYROSCOPE SENSOR $gyroscopeAvailable');
+    Utils.customPrint('GYROSCOPE SENSOR $gyroscopeAvailable');
 
     if (accelerometerAvailable) {
       _streamSubscriptions.add(
@@ -277,7 +274,7 @@ class CreateTrip {
       serviceInstance.on('setAsForeground').listen((event) async {
         serviceInstance.setAsForegroundService();
         // bool vaslue = await serviceInstance.isForegroundService();
-        // print('IS FOREGROUND SERVICE: $vaslue');
+        // Utils.customPrint('IS FOREGROUND SERVICE: $vaslue');
         // serviceInstance.setForegroundNotificationInfo(
         //     title: 'PerforMarine',
         //     content: 'PerforMarine consuming background services.');
@@ -292,7 +289,7 @@ class CreateTrip {
       serviceInstance.stopSelf();
       /*sharedPreferences!.setString('lastLat', latitude.toString()) as String;
     sharedPreferences!.setString('lastLong', longitude.toString()) as String;*/
-      print('service stopped'.toUpperCase());
+      Utils.customPrint('service stopped'.toUpperCase());
       if (positionStream != null) {
         positionStream!.cancel();
       }
@@ -310,17 +307,18 @@ class CreateTrip {
     });
 
     /* serviceInstance.on("stopSending").listen((event) {
-    print('STOP SENDING: ${event!['stopSending']}');
+    Utils.customPrint('STOP SENDING: ${event!['stopSending']}');
     stopSending = event['stopSending'];
   });*/
 
     serviceInstance.on('onStartTrip').listen((event) async {
       // bring to foreground
-      print('ON START TRIP');
+      Utils.customPrint('ON START TRIP');
 
       Position startTripPosition = await Geolocator.getCurrentPosition();
       double finalTripDistance = 0;
       int finalTripDuration = 0;
+      int calculateDuration1 = 0;
       double finalTripSpeed = 0;
       double finalTripAvgSpeed = 0;
 
@@ -335,7 +333,7 @@ class CreateTrip {
           endTripLat,
           endTripLong);
 
-      print('TRIP DISTANCE: $tripDistance');
+      Utils.customPrint('TRIP DISTANCE: $tripDistance');
     });*/
       // var pref = await SharedPreferences.getInstance();
 
@@ -350,32 +348,33 @@ class CreateTrip {
             endTripPosition.latitude,
             endTripPosition.longitude);
 
+        /// DURATION 00:00:00
+        String tripDurationForStorage =
+            Utils.calculateTripDuration((finalTripDuration / 1000).toInt());
+
+        /// DISTANCE
         finalTripDistance =
             finalTripDistance < tripDistance ? tripDistance : finalTripDistance;
+        String tripDistanceForStorage = calculateDistance(finalTripDistance);
 
-        finalTripSpeed = (speed * 2.237);
+        /// SPEED
+        String tripSpeedForStorage = calculateCurrentSpeed(speed);
 
-        finalTripAvgSpeed =
-            (((finalTripDistance / 1852) / (finalTripDuration / 1000)) * 1.944);
+        /// AVG. SPEED
+        String tripAvgSpeedForStorage =
+            calculateAvgSpeed(finalTripDistance, finalTripDuration);
+        // finalTripAvgSpeed = (((finalTripDistance / 1852) / (finalTripDuration / 1000)) * 1.944);
 
-        print(
-            'TRIP DISTANCE: ${(finalTripDistance / 1852).toStringAsFixed(2)}');
-        print('TRIP DURATION: $finalTripDuration');
-        print('TRIP SPEED 1212: $finalTripSpeed');
-        print('AVG SPEED: ${finalTripAvgSpeed.toStringAsFixed(2)}');
-
-        debugPrint('AVG SPEED 12 ${finalTripAvgSpeed.toStringAsFixed(2)}');
-
-        if (finalTripAvgSpeed.isNaN) {
-          finalTripAvgSpeed = 0.0;
-        }
+        Utils.customPrint('TRIP DISTANCE: $tripDistanceForStorage');
+        Utils.customPrint('TRIP DURATION: $tripDurationForStorage');
+        Utils.customPrint('TRIP SPEED 1212: $tripSpeedForStorage');
+        Utils.customPrint('AVG SPEED: $tripAvgSpeedForStorage');
 
         serviceInstance.invoke('tripAnalyticsData', {
-          "tripDistance":
-              (finalTripDistance / 1852).toDouble().toStringAsFixed(2),
-          "tripDuration": finalTripDuration,
-          "tripSpeed": finalTripSpeed.toStringAsFixed(1),
-          "tripAvgSpeed": finalTripAvgSpeed.toStringAsFixed(1)
+          "tripDistance": tripDistanceForStorage,
+          "tripDuration": tripDurationForStorage,
+          "tripSpeed": tripSpeedForStorage,
+          "tripAvgSpeed": tripAvgSpeedForStorage
         });
 
         if (serviceInstance is AndroidServiceInstance) {
@@ -395,19 +394,17 @@ class CreateTrip {
                     /*styleInformation:
                         BigTextStyleInformation('', summaryText: '$tripId')*/
                     styleInformation: BigTextStyleInformation(
-                        'Duration: ${Utils.calculateTripDuration((finalTripDuration / 1000).toInt())}    Distance: ${(finalTripDistance / 1852).toStringAsFixed(2)} nm\nSpeed: ${finalTripSpeed.toStringAsFixed(1)} m/h        Avg Speed: ${(finalTripAvgSpeed).toStringAsFixed(1)} nm',
+                        'Duration: $tripDurationForStorage    Distance: $tripDistanceForStorage $nauticalMile\nSpeed: $tripSpeedForStorage $knot        Avg Speed: $tripAvgSpeedForStorage $knot',
                         htmlFormatContentTitle: true,
-                        summaryText: '$tripId')),
+                        summaryText: '')),
               ),
             );
 
-            pref.setString(
-                'tripDistance', (finalTripDistance / 1852).toStringAsFixed(2));
-            pref.setInt('tripDuration', finalTripDuration);
+            pref.setString('tripDistance', tripDistanceForStorage);
+            pref.setString('tripDuration', tripDurationForStorage);
             // To get values in Km/h
-            pref.setString('tripSpeed', finalTripSpeed.toStringAsFixed(1));
-            pref.setString(
-                'tripAvgSpeed', finalTripAvgSpeed.toStringAsFixed(1));
+            pref.setString('tripSpeed', tripSpeedForStorage);
+            pref.setString('tripAvgSpeed', tripAvgSpeedForStorage);
 
             String filePath = await CreateTrip().getFile(tripId, fileName);
             File file = File(filePath);
@@ -416,37 +413,38 @@ class CreateTrip {
             /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
             /// Now File Size is 200000
             if (fileSize >= 200000) {
-              print('STOPPED WRITING');
-              print('CREATING NEW FILE');
+              Utils.customPrint('STOPPED WRITING');
+              Utils.customPrint('CREATING NEW FILE');
               // if (timer != null) timer.cancel();
-              // print('TIMER STOPPED');
+              // Utils.customPrint('TIMER STOPPED');
               fileIndex = fileIndex + 1;
               fileName = '$fileIndex.csv';
-              // print('FILE NAME: $fileName');
-              //print('NEW FILE CREATED');
+              // Utils.customPrint('FILE NAME: $fileName');
+              //Utils.customPrint('NEW FILE CREATED');
 
               /// STOP WRITING & CREATE NEW FILE
             } else {
-              print('WRITING');
+              Utils.customPrint('WRITING');
               String gyro = '', acc = '', mag = '', uacc = '';
-              //print('LAT1 LONG1 $latitude $longitude');
+              //Utils.customPrint('LAT1 LONG1 $latitude $longitude');
 
-              if (gyroscopeAvailable) {
-                gyro = CreateTrip()
-                    .convertDataToString('GYRO', _gyroscopeValues!, tripId);
-              }
-              if (accelerometerAvailable) {
-                acc = CreateTrip()
-                    .convertDataToString('AAC', _accelerometerValues!, tripId);
-              }
-              if (magnetometerAvailable) {
-                mag = CreateTrip()
-                    .convertDataToString('MAG', _magnetometerValues!, tripId);
-              }
-              if (userAccelerometerAvailable) {
-                uacc = CreateTrip().convertDataToString(
-                    'UACC', _userAccelerometerValues!, tripId);
-              }
+              gyro = CreateTrip().convertDataToString('GYRO',
+                  gyroscopeAvailable ? _gyroscopeValues! : [0.0], tripId);
+
+              acc = CreateTrip().convertDataToString(
+                  'AAC',
+                  accelerometerAvailable ? _accelerometerValues! : [0.0],
+                  tripId);
+
+              mag = CreateTrip().convertDataToString('MAG',
+                  magnetometerAvailable ? _magnetometerValues! : [0.0], tripId);
+
+              uacc = CreateTrip().convertDataToString(
+                  'UACC',
+                  userAccelerometerAvailable
+                      ? _userAccelerometerValues!
+                      : [0.0],
+                  tripId);
 
               String location = '$latitude $longitude';
               String gps =
@@ -454,7 +452,7 @@ class CreateTrip {
 
               String finalString = '';
 
-              if (gyroscopeAvailable &&
+              /*if (gyroscopeAvailable &&
                   accelerometerAvailable &&
                   userAccelerometerAvailable &&
                   magnetometerAvailable) {
@@ -484,11 +482,13 @@ class CreateTrip {
                   !userAccelerometerAvailable &&
                   !magnetometerAvailable) {
                 finalString = '$gps';
-              }
+              }*/
+
+              finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
 
               file.writeAsString('$finalString\n', mode: FileMode.append);
 
-              print('GPS $gps');
+              Utils.customPrint('GPS $gps');
             }
           }
         }
@@ -497,7 +497,7 @@ class CreateTrip {
   }
 
   downloadTrip(BuildContext context, String tripId) async {
-    debugPrint('DOWLOAD Started!!!');
+    Utils.customPrint('DOWLOAD Started!!!');
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
 
@@ -509,7 +509,7 @@ class CreateTrip {
         //File copiedFile = File('${ourDirectory!.path}.zip');
         File copiedFile = File('${ourDirectory!.path}/${tripId}.zip');
 
-        print('DIR PATH R ${ourDirectory!.path}');
+        Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
 
         Directory directory;
 
@@ -521,10 +521,10 @@ class CreateTrip {
 
         copiedFile.copy(directory.path);
 
-        print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+        Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
 
         if (copiedFile.existsSync()) {
-          print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+          Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
         }
       } else {
         await Utils.getStoragePermission(context);
@@ -543,10 +543,10 @@ class CreateTrip {
 
           copiedFile.copy(directory.path);
 
-          print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+          Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
 
           if (copiedFile.existsSync()) {
-            print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+            Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
           }
         }
       }
@@ -554,8 +554,8 @@ class CreateTrip {
       //File copiedFile = File('${ourDirectory!.path}.zip');
       File copiedFile = File('${ourDirectory!.path}/${tripId}.zip');
 
-      print('DIR PATH RT ${copiedFile.path}');
-      print('DIR PATH RT ${copiedFile.existsSync()}');
+      Utils.customPrint('DIR PATH RT ${copiedFile.path}');
+      Utils.customPrint('DIR PATH RT ${copiedFile.existsSync()}');
 
       Directory directory;
 
@@ -567,11 +567,29 @@ class CreateTrip {
 
       copiedFile.copy(directory.path);
 
-      print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+      Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
 
       if (copiedFile.existsSync()) {
-        print('DOES FILE EXIST: ${copiedFile.existsSync()}');
+        Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
       }
     }
+  }
+
+  int calculateDuration(int seconds) {
+    double newValue = seconds / 1000;
+    return newValue.toInt();
+  }
+
+  String calculateDistance(double distance) {
+    return (distance / 1852).toStringAsFixed(2);
+  }
+
+  String calculateCurrentSpeed(double speed) {
+    return (speed * 1.944).toStringAsFixed(1); // Knots
+  }
+
+  String calculateAvgSpeed(double tripDistance, int tripDuration) {
+    double value = (((tripDistance) / (tripDuration / 1000)) * 1.944); //Knots
+    return value.isNaN ? '0.0' : value.toStringAsFixed(1);
   }
 }

@@ -176,7 +176,7 @@ class _TripViewListingState extends State<TripViewListing> {
 
     setState(() {
       tripIsRunning = result;
-      print('Trip is Running $tripIsRunning');
+      Utils.customPrint('Trip is Running $tripIsRunning');
       setState(() {
         trip.isEndTripClicked = false;
       });

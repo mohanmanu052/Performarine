@@ -175,9 +175,9 @@ class _IntroScreenState extends State<IntroScreen> {
     var service = FlutterBackgroundService();
     bool isServiceRunning = await service.isRunning();
 
-    print('IS SERVICE RUNNING:$isServiceRunning');
+    Utils.customPrint('IS SERVICE RUNNING:$isServiceRunning');
 
-    debugPrint('INTRO START $isTripStarted');
+    Utils.customPrint('INTRO START $isTripStarted');
 
     setState(() {
       isTripRunningCurrently = isTripStarted;
@@ -192,7 +192,7 @@ class _IntroScreenState extends State<IntroScreen> {
         //var service2 = FlutterBackgroundService();
         bool isServiceRunning = await service.isRunning();
 
-        print('IS SERVICE RUNNING 222:$isServiceRunning');
+        Utils.customPrint('IS SERVICE RUNNING 222:$isServiceRunning');
       }
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) {
@@ -221,7 +221,7 @@ class _IntroScreenState extends State<IntroScreen> {
               .getNotificationAppLaunchDetails();
 
       if (notificationAppLaunchDetails == null) {
-        print('NotificationAppLaunchDetails IS NULL');
+        Utils.customPrint('NotificationAppLaunchDetails IS NULL');
         Future.delayed(Duration(seconds: 3), () {
           if (mounted) {
             setState(() {
@@ -231,7 +231,7 @@ class _IntroScreenState extends State<IntroScreen> {
         });
       } else {
         if (!notificationAppLaunchDetails.didNotificationLaunchApp) {
-          print('NotificationAppLaunchDetails IS FALSE');
+          Utils.customPrint('NotificationAppLaunchDetails IS FALSE');
           Future.delayed(Duration(seconds: 3), () {
             if (mounted) {
               setState(() {
@@ -240,7 +240,7 @@ class _IntroScreenState extends State<IntroScreen> {
             }
           });
         } else {
-          print('NotificationAppLaunchDetails IS TRUE');
+          Utils.customPrint('NotificationAppLaunchDetails IS TRUE');
 
           if (notificationAppLaunchDetails.notificationResponse!.id == 888) {
             List<String>? tripData =
@@ -267,7 +267,7 @@ class _IntroScreenState extends State<IntroScreen> {
       }
 
       /*Future.delayed(Duration(seconds: 3), () {
-        print('IS CALLED FROM NOTI: $isCalledFromNoti');
+        Utils.customPrint('IS CALLED FROM NOTI: $isCalledFromNoti');
         if (isCalledFromNoti == null) {
         } else if (!isCalledFromNoti) {
           if (mounted) {
@@ -289,7 +289,7 @@ class _IntroScreenState extends State<IntroScreen> {
     bool? isTripStarted = pref.getBool('trip_started');
     bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
 
-    debugPrint('ISUSERLOGEDIN $isUserLoggedIn');
+    Utils.customPrint('ISUSERLOGEDIN $isUserLoggedIn');
 
     var service = FlutterBackgroundService();
     bool isServiceRunning = await service.isRunning();
@@ -320,7 +320,7 @@ class _IntroScreenState extends State<IntroScreen> {
             ModalRoute.withName(""));
       }
     } else if (isTripStarted) {
-      debugPrint('INTRO TRIP IS RUNNING $isTripStarted');
+      Utils.customPrint('INTRO TRIP IS RUNNING $isTripStarted');
 
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 

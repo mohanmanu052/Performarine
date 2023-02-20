@@ -52,17 +52,14 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       http.StreamedResponse response = await request.send();
       http.Response responseValue = await http.Response.fromStream(response);
 
-      kReleaseMode
-          ? null
-          : debugPrint('Create Trip REQ : ' + responseValue.body);
-      debugPrint('Create Trip CODE : ' + responseValue.statusCode.toString());
+      Utils.customPrint('Create Trip REQ : ' + responseValue.body);
+      Utils.customPrint(
+          'Create Trip CODE : ' + responseValue.statusCode.toString());
 
       var decodedData = json.decode(responseValue.body);
 
       if (response.statusCode == HttpStatus.ok) {
-        kReleaseMode
-            ? null
-            : debugPrint('Create Trip Response : ' + responseValue.body);
+        Utils.customPrint('Create Trip Response : ' + responseValue.body);
 
         commonModel = CommonModel.fromJson(json.decode(responseValue.body));
         //final pref = await Utils.initSharedPreferences();
@@ -73,10 +70,8 @@ class SendSensorInfoApiProvider with ChangeNotifier {
             scaffoldKey: scaffoldKey, message: decodedData['message']);
         return commonModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
-        kReleaseMode
-            ? null
-            : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $response');
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+        Utils.customPrint('EXE RESP: $response');
 
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -90,19 +85,17 @@ class SendSensorInfoApiProvider with ChangeNotifier {
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        kReleaseMode
-            ? null
-            : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $response');
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+        Utils.customPrint('EXE RESP: $response');
       }
       commonModel = null;
     } on SocketException catch (_) {
       Utils().check(scaffoldKey);
-      kReleaseMode ? null : debugPrint('Socket Exception');
+      Utils.customPrint('Socket Exception');
 
       commonModel = null;
     } catch (exception, s) {
-      kReleaseMode ? null : debugPrint('error caught login:- $exception \n $s');
+      Utils.customPrint('error caught login:- $exception \n $s');
       commonModel = null;
     }
 
@@ -166,13 +159,11 @@ class SendSensorInfoApiProvider with ChangeNotifier {
           }*/
         },
       ).then((response) {
-        print('RESPONSE: ${response.statusCode}');
-        print('RESPONSE: ${jsonEncode(response.data)}');
+        Utils.customPrint('RESPONSE: ${response.statusCode}');
+        Utils.customPrint('RESPONSE: ${jsonEncode(response.data)}');
         var decodedData = json.decode(jsonEncode(response.data));
         if (response.statusCode == HttpStatus.ok) {
-          kReleaseMode
-              ? null
-              : debugPrint('Register Response : ' + response.data.toString());
+          Utils.customPrint('Register Response : ' + response.data.toString());
 
           if (decodedData['status']) {
             uploadTripModel = UploadTripModel.fromJson(decodedData);
@@ -185,10 +176,8 @@ class SendSensorInfoApiProvider with ChangeNotifier {
           }
           return uploadTripModel;
         } else if (response.statusCode == HttpStatus.gatewayTimeout) {
-          kReleaseMode
-              ? null
-              : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-          kReleaseMode ? null : debugPrint('EXE RESP: $response');
+          Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+          Utils.customPrint('EXE RESP: $response');
 
           if (scaffoldKey != null) {
             Utils.showSnackBar(context,
@@ -202,14 +191,12 @@ class SendSensorInfoApiProvider with ChangeNotifier {
                 scaffoldKey: scaffoldKey, message: decodedData['message']);
           }
 
-          kReleaseMode
-              ? null
-              : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-          kReleaseMode ? null : debugPrint('EXE RESP: $response');
+          Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+          Utils.customPrint('EXE RESP: $response');
         }
         uploadTripModel = null;
       }).onError((error, stackTrace) {
-        // print('ERROR DIO: $error\n$stackTrace');
+        // Utils.customPrint('ERROR DIO: $error\n$stackTrace');
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey,
@@ -221,13 +208,11 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       });
     } on SocketException catch (_) {
       Utils().check(scaffoldKey);
-      kReleaseMode ? null : debugPrint('Socket Exception');
+      Utils.customPrint('Socket Exception');
 
       uploadTripModel = null;
     } catch (exception, s) {
-      kReleaseMode
-          ? null
-          : debugPrint('error caught exception:- $exception \n $s');
+      Utils.customPrint('error caught exception:- $exception \n $s');
       uploadTripModel = null;
     }
 
@@ -248,7 +233,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       uri,
       (int bytes, int total) {
         final progress = bytes / total;
-        print('PROGRESS: $progress ($bytes/$total)');
+        Utils.customPrint('PROGRESS: $progress ($bytes/$total)');
       },
     );
 
@@ -269,17 +254,14 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       http.Response responseValue =
           await http.Response.fromStream(streamedResponse);
 
-      kReleaseMode
-          ? null
-          : debugPrint('Create Trip REQ : ' + responseValue.body);
-      debugPrint('Create Trip CODE : ' + responseValue.statusCode.toString());
+      Utils.customPrint('Create Trip REQ : ' + responseValue.body);
+      Utils.customPrint(
+          'Create Trip CODE : ' + responseValue.statusCode.toString());
 
       var decodedData = json.decode(responseValue.body);
 
       if (responseValue.statusCode == HttpStatus.ok) {
-        kReleaseMode
-            ? null
-            : debugPrint('Create Trip Response : ' + responseValue.body);
+        Utils.customPrint('Create Trip Response : ' + responseValue.body);
 
         commonModel = CommonModel.fromJson(json.decode(responseValue.body));
         //final pref = await Utils.initSharedPreferences();
@@ -290,10 +272,8 @@ class SendSensorInfoApiProvider with ChangeNotifier {
             scaffoldKey: scaffoldKey, message: decodedData['message']);
         return commonModel!;
       } else if (responseValue.statusCode == HttpStatus.gatewayTimeout) {
-        kReleaseMode
-            ? null
-            : debugPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $responseValue');
+        Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
+        Utils.customPrint('EXE RESP: $responseValue');
 
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -307,21 +287,17 @@ class SendSensorInfoApiProvider with ChangeNotifier {
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        kReleaseMode
-            ? null
-            : debugPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $responseValue');
+        Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
+        Utils.customPrint('EXE RESP: $responseValue');
       }
       commonModel = null;
     } on SocketException catch (_) {
       Utils().check(scaffoldKey);
-      kReleaseMode ? null : debugPrint('Socket Exception');
+      Utils.customPrint('Socket Exception');
 
       commonModel = null;
     } catch (exception, s) {
-      kReleaseMode
-          ? null
-          : debugPrint('error caught exception:- $exception \n $s');
+      Utils.customPrint('error caught exception:- $exception \n $s');
       commonModel = null;
     }
 

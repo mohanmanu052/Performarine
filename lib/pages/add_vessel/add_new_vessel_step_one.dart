@@ -81,8 +81,8 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
 
     if (widget.isEdit!) {
       if (widget.addVesselData != null) {
-        debugPrint('ENGINE TYPE ${widget.addVesselData!.engineType!}');
-        debugPrint('Image ${widget.addVesselData!.imageURLs!}');
+        Utils.customPrint('ENGINE TYPE ${widget.addVesselData!.engineType!}');
+        Utils.customPrint('Image ${widget.addVesselData!.imageURLs!}');
 
         nameController.text = widget.addVesselData!.name!;
         modelController.text = widget.addVesselData!.model!;
@@ -143,7 +143,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                         return null;
                       },
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -168,7 +168,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                         return null;
                       },
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -194,7 +194,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                         return null;
                       },
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -220,7 +220,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                         return null;
                       },*/
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -246,7 +246,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                         return null;
                       },*/
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -272,7 +272,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                         return null;
                       },
                       onSaved: (String value) {
-                        print(value);
+                        Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   Container(
@@ -287,7 +287,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
 
                         setState(() {
                           selectedEngineType = value;
-                          print('engine $selectedEngineType');
+                          Utils.customPrint('engine $selectedEngineType');
                         });
 
                         if (selectedEngineType!.toLowerCase() == 'hybrid') {
@@ -358,7 +358,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                   return null;
                                 },
                                 onSaved: (String value) {
-                                  print(value);
+                                  Utils.customPrint(value);
                                 }),
                           ],
                         )
@@ -393,7 +393,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                   return null;
                                 },
                                 onSaved: (String value) {
-                                  print(value);
+                                  Utils.customPrint(value);
                                 }),
                           ],
                         )
@@ -403,7 +403,8 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                     child: CommonButtons.getDottedButton(
                         'Upload Images', context, () {
                       uploadImageFunction();
-                      print('FIIALLL: ${finalSelectedFiles.length}');
+                      Utils.customPrint(
+                          'FIIALLL: ${finalSelectedFiles.length}');
                     }, Colors.grey),
                   ),
                   SizedBox(height: displayHeight(context) * 0.01),
@@ -506,13 +507,13 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                           top: 0,
                                           child: InkWell(
                                             onTap: () {
-                                              print(
+                                              Utils.customPrint(
                                                   'FIIALLL: ${finalSelectedFiles.length}');
                                               setState(() {
                                                 finalSelectedFiles
                                                     .removeAt(index);
                                               });
-                                              print(
+                                              Utils.customPrint(
                                                   'FIIALLL: ${finalSelectedFiles.length}');
                                             },
                                             child: Icon(
@@ -544,11 +545,11 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                     width: displayWidth(context),
                     onTap: () {
                       if (formKey.currentState!.validate()) {
-                        debugPrint(
+                        Utils.customPrint(
                             'FINAL SELECTED FILES ${finalSelectedFiles.isEmpty}');
                         // return;
 
-                        debugPrint(
+                        Utils.customPrint(
                             'WEIGHT 1 ${int.parse(weightController.text)}');
 
                         commonProvider.addVesselRequestModel = CreateVessel();
@@ -579,7 +580,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                             batteryCapacityController.text.isEmpty
                                 ? '0'
                                 : batteryCapacityController.text;
-                        //print('ImageURL NEXT ${widget.addVesselData!.imageURLs}');
+                        //Utils.customPrint('ImageURL NEXT ${widget.addVesselData!.imageURLs}');
                         commonProvider.addVesselRequestModel!.imageURLs =
                             widget.addVesselData == null
                                 ? ''
@@ -592,8 +593,9 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 ? deletedImageUrls.join(',')
                                 : " ";*/
 
-                        print('Step ONE VESSEL NAME: ${nameController.text}');
-                        //print('Step ONE VESSEL NAME: ${nameController.text}');
+                        Utils.customPrint(
+                            'Step ONE VESSEL NAME: ${nameController.text}');
+                        //Utils.customPrint('Step ONE VESSEL NAME: ${nameController.text}');
 
                         widget.pageController!.nextPage(
                             duration: Duration(milliseconds: 300),
@@ -630,9 +632,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
             setState(() {
               finalSelectedFiles.clear();
               finalSelectedFiles.addAll(selectedImageFileList);
-              kReleaseMode
-                  ? null
-                  : debugPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
+              Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
 
               /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
@@ -658,9 +658,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
               setState(() {
                 finalSelectedFiles.clear();
                 finalSelectedFiles.addAll(selectedImageFileList);
-                kReleaseMode
-                    ? null
-                    : debugPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
+                Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
 
                 /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
@@ -671,16 +669,14 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
         }
       }
     } else {
-      debugPrint('OTHER ELSE');
+      Utils.customPrint('OTHER ELSE');
       await selectImage(context, Colors.red,
           (List<File?> selectedImageFileList) {
         if (selectedImageFileList.isNotEmpty) {
           setState(() {
             finalSelectedFiles.clear();
             finalSelectedFiles.addAll(selectedImageFileList);
-            kReleaseMode
-                ? null
-                : debugPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
+            Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
 
             /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);

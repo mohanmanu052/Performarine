@@ -40,50 +40,26 @@ class EditVesselApiProvider with ChangeNotifier {
         });
       }
 
-      kReleaseMode ? null : debugPrint('NAME ${addVesselRequestModel.name!}');
-      kReleaseMode ? null : debugPrint('Model ${addVesselRequestModel.model!}');
-      kReleaseMode
-          ? null
-          : debugPrint('Builder Name ${addVesselRequestModel.builderName!}');
-      kReleaseMode
-          ? null
-          : debugPrint('regNumber ${addVesselRequestModel.regNumber!}');
-      kReleaseMode ? null : debugPrint('mmsi ${addVesselRequestModel.MMSI!}');
-      kReleaseMode
-          ? null
-          : debugPrint('Engine Type ${addVesselRequestModel.engineType!}');
-      kReleaseMode
-          ? null
-          : debugPrint('Fuel Capacity ${addVesselRequestModel.fuelCapacity!}');
-      kReleaseMode
-          ? null
-          : debugPrint('weight ${addVesselRequestModel.weight!}');
-      kReleaseMode
-          ? null
-          : debugPrint('freeBoard ${addVesselRequestModel.freeBoard!}');
-      kReleaseMode
-          ? null
-          : debugPrint(
-              'length Overall ${addVesselRequestModel.lenghtOverAll!}');
-      kReleaseMode ? null : debugPrint('beam ${addVesselRequestModel.beam!}');
-      kReleaseMode ? null : debugPrint('depth ${addVesselRequestModel.depth!}');
-      kReleaseMode
-          ? null
-          : debugPrint('vesselSize ${addVesselRequestModel.size!}');
-      kReleaseMode
-          ? null
-          : debugPrint('capacity ${addVesselRequestModel.capacity!}');
-      kReleaseMode
-          ? null
-          : debugPrint('built Year ${addVesselRequestModel.builtYear!}');
-      kReleaseMode ? null : debugPrint('user Id ${userId}');
-      kReleaseMode
-          ? null
-          : debugPrint(
-              'Image Urls ${addVesselRequestModel.imageUrls!.isEmpty}');
-      kReleaseMode
-          ? null
-          : debugPrint('user Id ${addVesselRequestModel.batteryCapacity}');
+      Utils.customPrint('NAME ${addVesselRequestModel.name!}');
+      Utils.customPrint('Model ${addVesselRequestModel.model!}');
+      Utils.customPrint('Builder Name ${addVesselRequestModel.builderName!}');
+      Utils.customPrint('regNumber ${addVesselRequestModel.regNumber!}');
+      Utils.customPrint('mmsi ${addVesselRequestModel.MMSI!}');
+      Utils.customPrint('Engine Type ${addVesselRequestModel.engineType!}');
+      Utils.customPrint('Fuel Capacity ${addVesselRequestModel.fuelCapacity!}');
+      Utils.customPrint('weight ${addVesselRequestModel.weight!}');
+      Utils.customPrint('freeBoard ${addVesselRequestModel.freeBoard!}');
+      Utils.customPrint(
+          'length Overall ${addVesselRequestModel.lenghtOverAll!}');
+      Utils.customPrint('beam ${addVesselRequestModel.beam!}');
+      Utils.customPrint('depth ${addVesselRequestModel.depth!}');
+      Utils.customPrint('vesselSize ${addVesselRequestModel.size!}');
+      Utils.customPrint('capacity ${addVesselRequestModel.capacity!}');
+      Utils.customPrint('built Year ${addVesselRequestModel.builtYear!}');
+      Utils.customPrint('user Id ${userId}');
+      Utils.customPrint(
+          'Image Urls ${addVesselRequestModel.imageUrls!.isEmpty}');
+      Utils.customPrint('user Id ${addVesselRequestModel.batteryCapacity}');
 
       request.headers.addAll(headers);
       request.fields['name'] = addVesselRequestModel.name!;
@@ -111,16 +87,12 @@ class EditVesselApiProvider with ChangeNotifier {
 
       http.Response responseValue = await http.Response.fromStream(response);
 
-      kReleaseMode
-          ? null
-          : debugPrint('Add VESSEL RESP : ' + jsonEncode(responseValue.body));
+      Utils.customPrint('Add VESSEL RESP : ' + jsonEncode(responseValue.body));
 
       var decodedData = json.decode(responseValue.body);
 // here
       if (responseValue.statusCode == HttpStatus.ok) {
-        kReleaseMode
-            ? null
-            : debugPrint('Register Response : ' + responseValue.body);
+        Utils.customPrint('Register Response : ' + responseValue.body);
 
         addVesselModel =
             AddVesselModel.fromJson(json.decode(responseValue.body));
@@ -130,10 +102,8 @@ class EditVesselApiProvider with ChangeNotifier {
 
         return addVesselModel!;
       } else if (responseValue.statusCode == HttpStatus.gatewayTimeout) {
-        kReleaseMode
-            ? null
-            : debugPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $responseValue');
+        Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
+        Utils.customPrint('EXE RESP: $responseValue');
 
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -147,19 +117,17 @@ class EditVesselApiProvider with ChangeNotifier {
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        kReleaseMode
-            ? null
-            : debugPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $responseValue');
+        Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
+        Utils.customPrint('EXE RESP: $responseValue');
       }
       addVesselModel = null;
     } on SocketException catch (_) {
       Utils().check(scaffoldKey);
-      kReleaseMode ? null : debugPrint('Socket Exception');
+      Utils.customPrint('Socket Exception');
 
       addVesselModel = null;
     } catch (exception, s) {
-      kReleaseMode ? null : debugPrint('error caught login:- $exception \n $s');
+      Utils.customPrint('error caught login:- $exception \n $s');
       addVesselModel = null;
     }
 

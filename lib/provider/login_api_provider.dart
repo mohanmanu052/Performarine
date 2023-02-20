@@ -41,22 +41,18 @@ class LoginApiProvider with ChangeNotifier {
       };
     }
 
-    kReleaseMode ? null : debugPrint('Login REQ $queryParameters');
+    Utils.customPrint('Login REQ $queryParameters');
 
     try {
       final response = await http.post(uri,
           body: jsonEncode(queryParameters), headers: headers);
 
-      kReleaseMode ? null : debugPrint('REGISTER REs : ' + response.body);
+      Utils.customPrint('REGISTER REs : ' + response.body);
 
       var decodedData = json.decode(response.body);
 
       if (response.statusCode == HttpStatus.ok) {
-        // var token = decodedData["token"];
-        // print('my token is: $token');
-        kReleaseMode
-            ? null
-            : debugPrint('Register Response : ' + response.body);
+        Utils.customPrint('Register Response : ' + response.body);
 
         final pref = await Utils.initSharedPreferences();
 
@@ -71,10 +67,8 @@ class LoginApiProvider with ChangeNotifier {
 
         return loginModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
-        kReleaseMode
-            ? null
-            : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $response');
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+        Utils.customPrint('EXE RESP: $response');
 
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -88,10 +82,8 @@ class LoginApiProvider with ChangeNotifier {
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        kReleaseMode
-            ? null
-            : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $response');
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+        Utils.customPrint('EXE RESP: $response');
       }
       loginModel = null;
     } on SocketException catch (_) {
@@ -112,11 +104,11 @@ class LoginApiProvider with ChangeNotifier {
               },
             );
           });*/
-      kReleaseMode ? null : debugPrint('Socket Exception');
+      Utils.customPrint('Socket Exception');
 
       loginModel = null;
     } catch (exception, s) {
-      kReleaseMode ? null : debugPrint('error caught login:- $exception \n $s');
+      Utils.customPrint('error caught login:- $exception \n $s');
       loginModel = null;
     }
     return loginModel ?? LoginModel();
