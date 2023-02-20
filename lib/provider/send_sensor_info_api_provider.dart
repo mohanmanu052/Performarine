@@ -125,10 +125,6 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         contentType: new MediaType("application", "zip"),
       ),
     });
-
-    debugPrint('SENSOR DATA $tripData');
-    //debugPrint('SENSOR DATA ');
-
     Uri uri = Uri.https(Urls.baseUrl, Urls.SendSensorData);
 
     try {
@@ -137,14 +133,11 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         data: formData,
         options: d.Options(
           headers: {
-            // "Content-Type": 'multipart/form-data',
+            "Content-Type": 'multipart/form-data',
             "x-access-token": '$accessToken', // set content-length
           },
         ),
         onSendProgress: (int sent, int total) async {
-          // print(
-          //     'UPLOAD PROGRESS: ${(sent / total * 100).toStringAsFixed(0)} $sent $total');
-
           int finalProgress =
               int.parse((sent / total * 100).toStringAsFixed(0));
 
@@ -216,7 +209,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         }
         uploadTripModel = null;
       }).onError((error, stackTrace) {
-        print('ERROR DIO: $error\n$stackTrace');
+        // print('ERROR DIO: $error\n$stackTrace');
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey,
