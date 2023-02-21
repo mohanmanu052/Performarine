@@ -53,7 +53,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false;
 
-  String tripDistance = '0';
+  String tripDistance = '0.00';
   String tripDuration = '00:00:00';
   String tripSpeed = '0.0';
   String tripAvgSpeed = '0.0';
@@ -270,7 +270,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                 child: Container(
                                   color: Color(0xfff2fffb),
                                   child: Image.asset(
-                                    'assets/images/trip_analytics_img.png',
+                                    'assets/images/boat.gif',
                                     height: displayHeight(context) * 0.22,
                                     width: displayWidth(context),
                                     fit: BoxFit.contain,

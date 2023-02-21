@@ -16,6 +16,7 @@ import 'package:performarine/provider/login_api_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:sqflite/sqflite.dart';
 
 class CommonProvider with ChangeNotifier {
   LoginModel? loginModel;
@@ -27,6 +28,7 @@ class CommonProvider with ChangeNotifier {
   UploadTripModel? uploadTripModel;
   int tripsCount = 0;
   bool tripStatus = false;
+  Future<List<Trip>>? getTripsByIdFuture;
 
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
@@ -144,5 +146,15 @@ class CommonProvider with ChangeNotifier {
   updateTripStatus(bool value) async {
     tripStatus = value;
     notifyListeners();
+  }
+
+  Future<List<Trip>>? getTripsByVesselId(String? vesselId) {
+    if (vesselId == null || vesselId == "") {
+      getTripsByIdFuture = DatabaseService().trips();
+    } else {
+      getTripsByIdFuture =
+          DatabaseService().getAllTripsByVesselId(vesselId.toString());
+    }
+    return getTripsByIdFuture!;
   }
 }

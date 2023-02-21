@@ -99,6 +99,7 @@ class CreateTrip {
       {BuildContext? context,
       GlobalKey<ScaffoldState>? scaffoldKey,
       VoidCallback? onEnded}) async {
+    String downloadedFilePath = '';
     await sharedPreferences!.reload();
 
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
@@ -137,10 +138,11 @@ class CreateTrip {
 
       ZipFile.createFromDirectory(
               sourceDir: dataDir, zipFile: zipFile, recurseSubDirs: true)
-          .then((value) {
-        downloadTrip(context!, tripId);
+          .then((value) async {
+        downloadedFilePath = await downloadTrip(context!, tripId);
       });
       Utils.customPrint('our path is $dataDir');
+      Utils.customPrint('DOWNLOADED FILE PATH: $downloadedFilePath');
     } catch (e) {
       Utils.customPrint('$e');
     }
@@ -159,7 +161,7 @@ class CreateTrip {
 
     await DatabaseService().updateTripStatus(
         1,
-        file.path,
+        downloadedFilePath,
         DateTime.now().toUtc().toString(),
         [currentLocationData!.latitude, currentLocationData.longitude]
             .join(","),
@@ -394,7 +396,7 @@ class CreateTrip {
                     /*styleInformation:
                         BigTextStyleInformation('', summaryText: '$tripId')*/
                     styleInformation: BigTextStyleInformation(
-                        'Duration: $tripDurationForStorage    Distance: $tripDistanceForStorage $nauticalMile\nSpeed: $tripSpeedForStorage $knot        Avg Speed: $tripAvgSpeedForStorage $knot',
+                        'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
                         htmlFormatContentTitle: true,
                         summaryText: '')),
               ),
@@ -496,7 +498,8 @@ class CreateTrip {
     });
   }
 
-  downloadTrip(BuildContext context, String tripId) async {
+  Future<String> downloadTrip(BuildContext context, String tripId) async {
+    String downloadedZipPath = '';
     Utils.customPrint('DOWLOAD Started!!!');
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
@@ -520,6 +523,7 @@ class CreateTrip {
         }
 
         copiedFile.copy(directory.path);
+        downloadedZipPath = "storage/emulated/0/Download/${tripId}.zip";
 
         Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
 
@@ -542,6 +546,7 @@ class CreateTrip {
           }
 
           copiedFile.copy(directory.path);
+          downloadedZipPath = "storage/emulated/0/Download/${tripId}.zip";
 
           Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
 
@@ -566,6 +571,7 @@ class CreateTrip {
       }
 
       copiedFile.copy(directory.path);
+      downloadedZipPath = "storage/emulated/0/Download/${tripId}.zip";
 
       Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
 
@@ -573,6 +579,8 @@ class CreateTrip {
         Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
       }
     }
+
+    return downloadedZipPath;
   }
 
   int calculateDuration(int seconds) {
@@ -590,6 +598,12 @@ class CreateTrip {
 
   String calculateAvgSpeed(double tripDistance, int tripDuration) {
     double value = (((tripDistance) / (tripDuration / 1000)) * 1.944); //Knots
-    return value.isNaN ? '0.0' : value.toStringAsFixed(1);
+    if (value.isNaN) {
+      return '0.0';
+    } else if (value.isInfinite) {
+      return '0.0';
+    } else {
+      return value.toStringAsFixed(1);
+    }
   }
 }

@@ -359,122 +359,7 @@ class _TripWidgetState extends State<TripWidget> {
                                             fontSize:
                                                 displayWidth(context) * 0.026,
                                             onTap: () async {
-                                              Utils.customPrint(
-                                                  'DOWLOAD Started!!!');
-
-                                              final androidInfo =
-                                                  await DeviceInfoPlugin()
-                                                      .androidInfo;
-
-                                              var isStoragePermitted =
-                                                  androidInfo.version.sdkInt >
-                                                          32
-                                                      ? await Permission
-                                                          .photos.status
-                                                      : await Permission
-                                                          .storage.status;
-                                              if (isStoragePermitted
-                                                  .isGranted) {
-                                                //File copiedFile = File('${ourDirectory!.path}.zip');
-                                                File copiedFile = File(
-                                                    '${ourDirectory!.path}/${widget.tripList!.id}.zip');
-
-                                                Utils.customPrint(
-                                                    'DIR PATH R ${ourDirectory!.path}');
-
-                                                Directory directory;
-
-                                                if (Platform.isAndroid) {
-                                                  directory = Directory(
-                                                      "storage/emulated/0/Download/${widget.tripList!.id}.zip");
-                                                } else {
-                                                  directory =
-                                                      await getApplicationDocumentsDirectory();
-                                                }
-
-                                                copiedFile.copy(directory.path);
-
-                                                Utils.customPrint(
-                                                    'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                                if (copiedFile.existsSync()) {
-                                                  Utils.showSnackBar(
-                                                    context,
-                                                    scaffoldKey:
-                                                        widget.scaffoldKey,
-                                                    message:
-                                                        'File downloaded successfully',
-                                                  );
-                                                  /*Utils.showActionSnackBar(
-                                                          context,
-                                                          scaffoldKey,
-                                                          'File downloaded successfully',
-                                                          () async {
-                                                        Utils.customPrint(
-                                                            'Open Btn clicked ttttt');
-                                                        var result =
-                                                            await OpenFile.open(
-                                                                directory.path);
-
-                                                        Utils.customPrint(
-                                                            "dataaaaa: ${result.message} ggg ${result.type}");
-                                                      });*/
-                                                }
-                                              } else {
-                                                await Utils
-                                                    .getStoragePermission(
-                                                        context);
-                                                var isStoragePermitted =
-                                                    await Permission
-                                                        .storage.status;
-
-                                                if (isStoragePermitted
-                                                    .isGranted) {
-                                                  File copiedFile = File(
-                                                      '${ourDirectory!.path}.zip');
-
-                                                  Directory directory;
-
-                                                  if (Platform.isAndroid) {
-                                                    directory = Directory(
-                                                        "storage/emulated/0/Download/${widget.tripList!.id}.zip");
-                                                  } else {
-                                                    directory =
-                                                        await getApplicationDocumentsDirectory();
-                                                  }
-
-                                                  copiedFile
-                                                      .copy(directory.path);
-
-                                                  Utils.customPrint(
-                                                      'DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-                                                  if (copiedFile.existsSync()) {
-                                                    Utils.showSnackBar(
-                                                      context,
-                                                      scaffoldKey:
-                                                          widget.scaffoldKey,
-                                                      message:
-                                                          'File downloaded successfully',
-                                                    );
-
-                                                    /*Utils.showActionSnackBar(
-                                                            context,
-                                                            scaffoldKey,
-                                                            'File downloaded successfully',
-                                                            () {
-                                                          Utils.customPrint(
-                                                              'Open Btn clicked');
-                                                          OpenFile.open(
-                                                                  directory.path)
-                                                              .catchError(
-                                                                  (onError) {
-                                                            Utils.customPrint(onError);
-                                                          });
-                                                        });*/
-                                                  }
-                                                }
-                                              }
+                                              downloadTrip(false);
                                             },
                                             context: context,
                                             width: displayWidth(context) * 0.38,
@@ -513,6 +398,9 @@ class _TripWidgetState extends State<TripWidget> {
                                                 setState(() {
                                                   isTripUploaded = true;
                                                 });
+
+                                                downloadTrip(true);
+
                                                 uploadDataIfDataIsNotSync();
 
                                                 Utils.customPrint('WIFI');
@@ -627,7 +515,7 @@ class _TripWidgetState extends State<TripWidget> {
         .sendSensorInfo(
             context,
             commonProvider.loginModel!.token!,
-            File('${tripData.filePath}'),
+            File('storage/emulated/0/Download/${widget.tripList!.id}.zip'),
             queryParameters,
             tripData.id!,
             widget.scaffoldKey!)
@@ -1031,5 +919,133 @@ class _TripWidgetState extends State<TripWidget> {
       isStartButton = !tripIsRunning;
     });*/
     return result;
+  }
+
+  downloadTrip(bool isuploadTrip) async {
+    Utils.customPrint('DOWLOAD Started!!!');
+
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+
+    var isStoragePermitted;
+    if (androidInfo.version.sdkInt < 29) {
+      isStoragePermitted = await Permission.storage.status;
+
+      if (isStoragePermitted.isGranted) {
+        //File copiedFile = File('${ourDirectory!.path}.zip');
+        File copiedFile =
+            File('${ourDirectory!.path}/${widget.tripList!.id}.zip');
+
+        Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
+
+        Directory directory;
+
+        if (Platform.isAndroid) {
+          directory = Directory(
+              "storage/emulated/0/Download/${widget.tripList!.id}.zip");
+        } else {
+          directory = await getApplicationDocumentsDirectory();
+        }
+
+        copiedFile.copy(directory.path);
+
+        Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+        if (copiedFile.existsSync()) {
+          if (!isuploadTrip) {
+            Utils.showSnackBar(
+              context,
+              scaffoldKey: widget.scaffoldKey,
+              message: 'File downloaded successfully',
+            );
+          }
+          /*Utils.showActionSnackBar(
+                                                          context,
+                                                          scaffoldKey,
+                                                          'File downloaded successfully',
+                                                          () async {
+                                                        Utils.customPrint(
+                                                            'Open Btn clicked ttttt');
+                                                        var result =
+                                                            await OpenFile.open(
+                                                                directory.path);
+
+                                                        Utils.customPrint(
+                                                            "dataaaaa: ${result.message} ggg ${result.type}");
+                                                      });*/
+        }
+      } else {
+        await Utils.getStoragePermission(context);
+        var isStoragePermitted = await Permission.storage.status;
+
+        if (isStoragePermitted.isGranted) {
+          File copiedFile = File('${ourDirectory!.path}.zip');
+
+          Directory directory;
+
+          if (Platform.isAndroid) {
+            directory = Directory(
+                "storage/emulated/0/Download/${widget.tripList!.id}.zip");
+          } else {
+            directory = await getApplicationDocumentsDirectory();
+          }
+
+          copiedFile.copy(directory.path);
+
+          Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+          if (copiedFile.existsSync()) {
+            Utils.showSnackBar(
+              context,
+              scaffoldKey: widget.scaffoldKey,
+              message: 'File downloaded successfully',
+            );
+
+            /*Utils.showActionSnackBar(
+                                                            context,
+                                                            scaffoldKey,
+                                                            'File downloaded successfully',
+                                                            () {
+                                                          Utils.customPrint(
+                                                              'Open Btn clicked');
+                                                          OpenFile.open(
+                                                                  directory.path)
+                                                              .catchError(
+                                                                  (onError) {
+                                                            Utils.customPrint(onError);
+                                                          });
+                                                        });*/
+          }
+        }
+      }
+    } else {
+      //File copiedFile = File('${ourDirectory!.path}.zip');
+      File copiedFile =
+          File('${ourDirectory!.path}/${widget.tripList!.id}.zip');
+
+      Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
+
+      Directory directory;
+
+      if (Platform.isAndroid) {
+        directory =
+            Directory("storage/emulated/0/Download/${widget.tripList!.id}.zip");
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      copiedFile.copy(directory.path);
+
+      Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
+
+      if (copiedFile.existsSync()) {
+        if (!isuploadTrip) {
+          Utils.showSnackBar(
+            context,
+            scaffoldKey: widget.scaffoldKey,
+            message: 'File downloaded successfully',
+          );
+        }
+      }
+    }
   }
 }

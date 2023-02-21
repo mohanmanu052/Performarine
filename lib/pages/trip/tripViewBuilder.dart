@@ -54,7 +54,7 @@ class _TripViewListingState extends State<TripViewListing> {
     super.initState();
 
     commonProvider = context.read<CommonProvider>();
-    getTripsByVesselId();
+    commonProvider.getTripsByVesselId(widget.vesselId);
   }
 
   @override
@@ -62,7 +62,7 @@ class _TripViewListingState extends State<TripViewListing> {
     commonProvider = context.watch<CommonProvider>();
 
     return FutureBuilder<List<Trip>>(
-      future: getTripsByIdFuture,
+      future: commonProvider.getTripsByIdFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return SizedBox(
@@ -94,7 +94,8 @@ class _TripViewListingState extends State<TripViewListing> {
                               calledFrom: widget.calledFrom,
                               tripUploadedSuccessfully: () {
                                 setState(() {
-                                  getTripsByVesselId();
+                                  commonProvider
+                                      .getTripsByVesselId(widget.vesselId);
                                   future = _databaseService.trips();
                                   //snapshot.data![index].tripStatus = 1;
                                 });

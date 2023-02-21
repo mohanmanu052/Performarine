@@ -544,6 +544,8 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                     borderColor: buttonBGColor,
                     width: displayWidth(context),
                     onTap: () {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+
                       if (formKey.currentState!.validate()) {
                         Utils.customPrint(
                             'FINAL SELECTED FILES ${finalSelectedFiles.isEmpty}');

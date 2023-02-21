@@ -110,10 +110,11 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       String tripId,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     d.Dio dio = d.Dio();
+    print('ZIPPPP: ${zipFile!.path}');
     var formData = d.FormData.fromMap({
       "tripData": jsonEncode(tripData),
       'sensorZipFiles': await d.MultipartFile.fromFile(
-        zipFile!.path,
+        zipFile.path,
         filename: zipFile.path.split('/').last,
         contentType: new MediaType("application", "zip"),
       ),

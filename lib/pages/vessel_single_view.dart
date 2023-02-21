@@ -244,6 +244,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     return WillPopScope(
       onWillPop: () async {
         if (widget.isCalledFromSuccessScreen! || tripIsEnded) {
@@ -460,6 +461,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         setState(() {
                                           isEndTripButton = false;
                                           tripIsEnded = true;
+                                          commonProvider.getTripsByVesselId(
+                                              widget.vessel!.id);
                                           // isZipFileCreate = true;
                                         });
                                         await tripIsRunningOrNot();
