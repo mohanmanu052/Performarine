@@ -101,22 +101,7 @@ class RegistrationApiProvider with ChangeNotifier {
       registrationModel = null;
     } on SocketException catch (_) {
       Utils().check(scaffoldKey);
-      /*showDialog(
-          context: scaffoldKey.currentContext!,
-          builder: (BuildContext context) {
-            return CustomDialog(
-              text: 'No Internet',
-              subText: 'Please enable your data connection to continue.',
-              negativeBtn: 'Re-Send',
-              positiveBtn: 'Okay',
-              negativeBtnOnTap: () {
-                Navigator.of(scaffoldKey.currentContext!).pop();
-              },
-              positiveBtnOnTap: () {
-                Navigator.of(scaffoldKey.currentContext!).pop();
-              },
-            );
-          });*/
+
       Utils.customPrint('Socket Exception');
 
       registrationModel = null;

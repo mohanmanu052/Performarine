@@ -1,22 +1,16 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
-    as locationAcc;
 import 'package:get/get.dart';
-// import 'package:location/location.dart';
-import 'package:lottie/lottie.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -33,11 +27,9 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/provider/common_provider.dart';
-import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class VesselSingleView extends StatefulWidget {
@@ -61,13 +53,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
   IosDeviceInfo? iosDeviceInfo;
   AndroidDeviceInfo? androidDeviceInfo;
 
-  List<double>? _accelerometerValues;
-  List<double>? _userAccelerometerValues;
-  List<double>? _gyroscopeValues;
-  List<double>? _magnetometerValues;
-  final _streamSubscriptions = <StreamSubscription<dynamic>>[];
-
-  // Directory? ourDirectory;
   bool isStartButton = false,
       isEndTripButton = false,
       isZipFileCreate = false,
@@ -76,7 +61,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isLocationDialogBoxOpen = false,
       tripIsEnded = false;
 
-  // Timer? timer;
   Timer? locationTimer;
   String fileName = '';
   int fileIndex = 1;
@@ -123,7 +107,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   DeviceInfo? deviceDetails;
 
-  //final DatabaseService _databaseService = DatabaseService();
   fetchDeviceInfo() async {
     final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
     if (Platform.isAndroid) {
@@ -137,9 +120,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   fetchDeviceData() async {
     await fetchDeviceInfo();
-    // Platform.isAndroid
-    //     ? androidDeviceInfo = await fetchDeviceInfo()!.androidDeviceData
-    //     : iosDeviceInfo = await fetchDeviceInfo()!.androidDeviceData;
+
     deviceDetails = Platform.isAndroid
         ? DeviceInfo(
             board: androidDeviceInfo?.board,
@@ -356,24 +337,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       SizedBox(
                         height: 10,
                       ),
-                      /*Card(
-                        child: ExpansionTile(
-                          textColor: Colors.black,
-                          iconColor: Colors.black,
-                          title: Text(
-                            "VESSEL ANALYTICS",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          children: [
-                            Padding(
-                                padding: const EdgeInsets.only(bottom: 0.0),
-                                child: vesselAnalytics(context))
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),*/
+
                       Theme(
                         data: Theme.of(context).copyWith(
                             colorScheme: ColorScheme.light(
@@ -381,6 +345,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             ),
                             dividerColor: Colors.transparent),
                         child: ExpansionTile(
+                          initiallyExpanded: true,
+                          onExpansionChanged: ((newState) {
+                            Utils.customPrint('CURRENT STAT $newState');
+                          }),
                           textColor: Colors.black,
                           iconColor: Colors.black,
                           title: commonText(
@@ -453,7 +421,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   Utils.customPrint(
                                       'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
 
-                                  CreateTrip().endTrip(
+                                  EndTrip().endTrip(
                                       context: context,
                                       scaffoldKey: scaffoldKey,
                                       onEnded: () async {
@@ -521,19 +489,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               bool isLocationPermitted =
                                   await Permission.locationAlways.isGranted;
                               if (isLocationPermitted) {
-                                /*setState(() {
-                                      isLocationDialogBoxOpen = false;
-                                    });*/
                                 vessel!.add(widget.vessel!);
                                 await locationPermissions(
                                     widget.vessel!.vesselSize!,
                                     widget.vessel!.name!,
                                     widget.vessel!.id!);
                               } else {
-                                /*setState(() {
-                                      isLocationDialogBoxOpen = false;
-                                    });*/
-
                                 if (!isLocationDialogBoxOpen) {
                                   showDialog(
                                       context: scaffoldKey.currentContext!,
@@ -546,29 +507,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               "To track your trip while you use other apps we need background access to your location",
                                           buttonText: 'Ok',
                                           buttonOnTap: () async {
-                                            //Navigator.pop(context);
-
                                             Get.back();
 
-                                            /* var status = await Permission
-                                              .locationWhenInUse.status;
-
-                                          if (status ==
-                                              PermissionStatus.granted) {
-                                            Permission.locationAlways.request();
-                                          }*/
-
-                                            //  AppSettings.openLocationSettings(asAnotherTask: true);
                                             await openAppSettings();
-                                            // Navigator.pop(context);
-                                            // await Geolocator.openAppSettings();
                                           },
                                         );
                                       }).then((value) {
                                     isLocationDialogBoxOpen = false;
                                   });
                                 }
-                                // await Permission.locationAlways.request();
                               }
                             }
                           }),
@@ -609,11 +556,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}');
-    double tripDistance = 0.0;
-    int tripDuration = 0;
-    String tripSpeed = '0.0';
-
-    // initializeService();
 
     showModalBottomSheet(
       isDismissible: false,
@@ -639,15 +581,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
               alignment: Alignment.bottomCenter,
               child: StatefulBuilder(builder:
                   (BuildContext bottomSheetContext, StateSetter stateSetter) {
-                /*service.on('tripAnalyticsData').listen((event) {
-                  tripDistance = event!['tripDistance'];
-                  tripDuration = event['tripDuration'];
-                  tripSpeed = event['tripSpeed'].toString();
-
-                  if (isBottomSheetOpened) {
-                    if (mounted) stateSetter(() {});
-                  }
-                });*/
                 return Container(
                   height: MediaQuery.of(context).size.height * 0.75,
                   decoration: BoxDecoration(
@@ -920,410 +853,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     ],
                                   ),
                                 ),
-                                /* Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: displayWidth(context) * 0.08),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          commonText(
-                                              context: context,
-                                              text: 'Accelerometer sensor',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.032,
-                                              textAlign: TextAlign.start),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          accelerometerAvailable!
-                                              ? TweenAnimationBuilder(
-                                                  duration: const Duration(
-                                                      seconds: 3),
-                                                  tween: Tween(
-                                                      begin:
-                                                          accSensorProgressBegin,
-                                                      end: accSensorProgress),
-                                                  builder: (context,
-                                                      double value, _) {
-                                                    return SizedBox(
-                                                      height: 20,
-                                                      width: 20,
-                                                      child: Stack(
-                                                        fit: StackFit.expand,
-                                                        children: [
-                                                          CircularProgressIndicator(
-                                                            color:
-                                                                circularProgressColor,
-                                                            value: value,
-                                                            backgroundColor:
-                                                                Colors.grey
-                                                                    .shade200,
-                                                            strokeWidth: 2,
-                                                            valueColor:
-                                                                const AlwaysStoppedAnimation(
-                                                                    Colors
-                                                                        .green),
-                                                          ),
-                                                          Center(
-                                                            child: subTitleProgress(
-                                                                value,
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.035),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    );
-                                                  })
-                                              : SizedBox(
-                                                  height: 20,
-                                                  width: 20,
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.red,
-                                                            width: 2),
-                                                        shape: BoxShape.circle),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        color: Colors.red,
-                                                        size: 14,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                        ],
-                                      ),
-                                      accelerometerAvailable!
-                                          ? Container()
-                                          : commonText(
-                                              context: context,
-                                              text:
-                                                  'We are unable to connect sensor!',
-                                              fontWeight: FontWeight.w400,
-                                              textColor: Colors.red,
-                                              textSize:
-                                                  displayWidth(context) * 0.028,
-                                              textAlign: TextAlign.start),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: displayWidth(context) * 0.08),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          commonText(
-                                              context: context,
-                                              text: 'User Accelerometer Sensor',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.032,
-                                              textAlign: TextAlign.start),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          userAccelerometerAvailable!
-                                              ? TweenAnimationBuilder(
-                                                  duration: const Duration(
-                                                      seconds: 3),
-                                                  tween: Tween(
-                                                      begin:
-                                                          uaccSensorProgressBegin,
-                                                      end: uaccSensorProgress),
-                                                  builder: (context,
-                                                      double value, _) {
-                                                    return SizedBox(
-                                                      height: 20,
-                                                      width: 20,
-                                                      child: Stack(
-                                                        fit: StackFit.expand,
-                                                        children: [
-                                                          CircularProgressIndicator(
-                                                            color:
-                                                                circularProgressColor,
-                                                            value: value,
-                                                            backgroundColor:
-                                                                Colors.grey
-                                                                    .shade200,
-                                                            strokeWidth: 2,
-                                                            valueColor:
-                                                                const AlwaysStoppedAnimation(
-                                                                    Colors
-                                                                        .green),
-                                                          ),
-                                                          Center(
-                                                            child: subTitleProgress(
-                                                                value,
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.035),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    );
-                                                  })
-                                              : SizedBox(
-                                                  height: 20,
-                                                  width: 20,
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.red,
-                                                            width: 2),
-                                                        shape: BoxShape.circle),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        color: Colors.red,
-                                                        size: 14,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                        ],
-                                      ),
-                                      userAccelerometerAvailable!
-                                          ? Container()
-                                          : commonText(
-                                              context: context,
-                                              text:
-                                                  'We are unable to connect sensor!',
-                                              fontWeight: FontWeight.w400,
-                                              textColor: Colors.red,
-                                              textSize:
-                                                  displayWidth(context) * 0.028,
-                                              textAlign: TextAlign.start),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: displayWidth(context) * 0.08),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          commonText(
-                                              context: context,
-                                              text: 'Gyroscope',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.032,
-                                              textAlign: TextAlign.start),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          gyroscopeAvailable!
-                                              ? TweenAnimationBuilder(
-                                                  duration: const Duration(
-                                                      seconds: 3),
-                                                  tween: Tween(
-                                                      begin:
-                                                          gyroSensorProgressBegin,
-                                                      end: gyroSensorProgress),
-                                                  builder: (context,
-                                                      double value, _) {
-                                                    return SizedBox(
-                                                      height: 20,
-                                                      width: 20,
-                                                      child: Stack(
-                                                        fit: StackFit.expand,
-                                                        children: [
-                                                          CircularProgressIndicator(
-                                                            color:
-                                                                circularProgressColor,
-                                                            value: value,
-                                                            backgroundColor:
-                                                                Colors.grey
-                                                                    .shade200,
-                                                            strokeWidth: 2,
-                                                            valueColor:
-                                                                const AlwaysStoppedAnimation(
-                                                                    Colors
-                                                                        .green),
-                                                          ),
-                                                          Center(
-                                                            child: subTitleProgress(
-                                                                value,
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.035),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    );
-                                                  })
-                                              : SizedBox(
-                                                  height: 20,
-                                                  width: 20,
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.red,
-                                                            width: 2),
-                                                        shape: BoxShape.circle),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        color: Colors.red,
-                                                        size: 14,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                        ],
-                                      ),
-                                      gyroscopeAvailable!
-                                          ? Container()
-                                          : commonText(
-                                              context: context,
-                                              text:
-                                                  'We are unable to connect sensor!',
-                                              fontWeight: FontWeight.w400,
-                                              textColor: Colors.red,
-                                              textSize:
-                                                  displayWidth(context) * 0.028,
-                                              textAlign: TextAlign.start),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: displayWidth(context) * 0.08),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          commonText(
-                                              context: context,
-                                              text: 'Magnetometer',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.032,
-                                              textAlign: TextAlign.start),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          magnetometerAvailable!
-                                              ? TweenAnimationBuilder(
-                                                  duration: const Duration(
-                                                      seconds: 3),
-                                                  tween: Tween(
-                                                      begin:
-                                                          magnSensorProgressBegin,
-                                                      end: magnSensorProgress),
-                                                  builder: (context,
-                                                      double value, _) {
-                                                    return SizedBox(
-                                                      height: 20,
-                                                      width: 20,
-                                                      child: Stack(
-                                                        fit: StackFit.expand,
-                                                        children: [
-                                                          CircularProgressIndicator(
-                                                            color:
-                                                                circularProgressColor,
-                                                            value: value,
-                                                            backgroundColor:
-                                                                Colors.grey
-                                                                    .shade200,
-                                                            strokeWidth: 2,
-                                                            valueColor:
-                                                                const AlwaysStoppedAnimation(
-                                                                    Colors
-                                                                        .green),
-                                                          ),
-                                                          Center(
-                                                            child: subTitleProgress(
-                                                                value,
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.035),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    );
-                                                  })
-                                              : SizedBox(
-                                                  height: 20,
-                                                  width: 20,
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.red,
-                                                            width: 2),
-                                                        shape: BoxShape.circle),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        color: Colors.red,
-                                                        size: 14,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                        ],
-                                      ),
-                                      magnetometerAvailable!
-                                          ? Container()
-                                          : commonText(
-                                              context: context,
-                                              text:
-                                                  'We are unable to connect sensor!',
-                                              fontWeight: FontWeight.w400,
-                                              textColor: Colors.red,
-                                              textSize:
-                                                  displayWidth(context) * 0.028,
-                                              textAlign: TextAlign.start),
-                                    ],
-                                  ),
-                                ),*/
                                 const SizedBox(
                                   height: 15,
                                 ),
                                 isZipFileCreate
                                     ? InkWell(
                                         onTap: () async {
-                                          // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
                                           File copiedFile =
                                               File('${ourDirectory!.path}.zip');
 
@@ -1406,7 +941,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     top: 5,
                                                     bottom: 5),
                                               ),
-
                                               child: commonText(
                                                   context: context,
                                                   text: vesselName,
@@ -1416,29 +950,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       displayWidth(context) *
                                                           0.032,
                                                   textAlign: TextAlign.start),
-
-                                              //Text(vesselName)
-                                              //     DropdownButtonHideUnderline(
-                                              //   child: DropdownButton<dynamic>(
-                                              //     value: null,
-                                              //     isDense: true,
-                                              //     hint:
-                                              //         Text(selectedVesselName),
-                                              //     isExpanded: true,
-                                              //     items: [
-                                              //       DropdownMenuItem(
-                                              //           value: '1',
-                                              //           child:
-                                              //               Text(vesselName)),
-                                              //     ],
-                                              //     onChanged: (newValue) {
-                                              //       stateSetter(() =>
-                                              //           selectedVesselName =
-                                              //               vesselName);
-                                              //       Utils.customPrint(selectedVesselName);
-                                              //     },
-                                              //   ),
-                                              // ),
                                             ),
                                           ),
                                         ),
@@ -1805,15 +1316,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     }
                                                   }
                                                 }
-
-                                                /// TODO Further Process
-                                                // await getLocationData();
-
-                                                /// SAVED Sensor data
-                                                // startSensorFunctionality(stateSetter);
                                               }
                                             }
-                                            // startTripService(stateSetter);
                                           })
                                   : Container(
                                       margin: EdgeInsets.only(bottom: 8),
@@ -1828,7 +1332,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           width: displayWidth(context),
                                           onTap: () {
                                             Get.back();
-                                            //Navigator.of(context).pop();
                                           }),
                                     ),
                             ),
@@ -1854,25 +1357,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         widget.vessel!.id = widget.vessel!.id;
                                       });
 
-                                      // Get.back();
-
                                       stateSetter(() {
                                         addingDataToDB = false;
                                       });
 
                                       Navigator.of(bottomSheetContext).pop();
-                                      /*if (isSensorDataUploaded) {
-
-                                  //setState(() {
-                                  // future = commonProvider.triplListData(
-                                  //     context,
-                                  //     commonProvider.loginModel!.token!,
-                                  //     widget.vesselId.toString(),
-                                  //     scaffoldKey);
-                                  //});
-                                } else {
-                                  Get.back();
-                                }*/
                                     },
                                     icon: Icon(Icons.close_rounded,
                                         color: buttonBGColor)),
@@ -1892,14 +1381,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
       await tripIsRunningOrNot();
       Utils.customPrint('BACK PRESSED');
       isBottomSheetOpened = false;
-      /* Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => VesselSingleView(
-                  vessel: widget.vessel,
-                  isCalledFromSuccessScreen: widget.isCalledFromSuccessScreen,
-                )),
-      );*/
 
       addingDataToDB = false;
       isStartButton = false;
@@ -1953,7 +1434,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     Utils.customPrint(
         'hello device details: ${deviceDetails!.toJson().toString()}');
-    // Utils.customPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
     String latitude = locationData!.latitude.toString();
     String longitude = locationData.longitude.toString();
 
@@ -1995,67 +1475,22 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     if (!isServiceRunning) {
       await service.startService();
-      // service.invoke("setAsForeground");
-      // initializeService();
+
       Utils.customPrint('View Single: $isServiceRunning');
     }
-
-    // service.invoke("setAsForeground");
 
     getTripId = ObjectId().toString();
 
     await onSave('', bottomSheetContext, true);
 
-    /* await service.configure(
-      androidConfiguration: AndroidConfiguration(
-        initialNotificationTitle: 'PerforMarine',
-        onStart: onStart,
-        autoStart: false,
-        isForegroundMode: true,
-        notificationChannelId: notificationChannelId,
-        initialNotificationContent:
-            'PerforMarine consuming background services.',
-        */ /*'Trip Data Collection in progress...',*/ /*
-        foregroundServiceNotificationId: notificationId,
-      ),
-      iosConfiguration: IosConfiguration(
-        autoStart: true,
-        onForeground: (service) {},
-      ),
-    );*/
-
     await Future.delayed(Duration(seconds: 4), () {
       Utils.customPrint('Future delayed duration Ended');
     });
 
-    // await tripIsRunningOrNot();
-
     service.invoke(
         'tripId', {'tripId': getTripId, 'vesselName': widget.vessel!.name});
 
-    //service.invoke("setAsForeground");
-
     service.invoke("onStartTrip");
-
-    /*locationTimer = Timer.periodic(Duration(milliseconds: 200), (timer) async {
-      Position? locationData = await Utils.getCurrentLocation();
-
-      // location = Location();
-      //
-      // location!.onLocationChanged.listen((LocationData currentLocation) {
-      //   Utils.customPrint("${currentLocation.latitude} : ${currentLocation.longitude}");
-      //   setState(() {
-      //     locationData = currentLocation;
-      //   });
-      // });
-
-      service.invoke('location', {
-        'lat': locationData.latitude,
-        'long': locationData.longitude,
-      });
-      // Utils.customPrint(
-      //     'SINGLE VIEW LAT LONG ${locationData.latitude} ${locationData.longitude}');
-    });*/
 
     await sharedPreferences!.setBool('trip_started', true);
     await sharedPreferences!.setStringList('trip_data', [
@@ -2068,16 +1503,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
     await tripIsRunningOrNot();
 
     Navigator.pop(bottomSheetContext);
-
-    // Navigator.pushReplacement(
-    //   scaffoldKey.currentContext!,
-    //   MaterialPageRoute(
-    //       builder: (context) => TripAnalyticsScreen(
-    //             tripList: tripDetails,
-    //             vessel: widget.vessel,
-    //             tripIsRunningOrNot: tripIsRunning,
-    //           )),
-    // );
   }
 
   showDialogBox() {

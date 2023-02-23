@@ -31,13 +31,11 @@ class AddVesselApiProvider with ChangeNotifier {
         uri,
       );
 
-      //Utils.customPrint('VESSEl IMAGE ${addVesselRequestModel!.imageURLs!}');
       Utils.customPrint(
           'VESSEl IMAGE ${addVesselRequestModel!.selectedImages!}');
 
       if (addVesselRequestModel.selectedImages == null ||
           addVesselRequestModel.selectedImages!.isEmpty) {
-        // request.fields['files'] = '';
       } else {
         addVesselRequestModel.selectedImages!.forEach((element) async {
           int index = addVesselRequestModel.selectedImages!.indexOf(element);

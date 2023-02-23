@@ -34,16 +34,17 @@ class CommonButtons {
       ],
     );
   }
+
   static Widget getRichTextActionButton(
       {String? title,
-        BuildContext? context,
-        Color? borderColor,
-        Color? textColor,
-        double? fontSize,
-        Function()? onTap,
-        Widget? icon,
-        double? width,
-        Color? buttonPrimaryColor}) {
+      BuildContext? context,
+      Color? borderColor,
+      Color? textColor,
+      double? fontSize,
+      Function()? onTap,
+      Widget? icon,
+      double? width,
+      Color? buttonPrimaryColor}) {
     width ??= displayWidth(context!);
     borderColor ??= buttonPrimaryColor;
 
@@ -71,15 +72,11 @@ class CommonButtons {
                       textColor: textColor,
                       fontWeight: FontWeight.w500),
                 ),
-                // TextSpan(
-                //   text: title,
-                // ),
               ],
             ),
           ),
         ));
   }
-
 
   static Widget getActionButton(
       {String? title,

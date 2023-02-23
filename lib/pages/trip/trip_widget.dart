@@ -1,34 +1,22 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_archive/flutter_archive.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
-    as pos;
-import 'dart:developer' as developer;
 import 'package:flutter_background_service/flutter_background_service.dart';
-// import 'package:location/location.dart';
-import 'package:open_file/open_file.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
-import 'package:performarine/common_widgets/utils/date_formatter.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/common_widgets/widgets/location_permission_dialog.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
-import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
@@ -38,8 +26,6 @@ import 'package:provider/provider.dart';
 import '../../common_widgets/widgets/status_tage.dart';
 
 class TripWidget extends StatefulWidget {
-  //final Color? statusColor;
-  //final String? status;
   final String? calledFrom;
   final VoidCallback? onTap;
   final VoidCallback? tripUploadedSuccessfully;
@@ -48,14 +34,11 @@ class TripWidget extends StatefulWidget {
 
   const TripWidget(
       {super.key,
-      //this.statusColor,
       this.calledFrom,
       this.tripList,
       this.onTap,
       this.tripUploadedSuccessfully,
-      this.scaffoldKey
-      //this.vesselName
-      });
+      this.scaffoldKey});
 
   @override
   State<TripWidget> createState() => _TripWidgetState();
@@ -180,7 +163,6 @@ class _TripWidgetState extends State<TripWidget> {
                           ),
                   ],
                 ),
-
                 const SizedBox(
                   height: 2,
                 ),
@@ -232,63 +214,11 @@ class _TripWidgetState extends State<TripWidget> {
                     ),
                   ],
                 ),
-                /*const SizedBox(
-                          height: 4,
-                        ),
-                        Row(
-                          children: [
-                            dashboardRichText(
-                                modelName: widget.tripList,
-                                builderName: vesselData.builderName,
-                                context: context,
-                                color: Colors.white.withOpacity(0.8))
-                          ],
-                        ),*/
-
-                // const SizedBox(
-                //   height: 4,
-                // ),
-                // commonText(
-                //     context: context,
-                //     text: '${widget.tripList!.currentLoad}',
-                //     fontWeight: FontWeight.w500,
-                //     textColor: Colors.grey,
-                //     textSize: displayWidth(context) * 0.034,
-                //     textAlign: TextAlign.start),
-                // SizedBox(
-                //   width: displayWidth(context) * 0.0,
-                // ),
-                /*Row(
-                          children: [
-                            commonText(
-                                context: context,
-                                text: 'widget.tripList.model',
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.grey,
-                                textSize: displayWidth(context) * 0.034,
-                                textAlign: TextAlign.start),
-                            SizedBox(
-                              width: displayWidth(context) * 0.05,
-                            ),
-                            commonText(
-                                context: context,
-                                text: */
-                /*widget.tripList?.deviceInfo?.make == null
-                                    ? 'Empty'
-                                    :*/ /*
-                                    'widget.tripList?.deviceInfo?.make',
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.grey,
-                                textSize: displayWidth(context) * 0.034,
-                                textAlign: TextAlign.start),
-                          ],
-                        ),*/
                 const SizedBox(
                   height: 12,
                 ),
                 widget.tripList?.tripStatus != 0
                     ? Row(
-                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
                             child: SizedBox(
@@ -458,10 +388,6 @@ class _TripWidgetState extends State<TripWidget> {
       Utils.customPrint('Vessel isSync $vesselIsSync');
     });
 
-    /*setState(() {
-      isEndTripButton = tripIsRunning;
-      isStartButton = !tripIsRunning;
-    });*/
     return result;
   }
 
@@ -644,17 +570,6 @@ class _TripWidgetState extends State<TripWidget> {
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,
                                   textAlign: TextAlign.center),
-                              /* SizedBox(
-                                height: displayHeight(context) * 0.015,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text:
-                                      'The vessel will be visible in your vessel list and you can record trips with it again',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.grey,
-                                  textSize: displayWidth(context) * 0.036,
-                                  textAlign: TextAlign.center),*/
                             ],
                           ),
                         ),
@@ -747,53 +662,6 @@ class _TripWidgetState extends State<TripWidget> {
     const int maxProgress = 10;
     progress = 0;
 
-    /*progressTimer = Timer.periodic(Duration(milliseconds: 500), (timer) {
-      progress = progress + 100;
-      //progress = timer.tick;
-      int fileLength = 0;
-      try {
-        fileLength =
-            File('storage/emulated/0/Download/${widget.tripList!.id}.zip')
-                .lengthSync();
-      } catch (e) {
-        showFailedNoti(widget.tripList!.id!);
-        setState(() {
-          isTripUploaded = false;
-        });
-      }
-
-      var value = progress / fileLength;
-
-      finalProgress = value * 100;
-
-      finalProgress = finalProgress > 100 ? 100 : finalProgress;
-
-      if (finalProgress == 100) {
-        progressTimer!.cancel();
-      }
-
-      final AndroidNotificationDetails androidPlatformChannelSpecifics =
-          AndroidNotificationDetails('progress channel', 'progress channel',
-              channelDescription: 'progress channel description',
-              channelShowBadge: false,
-              importance: Importance.max,
-              priority: Priority.high,
-              onlyAlertOnce: true,
-              showProgress: true,
-              ongoing: true,
-              indeterminate: false,
-              progress: finalProgress.toInt(),
-              maxProgress: 100);
-      final NotificationDetails platformChannelSpecifics =
-          NotificationDetails(android: androidPlatformChannelSpecifics);
-      flutterLocalNotificationsPlugin.show(
-          9986,
-          '${widget.tripList!.id} ${finalProgress.toStringAsFixed(0)}/100%',
-          '${finalProgress.toStringAsFixed(0)}/100%',
-          platformChannelSpecifics,
-          payload: 'item x');
-    });*/
-
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'progress channel',
@@ -864,21 +732,11 @@ class _TripWidgetState extends State<TripWidget> {
           .then((value) async {
         if (value != null) {
           if (value.status!) {
-            // Utils.customPrint('DATA');
             _databaseService.updateIsSyncStatus(
                 1, widget.tripList!.vesselId.toString());
 
-            /*setState(() {
-              isTripUploaded = false;
-            });*/
-
             startSensorFunctionality(widget.tripList!);
-          } /* else if (value.statusCode == 400) {
-            setState(() {
-              isTripUploaded = false;
-            });
-          } */
-          else {
+          } else {
             await cancelOnGoingProgressNotification(widget.tripList!.id!);
             showFailedNoti(widget.tripList!.id!);
             setState(() {
@@ -914,10 +772,6 @@ class _TripWidgetState extends State<TripWidget> {
       });
     }
 
-    /*setState(() {
-      isEndTripButton = tripIsRunning;
-      isStartButton = !tripIsRunning;
-    });*/
     return result;
   }
 
@@ -958,20 +812,6 @@ class _TripWidgetState extends State<TripWidget> {
               message: 'File downloaded successfully',
             );
           }
-          /*Utils.showActionSnackBar(
-                                                          context,
-                                                          scaffoldKey,
-                                                          'File downloaded successfully',
-                                                          () async {
-                                                        Utils.customPrint(
-                                                            'Open Btn clicked ttttt');
-                                                        var result =
-                                                            await OpenFile.open(
-                                                                directory.path);
-
-                                                        Utils.customPrint(
-                                                            "dataaaaa: ${result.message} ggg ${result.type}");
-                                                      });*/
         }
       } else {
         await Utils.getStoragePermission(context);
@@ -999,21 +839,6 @@ class _TripWidgetState extends State<TripWidget> {
               scaffoldKey: widget.scaffoldKey,
               message: 'File downloaded successfully',
             );
-
-            /*Utils.showActionSnackBar(
-                                                            context,
-                                                            scaffoldKey,
-                                                            'File downloaded successfully',
-                                                            () {
-                                                          Utils.customPrint(
-                                                              'Open Btn clicked');
-                                                          OpenFile.open(
-                                                                  directory.path)
-                                                              .catchError(
-                                                                  (onError) {
-                                                            Utils.customPrint(onError);
-                                                          });
-                                                        });*/
           }
         }
       }

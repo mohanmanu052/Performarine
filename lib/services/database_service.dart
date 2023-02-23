@@ -1,8 +1,8 @@
 // import 'package:performarine/models/Trip.dart';
-import 'package:performarine/common_widgets/utils/utils.dart';
-import 'package:performarine/models/vessel.dart';
-import 'package:performarine/models/trip.dart';
 import 'package:path/path.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/models/trip.dart';
+import 'package:performarine/models/vessel.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseService {

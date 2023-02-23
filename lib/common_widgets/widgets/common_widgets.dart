@@ -1,22 +1,14 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:lottie/lottie.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
-// import 'package:goe/utils/utils/common_size_helper.dart';
-// import 'package:goe/utils/utils/constants.dart';
-// import 'package:goe/utils/utils.dart';
-import 'package:path/path.dart' as path;
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/status_tage.dart';
-import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
-import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -320,49 +312,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 ]),
                               ))
                         ],
-                      )
-                // CachedNetworkImage(
-                //         height: displayHeight(context) * 0.22,
-                //         width: displayWidth(context),
-                //         imageUrl: vesselData.imageURLs!,
-                //
-                //         imageBuilder: (context, imageProvider) => Stack(
-                //           children: [
-                //             Container(
-                //               decoration: BoxDecoration(
-                //                 borderRadius: BorderRadius.circular(14),
-                //                 image: DecorationImage(
-                //                   image: imageProvider,
-                //                   fit: BoxFit.fill,
-                //                 ),
-                //               ),
-                //             ),
-                //             Positioned(
-                //                 bottom: 0,
-                //                 right: 0,
-                //                 left: 0,
-                //                 child: Container(
-                //                   height: displayHeight(context) * 0.14,
-                //                   width: displayWidth(context),
-                //                   padding: const EdgeInsets.only(top: 20),
-                //                   decoration: BoxDecoration(boxShadow: [
-                //                     BoxShadow(
-                //                         color: Colors.black.withOpacity(0.5),
-                //                         blurRadius: 50,
-                //                         spreadRadius: 5,
-                //                         offset: const Offset(0, 50))
-                //                   ]),
-                //                 ))
-                //           ],
-                //         ),
-                //         progressIndicatorBuilder:
-                //             (context, url, downloadProgress) => Center(
-                //           child: CircularProgressIndicator(
-                //               value: downloadProgress.progress),
-                //         ),
-                //         errorWidget: (context, url, error) => Icon(Icons.error),
-                //       ),
-                ),
+                      )),
           ),
           vesselData.vesselStatus == 0
               ? Positioned(
@@ -1018,7 +968,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
                     children: [
                       commonText(
                           context: context,
-                          text: '${avgSpeed}$knot',
+                          text: '$avgSpeed$knot',
                           fontWeight: FontWeight.w600,
                           textColor: Colors.black,
                           textSize: displayWidth(context) * 0.044,

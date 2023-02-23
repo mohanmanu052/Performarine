@@ -35,23 +35,6 @@ class CustomDialog extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min, // To make the card compact
               children: <Widget>[
-                /* Container(
-                  margin: EdgeInsets.only(top: 20.0),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40),
-                      border: Border.all(color: Colors.white, width: 1),
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black),
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Icon(
-                      Icons.person,
-                      size: 40,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),*/
                 Container(
                   margin: EdgeInsets.only(top: 10.0),
                   child: commonText(

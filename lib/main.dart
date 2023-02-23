@@ -4,33 +4,20 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
-// import 'package:location/location.dart';
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:performarine/common_widgets/utils/colors.dart';
+import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
-import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/intro_screen.dart';
-import 'package:get/get.dart';
-import 'package:performarine/pages/lets_get_started_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/provider/common_provider.dart';
-import 'package:performarine/services/create_trip.dart';
-import 'package:performarine/services/database_service.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
-
 import 'package:timezone/data/latest.dart' as tz;
-
-import 'models/vessel.dart';
 
 SharedPreferences? sharedPreferences;
 bool? isStart;
@@ -73,7 +60,7 @@ onDidReceiveBackgroundNotificationResponse(
 Future<void> onStart(ServiceInstance serviceInstance) async {
   DartPluginRegistrant.ensureInitialized();
 
-  CreateTrip().startTrip(serviceInstance);
+  StartTrip().startTrip(serviceInstance);
 }
 
 onDidReceiveLocalNotification(
@@ -135,10 +122,6 @@ Future<void> initializeService() async {
       onDidReceiveBackgroundNotificationResponse:
           onDidReceiveBackgroundNotificationResponse);
 
-  /*flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()!
-      .requestPermission();*/
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
@@ -194,19 +177,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         title: 'PerforMarine',
         debugShowCheckedModeBanner: false,
         initialRoute: "/",
-        /*routes: {
-          '/': (context) => IntroScreen(),
-          '/HomePage': (context) => HomePage(),
-        },*/
         getPages: [
           GetPage(name: '/', page: () => IntroScreen()),
           GetPage(name: '/HomePage', page: () => HomePage()),
         ],
-        // theme: ThemeData(
-        //   // primarySwatch: Color(0xFF42B5BF),
-        //   // accentColor: Colors.tealAccent,
-        // ),
-        //home: IntroScreen(),
       ),
     );
   }

@@ -45,10 +45,6 @@ class _VesselFormPageState extends State<VesselFormPage> {
 
   final DatabaseService _databaseService = DatabaseService();
 
-  int _selectedAge = 0;
-  int _selectedColor = 0;
-  int _selectedTrip = 0;
-
   @override
   void initState() {
     super.initState();
@@ -71,39 +67,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
       _capacityController.text = widget.vessel!.capacity.toString();
       _builtyearController.text = widget.vessel!.builtYear.toString();
     }
-    // Utils.customPrint("freeboard: ${_freeboardController.text.runtimeType}");
   }
-
-  Future<List<Trip>> _gettrips() async {
-    final trips = await _databaseService.trips();
-    if (_trips.length == 0) _trips.addAll(trips);
-
-    return _trips;
-  }
-
-  // Future<void> _onSave() async {
-  //   final name = _nameController.text;
-  //   final age = _selectedAge;
-  //   // final color = _colors[_selectedColor];
-  //   final Trip = _trips[_selectedTrip];
-  //
-  //   // Add save code here
-  //   widget.dog == null
-  //       ? await _databaseService.insertDog(
-  //           Dog(name: name, age: age,color: , TripId: Trip.id!),
-  //         )
-  //       : await _databaseService.updateDog(
-  //           Dog(
-  //             id: widget.dog!.id,
-  //             name: name,
-  //             age: age,
-  //             // color: color,
-  //             TripId: breed.id!,
-  //           ),
-  //         );
-  //
-  //   Navigator.pop(context);
-  // }
 
   Future<void> _onVesselSave() async {
     final vesselName = _nameController.text;
@@ -123,38 +87,34 @@ class _VesselFormPageState extends State<VesselFormPage> {
     final capacity = _capacityController.text;
     final builtYear = _builtyearController.text;
     var uuid = Uuid();
-    // Add save code here
-    // Utils.customPrint('widget.vessel!.freeboard.toString():${widget.vessel!.freeboard.toString()}');
-    // Utils.customPrint('widget.vessel!.freeboard.toString():${_freeboardController.text}');
+
     widget.vessel == null
-        ? await _databaseService.insertVessel(
-            // Dog(name: name, age: age, breedId: breed.id!),
-            CreateVessel(
-                id: ObjectId().toString(),
-                name: vesselName,
-                builderName: builder,
-                model: model,
-                regNumber: registrationNumber,
-                mMSI: mmsi,
-                engineType: engineType,
-                fuelCapacity: fuelCapacity,
-                batteryCapacity: batteryCapacity,
-                weight: weight,
-                freeBoard: double.parse(freeBoard),
-                lengthOverall: double.parse(lengthOverall),
-                beam: double.parse(beam),
-                draft: double.parse(draft),
-                vesselSize: double.parse(size),
-                capacity: int.parse(capacity),
-                builtYear: int.parse(builtYear),
-                isSync: 0,
-                vesselStatus: 1,
-                //ToDo: Need to add the image urls in base 64 format
-                imageURLs: "",
-                createdAt: DateTime.now().toUtc().toString(),
-                createdBy: "",
-                updatedAt: DateTime.now().toUtc().toString(),
-                updatedBy: ""))
+        ? await _databaseService.insertVessel(CreateVessel(
+            id: ObjectId().toString(),
+            name: vesselName,
+            builderName: builder,
+            model: model,
+            regNumber: registrationNumber,
+            mMSI: mmsi,
+            engineType: engineType,
+            fuelCapacity: fuelCapacity,
+            batteryCapacity: batteryCapacity,
+            weight: weight,
+            freeBoard: double.parse(freeBoard),
+            lengthOverall: double.parse(lengthOverall),
+            beam: double.parse(beam),
+            draft: double.parse(draft),
+            vesselSize: double.parse(size),
+            capacity: int.parse(capacity),
+            builtYear: int.parse(builtYear),
+            isSync: 0,
+            vesselStatus: 1,
+            //ToDo: Need to add the image urls in base 64 format
+            imageURLs: "",
+            createdAt: DateTime.now().toUtc().toString(),
+            createdBy: "",
+            updatedAt: DateTime.now().toUtc().toString(),
+            updatedBy: ""))
         : await _databaseService.updateVessel(CreateVessel(
             id: widget.vessel!.id,
             name: vesselName,
@@ -338,65 +298,6 @@ class _VesselFormPageState extends State<VesselFormPage> {
                 ),
               ),
               SizedBox(height: 16.0),
-              // TextField(
-              //   controller: _nameController,
-              //   decoration: InputDecoration(
-              //     border: OutlineInputBorder(),
-              //     hintText: 'Vessel Name',
-              //   ),
-              // ),
-              // SizedBox(height: 16.0),
-              // TextField(
-              //   controller: _nameController,
-              //   decoration: InputDecoration(
-              //     border: OutlineInputBorder(),
-              //     hintText: 'Vessel Name',
-              //   ),
-              // ),
-
-              // Todo: Age Slider
-              // AgeSlider(
-              //   max: 30.0,
-              //   selectedAge: _selectedAge.toDouble(),
-              //   onChanged: (value) {
-              //     setState(() {
-              //       _selectedAge = value.toInt();
-              //     });
-              //   },
-              // ),
-              SizedBox(height: 16.0),
-              // Color Picker
-              // ColorPicker(
-              //   colors: _colors,
-              //   selectedIndex: _selectedColor,
-              //   onChanged: (value) {
-              //     setState(() {
-              //       _selectedColor = value;
-              //     });
-              //   },
-              // ),
-              //Todo: query builder
-              // //==========start query========
-              // SizedBox(height: 24.0),
-              // // Breed Selector
-              // FutureBuilder<List<Breed>>(
-              //   future: _gettrips(),
-              //   builder: (context, snapshot) {
-              //     if (snapshot.connectionState == ConnectionState.waiting) {
-              //       return Text("Loading trips...");
-              //     }
-              //     return tripselector(
-              //       trips: _trips.map((e) => e.name).toList(),
-              //       selectedIndex: _selectedBreed,
-              //       onChanged: (value) {
-              //         setState(() {
-              //           _selectedBreed = value;
-              //         });
-              //       },
-              //     );
-              //   },
-              // ),
-              // //=========end query==========
               SizedBox(height: 24.0),
               SizedBox(
                 height: 45.0,

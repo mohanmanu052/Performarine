@@ -1,20 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
-import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/provider/common_provider.dart';
-import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 
@@ -112,7 +105,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                         true;
                                   });
 
-                                  CreateTrip().endTrip(
+                                  EndTrip().endTrip(
                                       context: context,
                                       scaffoldKey: widget.scaffoldKey,
                                       onEnded: () async {
@@ -183,10 +176,6 @@ class _TripViewListingState extends State<TripViewListing> {
       });
     });
 
-    /*setState(() {
-      isEndTripButton = tripIsRunning;
-      isStartButton = !tripIsRunning;
-    });*/
     return result;
   }
 }

@@ -1,14 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_archive/flutter_archive.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
-    as pos;
-import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -23,7 +16,6 @@ import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/provider/common_provider.dart';
-import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -92,6 +84,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
+  //TODO future reference code
   /*@override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
@@ -129,9 +122,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   fetchDeviceData() async {
     await fetchDeviceInfo();
-    // Platform.isAndroid
-    //     ? androidDeviceInfo = await fetchDeviceInfo()!.androidDeviceData
-    //     : iosDeviceInfo = await fetchDeviceInfo()!.androidDeviceData;
+
     deviceDetails = Platform.isAndroid
         ? DeviceInfo(
             board: androidDeviceInfo?.board,

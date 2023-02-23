@@ -1,10 +1,7 @@
-import 'package:country_picker/country_picker.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:location/location.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -17,9 +14,7 @@ import 'package:performarine/common_widgets/widgets/zig_zag_line_widget.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/coming_soon_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:location/location.dart' as loc;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -32,16 +27,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  /* GlobalKey<FormFieldState> zipCodeFormFieldKey = GlobalKey<FormFieldState>();
-  GlobalKey<FormFieldState> registrationEmailFormFieldKey =
-      GlobalKey<FormFieldState>();
-  GlobalKey<FormFieldState> phoneNumberFormFieldKey =
-      GlobalKey<FormFieldState>();
-  GlobalKey<FormFieldState> createPasswordFormFieldKey =
-      GlobalKey<FormFieldState>();
-  GlobalKey<FormFieldState> confirmPasswordFormFieldKey =
-      GlobalKey<FormFieldState>();*/
 
   late TextEditingController countryController;
   late TextEditingController countryCodeController;
@@ -88,36 +73,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     phoneController = TextEditingController();
     createPasswordController = TextEditingController();
     confirmPasswordController = TextEditingController();
-
-    //getLocationData();
   }
-
-  /*Future<LocationData> getLocationData() async {
-    LocationData? locationData =
-        await Utils.getLocationPermission(context, scaffoldKey);
-
-    latitude = locationData!.latitude!.toString();
-    longitude = locationData.longitude!.toString();
-
-    Utils.customPrint('LAT ${latitude}');
-    Utils.customPrint('LONG ${longitude}');
-
-    return locationData;
-  }
-
-  Future<bool> checkIfGPSIsEnabled() async {
-    if (await Permission.location.serviceStatus.isEnabled) {
-      return true;
-    } else {
-      return false;
-    }
-  }*/
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      //resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,
@@ -277,169 +238,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           isGoogleSignInBtnClicked = false;
                                         });
                                       });
-
-                                      //getAuthenticatedClient(context);
                                     } catch (e) {
                                       Utils.customPrint('EXE: $e');
                                       // TODO handle
                                     }
                                   }
-
-                                  /// Above Code
-
-                                  /*bool isGPSEnabled =
-                                      await checkIfGPSIsEnabled();
-
-                                  if (isGPSEnabled) {
-                                    await getLocationData();
-                                    if (selectedCountry == null) {
-                                      Utils.showSnackBar(context,
-                                          scaffoldKey: scaffoldKey,
-                                          message: 'Please select country');
-                                      return null;
-                                    }
-
-                                    */
-                                  /*if (zipCodeController.text.isEmpty) {
-                                      if (selectedCountry!.toLowerCase() ==
-                                          'canada') {
-                                        Utils.showSnackBar(context,
-                                            scaffoldKey: scaffoldKey,
-                                            message:
-                                                'Please enter postal code');
-                                        return null;
-                                      } else {
-                                        Utils.showSnackBar(context,
-                                            scaffoldKey: scaffoldKey,
-                                            message: 'Please enter zipcode');
-                                        return null;
-                                      }
-                                    }*/ /*
-
-                                    */
-                                  /*if (phoneController.text.isEmpty) {
-                                      Utils.showSnackBar(context,
-                                          scaffoldKey: scaffoldKey,
-                                          message: 'Please enter phone number');
-                                      return null;
-                                    }*/ /*
-
-                                    */
-                                  /* if (selectedCountry!.toLowerCase() ==
-                                        'canada') {
-                                      bool? isCanada = hasThreeDigitsLetters(
-                                          zipCodeController.text);
-
-                                      if (zipCodeController.text.length != 7) {
-                                        Utils.showSnackBar(context,
-                                            scaffoldKey: scaffoldKey,
-                                            message:
-                                                'Please enter a valid postal code like B3J 4B2');
-                                        return null;
-                                      } else if (!isCanada) {
-                                        Utils.customPrint('IS CANADA $isCanada');
-                                        Utils.showSnackBar(context,
-                                            scaffoldKey: scaffoldKey,
-                                            message:
-                                                'Please enter a valid postal code like 92618');
-                                        return null;
-                                      }
-                                    }*/
-                                  /*
-
-                                    GoogleSignInAccount? googleSignInAccount;
-
-                                    if (await googleSignIn.isSignedIn()) {
-                                      googleSignIn.signOut();
-                                      googleSignInAccount =
-                                          await googleSignIn.signIn();
-                                    } else {
-                                      googleSignInAccount =
-                                          await googleSignIn.signIn();
-                                    }
-
-                                    if (googleSignInAccount == null) {
-                                      // TODO handle
-                                      setState(() {
-                                        isGoogleSignInBtnClicked = false;
-                                      });
-                                    } else {
-                                      try {
-                                        Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.id}');
-                                        Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.email}');
-                                        Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.displayName}');
-                                        Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.photoUrl}');
-                                        Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.serverAuthCode}');
-                                        Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.authHeaders}');
-                                        Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.toString()}');
-
-                                        setState(() {
-                                          isGoogleSignInBtnClicked = true;
-                                        });
-
-                                        commonProvider
-                                            .registerUser(
-                                                context,
-                                                googleSignInAccount.email,
-                                                createPasswordController.text,
-                                                "+1",
-                                                phoneController.text,
-                                                selectedCountry!,
-                                                zipCodeController.text,
-                                                latitude,
-                                                longitude,
-                                                true,
-                                                googleSignInAccount.id,
-                                                scaffoldKey)
-                                            .then((value) {
-                                          setState(() {
-                                            isGoogleSignInBtnClicked = false;
-                                          });
-
-                                          if (value != null) {
-                                            setState(() {
-                                              isGoogleSignInBtnClicked = false;
-                                            });
-
-                                            if (value.status!) {
-                                              setState(() {
-                                                isGoogleSignInBtnClicked =
-                                                    false;
-                                              });
-                                              Future.delayed(
-                                                  Duration(seconds: 2), () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const SignInScreen()),
-                                                );
-                                              });
-                                            }
-                                          }
-                                        }).catchError((e) {
-                                          setState(() {
-                                            isGoogleSignInBtnClicked = false;
-                                          });
-                                        });
-
-                                        //getAuthenticatedClient(context);
-                                      } catch (e) {
-                                        Utils.customPrint('EXE: $e');
-                                        // TODO handle
-                                      }
-                                    }
-                                  } else {
-                                    Utils.getLocationPermission(
-                                        context, scaffoldKey);
-                                  }*/
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(0.0),
@@ -449,136 +252,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ),
                                 ),
                               ),
-                        /* Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset(
-                                'assets/images/apple_logo.png',
-                                height: displayHeight(context) * 0.04,
-                              ),
-                            ),
-                            SizedBox(
-                              width: displayWidth(context) * 0.045,
-                            ),
-                            isGoogleSignInBtnClicked
-                                ? Center(child: CircularProgressIndicator())
-                                : InkWell(
-                                    onTap: () async {
-                                      if (selectedCountry == null) {
-                                        Utils.showSnackBar(
-                                            scaffoldKey: scaffoldKey,
-                                            message: 'Please select country');
-                                        return null;
-                                      }
-
-                                      if (zipCodeController.text.isEmpty) {
-                                        Utils.showSnackBar(
-                                            scaffoldKey: scaffoldKey,
-                                            message: 'Please enter zipcode');
-                                        return null;
-                                      }
-
-                                      if (phoneController.text.isEmpty) {
-                                        Utils.showSnackBar(
-                                            scaffoldKey: scaffoldKey,
-                                            message:
-                                                'Please enter phone number');
-                                        return null;
-                                      }
-
-                                      setState(() {
-                                        isGoogleSignInBtnClicked = true;
-                                      });
-
-                                      googleSignInAccount =
-                                          await googleSignIn.signIn();
-
-                                      if (googleSignInAccount == null) {
-                                        // TODO handle
-                                      } else {
-                                        try {
-                                          Utils.customPrint(
-                                              'NAME: ${googleSignInAccount!.id}');
-                                          Utils.customPrint(
-                                              'NAME: ${googleSignInAccount!.email}');
-                                          Utils.customPrint(
-                                              'NAME: ${googleSignInAccount!.displayName}');
-                                          Utils.customPrint(
-                                              'NAME: ${googleSignInAccount!.photoUrl}');
-                                          Utils.customPrint(
-                                              'NAME: ${googleSignInAccount!.serverAuthCode}');
-                                          Utils.customPrint(
-                                              'NAME: ${googleSignInAccount!.authHeaders}');
-                                          Utils.customPrint(
-                                              'NAME: ${googleSignInAccount!.toString()}');
-
-                                          commonProvider
-                                              .registerUser(
-                                                  googleSignInAccount!.email,
-                                                  createPasswordController.text,
-                                                  countryCodeController.text,
-                                                  phoneController.text,
-                                                  selectedCountry!,
-                                                  zipCodeController.text,
-                                                  latitude,
-                                                  longitude,
-                                                  true,
-                                                  googleSignInAccount!.id,
-                                                  scaffoldKey)
-                                              .then((value) {
-                                            setState(() {
-                                              isGoogleSignInBtnClicked = false;
-                                            });
-
-                                            if (value != null) {
-                                              setState(() {
-                                                isGoogleSignInBtnClicked =
-                                                    false;
-                                              });
-
-                                              if (value.status!) {
-                                                setState(() {
-                                                  isGoogleSignInBtnClicked =
-                                                      false;
-                                                });
-
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const SignInScreen()),
-                                                );
-                                              }
-                                            }
-                                          }).catchError((e) {
-                                            setState(() {
-                                              isGoogleSignInBtnClicked = false;
-                                            });
-                                          });
-
-                                          //getAuthenticatedClient(context);
-                                        } catch (e) {
-                                          Utils.customPrint('EXE: $e');
-                                          // TODO handle
-                                        }
-                                      }
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(0.0),
-                                      child: Image.asset(
-                                        'assets/images/google_logo.png',
-                                        height: displayHeight(context) * 0.04,
-                                      ),
-                                    ),
-                                  ),
-                          ],
-                        ),*/
                       ],
                     ),
-                    //SizedBox(height: displayHeight(context) * 0.02),
                     SizedBox(height: displayHeight(context) * 0.035),
                     Container(
                       margin: EdgeInsets.only(top: 8.0),
@@ -588,8 +263,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         hintText: 'Country',
                         labelText: '',
                         onChanged: (String value) {
-                          // formKey.currentState!.validate();
-
                           setState(() {
                             selectedCountry = value;
 
@@ -613,45 +286,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                       ),
                     ),
-                    /*   CommonTextField(
-                        controller: countryController,
-                        focusNode: countryFocusNode,
-                        labelText: 'Select Country',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.text,
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 10,
-                        prefixIcon: null,
-                        requestFocusNode: null,
-                        obscureText: false,
-                        readOnly: true,
-                        onTap: () {
-                          showCountryPicker(
-                            context: context,
-                            showPhoneCode:
-                                false, // optional. Shows phone code before the country name.
-                            onSelect: (Country country) {
-                              setState(() {
-                                countryController.text = country.name;
-                              });
-                            },
-                          );
-                        },
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Select Country';
-                          }
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          Utils.customPrint(value) ;
-                        }),*/
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
-                        //key: zipCodeFormFieldKey,
                         controller: zipCodeController,
                         focusNode: zipCodeFocusNode,
                         labelText: selectedCountry == 'USA'
@@ -668,12 +304,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         prefixIcon: null,
                         requestFocusNode: null,
                         obscureText: false,
-                        onFieldSubmitted: (value) {
-                          //zipCodeFormFieldKey.currentState!.validate();
-                        },
-                        onTap: () {
-                          //formKey.currentState!.reset();
-                        },
+                        onFieldSubmitted: (value) {},
+                        onTap: () {},
                         onChanged: (String value) {},
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -730,168 +362,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Utils.customPrint(value);
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
-                    /*   Row(
-                      children: [
-                        */ /*Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                showCountryPicker(
-                                  context: context,
-                                  showPhoneCode:
-                                      true, // optional. Shows phone code before the country name.
-                                  onSelect: (Country country) {
-                                    if (country == null) {
-                                      setState(() {
-                                        validateCountryCodeWidget = true;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        validateCountryCodeWidget = false;
-                                        selectedCountryCode = country.phoneCode;
-                                      });
-                                    }
-                                  },
-                                );
-                              },
-                              child: Container(
-                                height: displayHeight(context) * 0.06,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.shade200,
-                                    border: Border.all(
-                                      width: 1.5,
-                                      color: validateCountryCodeWidget
-                                          ? Colors.red.shade300.withOpacity(0.7)
-                                          : Colors.grey.shade200,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Center(
-                                  child: commonText(
-                                      context: context,
-                                      text: selectedCountryCode ?? '+ **',
-                                      fontWeight: FontWeight.w500,
-                                      textColor: selectedCountryCode == null
-                                          ? Colors.grey
-                                          : Colors.black,
-                                      textSize: displayWidth(context) * 0.04,
-                                      textAlign: TextAlign.start),
-                                ),
-                              ),
-                            ),
-                            validateCountryCodeWidget
-                                ? Column(
-                                    children: [
-                                      const SizedBox(
-                                        height: 6,
-                                      ),
-                                      commonText(
-                                          context: context,
-                                          text: 'Select',
-                                          fontWeight: FontWeight.w500,
-                                          textColor: Colors.red,
-                                          textSize:
-                                              displayWidth(context) * 0.03,
-                                          textAlign: TextAlign.start),
-                                    ],
-                                  )
-                                : const SizedBox(),
-                          ],
-                        ),*/ /*
-
-                        */ /*Container(
-                          height: displayHeight(context) * 0.06,
-                          width: displayWidth(context) * 0.15,
-                          child: CommonTextField(
-                              controller: countryCodeController,
-                              focusNode: countryCodeFocusNode,
-                              labelText: '',
-                              hintText: '',
-                              suffixText: null,
-                              textInputAction: TextInputAction.next,
-                              textInputType: TextInputType.number,
-                              textCapitalization: TextCapitalization.words,
-                              maxLength: 2,
-                              prefixIcon: null,
-                              requestFocusNode: null,
-                              readOnly: true,
-                              obscureText: false,
-                              onTap: () {},
-                              onChanged: (String value) {},
-                              validator: (value) {
-                                return null;
-                              },
-                              onSaved: (String value) {
-                                Utils.customPrint(value) ;
-                              }),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: CommonTextField(
-                              controller: phoneController,
-                              focusNode: phoneFocusNode,
-                              labelText: 'Enter Phone Number',
-                              hintText: '9999999999',
-                              suffixText: null,
-                              textInputAction: TextInputAction.next,
-                              textInputType: TextInputType.number,
-                              textCapitalization: TextCapitalization.words,
-                              maxLength: 10,
-                              prefixIcon: null,
-                              requestFocusNode: null,
-                              obscureText: false,
-                              onTap: () {},
-                              onChanged: (String value) {},
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Enter Mobile Number';
-                                }
-                                if (value.length > 10 || value.length < 10) {
-                                  return 'Enter Valid Mobile Number';
-                                }
-
-                                return null;
-                              },
-                              onSaved: (String value) {
-                                Utils.customPrint(value) ;
-                              }),
-                        ),*/ /*
-
-                        CommonTextField(
-                            controller: phoneController,
-                            focusNode: phoneFocusNode,
-                            labelText: 'Enter Phone Number',
-                            hintText: '999 999 9999',
-                            suffixText: null,
-                            textInputAction: TextInputAction.next,
-                            textInputType: TextInputType.number,
-                            textCapitalization: TextCapitalization.words,
-                            maxLength: 10,
-                            prefixIcon: null,
-                            requestFocusNode: null,
-                            obscureText: false,
-                            onTap: () {},
-                            onChanged: (String value) {},
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Enter Mobile Number';
-                              }
-                              if (value.length > 10 || value.length < 10) {
-                                return 'Enter Valid Mobile Number';
-                              }
-
-                              return null;
-                            },
-                            onSaved: (String value) {
-                              Utils.customPrint(value) ;
-                            }),
-                      ],
-                    ),*/
                     CommonTextField(
-                        //key: phoneNumberFormFieldKey,
                         controller: phoneController,
                         focusNode: phoneFocusNode,
                         labelText: 'Enter Phone Number',
@@ -904,13 +375,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         prefixIcon: null,
                         requestFocusNode: null,
                         obscureText: false,
-                        onFieldSubmitted: (value) {
-                          //phoneNumberFormFieldKey.currentState!.validate();
-                        },
-                        onTap: () {
-                          /*registrationEmailFormFieldKey.currentState!
-                              .validate();*/
-                        },
+                        onFieldSubmitted: (value) {},
+                        onTap: () {},
                         onChanged: (String value) {},
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -927,7 +393,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
-                        //key: createPasswordFormFieldKey,
                         controller: createPasswordController,
                         focusNode: createPasswordFocusNode,
                         labelText: 'Create Password',
@@ -940,12 +405,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         prefixIcon: null,
                         requestFocusNode: null,
                         obscureText: true,
-                        onFieldSubmitted: (value) {
-                          //createPasswordFormFieldKey.currentState!.validate();
-                        },
-                        onTap: () {
-                          //phoneNumberFormFieldKey.currentState!.validate();
-                        },
+                        onFieldSubmitted: (value) {},
+                        onTap: () {},
                         onChanged: (String value) {},
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -964,7 +425,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
-                        //key: confirmPasswordFormFieldKey,
                         controller: confirmPasswordController,
                         focusNode: confirmPasswordFocusNode,
                         labelText: 'Confirm Password',
@@ -977,12 +437,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         prefixIcon: null,
                         requestFocusNode: null,
                         obscureText: true,
-                        onFieldSubmitted: (value) {
-                          //confirmPasswordFormFieldKey.currentState!.validate();
-                        },
-                        onTap: () {
-                          //createPasswordFormFieldKey.currentState!.validate();
-                        },
+                        onFieldSubmitted: (value) {},
+                        onTap: () {},
                         onChanged: (String value) {},
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -1072,14 +528,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       height: displayHeight(context) * 0.03,
                     ),
-                    /*  commonText(
-                        context: context,
-                        text:
-                            'By clicking on register you accept T&C\nand Privacy Policy',
-                        fontWeight: FontWeight.w400,
-                        textColor: Colors.black,
-                        textSize: displayWidth(context) * 0.03,
-                        textAlign: TextAlign.start),*/
                     RichText(
                       text: TextSpan(
                         text: 'By clicking on register you accept',

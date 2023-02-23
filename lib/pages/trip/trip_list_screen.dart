@@ -1,29 +1,25 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
-    as pos;
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
+    as pos;
+import 'package:get/get.dart';
 import 'package:objectid/objectid.dart';
+// import 'package:location/location.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
-import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
-import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
-import 'package:get/get.dart';
-// import 'package:location/location.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:uuid/uuid.dart';
@@ -99,9 +95,7 @@ class _TripListScreenState extends State<TripListScreen> {
 
   fetchDeviceData() async {
     await fetchDeviceInfo();
-    // Platform.isAndroid
-    //     ? androidDeviceInfo = await fetchDeviceInfo()!.androidDeviceData
-    //     : iosDeviceInfo = await fetchDeviceInfo()!.androidDeviceData;
+
     deviceDetails = Platform.isAndroid
         ? DeviceInfo(
             board: androidDeviceInfo?.board,
@@ -153,73 +147,6 @@ class _TripListScreenState extends State<TripListScreen> {
             textSize: displayWidth(context) * 0.05,
             textAlign: TextAlign.start),
       ),
-      /*bottomNavigationBar: Container(
-        margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
-        child: CommonButtons.getActionButton(
-            title: 'Start Trip',
-            context: context,
-            fontSize: displayWidth(context) * 0.042,
-            textColor: Colors.white,
-            buttonPrimaryColor: buttonBGColor,
-            borderColor: buttonBGColor,
-            width: displayWidth(context),
-            onTap: () {
-              locationPermissions(
-                  widget.vesselSize!, widget.vesselName!, widget.vesselId!);
-              // getLocationData();
-
-              // getBottomSheet(
-              //   context,
-              //   size,
-              //   widget.vesselName!,
-              //   widget.vesselId!,
-              // );
-              _streamSubscriptions.add(
-                accelerometerEvents.listen(
-                  (AccelerometerEvent event) {
-                    setState(() {
-                      _accelerometerValues = <double>[
-                        event.x,
-                        event.y,
-                        event.z
-                      ];
-                    });
-                  },
-                ),
-              );
-              _streamSubscriptions.add(
-                gyroscopeEvents.listen(
-                  (GyroscopeEvent event) {
-                    setState(() {
-                      _gyroscopeValues = <double>[event.x, event.y, event.z];
-                    });
-                  },
-                ),
-              );
-              _streamSubscriptions.add(
-                userAccelerometerEvents.listen(
-                  (UserAccelerometerEvent event) {
-                    setState(() {
-                      _userAccelerometerValues = <double>[
-                        event.x,
-                        event.y,
-                        event.z
-                      ];
-                    });
-                  },
-                ),
-              );
-              _streamSubscriptions.add(
-                magnetometerEvents.listen(
-                  (MagnetometerEvent event) {
-                    setState(() {
-                      _magnetometerValues = <double>[event.x, event.y, event.z];
-                    });
-                  },
-                ),
-              );
-            }),
-      ),*/
       body: Stack(
         children: [
           TripViewBuilder(widget.vesselId.toString()),
@@ -240,14 +167,7 @@ class _TripListScreenState extends State<TripListScreen> {
                   onTap: () {
                     locationPermissions(widget.vesselSize!, widget.vesselName!,
                         widget.vesselId!);
-                    // getLocationData();
 
-                    // getBottomSheet(
-                    //   context,
-                    //   size,
-                    //   widget.vesselName!,
-                    //   widget.vesselId!,
-                    // );
                     _streamSubscriptions.add(
                       accelerometerEvents.listen(
                         (AccelerometerEvent event) {
@@ -329,7 +249,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                   snapshot.data![index].isEndTripClicked = true;
                                 });
 
-                                CreateTrip().endTrip(
+                                EndTrip().endTrip(
                                     context: context,
                                     scaffoldKey: scaffoldKey,
                                     onEnded: () {
@@ -339,90 +259,6 @@ class _TripListScreenState extends State<TripListScreen> {
                                                 widget.vesselId.toString());
                                       });
                                     });
-                                return;
-
-                                bool isServiceRunning =
-                                    await service.isRunning();
-
-                                Utils.customPrint(
-                                    'IS SERVICE RUNNING: $isServiceRunning');
-
-                                try {
-                                  service.invoke('stopService');
-                                  // instan.stopSelf();
-                                } on Exception catch (e) {
-                                  Utils.customPrint('SERVICE STOP BG EXE: $e');
-                                }
-
-                                File? zipFile;
-                                if (timer != null) timer!.cancel();
-                                Utils.customPrint(
-                                    'TIMER STOPPED ${ourDirectory!.path}/${snapshot.data![index].id}');
-                                final dataDir = Directory(
-                                    '${ourDirectory!.path}/${snapshot.data![index].id}');
-
-                                try {
-                                  zipFile = File(
-                                      '${ourDirectory!.path}/${snapshot.data![index].id}.zip');
-
-                                  ZipFile.createFromDirectory(
-                                      sourceDir: dataDir,
-                                      zipFile: zipFile,
-                                      recurseSubDirs: true);
-                                  Utils.customPrint('our path is $dataDir');
-                                } catch (e) {
-                                  Utils.customPrint('$e');
-                                }
-
-                                File file = File(zipFile!.path);
-                                Utils.customPrint('FINAL PATH: ${file.path}');
-
-                                await sharedPreferences!.reload();
-
-                                int? tripDuration =
-                                    sharedPreferences!.getInt("tripDuration") ??
-                                        1;
-                                String? tripDistance = sharedPreferences!
-                                        .getString("tripDistance") ??
-                                    '1';
-                                String? tripSpeed =
-                                    sharedPreferences!.getString("tripSpeed") ??
-                                        '1';
-                                String? tripAvgSpeed = sharedPreferences!
-                                        .getString("tripAvgSpeed") ??
-                                    '1';
-
-                                String finalTripDuration =
-                                    Utils.calculateTripDuration(
-                                        (tripDuration / 1000).toInt());
-                                String finalTripDistance = tripDistance;
-                                Position? locationData =
-                                    await Utils.getLocationPermission(
-                                        context, scaffoldKey);
-
-                                await _databaseService.updateTripStatus(
-                                    1,
-                                    file.path,
-                                    DateTime.now().toUtc().toString(),
-                                    json.encode([
-                                      locationData!.latitude,
-                                      locationData.longitude
-                                    ].join(",")),
-                                    finalTripDuration,
-                                    finalTripDistance,
-                                    tripSpeed.toString(),
-                                    tripAvgSpeed,
-                                    snapshot.data![index].id!);
-
-                                _databaseService
-                                    .updateVesselDataWithDurationSpeedDistance(
-                                        finalTripDuration,
-                                        finalTripDistance,
-                                        tripSpeed.toString(),
-                                        tripAvgSpeed,
-                                        snapshot.data![index].vesselId!);
-
-                                sharedPreferences!.remove('trip_data');
                               })
                           : commonText(
                               text: 'oops! No Trips are added yet',
@@ -808,7 +644,6 @@ class _TripListScreenState extends State<TripListScreen> {
                                                     top: 5,
                                                     bottom: 5),
                                               ),
-
                                               child: commonText(
                                                   context: context,
                                                   text: vesselName,
@@ -818,29 +653,6 @@ class _TripListScreenState extends State<TripListScreen> {
                                                       displayWidth(context) *
                                                           0.032,
                                                   textAlign: TextAlign.start),
-
-                                              //Text(vesselName)
-                                              //     DropdownButtonHideUnderline(
-                                              //   child: DropdownButton<dynamic>(
-                                              //     value: null,
-                                              //     isDense: true,
-                                              //     hint:
-                                              //         Text(selectedVesselName),
-                                              //     isExpanded: true,
-                                              //     items: [
-                                              //       DropdownMenuItem(
-                                              //           value: '1',
-                                              //           child:
-                                              //               Text(vesselName)),
-                                              //     ],
-                                              //     onChanged: (newValue) {
-                                              //       stateSetter(() =>
-                                              //           selectedVesselName =
-                                              //               vesselName);
-                                              //       Utils.customPrint(selectedVesselName);
-                                              //     },
-                                              //   ),
-                                              // ),
                                             ),
                                           ),
                                         ),
@@ -938,6 +750,7 @@ class _TripListScreenState extends State<TripListScreen> {
                       height: 50,
                       width: displayWidth(context),
                       child: Container(
+                        color: Colors.red,
                         margin: EdgeInsets.symmetric(horizontal: 10),
                         child: isStartButton
                             ? CommonButtons.getActionButton(
@@ -1016,14 +829,6 @@ class _TripListScreenState extends State<TripListScreen> {
                                       Utils.customPrint(
                                           'FINAL PATH: ${file.path}');
                                       onSave(file);
-
-                                      /*File file = File(zipFile!.path);
-                                      Future.delayed(Duration(seconds: 1))
-                                          .then((value) {
-                                        stateSetter(() {
-                                          isZipFileCreate = true;
-                                        });
-                                      });*/
                                     })
                                 : CommonButtons.getActionButton(
                                     title: 'Cancel',
@@ -1035,7 +840,6 @@ class _TripListScreenState extends State<TripListScreen> {
                                     width: displayWidth(context),
                                     onTap: () {
                                       Get.back();
-                                      //Navigator.of(context).pop();
                                     }),
                       ),
                     ),
@@ -1054,13 +858,6 @@ class _TripListScreenState extends State<TripListScreen> {
                       onPressed: () {
                         if (isSensorDataUploaded) {
                           Get.back();
-                          //setState(() {
-                          // future = commonProvider.triplListData(
-                          //     context,
-                          //     commonProvider.loginModel!.token!,
-                          //     widget.vesselId.toString(),
-                          //     scaffoldKey);
-                          //});
                         } else {
                           Get.back();
                         }
@@ -1073,202 +870,8 @@ class _TripListScreenState extends State<TripListScreen> {
         });
       },
       elevation: 4,
-      /*shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-      ),*/
       enableDrag: false,
     );
-
-    /*return Get.bottomSheet(StatefulBuilder(
-            builder: (BuildContext context, StateSetter stateSetter) {
-      return Container(
-        padding:
-            const EdgeInsets.only(top: 25, bottom: 25, left: 10, right: 10),
-        height: displayHeight(context) / 1.5,
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40), topRight: Radius.circular(40))),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TweenAnimationBuilder(
-                      duration: const Duration(seconds: 5),
-                      tween: Tween(begin: 0.0, end: 1.0),
-                      builder: (context, double value, _) {
-                        return SizedBox(
-                          height: 80,
-                          width: 80,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              CircularProgressIndicator(
-                                value: value,
-                                backgroundColor: Colors.grey.shade200,
-                                strokeWidth: 3,
-                              ),
-                              Center(
-                                child: buildProgress(value, 60),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                      onEnd: () {
-                        Utils.customPrint('END');
-
-                        stateSetter(() {
-                          isStartButton = true;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        commonText(
-                            context: context,
-                            text: 'Fetching your device details',
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.032,
-                            textAlign: TextAlign.start),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        TweenAnimationBuilder(
-                            duration: const Duration(seconds: 5),
-                            tween: Tween(begin: 0.0, end: 1.0),
-                            builder: (context, double value, _) {
-                              return SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    CircularProgressIndicator(
-                                      color: Colors.blue,
-                                      value: value,
-                                      backgroundColor: Colors.grey.shade200,
-                                      strokeWidth: 2,
-                                      valueColor: const AlwaysStoppedAnimation(
-                                          Colors.green),
-                                    ),
-                                    Center(
-                                      child: subTitleProgress(
-                                          value, displayWidth(context) * 0.035),
-                                    )
-                                  ],
-                                ),
-                              );
-                            }),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        commonText(
-                            context: context,
-                            text: 'Connecting with your Sensors',
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.032,
-                            textAlign: TextAlign.start),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        TweenAnimationBuilder(
-                            duration: const Duration(seconds: 5),
-                            tween: Tween(begin: 0.0, end: 1.0),
-                            builder: (context, double value, _) {
-                              return SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    CircularProgressIndicator(
-                                      color: Colors.blue,
-                                      value: value,
-                                      backgroundColor: Colors.grey.shade200,
-                                      strokeWidth: 2,
-                                      valueColor: const AlwaysStoppedAnimation(
-                                          Colors.green),
-                                    ),
-                                    Center(
-                                      child: subTitleProgress(
-                                          value, displayWidth(context) * 0.035),
-                                    )
-                                  ],
-                                ),
-                              );
-                            }),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 50,
-                width: displayWidth(context),
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 10),
-                  child: isStartButton
-                      ? CommonButtons.getActionButton(
-                          title: 'Start',
-                          context: context,
-                          fontSize: displayWidth(context) * 0.042,
-                          textColor: Colors.white,
-                          buttonPrimaryColor: buttonBGColor,
-                          borderColor: buttonBGColor,
-                          width: displayWidth(context),
-                          onTap: () {
-                            fileName = '$fileIndex.csv';
-
-                            Future.delayed(Duration(seconds: 1), () {
-                              timer = Timer.periodic(const Duration(seconds: 1),
-                                  (timer) {
-                                writeSensorDataToFile();
-                              });
-                            });
-                          })
-                      : CommonButtons.getActionButton(
-                          title: 'Cancel',
-                          context: context,
-                          fontSize: displayWidth(context) * 0.042,
-                          textColor: Colors.white,
-                          buttonPrimaryColor: buttonBGColor,
-                          borderColor: buttonBGColor,
-                          width: displayWidth(context),
-                          onTap: () {
-                            //Navigator.of(context).pop();
-                          }),
-                ),
-              )
-            ],
-          ),
-        ),
-      );
-    }),
-        isDismissible: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-        ),
-        enableDrag: false,
-        isScrollControlled: true);*/
   }
 
   buildProgress(double progress, double size) {

@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:lottie/lottie.dart';
@@ -32,7 +29,6 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
     return WillPopScope(
       onWillPop: () async {
         if (widget.isEdit!) {
-          //  Navigator.of(context).pop([true, widget.data]);
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -73,9 +69,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            VesselSingleView(vessel: widget.data!
-                                // isCalledFromSuccessScreen: true,
-                                )),
+                            VesselSingleView(vessel: widget.data!)),
                   );
                 } else {
                   Navigator.pushReplacement(

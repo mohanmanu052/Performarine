@@ -11,7 +11,6 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class CustomDrawer extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;

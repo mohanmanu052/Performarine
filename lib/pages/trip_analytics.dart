@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -7,12 +6,11 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
-import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -21,7 +19,6 @@ import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/provider/common_provider.dart';
-import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -371,7 +368,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                     isTripEnded = true;
                                                   });
                                                   Navigator.pop(context);
-                                                  CreateTrip().endTrip(
+                                                  EndTrip().endTrip(
                                                       context: context,
                                                       scaffoldKey: scaffoldKey,
                                                       onEnded: () async {
@@ -870,10 +867,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       Utils.customPrint('Vessel isSync $vesselIsSync');
     });
 
-    /*setState(() {
-      isEndTripButton = tripIsRunning;
-      isStartButton = !tripIsRunning;
-    });*/
     return result;
   }
 
@@ -913,17 +906,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,
                                   textAlign: TextAlign.center),
-                              /* SizedBox(
-                                height: displayHeight(context) * 0.015,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text:
-                                      'The vessel will be visible in your vessel list and you can record trips with it again',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.grey,
-                                  textSize: displayWidth(context) * 0.036,
-                                  textAlign: TextAlign.center),*/
                             ],
                           ),
                         ),
@@ -1022,13 +1004,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     var endPosition = tripData.endPosition!.split(",");
     Utils.customPrint('START POSITION 0 ${startPosition}');
 
-    //TODO remove below code
-    /*setState(() {
-      isTripUploaded = false;
-    });
-    return;*/
-    //String startLong = ;
-
     var queryParameters;
     queryParameters = {
       "id": tripData.id,
@@ -1093,8 +1068,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           showSuccessNoti();
 
           isDataUpdated = true;
-
-          // widget.tripUploadedSuccessfully!.call();
         } else {
           setState(() {
             isTripUploaded = false;
@@ -1119,11 +1092,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   }
 
   Future<void> cancelOnGoingProgressNotification(String id) async {
-    //progressTimer!.cancel();
     flutterLocalNotificationsPlugin.cancel(9989);
-    // setState(() {
-    //   progress = 100;
-    // });
+
     return;
   }
 
@@ -1210,17 +1180,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             await _databaseService.updateIsSyncStatus(
                 1, tripData!.vesselId.toString());
 
-            /*setState(() {
-              isTripUploaded = false;
-            });*/
-
             startSensorFunctionality(tripData!);
-          } /* else if (value.statusCode == 400) {
-            setState(() {
-              isTripUploaded = false;
-            });
-          } */
-          else {
+          } else {
             Utils.customPrint('UPLOADEDDDD: ${value.message}');
             await cancelOnGoingProgressNotification(tripData!.id!);
             showFailedNoti(tripData!.id!);
@@ -1316,20 +1277,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
               message: 'File downloaded successfully',
             );
           }
-          /*Utils.showActionSnackBar(
-                                                          context,
-                                                          scaffoldKey,
-                                                          'File downloaded successfully',
-                                                          () async {
-                                                        Utils.customPrint(
-                                                            'Open Btn clicked ttttt');
-                                                        var result =
-                                                            await OpenFile.open(
-                                                                directory.path);
-
-                                                        Utils.customPrint(
-                                                            "dataaaaa: ${result.message} ggg ${result.type}");
-                                                      });*/
         }
       } else {
         await Utils.getStoragePermission(context);
@@ -1357,26 +1304,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
               scaffoldKey: scaffoldKey,
               message: 'File downloaded successfully',
             );
-
-            /*Utils.showActionSnackBar(
-                                                            context,
-                                                            scaffoldKey,
-                                                            'File downloaded successfully',
-                                                            () {
-                                                          Utils.customPrint(
-                                                              'Open Btn clicked');
-                                                          OpenFile.open(
-                                                                  directory.path)
-                                                              .catchError(
-                                                                  (onError) {
-                                                            Utils.customPrint(onError);
-                                                          });
-                                                        });*/
           }
         }
       }
     } else {
-      //File copiedFile = File('${ourDirectory!.path}.zip');
       File copiedFile = File('${ourDirectory!.path}/${tripData!.id}.zip');
 
       Utils.customPrint('DIR PATH R ${ourDirectory!.path}');

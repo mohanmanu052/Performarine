@@ -3,8 +3,6 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/models/trip.dart';
-import 'package:get/get.dart';
-// import 'package:performarine/models/Trip.dart';
 
 class TripBuilder extends StatelessWidget {
   const TripBuilder({
@@ -108,20 +106,6 @@ class TripBuilder extends StatelessWidget {
               ),
             ),
           ),
-
-          /*Container(
-                  padding: const EdgeInsets.only(
-                      right: 5, left: 20, top: 5, bottom: 5),
-                  color:
-                      statusColor ?? const Color.fromARGB(255, 19, 49, 73),
-                  child: const Text(
-                    'Completed',
-                    style: TextStyle(
-                        fontSize: 8,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                ),*/
         )
       ],
     );

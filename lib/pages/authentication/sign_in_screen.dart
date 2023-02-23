@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:country_picker/country_picker.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -78,9 +76,6 @@ class _SignInScreenState extends State<SignInScreen> {
     super.initState();
 
     commonProvider = context.read<CommonProvider>();
-
-    //emailFormFieldKey = GlobalKey<FormFieldState>();
-    //passwordFormFieldKey = GlobalKey<FormFieldState>();
 
     emailController.addListener(() {
       if (emailController.text.isNotEmpty) {
@@ -220,12 +215,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           prefixIcon: null,
                           requestFocusNode: null,
                           obscureText: true,
-                          onTap: () {
-                            //emailFormFieldKey.currentState!.validate();
-                          },
-                          onFieldSubmitted: (value) {
-                            // passwordFormFieldKey.currentState!.validate();
-                          },
+                          onTap: () {},
+                          onFieldSubmitted: (value) {},
                           onChanged: (String value) {},
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -286,21 +277,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                           });
                                         } else {
                                           try {
-                                            // Utils.customPrint(
-                                            //     'NAME: ${googleSignInAccount!.id}');
-                                            // Utils.customPrint(
-                                            //     'NAME: ${googleSignInAccount!.email}');
-                                            // Utils.customPrint(
-                                            //     'NAME: ${googleSignInAccount!.displayName}');
-                                            // Utils.customPrint(
-                                            //     'NAME: ${googleSignInAccount!.photoUrl}');
-                                            // Utils.customPrint(
-                                            //     'NAME: ${googleSignInAccount!.serverAuthCode}');
-                                            // Utils.customPrint(
-                                            //     'NAME: ${googleSignInAccount!.authHeaders}');
-                                            // Utils.customPrint(
-                                            //     'NAME: ${googleSignInAccount!.toString()}');
-
                                             setState(() {
                                               isGoogleSignInBtnClicked = true;
                                             });
@@ -340,8 +316,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                                     false;
                                               });
                                             });
-
-                                            //getAuthenticatedClient(context);
                                           } catch (e) {
                                             Utils.customPrint('EXE: $e');
                                             // TODO handle
@@ -414,40 +388,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                         isLoginBtnClicked = false;
                                       });
                                     });
-                                  } else {
-                                    /*Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => VerifyOtpScreen(
-                                                countryCode:
-                                                    selectedCountryCode!,
-                                                mobileNumber:
-                                                    phoneController.text,
-                                              )),
-                                    );*/
-                                  }
+                                  } else {}
                                 }
                               }),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      /* GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const ForgetPasswordScreen()),
-                          );
-                        },
-                        child: commonText(
-                            context: context,
-                            text: 'Forgot Password?',
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.034,
-                            textAlign: TextAlign.start),
-                      ),*/
                     ],
                   ),
                 ),

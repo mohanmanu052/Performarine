@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/provider/common_provider.dart';
-import 'package:provider/provider.dart';
 
 class ComingSoonScreen extends StatefulWidget {
   const ComingSoonScreen({Key? key}) : super(key: key);

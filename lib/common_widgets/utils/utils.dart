@@ -1,35 +1,20 @@
 import 'dart:io';
-import 'dart:math';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
-import 'package:get/get.dart';
-// import 'package:goe/providers/common_provider.dart';
-// import 'package:goe/utils/colors.dart';
-// import 'package:goe/widgets/custom_dialog.dart';
-// import 'package:goe/widgets/location_permission_dialog.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:location/location.dart' as loc;
-import 'package:mime/mime.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:performarine/models/trip.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dio/dio.dart' as d;
-
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -42,34 +27,6 @@ class Utils {
 
     _inProcess = true;
     final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-    CroppedFile? croppedFile;
-    /*if (photo != null) {
-      croppedFile = await ImageCropper().cropImage(
-        sourcePath: photo.path,
-        aspectRatioPresets: [
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9
-        ],
-        uiSettings: [
-          AndroidUiSettings(
-              toolbarTitle: 'Cropper',
-              toolbarColor: Colors.deepOrange,
-              toolbarWidgetColor: Colors.white,
-              initAspectRatio: CropAspectRatioPreset.original,
-              lockAspectRatio: false),
-          IOSUiSettings(
-            title: 'Cropper',
-          ),
-        ],
-      );
-
-      _inProcess = false;
-    } else {
-      _inProcess = false;
-    }*/
 
     return [new File(photo!.path)];
   }
@@ -78,7 +35,6 @@ class Utils {
     FilePickerResult? result = await FilePicker.platform
         .pickFiles(allowMultiple: false, type: FileType.image);
     List<File> files = [];
-    List<File> croppedFileList = [];
     if (result != null) {
       files = result.paths.map((path) => File(path!)).toList();
 
@@ -87,8 +43,6 @@ class Utils {
       // User canceled the picker
       return files;
     }
-
-    // return croppedFileList;
   }
 
   static void showSnackBar(BuildContext context,
@@ -100,10 +54,7 @@ class Utils {
     bool isDarkMode = brightness == Brightness.dark;
 
     final snackBar = SnackBar(
-      backgroundColor: status
-          ? Colors
-              .blue /*Utils.convertToColor(commonProvider.globalLoginModel!.data!.configUserData![0].defaultConfig!.buttonPrimaryColor)*/
-          : Colors.red,
+      backgroundColor: status ? Colors.blue : Colors.red,
       content: Row(
         children: [
           Icon(
@@ -152,29 +103,18 @@ class Utils {
       BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) async {
     bool isPermissionGranted = false;
 
-    Position? locationData;
-
     await Geolocator.requestPermission().then((value) async {
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           isPermissionGranted = false;
-          /*Utils.showActionSnackBar(context, scaffoldKey,
-            'Location permissions are denied without permissions we are unable to start the trip',
-            () {
-          // OpenFile.open(directoryPath);
-        });*/
+
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey,
               message:
                   'Location permissions are denied without permissions we are unable to start the trip');
 
-          // Permissions are denied, next time you could try
-          // requesting permissions again (this is also where
-          // Android's shouldShowRequestPermissionRationale
-          // returned true. According to Android guidelines
-          // your App should show an explanatory UI now.
           return Future.error('Location permissions are denied');
         }
       }
@@ -185,11 +125,7 @@ class Utils {
 
         isPermissionGranted = await openAppSettings();
         Utils.customPrint("isPermissionGranted:$isPermissionGranted");
-        /* Utils.showActionSnackBar(context, scaffoldKey,
-            'Location permissions are denied without permissions we are unable to start the trip',
-            () {
-          // OpenFile.open(directoryPath);
-        });*/
+
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey,
             message:
@@ -200,65 +136,9 @@ class Utils {
             'Location permissions are permanently denied, we cannot request permissions.');
       }
 
-      // When we reach here, permissions are granted and we can
-      // continue accessing the position of the device.
       return await Geolocator.getCurrentPosition();
     });
     return await Geolocator.getCurrentPosition();
-
-    // try {
-    //   if (await Permission.locationAlways.request().isGranted) {
-    //     // if (ModalRoute.of(context)?.isCurrent != null) {
-    //     //   if (ModalRoute.of(context)?.isCurrent != true) {
-    //     //     // Utils.customPrint("im in the loop:$locationData");
-    //     //     // Get.back();
-    //     //   }
-    //     // }
-    //     //ModalRoute.of(context)?.isCurrent != true;
-    //     isPermissionGranted = true;
-    //     locationData = await Utils.getCurrentLocation();
-    //     Utils.customPrint("im in the loop assigned getCurrentLocation:$locationData");
-    //   } else if (
-    //
-    //   // await Geolocator.checkPermission().then((value) => null);
-    //
-    //   await Permission.locationAlways
-    //       .request()
-    //       .isPermanentlyDenied) {
-    //     isPermissionGranted = false;
-    //     Utils.customPrint('PD');
-    //
-    //     isPermissionGranted = await openAppSettings();
-    //     Utils.customPrint("isPermissionGranted:$isPermissionGranted");
-    //     /* Utils.showActionSnackBar(context, scaffoldKey,
-    //         'Location permissions are denied without permissions we are unable to start the trip',
-    //         () {
-    //       // OpenFile.open(directoryPath);
-    //     });*/
-    //     Utils.showSnackBar(context,
-    //         scaffoldKey: scaffoldKey,
-    //         message:
-    //             'Location permissions are denied without permissions we are unable to start the trip');
-    //   } else if (await Permission.locationAlways.request().isDenied) {
-    //     // Utils.customPrint('D');
-    //     isPermissionGranted = false;
-    //     /*Utils.showActionSnackBar(context, scaffoldKey,
-    //         'Location permissions are denied without permissions we are unable to start the trip',
-    //         () {
-    //       // OpenFile.open(directoryPath);
-    //     });*/
-    //     Utils.showSnackBar(context,
-    //         scaffoldKey: scaffoldKey,
-    //         message:
-    //             'Location permissions are denied without permissions we are unable to start the trip');
-    //   } else {
-    //     locationData = await getCurrentLocation();
-    //   }
-    // } catch (e) {
-    //   isPermissionGranted = false;
-    // }
-
-    // return locationData;
   }
 
   static Future<SharedPreferences> initSharedPreferences() async {
@@ -310,49 +190,10 @@ class Utils {
         }
         Utils.customPrint('PD');
 
-        /*showDialog(
-            context: scaffoldKey.currentContext!,
-            builder: (BuildContext context) {
-              return LocationPermissionCustomDialog(
-                headingText: 'Storage Permission Required',
-                text: 'Allow Access to “Media Storage”',
-                subText:
-                    "To add vessels data we need access for your local storage",
-                stepOne: 'Click OK to access App Info',
-                stepTwo: 'Click Permissions to access Permission Info',
-                stepThree: 'Select Media & Photos and change to allow access.',
-                buttonText: 'Ok',
-                buttonOnTap: () async {
-                  isPermissionGranted = await openAppSettings();
-                  Navigator.pop(context);
-                },
-              );
-            });*/
-
         isPermissionGranted = await openAppSettings();
       } else if (await Permission.locationAlways.request().isDenied) {
         Utils.customPrint('D');
         isPermissionGranted = false;
-        //getStoragePermission(context, scaffoldKey);
-
-        /*showDialog(
-            context: scaffoldKey.currentContext!,
-            builder: (BuildContext context) {
-              return LocationPermissionCustomDialog(
-                headingText: 'Storage Permission Required',
-                text: 'Allow Access to “Media Storage”',
-                subText:
-                    "To add vessels data we need access for your local storage",
-                stepOne: 'Click OK to access App Info',
-                stepTwo: 'Click Permissions to access Permission Info',
-                stepThree: 'Select Media & Photos and change to allow access.',
-                buttonText: 'Ok',
-                buttonOnTap: () async {
-                  isPermissionGranted = await openAppSettings();
-                  Navigator.pop(context);
-                },
-              );
-            });*/
       }
     } catch (e) {
       isPermissionGranted = false;
@@ -557,10 +398,6 @@ class Utils {
   }
 
   static String getCurrentTZDateTime() {
-    /*var locations = tz.timeZoneDatabase.locations;
-    locations.forEach((key, value) {
-      Utils.customPrint('$key: $value');
-    });*/
     var canada = tz.getLocation('Canada/Pacific');
     var now = tz.TZDateTime.now(canada).toUtc();
     var localNow = DateTime.now();

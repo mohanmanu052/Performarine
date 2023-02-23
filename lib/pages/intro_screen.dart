@@ -5,12 +5,10 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
-import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lets_get_started_screen.dart';
-import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
-import 'package:performarine/services/database_service.dart';
 
 import '../common_widgets/utils/constants.dart';
 
@@ -124,14 +122,6 @@ class _IntroScreenState extends State<IntroScreen> {
                               SizedBox(height: displayHeight(context) * 0.02),
                               GestureDetector(
                                 onTap: () {
-                                  /*Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LetsGetStartedScreen(),
-                                      ),
-                                      ModalRoute.withName(""));*/
-
                                   checkIfUserIsLoggedIn();
                                 },
                                 child: Container(
@@ -265,20 +255,6 @@ class _IntroScreenState extends State<IntroScreen> {
           }
         }
       }
-
-      /*Future.delayed(Duration(seconds: 3), () {
-        Utils.customPrint('IS CALLED FROM NOTI: $isCalledFromNoti');
-        if (isCalledFromNoti == null) {
-        } else if (!isCalledFromNoti) {
-          if (mounted) {
-            setState(() {
-              isBtnVisible = true;
-            });
-          }
-        } else {
-          checkIfUserIsLoggedIn();
-        }
-      });*/
     }
   }
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:performarine/analytics/get_or_create_folder.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -12,11 +13,8 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/sucessfully_added_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
-import 'package:performarine/services/create_trip.dart';
 import 'package:performarine/services/database_service.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-// import 'package:uuid/uuid.dart';
 import 'package:path/path.dart' as path;
 
 class AddNewVesselStepTwo extends StatefulWidget {
@@ -378,8 +376,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
 
                               if (commonProvider.addVesselRequestModel!
                                   .selectedImages!.isNotEmpty) {
-                                String vesselImagesDirPath = await CreateTrip()
-                                    .getOrCreateFolderForAddVessel();
+                                String vesselImagesDirPath =
+                                    await GetOrCreateFolder()
+                                        .getOrCreateFolderForAddVessel();
                                 Utils.customPrint(
                                     'FOLDER PATH: $vesselImagesDirPath');
 
@@ -453,14 +452,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                         commonProvider
                                             .addVesselRequestModel!.name!,
                                         widget.addVesselData!.id!.toString());
-
-                                    /*_databaseService.updateVesselStatus(1,
-                                        widget.addVesselData!.id!.toString());*/
-
-                                    /*Navigator.of(context).pop([
-                                      true,
-                                      commonProvider.addVesselRequestModel
-                                    ]);*/
 
                                     Navigator.pushReplacement(
                                       context,

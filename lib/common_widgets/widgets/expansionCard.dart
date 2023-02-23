@@ -10,8 +10,6 @@ import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
-import 'package:performarine/pages/trip/tripViewBuilder.dart';
-import 'package:performarine/pages/trip/trip_list_screen.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/services/database_service.dart';
 
@@ -123,25 +121,9 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                           scaffoldKey: widget.scaffoldKey,
                                           message:
                                               'Please end the trip which is already running');
-                                      /*Utils.showSnackBar(context,
-                                          scaffoldKey: widget.scaffoldKey,
-                                          message:
-                                              'Please end the trip which is already running');*/
                                     } else {
                                       showDialogBox();
                                     }
-
-                                    //await widget.onDelete(widget.vessel!);
-                                    /*Utils.showSnackBar(context,
-                                        scaffoldKey: widget.scaffoldKey,
-                                        message: 'Vessel Deleted Successfully');
-                                    //ToDo: @rupali add the timer of 500 ms then navigate*/
-                                    /*Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => HomePage(),
-                                        fullscreenDialog: true,
-                                      ),
-                                    );*/
                                   },
                                 ),
                               ),
@@ -627,10 +609,6 @@ class _ExpansionCardState extends State<ExpansionCard> {
                         ),
                         dividerColor: Colors.transparent),
                     child: Container(
-                      //color: Colors.red,
-                      /*height: isVesselParticularExpanded
-                          ? displayHeight(context) * 0.25
-                          : displayHeight(context) * 0.09,*/
                       child: ExpansionTile(
                         initiallyExpanded: true,
                         onExpansionChanged: ((newState) {
@@ -850,422 +828,6 @@ class _ExpansionCardState extends State<ExpansionCard> {
                       ),
                     ),
                   ),
-                  /* ExpandablePanel(
-                    theme: const ExpandableThemeData(
-                      headerAlignment: ExpandablePanelHeaderAlignment.center,
-                      tapBodyToCollapse: true,
-                    ),
-                    header: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text(
-                        "${widget.vessel!.name!.toUpperCase()}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    collapsed: Container(
-                      width: displayWidth(context),
-                      padding: widget.vessel!.engineType!.toLowerCase() ==
-                              'combustion'
-                          ? EdgeInsets.symmetric(horizontal: 50)
-                          : widget.vessel!.engineType!.toLowerCase() ==
-                                  'electric'
-                              ? EdgeInsets.symmetric(horizontal: 0)
-                              : EdgeInsets.symmetric(horizontal: 16),
-                      //color: Colors.red,
-                      child: widget.vessel!.engineType!.toLowerCase() ==
-                              'combustion'
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Image.asset('assets/images/fuel.png',
-                                        width: displayWidth(context) * 0.04,
-                                        color: Colors.black),
-                                    SizedBox(
-                                      width: displayWidth(context) * 0.018,
-                                    ),
-                                    commonText(
-                                        context: context,
-                                        text:
-                                            '${widget.vessel!.fuelCapacity} gal',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.038,
-                                        textAlign: TextAlign.start),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Image.asset(
-                                        widget.vessel!.engineType!
-                                                    .toLowerCase() ==
-                                                'hybrid'
-                                            ? 'assets/images/hybrid_engine.png'
-                                            : widget.vessel!.engineType!
-                                                        .toLowerCase() ==
-                                                    'electric'
-                                                ? 'assets/images/electric_engine.png'
-                                                : 'assets/images/combustion_engine.png',
-                                        width: displayWidth(context) * 0.07,
-                                        color: Colors.black),
-                                    SizedBox(
-                                      width: displayWidth(context) * 0.02,
-                                    ),
-                                    Text(
-                                      widget.vessel!.engineType!,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black,
-                                          fontSize:
-                                              displayWidth(context) * 0.038,
-                                          fontFamily: poppins),
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          : widget.vessel!.engineType!.toLowerCase() ==
-                                  'electric'
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Image.asset('assets/images/battery.png',
-                                            width: displayWidth(context) * 0.04,
-                                            color: Colors.black),
-                                        SizedBox(
-                                          width: displayWidth(context) * 0.02,
-                                        ),
-                                        commonText(
-                                            context: context,
-                                            text:
-                                                '${widget.vessel!.batteryCapacity} kw',
-                                            fontWeight: FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize:
-                                                displayWidth(context) * 0.038,
-                                            textAlign: TextAlign.start),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Image.asset(
-                                            widget.vessel!.engineType!
-                                                        .toLowerCase() ==
-                                                    'hybrid'
-                                                ? 'assets/images/hybrid_engine.png'
-                                                : widget.vessel!.engineType!
-                                                            .toLowerCase() ==
-                                                        'electric'
-                                                    ? 'assets/images/electric_engine.png'
-                                                    : 'assets/images/combustion_engine.png',
-                                            width: displayWidth(context) * 0.07,
-                                            color: Colors.black),
-                                        SizedBox(
-                                          width: displayWidth(context) * 0.02,
-                                        ),
-                                        Text(
-                                          widget.vessel!.engineType!,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black,
-                                              fontSize:
-                                                  displayWidth(context) * 0.038,
-                                              fontFamily: poppins),
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )
-                              : Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Image.asset('assets/images/fuel.png',
-                                            width: displayWidth(context) * 0.07,
-                                            color: Colors.black),
-                                        SizedBox(
-                                          width: displayWidth(context) * 0.02,
-                                        ),
-                                        commonText(
-                                            context: context,
-                                            text:
-                                                '${widget.vessel!.fuelCapacity} gal',
-                                            fontWeight: FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize:
-                                                displayWidth(context) * 0.038,
-                                            textAlign: TextAlign.start),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Image.asset('assets/images/battery.png',
-                                            width:
-                                                displayWidth(context) * 0.045,
-                                            color: Colors.black),
-                                        SizedBox(
-                                          width: displayWidth(context) * 0.02,
-                                        ),
-                                        commonText(
-                                            context: context,
-                                            text:
-                                                '${widget.vessel!.batteryCapacity} kw',
-                                            fontWeight: FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize:
-                                                displayWidth(context) * 0.038,
-                                            textAlign: TextAlign.start),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: 4,
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Image.asset(
-                                            widget.vessel!.engineType!
-                                                        .toLowerCase() ==
-                                                    'hybrid'
-                                                ? 'assets/images/hybrid_engine.png'
-                                                : widget.vessel!.engineType!
-                                                            .toLowerCase() ==
-                                                        'electric'
-                                                    ? 'assets/images/electric_engine.png'
-                                                    : 'assets/images/combustion_engine.png',
-                                            width: displayWidth(context) * 0.08,
-                                            color: Colors.black),
-                                        SizedBox(
-                                          width: displayWidth(context) * 0.018,
-                                        ),
-                                        Text(
-                                          widget.vessel!.engineType!,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black,
-                                              fontSize:
-                                                  displayWidth(context) * 0.038,
-                                              fontFamily: poppins),
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                    ),
-                    expanded: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        singleViewOfShip(widget.vessel!),
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text("Fuel : ${widget.vessel!.fuelCapacity}"),
-                              Text(
-                                "|",
-                                style: TextStyle(
-                                    color: letsGetStartedButtonColor,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                  "Battery : ${widget.vessel!.batteryCapacity}"),
-                              Text(
-                                "|",
-                                style: TextStyle(
-                                    color: letsGetStartedButtonColor,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text("Engine : ${widget.vessel!.engineType}"),
-                            ],
-                          ),
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.all(10),
-                          title: Text("Measurements"),
-                          subtitle: Column(
-                            children: [
-                              SizedBox(
-                                height: 12,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      "Length (LOA) : ${widget.vessel!.lengthOverall}"),
-                                  Text(
-                                      "Freeboard : ${widget.vessel!.freeBoard}")
-                                ],
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Beam : ${widget.vessel!.beam}"),
-                                  Text("Draft : ${widget.vessel!.draft}")
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        ListTile(
-                          contentPadding: EdgeInsets.all(10),
-                          title: Text("Vessel Particulars"),
-                          subtitle: Column(
-                            children: [
-                              SizedBox(
-                                height: 12,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Capacity : ${widget.vessel!.capacity}"),
-                                  Text(
-                                      "Built Year : ${widget.vessel!.builtYear}"),
-                                  Text("Reg No : ${widget.vessel!.regNumber}")
-                                ],
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Weight : ${widget.vessel!.weight}"),
-                                  Text(
-                                      "Size (hp) : ${widget.vessel!.vesselSize}"),
-                                  Text("MMSI : ${widget.vessel!.mMSI}")
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            // SizedBox(width: 20.0),
-                            GestureDetector(
-                              onTap: () => widget.onEdit(widget.vessel!),
-                              child: Container(
-                                height: 40.0,
-                                width: MediaQuery.of(context).size.width * .4,
-                                color: letsGetStartedButtonColor,
-                                // decoration: BoxDecoration(
-                                //   shape: BoxShape.circle,
-                                //   color: Colors.grey[200],
-                                // ),
-                                alignment: Alignment.center,
-                                child: Icon(Icons.edit, color: Colors.white),
-                              ),
-                            ),
-                            // SizedBox(width: 20.0),
-                            GestureDetector(
-                              onTap: () => widget.onDelete(widget.vessel!),
-                              child: Container(
-                                height: 40.0,
-                                width: MediaQuery.of(context).size.width * .4,
-                                color: letsGetStartedButtonColor,
-                                alignment: Alignment.center,
-                                child: Icon(Icons.delete, color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                        widget.isSingleView
-                            ? Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    // final DatabaseService _databaseService = DatabaseService();
-                                    vessel!.add(widget.vessel!);
-                                    // prUtils.customPrintint(vessel[0].vesselName);
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => StartTrip(
-                                            vessels: vessel, context: context),
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
-
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => TripListScreen(
-                                          vesselId: widget.vessel!.id,
-                                          vesselName: widget.vessel!.name,
-                                          vesselSize: widget.vessel!.vesselSize,
-                                        ),
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    height: 40.0,
-                                    width: MediaQuery.of(context).size.width,
-                                    color: letsGetStartedButtonColor,
-                                    // decoration: BoxDecoration(
-                                    //   shape: BoxShape.circle,
-                                    //   color: Colors.grey[200],
-                                    // ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      "Start Trip",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : Container(),
-                      ],
-                    ),
-                    builder: (_, collapsed, expanded) {
-                      return Padding(
-                        padding:
-                            EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                        child: Expandable(
-                          collapsed: widget.isSingleView ? collapsed : expanded,
-                          expanded: widget.isSingleView ? expanded : collapsed,
-                          theme: const ExpandableThemeData(crossFadePoint: 0),
-                        ),
-                      );
-                    },
-                  ),*/
                 ],
               ),
             ),
@@ -1313,19 +875,6 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                 textAlign: TextAlign.start),
                           ],
                         ),
-                        /* const SizedBox(
-                                                              height: 14,
-                                                            ),
-                                                            StepProgressIndicator(
-                                                              totalSteps: 16,
-                                                              currentStep: 10,
-                                                              padding: 1,
-                                                              size: 9,
-                                                              selectedColor: Colors
-                                                                  .lightGreen.shade200,
-                                                              unselectedColor:
-                                                                  Colors.grey.shade200,
-                                                            )*/
                       ],
                     ),
                     Column(
@@ -1387,21 +936,6 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                     textAlign: TextAlign.start),
                               ],
                             ),
-                            /*const SizedBox(
-                                                                  height: 14,
-                                                                ),
-                                                                StepProgressIndicator(
-                                                                  totalSteps: 16,
-                                                                  currentStep: 10,
-                                                                  padding: 1,
-                                                                  size: 9,
-                                                                  selectedColor: Colors
-                                                                      .lightGreen
-                                                                      .shade200,
-                                                                  unselectedColor:
-                                                                      Colors.grey
-                                                                          .shade200,
-                                                                )*/
                           ],
                         ),
                         Column(
@@ -1462,21 +996,6 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                     textAlign: TextAlign.start),
                               ],
                             ),
-                            /*const SizedBox(
-                                                                  height: 14,
-                                                                ),
-                                                                StepProgressIndicator(
-                                                                  totalSteps: 16,
-                                                                  currentStep: 10,
-                                                                  padding: 1,
-                                                                  size: 9,
-                                                                  selectedColor: Colors
-                                                                      .lightGreen
-                                                                      .shade200,
-                                                                  unselectedColor:
-                                                                      Colors.grey
-                                                                          .shade200,
-                                                                )*/
                           ],
                         ),
                         SizedBox(
@@ -1502,18 +1021,6 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                     textAlign: TextAlign.start),
                               ],
                             ),
-
-                            /*StepProgressIndicator(
-                                                                  totalSteps: 16,
-                                                                  currentStep: 10,
-                                                                  padding: 1,
-                                                                  size: 9,
-                                                                  selectedColor:
-                                                                      primaryColor,
-                                                                  unselectedColor:
-                                                                      Colors.grey
-                                                                          .shade200,
-                                                                )*/
                           ],
                         ),
                         SizedBox(
@@ -1554,189 +1061,11 @@ class _ExpansionCardState extends State<ExpansionCard> {
                       ],
                     ),
           SizedBox(height: displayHeight(context) * 0.005),
-          /*Theme(
-                                                data: Theme.of(context).copyWith(
-                                                    dividerColor: Colors.transparent),
-                                                child: ExpansionTile(
-                                                  initiallyExpanded: true,
-                                                  tilePadding: EdgeInsets.zero,
-                                                  childrenPadding: EdgeInsets.zero,
-                                                  title: commonText(
-                                                      context: context,
-                                                      text: 'WEATHER',
-                                                      fontWeight: FontWeight.w500,
-                                                      textColor: Colors.black,
-                                                      textSize:
-                                                          displayWidth(context) * 0.04,
-                                                      textAlign: TextAlign.start),
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.spaceAround,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Image.asset(
-                                                                'assets/images/temperature.png',
-                                                                width: displayWidth(
-                                                                        context) *
-                                                                    0.1,
-                                                                color: Colors.black),
-                                                            SizedBox(
-                                                                width: displayWidth(
-                                                                        context) *
-                                                                    0.01),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                commonText(
-                                                                    context: context,
-                                                                    text: '23 C',
-                                                                    fontWeight:
-                                                                        FontWeight.w500,
-                                                                    textColor:
-                                                                        Colors.black,
-                                                                    textSize:
-                                                                        displayWidth(
-                                                                                context) *
-                                                                            0.04,
-                                                                    textAlign: TextAlign
-                                                                        .start),
-                                                                commonText(
-                                                                    context: context,
-                                                                    text: '73 F',
-                                                                    fontWeight:
-                                                                        FontWeight.w500,
-                                                                    textColor:
-                                                                        Colors.black,
-                                                                    textSize:
-                                                                        displayWidth(
-                                                                                context) *
-                                                                            0.04,
-                                                                    textAlign: TextAlign
-                                                                        .start),
-                                                              ],
-                                                            )
-                                                          ],
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Image.asset(
-                                                                'assets/images/gps.png',
-                                                                width: displayWidth(
-                                                                        context) *
-                                                                    0.1,
-                                                                color: Colors.black),
-                                                            SizedBox(
-                                                                width: displayWidth(
-                                                                        context) *
-                                                                    0.02),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                commonText(
-                                                                    context: context,
-                                                                    text: '15.9 kn',
-                                                                    fontWeight:
-                                                                        FontWeight.w500,
-                                                                    textColor:
-                                                                        Colors.black,
-                                                                    textSize:
-                                                                        displayWidth(
-                                                                                context) *
-                                                                            0.04,
-                                                                    textAlign: TextAlign
-                                                                        .start),
-                                                                commonText(
-                                                                    context: context,
-                                                                    text: '8.2 m/s',
-                                                                    fontWeight:
-                                                                        FontWeight.w500,
-                                                                    textColor:
-                                                                        Colors.black,
-                                                                    textSize:
-                                                                        displayWidth(
-                                                                                context) *
-                                                                            0.04,
-                                                                    textAlign: TextAlign
-                                                                        .start),
-                                                              ],
-                                                            )
-                                                          ],
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Image.asset(
-                                                                'assets/images/depth_bold.png',
-                                                                width: displayWidth(
-                                                                        context) *
-                                                                    0.1,
-                                                                color: Colors.black),
-                                                            SizedBox(
-                                                                width: displayWidth(
-                                                                        context) *
-                                                                    0.02),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                commonText(
-                                                                    context: context,
-                                                                    text: '1.7 m',
-                                                                    fontWeight:
-                                                                        FontWeight.w500,
-                                                                    textColor:
-                                                                        Colors.black,
-                                                                    textSize:
-                                                                        displayWidth(
-                                                                                context) *
-                                                                            0.04,
-                                                                    textAlign: TextAlign
-                                                                        .start),
-                                                                commonText(
-                                                                    context: context,
-                                                                    text: '5.6 ft',
-                                                                    fontWeight:
-                                                                        FontWeight.w500,
-                                                                    textColor:
-                                                                        Colors.black,
-                                                                    textSize:
-                                                                        displayWidth(
-                                                                                context) *
-                                                                            0.04,
-                                                                    textAlign: TextAlign
-                                                                        .start),
-                                                              ],
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                  height:
-                                                      displayHeight(context) * 0.02),*/
           Theme(
             data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
             child: ExpansionTile(
               initiallyExpanded: true,
-              onExpansionChanged: ((newState) {
-                /* if (newState)
-                 */ /* setState(() {
-                    isSelectedTileOpen = true;
-                  });*/ /*
-                else
-                  setState(() {
-                    isSelectedTileOpen = false;
-                  });*/
-              }),
+              onExpansionChanged: ((newState) {}),
               tilePadding: EdgeInsets.zero,
               childrenPadding: EdgeInsets.zero,
               title: commonText(
@@ -1908,21 +1237,6 @@ class _ExpansionCardState extends State<ExpansionCard> {
 
                   Utils.customPrint(
                       'EXPANSION CHANGE $isVesselParticularExpanded');
-
-                  /*if (newState)
-                    setState(() {
-                      isSelectedTileOpen1 = true;
-                    });
-                  else
-                    setState(() {
-                      isSelectedTileOpen1 = false;
-
-                      _scrollController.animateTo(
-                        _scrollController.position.minScrollExtent,
-                        curve: Curves.easeOut,
-                        duration: const Duration(milliseconds: 300),
-                      );
-                    });*/
                 }),
                 tilePadding: EdgeInsets.zero,
                 childrenPadding: EdgeInsets.zero,
@@ -2255,10 +1569,6 @@ class _ExpansionCardState extends State<ExpansionCard> {
       Utils.customPrint('Trip is Running $tripIsRunning');
     });
 
-    /*setState(() {
-      isEndTripButton = tripIsRunning;
-      isStartButton = !tripIsRunning;
-    });*/
     return result;
   }
 }
