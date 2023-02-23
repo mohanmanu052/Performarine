@@ -421,9 +421,6 @@ class CreateTrip {
               // Utils.customPrint('TIMER STOPPED');
               fileIndex = fileIndex + 1;
               fileName = '$fileIndex.csv';
-              // Utils.customPrint('FILE NAME: $fileName');
-              //Utils.customPrint('NEW FILE CREATED');
-
               /// STOP WRITING & CREATE NEW FILE
             } else {
               Utils.customPrint('WRITING');
@@ -587,7 +584,9 @@ class CreateTrip {
     double newValue = seconds / 1000;
     return newValue.toInt();
   }
-
+  //TODo: Rupali add the changes
+  //Example calculateDistance(1.10) // distance in meters
+  //Link:
   String calculateDistance(double distance) {
     return (distance / 1852).toStringAsFixed(2);
   }
