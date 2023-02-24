@@ -86,12 +86,14 @@ class _TripViewListingState extends State<TripViewListing> {
                               tripList: snapshot.data![index],
                               calledFrom: widget.calledFrom,
                               tripUploadedSuccessfully: () {
-                                setState(() {
-                                  commonProvider
-                                      .getTripsByVesselId(widget.vesselId);
-                                  future = _databaseService.trips();
-                                  //snapshot.data![index].tripStatus = 1;
-                                });
+                                if (mounted) {
+                                  setState(() {
+                                    commonProvider
+                                        .getTripsByVesselId(widget.vesselId);
+                                    future = _databaseService.trips();
+                                    //snapshot.data![index].tripStatus = 1;
+                                  });
+                                }
                                 commonProvider.getTripsCount();
                               },
                               onTap: () async {

@@ -6,8 +6,10 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -289,7 +291,10 @@ class _TripWidgetState extends State<TripWidget> {
                                             fontSize:
                                                 displayWidth(context) * 0.026,
                                             onTap: () async {
-                                              downloadTrip(false);
+                                              DownloadTrip().downloadTrip(
+                                                  context,
+                                                  widget.scaffoldKey!,
+                                                  widget.tripList!.id!);
                                             },
                                             context: context,
                                             width: displayWidth(context) * 0.38,
@@ -329,7 +334,7 @@ class _TripWidgetState extends State<TripWidget> {
                                                   isTripUploaded = true;
                                                 });
 
-                                                downloadTrip(true);
+                                                // downloadTrip(true);
 
                                                 uploadDataIfDataIsNotSync();
 
@@ -407,6 +412,7 @@ class _TripWidgetState extends State<TripWidget> {
     var endPosition = tripData.endPosition!.split(",");
     Utils.customPrint('START POSITION 0 ${startPosition}');
 
+    //'storage/emulated/0/Download/${widget.tripList!.id}.zip',
     var queryParameters;
     queryParameters = {
       "id": tripData.id,
@@ -425,7 +431,8 @@ class _TripWidgetState extends State<TripWidget> {
       "startPosition": startPosition,
       "endPosition": endPosition,
       "vesselId": tripData.vesselId,
-      "filePath": 'storage/emulated/0/Download/${widget.tripList!.id}.zip',
+      "filePath":
+          '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip',
       "createdAt": tripData.createdAt,
       "updatedAt": tripData.updatedAt,
       "duration": tripDuration,
@@ -436,23 +443,30 @@ class _TripWidgetState extends State<TripWidget> {
     };
 
     Utils.customPrint('CREATE TRIP: $queryParameters');
+    //Utils.customPrint('CREATE TRIP FILE PATH: ${tripData.filePath}');
+    Utils.customPrint(
+        'CREATE TRIP FILE PATH: ${'/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'}');
 
     commonProvider
         .sendSensorInfo(
-            context,
+            Get.context!,
             commonProvider.loginModel!.token!,
-            File('storage/emulated/0/Download/${widget.tripList!.id}.zip'),
+            File(
+                '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'),
             queryParameters,
             tripData.id!,
             widget.scaffoldKey!)
         .then((value) async {
       if (value != null) {
+        commonProvider.updateTripUploadingStatus(false);
         if (value.status!) {
           await cancelOnGoingProgressNotification(tripData.id!);
 
-          setState(() {
-            isTripUploaded = false;
-          });
+          if (mounted) {
+            setState(() {
+              isTripUploaded = false;
+            });
+          }
           Utils.customPrint("widget.tripList!.id: ${widget.tripList!.id}");
           _databaseService.updateTripIsSyncStatus(1, tripData.id.toString());
 
@@ -460,17 +474,22 @@ class _TripWidgetState extends State<TripWidget> {
 
           widget.tripUploadedSuccessfully!.call();
         } else {
-          setState(() {
-            isTripUploaded = false;
-          });
+          if (mounted) {
+            setState(() {
+              isTripUploaded = false;
+            });
+          }
           _databaseService.updateTripIsSyncStatus(0, tripData.id.toString());
           await cancelOnGoingProgressNotification(tripData.id!);
           showFailedNoti(tripData.id!, value.message);
         }
       } else {
-        setState(() {
-          isTripUploaded = false;
-        });
+        commonProvider.updateTripUploadingStatus(false);
+        if (mounted) {
+          setState(() {
+            isTripUploaded = false;
+          });
+        }
         _databaseService.updateTripIsSyncStatus(0, tripData.id.toString());
         await cancelOnGoingProgressNotification(tripData.id!);
         showFailedNoti(tripData.id!);
@@ -656,6 +675,7 @@ class _TripWidgetState extends State<TripWidget> {
   }
 
   uploadDataIfDataIsNotSync() async {
+    commonProvider.updateTripUploadingStatus(true);
     await vesselIsSyncOrNot(widget.tripList!.vesselId.toString());
     Utils.customPrint('VESSEL STATUS isSync $vesselIsSync');
 
@@ -737,6 +757,7 @@ class _TripWidgetState extends State<TripWidget> {
 
             startSensorFunctionality(widget.tripList!);
           } else {
+            commonProvider.updateTripUploadingStatus(false);
             await cancelOnGoingProgressNotification(widget.tripList!.id!);
             showFailedNoti(widget.tripList!.id!);
             setState(() {
@@ -744,6 +765,7 @@ class _TripWidgetState extends State<TripWidget> {
             });
           }
         } else {
+          commonProvider.updateTripUploadingStatus(false);
           await cancelOnGoingProgressNotification(widget.tripList!.id!);
           showFailedNoti(widget.tripList!.id!);
           setState(() {
@@ -775,7 +797,7 @@ class _TripWidgetState extends State<TripWidget> {
     return result;
   }
 
-  downloadTrip(bool isuploadTrip) async {
+  /*downloadTrip(bool isuploadTrip) async {
     Utils.customPrint('DOWLOAD Started!!!');
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
@@ -872,5 +894,5 @@ class _TripWidgetState extends State<TripWidget> {
         }
       }
     }
-  }
+  }*/
 }

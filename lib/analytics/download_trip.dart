@@ -8,7 +8,8 @@ import 'package:performarine/main.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DownloadTrip {
-  Future<String> downloadTrip(BuildContext context, String tripId) async {
+  Future<String> downloadTrip(BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey, String tripId) async {
     String downloadedZipPath = '';
     Utils.customPrint('DOWLOAD Started!!!');
 
@@ -38,6 +39,11 @@ class DownloadTrip {
 
         if (copiedFile.existsSync()) {
           Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
+          Utils.showSnackBar(
+            context,
+            scaffoldKey: scaffoldKey,
+            message: 'File downloaded successfully',
+          );
         }
       } else {
         await Utils.getStoragePermission(context);
@@ -61,6 +67,11 @@ class DownloadTrip {
 
           if (copiedFile.existsSync()) {
             Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
+            Utils.showSnackBar(
+              context,
+              scaffoldKey: scaffoldKey,
+              message: 'File downloaded successfully',
+            );
           }
         }
       }
@@ -86,6 +97,11 @@ class DownloadTrip {
 
       if (copiedFile.existsSync()) {
         Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
+        Utils.showSnackBar(
+          context,
+          scaffoldKey: scaffoldKey,
+          message: 'File downloaded successfully',
+        );
       }
     }
 

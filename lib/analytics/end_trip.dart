@@ -46,8 +46,7 @@ class EndTrip {
 
     ///Download
     //  downloadTrip(context!, tripId);
-    var pref = await SharedPreferences.getInstance();
-    Utils.customPrint('FINAL PATH: ${file.path}');
+    Utils.customPrint('FINAL ZIP FILE PATH: ${file.path}');
 
     sharedPreferences!.remove('trip_data');
     sharedPreferences!.remove('trip_started');
@@ -56,7 +55,7 @@ class EndTrip {
 
     await DatabaseService().updateTripStatus(
         1,
-        downloadedFilePath,
+        file.path,
         DateTime.now().toUtc().toString(),
         [currentLocationData!.latitude, currentLocationData.longitude]
             .join(","),

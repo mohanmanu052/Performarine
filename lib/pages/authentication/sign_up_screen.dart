@@ -366,7 +366,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: phoneController,
                         focusNode: phoneFocusNode,
                         labelText: 'Enter Phone Number',
-                        hintText: '9999999999',
+                        hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
                         textInputType: TextInputType.number,
@@ -417,7 +417,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return 'Password must contain at least 8 characters and \n include : \n * At least one lowercase letter (a-z) \n '
                                 '* At least one uppercase letter (A-Z) \n * At least one number (0-9) \n * At least one special character (e.g: !.@#\$&*~)';
                           }
-
                           return null;
                         },
                         onSaved: (String value) {

@@ -27,7 +27,7 @@ class CommonProvider with ChangeNotifier {
   CommonModel? commonModel;
   UploadTripModel? uploadTripModel;
   int tripsCount = 0;
-  bool tripStatus = false;
+  bool tripStatus = false, isTripUploading = false;
   Future<List<Trip>>? getTripsByIdFuture;
 
   init() {
@@ -156,5 +156,10 @@ class CommonProvider with ChangeNotifier {
           DatabaseService().getAllTripsByVesselId(vesselId.toString());
     }
     return getTripsByIdFuture!;
+  }
+
+  updateTripUploadingStatus(bool value) {
+    isTripUploading = value;
+    notifyListeners();
   }
 }
