@@ -8,7 +8,6 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -22,7 +21,6 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/widgets/status_tage.dart';
@@ -31,6 +29,7 @@ class TripWidget extends StatefulWidget {
   final String? calledFrom;
   final VoidCallback? onTap;
   final VoidCallback? tripUploadedSuccessfully;
+  final Function()? onTripEnded;
   final Trip? tripList;
   final GlobalKey<ScaffoldState>? scaffoldKey;
 
@@ -40,6 +39,7 @@ class TripWidget extends StatefulWidget {
       this.tripList,
       this.onTap,
       this.tripUploadedSuccessfully,
+      this.onTripEnded,
       this.scaffoldKey});
 
   @override
@@ -47,7 +47,6 @@ class TripWidget extends StatefulWidget {
 }
 
 class _TripWidgetState extends State<TripWidget> {
-  //GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
   FlutterBackgroundService service = FlutterBackgroundService();
 
@@ -110,6 +109,9 @@ class _TripWidgetState extends State<TripWidget> {
           if (result != null) {
             if (result) {
               widget.tripUploadedSuccessfully!.call();
+              if (widget.onTripEnded != null) {
+                widget.onTripEnded!.call();
+              }
             }
           }
         }

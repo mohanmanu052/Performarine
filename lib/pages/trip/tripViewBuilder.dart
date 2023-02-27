@@ -85,6 +85,7 @@ class _TripViewListingState extends State<TripViewListing> {
                               scaffoldKey: widget.scaffoldKey,
                               tripList: snapshot.data![index],
                               calledFrom: widget.calledFrom,
+                              onTripEnded: widget.onTripEnded,
                               tripUploadedSuccessfully: () {
                                 if (mounted) {
                                   setState(() {

@@ -1391,7 +1391,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         List<String>? tripData = sharedPreferences!.getStringList('trip_data');
         final tripDetails = await _databaseService.getTrip(tripData![0]);
 
-        Navigator.pushReplacement(
+        var result = Navigator.pushReplacement(
           scaffoldKey.currentContext!,
           MaterialPageRoute(
               builder: (context) => TripAnalyticsScreen(
@@ -1400,6 +1400,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                     tripIsRunningOrNot: tripIsRunning,
                   )),
         );
+
+        if (result != null) {
+          debugPrint('VESSEL SINGLE VIEW RESULT $result');
+        }
       }
     });
   }
