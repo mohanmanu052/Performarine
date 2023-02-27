@@ -18,7 +18,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
       children: [
         Container(
           width: displayWidth(context),
-          height: displayHeight(context) * 0.75,
+          height: displayHeight(context) * 0.9,
           margin: EdgeInsets.all(10),
           decoration: new BoxDecoration(
             color: Theme.of(context).brightness == Brightness.dark
@@ -65,7 +65,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 10.0),
+                        margin: EdgeInsets.only(top: 6.0),
                         child: commonText(
                             text: text,
                             context: context,
@@ -78,7 +78,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                       ),
                       Container(
                         margin: EdgeInsets.only(
-                            top: 10.0, bottom: 10.0, left: 10, right: 10),
+                            top: 6.0, bottom: 10.0, left: 10, right: 10),
                         child: commonText(
                             text: subText!,
                             context: context,
@@ -240,7 +240,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 10.0, bottom: 20.0),
+                  margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

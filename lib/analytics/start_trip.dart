@@ -191,7 +191,7 @@ class StartTrip {
               NotificationDetails(
                 android: AndroidNotificationDetails(
                     notificationChannelId, 'MY FOREGROUND SERVICE',
-                    icon: '@drawable/logo',
+                    icon: '@drawable/noti_logo',
                     ongoing: true,
                     /*styleInformation:
                         BigTextStyleInformation('', summaryText: '$tripId')*/

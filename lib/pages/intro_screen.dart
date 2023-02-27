@@ -98,7 +98,7 @@ class _IntroScreenState extends State<IntroScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                'Start you sea voyage with ',
+                                'Start your sea voyage with ',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,

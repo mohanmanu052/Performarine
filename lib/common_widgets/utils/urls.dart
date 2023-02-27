@@ -17,4 +17,7 @@ class Urls {
   static const String getTripById = '/api/getTripById';
   static const String GetTripList = '/api/listTrips';
   static const String SendSensorData = '/api/sendSensorInfo';
+
+  // Sync Data
+  static const String getUserConfig = '/api/auth/getUserConfigbyId';
 }

@@ -5,6 +5,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/add_vessel_model.dart';
 import 'package:performarine/models/common_model.dart';
+import 'package:performarine/models/get_user_config_model.dart';
 import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/registration_model.dart';
 import 'package:performarine/models/send_sensor_model.dart';
@@ -12,6 +13,7 @@ import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/upload_trip_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/provider/add_vessel_api_provider.dart';
+import 'package:performarine/provider/get_user_config_api_provider.dart';
 import 'package:performarine/provider/login_api_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
@@ -29,6 +31,7 @@ class CommonProvider with ChangeNotifier {
   int tripsCount = 0;
   bool tripStatus = false, isTripUploading = false;
   Future<List<Trip>>? getTripsByIdFuture;
+  GetUserConfigModel? getUserConfigModel;
 
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
@@ -162,4 +165,18 @@ class CommonProvider with ChangeNotifier {
     isTripUploading = value;
     notifyListeners();
   }
+
+  /*Future<GetUserConfigModel?> getUserConfigData(
+      BuildContext context,
+      String userId,
+      String accessToken,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    getUserConfigModel = GetUserConfigModel();
+
+    getUserConfigModel = await GetUserConfigApiProvider()
+        .getUserConfigData(context, userId, accessToken, scaffoldKey);
+    notifyListeners();
+
+    return getUserConfigModel;
+  }*/
 }
