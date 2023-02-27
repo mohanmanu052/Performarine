@@ -34,6 +34,8 @@
         android:label="PerforMarine"
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
+        android:allowBackup="false"
+        tools:replace="android:allowBackup"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -79,7 +81,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/home" />
+            android:resource="@drawable/noti_logo" />
 
        <!-- <provider
             android:name="androidx.core.content.FileProvider"

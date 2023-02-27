@@ -87,7 +87,7 @@ Future<void> initializeService() async {
   );
 
   const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('logo');
+      AndroidInitializationSettings('noti_logo');
   final DarwinInitializationSettings initializationSettingsDarwin =
       DarwinInitializationSettings(
           onDidReceiveLocalNotification: onDidReceiveLocalNotification);
