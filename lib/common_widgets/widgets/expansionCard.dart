@@ -743,7 +743,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                         commonText(
                                             context: context,
                                             text:
-                                                '${widget.vessel!.weight} Kgs',
+                                                '${widget.vessel!.weight} lbs',
                                             fontWeight: FontWeight.w600,
                                             textColor: Colors.black,
                                             textSize:
@@ -839,7 +839,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
     ));
   }
 
-  singleViewOfShip(CreateVessel vessel) {
+  /*singleViewOfShip(CreateVessel vessel) {
     return Container(
       height: displayHeight(context) >= 700
           ? isVesselParticularExpanded
@@ -1420,7 +1420,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
         ],
       ),
     );
-  }
+  }*/
 
   showDialogBox() {
     return showDialog(
