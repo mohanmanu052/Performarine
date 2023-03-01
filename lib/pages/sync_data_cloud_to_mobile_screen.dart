@@ -20,15 +20,20 @@ class _SyncDataCloudToMobileScreenState
       child: Scaffold(
         key: scaffoldKey,
         body: Container(
+          margin: EdgeInsets.symmetric(horizontal: 17),
           child: Column(
             children: [
-              Image.asset('assets/images/cloud.png'),
+              Image.asset(
+                'assets/images/cloud.png',
+                height: displayHeight(context) * 0.4,
+                width: displayWidth(context),
+              ),
               commonText(
                 text: 'Restoring your data from cloud',
                 context: context,
-                textSize: displayWidth(context) * 0.04,
+                textSize: displayWidth(context) * 0.06,
                 textColor: Colors.black,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
                 textAlign: TextAlign.center,
               )
             ],
