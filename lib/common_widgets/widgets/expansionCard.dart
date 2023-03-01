@@ -147,7 +147,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                       borderRadius: BorderRadius.circular(10),
                       child: widget.vessel!.imageURLs == null ||
                               widget.vessel!.imageURLs!.isEmpty ||
-                              widget.vessel!.imageURLs == 'string'
+                              widget.vessel!.imageURLs == 'string' ||
+                              widget.vessel!.imageURLs == '[]'
                           ? Stack(
                               children: [
                                 Container(
@@ -839,7 +840,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
     ));
   }
 
-  singleViewOfShip(CreateVessel vessel) {
+  /*singleViewOfShip(CreateVessel vessel) {
     return Container(
       height: displayHeight(context) >= 700
           ? isVesselParticularExpanded
@@ -1343,7 +1344,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                               children: [
                                 commonText(
                                     context: context,
-                                    text: '${vessel.weight} Kgs',
+                                    text: '${vessel.weight} lbs',
                                     fontWeight: FontWeight.w600,
                                     textColor: Colors.black,
                                     textSize: displayWidth(context) * 0.048,
@@ -1420,7 +1421,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
         ],
       ),
     );
-  }
+  }*/
 
   showDialogBox() {
     return showDialog(

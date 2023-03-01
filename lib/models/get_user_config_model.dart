@@ -64,10 +64,10 @@ class Vessels {
   int? batteryCapacity;
   String? weight;
   List<Null>? imageURLs;
-  int? freeBoard;
-  int? lengthOverall;
-  int? beam;
-  int? depth;
+  double? freeBoard;
+  double? lengthOverall;
+  double? beam;
+  double? depth;
   String? vesselSize;
   String? capacity;
   int? builtYear;
@@ -192,7 +192,7 @@ class Trips {
   String? duration;
   double? distance;
   double? speed;
-  int? avgSpeed;
+  double? avgSpeed;
   String? cloudFilePath;
   String? exceptionMsg;
   String? id;

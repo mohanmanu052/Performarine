@@ -1,0 +1,271 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/models/trip.dart';
+import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:performarine/services/database_service.dart';
+import 'package:provider/provider.dart';
+import 'package:status_stepper/status_stepper.dart';
+
+class SyncDataCloudToMobileScreen extends StatefulWidget {
+  const SyncDataCloudToMobileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SyncDataCloudToMobileScreen> createState() =>
+      _SyncDataCloudToMobileScreenState();
+}
+
+class _SyncDataCloudToMobileScreenState
+    extends State<SyncDataCloudToMobileScreen> {
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+
+  final DatabaseService _databaseService = DatabaseService();
+
+  final statuses = List.generate(
+    3,
+    (index) => SizedBox.square(
+      dimension: 14,
+      child: Center(child: Text('')),
+    ),
+  );
+
+  int curIndex = -1;
+  int lastIndex = -1;
+
+  late CommonProvider commonProvider;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    commonProvider = context.read<CommonProvider>();
+
+    commonProvider.init();
+
+    getUserConfigData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        key: scaffoldKey,
+        body: Container(
+          margin: EdgeInsets.symmetric(horizontal: 17),
+          child: Column(
+            children: [
+              SizedBox(
+                height: displayHeight(context) * 0.1,
+              ),
+              Image.asset(
+                'assets/images/cloud.png',
+                height: displayHeight(context) * 0.3,
+              ),
+              SizedBox(
+                height: displayHeight(context) * 0.08,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50),
+                child: commonText(
+                  text: 'Restoring your data from cloud',
+                  context: context,
+                  textSize: displayWidth(context) * 0.055,
+                  textColor: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(
+                height: displayHeight(context) * 0.08,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Container(
+                  child: stepperWidget(),
+                ),
+              ),
+              SizedBox(
+                height: displayHeight(context) * 0.08,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: commonText(
+                  text:
+                      'Don’t click back button while restoring data until its fully completed ',
+                  context: context,
+                  textSize: displayWidth(context) * 0.03,
+                  textColor: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  stepperWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8),
+      child: Column(
+        children: [
+          StatusStepper(
+            connectorCurve: Curves.easeIn,
+            itemCurve: Curves.easeOut,
+            activeColor: Colors.black,
+            disabledColor: Colors.grey,
+            animationDuration: const Duration(milliseconds: 500),
+            children: statuses,
+            lastActiveIndex: lastIndex,
+            currentIndex: curIndex,
+            connectorThickness: 5,
+          ),
+          SizedBox(
+            height: 14,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: commonText(
+                        text: 'Fetching data\nfrom cloud',
+                        context: context,
+                        textSize: displayWidth(context) * 0.025,
+                        textColor: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        textAlign: TextAlign.center,
+                      ))),
+              Expanded(
+                  child: Center(
+                      child: commonText(
+                text: 'Data\nprocessing',
+                context: context,
+                textSize: displayWidth(context) * 0.025,
+                textColor: Colors.black,
+                fontWeight: FontWeight.w500,
+                textAlign: TextAlign.center,
+              ))),
+              Expanded(
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      child: commonText(
+                        text: 'Data restoring\nfrom cloud',
+                        context: context,
+                        textSize: displayWidth(context) * 0.025,
+                        textColor: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        textAlign: TextAlign.center,
+                      )))
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  getUserConfigData() {
+    Utils.customPrint("CLOUDE USER ID ${commonProvider.loginModel!.userId}");
+
+    setState(() {
+      curIndex = 0;
+      lastIndex = 0;
+    });
+
+    commonProvider
+        .getUserConfigData(context, commonProvider.loginModel!.userId!,
+            commonProvider.loginModel!.token!, scaffoldKey)
+        .then((value) async {
+      if (value != null) {
+        if (value.status!) {
+          setState(() {
+            curIndex = 1;
+            lastIndex = 1;
+          });
+          for (int i = 0; i < value.vessels!.length; i++) {
+            CreateVessel vesselData = CreateVessel(
+                id: value.vessels![i].id,
+                name: value.vessels![i].name,
+                builderName: value.vessels![i].builderName,
+                model: value.vessels![i].model,
+                regNumber: value.vessels![i].regNumber,
+                mMSI: value.vessels![i].mMSI,
+                engineType: value.vessels![i].engineType,
+                fuelCapacity: value.vessels![i].fuelCapacity.toString(),
+                batteryCapacity: value.vessels![i].batteryCapacity.toString(),
+                weight: value.vessels![i].weight,
+                freeBoard: value.vessels![i].freeBoard!,
+                lengthOverall: value.vessels![i].lengthOverall!,
+                beam: value.vessels![i].beam!,
+                draft: value.vessels![i].depth!,
+                vesselSize: value.vessels![i].vesselSize!,
+                capacity: int.parse(value.vessels![i].capacity!),
+                builtYear: int.parse(value.vessels![i].builtYear.toString()),
+                vesselStatus:
+                    int.parse(value.vessels![i].vesselStatus.toString()),
+                imageURLs: value.vessels![i].imageURLs == '[]'
+                    ? ''
+                    : value.vessels![i].imageURLs.toString(),
+                createdAt: value.vessels![i].createdAt.toString(),
+                createdBy: value.vessels![i].createdBy.toString(),
+                updatedAt: value.vessels![i].updatedAt.toString(),
+                isSync: 1,
+                updatedBy: value.vessels![i].updatedBy.toString());
+
+            Utils.customPrint('USER CONFIG DATA ${vesselData.name}');
+
+            await _databaseService.insertVessel(vesselData);
+          }
+
+          for (int i = 0; i < value.trips!.length; i++) {
+            Trip tripData = Trip(
+              id: value.trips![i].id,
+              vesselId: value.trips![i].vesselId,
+              vesselName: '',
+              currentLoad: value.trips![i].load,
+              filePath: value.trips![i].filePath,
+              isSync: 1,
+              tripStatus: value.trips![i].tripStatus,
+              updatedAt: value.trips![i].updatedAt,
+              createdAt: value.trips![i].createdAt,
+              deviceInfo: value.trips![i].deviceInfo!.deviceId,
+              startPosition: value.trips![i].startPosition!.join(','),
+              endPosition: value.trips![i].endPosition!.join(','),
+              time: value.trips![i].duration,
+              distance: value.trips![i].distance.toString(),
+              speed: value.trips![i].speed.toString(),
+              avgSpeed: value.trips![i].avgSpeed.toString(),
+            );
+
+            Utils.customPrint('USER CONFIG DATA ${tripData.id}');
+
+            await _databaseService.insertTrip(tripData);
+          }
+
+          setState(() {
+            curIndex = 2;
+            lastIndex = 2;
+          });
+
+          Future.delayed(Duration(seconds: 2), () {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+                ModalRoute.withName(""));
+          });
+        }
+      }
+    });
+  }
+}

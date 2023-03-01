@@ -166,7 +166,7 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /*Future<GetUserConfigModel?> getUserConfigData(
+  Future<GetUserConfigModel?> getUserConfigData(
       BuildContext context,
       String userId,
       String accessToken,
@@ -178,5 +178,5 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
 
     return getUserConfigModel;
-  }*/
+  }
 }

@@ -12,6 +12,7 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/zig_zag_line_widget.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lets_get_started_screen.dart';
+import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -301,11 +302,18 @@ class _SignInScreenState extends State<SignInScreen> {
                                                     isGoogleSignInBtnClicked =
                                                         false;
                                                   });
-                                                  Navigator.pushAndRemoveUntil(
+                                                  /*Navigator.pushAndRemoveUntil(
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) =>
                                                             HomePage(),
+                                                      ),
+                                                      ModalRoute.withName(""));*/
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            SyncDataCloudToMobileScreen(),
                                                       ),
                                                       ModalRoute.withName(""));
                                                 }
@@ -374,11 +382,19 @@ class _SignInScreenState extends State<SignInScreen> {
 
                                       if (value != null) {
                                         if (value.status!) {
-                                          Navigator.pushAndRemoveUntil(
+                                          /*Navigator.pushAndRemoveUntil(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     HomePage(),
+                                              ),
+                                              ModalRoute.withName(""));*/
+
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SyncDataCloudToMobileScreen(),
                                               ),
                                               ModalRoute.withName(""));
                                         }

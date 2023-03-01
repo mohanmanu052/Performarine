@@ -242,7 +242,8 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                 borderRadius: BorderRadius.circular(10),
                 child: vesselData.imageURLs == null ||
                         vesselData.imageURLs!.isEmpty ||
-                        vesselData.imageURLs == 'string'
+                        vesselData.imageURLs == 'string' ||
+                        vesselData.imageURLs == '[]'
                     ? Stack(
                         children: [
                           ClipRRect(

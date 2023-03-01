@@ -470,6 +470,7 @@ class _TripWidgetState extends State<TripWidget> {
             });
           }
           Utils.customPrint("widget.tripList!.id: ${widget.tripList!.id}");
+          Utils.customPrint("UPLOAD TRIP STATUS CODE : ${value.statusCode}");
           _databaseService.updateTripIsSyncStatus(1, tripData.id.toString());
 
           showSuccessNoti();

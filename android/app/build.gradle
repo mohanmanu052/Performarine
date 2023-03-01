@@ -29,8 +29,9 @@ android {
     compileSdkVersion 33
 
     lintOptions {
-        //checkReleaseBuilds false
+
         disable 'InvalidPackage'
+        checkReleaseBuilds false
     }
 
     sourceSets {

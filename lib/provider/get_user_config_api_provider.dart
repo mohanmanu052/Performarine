@@ -1,4 +1,3 @@
-/*
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -44,10 +43,6 @@ class GetUserConfigApiProvider with ChangeNotifier {
         getUserConfigModel =
             GetUserConfigModel.fromJson(json.decode(response.body));
 
-        await _databaseService
-            .insertVessel(
-            getUserConfigModel.vessels!)
-
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
 
@@ -86,4 +81,3 @@ class GetUserConfigApiProvider with ChangeNotifier {
     return getUserConfigModel!;
   }
 }
-*/

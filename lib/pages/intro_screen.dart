@@ -8,6 +8,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lets_get_started_screen.dart';
+import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 
 import '../common_widgets/utils/constants.dart';
