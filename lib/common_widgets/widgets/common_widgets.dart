@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -288,32 +289,62 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               ))
                         ],
                       )
-                    : Stack(
-                        children: [
-                          Image.file(
-                            File(vesselData.imageURLs!),
-                            fit: BoxFit.cover,
-                            height: displayHeight(context) * 0.22,
-                            width: displayWidth(context),
-                          ),
-                          Positioned(
-                              bottom: 0,
-                              right: 0,
-                              left: 0,
-                              child: Container(
-                                height: displayHeight(context) * 0.14,
+                    : vesselData.imageURLs!.contains("https")
+                        ? CachedNetworkImage(
+                            height: displayHeight(context) * 0.2,
+                            width: displayHeight(context),
+                            imageUrl: vesselData.imageURLs!,
+                            imageBuilder: (context, imageProvider) => Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(15),
+                                        topLeft: Radius.circular(15)),
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Center(
+                              child: CircularProgressIndicator(
+                                  value: downloadProgress.progress,
+                                  valueColor: new AlwaysStoppedAnimation<Color>(
+                                      primaryColor)),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          )
+                        : Stack(
+                            children: [
+                              Image.file(
+                                File(vesselData.imageURLs!),
+                                fit: BoxFit.cover,
+                                height: displayHeight(context) * 0.22,
                                 width: displayWidth(context),
-                                padding: const EdgeInsets.only(top: 20),
-                                decoration: BoxDecoration(boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.black.withOpacity(0.5),
-                                      blurRadius: 50,
-                                      spreadRadius: 5,
-                                      offset: const Offset(0, 50))
-                                ]),
-                              ))
-                        ],
-                      )),
+                              ),
+                              Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  left: 0,
+                                  child: Container(
+                                    height: displayHeight(context) * 0.14,
+                                    width: displayWidth(context),
+                                    padding: const EdgeInsets.only(top: 20),
+                                    decoration: BoxDecoration(boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black.withOpacity(0.5),
+                                          blurRadius: 50,
+                                          spreadRadius: 5,
+                                          offset: const Offset(0, 50))
+                                    ]),
+                                  ))
+                            ],
+                          )),
           ),
           vesselData.vesselStatus == 0
               ? Positioned(

@@ -259,74 +259,80 @@ class _SignInScreenState extends State<SignInScreen> {
                                     ))
                                   : InkWell(
                                       onTap: () async {
-                                        GoogleSignInAccount?
-                                            googleSignInAccount;
+                                        bool check =
+                                            await Utils().check(scaffoldKey);
+                                        if (check) {
+                                          GoogleSignInAccount?
+                                              googleSignInAccount;
 
-                                        if (await googleSignIn.isSignedIn()) {
-                                          googleSignIn.signOut();
-                                          googleSignInAccount =
-                                              await googleSignIn.signIn();
-                                        } else {
-                                          googleSignInAccount =
-                                              await googleSignIn.signIn();
-                                        }
+                                          if (await googleSignIn.isSignedIn()) {
+                                            googleSignIn.signOut();
+                                            googleSignInAccount =
+                                                await googleSignIn.signIn();
+                                          } else {
+                                            googleSignInAccount =
+                                                await googleSignIn.signIn();
+                                          }
 
-                                        if (googleSignInAccount == null) {
-                                          // TODO handle
-                                          setState(() {
-                                            isGoogleSignInBtnClicked = false;
-                                          });
-                                        } else {
-                                          try {
+                                          if (googleSignInAccount == null) {
+                                            // TODO handle
                                             setState(() {
-                                              isGoogleSignInBtnClicked = true;
+                                              isGoogleSignInBtnClicked = false;
                                             });
-
-                                            commonProvider
-                                                .login(
-                                                    context,
-                                                    googleSignInAccount.email,
-                                                    "",
-                                                    true,
-                                                    googleSignInAccount.id,
-                                                    scaffoldKey)
-                                                .then((value) {
+                                          } else {
+                                            try {
                                               setState(() {
-                                                isGoogleSignInBtnClicked =
-                                                    false;
+                                                isGoogleSignInBtnClicked = true;
                                               });
 
-                                              if (value != null) {
-                                                if (value.status!) {
-                                                  setState(() {
-                                                    isGoogleSignInBtnClicked =
-                                                        false;
-                                                  });
-                                                  /*Navigator.pushAndRemoveUntil(
+                                              commonProvider
+                                                  .login(
+                                                      context,
+                                                      googleSignInAccount.email,
+                                                      "",
+                                                      true,
+                                                      googleSignInAccount.id,
+                                                      scaffoldKey)
+                                                  .then((value) {
+                                                setState(() {
+                                                  isGoogleSignInBtnClicked =
+                                                      false;
+                                                });
+
+                                                if (value != null) {
+                                                  if (value.status!) {
+                                                    setState(() {
+                                                      isGoogleSignInBtnClicked =
+                                                          false;
+                                                    });
+                                                    /*Navigator.pushAndRemoveUntil(
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) =>
                                                             HomePage(),
                                                       ),
                                                       ModalRoute.withName(""));*/
-                                                  Navigator.pushAndRemoveUntil(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            SyncDataCloudToMobileScreen(),
-                                                      ),
-                                                      ModalRoute.withName(""));
+                                                    Navigator
+                                                        .pushAndRemoveUntil(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  SyncDataCloudToMobileScreen(),
+                                                            ),
+                                                            ModalRoute.withName(
+                                                                ""));
+                                                  }
                                                 }
-                                              }
-                                            }).catchError((e) {
-                                              setState(() {
-                                                isGoogleSignInBtnClicked =
-                                                    false;
+                                              }).catchError((e) {
+                                                setState(() {
+                                                  isGoogleSignInBtnClicked =
+                                                      false;
+                                                });
                                               });
-                                            });
-                                          } catch (e) {
-                                            Utils.customPrint('EXE: $e');
-                                            // TODO handle
+                                            } catch (e) {
+                                              Utils.customPrint('EXE: $e');
+                                              // TODO handle
+                                            }
                                           }
                                         }
                                       },
@@ -357,32 +363,37 @@ class _SignInScreenState extends State<SignInScreen> {
                               buttonPrimaryColor: buttonBGColor,
                               borderColor: buttonBGColor,
                               width: displayWidth(context),
-                              onTap: () {
+                              onTap: () async {
                                 if (formKey.currentState!.validate()) {
+                                  bool check = await Utils().check(scaffoldKey);
+
+                                  Utils.customPrint("NETWORK $check");
+
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
 
-                                  setState(() {
-                                    isLoginBtnClicked = true;
-                                  });
+                                  if (check) {
+                                    setState(() {
+                                      isLoginBtnClicked = true;
+                                    });
 
-                                  if (isLoginByEmailId) {
-                                    commonProvider
-                                        .login(
-                                            context,
-                                            emailController.text.trim(),
-                                            passwordController.text.trim(),
-                                            false,
-                                            "",
-                                            scaffoldKey)
-                                        .then((value) {
-                                      setState(() {
-                                        isLoginBtnClicked = false;
-                                      });
+                                    if (isLoginByEmailId) {
+                                      commonProvider
+                                          .login(
+                                              context,
+                                              emailController.text.trim(),
+                                              passwordController.text.trim(),
+                                              false,
+                                              "",
+                                              scaffoldKey)
+                                          .then((value) {
+                                        setState(() {
+                                          isLoginBtnClicked = false;
+                                        });
 
-                                      if (value != null) {
-                                        if (value.status!) {
-                                          /*Navigator.pushAndRemoveUntil(
+                                        if (value != null) {
+                                          if (value.status!) {
+                                            /*Navigator.pushAndRemoveUntil(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
@@ -390,21 +401,22 @@ class _SignInScreenState extends State<SignInScreen> {
                                               ),
                                               ModalRoute.withName(""));*/
 
-                                          Navigator.pushAndRemoveUntil(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SyncDataCloudToMobileScreen(),
-                                              ),
-                                              ModalRoute.withName(""));
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SyncDataCloudToMobileScreen(),
+                                                ),
+                                                ModalRoute.withName(""));
+                                          }
                                         }
-                                      }
-                                    }).catchError((e) {
-                                      setState(() {
-                                        isLoginBtnClicked = false;
+                                      }).catchError((e) {
+                                        setState(() {
+                                          isLoginBtnClicked = false;
+                                        });
                                       });
-                                    });
-                                  } else {}
+                                    } else {}
+                                  }
                                 }
                               }),
                       SizedBox(

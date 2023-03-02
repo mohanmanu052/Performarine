@@ -87,7 +87,7 @@ class LoginApiProvider with ChangeNotifier {
       }
       loginModel = null;
     } on SocketException catch (_) {
-      Utils().check(scaffoldKey);
+      await Utils().check(scaffoldKey);
 
       Utils.customPrint('Socket Exception');
 

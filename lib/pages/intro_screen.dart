@@ -265,6 +265,7 @@ class _IntroScreenState extends State<IntroScreen> {
     bool? isUserLoggedIn = pref.getBool('isUserLoggedIn');
     bool? isTripStarted = pref.getBool('trip_started');
     bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
+    bool? isFirstTimeUser = pref.getBool('isFirstTimeUser');
 
     Utils.customPrint('ISUSERLOGEDIN $isUserLoggedIn');
 
@@ -286,10 +287,18 @@ class _IntroScreenState extends State<IntroScreen> {
                 builder: (context) => const LetsGetStartedScreen()),
             ModalRoute.withName(""));
       } else if (isUserLoggedIn) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-            ModalRoute.withName(""));
+        if (isFirstTimeUser == null) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SyncDataCloudToMobileScreen()),
+              ModalRoute.withName(""));
+        } else {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+              ModalRoute.withName(""));
+        }
       } else {
         Navigator.pushAndRemoveUntil(
             context,

@@ -147,100 +147,106 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ))
                             : InkWell(
                                 onTap: () async {
-                                  GoogleSignInAccount? googleSignInAccount;
+                                  bool check = await Utils().check(scaffoldKey);
 
-                                  if (await googleSignIn.isSignedIn()) {
-                                    googleSignIn.signOut();
-                                    googleSignInAccount =
-                                        await googleSignIn.signIn();
-                                  } else {
-                                    googleSignInAccount =
-                                        await googleSignIn.signIn();
-                                  }
+                                  if (check) {
+                                    GoogleSignInAccount? googleSignInAccount;
 
-                                  if (googleSignInAccount == null) {
-                                    // TODO handle
-                                    setState(() {
-                                      isGoogleSignInBtnClicked = false;
-                                    });
-                                  } else {
-                                    try {
-                                      Utils.customPrint(
-                                          'NAME: ${googleSignInAccount.id}');
-                                      Utils.customPrint(
-                                          'NAME: ${googleSignInAccount.email}');
-                                      Utils.customPrint(
-                                          'NAME: ${googleSignInAccount.displayName}');
-                                      Utils.customPrint(
-                                          'NAME: ${googleSignInAccount.photoUrl}');
-                                      Utils.customPrint(
-                                          'NAME: ${googleSignInAccount.serverAuthCode}');
-                                      Utils.customPrint(
-                                          'NAME: ${googleSignInAccount.authHeaders}');
-                                      Utils.customPrint(
-                                          'NAME: ${googleSignInAccount.toString()}');
+                                    if (await googleSignIn.isSignedIn()) {
+                                      googleSignIn.signOut();
+                                      googleSignInAccount =
+                                          await googleSignIn.signIn();
+                                    } else {
+                                      googleSignInAccount =
+                                          await googleSignIn.signIn();
+                                    }
 
+                                    if (googleSignInAccount == null) {
+                                      // TODO handle
                                       setState(() {
-                                        isGoogleSignInBtnClicked = true;
+                                        isGoogleSignInBtnClicked = false;
                                       });
+                                    } else {
+                                      try {
+                                        Utils.customPrint(
+                                            'NAME: ${googleSignInAccount.id}');
+                                        Utils.customPrint(
+                                            'NAME: ${googleSignInAccount.email}');
+                                        Utils.customPrint(
+                                            'NAME: ${googleSignInAccount.displayName}');
+                                        Utils.customPrint(
+                                            'NAME: ${googleSignInAccount.photoUrl}');
+                                        Utils.customPrint(
+                                            'NAME: ${googleSignInAccount.serverAuthCode}');
+                                        Utils.customPrint(
+                                            'NAME: ${googleSignInAccount.authHeaders}');
+                                        Utils.customPrint(
+                                            'NAME: ${googleSignInAccount.toString()}');
 
-                                      commonProvider
-                                          .registerUser(
-                                              context,
-                                              googleSignInAccount.email,
-                                              '',
-                                              "",
-                                              '',
-                                              '',
-                                              '',
-                                              '',
-                                              '',
-                                              true,
-                                              googleSignInAccount.id,
-                                              googleSignInAccount.photoUrl ??
-                                                  '',
-                                              scaffoldKey)
-                                          .then((value) {
                                         setState(() {
-                                          isGoogleSignInBtnClicked = false;
+                                          isGoogleSignInBtnClicked = true;
                                         });
 
-                                        if (value != null) {
+                                        commonProvider
+                                            .registerUser(
+                                                context,
+                                                googleSignInAccount.email,
+                                                '',
+                                                "",
+                                                '',
+                                                '',
+                                                '',
+                                                '',
+                                                '',
+                                                true,
+                                                googleSignInAccount.id,
+                                                googleSignInAccount.photoUrl ??
+                                                    '',
+                                                scaffoldKey)
+                                            .then((value) {
                                           setState(() {
                                             isGoogleSignInBtnClicked = false;
                                           });
 
-                                          if (value.status!) {
+                                          if (value != null) {
                                             setState(() {
                                               isGoogleSignInBtnClicked = false;
                                             });
-                                            Future.delayed(Duration(seconds: 2),
-                                                () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const SignInScreen()),
-                                              );
-                                            });
+
+                                            if (value.status!) {
+                                              setState(() {
+                                                isGoogleSignInBtnClicked =
+                                                    false;
+                                              });
+                                              Future.delayed(
+                                                  Duration(seconds: 2), () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const SignInScreen()),
+                                                );
+                                              });
+                                            } else {
+                                              setState(() {
+                                                isGoogleSignInBtnClicked =
+                                                    false;
+                                              });
+                                            }
                                           } else {
                                             setState(() {
                                               isGoogleSignInBtnClicked = false;
                                             });
                                           }
-                                        } else {
+                                        }).catchError((e) {
                                           setState(() {
                                             isGoogleSignInBtnClicked = false;
                                           });
-                                        }
-                                      }).catchError((e) {
-                                        setState(() {
-                                          isGoogleSignInBtnClicked = false;
                                         });
-                                      });
-                                    } catch (e) {
-                                      Utils.customPrint('EXE: $e');
-                                      // TODO handle
+                                      } catch (e) {
+                                        Utils.customPrint('EXE: $e');
+                                        // TODO handle
+                                      }
                                     }
                                   }
                                 },
@@ -473,55 +479,60 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             width: displayWidth(context),
                             onTap: () async {
                               if (formKey.currentState!.validate()) {
-                                setState(() {
-                                  isRegistrationBtnClicked = true;
-                                });
+                                bool check = await Utils().check(scaffoldKey);
 
-                                commonProvider
-                                    .registerUser(
-                                        context,
-                                        emailController.text,
-                                        createPasswordController.text,
-                                        "+1",
-                                        phoneController.text,
-                                        selectedCountry!,
-                                        zipCodeController.text,
-                                        "",
-                                        "",
-                                        false,
-                                        "",
-                                        "",
-                                        scaffoldKey)
-                                    .then((value) {
+                                if (check) {
                                   setState(() {
-                                    isRegistrationBtnClicked = false;
+                                    isRegistrationBtnClicked = true;
                                   });
 
-                                  if (value != null) {
+                                  commonProvider
+                                      .registerUser(
+                                          context,
+                                          emailController.text,
+                                          createPasswordController.text,
+                                          "+1",
+                                          phoneController.text,
+                                          selectedCountry!,
+                                          zipCodeController.text,
+                                          "",
+                                          "",
+                                          false,
+                                          "",
+                                          "",
+                                          scaffoldKey)
+                                      .then((value) {
                                     setState(() {
                                       isRegistrationBtnClicked = false;
                                     });
 
-                                    if (value.status!) {
+                                    if (value != null) {
                                       setState(() {
                                         isRegistrationBtnClicked = false;
                                       });
 
-                                      Future.delayed(Duration(seconds: 2), () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const SignInScreen()),
-                                        );
-                                      });
+                                      if (value.status!) {
+                                        setState(() {
+                                          isRegistrationBtnClicked = false;
+                                        });
+
+                                        Future.delayed(Duration(seconds: 2),
+                                            () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const SignInScreen()),
+                                          );
+                                        });
+                                      }
                                     }
-                                  }
-                                }).catchError((e) {
-                                  setState(() {
-                                    isRegistrationBtnClicked = false;
+                                  }).catchError((e) {
+                                    setState(() {
+                                      isRegistrationBtnClicked = false;
+                                    });
                                   });
-                                });
+                                }
                               }
                             }),
                     SizedBox(

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -214,16 +215,20 @@ class _SyncDataCloudToMobileScreenState
                 builtYear: int.parse(value.vessels![i].builtYear.toString()),
                 vesselStatus:
                     int.parse(value.vessels![i].vesselStatus.toString()),
-                imageURLs: value.vessels![i].imageURLs == '[]'
+                imageURLs: value.vessels![i].imageURLs == []
                     ? ''
-                    : value.vessels![i].imageURLs.toString(),
+                    : value.vessels![i].imageURLs
+                        .toString()
+                        .replaceAll("[", "")
+                        .replaceAll("]", ""),
                 createdAt: value.vessels![i].createdAt.toString(),
                 createdBy: value.vessels![i].createdBy.toString(),
                 updatedAt: value.vessels![i].updatedAt.toString(),
                 isSync: 1,
                 updatedBy: value.vessels![i].updatedBy.toString());
 
-            Utils.customPrint('USER CONFIG DATA ${vesselData.name}');
+            Utils.customPrint(
+                'USER CONFIG DATA ${value.vessels![i].imageURLs}');
 
             await _databaseService.insertVessel(vesselData);
           }
@@ -248,7 +253,7 @@ class _SyncDataCloudToMobileScreenState
               avgSpeed: value.trips![i].avgSpeed.toString(),
             );
 
-            Utils.customPrint('USER CONFIG DATA ${tripData.id}');
+            //Utils.customPrint('USER CONFIG DATA ${tripData.id}');
 
             await _databaseService.insertTrip(tripData);
           }
@@ -259,6 +264,8 @@ class _SyncDataCloudToMobileScreenState
           });
 
           Future.delayed(Duration(seconds: 2), () {
+            sharedPreferences!.setBool('isFirstTimeUser', true);
+
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => HomePage()),

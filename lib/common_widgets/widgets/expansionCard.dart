@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -179,18 +180,51 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                     ))
                               ],
                             )
-                          : Container(
-                              height: displayHeight(context) * 0.22,
-                              width: displayWidth(context),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                  image: FileImage(
-                                      File(widget.vessel!.imageURLs!)),
-                                  fit: BoxFit.cover,
+                          : widget.vessel!.imageURLs!.contains("https")
+                              ? CachedNetworkImage(
+                                  height: displayHeight(context) * 0.2,
+                                  width: displayHeight(context),
+                                  imageUrl: widget.vessel!.imageURLs!,
+                                  imageBuilder: (context, imageProvider) =>
+                                      Stack(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(15),
+                                              topLeft: Radius.circular(15)),
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  progressIndicatorBuilder:
+                                      (context, url, downloadProgress) =>
+                                          Center(
+                                    child: CircularProgressIndicator(
+                                        value: downloadProgress.progress,
+                                        valueColor:
+                                            new AlwaysStoppedAnimation<Color>(
+                                                primaryColor)),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
+                                )
+                              : Container(
+                                  height: displayHeight(context) * 0.22,
+                                  width: displayWidth(context),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                      image: FileImage(
+                                          File(widget.vessel!.imageURLs!)),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
                     ),
                   ],
                 ),

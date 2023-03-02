@@ -800,7 +800,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                     context) /
                                                                 2.3,
                                                             onTap: () async {
-                                                              Utils().check(
+                                                              await Utils().check(
                                                                   scaffoldKey);
 
                                                               if (tripData

@@ -202,7 +202,7 @@ class Utils {
     return isPermissionGranted;
   }
 
-  check(GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<bool> check(GlobalKey<ScaffoldState> scaffoldKey) async {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -223,6 +223,7 @@ class Utils {
               },
             );
           });
+      return false;
     }
     return false;
   }

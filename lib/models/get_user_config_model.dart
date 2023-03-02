@@ -63,7 +63,7 @@ class Vessels {
   int? fuelCapacity;
   int? batteryCapacity;
   String? weight;
-  List<Null>? imageURLs;
+  List<String>? imageURLs;
   double? freeBoard;
   double? lengthOverall;
   double? beam;
@@ -118,7 +118,7 @@ class Vessels {
     batteryCapacity = json['batteryCapacity'];
     weight = json['weight'];
     if (json['imageURLs'] != null) {
-      imageURLs = <Null>[];
+      imageURLs = <String>[];
       json['imageURLs'].forEach((v) {
         imageURLs!.add(v);
       });

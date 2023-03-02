@@ -100,7 +100,7 @@ class RegistrationApiProvider with ChangeNotifier {
       }
       registrationModel = null;
     } on SocketException catch (_) {
-      Utils().check(scaffoldKey);
+      await Utils().check(scaffoldKey);
 
       Utils.customPrint('Socket Exception');
 

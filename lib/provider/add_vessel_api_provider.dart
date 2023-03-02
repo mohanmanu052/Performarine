@@ -133,7 +133,7 @@ class AddVesselApiProvider with ChangeNotifier {
       }
       addVesselModel = null;
     } on SocketException catch (_) {
-      Utils().check(scaffoldKey);
+      await Utils().check(scaffoldKey);
       Utils.customPrint('Socket Exception');
 
       addVesselModel = null;

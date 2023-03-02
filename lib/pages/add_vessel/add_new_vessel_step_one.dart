@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -420,22 +421,74 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                         width: displayHeight(context) * 0.085,
                                         child: Stack(
                                           children: [
-                                            Container(
-                                              //margin: EdgeInsets.all(6),
-                                              decoration: BoxDecoration(
-                                                //color: Colors.orange,
-                                                shape: BoxShape.rectangle,
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                image: DecorationImage(
-                                                  fit: BoxFit.fill,
-                                                  image: FileImage(File(widget
-                                                      .addVesselData!
-                                                      .imageURLs!)),
-                                                  // fit: BoxFit.cover
-                                                ),
-                                              ),
-                                            ),
+                                            widget.addVesselData!.imageURLs!
+                                                    .contains("https")
+                                                ? SizedBox(
+                                                    child: CachedNetworkImage(
+                                                      height: displayHeight(
+                                                              context) *
+                                                          0.1,
+                                                      width: displayHeight(
+                                                              context) *
+                                                          0.1,
+                                                      // imageUrl: 'https://picsum.photos/200',
+                                                      imageUrl: widget
+                                                          .addVesselData!
+                                                          .imageURLs!,
+                                                      imageBuilder: (context,
+                                                              imageProvider) =>
+                                                          Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape: BoxShape
+                                                              .rectangle,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                          image:
+                                                              DecorationImage(
+                                                            image:
+                                                                imageProvider,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      progressIndicatorBuilder:
+                                                          (context, url,
+                                                                  downloadProgress) =>
+                                                              Center(
+                                                        child: CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress,
+                                                            valueColor:
+                                                                new AlwaysStoppedAnimation<
+                                                                        Color>(
+                                                                    primaryColor)),
+                                                      ),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          Icon(Icons.error),
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    //margin: EdgeInsets.all(6),
+                                                    decoration: BoxDecoration(
+                                                      //color: Colors.orange,
+                                                      shape: BoxShape.rectangle,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                      image: DecorationImage(
+                                                        fit: BoxFit.fill,
+                                                        image: FileImage(File(
+                                                            widget
+                                                                .addVesselData!
+                                                                .imageURLs!)),
+                                                        // fit: BoxFit.cover
+                                                      ),
+                                                    ),
+                                                  ),
                                             Positioned(
                                               right: 0,
                                               top: 0,

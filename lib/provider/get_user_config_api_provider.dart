@@ -43,8 +43,8 @@ class GetUserConfigApiProvider with ChangeNotifier {
         getUserConfigModel =
             GetUserConfigModel.fromJson(json.decode(response.body));
 
-        Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey, message: decodedData['message']);
+        /* Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);*/
 
         return getUserConfigModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
@@ -68,7 +68,7 @@ class GetUserConfigApiProvider with ChangeNotifier {
       }
       getUserConfigModel = null;
     } on SocketException catch (_) {
-      Utils().check(scaffoldKey);
+      await Utils().check(scaffoldKey);
 
       Utils.customPrint('Socket Exception');
 

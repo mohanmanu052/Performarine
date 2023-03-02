@@ -320,7 +320,7 @@ class _TripWidgetState extends State<TripWidget> {
                                             fontSize:
                                                 displayWidth(context) * 0.026,
                                             onTap: () async {
-                                              Utils()
+                                              await Utils()
                                                   .check(widget.scaffoldKey!);
 
                                               var connectivityResult =
