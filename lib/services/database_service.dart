@@ -317,4 +317,40 @@ class DatabaseService {
         [time, distance, speed, avgSpeed, vesselId]);
     Utils.customPrint('updated: $count');
   }
+
+  Future<bool> tripSyncDetails() async {
+    final db = await _databaseService.database;
+    var result = await db.rawQuery(
+      'SELECT EXISTS(SELECT 1 FROM trips WHERE isSync="0")',
+    );
+    int? exists = Sqflite.firstIntValue(result);
+    Utils.customPrint('EXIST $exists');
+    return exists == 1;
+  }
+
+  Future<bool> vesselsSyncDetails() async {
+    final db = await _databaseService.database;
+    var result = await db.rawQuery(
+      'SELECT EXISTS(SELECT 1 FROM vessels WHERE isSync="0")',
+    );
+    int? exists = Sqflite.firstIntValue(result);
+    Utils.customPrint('EXIST $exists');
+    return exists == 1;
+  }
+
+  Future<bool> deleteDataFromVesselTable() async {
+    final db = await _databaseService.database;
+    var result = await db.rawQuery('DELETE FROM vessels');
+    int? exists = Sqflite.firstIntValue(result);
+    Utils.customPrint('EXIST Vessels  $exists');
+    return exists == 1;
+  }
+
+  Future<bool> deleteDataFromTripTable() async {
+    final db = await _databaseService.database;
+    var result = await db.rawQuery('DELETE FROM trips');
+    int? exists = Sqflite.firstIntValue(result);
+    Utils.customPrint('EXIST TRIPS  $exists');
+    return exists == 1;
+  }
 }

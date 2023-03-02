@@ -18,7 +18,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
       children: [
         Container(
           width: displayWidth(context),
-          height: displayHeight(context) * 0.9,
+          height: displayHeight(context) * 0.76,
           margin: EdgeInsets.all(10),
           decoration: new BoxDecoration(
             color: Theme.of(context).brightness == Brightness.dark
