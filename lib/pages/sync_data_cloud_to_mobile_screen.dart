@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -227,11 +226,44 @@ class _SyncDataCloudToMobileScreenState
                 isSync: 1,
                 updatedBy: value.vessels![i].updatedBy.toString());
 
-            Utils.customPrint(
-                'USER CONFIG DATA ${value.vessels![i].imageURLs}');
+            var vesselExist = await _databaseService
+                .vesselsExistInCloud(value.vessels![i].id!);
 
-            await _databaseService.insertVessel(vesselData);
+            Utils.customPrint('USER CONFIG DATA CLOUD $vesselExist');
+
+            if (vesselExist) {
+              await _databaseService.updateVessel(vesselData);
+            } else {
+              await _databaseService.insertVessel(vesselData);
+            }
           }
+
+          /* Future.delayed(Duration(seconds: 3), () async {
+            for (int i = 0; i < value.trips!.length; i++) {
+              Trip tripData = Trip(
+                id: value.trips![i].id,
+                vesselId: value.trips![i].vesselId,
+                vesselName: '',
+                currentLoad: value.trips![i].load,
+                filePath: value.trips![i].cloudFilePath,
+                isSync: 1,
+                tripStatus: value.trips![i].tripStatus,
+                updatedAt: value.trips![i].updatedAt,
+                createdAt: value.trips![i].createdAt,
+                deviceInfo: value.trips![i].deviceInfo!.deviceId,
+                startPosition: value.trips![i].startPosition!.join(','),
+                endPosition: value.trips![i].endPosition!.join(','),
+                time: value.trips![i].duration,
+                distance: value.trips![i].distance.toString(),
+                speed: value.trips![i].speed.toString(),
+                avgSpeed: value.trips![i].avgSpeed.toString(),
+              );
+
+              //Utils.customPrint('USER CONFIG DATA ${tripData.id}');
+
+              await _databaseService.insertTrip(tripData);
+            }
+          });*/
 
           for (int i = 0; i < value.trips!.length; i++) {
             Trip tripData = Trip(
@@ -239,7 +271,7 @@ class _SyncDataCloudToMobileScreenState
               vesselId: value.trips![i].vesselId,
               vesselName: '',
               currentLoad: value.trips![i].load,
-              filePath: value.trips![i].filePath,
+              filePath: value.trips![i].cloudFilePath,
               isSync: 1,
               tripStatus: value.trips![i].tripStatus,
               updatedAt: value.trips![i].updatedAt,
@@ -253,7 +285,7 @@ class _SyncDataCloudToMobileScreenState
               avgSpeed: value.trips![i].avgSpeed.toString(),
             );
 
-            //Utils.customPrint('USER CONFIG DATA ${tripData.id}');
+            Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
 
             await _databaseService.insertTrip(tripData);
           }

@@ -293,10 +293,21 @@ class _TripWidgetState extends State<TripWidget> {
                                             fontSize:
                                                 displayWidth(context) * 0.026,
                                             onTap: () async {
-                                              DownloadTrip().downloadTrip(
-                                                  context,
-                                                  widget.scaffoldKey!,
-                                                  widget.tripList!.id!);
+                                              if (widget.tripList!.filePath!
+                                                  .startsWith("https")) {
+                                                Utils.customPrint("HTTP URL ");
+                                                DownloadTrip
+                                                    .downloadTripFromCloud(
+                                                        context,
+                                                        widget.scaffoldKey!,
+                                                        widget.tripList!
+                                                            .filePath!);
+                                              } else {
+                                                DownloadTrip().downloadTrip(
+                                                    context,
+                                                    widget.scaffoldKey!,
+                                                    widget.tripList!.id!);
+                                              }
                                             },
                                             context: context,
                                             width: displayWidth(context) * 0.38,
@@ -735,15 +746,24 @@ class _TripWidgetState extends State<TripWidget> {
           vesselData.batteryCapacity;
       //commonProvider.addVesselRequestModel!.imageURLs = vesselData.imageURLs!;
 
+      Utils.customPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
+
       if (vesselData.imageURLs!.isNotEmpty) {
-        finalSelectedFiles.add(File(vesselData.imageURLs!));
-        commonProvider.addVesselRequestModel!.selectedImages =
-            finalSelectedFiles;
+        if (vesselData.imageURLs!.startsWith("https")) {
+          commonProvider.addVesselRequestModel!.selectedImages = [];
+        } else {
+          finalSelectedFiles.add(File(vesselData.imageURLs!));
+          commonProvider.addVesselRequestModel!.selectedImages =
+              finalSelectedFiles;
+        }
 
         Utils.customPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
       } else {
         commonProvider.addVesselRequestModel!.selectedImages = [];
       }
+
+      Utils.customPrint(
+          'VESSEL IMAGE URL ${File(commonProvider.addVesselRequestModel!.selectedImages!.toString())}');
 
       commonProvider
           .addVessel(

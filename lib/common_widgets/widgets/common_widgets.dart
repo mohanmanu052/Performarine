@@ -244,7 +244,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                 child: vesselData.imageURLs == null ||
                         vesselData.imageURLs!.isEmpty ||
                         vesselData.imageURLs == 'string' ||
-                        vesselData.imageURLs == '[]'
+                        vesselData.imageURLs == ''
                     ? Stack(
                         children: [
                           ClipRRect(
@@ -264,13 +264,6 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               ),
                             ),
                           ),
-                          /*Image.asset(
-                              'assets/images/shadow_img.png',
-                              height: displayHeight(context) * 0.22,
-                              width: displayWidth(context),
-                              fit: BoxFit.cover,
-                            ),*/
-
                           Positioned(
                               bottom: 0,
                               right: 0,
@@ -289,35 +282,71 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               ))
                         ],
                       )
-                    : vesselData.imageURLs!.contains("https")
-                        ? CachedNetworkImage(
-                            height: displayHeight(context) * 0.2,
-                            width: displayHeight(context),
-                            imageUrl: vesselData.imageURLs!,
-                            imageBuilder: (context, imageProvider) => Stack(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(15),
-                                        topLeft: Radius.circular(15)),
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.cover,
+                    : vesselData.imageURLs!.startsWith("https")
+                        ? Stack(
+                            children: [
+                              CachedNetworkImage(
+                                height: displayHeight(context) * 0.22,
+                                width: displayHeight(context),
+                                imageUrl: vesselData.imageURLs!,
+                                imageBuilder: (context, imageProvider) => Stack(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(15),
+                                            topLeft: Radius.circular(15)),
+                                        image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) => Center(
+                                  child: CircularProgressIndicator(
+                                      value: downloadProgress.progress,
+                                      valueColor:
+                                          new AlwaysStoppedAnimation<Color>(
+                                              primaryColor)),
+                                ),
+                                errorWidget: (context, url, error) => ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    height: displayHeight(context) * 0.22,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      //color: Colors.white,
+                                    ),
+                                    child: Center(
+                                      child: Image.asset(
+                                        'assets/images/vessel_default_img.png',
+                                        width: displayWidth(context) * 0.65,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) => Center(
-                              child: CircularProgressIndicator(
-                                  value: downloadProgress.progress,
-                                  valueColor: new AlwaysStoppedAnimation<Color>(
-                                      primaryColor)),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
+                              ),
+                              Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  left: 0,
+                                  child: Container(
+                                    height: displayHeight(context) * 0.14,
+                                    width: displayWidth(context),
+                                    padding: const EdgeInsets.only(top: 20),
+                                    decoration: BoxDecoration(boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.black.withOpacity(0.5),
+                                          blurRadius: 50,
+                                          spreadRadius: 5,
+                                          offset: const Offset(0, 50))
+                                    ]),
+                                  ))
+                            ],
                           )
                         : Stack(
                             children: [

@@ -422,7 +422,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                         child: Stack(
                                           children: [
                                             widget.addVesselData!.imageURLs!
-                                                    .contains("https")
+                                                    .startsWith("https")
                                                 ? SizedBox(
                                                     child: CachedNetworkImage(
                                                       height: displayHeight(

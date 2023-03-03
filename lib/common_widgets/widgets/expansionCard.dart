@@ -180,7 +180,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                     ))
                               ],
                             )
-                          : widget.vessel!.imageURLs!.contains("https")
+                          : widget.vessel!.imageURLs!.startsWith("https")
                               ? CachedNetworkImage(
                                   height: displayHeight(context) * 0.2,
                                   width: displayHeight(context),
@@ -211,7 +211,23 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                 primaryColor)),
                                   ),
                                   errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
+                                      ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Container(
+                                      height: displayHeight(context) * 0.22,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        //color: Colors.white,
+                                      ),
+                                      child: Center(
+                                        child: Image.asset(
+                                          'assets/images/vessel_default_img.png',
+                                          width: displayWidth(context) * 0.65,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 )
                               : Container(
                                   height: displayHeight(context) * 0.22,

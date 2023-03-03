@@ -229,7 +229,7 @@ class Utils {
   }
 
   static void showActionSnackBar(BuildContext context,
-      GlobalKey<ScaffoldState> scaffoldKey, String message, Function() onTap) {
+      GlobalKey<ScaffoldState> scaffoldKey, String message) {
     final snackBar = new SnackBar(
       backgroundColor: Colors.blue,
       content: Row(
@@ -250,12 +250,12 @@ class Utils {
         ],
       ),
       behavior: SnackBarBehavior.floating,
-      duration: Duration(minutes: 1),
-      action: SnackBarAction(
+      duration: Duration(seconds: 4),
+      /*action: SnackBarAction(
         label: 'OPEN',
         textColor: Colors.white,
         onPressed: onTap,
-      ),
+      ),*/
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }

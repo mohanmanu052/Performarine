@@ -45,8 +45,9 @@ class DatabaseService {
     await db.execute(
       'CREATE TABLE trips(id Text PRIMARY KEY,vesselId Text,vesselName Text, currentLoad TEXT,filePath Text,isSync INTEGER DEFAULT 0,'
       'tripStatus INTEGER  DEFAULT 0,deviceInfo Text, startPosition Text,endPosition Text,'
-      ' createdAt TEXT,updatedAt TEXT,duration TEXT,distance TEXT,speed TEXT,avgSpeed TEXT,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL)',
+      ' createdAt TEXT,updatedAt TEXT,duration TEXT,distance TEXT,speed TEXT,avgSpeed TEXT)',
     );
+    // ,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL
     // Run the CREATE {dogs} TABLE statement on the database.
     // await db.execute(
     //   'CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER, color INTEGER, TripId INTEGER,isSync INTEGER DEFAULT 0, FOREIGN KEY (TripId) REFERENCES Trips(id) ON DELETE SET NULL)',
@@ -351,6 +352,16 @@ class DatabaseService {
     var result = await db.rawQuery('DELETE FROM trips');
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST TRIPS  $exists');
+    return exists == 1;
+  }
+
+  Future<bool> vesselsExistInCloud(String vesselId) async {
+    final db = await _databaseService.database;
+    var result = await db.rawQuery(
+      'SELECT EXISTS(SELECT 1 FROM vessels WHERE id="$vesselId")',
+    );
+    int? exists = Sqflite.firstIntValue(result);
+    Utils.customPrint('EXIST $exists');
     return exists == 1;
   }
 }

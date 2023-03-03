@@ -730,10 +730,22 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                 width:
                                                     displayWidth(context) / 2.3,
                                                 onTap: () async {
-                                                  DownloadTrip().downloadTrip(
-                                                      context,
-                                                      scaffoldKey,
-                                                      tripData!.id!);
+                                                  if (tripData!.filePath!
+                                                      .startsWith("https")) {
+                                                    Utils.customPrint(
+                                                        "HTTP URL ");
+                                                    DownloadTrip
+                                                        .downloadTripFromCloud(
+                                                            context,
+                                                            scaffoldKey,
+                                                            tripData!
+                                                                .filePath!);
+                                                  } else {
+                                                    DownloadTrip().downloadTrip(
+                                                        context,
+                                                        scaffoldKey,
+                                                        tripData!.id!);
+                                                  }
                                                 }),
                                             isTripUploaded
                                                 ? Container(
