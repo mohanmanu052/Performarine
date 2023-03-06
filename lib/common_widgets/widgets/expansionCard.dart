@@ -180,67 +180,18 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                     ))
                               ],
                             )
-                          : widget.vessel!.imageURLs!.startsWith("https")
-                              ? CachedNetworkImage(
-                                  height: displayHeight(context) * 0.2,
-                                  width: displayHeight(context),
-                                  imageUrl: widget.vessel!.imageURLs!,
-                                  imageBuilder: (context, imageProvider) =>
-                                      Stack(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(15),
-                                              topLeft: Radius.circular(15)),
-                                          image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  progressIndicatorBuilder:
-                                      (context, url, downloadProgress) =>
-                                          Center(
-                                    child: CircularProgressIndicator(
-                                        value: downloadProgress.progress,
-                                        valueColor:
-                                            new AlwaysStoppedAnimation<Color>(
-                                                primaryColor)),
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Container(
-                                      height: displayHeight(context) * 0.22,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        //color: Colors.white,
-                                      ),
-                                      child: Center(
-                                        child: Image.asset(
-                                          'assets/images/vessel_default_img.png',
-                                          width: displayWidth(context) * 0.65,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : Container(
-                                  height: displayHeight(context) * 0.22,
-                                  width: displayWidth(context),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                      image: FileImage(
-                                          File(widget.vessel!.imageURLs!)),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
+                          : Container(
+                              height: displayHeight(context) * 0.22,
+                              width: displayWidth(context),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                  image: FileImage(
+                                      File(widget.vessel!.imageURLs!)),
+                                  fit: BoxFit.cover,
                                 ),
+                              ),
+                            ),
                     ),
                   ],
                 ),

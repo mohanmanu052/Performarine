@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -180,7 +181,7 @@ class _SyncDataCloudToMobileScreenState
 
     setState(() {
       curIndex = 0;
-      lastIndex = 0;
+      lastIndex = -1;
     });
 
     commonProvider
@@ -191,9 +192,29 @@ class _SyncDataCloudToMobileScreenState
         if (value.status!) {
           setState(() {
             curIndex = 1;
-            lastIndex = 1;
+            lastIndex = 0;
           });
           for (int i = 0; i < value.vessels!.length; i++) {
+            String cloudImage = value.vessels![i].imageURLs == []
+                ? ''
+                : value.vessels![i].imageURLs
+                    .toString()
+                    .replaceAll("[", "")
+                    .replaceAll("]", "");
+
+            Utils.customPrint('USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage');
+
+            var downloadImageFromCloud;
+            if (cloudImage.isNotEmpty) {
+              downloadImageFromCloud = await DownloadTrip()
+                  .downloadImageFromCloud(context, scaffoldKey, cloudImage);
+
+              Utils.customPrint(
+                  'USER CONFIG DATA CLOUD IMAGE $downloadImageFromCloud');
+            } else {
+              downloadImageFromCloud = '';
+            }
+
             CreateVessel vesselData = CreateVessel(
                 id: value.vessels![i].id,
                 name: value.vessels![i].name,
@@ -214,17 +235,13 @@ class _SyncDataCloudToMobileScreenState
                 builtYear: int.parse(value.vessels![i].builtYear.toString()),
                 vesselStatus:
                     int.parse(value.vessels![i].vesselStatus.toString()),
-                imageURLs: value.vessels![i].imageURLs == []
-                    ? ''
-                    : value.vessels![i].imageURLs
-                        .toString()
-                        .replaceAll("[", "")
-                        .replaceAll("]", ""),
+                imageURLs: downloadImageFromCloud,
                 createdAt: value.vessels![i].createdAt.toString(),
                 createdBy: value.vessels![i].createdBy.toString(),
                 updatedAt: value.vessels![i].updatedAt.toString(),
                 isSync: 1,
-                updatedBy: value.vessels![i].updatedBy.toString());
+                updatedBy: value.vessels![i].updatedBy.toString(),
+                isCloud: 1);
 
             var vesselExist = await _databaseService
                 .vesselsExistInCloud(value.vessels![i].id!);
@@ -266,24 +283,29 @@ class _SyncDataCloudToMobileScreenState
           });*/
 
           for (int i = 0; i < value.trips!.length; i++) {
+            CreateVessel vesselData = await _databaseService
+                .getVesselFromVesselID(value.trips![i].vesselId.toString());
+
+            Utils.customPrint("VESSEL NAME ${vesselData.name}");
+
             Trip tripData = Trip(
-              id: value.trips![i].id,
-              vesselId: value.trips![i].vesselId,
-              vesselName: '',
-              currentLoad: value.trips![i].load,
-              filePath: value.trips![i].cloudFilePath,
-              isSync: 1,
-              tripStatus: value.trips![i].tripStatus,
-              updatedAt: value.trips![i].updatedAt,
-              createdAt: value.trips![i].createdAt,
-              deviceInfo: value.trips![i].deviceInfo!.deviceId,
-              startPosition: value.trips![i].startPosition!.join(','),
-              endPosition: value.trips![i].endPosition!.join(','),
-              time: value.trips![i].duration,
-              distance: value.trips![i].distance.toString(),
-              speed: value.trips![i].speed.toString(),
-              avgSpeed: value.trips![i].avgSpeed.toString(),
-            );
+                id: value.trips![i].id,
+                vesselId: value.trips![i].vesselId,
+                vesselName: vesselData.name,
+                currentLoad: value.trips![i].load,
+                filePath: value.trips![i].cloudFilePath,
+                isSync: 1,
+                tripStatus: value.trips![i].tripStatus,
+                updatedAt: value.trips![i].updatedAt,
+                createdAt: value.trips![i].createdAt,
+                deviceInfo: value.trips![i].deviceInfo!.toJson().toString(),
+                startPosition: value.trips![i].startPosition!.join(','),
+                endPosition: value.trips![i].endPosition!.join(','),
+                time: value.trips![i].duration,
+                distance: value.trips![i].distance.toString(),
+                speed: value.trips![i].speed.toString(),
+                avgSpeed: value.trips![i].avgSpeed.toString(),
+                isCloud: 1);
 
             Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
 
@@ -292,9 +314,8 @@ class _SyncDataCloudToMobileScreenState
 
           setState(() {
             curIndex = 2;
-            lastIndex = 2;
+            lastIndex = 1;
           });
-
           Future.delayed(Duration(seconds: 2), () {
             sharedPreferences!.setBool('isFirstTimeUser', true);
 

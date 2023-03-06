@@ -713,154 +713,182 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                       child: Container(
                                         margin: EdgeInsets.symmetric(
                                             horizontal: 17, vertical: 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            CommonButtons.getActionButton(
-                                                title: 'Download Trip Data',
-                                                context: context,
-                                                fontSize:
-                                                    displayWidth(context) *
-                                                        0.034,
-                                                textColor: Colors.white,
-                                                buttonPrimaryColor:
-                                                    Color(0xFF889BAB),
-                                                borderColor: Color(0xFF889BAB),
-                                                width:
-                                                    displayWidth(context) / 2.3,
-                                                onTap: () async {
-                                                  if (tripData!.filePath!
-                                                      .startsWith("https")) {
-                                                    Utils.customPrint(
-                                                        "HTTP URL ");
-                                                    DownloadTrip
-                                                        .downloadTripFromCloud(
-                                                            context,
-                                                            scaffoldKey,
-                                                            tripData!
-                                                                .filePath!);
-                                                  } else {
-                                                    DownloadTrip().downloadTrip(
-                                                        context,
-                                                        scaffoldKey,
-                                                        tripData!.id!);
-                                                  }
-                                                }),
-                                            isTripUploaded
-                                                ? Container(
-                                                    margin: EdgeInsets.only(
-                                                        right: displayWidth(
+                                        child: tripData!.isCloud != 0
+                                            ? SizedBox(
+                                                width: displayWidth(context),
+                                                child: CommonButtons
+                                                    .getActionButton(
+                                                        title: 'Home',
+                                                        context: context,
+                                                        fontSize: displayWidth(
                                                                 context) *
-                                                            0.2),
-                                                    child: Center(
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                      valueColor:
-                                                          AlwaysStoppedAnimation<
-                                                                  Color>(
-                                                              circularProgressColor),
-                                                    )),
-                                                  )
-                                                : tripData?.isSync != 0
-                                                    ? CommonButtons
-                                                        .getActionButton(
-                                                            title: 'Home',
-                                                            context: context,
-                                                            fontSize: displayWidth(
-                                                                    context) *
-                                                                0.034,
-                                                            textColor: Colors
-                                                                .white,
-                                                            buttonPrimaryColor:
-                                                                buttonBGColor,
-                                                            borderColor:
-                                                                buttonBGColor,
-                                                            width:
-                                                                displayWidth(
-                                                                        context) /
-                                                                    2.3,
-                                                            onTap: () async {
-                                                              Navigator
-                                                                  .pushAndRemoveUntil(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                        builder:
-                                                                            (context) =>
-                                                                                HomePage(),
-                                                                      ),
-                                                                      ModalRoute
-                                                                          .withName(
-                                                                              ""));
-                                                            })
-                                                    : CommonButtons
-                                                        .getActionButton(
-                                                            title:
-                                                                'Upload Trip Data',
-                                                            context: context,
-                                                            fontSize:
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.034,
-                                                            textColor: Colors
-                                                                .white,
-                                                            buttonPrimaryColor:
-                                                                buttonBGColor,
-                                                            borderColor:
-                                                                buttonBGColor,
-                                                            width: displayWidth(
-                                                                    context) /
-                                                                2.3,
-                                                            onTap: () async {
-                                                              await Utils().check(
-                                                                  scaffoldKey);
-
-                                                              if (tripData
-                                                                      ?.isSync !=
-                                                                  0) {
-                                                                Utils.customPrint(
-                                                                    'UPLOADED ${tripData?.isSync != 0}');
-                                                                Utils.customPrint(
-                                                                    'UPLOADED 1 ${isTripUploaded}');
-
-                                                                Utils
-                                                                    .showSnackBar(
+                                                            0.034,
+                                                        textColor: Colors.white,
+                                                        buttonPrimaryColor:
+                                                            buttonBGColor,
+                                                        borderColor:
+                                                            buttonBGColor,
+                                                        width: displayWidth(
+                                                                context) /
+                                                            2.3,
+                                                        onTap: () async {
+                                                          Navigator
+                                                              .pushAndRemoveUntil(
                                                                   context,
-                                                                  scaffoldKey:
-                                                                      scaffoldKey,
-                                                                  message:
-                                                                      'File already uploaded',
-                                                                );
-                                                                return;
-                                                              }
+                                                                  MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            HomePage(),
+                                                                  ),
+                                                                  ModalRoute
+                                                                      .withName(
+                                                                          ""));
+                                                        }),
+                                              )
+                                            : Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  CommonButtons.getActionButton(
+                                                      title:
+                                                          'Download Trip Data',
+                                                      context: context,
+                                                      fontSize: displayWidth(
+                                                              context) *
+                                                          0.034,
+                                                      textColor: Colors.white,
+                                                      buttonPrimaryColor:
+                                                          Color(0xFF889BAB),
+                                                      borderColor:
+                                                          Color(0xFF889BAB),
+                                                      width: displayWidth(
+                                                              context) /
+                                                          2.3,
+                                                      onTap: () async {
+                                                        DownloadTrip()
+                                                            .downloadTrip(
+                                                                context,
+                                                                scaffoldKey,
+                                                                tripData!.id!);
+                                                      }),
+                                                  isTripUploaded
+                                                      ? Container(
+                                                          margin: EdgeInsets.only(
+                                                              right: displayWidth(
+                                                                      context) *
+                                                                  0.2),
+                                                          child: Center(
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                        Color>(
+                                                                    circularProgressColor),
+                                                          )),
+                                                        )
+                                                      : tripData?.isSync != 0
+                                                          ? CommonButtons
+                                                              .getActionButton(
+                                                                  title: 'Home',
+                                                                  context:
+                                                                      context,
+                                                                  fontSize: displayWidth(
+                                                                          context) *
+                                                                      0.034,
+                                                                  textColor:
+                                                                      Colors
+                                                                          .white,
+                                                                  buttonPrimaryColor:
+                                                                      buttonBGColor,
+                                                                  borderColor:
+                                                                      buttonBGColor,
+                                                                  width:
+                                                                      displayWidth(
+                                                                              context) /
+                                                                          2.3,
+                                                                  onTap:
+                                                                      () async {
+                                                                    Navigator.pushAndRemoveUntil(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              HomePage(),
+                                                                        ),
+                                                                        ModalRoute.withName(""));
+                                                                  })
+                                                          : CommonButtons
+                                                              .getActionButton(
+                                                                  title:
+                                                                      'Upload Trip Data',
+                                                                  context:
+                                                                      context,
+                                                                  fontSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.034,
+                                                                  textColor:
+                                                                      Colors
+                                                                          .white,
+                                                                  buttonPrimaryColor:
+                                                                      buttonBGColor,
+                                                                  borderColor:
+                                                                      buttonBGColor,
+                                                                  width: displayWidth(
+                                                                          context) /
+                                                                      2.3,
+                                                                  onTap:
+                                                                      () async {
+                                                                    await Utils()
+                                                                        .check(
+                                                                            scaffoldKey);
 
-                                                              //downloadTrip(true);
+                                                                    if (tripData
+                                                                            ?.isSync !=
+                                                                        0) {
+                                                                      Utils.customPrint(
+                                                                          'UPLOADED ${tripData?.isSync != 0}');
+                                                                      Utils.customPrint(
+                                                                          'UPLOADED 1 ${isTripUploaded}');
 
-                                                              var connectivityResult =
-                                                                  await (Connectivity()
-                                                                      .checkConnectivity());
-                                                              if (connectivityResult ==
-                                                                  ConnectivityResult
-                                                                      .mobile) {
-                                                                Utils.customPrint(
-                                                                    'Mobile');
-                                                                showDialogBoxToUploadTrip();
-                                                              } else if (connectivityResult ==
-                                                                  ConnectivityResult
-                                                                      .wifi) {
-                                                                setState(() {
-                                                                  isTripUploaded =
-                                                                      true;
-                                                                });
-                                                                uploadDataIfDataIsNotSync();
+                                                                      Utils
+                                                                          .showSnackBar(
+                                                                        context,
+                                                                        scaffoldKey:
+                                                                            scaffoldKey,
+                                                                        message:
+                                                                            'File already uploaded',
+                                                                      );
+                                                                      return;
+                                                                    }
 
-                                                                Utils
-                                                                    .customPrint(
-                                                                        'WIFI');
-                                                              }
-                                                            })
-                                          ],
-                                        ),
+                                                                    //downloadTrip(true);
+
+                                                                    var connectivityResult =
+                                                                        await (Connectivity()
+                                                                            .checkConnectivity());
+                                                                    if (connectivityResult ==
+                                                                        ConnectivityResult
+                                                                            .mobile) {
+                                                                      Utils.customPrint(
+                                                                          'Mobile');
+                                                                      showDialogBoxToUploadTrip();
+                                                                    } else if (connectivityResult ==
+                                                                        ConnectivityResult
+                                                                            .wifi) {
+                                                                      setState(
+                                                                          () {
+                                                                        isTripUploaded =
+                                                                            true;
+                                                                      });
+                                                                      uploadDataIfDataIsNotSync();
+
+                                                                      Utils.customPrint(
+                                                                          'WIFI');
+                                                                    }
+                                                                  })
+                                                ],
+                                              ),
                                       ),
                                     )
                                   ],

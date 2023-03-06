@@ -4,7 +4,6 @@ import 'package:dio/dio.dart' as d;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
@@ -111,18 +110,79 @@ class DownloadTrip {
     return downloadedZipPath;
   }
 
-  static void downloadTripFromCloud(BuildContext context,
+  Future<String> downloadImageFromCloud(BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey, String imageUrl) async {
+    String cloudImagePath = '';
+    Response resp;
+    d.Dio dio = d.Dio();
+    Utils.customPrint('CLOUD IMAGE DOWNLOAD Started!!!');
+
+    final appDirectory = await getApplicationDocumentsDirectory();
+    ourDirectory = Directory('${appDirectory.path}');
+
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+
+    var isStoragePermitted;
+    String fileName = imageUrl.split('/').last;
+    if (androidInfo.version.sdkInt < 29) {
+      isStoragePermitted = await Permission.storage.status;
+
+      if (isStoragePermitted.isGranted) {
+        Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
+        cloudImagePath = '${ourDirectory!.path}/$fileName';
+
+        if (File(cloudImagePath).existsSync()) {
+          File(cloudImagePath).deleteSync();
+        }
+
+        try {
+          dio.download(imageUrl, cloudImagePath,
+              onReceiveProgress: (progress, total) {});
+        } on d.DioError catch (e) {
+          print('DOWNLOAD EXE: ${e.error}');
+
+          Navigator.pop(context);
+        }
+      } else {
+        await Utils.getStoragePermission(context);
+        var isStoragePermitted = await Permission.storage.status;
+
+        if (isStoragePermitted.isGranted) {
+          cloudImagePath = "${ourDirectory!.path}/$fileName";
+
+          try {
+            dio.download(imageUrl, cloudImagePath,
+                onReceiveProgress: (progress, total) {});
+          } on d.DioError catch (e) {
+            print('DOWNLOAD EXE: ${e.error}');
+
+            Navigator.pop(context);
+          }
+        }
+      }
+    } else {
+      cloudImagePath = "${ourDirectory!.path}/$fileName";
+
+      try {
+        dio.download(imageUrl, cloudImagePath,
+            onReceiveProgress: (progress, total) {});
+      } on d.DioError catch (e) {
+        print('DOWNLOAD EXE: ${e.error}');
+
+        Navigator.pop(context);
+      }
+    }
+    return cloudImagePath;
+  }
+
+  /*Future<String> downloadImageFromCloud(BuildContext context,
       GlobalKey<ScaffoldState> scaffoldKey, String imageUrl) async {
     bool isPermissionGranted = await Utils.getStoragePermission(context);
     print('IS PERMISSION GRANTED: $isPermissionGranted');
 
     Directory directory;
 
-    if (Platform.isAndroid) {
-      directory = Directory("storage/emulated/0/Download");
-    } else {
-      directory = await getApplicationDocumentsDirectory();
-    }
+    directory = await getApplicationDocumentsDirectory();
 
     if (isPermissionGranted) {
       bool doesExist = await directory.exists();
@@ -131,7 +191,7 @@ class DownloadTrip {
       print('FILE URL: $imageUrl');
       print('DOWNLOAD DIRECTORY PATH: ${directory.path}');
 
-      showLoaderDialog(context);
+      //showLoaderDialog(context);
     }
 
     Response resp;
@@ -144,14 +204,14 @@ class DownloadTrip {
     String directoryPath = '${directory.path}/$name';
     print('DOWNLOAD DIRECTORY PATH WITH FILENAME: $directoryPath');
 
-    try {
+      try {
       dio.download(imageUrl, directoryPath,
           onReceiveProgress: (progress, total) {
         // pr.update(progress: double.parse(((progress/total)*100).toStringAsFixed(0)));
 
         if (progress == total) {
-          /*if(pr.isShowing()) pr.hide();
-              pr.update(progress: 0.0);*/
+             if(pr.isShowing()) pr.hide();
+              pr.update(progress: 0.0);
           Navigator.pop(context);
 
           Utils.showActionSnackBar(
@@ -161,33 +221,11 @@ class DownloadTrip {
     } on d.DioError catch (e) {
       print('DOWNLOAD EXE: ${e.error}');
 
-      /*if(pr.isShowing())
-      {
-        pr.hide();
-        pr.update(progress: 0.0);
-      }*/
       Navigator.pop(context);
     }
 
     // pr.update(progress: 0.0);
-  }
 
-  static showLoaderDialog(BuildContext context) {
-    AlertDialog alert = AlertDialog(
-      content: new Row(
-        children: [
-          CircularProgressIndicator(),
-          Container(
-              margin: EdgeInsets.only(left: 7), child: Text("DOWNLOADING...")),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+    return directoryPath;
+  }*/
 }

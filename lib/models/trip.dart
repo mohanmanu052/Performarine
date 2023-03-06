@@ -20,6 +20,7 @@ class Trip {
   final String? distance;
   final String? speed;
   final String? avgSpeed;
+  int? isCloud;
   bool? isEndTripClicked;
 
   Trip(
@@ -39,6 +40,7 @@ class Trip {
       this.distance,
       this.speed,
       this.avgSpeed,
+      this.isCloud,
       this.isEndTripClicked});
 
   // Convert a Trip into a Map. The keys must correspond to the vesselNames of the
@@ -61,6 +63,7 @@ class Trip {
       'distance': distance,
       'speed': speed,
       'avgSpeed': avgSpeed,
+      'isCloud': isCloud,
     };
   }
 
@@ -82,6 +85,7 @@ class Trip {
       distance: map['distance'] ?? '',
       speed: map['speed'] ?? '',
       avgSpeed: map['avgSpeed'] ?? '',
+      isCloud: map['isCloud'] ?? 0,
       isEndTripClicked: false,
     );
   }

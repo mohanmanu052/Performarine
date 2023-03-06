@@ -167,15 +167,55 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         height: displayHeight(context) * 0.02,
                       ),
                       InkWell(
-                        onTap: () {
-                          Navigator.of(context).pop();
+                        onTap: () async {
+                          bool? isTripStarted =
+                              sharedPreferences!.getBool('trip_started');
 
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const SyncDataCloudToMobileScreen()),
-                          );
+                          var tripSyncDetails =
+                              await _databaseService.tripSyncDetails();
+                          var vesselsSyncDetails =
+                              await _databaseService.vesselsSyncDetails();
+
+                          Utils.customPrint(
+                              "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+
+                          if (isTripStarted != null) {
+                            if (isTripStarted) {
+                              Navigator.of(context).pop();
+                              Utils.showSnackBar(context,
+                                  scaffoldKey: widget.scaffoldKey,
+                                  message:
+                                      'Please end the trip which is already running');
+                            } else {
+                              if (vesselsSyncDetails || tripSyncDetails) {
+                                showDialogBoxToUploadData(
+                                    context, widget.scaffoldKey!);
+                              } else {
+                                Navigator.of(context).pop();
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SyncDataCloudToMobileScreen()),
+                                );
+                              }
+                            }
+                          } else {
+                            if (vesselsSyncDetails || tripSyncDetails) {
+                              showDialogBoxToUploadData(
+                                  context, widget.scaffoldKey!);
+                            } else {
+                              Navigator.of(context).pop();
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SyncDataCloudToMobileScreen()),
+                              );
+                            }
+                          }
                         },
                         child: commonText(
                             context: context,
@@ -433,6 +473,139 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                                     Utils.customPrint('DELETE $vesselDelete');
                                     Utils.customPrint('DELETE $tripsDelete');
+                                  },
+                                      displayWidth(context) * 0.4,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.018,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
+  }
+
+  showDialogBoxToUploadData(
+      BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogBoxContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.32,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                      'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
+                                  fontWeight: FontWeight.w600,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.038,
+                                  textAlign: TextAlign.center),
+                              SizedBox(
+                                height: displayHeight(context) * 0.015,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text:
+                                      'If you click on ok, you are going to loose entire local data which is not uploaded',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.grey,
+                                  textSize: displayWidth(context) * 0.032,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey)),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Cancel', context, primaryColor, () {
+                                    Navigator.of(context).pop();
+                                  },
+                                      displayWidth(context) * 0.4,
+                                      displayHeight(context) * 0.05,
+                                      Colors.grey.shade400,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black,
+                                      displayHeight(context) * 0.018,
+                                      Colors.grey.shade400,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15.0,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Ok', context, primaryColor, () async {
+                                    Navigator.of(context).pop();
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SyncDataCloudToMobileScreen()),
+                                    );
                                   },
                                       displayWidth(context) * 0.4,
                                       displayHeight(context) * 0.05,

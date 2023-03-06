@@ -45,7 +45,7 @@ class DatabaseService {
     await db.execute(
       'CREATE TABLE trips(id Text PRIMARY KEY,vesselId Text,vesselName Text, currentLoad TEXT,filePath Text,isSync INTEGER DEFAULT 0,'
       'tripStatus INTEGER  DEFAULT 0,deviceInfo Text, startPosition Text,endPosition Text,'
-      ' createdAt TEXT,updatedAt TEXT,duration TEXT,distance TEXT,speed TEXT,avgSpeed TEXT)',
+      ' createdAt TEXT,updatedAt TEXT,duration TEXT,distance TEXT,speed TEXT,avgSpeed TEXT,isCloud INTEGER  DEFAULT 0)',
     );
     // ,FOREIGN KEY (vesselId) REFERENCES vessels(id) ON DELETE SET NULL
     // Run the CREATE {dogs} TABLE statement on the database.
@@ -81,7 +81,8 @@ class DatabaseService {
       'duration TEXT, '
       'distance TEXT, '
       'speed TEXT, '
-      'avgSpeed TEXT '
+      'avgSpeed TEXT, '
+      'isCloud INTEGER  DEFAULT 0'
       ')',
     );
     //  ToDo: Foreign Key mapping
