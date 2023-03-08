@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -9,6 +12,8 @@ import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
 import 'package:performarine/main.dart';
+import 'package:performarine/models/trip.dart';
+import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -33,6 +38,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   String? currentVersion;
   late CommonProvider commonProvider;
+  late List<CreateVessel> getVesselFuture;
+  late List<Trip> getTrip;
+  late DeviceInfoPlugin deviceDetails;
 
   @override
   void initState() {
@@ -40,6 +48,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     super.initState();
 
+    deviceDetails = DeviceInfoPlugin();
     getVersion();
   }
 
@@ -246,19 +255,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           await _databaseService.vesselsSyncDetails();
 
                       Utils.customPrint(
-                          "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails"); /*
-
-                      vesselsSyncDetails = true;
-                      tripSyncDetails = true;
-
-                      Utils.customPrint(
-                          "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");*/
-
-                      /*if (vesselsSyncDetails && tripSyncDetails) {
-                        showDialogBox(context, widget.scaffoldKey!);
-                      } else if (vesselsSyncDetails) {
-                        showDialogBox(context, widget.scaffoldKey!);
-                      }*/
+                          "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
 
                       if (isTripStarted != null) {
                         if (isTripStarted) {
@@ -348,7 +345,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
     });
   }
 
-  signOut() {
+  signOut() async {
+    var vesselDelete = await _databaseService.deleteDataFromVesselTable();
+    var tripsDelete = await _databaseService.deleteDataFromTripTable();
+
+    Utils.customPrint('DELETE $vesselDelete');
+    Utils.customPrint('DELETE $tripsDelete');
+
     sharedPreferences!.clear();
     GoogleSignIn googleSignIn = GoogleSignIn(
       scopes: <String>[
@@ -366,6 +369,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 
   showDialogBox(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
+    bool isSigningOut = false;
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -395,10 +399,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             children: [
                               commonText(
                                   context: context,
-                                  text: 'Sign Out?',
+                                  text:
+                                      'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
                                   fontWeight: FontWeight.w600,
                                   textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.042,
+                                  textSize: displayWidth(context) * 0.038,
                                   textAlign: TextAlign.center),
                               SizedBox(
                                 height: displayHeight(context) * 0.015,
@@ -406,10 +411,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               commonText(
                                   context: context,
                                   text:
-                                      'You have data which is not uploaded to cloud, if you sign out you may loose data',
+                                      'If you click on SignOut, you are going to loose entire local data which is not uploaded',
                                   fontWeight: FontWeight.w400,
                                   textColor: Colors.grey,
-                                  textSize: displayWidth(context) * 0.036,
+                                  textSize: displayWidth(context) * 0.032,
                                   textAlign: TextAlign.center),
                             ],
                           ),
@@ -433,8 +438,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             : Colors.grey)),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Cancel', context, primaryColor, () {
+                                      'Sign Out', context, primaryColor,
+                                      () async {
                                     Navigator.of(context).pop();
+
+                                    signOut();
                                   },
                                       displayWidth(context) * 0.4,
                                       displayHeight(context) * 0.05,
@@ -443,7 +451,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                               Brightness.dark
                                           ? Colors.white
                                           : Colors.black,
-                                      displayHeight(context) * 0.018,
+                                      displayHeight(context) * 0.016,
                                       Colors.grey.shade400,
                                       '',
                                       fontWeight: FontWeight.w500),
@@ -458,31 +466,35 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 margin: EdgeInsets.only(
                                   top: 8.0,
                                 ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Sign Out', context, primaryColor,
-                                      () async {
-                                    Navigator.of(context).pop();
+                                child: isSigningOut
+                                    ? Center(child: CircularProgressIndicator())
+                                    : Center(
+                                        child: CommonButtons.getAcceptButton(
+                                            'Sync and SignOut',
+                                            context,
+                                            primaryColor, () async {
+                                          setDialogState(() {
+                                            isSigningOut = true;
+                                          });
+                                          syncAndSignOut();
 
-                                    signOut();
-
-                                    var vesselDelete = await _databaseService
+                                          /*var vesselDelete = await _databaseService
                                         .deleteDataFromVesselTable();
                                     var tripsDelete = await _databaseService
                                         .deleteDataFromTripTable();
 
                                     Utils.customPrint('DELETE $vesselDelete');
-                                    Utils.customPrint('DELETE $tripsDelete');
-                                  },
-                                      displayWidth(context) * 0.4,
-                                      displayHeight(context) * 0.05,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.018,
-                                      buttonBGColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                                    Utils.customPrint('DELETE $tripsDelete');*/
+                                        },
+                                            displayWidth(context) * 0.4,
+                                            displayHeight(context) * 0.05,
+                                            primaryColor,
+                                            Colors.white,
+                                            displayHeight(context) * 0.016,
+                                            buttonBGColor,
+                                            '',
+                                            fontWeight: FontWeight.w500),
+                                      ),
                               ),
                             ),
                           ],
@@ -631,5 +643,138 @@ class _CustomDrawerState extends State<CustomDrawer> {
             ),
           );
         });
+  }
+
+  syncAndSignOut() async {
+    bool vesselErrorOccurred = false;
+    bool tripErrorOccurred = false;
+    var vesselsSyncDetails = await _databaseService.vesselsSyncDetails();
+    var tripSyncDetails = await _databaseService.tripSyncDetails();
+
+    getVesselFuture = await _databaseService.vessels();
+    getTrip = await _databaseService.trips();
+
+    // tripSyncDetails = false;
+
+    Utils.customPrint("VESSEL SYNC ${getVesselFuture.length}");
+    Utils.customPrint("VESSEL SYNC TRIP ${getTrip.length}");
+    Utils.customPrint("VESSEL SYNC TRIP $vesselsSyncDetails");
+    Utils.customPrint("VESSEL SYNC TRIP $tripSyncDetails");
+
+    if (vesselsSyncDetails) {
+      for (int i = 0; i < getVesselFuture.length; i++) {
+        var vesselSyncOrNot = getVesselFuture[i].isSync;
+
+        if (vesselSyncOrNot == 0) {
+          await commonProvider
+              .addVessel(
+                  context,
+                  getVesselFuture[i],
+                  commonProvider.loginModel!.userId!,
+                  commonProvider.loginModel!.token!,
+                  widget.scaffoldKey!,
+                  calledFromSignOut: true)
+              .then((value) async {
+            if (value!.status!) {
+              Utils.customPrint("VESSEL SUCCESS MESSAGE ${value.message}");
+              await _databaseService.updateIsSyncStatus(
+                  1, getVesselFuture[i].id.toString());
+            } else {
+              Utils.customPrint("VESSEL MESSAGE ${value.message}");
+              setState(() {
+                vesselErrorOccurred = true;
+              });
+            }
+          });
+        }
+      }
+
+      Utils.customPrint("VESSEL DATA Uploaded");
+    }
+
+    if (tripSyncDetails) {
+      for (int i = 0; i < getTrip.length; i++) {
+        var tripSyncOrNot = getTrip[i].isSync;
+
+        AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
+
+        if (tripSyncOrNot == 0) {
+          var queryParameters;
+          queryParameters = {
+            "id": getTrip[i].id,
+            "load": getTrip[i].currentLoad,
+            "sensorInfo": [
+              {"make": "qualicom", "name": "gps"}
+            ],
+            "deviceInfo": {
+              "deviceId": androidDeviceInfo.id,
+              "model": androidDeviceInfo.model,
+              "version": androidDeviceInfo.version.release,
+              "make": androidDeviceInfo.manufacturer,
+              "board": androidDeviceInfo.board,
+              "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
+            },
+            "startPosition": getTrip[i].startPosition!.split(','),
+            "endPosition": getTrip[i].endPosition!.split(','),
+            /*json.decode(tripData.endPosition!.toString()).cast<String>().toList()*/
+            "vesselId": getTrip[i].vesselId,
+            "filePath":
+                '/data/user/0/com.performarine.app/app_flutter/${getTrip[i].id}.zip',
+            "createdAt": getTrip[i].createdAt,
+            "updatedAt": getTrip[i].updatedAt,
+            "duration": getTrip[i].time,
+            "distance": double.parse(getTrip[i].distance!),
+            "speed": double.parse(getTrip[i].speed!),
+            "avgSpeed": double.parse(getTrip[i].avgSpeed!),
+            //"userID": commonProvider.loginModel!.userId!
+          };
+
+          print('QQQQQQ: $queryParameters');
+
+          await commonProvider
+              .sendSensorInfo(
+                  context,
+                  commonProvider.loginModel!.token,
+                  File(
+                      '/data/user/0/com.performarine.app/app_flutter/${getTrip[i].id}.zip'),
+                  queryParameters,
+                  getTrip[i].id!,
+                  widget.scaffoldKey!,
+                  calledFromSignOut: true)
+              .then((value) async {
+            if (value!.status!) {
+              Utils.customPrint("TRIP SUCCESS MESSAGE ${value.message}");
+
+              await _databaseService.updateTripIsSyncStatus(
+                  1, getTrip[i].id.toString());
+            } else {
+              Utils.customPrint("TRIP MESSAGE ${value.message}");
+              setState(() {
+                tripErrorOccurred = true;
+              });
+            }
+          }).catchError((onError) {
+            print('DIOOOOOOOOOOOOO');
+            setState(() {
+              tripErrorOccurred = true;
+            });
+          });
+        }
+      }
+    }
+
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+
+    if (!vesselErrorOccurred && !tripErrorOccurred) {
+      signOut();
+      Utils.customPrint("ERROR WHILE SYNC AND SIGN OUT IF SIGN OUTT");
+    } else {
+      Utils.showSnackBar(context,
+          scaffoldKey: widget.scaffoldKey,
+          message: 'Failed to sync data to cloud. Please try again.');
+
+      Utils.customPrint("ERROR WHILE SYNC AND SIGN OUT ELSE");
+    }
   }
 }

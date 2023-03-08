@@ -283,11 +283,20 @@ class DatabaseService {
     return exists == 1;
   }
 
-  Future<CreateVessel> getVesselFromVesselID(String vesselId) async {
+  Future<CreateVessel?> getVesselFromVesselID(String vesselId) async {
     final db = await _databaseService.database;
     var list =
         await db.query('vessels', where: 'id = ?', whereArgs: [vesselId]);
-    return CreateVessel.fromMap(list[0]);
+
+    Utils.customPrint(
+        "VESSEL ID EXIST IN VESSEL TABLE ${CreateVessel.fromMap(list[0])}");
+
+    if (list.length > 0) {
+      return CreateVessel.fromMap(list[0]);
+    } else {
+      return null;
+    }
+    //return CreateVessel.fromMap(list[0]);
   }
 
   Future<int> updateIsSyncStatus(int isSyncValue, String id) async {

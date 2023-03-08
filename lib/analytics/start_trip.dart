@@ -141,10 +141,10 @@ class StartTrip {
       double finalTripDistance = 0;
       int finalTripDuration = 0;
 
-      timer = Timer.periodic(const Duration(milliseconds: 200), (timer) async {
+      timer = Timer.periodic(const Duration(milliseconds: 300), (timer) async {
         // to get values in seconds (we are executing value every miliseconds)
         finalTripDuration =
-            timer.tick % 5 == 0 ? (timer.tick * 200) : finalTripDuration;
+            timer.tick % 5 == 0 ? (timer.tick * 300) : finalTripDuration;
         Position endTripPosition = await Geolocator.getCurrentPosition();
         double tripDistance = Geolocator.distanceBetween(
             startTripPosition.latitude,

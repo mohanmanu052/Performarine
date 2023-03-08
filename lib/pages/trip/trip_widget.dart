@@ -768,10 +768,10 @@ class _TripWidgetState extends State<TripWidget> {
         payload: 'item x');
 
     if (!vesselIsSync) {
-      CreateVessel vesselData = await _databaseService
+      CreateVessel? vesselData = await _databaseService
           .getVesselFromVesselID((widget.tripList!.vesselId.toString()));
 
-      Utils.customPrint('VESSEL DATA ${vesselData.id}');
+      Utils.customPrint('VESSEL DATA ${vesselData!.id}');
 
       commonProvider.addVesselRequestModel = CreateVessel();
       commonProvider.addVesselRequestModel!.id = vesselData.id;

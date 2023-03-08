@@ -25,9 +25,11 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       File? zipFile,
       Map<String, dynamic> tripData,
       String tripId,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+      GlobalKey<ScaffoldState> scaffoldKey,
+      {bool calledFromSignOut = false}) async {
     d.Dio dio = d.Dio();
     print('ZIPPPP: ${zipFile!.path}');
+    print('ZIPPPP: ${zipFile.existsSync()}');
     var formData = d.FormData.fromMap({
       "tripData": jsonEncode(tripData),
       'sensorZipFiles': await d.MultipartFile.fromFile(
@@ -52,25 +54,28 @@ class SendSensorInfoApiProvider with ChangeNotifier {
           int finalProgress =
               int.parse((sent / total * 100).toStringAsFixed(0));
 
-          final AndroidNotificationDetails androidPlatformChannelSpecifics =
-              AndroidNotificationDetails('progress channel', 'progress channel',
-                  channelDescription: 'progress channel description',
-                  channelShowBadge: false,
-                  importance: Importance.max,
-                  priority: Priority.high,
-                  onlyAlertOnce: true,
-                  ongoing: true,
-                  showProgress: true,
-                  maxProgress: 100,
-                  progress: finalProgress);
-          final NotificationDetails platformChannelSpecifics =
-              NotificationDetails(android: androidPlatformChannelSpecifics);
-          flutterLocalNotificationsPlugin.show(
-              9989,
-              '$tripId - $finalProgress/100 %',
-              '$tripId - $finalProgress/100 %',
-              platformChannelSpecifics,
-              payload: 'item x');
+          if (!calledFromSignOut) {
+            final AndroidNotificationDetails androidPlatformChannelSpecifics =
+                AndroidNotificationDetails(
+                    'progress channel', 'progress channel',
+                    channelDescription: 'progress channel description',
+                    channelShowBadge: false,
+                    importance: Importance.max,
+                    priority: Priority.high,
+                    onlyAlertOnce: true,
+                    ongoing: true,
+                    showProgress: true,
+                    maxProgress: 100,
+                    progress: finalProgress);
+            final NotificationDetails platformChannelSpecifics =
+                NotificationDetails(android: androidPlatformChannelSpecifics);
+            flutterLocalNotificationsPlugin.show(
+                9989,
+                '$tripId - $finalProgress/100 %',
+                '$tripId - $finalProgress/100 %',
+                platformChannelSpecifics,
+                payload: 'item x');
+          }
 
           /*if (sent == total) {
             await flutterLocalNotificationsPlugin.cancel(9989);
@@ -98,15 +103,19 @@ class SendSensorInfoApiProvider with ChangeNotifier {
           Utils.customPrint('EXE RESP: $response');
 
           if (scaffoldKey != null) {
-            Utils.showSnackBar(context,
-                scaffoldKey: scaffoldKey, message: decodedData['message']);
+            if (!calledFromSignOut) {
+              Utils.showSnackBar(context,
+                  scaffoldKey: scaffoldKey, message: decodedData['message']);
+            }
           }
 
           uploadTripModel = null;
         } else {
           if (scaffoldKey != null) {
-            Utils.showSnackBar(context,
-                scaffoldKey: scaffoldKey, message: decodedData['message']);
+            if (!calledFromSignOut) {
+              Utils.showSnackBar(context,
+                  scaffoldKey: scaffoldKey, message: decodedData['message']);
+            }
           }
 
           Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
@@ -114,12 +123,14 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         }
         uploadTripModel = null;
       }).onError((error, stackTrace) {
-        // Utils.customPrint('ERROR DIO: $error\n$stackTrace');
+        Utils.customPrint('ERROR DIO: $error\n$stackTrace');
         if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey,
-              message:
-                  'Failed to upload trip. Please check internet connection and try again.');
+          if (!calledFromSignOut) {
+            Utils.showSnackBar(context,
+                scaffoldKey: scaffoldKey,
+                message:
+                    'Failed to upload trip. Please check internet connection and try again.');
+          }
         }
         flutterLocalNotificationsPlugin.cancel(9989);
         uploadTripModel = null;

@@ -1188,10 +1188,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     commonProvider.init();
 
     if (!vesselIsSync) {
-      CreateVessel vesselData = await _databaseService
+      CreateVessel? vesselData = await _databaseService
           .getVesselFromVesselID((tripData!.vesselId.toString()));
 
-      Utils.customPrint('VESSEL DATA ${vesselData.id}');
+      Utils.customPrint('VESSEL DATA ${vesselData!.id}');
 
       commonProvider.addVesselRequestModel = CreateVessel();
       commonProvider.addVesselRequestModel!.id = vesselData.id;
@@ -1310,100 +1310,4 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         9989, 'Trip uploaded successfully', '', platformChannelSpecifics,
         payload: 'item x');
   }
-
-  /*downloadTrip(bool isuploadTrip) async {
-    Utils.customPrint('DOWLOAD Started!!!');
-
-    final androidInfo = await DeviceInfoPlugin().androidInfo;
-
-    var isStoragePermitted;
-    if (androidInfo.version.sdkInt < 29) {
-      isStoragePermitted = await Permission.storage.status;
-
-      if (isStoragePermitted.isGranted) {
-        //File copiedFile = File('${ourDirectory!.path}.zip');
-        File copiedFile = File('${ourDirectory!.path}/${tripData!.id}.zip');
-
-        Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
-
-        Directory directory;
-
-        if (Platform.isAndroid) {
-          directory =
-              Directory("storage/emulated/0/Download/${tripData!.id}.zip");
-        } else {
-          directory = await getApplicationDocumentsDirectory();
-        }
-
-        copiedFile.copy(directory.path);
-
-        Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-        if (copiedFile.existsSync()) {
-          if (!isuploadTrip) {
-            Utils.showSnackBar(
-              context,
-              scaffoldKey: scaffoldKey,
-              message: 'File downloaded successfully',
-            );
-          }
-        }
-      } else {
-        await Utils.getStoragePermission(context);
-        var isStoragePermitted = await Permission.storage.status;
-
-        if (isStoragePermitted.isGranted) {
-          File copiedFile = File('${ourDirectory!.path}.zip');
-
-          Directory directory;
-
-          if (Platform.isAndroid) {
-            directory =
-                Directory("storage/emulated/0/Download/${tripData!.id}.zip");
-          } else {
-            directory = await getApplicationDocumentsDirectory();
-          }
-
-          copiedFile.copy(directory.path);
-
-          Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-          if (copiedFile.existsSync()) {
-            Utils.showSnackBar(
-              context,
-              scaffoldKey: scaffoldKey,
-              message: 'File downloaded successfully',
-            );
-          }
-        }
-      }
-    } else {
-      File copiedFile = File('${ourDirectory!.path}/${tripData!.id}.zip');
-
-      Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
-
-      Directory directory;
-
-      if (Platform.isAndroid) {
-        directory =
-            Directory("storage/emulated/0/Download/${tripData!.id}.zip");
-      } else {
-        directory = await getApplicationDocumentsDirectory();
-      }
-
-      copiedFile.copy(directory.path);
-
-      Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-      if (copiedFile.existsSync()) {
-        if (!isuploadTrip) {
-          Utils.showSnackBar(
-            context,
-            scaffoldKey: scaffoldKey,
-            message: 'File downloaded successfully',
-          );
-        }
-      }
-    }
-  }*/
 }

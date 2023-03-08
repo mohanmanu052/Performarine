@@ -17,7 +17,8 @@ class AddVesselApiProvider with ChangeNotifier {
       CreateVessel? addVesselRequestModel,
       String userId,
       String accessToken,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+      GlobalKey<ScaffoldState> scaffoldKey,
+      {bool calledFromSignOut = false}) async {
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
       "x_access_token": '$accessToken',
@@ -31,10 +32,9 @@ class AddVesselApiProvider with ChangeNotifier {
         uri,
       );
 
-      Utils.customPrint(
-          'VESSEl IMAGE ${addVesselRequestModel!.selectedImages!}');
+      //Utils.customPrint('VESSEl IMAGE ${addVesselRequestModel!.selectedImages!}');
 
-      if (addVesselRequestModel.selectedImages == null ||
+      if (addVesselRequestModel!.selectedImages == null ||
           addVesselRequestModel.selectedImages!.isEmpty) {
       } else {
         addVesselRequestModel.selectedImages!.forEach((element) async {
@@ -116,15 +116,19 @@ class AddVesselApiProvider with ChangeNotifier {
         Utils.customPrint('EXE RESP: $responseValue');
 
         if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
+          if (!calledFromSignOut) {
+            Utils.showSnackBar(context,
+                scaffoldKey: scaffoldKey, message: decodedData['message']);
+          }
         }
 
         addVesselModel = null;
       } else {
         if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
+          if (calledFromSignOut) {
+            Utils.showSnackBar(context,
+                scaffoldKey: scaffoldKey, message: decodedData['message']);
+          }
         }
 
         Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');

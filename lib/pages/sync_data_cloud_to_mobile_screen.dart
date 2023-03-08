@@ -283,39 +283,47 @@ class _SyncDataCloudToMobileScreenState
           });*/
 
           for (int i = 0; i < value.trips!.length; i++) {
-            CreateVessel vesselData = await _databaseService
+            Utils.customPrint("TRIPS DATA ${value.trips!.length}");
+            Utils.customPrint("TRIPS VESSEL ID ${value.trips![i].vesselId}");
+
+            CreateVessel? vesselData = await _databaseService
                 .getVesselFromVesselID(value.trips![i].vesselId.toString());
 
-            Utils.customPrint("VESSEL NAME ${vesselData.name}");
+            Utils.customPrint("VESSEL NAME ${vesselData!.name}");
 
-            Trip tripData = Trip(
-                id: value.trips![i].id,
-                vesselId: value.trips![i].vesselId,
-                vesselName: vesselData.name,
-                currentLoad: value.trips![i].load,
-                filePath: value.trips![i].cloudFilePath,
-                isSync: 1,
-                tripStatus: value.trips![i].tripStatus,
-                updatedAt: value.trips![i].updatedAt,
-                createdAt: value.trips![i].createdAt,
-                deviceInfo: value.trips![i].deviceInfo!.toJson().toString(),
-                startPosition: value.trips![i].startPosition!.join(','),
-                endPosition: value.trips![i].endPosition!.join(','),
-                time: value.trips![i].duration,
-                distance: value.trips![i].distance.toString(),
-                speed: value.trips![i].speed.toString(),
-                avgSpeed: value.trips![i].avgSpeed.toString(),
-                isCloud: 1);
+            if (vesselData != null) {
+              Trip tripData = Trip(
+                  id: value.trips![i].id,
+                  vesselId: value.trips![i].vesselId,
+                  vesselName: vesselData.name,
+                  currentLoad: value.trips![i].load,
+                  filePath: value.trips![i].cloudFilePath,
+                  isSync: 1,
+                  tripStatus: value.trips![i].tripStatus,
+                  updatedAt: value.trips![i].updatedAt,
+                  createdAt: value.trips![i].createdAt,
+                  deviceInfo: value.trips![i].deviceInfo!.toJson().toString(),
+                  startPosition: value.trips![i].startPosition!.join(','),
+                  endPosition: value.trips![i].endPosition!.join(','),
+                  time: value.trips![i].duration,
+                  distance: value.trips![i].distance.toString(),
+                  speed: value.trips![i].speed.toString(),
+                  avgSpeed: value.trips![i].avgSpeed.toString(),
+                  isCloud: 1);
 
-            Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
+              Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
 
-            await _databaseService.insertTrip(tripData);
+              await _databaseService.insertTrip(tripData);
+            }
           }
 
-          setState(() {
-            curIndex = 2;
-            lastIndex = 1;
+          Future.delayed(Duration(seconds: 1), () {
+            setState(() {
+              curIndex = 2;
+              lastIndex = 1;
+            });
           });
+
           Future.delayed(Duration(seconds: 2), () {
             sharedPreferences!.setBool('isFirstTimeUser', true);
 

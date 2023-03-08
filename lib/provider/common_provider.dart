@@ -100,7 +100,8 @@ class CommonProvider with ChangeNotifier {
       CreateVessel? addVesselRequestModel,
       String userId,
       String accessToken,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+      GlobalKey<ScaffoldState> scaffoldKey,
+      {bool calledFromSignOut = false}) async {
     addVesselModel = AddVesselModel();
 
     addVesselModel = await AddVesselApiProvider().addVesselData(
@@ -116,7 +117,8 @@ class CommonProvider with ChangeNotifier {
       File sensorZipFiles,
       Map<String, dynamic> queryParameters,
       String tripId,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+      GlobalKey<ScaffoldState> scaffoldKey,
+      {bool calledFromSignOut = false}) async {
     uploadTripModel = UploadTripModel();
 
     uploadTripModel = await SendSensorInfoApiProvider().sendSensorDataInfoDio(
@@ -125,7 +127,8 @@ class CommonProvider with ChangeNotifier {
         sensorZipFiles,
         queryParameters,
         tripId,
-        scaffoldKey);
+        scaffoldKey,
+        calledFromSignOut: calledFromSignOut);
     final DatabaseService _databaseService = DatabaseService();
     Utils.customPrint(
         'queryParameters["id"].toString(): ${queryParameters["id"].toString()}');
