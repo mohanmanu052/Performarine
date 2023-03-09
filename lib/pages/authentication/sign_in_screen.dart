@@ -1,15 +1,18 @@
 import 'dart:async';
 
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/zig_zag_line_widget.dart';
+import 'package:performarine/pages/authentication/sign_up_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lets_get_started_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
@@ -289,11 +292,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                                   .login(
                                                       context,
                                                       googleSignInAccount.email,
-                                                      //"pramodh.g024@gmail.com",
                                                       "",
                                                       true,
                                                       googleSignInAccount.id,
-                                                      //"108382049644295398048",
                                                       scaffoldKey)
                                                   .then((value) {
                                                 setState(() {
@@ -423,6 +424,33 @@ class _SignInScreenState extends State<SignInScreen> {
                               }),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
+                      ),
+                      RichText(
+                        text: TextSpan(
+                            text: 'Don’t have an account?',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: poppins,
+                                fontStyle: FontStyle.normal,
+                                fontSize: displayWidth(context) * 0.032),
+                            children: [
+                              TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return SignUpScreen();
+                                      }));
+                                    },
+                                  text: ' SignUp',
+                                  style: TextStyle(
+                                      color: primaryColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: poppins,
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: displayWidth(context) * 0.035)),
+                            ]),
                       ),
                     ],
                   ),

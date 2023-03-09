@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/models/get_user_config_model.dart';
+import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/services/database_service.dart';
 
 class GetUserConfigApiProvider with ChangeNotifier {
@@ -68,13 +69,21 @@ class GetUserConfigApiProvider with ChangeNotifier {
       }
       getUserConfigModel = null;
     } on SocketException catch (_) {
-      await Utils().check(scaffoldKey);
+      await Utils().check(scaffoldKey, userConfig: true);
 
       Utils.customPrint('Socket Exception');
 
       getUserConfigModel = null;
     } catch (exception, s) {
+      Future.delayed(Duration(seconds: 1), () {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+            ModalRoute.withName(""));
+      });
+
       Utils.customPrint('error caught login:- $exception \n $s');
+
       getUserConfigModel = null;
     }
 

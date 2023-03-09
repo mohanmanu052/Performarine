@@ -66,6 +66,7 @@ dependencies:
   http_parser: ^4.0.2
   flutter_sensors: ^1.0.1
   status_stepper: ^1.0.0
+  flutter_image_compress: ^1.1.3
 
 
 

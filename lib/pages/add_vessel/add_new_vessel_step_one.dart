@@ -81,7 +81,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
     if (widget.isEdit!) {
       if (widget.addVesselData != null) {
         Utils.customPrint('ENGINE TYPE ${widget.addVesselData!.engineType!}');
-        Utils.customPrint('Image ${widget.addVesselData!.imageURLs!}');
+        //Utils.customPrint('Image ${widget.addVesselData!.imageURLs!}');
 
         nameController.text = widget.addVesselData!.name!;
         modelController.text = widget.addVesselData!.model!;

@@ -3,6 +3,7 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/pages/home_page.dart';
 
 class CustomDialog extends StatelessWidget {
   String? text, subText, positiveBtn;
@@ -10,6 +11,7 @@ class CustomDialog extends StatelessWidget {
   Function()? positiveBtnOnTap;
 
   bool isPositiveBtnClick = false, isNegativeBtnClick = false;
+  bool? userConfig = false;
 
   dialogContent(BuildContext context) {
     return Stack(
@@ -90,6 +92,12 @@ class CustomDialog extends StatelessWidget {
           child: GestureDetector(
             onTap: () {
               Navigator.of(context).pop();
+              if (userConfig!) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                    ModalRoute.withName(""));
+              }
             },
             child: Container(
               decoration: BoxDecoration(
@@ -132,5 +140,6 @@ class CustomDialog extends StatelessWidget {
     this.subText,
     this.positiveBtn,
     this.positiveBtnOnTap,
+    this.userConfig,
   });
 }

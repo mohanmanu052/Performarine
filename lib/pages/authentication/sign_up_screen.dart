@@ -536,6 +536,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               }
                             }),
                     SizedBox(
+                      height: displayHeight(context) * 0.02,
+                    ),
+                    Center(
+                      child: RichText(
+                        text: TextSpan(
+                            text: 'Already have an account?',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: poppins,
+                                fontStyle: FontStyle.normal,
+                                fontSize: displayWidth(context) * 0.032),
+                            children: [
+                              TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return SignInScreen();
+                                      }));
+                                    },
+                                  text: ' SignIn',
+                                  style: TextStyle(
+                                      color: primaryColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: poppins,
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: displayWidth(context) * 0.035)),
+                            ]),
+                      ),
+                    ),
+                    SizedBox(
                       height: displayHeight(context) * 0.03,
                     ),
                     RichText(

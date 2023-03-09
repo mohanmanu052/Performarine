@@ -286,8 +286,9 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                       )
                     : Stack(
                         children: [
-                          Image.file(
-                            File(vesselData.imageURLs!),
+                          //Image.memory(bytes)
+                          Image.memory(
+                            File(vesselData.imageURLs!).readAsBytesSync(),
                             fit: BoxFit.cover,
                             height: displayHeight(context) * 0.22,
                             width: displayWidth(context),

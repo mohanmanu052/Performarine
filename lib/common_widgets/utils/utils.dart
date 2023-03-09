@@ -13,6 +13,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
+import 'package:performarine/pages/home_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -202,7 +203,8 @@ class Utils {
     return isPermissionGranted;
   }
 
-  Future<bool> check(GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<bool> check(GlobalKey<ScaffoldState> scaffoldKey,
+      {bool userConfig = false}) async {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -214,14 +216,21 @@ class Utils {
           context: scaffoldKey.currentContext!,
           builder: (BuildContext context) {
             return CustomDialog(
-              text: 'No Internet',
-              subText: 'Please enable your data connection to continue.',
-              positiveBtn: 'Okay',
-              positiveBtnOnTap: () {
-                Navigator.of(scaffoldKey.currentContext!).pop();
-                //check(scaffoldKey);
-              },
-            );
+                text: 'No Internet',
+                subText: 'Please enable your data connection to continue.',
+                positiveBtn: 'Okay',
+                positiveBtnOnTap: () {
+                  Navigator.of(scaffoldKey.currentContext!).pop();
+
+                  if (userConfig) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                        ModalRoute.withName(""));
+                  }
+                  //check(scaffoldKey);
+                },
+                userConfig: userConfig);
           });
       return false;
     }

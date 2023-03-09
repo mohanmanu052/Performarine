@@ -29,6 +29,10 @@ class _IntroScreenState extends State<IntroScreen> {
     super.initState();
 
     checkIfTripIsRunning();
+
+    Future.delayed(Duration(seconds: 4), () {
+      checkIfUserIsLoggedIn();
+    });
   }
 
   @override
@@ -121,7 +125,7 @@ class _IntroScreenState extends State<IntroScreen> {
                                     textAlign: TextAlign.center),
                               ),
                               SizedBox(height: displayHeight(context) * 0.02),
-                              GestureDetector(
+                              /*GestureDetector(
                                 onTap: () {
                                   checkIfUserIsLoggedIn();
                                 },
@@ -145,7 +149,7 @@ class _IntroScreenState extends State<IntroScreen> {
                                         textAlign: TextAlign.center),
                                   ),
                                 ),
-                              ),
+                              ),*/
                             ],
                           ),
                         )
@@ -283,8 +287,7 @@ class _IntroScreenState extends State<IntroScreen> {
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-                builder: (context) => const LetsGetStartedScreen()),
+            MaterialPageRoute(builder: (context) => const SignInScreen()),
             ModalRoute.withName(""));
       } else if (isUserLoggedIn) {
         if (isFirstTimeUser == null) {
@@ -342,8 +345,7 @@ class _IntroScreenState extends State<IntroScreen> {
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-                builder: (context) => const LetsGetStartedScreen()),
+            MaterialPageRoute(builder: (context) => const SignInScreen()),
             ModalRoute.withName(""));
       } else if (isUserLoggedIn) {
         Navigator.pushAndRemoveUntil(

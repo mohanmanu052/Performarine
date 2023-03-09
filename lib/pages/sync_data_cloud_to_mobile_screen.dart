@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -48,7 +51,24 @@ class _SyncDataCloudToMobileScreenState
 
     commonProvider.init();
 
-    getUserConfigData();
+    getUserData();
+  }
+
+  getUserData() async {
+    var bool = await Utils().check(scaffoldKey);
+
+    Utils.customPrint("INTERNET $bool");
+
+    if (bool) {
+      getUserConfigData();
+    } else {
+      Future.delayed(Duration(seconds: 1), () {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+            ModalRoute.withName(""));
+      });
+    }
   }
 
   @override
@@ -195,16 +215,31 @@ class _SyncDataCloudToMobileScreenState
             lastIndex = 0;
           });
           for (int i = 0; i < value.vessels!.length; i++) {
-            String cloudImage = value.vessels![i].imageURLs == []
-                ? ''
-                : value.vessels![i].imageURLs
-                    .toString()
-                    .replaceAll("[", "")
-                    .replaceAll("]", "");
+            if (value.vessels![i].name == 'rrrrr 12') {
+              print('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()}');
+            }
 
-            Utils.customPrint('USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage');
+            Utils.customPrint(
+                'USER CONFIG DATA CLOUD IMAGE 1212 ${value.vessels![i].imageURLs!}');
+            String cloudImage;
+            if (value.vessels![i].imageURLs!.length > 1) {
+              cloudImage = value.vessels![i].imageURLs![0];
+
+              // Utils.customPrint('USER CONFIG DATA CLOUD IMAGE ARRAY $cloudImage');
+            } else {
+              cloudImage = value.vessels![i].imageURLs == []
+                  ? ''
+                  : value.vessels![i].imageURLs
+                      .toString()
+                      .replaceAll("[", "")
+                      .replaceAll("]", "");
+
+              Utils.customPrint(
+                  'USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage');
+            }
 
             var downloadImageFromCloud;
+            var downloadedCompressImageFile;
             if (cloudImage.isNotEmpty) {
               downloadImageFromCloud = await DownloadTrip()
                   .downloadImageFromCloud(context, scaffoldKey, cloudImage);
@@ -214,6 +249,87 @@ class _SyncDataCloudToMobileScreenState
             } else {
               downloadImageFromCloud = '';
             }
+
+            File downloadedFile = File(downloadImageFromCloud);
+
+            Utils.customPrint('DOWNLOADED FILE PATH ${downloadedFile.path}');
+            Utils.customPrint(
+                'DOWNLOADED FILE EXIST SYNC ${downloadedFile.existsSync()}');
+
+            bool doesExist = await downloadedFile.exists();
+
+            /// 2MB
+            if (doesExist) {
+              if (downloadedFile.lengthSync() >= 2000000) {
+                String targetPath = '${ourDirectory!.path}/vesselImages';
+
+                Directory vesselDirectory = Directory(targetPath);
+
+                if (!vesselDirectory.existsSync()) {
+                  vesselDirectory.createSync();
+                }
+
+                FlutterImageCompress.validator.ignoreCheckExtName = true;
+
+                var result = await FlutterImageCompress.compressAndGetFile(
+                  downloadedFile.absolute.path,
+                  '$targetPath/${downloadedFile.path.split('/').last}',
+                  quality: 50,
+                  //format: CompressFormat.jpeg
+                );
+
+                downloadedCompressImageFile = result!.path;
+
+                Utils.customPrint(downloadedFile.lengthSync().toString());
+                Utils.customPrint(result.lengthSync().toString());
+
+                Utils.customPrint("RESULT N PATH ${result.path}");
+                Utils.customPrint(
+                    "RESULT N PATH ${downloadedCompressImageFile}");
+
+                downloadedFile.deleteSync();
+              } else {
+                downloadedCompressImageFile = downloadedFile.path;
+              }
+            } else {
+              bool doesExist = await downloadedFile.exists();
+              Utils.customPrint('DOWNLOADED FILE EXIST SYNC @@@ $doesExist');
+              if (doesExist) {
+                if (downloadedFile.lengthSync() >= 2000000) {
+                  String targetPath = '${ourDirectory!.path}/vesselImages';
+
+                  Directory vesselDirectory = Directory(targetPath);
+
+                  if (!vesselDirectory.existsSync()) {
+                    vesselDirectory.createSync();
+                  }
+
+                  FlutterImageCompress.validator.ignoreCheckExtName = true;
+
+                  var result = await FlutterImageCompress.compressAndGetFile(
+                    downloadedFile.absolute.path,
+                    '$targetPath/${downloadedFile.path.split('/').last}',
+                    quality: 50,
+                    //format: CompressFormat.jpeg
+                  );
+
+                  downloadedCompressImageFile = result!.path;
+
+                  Utils.customPrint(downloadedFile.lengthSync().toString());
+                  Utils.customPrint(result.lengthSync().toString());
+
+                  Utils.customPrint("RESULT N PATH ${result.path}");
+                  Utils.customPrint(
+                      "RESULT N PATH ${downloadedCompressImageFile}");
+
+                  downloadedFile.deleteSync();
+                } else {
+                  downloadedCompressImageFile = downloadedFile.path;
+                }
+              }
+            }
+
+            Utils.customPrint('FINAL IMAGEEEE: $downloadedCompressImageFile');
 
             CreateVessel vesselData = CreateVessel(
                 id: value.vessels![i].id,
@@ -235,7 +351,7 @@ class _SyncDataCloudToMobileScreenState
                 builtYear: int.parse(value.vessels![i].builtYear.toString()),
                 vesselStatus:
                     int.parse(value.vessels![i].vesselStatus.toString()),
-                imageURLs: downloadImageFromCloud,
+                imageURLs: downloadedCompressImageFile,
                 createdAt: value.vessels![i].createdAt.toString(),
                 createdBy: value.vessels![i].createdBy.toString(),
                 updatedAt: value.vessels![i].updatedAt.toString(),
@@ -254,33 +370,6 @@ class _SyncDataCloudToMobileScreenState
               await _databaseService.insertVessel(vesselData);
             }
           }
-
-          /* Future.delayed(Duration(seconds: 3), () async {
-            for (int i = 0; i < value.trips!.length; i++) {
-              Trip tripData = Trip(
-                id: value.trips![i].id,
-                vesselId: value.trips![i].vesselId,
-                vesselName: '',
-                currentLoad: value.trips![i].load,
-                filePath: value.trips![i].cloudFilePath,
-                isSync: 1,
-                tripStatus: value.trips![i].tripStatus,
-                updatedAt: value.trips![i].updatedAt,
-                createdAt: value.trips![i].createdAt,
-                deviceInfo: value.trips![i].deviceInfo!.deviceId,
-                startPosition: value.trips![i].startPosition!.join(','),
-                endPosition: value.trips![i].endPosition!.join(','),
-                time: value.trips![i].duration,
-                distance: value.trips![i].distance.toString(),
-                speed: value.trips![i].speed.toString(),
-                avgSpeed: value.trips![i].avgSpeed.toString(),
-              );
-
-              //Utils.customPrint('USER CONFIG DATA ${tripData.id}');
-
-              await _databaseService.insertTrip(tripData);
-            }
-          });*/
 
           for (int i = 0; i < value.trips!.length; i++) {
             Utils.customPrint("TRIPS DATA ${value.trips!.length}");

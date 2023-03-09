@@ -136,7 +136,7 @@ class DownloadTrip {
         }
 
         try {
-          dio.download(imageUrl, cloudImagePath,
+          await dio.download(imageUrl, cloudImagePath,
               onReceiveProgress: (progress, total) {});
         } on d.DioError catch (e) {
           print('DOWNLOAD EXE: ${e.error}');
@@ -150,8 +150,12 @@ class DownloadTrip {
         if (isStoragePermitted.isGranted) {
           cloudImagePath = "${ourDirectory!.path}/$fileName";
 
+          if (File(cloudImagePath).existsSync()) {
+            File(cloudImagePath).deleteSync();
+          }
+
           try {
-            dio.download(imageUrl, cloudImagePath,
+            await dio.download(imageUrl, cloudImagePath,
                 onReceiveProgress: (progress, total) {});
           } on d.DioError catch (e) {
             print('DOWNLOAD EXE: ${e.error}');
@@ -163,8 +167,12 @@ class DownloadTrip {
     } else {
       cloudImagePath = "${ourDirectory!.path}/$fileName";
 
+      if (File(cloudImagePath).existsSync()) {
+        File(cloudImagePath).deleteSync();
+      }
+
       try {
-        dio.download(imageUrl, cloudImagePath,
+        await dio.download(imageUrl, cloudImagePath,
             onReceiveProgress: (progress, total) {});
       } on d.DioError catch (e) {
         print('DOWNLOAD EXE: ${e.error}');

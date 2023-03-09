@@ -745,7 +745,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                         commonText(
                                             context: context,
                                             text:
-                                                '${widget.vessel!.weight} lbs',
+                                                '${widget.vessel!.weight} Lbs',
                                             fontWeight: FontWeight.w600,
                                             textColor: Colors.black,
                                             textSize:
@@ -1345,7 +1345,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                               children: [
                                 commonText(
                                     context: context,
-                                    text: '${vessel.weight} lbs',
+                                    text: '${vessel.weight} Lbs',
                                     fontWeight: FontWeight.w600,
                                     textColor: Colors.black,
                                     textSize: displayWidth(context) * 0.048,
