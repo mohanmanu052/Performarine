@@ -11,6 +11,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
+import 'package:performarine/lpr_bluetooth_widget.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
@@ -233,6 +234,31 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             textColor: Colors.black54,
                             textSize: textSize,
                             textAlign: TextAlign.start),
+                      ),
+                      SizedBox(
+                        height: displayHeight(context) * 0.02,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const LprBluetoothWidget()),
+                          );
+                        },
+                        child: commonText(
+                            context: context,
+                            text: 'LPR Connection',
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.black54,
+                            textSize: textSize,
+                            textAlign: TextAlign.start),
+                      ),
+                      SizedBox(
+                        height: displayHeight(context) * 0.02,
                       ),
                     ],
                   )
