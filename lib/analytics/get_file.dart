@@ -3,11 +3,16 @@ import 'dart:io';
 import 'package:performarine/analytics/get_or_create_folder.dart';
 
 class GetFile {
-  Future<String> getFile(String tripId, String fileName) async {
-    String folderPath = await GetOrCreateFolder().getOrCreateFolder(tripId);
+  Future<List<String>> getFile(String tripId, String fileName) async {
+    List<String> folderPath =
+        await GetOrCreateFolder().getOrCreateFolder(tripId);
 
+    File mobileSensorDataFile = File('${folderPath[0]}/$fileName');
+
+    File lprDataFile = File('${folderPath[1]}/$fileName');
     File sensorDataFile = File('$folderPath/$fileName');
-    return sensorDataFile.path;
+    // return sensorDataFile.path;
+    return [mobileSensorDataFile.path, lprDataFile.path];
   }
 
   int checkFileSize(File file) {

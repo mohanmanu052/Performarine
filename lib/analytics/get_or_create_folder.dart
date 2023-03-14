@@ -21,17 +21,37 @@ class GetOrCreateFolder {
     }
   }
 
-  Future<String> getOrCreateFolder(String tripId) async {
+  Future<List<String>> getOrCreateFolder(String tripId) async {
     Directory? ourDirectory;
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}/$tripId');
 
     Utils.customPrint('FOLDER PATH $ourDirectory');
     if ((await ourDirectory.exists())) {
-      return ourDirectory.path;
+      Directory mobileDir = Directory('${ourDirectory.path}/mobile-$tripId');
+      Directory lprDir = Directory('${ourDirectory.path}/lpr-$tripId');
+
+      if ((await mobileDir.exists()) && (await lprDir.exists())) {
+        return [mobileDir.path, lprDir.path];
+      } else {
+        await mobileDir.create();
+        await lprDir.create();
+        return [mobileDir.path, lprDir.path];
+      } //return ourDirectory.path;
     } else {
-      ourDirectory.create();
-      return ourDirectory.path;
+      await ourDirectory.create();
+
+      Directory mobileDir = Directory('${ourDirectory.path}/mobile-$tripId');
+      Directory lprDir = Directory('${ourDirectory.path}/lpr-$tripId');
+
+      if ((await mobileDir.exists()) && (await lprDir.exists())) {
+        return [mobileDir.path, lprDir.path];
+      } else {
+        await mobileDir.create();
+        await lprDir.create();
+        return [mobileDir.path, lprDir.path];
+      }
+      //return ourDirectory.path;
     }
   }
 }

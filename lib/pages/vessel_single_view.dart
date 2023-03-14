@@ -808,6 +808,63 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     children: [
                                       commonText(
                                           context: context,
+                                          text: 'Connecting with LPR',
+                                          fontWeight: FontWeight.w500,
+                                          textColor: Colors.black,
+                                          textSize:
+                                              displayWidth(context) * 0.032,
+                                          textAlign: TextAlign.start),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      TweenAnimationBuilder(
+                                          duration: const Duration(seconds: 3),
+                                          tween: Tween(
+                                              begin: accSensorProgressBegin,
+                                              end: accSensorProgress),
+                                          builder: (context, double value, _) {
+                                            return SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: Stack(
+                                                fit: StackFit.expand,
+                                                children: [
+                                                  CircularProgressIndicator(
+                                                    color:
+                                                        circularProgressColor,
+                                                    value: value,
+                                                    backgroundColor:
+                                                        Colors.grey.shade200,
+                                                    strokeWidth: 2,
+                                                    valueColor:
+                                                        const AlwaysStoppedAnimation(
+                                                            Colors.green),
+                                                  ),
+                                                  Center(
+                                                    child: subTitleProgress(
+                                                        value,
+                                                        displayWidth(context) *
+                                                            0.035),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: displayWidth(context) * 0.08),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      commonText(
+                                          context: context,
                                           text: 'Connecting with sensors',
                                           fontWeight: FontWeight.w500,
                                           textColor: Colors.black,

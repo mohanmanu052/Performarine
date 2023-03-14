@@ -208,13 +208,17 @@ class StartTrip {
             pref.setString('tripSpeed', tripSpeedForStorage);
             pref.setString('tripAvgSpeed', tripAvgSpeedForStorage);
 
-            String filePath = await GetFile().getFile(tripId, fileName);
-            File file = File(filePath);
-            int fileSize = await GetFile().checkFileSize(file);
+            List<String> filePath = await GetFile().getFile(tripId, fileName);
+            File mobileFile = File(filePath[0]);
+
+            File lprFile = File(filePath[1]);
+            //File file = File(filePath);
+            int mobileFileSize = await GetFile().checkFileSize(mobileFile);
+            int lprFileSize = await GetFile().checkFileSize(mobileFile);
 
             /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
             /// Now File Size is 200000
-            if (fileSize >= 200000) {
+            if (mobileFileSize >= 200000 && lprFileSize >= 200000) {
               Utils.customPrint('STOPPED WRITING');
               Utils.customPrint('CREATING NEW FILE');
               // if (timer != null) timer.cancel();
@@ -254,7 +258,8 @@ class StartTrip {
 
               finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
 
-              file.writeAsString('$finalString\n', mode: FileMode.append);
+              mobileFile.writeAsString('$finalString\n', mode: FileMode.append);
+              lprFile.writeAsString('$finalString\n', mode: FileMode.append);
 
               Utils.customPrint('GPS $gps');
             }

@@ -161,7 +161,7 @@ class _SyncDataCloudToMobileScreenState
                   child: Align(
                       alignment: Alignment.centerLeft,
                       child: commonText(
-                        text: 'Fetching data\nfrom cloud',
+                        text: 'Downloading\ndata from cloud',
                         context: context,
                         textSize: displayWidth(context) * 0.025,
                         textColor: Colors.black,
@@ -171,7 +171,7 @@ class _SyncDataCloudToMobileScreenState
               Expanded(
                   child: Center(
                       child: commonText(
-                text: 'Data\nprocessing',
+                text: 'Importing data\nin application',
                 context: context,
                 textSize: displayWidth(context) * 0.025,
                 textColor: Colors.black,
@@ -182,7 +182,7 @@ class _SyncDataCloudToMobileScreenState
                   child: Align(
                       alignment: Alignment.centerRight,
                       child: commonText(
-                        text: 'Data restoring\nfrom cloud',
+                        text: 'Completed',
                         context: context,
                         textSize: displayWidth(context) * 0.025,
                         textColor: Colors.black,
