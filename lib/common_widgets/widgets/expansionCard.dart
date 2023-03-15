@@ -32,7 +32,22 @@ class _ExpansionCardState extends State<ExpansionCard> {
   List<CreateVessel>? vessel = [];
   final DatabaseService _databaseService = DatabaseService();
 
-  bool tripIsRunning = false, isVesselParticularExpanded = false;
+  bool tripIsRunning = false,
+      isVesselParticularExpanded = false,
+      vesselAnalytics = false;
+
+  String totalDistance = '0',
+      avgSpeed = '0',
+      tripsCount = '0',
+      totalDuration = "00:00:00";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getVesselAnalytics(widget.vessel!.id!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -830,6 +845,52 @@ class _ExpansionCardState extends State<ExpansionCard> {
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.01,
+                  ),
+                  Theme(
+                    data: Theme.of(context).copyWith(
+                        colorScheme: ColorScheme.light(
+                          primary: Colors.black,
+                        ),
+                        dividerColor: Colors.transparent),
+                    child: Container(
+                      child: ExpansionTile(
+                        initiallyExpanded: true,
+                        onExpansionChanged: ((newState) {
+                          setState(() {
+                            isVesselParticularExpanded = newState;
+                          });
+
+                          Utils.customPrint(
+                              'EXPANSION CHANGE $isVesselParticularExpanded');
+                        }),
+                        tilePadding: EdgeInsets.zero,
+                        childrenPadding: EdgeInsets.zero,
+                        title: commonText(
+                            context: context,
+                            text: 'VESSEL ANALYTICS',
+                            fontWeight: FontWeight.w600,
+                            textColor: Colors.black,
+                            textSize: displayWidth(context) * 0.038,
+                            textAlign: TextAlign.start),
+                        children: [
+                          vesselAnalytics
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CircularProgressIndicator(),
+                                )
+                              : vesselSingleViewVesselAnalytics(
+                                  context,
+                                  totalDuration,
+                                  totalDistance,
+                                  tripsCount,
+                                  avgSpeed,
+                                ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -1572,5 +1633,31 @@ class _ExpansionCardState extends State<ExpansionCard> {
     });
 
     return result;
+  }
+
+  void getVesselAnalytics(String vesselId) async {
+    setState(() {
+      vesselAnalytics = true;
+    });
+    List<String> analyticsData =
+        await _databaseService.getVesselAnalytics(vesselId);
+
+    setState(() {
+      totalDistance = analyticsData[0];
+      avgSpeed = analyticsData[1];
+      tripsCount = analyticsData[2];
+      totalDuration = analyticsData[3];
+      vesselAnalytics = false;
+    });
+
+    /// 1. TotalDistanceSum
+
+    /// 2. AvgSpeed
+
+    /// 3. TripsCount
+    ///
+    print('totalDistance $totalDistance');
+    print('avgSpeed $avgSpeed');
+    print('COUNT $tripsCount');
   }
 }

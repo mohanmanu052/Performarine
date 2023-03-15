@@ -1218,7 +1218,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           vesselData.batteryCapacity;
       //commonProvider.addVesselRequestModel!.imageURLs = vesselData.imageURLs!;
 
-      if (vesselData.imageURLs!.isNotEmpty) {
+      if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
         finalSelectedFiles.add(File(vesselData.imageURLs!));
         commonProvider.addVesselRequestModel!.selectedImages =
             finalSelectedFiles;

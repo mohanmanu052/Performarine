@@ -374,4 +374,78 @@ class DatabaseService {
     Utils.customPrint('EXIST $exists');
     return exists == 1;
   }
+
+  void totalAvgOfAvgSpeed(String vesselId) async {
+    final db = await _databaseService.database;
+    //var list = await db.rawQuery('SELECT AVG(avgSpeed) FROM vessels');
+    var list = await db.rawQuery('SELECT AVG(avgSpeed) FROM trips');
+    /* int update = await db
+        .rawQuery('SELECT AVG(avgSpeed) From vessels WHERE id="$vesselId"');*/
+    Utils.customPrint('UPDATEDDDDD: ${list[0].values.first}˙');
+    //return list!;
+  }
+
+  void calculateDistance(String vesselId) async {
+    final db = await _databaseService.database;
+    //var list = await db.rawQuery('SELECT AVG(avgSpeed) FROM vessels');
+    var list =
+        await db.rawQuery('SELECT SUM(CAST(distance AS FLOAT)) FROM trips');
+    /* int update = await db
+        .rawQuery('SELECT AVG(avgSpeed) From vessels WHERE id="$vesselId"');*/
+    Utils.customPrint('DISTANCE AVG: ${list[0].values.first}˙');
+  }
+
+  Future<List<String>> getVesselAnalytics(String vesselId) async {
+    final db = await _databaseService.database;
+    final List<Map<String, dynamic>> maps =
+        await db.query('trips', where: 'vesselId = ?', whereArgs: [vesselId]);
+
+    List<Trip> tripsList =
+        List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
+    double totalAverageSpeed = 0.0;
+    double totalDistanceSum = 0.0;
+    int totalTripsCount = tripsList.length;
+    int totalTripsDuration = 0;
+
+    for (int i = 0; i < tripsList.length; i++) {
+      double singleTripAvgSpeed =
+          double.parse(tripsList[i].avgSpeed.toString());
+      double singleTripDistance =
+          double.parse(tripsList[i].distance.toString());
+
+      String startTime = tripsList[i].createdAt.toString();
+      String endTime = tripsList[i].updatedAt.toString();
+
+      print('UTC START TIME: $startTime');
+      print('UTC END TIME: $endTime');
+
+      DateTime startDateTime = DateTime.parse(startTime);
+      DateTime endDateTime = DateTime.parse(endTime);
+
+      print('DATE TIME START: $startDateTime');
+      print('DATE TIME END: $endDateTime');
+
+      Duration diffDuration = endDateTime.difference(startDateTime);
+      totalTripsDuration = totalTripsDuration + diffDuration.inSeconds;
+
+      print('DIFFERENCE DURATION IN SECONDS: $totalTripsDuration');
+
+      totalAverageSpeed = totalAverageSpeed + singleTripAvgSpeed;
+      totalDistanceSum = totalDistanceSum + singleTripDistance;
+    }
+
+    double average = totalAverageSpeed / tripsList.length;
+    return [
+      totalDistanceSum.toStringAsFixed(2),
+      average.toStringAsFixed(2),
+      totalTripsCount.toString(),
+      Utils.calculateTripDuration(totalTripsDuration)
+    ]; // 1. TotalDistanceSum, 2. AvgSpeed, 3. TripsCount, 4. Total Duration
+  }
+
+  calculateTotalDuration(String vesselId) async {
+    final db = await _databaseService.database;
+    final List<Map<String, dynamic>> maps =
+        await db.query('trips', where: 'vesselId = ?', whereArgs: [vesselId]);
+  }
 }

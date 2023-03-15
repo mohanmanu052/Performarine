@@ -238,7 +238,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      InkWell(
+                      /* InkWell(
                         onTap: () {
                           Navigator.of(context).pop();
 
@@ -259,7 +259,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
-                      ),
+                      ),*/
                     ],
                   )
                 ],

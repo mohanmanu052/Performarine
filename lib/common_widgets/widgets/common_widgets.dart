@@ -989,3 +989,156 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
     ),
   );
 }
+
+Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
+    String distance, String totalCount, String avgSpeed) {
+  //double avgSpeed = int.parse(distance) / int.parse(duration);
+  return Container(
+    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Color(0XFFE4F5F5)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: duration,
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.044,
+                          textAlign: TextAlign.start),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'Total Trips Duration',
+                          fontWeight: FontWeight.w500,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Color(0XFFE4F5F5)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: '$distance $nauticalMile',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.044,
+                          textAlign: TextAlign.start),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'Total Distance',
+                          fontWeight: FontWeight.w500,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Color(0XFFE4F5F5)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: '$totalCount',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.044,
+                          textAlign: TextAlign.start),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'Total no of Trips',
+                          fontWeight: FontWeight.w500,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Color(0XFFE4F5F5)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: '$avgSpeed $knot',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.044,
+                          textAlign: TextAlign.start),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'Avg. Speed',
+                          fontWeight: FontWeight.w500,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}

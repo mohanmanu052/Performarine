@@ -798,9 +798,7 @@ class _TripWidgetState extends State<TripWidget> {
           vesselData.batteryCapacity;
       //commonProvider.addVesselRequestModel!.imageURLs = vesselData.imageURLs!;
 
-      Utils.customPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
-
-      if (vesselData.imageURLs!.isNotEmpty) {
+      if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
         if (vesselData.imageURLs!.startsWith("https")) {
           commonProvider.addVesselRequestModel!.selectedImages = [];
         } else {

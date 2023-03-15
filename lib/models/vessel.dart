@@ -28,6 +28,10 @@ class CreateVessel {
   String? createdBy;
   String? updatedAt;
   String? updatedBy;
+  /*String? time;
+  String? distance;
+  String? speed;
+  String? avgSpeed;*/
   int? isCloud;
   List<File?>? selectedImages;
 
@@ -55,6 +59,10 @@ class CreateVessel {
       this.createdBy,
       this.updatedAt,
       this.updatedBy,
+      /*this.time,
+      this.distance,
+      this.speed,
+      this.avgSpeed,*/
       this.isCloud,
       this.imageURLs,
       this.selectedImages});
@@ -85,6 +93,10 @@ class CreateVessel {
     createdAt = json["createdAt"];
     updatedBy = json["updatedBy"];
     updatedAt = json["updatedAt"];
+    /*time = json["duration"];
+    distance = json["distance"];
+    speed = json["speed"];
+    avgSpeed = json["avgSpeed"];*/
     isCloud = json["isCloud"];
   }
 
@@ -116,6 +128,10 @@ class CreateVessel {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'updatedBy': updatedBy,
+      /*'time': time,
+      'distance': distance,
+      'speed': speed,
+      'avgSpeed': avgSpeed,*/
       'isCloud': isCloud,
     };
   }
