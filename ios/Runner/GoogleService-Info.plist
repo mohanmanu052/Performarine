@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>263893378527-frupntpobatt2p53th44anj2cijp6jlm.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.263893378527-frupntpobatt2p53th44anj2cijp6jlm</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>263893378527-jo4vcglg0gka3sgh3mjg8btbqb17u8rs.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAljIIZZzoFcxKtwmLqEVRnN6lFxJzgUjc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>263893378527</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.performarine.ios.app</string>
+	<key>PROJECT_ID</key>
+	<string>performarine-9b4c5</string>
+	<key>STORAGE_BUCKET</key>
+	<string>performarine-9b4c5.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:263893378527:ios:8cbcd075936a57478d906a</string>
+</dict>
+</plist>
