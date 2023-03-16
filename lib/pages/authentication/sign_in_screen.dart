@@ -283,10 +283,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                             commonProvider
                                                 .login(
                                                     context,
-                                                    googleSignInAccount.email,
+                                                    //googleSignInAccount.email,
+                                                    'paccoretesting@gmail.com',
                                                     "",
                                                     true,
-                                                    googleSignInAccount.id,
+                                                    //googleSignInAccount.id,
+                                                    '114993051138200889304',
                                                     scaffoldKey)
                                                 .then((value) {
                                               setState(() {
