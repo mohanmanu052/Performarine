@@ -376,6 +376,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
 
                               if (commonProvider.addVesselRequestModel!
                                   .selectedImages!.isNotEmpty) {
+                                print(
+                                    'XXXXX:${commonProvider.addVesselRequestModel!.selectedImages!}');
                                 String vesselImagesDirPath =
                                     await GetOrCreateFolder()
                                         .getOrCreateFolderForAddVessel();
@@ -395,8 +397,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                   directory = Directory(
                                       '$vesselImagesDirPath/${commonProvider.addVesselRequestModel!.id}-${DateTime.now().toUtc().millisecondsSinceEpoch}$fileExtension');
                                 } else {
-                                  directory =
+                                  Directory dir =
                                       await getApplicationDocumentsDirectory();
+                                  directory = Directory(
+                                      '$vesselImagesDirPath/${commonProvider.addVesselRequestModel!.id}-${DateTime.now().toUtc().millisecondsSinceEpoch}$fileExtension');
                                 }
 
                                 copiedFile.copy(directory.path);

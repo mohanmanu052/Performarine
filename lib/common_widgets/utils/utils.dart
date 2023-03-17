@@ -8,11 +8,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
+import 'package:performarine/main.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,7 +39,9 @@ class Utils {
         .pickFiles(allowMultiple: false, type: FileType.image);
     List<File> files = [];
     if (result != null) {
-      files = result.paths.map((path) => File(path!)).toList();
+      files = result.paths.map((path) {
+        return File(path!);
+      }).toList();
 
       return files;
     } else {

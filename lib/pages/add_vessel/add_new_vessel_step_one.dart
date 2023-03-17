@@ -685,7 +685,9 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
             setState(() {
               finalSelectedFiles.clear();
               finalSelectedFiles.addAll(selectedImageFileList);
-              Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
+              Utils.customPrint('CAMERA FILE 2 ${finalSelectedFiles[0]!.path}');
+              Utils.customPrint(
+                  'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
 
               /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
@@ -730,6 +732,8 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
             finalSelectedFiles.clear();
             finalSelectedFiles.addAll(selectedImageFileList);
             Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
+            Utils.customPrint(
+                'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
 
             /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);

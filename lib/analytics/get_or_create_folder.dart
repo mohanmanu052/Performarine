@@ -7,11 +7,14 @@ import 'package:permission_handler/permission_handler.dart';
 class GetOrCreateFolder {
   Future<String> getOrCreateFolderForAddVessel() async {
     final appDirectory = await getApplicationDocumentsDirectory();
+    print('ADD V AD PATH: ${appDirectory.path}');
     Directory directory = Directory('${appDirectory.path}/vesselImages');
-    Utils.customPrint('FOLDER PATH $directory');
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
+    Utils.customPrint('FOLDER PATH ${directory.path}');
+    if (Platform.isAndroid) {
+      var status = await Permission.storage.status;
+      if (!status.isGranted) {
+        await Permission.storage.request();
+      }
     }
     if ((await directory.exists())) {
       return directory.path;

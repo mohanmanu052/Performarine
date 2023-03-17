@@ -268,7 +268,7 @@ SPEC CHECKSUMS:
   firebase_core: bf59c32d2e53814f558efa20840c1902fa2fe461
   FirebaseCore: 988754646ab3bd4bdcb740f1bfe26b9f6c0d5f2a
   FirebaseCoreInternal: 29b76f784d607df8b2a1259d73c3f04f1210137b
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_archive: 1805fdd3a695fd284b43edb53dc35ca843fb761c
   flutter_background_service_ios: e30e0d3ee69e4cee66272d0c78eacd48c2e94aac
   flutter_blue_plus: 6787777145d615de01828f3a9fa423c3c702f0b3
@@ -305,6 +305,6 @@ SPEC CHECKSUMS:
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
   ZIPFoundation: ae5b4b813d216d3bf0a148773267fff14bd51d37
 
-PODFILE CHECKSUM: 5dca610f0d2a8f42ef18dd096100712f9e5fc736
+PODFILE CHECKSUM: 61500ad6a35663c0a03bc968e399696a441dfb7f
 
 COCOAPODS: 1.11.3

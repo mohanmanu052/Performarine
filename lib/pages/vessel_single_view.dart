@@ -468,6 +468,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             bool isLocationPermitted =
                                 await Permission.locationAlways.isGranted;
 
+                            /* if (Platform.isAndroid) {
+                              isLocationPermitted =
+                                  await Permission.locationAlways.isGranted;
+                            } else if (Platform.isIOS) {
+                              isLocationPermitted =
+                                  await Permission.locationWhenInUse.isGranted;
+                            }*/
+
                             if (isLocationPermitted) {
                               vessel!.add(widget.vessel!);
                               await locationPermissions(
@@ -495,26 +503,49 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     widget.vessel!.name!,
                                     widget.vessel!.id!);
                               } else {
-                                if (!isLocationDialogBoxOpen) {
-                                  showDialog(
-                                      context: scaffoldKey.currentContext!,
-                                      builder: (BuildContext context) {
-                                        isLocationDialogBoxOpen = true;
-                                        return LocationPermissionCustomDialog(
-                                          text:
-                                              'Always Allow Access to “Location”',
-                                          subText:
-                                              "To track your trip while you use other apps we need background access to your location",
-                                          buttonText: 'Ok',
-                                          buttonOnTap: () async {
-                                            Get.back();
+                                if (Platform.isIOS) {
+                                  await Permission.locationAlways.request();
+                                  bool isLocationAlwaysPermitted =
+                                      await Permission.locationAlways.isGranted;
 
-                                            await openAppSettings();
-                                          },
-                                        );
-                                      }).then((value) {
-                                    isLocationDialogBoxOpen = false;
-                                  });
+                                  Utils.customPrint(
+                                      'IOS PERMISSION GIVEN OUTSIDE');
+
+                                  if (isLocationAlwaysPermitted) {
+                                    Utils.customPrint('IOS PERMISSION GIVEN');
+
+                                    vessel!.add(widget.vessel!);
+                                    await locationPermissions(
+                                        widget.vessel!.vesselSize!,
+                                        widget.vessel!.name!,
+                                        widget.vessel!.id!);
+                                  }
+                                } else {
+                                  Utils.customPrint(
+                                      'IOS PERMISSION GIVEN OUTSIDE 1');
+
+                                  if (!isLocationDialogBoxOpen) {
+                                    Utils.customPrint('IOS PERMISSION GIVEN 1');
+                                    showDialog(
+                                        context: scaffoldKey.currentContext!,
+                                        builder: (BuildContext context) {
+                                          isLocationDialogBoxOpen = true;
+                                          return LocationPermissionCustomDialog(
+                                            text:
+                                                'Always Allow Access to “Location”',
+                                            subText:
+                                                "To track your trip while you use other apps we need background access to your location",
+                                            buttonText: 'Ok',
+                                            buttonOnTap: () async {
+                                              Get.back();
+
+                                              await openAppSettings();
+                                            },
+                                          );
+                                        }).then((value) {
+                                      isLocationDialogBoxOpen = false;
+                                    });
+                                  }
                                 }
                               }
                             }

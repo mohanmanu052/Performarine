@@ -120,35 +120,19 @@ class DownloadTrip {
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}');
 
-    final androidInfo = await DeviceInfoPlugin().androidInfo;
-
+    final androidInfo, iosInfo;
     var isStoragePermitted;
-    String fileName = imageUrl.split('/').last;
-    if (androidInfo.version.sdkInt < 29) {
-      isStoragePermitted = await Permission.storage.status;
+    if (Platform.isAndroid) {
+      androidInfo = await DeviceInfoPlugin().androidInfo;
 
-      if (isStoragePermitted.isGranted) {
-        Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
-        cloudImagePath = '${ourDirectory!.path}/$fileName';
+      String fileName = imageUrl.split('/').last;
 
-        if (File(cloudImagePath).existsSync()) {
-          File(cloudImagePath).deleteSync();
-        }
-
-        try {
-          await dio.download(imageUrl, cloudImagePath,
-              onReceiveProgress: (progress, total) {});
-        } on d.DioError catch (e) {
-          print('DOWNLOAD EXE: ${e.error}');
-
-          Navigator.pop(context);
-        }
-      } else {
-        await Utils.getStoragePermission(context);
-        var isStoragePermitted = await Permission.storage.status;
+      if (androidInfo.version.sdkInt < 29) {
+        isStoragePermitted = await Permission.storage.status;
 
         if (isStoragePermitted.isGranted) {
-          cloudImagePath = "${ourDirectory!.path}/$fileName";
+          Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
+          cloudImagePath = '${ourDirectory!.path}/$fileName';
 
           if (File(cloudImagePath).existsSync()) {
             File(cloudImagePath).deleteSync();
@@ -162,10 +146,50 @@ class DownloadTrip {
 
             Navigator.pop(context);
           }
+        } else {
+          await Utils.getStoragePermission(context);
+          var isStoragePermitted = await Permission.storage.status;
+
+          if (isStoragePermitted.isGranted) {
+            cloudImagePath = "${ourDirectory!.path}/$fileName";
+
+            if (File(cloudImagePath).existsSync()) {
+              File(cloudImagePath).deleteSync();
+            }
+
+            try {
+              await dio.download(imageUrl, cloudImagePath,
+                  onReceiveProgress: (progress, total) {});
+            } on d.DioError catch (e) {
+              print('DOWNLOAD EXE: ${e.error}');
+
+              Navigator.pop(context);
+            }
+          }
+        }
+      } else {
+        cloudImagePath = "${ourDirectory!.path}/$fileName";
+
+        if (File(cloudImagePath).existsSync()) {
+          File(cloudImagePath).deleteSync();
+        }
+
+        try {
+          await dio.download(imageUrl, cloudImagePath,
+              onReceiveProgress: (progress, total) {});
+        } on d.DioError catch (e) {
+          print('DOWNLOAD EXE: ${e.error}');
+
+          Navigator.pop(context);
         }
       }
     } else {
+      iosInfo = await DeviceInfoPlugin().iosInfo;
+
+      String fileName = imageUrl.split('/').last;
       cloudImagePath = "${ourDirectory!.path}/$fileName";
+
+      Utils.customPrint("IOS IMAGE PATH ${cloudImagePath}");
 
       if (File(cloudImagePath).existsSync()) {
         File(cloudImagePath).deleteSync();
@@ -180,6 +204,7 @@ class DownloadTrip {
         Navigator.pop(context);
       }
     }
+
     return cloudImagePath;
   }
 

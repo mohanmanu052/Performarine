@@ -214,6 +214,8 @@ class _SyncDataCloudToMobileScreenState
             curIndex = 1;
             lastIndex = 0;
           });
+
+          print('LENGTH: ${value.vessels!.length}');
           for (int i = 0; i < value.vessels!.length; i++) {
             if (value.vessels![i].name == 'rrrrr 12') {
               print('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()}');

@@ -287,9 +287,17 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                     : Stack(
                         children: [
                           //Image.memory(bytes)
-                          Image.memory(
-                            File(vesselData.imageURLs!).readAsBytesSync(),
+                          Image.file(
+                            File(vesselData.imageURLs!),
                             fit: BoxFit.cover,
+                            /*errorBuilder:
+                                (BuildContext context, exception, stackTrace) {
+                              return Image.asset(
+                                'assets/images/vessel_default_img.png',
+                                width: displayWidth(context) * 0.65,
+                                fit: BoxFit.cover,
+                              );
+                            },*/
                             height: displayHeight(context) * 0.22,
                             width: displayWidth(context),
                           ),
