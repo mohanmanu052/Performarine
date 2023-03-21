@@ -87,14 +87,14 @@ class _SyncDataCloudToMobileScreenState
           child: Column(
             children: [
               SizedBox(
-                height: displayHeight(context) * 0.1,
+                height: displayHeight(context) * 0.09,
               ),
               Image.asset(
                 'assets/images/cloud.png',
                 height: displayHeight(context) * 0.3,
               ),
               SizedBox(
-                height: displayHeight(context) * 0.05,
+                height: displayHeight(context) * 0.03,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -108,7 +108,7 @@ class _SyncDataCloudToMobileScreenState
                 ),
               ),
               SizedBox(
-                height: displayHeight(context) * 0.08,
+                height: displayHeight(context) * 0.07,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -117,7 +117,7 @@ class _SyncDataCloudToMobileScreenState
                 ),
               ),
               SizedBox(
-                height: displayHeight(context) * 0.08,
+                height: displayHeight(context) * 0.06,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -132,7 +132,7 @@ class _SyncDataCloudToMobileScreenState
                 ),
               ),
               SizedBox(
-                height: displayHeight(context) * 0.02,
+                height: displayHeight(context) * 0.01,
               ),
               Row(
                 children: [

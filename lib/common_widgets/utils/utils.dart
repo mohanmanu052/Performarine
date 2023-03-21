@@ -175,11 +175,13 @@ class Utils {
       [Permission permission = Permission.storage]) async {
     bool isPermissionGranted = false;
 
-    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
 
-    if (permission == Permission.storage) {
-      if (androidInfo.version.sdkInt > 32) {
-        permission = Permission.photos;
+      if (permission == Permission.storage) {
+        if (androidInfo.version.sdkInt > 32) {
+          permission = Permission.photos;
+        }
       }
     }
 
