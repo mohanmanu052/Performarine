@@ -408,10 +408,14 @@ class DatabaseService {
     int totalTripsDuration = 0;
 
     for (int i = 0; i < tripsList.length; i++) {
-      double singleTripAvgSpeed =
-          double.parse(tripsList[i].avgSpeed.toString());
-      double singleTripDistance =
-          double.parse(tripsList[i].distance.toString());
+      double singleTripAvgSpeed = double.parse(
+          tripsList[i].avgSpeed == null || tripsList[i].avgSpeed!.isEmpty
+              ? '0.0'
+              : tripsList[i].avgSpeed.toString());
+      double singleTripDistance = double.parse(
+          tripsList[i].distance == null || tripsList[i].distance!.isEmpty
+              ? '0.0'
+              : tripsList[i].distance.toString());
 
       String startTime = tripsList[i].createdAt.toString();
       String endTime = tripsList[i].updatedAt.toString();

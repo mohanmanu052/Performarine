@@ -161,12 +161,6 @@ class CustomDialog extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).pop();
-                    if (userConfig!) {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                          ModalRoute.withName(""));
-                    }
                   },
                   child: Container(
                     decoration: BoxDecoration(

@@ -153,7 +153,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isDataUpdated = false,
       tripIsRunning = false,
       isCheckingPermission = false,
-      isTripEndedOrNot = false;
+      isTripEndedOrNot = false,
+      vesselAnalytics = false,
+      isVesselParticularExpanded = false;
 
   late CommonProvider commonProvider;
 
@@ -161,6 +163,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
       accelerometerAvailable,
       magnetometerAvailable,
       userAccelerometerAvailable;
+
+  String totalDistance = '0',
+      avgSpeed = '0',
+      tripsCount = '0',
+      totalDuration = "00:00:00";
 
   @override
   void initState() {
@@ -174,6 +181,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
     Utils.customPrint('VESSEL Image ${isTripEndedOrNot}');
 
     checkSensorAvailabelOrNot();
+
+    getVesselAnalytics(widget.vessel!.id!);
   }
 
   getRunningTripDetails() async {
@@ -337,6 +346,52 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       SizedBox(
                         height: 10,
                       ),
+                      Theme(
+                        data: Theme.of(context).copyWith(
+                            colorScheme: ColorScheme.light(
+                              primary: Colors.black,
+                            ),
+                            dividerColor: Colors.transparent),
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 15),
+                          child: ExpansionTile(
+                            initiallyExpanded: true,
+                            onExpansionChanged: ((newState) {
+                              setState(() {
+                                isVesselParticularExpanded = newState;
+                              });
+
+                              Utils.customPrint(
+                                  'EXPANSION CHANGE $isVesselParticularExpanded');
+                            }),
+                            tilePadding: EdgeInsets.zero,
+                            childrenPadding: EdgeInsets.zero,
+                            title: commonText(
+                                context: context,
+                                text: 'VESSEL ANALYTICS',
+                                fontWeight: FontWeight.w600,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.038,
+                                textAlign: TextAlign.start),
+                            children: [
+                              vesselAnalytics
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : vesselSingleViewVesselAnalytics(
+                                      context,
+                                      totalDuration,
+                                      totalDistance,
+                                      tripsCount,
+                                      avgSpeed),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
 
                       Theme(
                         data: Theme.of(context).copyWith(
@@ -371,6 +426,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   setState(() {
                                     tripIsEnded = true;
                                   });
+                                  getVesselAnalytics(widget.vessel!.id!);
                                 },
                               ),
                             ),
@@ -434,6 +490,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           // isZipFileCreate = true;
                                         });
                                         await tripIsRunningOrNot();
+                                        getVesselAnalytics(widget.vessel!.id!);
                                       });
                                 }, () {
                                   Navigator.of(context).pop();
@@ -1633,5 +1690,33 @@ class VesselSingleViewState extends State<VesselSingleView> {
             ),
           );
         });
+  }
+
+  void getVesselAnalytics(String vesselId) async {
+    if (!tripIsRunning) {
+      setState(() {
+        vesselAnalytics = true;
+      });
+    }
+    List<String> analyticsData =
+        await _databaseService.getVesselAnalytics(vesselId);
+
+    setState(() {
+      totalDistance = analyticsData[0];
+      avgSpeed = analyticsData[1];
+      tripsCount = analyticsData[2];
+      totalDuration = analyticsData[3];
+      vesselAnalytics = false;
+    });
+
+    /// 1. TotalDistanceSum
+
+    /// 2. AvgSpeed
+
+    /// 3. TripsCount
+    ///
+    print('totalDistance $totalDistance');
+    print('avgSpeed $avgSpeed');
+    print('COUNT $tripsCount');
   }
 }
