@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
 import 'package:performarine/models/get_user_config_model.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/services/database_service.dart';
@@ -12,7 +13,7 @@ class GetUserConfigApiProvider with ChangeNotifier {
   GetUserConfigModel? getUserConfigModel;
   final DatabaseService _databaseService = DatabaseService();
 
-  Future<GetUserConfigModel> getUserConfigData(
+  Future<GetUserConfigModel?> getUserConfigData(
       BuildContext context,
       String userId,
       String accessToken,
@@ -41,8 +42,28 @@ class GetUserConfigApiProvider with ChangeNotifier {
       if (response.statusCode == HttpStatus.ok) {
         Utils.customPrint('Register Response : ' + response.body);
 
-        getUserConfigModel =
-            GetUserConfigModel.fromJson(json.decode(response.body));
+        if (decodedData['status']) {
+          getUserConfigModel =
+              GetUserConfigModel.fromJson(json.decode(response.body));
+        } else {
+          showDialog(
+              context: scaffoldKey.currentContext!,
+              builder: (BuildContext context) {
+                return CustomDialog(
+                  text: 'Failed to sync',
+                  subText: 'We are unable to sync data.',
+                  positiveBtn: '',
+                  cancelBtn: '',
+                  positiveBtnOnTap: () {},
+                  userConfig: false,
+                  isError: true,
+                );
+              });
+
+          Future.delayed(Duration(seconds: 3), () {
+            Navigator.of(context).pop();
+          });
+        }
 
         /* Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);*/
@@ -52,6 +73,24 @@ class GetUserConfigApiProvider with ChangeNotifier {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 
+        showDialog(
+            context: scaffoldKey.currentContext!,
+            builder: (BuildContext context) {
+              return CustomDialog(
+                text: 'Failed to sync',
+                subText: 'We are unable to sync data.',
+                positiveBtn: '',
+                cancelBtn: '',
+                positiveBtnOnTap: () {},
+                userConfig: false,
+                isError: true,
+              );
+            });
+
+        Future.delayed(Duration(seconds: 3), () {
+          Navigator.of(context).pop();
+        });
+
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey, message: decodedData['message']);
@@ -59,6 +98,24 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
         getUserConfigModel = null;
       } else {
+        showDialog(
+            context: scaffoldKey.currentContext!,
+            builder: (BuildContext context) {
+              return CustomDialog(
+                text: 'Failed to sync',
+                subText: 'We are unable to sync data.',
+                positiveBtn: '',
+                cancelBtn: '',
+                positiveBtnOnTap: () {},
+                userConfig: false,
+                isError: true,
+              );
+            });
+
+        Future.delayed(Duration(seconds: 3), () {
+          Navigator.of(context).pop();
+        });
+
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey, message: decodedData['message']);
@@ -75,11 +132,22 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
       getUserConfigModel = null;
     } catch (exception, s) {
-      Future.delayed(Duration(seconds: 1), () {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-            ModalRoute.withName(""));
+      showDialog(
+          context: scaffoldKey.currentContext!,
+          builder: (BuildContext context) {
+            return CustomDialog(
+              text: 'Failed to sync',
+              subText: 'We are unable to sync data.',
+              positiveBtn: '',
+              cancelBtn: '',
+              positiveBtnOnTap: () {},
+              userConfig: false,
+              isError: true,
+            );
+          });
+
+      Future.delayed(Duration(seconds: 3), () {
+        Navigator.of(context).pop();
       });
 
       Utils.customPrint('error caught login:- $exception \n $s');
@@ -87,6 +155,6 @@ class GetUserConfigApiProvider with ChangeNotifier {
       getUserConfigModel = null;
     }
 
-    return getUserConfigModel!;
+    return getUserConfigModel;
   }
 }

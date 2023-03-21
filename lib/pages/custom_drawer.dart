@@ -197,7 +197,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   message:
                                       'Please end the trip which is already running');
                             } else {
-                              if (vesselsSyncDetails || tripSyncDetails) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SyncDataCloudToMobileScreen()),
+                              );
+
+                              /*if (vesselsSyncDetails || tripSyncDetails) {
                                 showDialogBoxToUploadData(
                                     context, widget.scaffoldKey!);
                               } else {
@@ -209,10 +216,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       builder: (context) =>
                                           const SyncDataCloudToMobileScreen()),
                                 );
-                              }
+                              }*/
                             }
                           } else {
-                            if (vesselsSyncDetails || tripSyncDetails) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SyncDataCloudToMobileScreen()),
+                            );
+
+                            /*if (vesselsSyncDetails || tripSyncDetails) {
                               showDialogBoxToUploadData(
                                   context, widget.scaffoldKey!);
                             } else {
@@ -224,7 +238,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     builder: (context) =>
                                         const SyncDataCloudToMobileScreen()),
                               );
-                            }
+                            }*/
                           }
                         },
                         child: commonText(
@@ -679,10 +693,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     getVesselFuture = await _databaseService.vessels();
     getTrip = await _databaseService.trips();
-
-    // tripSyncDetails = false;
-
-    Utils.customPrint("VESSEL SYNC ${getVesselFuture.length}");
+    Utils.customPrint("VESSEL SYNC ${getVesselFuture[7].imageURLs}");
     Utils.customPrint("VESSEL SYNC TRIP ${getTrip.length}");
     Utils.customPrint("VESSEL SYNC TRIP $vesselsSyncDetails");
     Utils.customPrint("VESSEL SYNC TRIP $tripSyncDetails");
@@ -690,8 +701,26 @@ class _CustomDrawerState extends State<CustomDrawer> {
     if (vesselsSyncDetails) {
       for (int i = 0; i < getVesselFuture.length; i++) {
         var vesselSyncOrNot = getVesselFuture[i].isSync;
+        Utils.customPrint(
+            "VESSEL SUCCESS MESSAGE ${getVesselFuture[i].imageURLs}");
 
         if (vesselSyncOrNot == 0) {
+          if (getVesselFuture[i].imageURLs != null &&
+              getVesselFuture[i].imageURLs!.isNotEmpty) {
+            if (getVesselFuture[i].imageURLs!.startsWith("https")) {
+              getVesselFuture[i].selectedImages = [];
+            } else {
+              getVesselFuture[i].selectedImages = [
+                File(getVesselFuture[i].imageURLs!)
+              ];
+            }
+
+            Utils.customPrint(
+                'VESSEL Data ${File(getVesselFuture[i].imageURLs!)}');
+          } else {
+            getVesselFuture[i].selectedImages = [];
+          }
+
           await commonProvider
               .addVessel(
                   context,
@@ -717,7 +746,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
       Utils.customPrint("VESSEL DATA Uploaded");
     }
-
     if (tripSyncDetails) {
       for (int i = 0; i < getTrip.length; i++) {
         var tripSyncOrNot = getTrip[i].isSync;

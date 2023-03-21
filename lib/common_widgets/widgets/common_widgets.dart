@@ -1000,7 +1000,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
 
 Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
     String distance, String totalCount, String avgSpeed) {
-  //double avgSpeed = int.parse(distance) / int.parse(duration);
+  double finalAvgSpeed = double.parse(avgSpeed);
   return Container(
     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
     child: Column(
@@ -1124,7 +1124,9 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                     children: [
                       commonText(
                           context: context,
-                          text: '$avgSpeed $knot',
+                          text: finalAvgSpeed.isNaN
+                              ? '0'
+                              : '$finalAvgSpeed $knot',
                           fontWeight: FontWeight.w600,
                           textColor: Colors.black,
                           textSize: displayWidth(context) * 0.044,

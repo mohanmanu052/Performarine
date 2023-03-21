@@ -77,6 +77,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     // TODO: implement initState
     super.initState();
     // getVesselDataById();
+
+    Utils.customPrint('CURRENT TIME TIME ${DateTime.now()}');
+
     sharedPreferences!.remove('sp_key_called_from_noti');
 
     setState(() {
@@ -364,6 +367,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                               borderColor: buttonBGColor,
                                               width: displayWidth(context),
                                               onTap: () async {
+                                                Utils.customPrint(
+                                                    "END TRIP CURRENT TIME ${DateTime.now()}");
+
                                                 Utils().showEndTripDialog(
                                                     context, () async {
                                                   setState(() {

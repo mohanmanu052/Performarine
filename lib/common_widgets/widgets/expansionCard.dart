@@ -848,49 +848,6 @@ class _ExpansionCardState extends State<ExpansionCard> {
                   SizedBox(
                     height: displayHeight(context) * 0.01,
                   ),
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                        colorScheme: ColorScheme.light(
-                          primary: Colors.black,
-                        ),
-                        dividerColor: Colors.transparent),
-                    child: Container(
-                      child: ExpansionTile(
-                        initiallyExpanded: true,
-                        onExpansionChanged: ((newState) {
-                          setState(() {
-                            isVesselParticularExpanded = newState;
-                          });
-
-                          Utils.customPrint(
-                              'EXPANSION CHANGE $isVesselParticularExpanded');
-                        }),
-                        tilePadding: EdgeInsets.zero,
-                        childrenPadding: EdgeInsets.zero,
-                        title: commonText(
-                            context: context,
-                            text: 'VESSEL ANALYTICS',
-                            fontWeight: FontWeight.w600,
-                            textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.038,
-                            textAlign: TextAlign.start),
-                        children: [
-                          vesselAnalytics
-                              ? Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CircularProgressIndicator(),
-                                )
-                              : vesselSingleViewVesselAnalytics(
-                                  context,
-                                  totalDuration,
-                                  totalDistance,
-                                  tripsCount,
-                                  avgSpeed,
-                                ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -1636,9 +1593,11 @@ class _ExpansionCardState extends State<ExpansionCard> {
   }
 
   void getVesselAnalytics(String vesselId) async {
-    setState(() {
-      vesselAnalytics = true;
-    });
+    if (!tripIsRunning) {
+      setState(() {
+        vesselAnalytics = true;
+      });
+    }
     List<String> analyticsData =
         await _databaseService.getVesselAnalytics(vesselId);
 

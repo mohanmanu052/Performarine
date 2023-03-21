@@ -3,9 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:performarine/analytics/download_trip.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
@@ -55,19 +58,20 @@ class _SyncDataCloudToMobileScreenState
   }
 
   getUserData() async {
-    var bool = await Utils().check(scaffoldKey);
+    var bool = await Utils()
+        .check(scaffoldKey, userConfig: true, onRetryTap: () => getUserData());
 
     Utils.customPrint("INTERNET $bool");
 
     if (bool) {
       getUserConfigData();
     } else {
-      Future.delayed(Duration(seconds: 1), () {
+      /* Future.delayed(Duration(seconds: 1), () {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
             ModalRoute.withName(""));
-      });
+      }); */
     }
   }
 
@@ -90,7 +94,7 @@ class _SyncDataCloudToMobileScreenState
                 height: displayHeight(context) * 0.3,
               ),
               SizedBox(
-                height: displayHeight(context) * 0.08,
+                height: displayHeight(context) * 0.05,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -126,6 +130,63 @@ class _SyncDataCloudToMobileScreenState
                   fontWeight: FontWeight.w500,
                   textAlign: TextAlign.center,
                 ),
+              ),
+              SizedBox(
+                height: displayHeight(context) * 0.02,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(
+                          bottom: displayHeight(context) * 0.02,
+                          top: displayHeight(context) * 0.02),
+                      child: CommonButtons.getActionButton(
+                          title: 'Retry',
+                          context: context,
+                          fontSize: displayWidth(context) * 0.038,
+                          textColor: Colors.white,
+                          buttonPrimaryColor: buttonBGColor,
+                          borderColor: buttonBGColor,
+                          width: displayWidth(context),
+                          onTap: () {
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+                            getUserConfigData();
+                          }),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(
+                          bottom: displayHeight(context) * 0.02,
+                          top: displayHeight(context) * 0.02),
+                      child: CommonButtons.getActionButton(
+                          title: 'Skip & Continue',
+                          context: context,
+                          fontSize: displayWidth(context) * 0.038,
+                          textColor: Colors.white,
+                          buttonPrimaryColor: buttonBGColor,
+                          borderColor: buttonBGColor,
+                          width: displayWidth(context),
+                          onTap: () {
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+
+                            sharedPreferences!.setBool('isFirstTimeUser', true);
+
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomePage()),
+                                ModalRoute.withName(""));
+                          }),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

@@ -290,7 +290,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                     googleSignInAccount.id,
                                                     //'114993051138200889304',
                                                     scaffoldKey)
-                                                .then((value) {
+                                                .then((value) async {
                                               setState(() {
                                                 isGoogleSignInBtnClicked =
                                                     false;
@@ -309,6 +309,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                                           HomePage(),
                                                     ),
                                                     ModalRoute.withName(""));*/
+                                                  var bool = await Utils()
+                                                      .check(scaffoldKey);
+
                                                   Navigator.pushAndRemoveUntil(
                                                       context,
                                                       MaterialPageRoute(

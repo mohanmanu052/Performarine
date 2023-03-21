@@ -208,7 +208,7 @@ class Utils {
   }
 
   Future<bool> check(GlobalKey<ScaffoldState> scaffoldKey,
-      {bool userConfig = false}) async {
+      {bool userConfig = false, VoidCallback? onRetryTap}) async {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -220,21 +220,25 @@ class Utils {
           context: scaffoldKey.currentContext!,
           builder: (BuildContext context) {
             return CustomDialog(
-                text: 'No Internet',
-                subText: 'Please enable your data connection to continue.',
-                positiveBtn: 'Okay',
-                positiveBtnOnTap: () {
-                  Navigator.of(scaffoldKey.currentContext!).pop();
+              text: 'No Internet',
+              subText: 'Please enable your data connection to continue.',
+              positiveBtn: userConfig ? 'Retry' : 'Okay',
+              cancelBtn: userConfig ? 'Don\'t Sync' : '',
+              positiveBtnOnTap: () {
+                Navigator.of(scaffoldKey.currentContext!).pop();
 
-                  if (userConfig) {
-                    Navigator.pushAndRemoveUntil(
+                if (userConfig) {
+                  onRetryTap!.call();
+                  /*Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => HomePage()),
-                        ModalRoute.withName(""));
-                  }
-                  //check(scaffoldKey);
-                },
-                userConfig: userConfig);
+                        ModalRoute.withName(""));*/
+                }
+                //check(scaffoldKey);
+              },
+              userConfig: userConfig,
+              isError: false,
+            );
           });
       return false;
     }

@@ -6,17 +6,18 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/pages/home_page.dart';
 
 class CustomDialog extends StatelessWidget {
-  String? text, subText, positiveBtn;
+  String? text, subText, positiveBtn, cancelBtn;
 
   Function()? positiveBtnOnTap;
 
   bool isPositiveBtnClick = false, isNegativeBtnClick = false;
-  bool? userConfig = false;
+  bool? userConfig = false, isError = false;
 
   dialogContent(BuildContext context) {
     return Stack(
       children: [
         Container(
+          width: displayWidth(context),
           margin: EdgeInsets.all(10),
           decoration: new BoxDecoration(
             color: Theme.of(context).brightness == Brightness.dark
@@ -59,66 +60,128 @@ class CustomDialog extends StatelessWidget {
                           : Colors.black,
                       fontWeight: FontWeight.w500),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 10.0, bottom: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      CommonButtons.getAcceptButton(
-                          positiveBtn!,
-                          context,
-                          Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Colors.white,
-                          positiveBtnOnTap,
-                          displayWidth(context) * 0.5,
-                          displayHeight(context) * 0.06,
-                          primaryColor,
-                          Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Colors.white,
-                          displayHeight(context) * 0.018,
-                          primaryColor,
-                          ''),
-                    ],
-                  ),
-                )
+                isError!
+                    ? SizedBox()
+                    : userConfig!
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  margin:
+                                      EdgeInsets.only(top: 10.0, bottom: 20.0),
+                                  child: CommonButtons.getAcceptButton(
+                                      positiveBtn!,
+                                      context,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.white,
+                                      positiveBtnOnTap,
+                                      displayWidth(context),
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.white,
+                                      displayHeight(context) * 0.014,
+                                      buttonBGColor,
+                                      ''),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  margin:
+                                      EdgeInsets.only(top: 10.0, bottom: 20.0),
+                                  child: CommonButtons.getAcceptButton(
+                                      cancelBtn!,
+                                      context,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.white, () {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => HomePage()),
+                                        ModalRoute.withName(""));
+                                  },
+                                      displayWidth(context),
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.white,
+                                      displayHeight(context) * 0.014,
+                                      buttonBGColor,
+                                      ''),
+                                ),
+                              )
+                            ],
+                          )
+                        : Container(
+                            margin: EdgeInsets.only(top: 10.0, bottom: 20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                CommonButtons.getAcceptButton(
+                                    positiveBtn!,
+                                    context,
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.white,
+                                    positiveBtnOnTap,
+                                    displayWidth(context) * 0.5,
+                                    displayHeight(context) * 0.06,
+                                    primaryColor,
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.white,
+                                    displayHeight(context) * 0.018,
+                                    buttonBGColor,
+                                    ''),
+                              ],
+                            ),
+                          )
               ],
             ),
           ),
         ),
-        Positioned(
-          right: 0.0,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-              if (userConfig!) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                    ModalRoute.withName(""));
-              }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(40),
-                  border: Border.all(color: Colors.white, width: 1),
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.black
-                      : Colors.white),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  Icons.close,
-                  size: 20,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
+        isError!
+            ? SizedBox()
+            : Positioned(
+                right: 0.0,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40),
+                        border: Border.all(color: Colors.white, width: 1),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.black
+                            : Colors.white),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.close,
+                        size: 20,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -135,11 +198,12 @@ class CustomDialog extends StatelessWidget {
     );
   }
 
-  CustomDialog({
-    this.text,
-    this.subText,
-    this.positiveBtn,
-    this.positiveBtnOnTap,
-    this.userConfig,
-  });
+  CustomDialog(
+      {this.text,
+      this.subText,
+      this.positiveBtn,
+      this.positiveBtnOnTap,
+      this.userConfig,
+      this.cancelBtn,
+      this.isError});
 }
