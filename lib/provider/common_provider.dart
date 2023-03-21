@@ -29,7 +29,7 @@ class CommonProvider with ChangeNotifier {
   CommonModel? commonModel;
   UploadTripModel? uploadTripModel;
   int tripsCount = 0;
-  bool tripStatus = false, isTripUploading = false;
+  bool tripStatus = false, isTripUploading = false, exceptionOccurred = false;
   Future<List<Trip>>? getTripsByIdFuture;
   GetUserConfigModel? getUserConfigModel;
 
@@ -181,5 +181,10 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
 
     return getUserConfigModel;
+  }
+
+  updateExceptionOccurredValue(bool value) {
+    exceptionOccurred = value;
+    notifyListeners();
   }
 }

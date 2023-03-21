@@ -7,17 +7,25 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
 import 'package:performarine/models/get_user_config_model.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:provider/provider.dart';
 
 class GetUserConfigApiProvider with ChangeNotifier {
   GetUserConfigModel? getUserConfigModel;
   final DatabaseService _databaseService = DatabaseService();
+
+  CommonProvider? commonProvider;
 
   Future<GetUserConfigModel?> getUserConfigData(
       BuildContext context,
       String userId,
       String accessToken,
       GlobalKey<ScaffoldState> scaffoldKey) async {
+    commonProvider = context.read<CommonProvider>();
+
+    commonProvider!.updateExceptionOccurredValue(false);
+
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
       "x_access_token": '$accessToken',
@@ -46,6 +54,8 @@ class GetUserConfigApiProvider with ChangeNotifier {
           getUserConfigModel =
               GetUserConfigModel.fromJson(json.decode(response.body));
         } else {
+          commonProvider!.updateExceptionOccurredValue(true);
+
           showDialog(
               context: scaffoldKey.currentContext!,
               builder: (BuildContext context) {
@@ -73,6 +83,8 @@ class GetUserConfigApiProvider with ChangeNotifier {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 
+        commonProvider!.updateExceptionOccurredValue(true);
+
         showDialog(
             context: scaffoldKey.currentContext!,
             builder: (BuildContext context) {
@@ -98,6 +110,8 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
         getUserConfigModel = null;
       } else {
+        commonProvider!.updateExceptionOccurredValue(true);
+
         showDialog(
             context: scaffoldKey.currentContext!,
             builder: (BuildContext context) {
@@ -130,8 +144,12 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
       Utils.customPrint('Socket Exception');
 
+      commonProvider!.updateExceptionOccurredValue(true);
+
       getUserConfigModel = null;
     } catch (exception, s) {
+      commonProvider!.updateExceptionOccurredValue(true);
+
       showDialog(
           context: scaffoldKey.currentContext!,
           builder: (BuildContext context) {

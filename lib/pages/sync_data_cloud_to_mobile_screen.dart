@@ -45,6 +45,8 @@ class _SyncDataCloudToMobileScreenState
 
   late CommonProvider commonProvider;
 
+  bool internetConnectionOn = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -66,6 +68,9 @@ class _SyncDataCloudToMobileScreenState
     if (bool) {
       getUserConfigData();
     } else {
+      setState(() {
+        commonProvider.updateExceptionOccurredValue(true);
+      });
       /* Future.delayed(Duration(seconds: 1), () {
         Navigator.pushAndRemoveUntil(
             context,
@@ -134,33 +139,8 @@ class _SyncDataCloudToMobileScreenState
               SizedBox(
                 height: displayHeight(context) * 0.02,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(
-                          bottom: displayHeight(context) * 0.02,
-                          top: displayHeight(context) * 0.02),
-                      child: CommonButtons.getActionButton(
-                          title: 'Retry',
-                          context: context,
-                          fontSize: displayWidth(context) * 0.038,
-                          textColor: Colors.white,
-                          buttonPrimaryColor: buttonBGColor,
-                          borderColor: buttonBGColor,
-                          width: displayWidth(context),
-                          onTap: () {
-                            FocusScope.of(context)
-                                .requestFocus(new FocusNode());
-                            getUserConfigData();
-                          }),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Container(
+              !commonProvider.exceptionOccurred
+                  ? Container(
                       margin: EdgeInsets.only(
                           bottom: displayHeight(context) * 0.02,
                           top: displayHeight(context) * 0.02),
@@ -184,10 +164,62 @@ class _SyncDataCloudToMobileScreenState
                                     builder: (context) => HomePage()),
                                 ModalRoute.withName(""));
                           }),
+                    )
+                  : Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                bottom: displayHeight(context) * 0.02,
+                                top: displayHeight(context) * 0.02),
+                            child: CommonButtons.getActionButton(
+                                title: 'Retry',
+                                context: context,
+                                fontSize: displayWidth(context) * 0.038,
+                                textColor: Colors.white,
+                                buttonPrimaryColor: buttonBGColor,
+                                borderColor: buttonBGColor,
+                                width: displayWidth(context),
+                                onTap: () {
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
+                                  getUserConfigData();
+                                }),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                bottom: displayHeight(context) * 0.02,
+                                top: displayHeight(context) * 0.02),
+                            child: CommonButtons.getActionButton(
+                                title: 'Skip & Continue',
+                                context: context,
+                                fontSize: displayWidth(context) * 0.038,
+                                textColor: Colors.white,
+                                buttonPrimaryColor: buttonBGColor,
+                                borderColor: buttonBGColor,
+                                width: displayWidth(context),
+                                onTap: () {
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
+
+                                  sharedPreferences!
+                                      .setBool('isFirstTimeUser', true);
+
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HomePage()),
+                                      ModalRoute.withName(""));
+                                }),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
