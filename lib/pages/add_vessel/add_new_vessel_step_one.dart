@@ -338,14 +338,16 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 labelText: 'Fuel Capacity (gal)*',
                                 hintText: '',
                                 suffixText: null,
-                                textInputAction: TextInputAction.next,
+                                textInputAction: selectedEngineType == 'Hybrid'
+                                    ? TextInputAction.next
+                                    : TextInputAction.done,
                                 textInputType: TextInputType.number,
                                 textCapitalization: TextCapitalization.words,
                                 maxLength: 6,
                                 prefixIcon: null,
                                 requestFocusNode: selectedEngineType == 'Hybrid'
                                     ? batteryCapacityFocusNode
-                                    : weightFocusNode,
+                                    : null,
                                 obscureText: false,
                                 onTap: () {},
                                 onChanged: (String value) {},
@@ -375,7 +377,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 labelText: 'Battery Capacity(kw)*',
                                 hintText: '',
                                 suffixText: null,
-                                textInputAction: TextInputAction.next,
+                                textInputAction: TextInputAction.done,
                                 textInputType: TextInputType.number,
                                 textCapitalization: TextCapitalization.words,
                                 maxLength: 6,

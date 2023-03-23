@@ -229,7 +229,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                       child: widget.vessel!.engineType!.toLowerCase() ==
                               'combustion'
                           ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -1539,6 +1539,9 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                   child: CommonButtons.getAcceptButton(
                                       'OK', context, primaryColor, () {
                                     _databaseService.updateVesselStatus(
+                                        0, widget.vessel!.id!);
+
+                                    _databaseService.updateIsSyncStatus(
                                         0, widget.vessel!.id!);
 
                                     Utils.showSnackBar(context,

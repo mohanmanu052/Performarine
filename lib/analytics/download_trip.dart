@@ -177,7 +177,11 @@ class DownloadTrip {
       } on d.DioError catch (e) {
         print('DOWNLOAD EXE: ${e.error}');
 
-        Navigator.pop(context);
+        //Navigator.pop(context);
+      } on SocketException catch (s) {
+        print('DOWNLOAD EXE SOCKET EXCEPTION: $s');
+      } catch (er) {
+        print('DOWNLOAD EXE SOCKET EXCEPTION: $er');
       }
     }
     return cloudImagePath;

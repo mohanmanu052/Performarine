@@ -767,6 +767,9 @@ showDialogBox(BuildContext context, CreateVessel vesselData,
                                   await DatabaseService()
                                       .updateVesselStatus(1, vesselData.id!)
                                       .then((value) {
+                                    DatabaseService()
+                                        .updateIsSyncStatus(0, vesselData.id!);
+
                                     Utils.showSnackBar(context,
                                         scaffoldKey: scaffoldKey,
                                         message:

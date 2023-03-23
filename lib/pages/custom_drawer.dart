@@ -362,7 +362,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       textColor: Colors.black54,
                       fontWeight: FontWeight.w400),
                   commonText(
-                      text: 'Release Date - 1 Dec 2022',
+                      text: 'Release Date - 23 Mar 2023',
                       //${DateFormat('dd MMM yyyy').format(DateTime.now())}
                       context: context,
                       textSize: displayWidth(context) * 0.03,
@@ -513,10 +513,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             'Sync and SignOut',
                                             context,
                                             primaryColor, () async {
-                                          setDialogState(() {
-                                            isSigningOut = true;
-                                          });
-                                          syncAndSignOut();
+                                          bool internet =
+                                              await Utils().check(scaffoldKey);
+
+                                          if (internet) {
+                                            setDialogState(() {
+                                              isSigningOut = true;
+                                            });
+
+                                            syncAndSignOut();
+                                          }
 
                                           /*var vesselDelete = await _databaseService
                                         .deleteDataFromVesselTable();
@@ -688,6 +694,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   syncAndSignOut() async {
     bool vesselErrorOccurred = false;
     bool tripErrorOccurred = false;
+
     var vesselsSyncDetails = await _databaseService.vesselsSyncDetails();
     var tripSyncDetails = await _databaseService.tripSyncDetails();
 
@@ -731,16 +738,26 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   calledFromSignOut: true)
               .then((value) async {
             if (value!.status!) {
-              Utils.customPrint("VESSEL SUCCESS MESSAGE ${value.message}");
+              //Utils.customPrint("VESSEL SUCCESS MESSAGE ${value.message}");
               await _databaseService.updateIsSyncStatus(
                   1, getVesselFuture[i].id.toString());
             } else {
-              Utils.customPrint("VESSEL MESSAGE ${value.message}");
+              //Utils.customPrint("VESSEL MESSAGE ${value.message}");
               setState(() {
                 vesselErrorOccurred = true;
               });
             }
+          }).catchError((error) {
+            Utils.customPrint("ADD VESSEL ERROR $error");
+            setState(() {
+              vesselErrorOccurred = true;
+            });
+            /*Utils.showSnackBar(context,
+                scaffoldKey: widget.scaffoldKey,
+                message: 'Failed to sync data to cloud. Please try again.');*/
           });
+        } else {
+          Utils.customPrint("VESSEL DATA NOT Uploaded");
         }
       }
 
@@ -812,6 +829,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
             setState(() {
               tripErrorOccurred = true;
             });
+            /*Utils.showSnackBar(context,
+                scaffoldKey: widget.scaffoldKey,
+                message: 'Failed to sync data to cloud. Please try again.');*/
           });
         }
       }

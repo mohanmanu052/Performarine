@@ -62,7 +62,7 @@ class CustomDialog extends StatelessWidget {
                 ),
                 isError!
                     ? SizedBox()
-                    : userConfig!
+                    : /*userConfig!
                         ? Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -124,32 +124,31 @@ class CustomDialog extends StatelessWidget {
                               )
                             ],
                           )
-                        : Container(
-                            margin: EdgeInsets.only(top: 10.0, bottom: 20.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                CommonButtons.getAcceptButton(
-                                    positiveBtn!,
-                                    context,
-                                    Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.white,
-                                    positiveBtnOnTap,
-                                    displayWidth(context) * 0.5,
-                                    displayHeight(context) * 0.06,
-                                    primaryColor,
-                                    Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.white,
-                                    displayHeight(context) * 0.018,
-                                    buttonBGColor,
-                                    ''),
-                              ],
-                            ),
-                          )
+                        : */
+                    Container(
+                        margin: EdgeInsets.only(top: 10.0, bottom: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            CommonButtons.getAcceptButton(
+                                positiveBtn!,
+                                context,
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.white,
+                                positiveBtnOnTap,
+                                displayWidth(context) * 0.5,
+                                displayHeight(context) * 0.06,
+                                primaryColor,
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.white,
+                                displayHeight(context) * 0.018,
+                                buttonBGColor,
+                                ''),
+                          ],
+                        ),
+                      )
               ],
             ),
           ),

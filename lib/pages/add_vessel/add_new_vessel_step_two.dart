@@ -233,7 +233,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                   CommonTextField(
                       controller: sizeController,
                       focusNode: sizeFocusNode,
-                      labelText: 'Size (hp)',
+                      labelText: 'Size (hp)*',
                       hintText: '',
                       suffixText: null,
                       textInputAction: TextInputAction.next,
