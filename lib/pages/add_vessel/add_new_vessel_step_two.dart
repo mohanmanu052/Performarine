@@ -161,7 +161,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                         if (value!.trim().isEmpty) {
                           return 'Enter vessel length overall';
                         }
-
                         return null;
                       },
                       onSaved: (String value) {
