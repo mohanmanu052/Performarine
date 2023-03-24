@@ -569,7 +569,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       'IOS PERMISSION GIVEN OUTSIDE');
 
                                   if (isLocationAlwaysPermitted) {
-                                    Utils.customPrint('IOS PERMISSION GIVEN');
+                                    Utils.customPrint('IOS PERMISSION GIVEN 1');
 
                                     vessel!.add(widget.vessel!);
                                     await locationPermissions(
