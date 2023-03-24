@@ -24,7 +24,7 @@ class AddVesselApiProvider with ChangeNotifier {
       "x_access_token": '$accessToken',
     };
 
-    Uri uri = Uri.https(Urls.baseUrl, Urls.createVessel);
+    Uri uri = Uri.http(Urls.baseUrl, Urls.createVessel);
 
     try {
       var request = http.MultipartRequest(
@@ -84,6 +84,9 @@ class AddVesselApiProvider with ChangeNotifier {
       request.fields['capacity'] = addVesselRequestModel.capacity!.toString();
       request.fields['builtYear'] = addVesselRequestModel.builtYear!.toString();
       request.fields['userID'] = userId;
+      request.fields['vesselStatus'] = addVesselRequestModel.vesselStatus == 0
+          ? '2'
+          : addVesselRequestModel.vesselStatus!.toString();
       request.fields['batteryCapacity'] =
           addVesselRequestModel.batteryCapacity!;
       Utils.customPrint('Add VESSEL RESP : ' + jsonEncode(request.fields));

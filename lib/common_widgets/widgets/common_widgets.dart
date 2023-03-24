@@ -764,12 +764,11 @@ showDialogBox(BuildContext context, CreateVessel vesselData,
                               child: Center(
                                 child: CommonButtons.getAcceptButton(
                                     'OK', context, primaryColor, () async {
+                                  DatabaseService()
+                                      .updateIsSyncStatus(0, vesselData.id!);
                                   await DatabaseService()
                                       .updateVesselStatus(1, vesselData.id!)
                                       .then((value) {
-                                    DatabaseService()
-                                        .updateIsSyncStatus(0, vesselData.id!);
-
                                     Utils.showSnackBar(context,
                                         scaffoldKey: scaffoldKey,
                                         message:

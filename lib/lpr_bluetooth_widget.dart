@@ -145,6 +145,8 @@ class _LprBluetoothWidgetState extends State<LprBluetoothWidget> {
               lprDataText = lprDataLineBuffer.toString();
             });
 
+            Utils.customPrint("LPR Data $lprDataText");
+
             lprDataLineBuffer.clear();
           }
         });

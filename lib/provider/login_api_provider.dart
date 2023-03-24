@@ -21,7 +21,7 @@ class LoginApiProvider with ChangeNotifier {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
-    Uri uri = Uri.https(Urls.baseUrl, Urls.loginUrl);
+    Uri uri = Uri.http(Urls.baseUrl, Urls.loginUrl);
 
     var queryParameters;
 
@@ -58,9 +58,11 @@ class LoginApiProvider with ChangeNotifier {
 
         loginModel = LoginModel.fromJson(json.decode(response.body));
 
-        pref.setBool('isUserLoggedIn', true);
-        pref.setString('loginData', response.body);
-        pref.setString('loginModel', loginModel.toString());
+        if (loginModel!.status!) {
+          pref.setBool('isUserLoggedIn', true);
+          pref.setString('loginData', response.body);
+          pref.setString('loginModel', loginModel.toString());
+        }
 
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);

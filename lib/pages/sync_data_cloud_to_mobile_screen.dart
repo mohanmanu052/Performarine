@@ -442,8 +442,9 @@ class _SyncDataCloudToMobileScreenState
                 vesselSize: value.vessels![i].vesselSize!,
                 capacity: int.parse(value.vessels![i].capacity!),
                 builtYear: int.parse(value.vessels![i].builtYear.toString()),
-                vesselStatus:
-                    int.parse(value.vessels![i].vesselStatus.toString()),
+                vesselStatus: value.vessels![i].vesselStatus == '2'
+                    ? 0
+                    : int.parse(value.vessels![i].vesselStatus.toString()),
                 imageURLs: downloadedCompressImageFile,
                 createdAt: value.vessels![i].createdAt.toString(),
                 createdBy: value.vessels![i].createdBy.toString(),
@@ -471,6 +472,7 @@ class _SyncDataCloudToMobileScreenState
             CreateVessel? vesselData = await _databaseService
                 .getVesselFromVesselID(value.trips![i].vesselId.toString());
 
+            Utils.customPrint("TRIPS VESSEL ID ${value.trips![i].vesselId}");
             Utils.customPrint("VESSEL NAME ${vesselData!.name}");
 
             if (vesselData != null) {
