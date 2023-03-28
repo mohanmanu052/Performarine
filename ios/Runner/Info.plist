@@ -6,6 +6,10 @@
 	<true/>
     <key>NSCameraUsageDescription</key>
     <string>Camera usage description</string>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>dev.flutter.background.refresh</string>
+    </array>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>This application requires location services to work</string>
     <key>NSLocationAlwaysUsageDescription</key>

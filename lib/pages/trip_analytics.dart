@@ -1063,7 +1063,25 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   }
 
   startSensorFunctionality(Trip tripData) async {
-    AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
+    String deviceId = '', model = '', version = '', make = '', board = '';
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
+      deviceId = androidDeviceInfo.id;
+      model = androidDeviceInfo.model;
+      version = androidDeviceInfo.version.release;
+      make = androidDeviceInfo.manufacturer;
+      board = androidDeviceInfo.board;
+    } else {
+      IosDeviceInfo iosDeviceInfo = await deviceDetails.iosInfo;
+      deviceId = iosDeviceInfo.identifierForVendor!;
+      model = iosDeviceInfo.model!;
+      version = iosDeviceInfo.systemVersion!;
+      make = iosDeviceInfo.systemName!;
+      board = iosDeviceInfo.localizedModel!;
+
+      print("IOS DETAILS $deviceId \n$model \n$version \n$make \n$board");
+    }
 
     String? tripDuration =
         sharedPreferences!.getString("tripDuration") ?? '00:00:00';
@@ -1085,11 +1103,11 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         {"make": "qualicom", "name": "gps"}
       ],
       "deviceInfo": {
-        "deviceId": androidDeviceInfo.id,
-        "model": androidDeviceInfo.model,
-        "version": androidDeviceInfo.version.release,
-        "make": androidDeviceInfo.manufacturer,
-        "board": androidDeviceInfo.board,
+        "deviceId": deviceId,
+        "model": model,
+        "version": version,
+        "make": make,
+        "board": board,
         "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
       },
       "startPosition": startPosition

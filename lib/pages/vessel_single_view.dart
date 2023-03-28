@@ -629,6 +629,18 @@ class VesselSingleViewState extends State<VesselSingleView> {
               context, size, vesselName, weight, isLocationPermitted);
         }
       }
+    } else {
+      bool isLocationPermitted = await Permission.locationAlways.isGranted;
+      if (isLocationPermitted) {
+        getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
+      } else {
+        await Utils.getLocationPermissions(context, scaffoldKey);
+        bool isLocationPermitted = await Permission.locationAlways.isGranted;
+        if (isLocationPermitted) {
+          getBottomSheet(
+              context, size, vesselName, weight, isLocationPermitted);
+        }
+      }
     }
   }
 
@@ -1245,119 +1257,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 isLocationPermission = true;
                                               });
 
-                                              final androidInfo =
-                                                  await DeviceInfoPlugin()
-                                                      .androidInfo;
-
-                                              if (androidInfo.version.sdkInt <
-                                                  29) {
-                                                var isStoragePermitted =
-                                                    await Permission
-                                                        .storage.status;
-                                                if (isStoragePermitted
-                                                    .isGranted) {
-                                                  bool isNotificationPermitted =
-                                                      await Permission
-                                                          .notification
-                                                          .isGranted;
-
-                                                  if (isNotificationPermitted) {
-                                                    startWritingDataToDB(
-                                                        bottomSheetContext,
-                                                        stateSetter);
-                                                  } else {
-                                                    await Utils
-                                                        .getNotificationPermission(
-                                                            context);
-                                                    bool
-                                                        isNotificationPermitted =
-                                                        await Permission
-                                                            .notification
-                                                            .isGranted;
-                                                    if (isNotificationPermitted) {
-                                                      startWritingDataToDB(
-                                                          bottomSheetContext,
-                                                          stateSetter);
-                                                    }
-                                                  }
-                                                } else {
-                                                  await Utils
-                                                      .getStoragePermission(
-                                                          context);
-                                                  final androidInfo =
-                                                      await DeviceInfoPlugin()
-                                                          .androidInfo;
-
-                                                  var isStoragePermitted =
-                                                      await Permission
-                                                          .storage.status;
-
-                                                  if (isStoragePermitted
-                                                      .isGranted) {
-                                                    bool
-                                                        isNotificationPermitted =
-                                                        await Permission
-                                                            .notification
-                                                            .isGranted;
-
-                                                    if (isNotificationPermitted) {
-                                                      startWritingDataToDB(
-                                                          bottomSheetContext,
-                                                          stateSetter);
-                                                    } else {
-                                                      await Utils
-                                                          .getNotificationPermission(
-                                                              context);
-                                                      bool
-                                                          isNotificationPermitted =
-                                                          await Permission
-                                                              .notification
-                                                              .isGranted;
-                                                      if (isNotificationPermitted) {
-                                                        startWritingDataToDB(
-                                                            bottomSheetContext,
-                                                            stateSetter);
-                                                      }
-                                                    }
-                                                  }
-                                                }
-                                              } else {
-                                                bool isNotificationPermitted =
-                                                    await Permission
-                                                        .notification.isGranted;
-
-                                                if (isNotificationPermitted) {
-                                                  startWritingDataToDB(
-                                                      bottomSheetContext,
-                                                      stateSetter);
-                                                } else {
-                                                  await Utils
-                                                      .getNotificationPermission(
-                                                          context);
-                                                  bool isNotificationPermitted =
-                                                      await Permission
-                                                          .notification
-                                                          .isGranted;
-                                                  if (isNotificationPermitted) {
-                                                    startWritingDataToDB(
-                                                        bottomSheetContext,
-                                                        stateSetter);
-                                                  }
-                                                }
-                                              }
-                                            } else {
-                                              await Utils.getLocationPermission(
-                                                  context, scaffoldKey);
-                                              bool isLocationPermitted =
-                                                  await Permission
-                                                      .location.isGranted;
-
-                                              if (isLocationPermitted) {
-                                                stateSetter(() {
-                                                  isLocationPermission = true;
-                                                });
-                                                // service.startService();
-
+                                              if (Platform.isAndroid) {
                                                 final androidInfo =
                                                     await DeviceInfoPlugin()
                                                         .androidInfo;
@@ -1432,6 +1332,175 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                               bottomSheetContext,
                                                               stateSetter);
                                                         }
+                                                      }
+                                                    }
+                                                  }
+                                                } else {
+                                                  bool isNotificationPermitted =
+                                                      await Permission
+                                                          .notification
+                                                          .isGranted;
+
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        bottomSheetContext,
+                                                        stateSetter);
+                                                  } else {
+                                                    await Utils
+                                                        .getNotificationPermission(
+                                                            context);
+                                                    bool
+                                                        isNotificationPermitted =
+                                                        await Permission
+                                                            .notification
+                                                            .isGranted;
+                                                    if (isNotificationPermitted) {
+                                                      startWritingDataToDB(
+                                                          bottomSheetContext,
+                                                          stateSetter);
+                                                    }
+                                                  }
+                                                }
+                                              } else {
+                                                bool isNotificationPermitted =
+                                                    await Permission
+                                                        .notification.isGranted;
+
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
+                                                } else {
+                                                  await Utils
+                                                      .getNotificationPermission(
+                                                          context);
+                                                  bool isNotificationPermitted =
+                                                      await Permission
+                                                          .notification
+                                                          .isGranted;
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        bottomSheetContext,
+                                                        stateSetter);
+                                                  }
+                                                }
+                                              }
+                                            } else {
+                                              await Utils.getLocationPermission(
+                                                  context, scaffoldKey);
+                                              bool isLocationPermitted =
+                                                  await Permission
+                                                      .location.isGranted;
+
+                                              if (isLocationPermitted) {
+                                                stateSetter(() {
+                                                  isLocationPermission = true;
+                                                });
+                                                // service.startService();
+
+                                                if (Platform.isAndroid) {
+                                                  final androidInfo =
+                                                      await DeviceInfoPlugin()
+                                                          .androidInfo;
+
+                                                  if (androidInfo
+                                                          .version.sdkInt <
+                                                      29) {
+                                                    var isStoragePermitted =
+                                                        await Permission
+                                                            .storage.status;
+                                                    if (isStoragePermitted
+                                                        .isGranted) {
+                                                      bool
+                                                          isNotificationPermitted =
+                                                          await Permission
+                                                              .notification
+                                                              .isGranted;
+
+                                                      if (isNotificationPermitted) {
+                                                        startWritingDataToDB(
+                                                            bottomSheetContext,
+                                                            stateSetter);
+                                                      } else {
+                                                        await Utils
+                                                            .getNotificationPermission(
+                                                                context);
+                                                        bool
+                                                            isNotificationPermitted =
+                                                            await Permission
+                                                                .notification
+                                                                .isGranted;
+                                                        if (isNotificationPermitted) {
+                                                          startWritingDataToDB(
+                                                              bottomSheetContext,
+                                                              stateSetter);
+                                                        }
+                                                      }
+                                                    } else {
+                                                      await Utils
+                                                          .getStoragePermission(
+                                                              context);
+                                                      final androidInfo =
+                                                          await DeviceInfoPlugin()
+                                                              .androidInfo;
+
+                                                      var isStoragePermitted =
+                                                          await Permission
+                                                              .storage.status;
+
+                                                      if (isStoragePermitted
+                                                          .isGranted) {
+                                                        bool
+                                                            isNotificationPermitted =
+                                                            await Permission
+                                                                .notification
+                                                                .isGranted;
+
+                                                        if (isNotificationPermitted) {
+                                                          startWritingDataToDB(
+                                                              bottomSheetContext,
+                                                              stateSetter);
+                                                        } else {
+                                                          await Utils
+                                                              .getNotificationPermission(
+                                                                  context);
+                                                          bool
+                                                              isNotificationPermitted =
+                                                              await Permission
+                                                                  .notification
+                                                                  .isGranted;
+                                                          if (isNotificationPermitted) {
+                                                            startWritingDataToDB(
+                                                                bottomSheetContext,
+                                                                stateSetter);
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  } else {
+                                                    bool
+                                                        isNotificationPermitted =
+                                                        await Permission
+                                                            .notification
+                                                            .isGranted;
+
+                                                    if (isNotificationPermitted) {
+                                                      startWritingDataToDB(
+                                                          bottomSheetContext,
+                                                          stateSetter);
+                                                    } else {
+                                                      await Utils
+                                                          .getNotificationPermission(
+                                                              context);
+                                                      bool
+                                                          isNotificationPermitted =
+                                                          await Permission
+                                                              .notification
+                                                              .isGranted;
+                                                      if (isNotificationPermitted) {
+                                                        startWritingDataToDB(
+                                                            bottomSheetContext,
+                                                            stateSetter);
                                                       }
                                                     }
                                                   }

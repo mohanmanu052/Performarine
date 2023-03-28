@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import flutter_background_service_ios
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -7,6 +8,7 @@ import Flutter
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+  SwiftFlutterBackgroundServicePlugin.taskIdentifier = SwiftFlutterBackgroundServicePlugin.taskIdentifier
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
