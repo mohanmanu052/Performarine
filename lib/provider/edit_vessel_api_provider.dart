@@ -78,6 +78,9 @@ class EditVesselApiProvider with ChangeNotifier {
       request.fields['capacity'] = addVesselRequestModel.capacity!;
       request.fields['builtYear'] = addVesselRequestModel.builtYear!;
       request.fields['userID'] = userId;
+      request.fields['vesselStatus'] = addVesselRequestModel.vesselStatus == 0
+          ? '2'
+          : addVesselRequestModel.vesselStatus!.toString();
       request.fields['imageURL'] = addVesselRequestModel.imageUrls ?? ' ';
       request.fields['vesselID'] = vesselId;
       request.fields['batteryCapacity'] =

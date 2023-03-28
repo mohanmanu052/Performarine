@@ -157,6 +157,7 @@ class AddVesselRequestModel {
   String? capacity;
   String? builtYear;
   String? imageUrls;
+  int? vesselStatus;
   List<File?>? files;
 
   AddVesselRequestModel(
@@ -177,5 +178,6 @@ class AddVesselRequestModel {
       this.capacity,
       this.builtYear,
       this.imageUrls,
+      this.vesselStatus,
       this.files});
 }

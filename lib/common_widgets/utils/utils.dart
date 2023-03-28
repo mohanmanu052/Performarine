@@ -224,18 +224,10 @@ class Utils {
             return CustomDialog(
               text: 'No Internet',
               subText: 'Please enable your data connection to continue.',
-              positiveBtn: userConfig ? 'Retry' : 'Okay',
+              positiveBtn: userConfig ? 'Cancel' : 'Okay',
               cancelBtn: userConfig ? 'Don\'t Sync' : '',
               positiveBtnOnTap: () {
                 Navigator.of(scaffoldKey.currentContext!).pop();
-
-                if (userConfig) {
-                  onRetryTap!.call();
-                  /*Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
-                        ModalRoute.withName(""));*/
-                }
                 //check(scaffoldKey);
               },
               userConfig: userConfig,

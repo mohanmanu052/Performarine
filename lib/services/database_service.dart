@@ -288,8 +288,7 @@ class DatabaseService {
     var list =
         await db.query('vessels', where: 'id = ?', whereArgs: [vesselId]);
 
-    Utils.customPrint(
-        "VESSEL ID EXIST IN VESSEL TABLE ${CreateVessel.fromMap(list[0])}");
+    //Utils.customPrint("VESSEL ID EXIST IN VESSEL TABLE ${CreateVessel.fromMap(list[0])}");
 
     if (list.length > 0) {
       return CreateVessel.fromMap(list[0]);
@@ -451,5 +450,12 @@ class DatabaseService {
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps =
         await db.query('trips', where: 'vesselId = ?', whereArgs: [vesselId]);
+  }
+
+  Future<List<CreateVessel>> syncAndSignOutVesselList() async {
+    final db = await _databaseService.database;
+    final List<Map<String, dynamic>> maps = await db.query('vessels');
+    return List.generate(
+        maps.length, (index) => CreateVessel.fromMap(maps[index]));
   }
 }

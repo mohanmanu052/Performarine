@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:get/get.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -69,101 +70,129 @@ class _TripViewListingState extends State<TripViewListing> {
           );
         }
 
-        return snapshot.data != null
-            ? StatefulBuilder(
-                builder: (BuildContext context, StateSetter setter) {
-                return Padding(
-                  padding:
-                      const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-                  child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      return snapshot.data!.isNotEmpty
-                          ? TripWidget(
-                              scaffoldKey: widget.scaffoldKey,
-                              tripList: snapshot.data![index],
-                              calledFrom: widget.calledFrom,
-                              onTripEnded: widget.onTripEnded,
-                              tripUploadedSuccessfully: () {
-                                if (mounted) {
-                                  setState(() {
-                                    commonProvider
-                                        .getTripsByVesselId(widget.vesselId);
-                                    future = _databaseService.trips();
-                                    //snapshot.data![index].tripStatus = 1;
-                                  });
-                                }
-                                commonProvider.getTripsCount();
-                              },
-                              onTap: () async {
-                                Utils().showEndTripDialog(context, () async {
-                                  Navigator.of(context).pop();
+        if (snapshot.hasData) {
+          if (snapshot.data!.isEmpty) {
+            return Container(
+              height: displayHeight(context) / 1.5,
+              child: Center(
+                child: commonText(
+                    text: 'oops! No Trips are added yet',
+                    context: context,
+                    textSize: displayWidth(context) * 0.04,
+                    textColor: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                    fontWeight: FontWeight.w500),
+              ),
+            );
+          } else {
+            return snapshot.data != null
+                ? StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setter) {
+                    Utils.customPrint("TRIP DETAILS ${snapshot.data!.length}");
+                    Utils.customPrint(
+                        "TRIP DETAILS 1 ${snapshot.data!.isEmpty}");
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          left: 8.0, right: 8.0, top: 8.0),
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return snapshot.data!.isNotEmpty
+                              ? TripWidget(
+                                  scaffoldKey: widget.scaffoldKey,
+                                  tripList: snapshot.data![index],
+                                  calledFrom: widget.calledFrom,
+                                  onTripEnded: widget.onTripEnded,
+                                  tripUploadedSuccessfully: () {
+                                    if (mounted) {
+                                      setState(() {
+                                        commonProvider.getTripsByVesselId(
+                                            widget.vesselId);
+                                        future = _databaseService.trips();
+                                        //snapshot.data![index].tripStatus = 1;
+                                      });
+                                    }
+                                    commonProvider.getTripsCount();
+                                  },
+                                  onTap: () async {
+                                    Utils().showEndTripDialog(context,
+                                        () async {
+                                      Navigator.of(context).pop();
 
-                                  await commonProvider.updateTripStatus(true);
+                                      await commonProvider
+                                          .updateTripStatus(true);
 
-                                  setState(() {
-                                    snapshot.data![index].isEndTripClicked =
-                                        true;
-                                  });
-
-                                  EndTrip().endTrip(
-                                      context: context,
-                                      scaffoldKey: widget.scaffoldKey,
-                                      onEnded: () async {
-                                        setState(() {
-                                          //future = _databaseService.trips();
-                                          snapshot.data![index].tripStatus = 1;
-                                        });
-
-                                        await commonProvider
-                                            .updateTripStatus(false);
-
-                                        if (widget.onTripEnded != null) {
-                                          widget.onTripEnded!.call();
-                                        }
-
-                                        await tripIsRunningOrNot(
-                                            snapshot.data![index]);
+                                      setState(() {
+                                        snapshot.data![index].isEndTripClicked =
+                                            true;
                                       });
 
-                                  return;
-                                }, () {
-                                  Navigator.of(context).pop();
-                                });
-                              })
-                          : Container(
-                              height: displayHeight(context) / 1.5,
-                              child: Center(
-                                child: commonText(
-                                    text: 'oops! No Trips are added yet',
-                                    context: context,
-                                    textSize: displayWidth(context) * 0.04,
-                                    textColor: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            );
-                    },
-                  ),
-                );
-              })
-            : Container(
-                height: displayHeight(context) / 1.5,
-                child: Center(
-                  child: commonText(
-                      text: 'oops! No Trips are added yet',
-                      context: context,
-                      textSize: displayWidth(context) * 0.04,
-                      textColor: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black,
-                      fontWeight: FontWeight.w500),
-                ),
-              );
+                                      EndTrip().endTrip(
+                                          context: context,
+                                          scaffoldKey: widget.scaffoldKey,
+                                          onEnded: () async {
+                                            setState(() {
+                                              //future = _databaseService.trips();
+                                              snapshot.data![index].tripStatus =
+                                                  1;
+                                            });
+
+                                            await commonProvider
+                                                .updateTripStatus(false);
+
+                                            if (widget.onTripEnded != null) {
+                                              widget.onTripEnded!.call();
+                                            }
+
+                                            await tripIsRunningOrNot(
+                                                snapshot.data![index]);
+                                          });
+
+                                      return;
+                                    }, () {
+                                      Navigator.of(context).pop();
+                                    });
+                                  })
+                              : Container(
+                                  height: displayHeight(context) / 1.5,
+                                  child: Center(
+                                    child: commonText(
+                                        text: 'oops! No Trips are added yet',
+                                        context: context,
+                                        textSize: displayWidth(context) * 0.04,
+                                        textColor:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? Colors.white
+                                                : Colors.black,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                );
+                        },
+                      ),
+                    );
+                  })
+                : Container(
+                    height: displayHeight(context) / 1.5,
+                    child: Center(
+                      child: commonText(
+                          text: 'oops! No Trips are added yet',
+                          context: context,
+                          textSize: displayWidth(context) * 0.04,
+                          textColor:
+                              Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  );
+          }
+        }
+
+        return Container();
       },
     );
   }

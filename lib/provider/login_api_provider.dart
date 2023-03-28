@@ -58,9 +58,11 @@ class LoginApiProvider with ChangeNotifier {
 
         loginModel = LoginModel.fromJson(json.decode(response.body));
 
-        pref.setBool('isUserLoggedIn', true);
-        pref.setString('loginData', response.body);
-        pref.setString('loginModel', loginModel.toString());
+        if (loginModel!.status!) {
+          pref.setBool('isUserLoggedIn', true);
+          pref.setString('loginData', response.body);
+          pref.setString('loginModel', loginModel.toString());
+        }
 
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);

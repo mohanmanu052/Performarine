@@ -161,7 +161,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                         if (value!.trim().isEmpty) {
                           return 'Enter vessel length overall';
                         }
-
                         return null;
                       },
                       onSaved: (String value) {
@@ -233,7 +232,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                   CommonTextField(
                       controller: sizeController,
                       focusNode: sizeFocusNode,
-                      labelText: 'Size (hp)',
+                      labelText: 'Size (hp)*',
                       hintText: '',
                       suffixText: null,
                       textInputAction: TextInputAction.next,

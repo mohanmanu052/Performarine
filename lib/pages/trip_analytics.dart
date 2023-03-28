@@ -61,7 +61,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   FlutterBackgroundService service = FlutterBackgroundService();
 
-  bool isTripUploaded = false, vesselIsSync = false, isDataUpdated = false;
+  bool isTripUploaded = false,
+      vesselIsSync = false,
+      isDataUpdated = false,
+      getTripDetailsFromNoti = false;
 
   int progress = 0;
   Timer? progressTimer;
@@ -110,13 +113,22 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   }
 
   getRealTimeTripDetails() async {
+    if (mounted) {
+      setState(() {
+        getTripDetailsFromNoti = true;
+      });
+    }
+
     service.on('tripAnalyticsData').listen((event) {
       tripDistance = event!['tripDistance'];
       tripDuration = event['tripDuration'];
       tripSpeed = event['tripSpeed'].toString();
       tripAvgSpeed = event['tripAvgSpeed'].toString();
 
-      if (mounted) setState(() {});
+      if (mounted)
+        setState(() {
+          getTripDetailsFromNoti = false;
+        });
     });
   }
 
@@ -319,21 +331,30 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                             0.032,
                                                   ),
                                                 ),
-                                                vesselAnalytics(
-                                                    context,
-                                                    tripIsRunning
-                                                        ? '$tripDuration'
-                                                        : '${tripData!.time} ',
-                                                    tripIsRunning
-                                                        ? '${(tripDistance)}'
-                                                        : '${tripData!.distance} ',
-                                                    tripIsRunning
-                                                        ? '${tripSpeed} '
-                                                        : '${tripData!.speed} ',
-                                                    tripIsRunning
-                                                        ? '${tripAvgSpeed} '
-                                                        : '${tripData!.avgSpeed} ',
-                                                    tripIsRunning),
+                                                getTripDetailsFromNoti
+                                                    ? Container(
+                                                        height: displayHeight(
+                                                                context) *
+                                                            0.2,
+                                                        child: Center(
+                                                            child:
+                                                                CircularProgressIndicator()),
+                                                      )
+                                                    : vesselAnalytics(
+                                                        context,
+                                                        tripIsRunning
+                                                            ? '$tripDuration'
+                                                            : '${tripData!.time} ',
+                                                        tripIsRunning
+                                                            ? '${(tripDistance)}'
+                                                            : '${tripData!.distance} ',
+                                                        tripIsRunning
+                                                            ? '${tripSpeed} '
+                                                            : '${tripData!.speed} ',
+                                                        tripIsRunning
+                                                            ? '${tripAvgSpeed} '
+                                                            : '${tripData!.avgSpeed} ',
+                                                        tripIsRunning),
                                               ],
                                             ),
                                             SizedBox(
@@ -1220,6 +1241,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       commonProvider.addVesselRequestModel!.capacity = vesselData.capacity;
       commonProvider.addVesselRequestModel!.builtYear = vesselData.builtYear;
       commonProvider.addVesselRequestModel!.createdAt = vesselData.createdAt;
+      commonProvider.addVesselRequestModel!.vesselStatus =
+          vesselData.vesselStatus;
       commonProvider.addVesselRequestModel!.batteryCapacity =
           vesselData.batteryCapacity;
       //commonProvider.addVesselRequestModel!.imageURLs = vesselData.imageURLs!;

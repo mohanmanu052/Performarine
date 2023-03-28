@@ -1,5 +1,6 @@
 class Urls {
   static const String baseUrl = 'goeapidev.azurewebsites.net';
+  //static const String baseUrl = '127.0.0.1:5000';
 
   // Auth
   static const String registrationUrl = '/api/auth/signup';
