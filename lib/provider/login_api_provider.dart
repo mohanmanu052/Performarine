@@ -21,7 +21,7 @@ class LoginApiProvider with ChangeNotifier {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
-    Uri uri = Uri.http(Urls.baseUrl, Urls.loginUrl);
+    Uri uri = Uri.https(Urls.baseUrl, Urls.loginUrl);
 
     var queryParameters;
 

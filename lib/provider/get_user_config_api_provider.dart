@@ -32,7 +32,7 @@ class GetUserConfigApiProvider with ChangeNotifier {
       "Connection": "Keep-Alive",
     };
 
-    Uri uri = Uri.http(Urls.baseUrl, Urls.getUserConfig);
+    Uri uri = Uri.https(Urls.baseUrl, Urls.getUserConfig);
 
     var queryParameters = {
       "userID": userId,

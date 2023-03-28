@@ -24,7 +24,7 @@ class AddVesselApiProvider with ChangeNotifier {
       "x_access_token": '$accessToken',
     };
 
-    Uri uri = Uri.http(Urls.baseUrl, Urls.createVessel);
+    Uri uri = Uri.https(Urls.baseUrl, Urls.createVessel);
 
     try {
       var request = http.MultipartRequest(

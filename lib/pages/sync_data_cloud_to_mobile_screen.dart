@@ -472,8 +472,8 @@ class _SyncDataCloudToMobileScreenState
             CreateVessel? vesselData = await _databaseService
                 .getVesselFromVesselID(value.trips![i].vesselId.toString());
 
-            Utils.customPrint("TRIPS VESSEL ID ${value.trips![i].vesselId}");
-            Utils.customPrint("VESSEL NAME ${vesselData!.name}");
+            //Utils.customPrint("TRIPS VESSEL ID ${value.trips![i].vesselId}");
+            //Utils.customPrint("VESSEL NAME ${vesselData!.name}");
 
             if (vesselData != null) {
               Trip tripData = Trip(
