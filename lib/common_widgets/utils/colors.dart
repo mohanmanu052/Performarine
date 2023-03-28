@@ -8,6 +8,14 @@ const darkBlueColor = Color(0xFF275778);
 const backgroundColor = Color(0xFFBFF2B9);
 const buttonBGColor = Color(0xFF1A3154);
 const circularProgressColor = Color(0xFF1C75BC);
+const blutoothDialogTitleColor = Color(0xFF0F0F11);
+const blutoothDialogTxtColor = Color(0xFF000000);
+const bluetoothCancelBtnTxtColor = Color(0xFF090909);
+const bluetoothCancelBtnBackColor = Color(0xFFC7CACE);
+const bluetoothConnectBtnBackColor = Color(0xFF1A3154);
+const bluetoothConnectBtncolor = Color(0xFFFFFFFF);
+const bluetoothDeviceActiveColor = Color(0xFF1C75BC);
+const bluetoothDeviceInActiveColor = Color(0xFF797979);
 
 Map<int, Color> materialPrimaryColor = {
   50: Color(0x1042B5BF),
