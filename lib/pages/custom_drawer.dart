@@ -700,7 +700,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     getVesselFuture = await _databaseService.syncAndSignOutVesselList();
     getTrip = await _databaseService.trips();
-    Utils.customPrint("VESSEL SYNC ${getVesselFuture[7].imageURLs}");
+    // Utils.customPrint("VESSEL SYNC ${getVesselFuture[7].imageURLs}");
     Utils.customPrint("VESSEL SYNC TRIP ${getTrip.length}");
     Utils.customPrint("VESSEL SYNC TRIP $vesselsSyncDetails");
     Utils.customPrint("VESSEL SYNC TRIP $tripSyncDetails");
