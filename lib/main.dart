@@ -139,9 +139,11 @@ Future<void> initializeService() async {
       foregroundServiceNotificationId: notificationId,
     ),
     iosConfiguration: IosConfiguration(
-      autoStart: true,
-      onForeground: (service) {},
-    ),
+        autoStart: true,
+        onForeground: onStart,
+        onBackground: (value) {
+          return true;
+        }),
   );
   service.startService();
 }

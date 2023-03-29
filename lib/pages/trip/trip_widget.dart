@@ -465,6 +465,7 @@ class _TripWidgetState extends State<TripWidget> {
     //fileName = '$fileIndex.csv';
 
     // flutterLocalNotificationsPlugin.cancel(9988);
+
     AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
 
     String? tripDuration =
