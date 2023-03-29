@@ -627,6 +627,48 @@ class VesselSingleViewState extends State<VesselSingleView> {
         });*/
 
         FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+        FlutterBluePlus.instance.scanResults.listen((results) async {
+          // print('SCAN RESULT INSIDE LISTEN');
+          for (ScanResult r in results) {
+            // print('SCAN RESULT INSIDE FOR EACH');
+            // print('${r.device.name} found! rssi: ${r.rssi}');
+            if (r.device.name.toLowerCase().contains("lpr")) {
+              // print('SCAN RESULT INSIDE IF ${r.device.name}');
+              print('FOUND DEVICE AGAIN');
+
+              r.device.connect().catchError((e) {
+                r.device.state.listen((event) {
+                  if (event == BluetoothDeviceState.connected) {
+                    // print('CONNECTION EVENT ${event}');
+                    r.device.disconnect().then((value) {
+                      r.device.connect().catchError((e) {
+                        // print('SCAN RESULT INSIDE IF ${r.device.name}');
+                        if (mounted) {
+                          setState(() {
+                            isBluetoothConnected = true;
+                            progress = 1.0;
+                            lprSensorProgress = 1.0;
+                            isStartButton = true;
+                          });
+                        }
+                      });
+                    });
+                  }
+                });
+              });
+
+              bluetoothName = r.device.name;
+              setState(() {
+                isBluetoothConnected = true;
+                progress = 1.0;
+                lprSensorProgress = 1.0;
+                isStartButton = true;
+              });
+              FlutterBluePlus.instance.stopScan();
+              break;
+            }
+          }
+        });
         getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       } else {
         // await showBluetoothDialog(context);
@@ -635,6 +677,47 @@ class VesselSingleViewState extends State<VesselSingleView> {
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
           FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+          FlutterBluePlus.instance.scanResults.listen((results) async {
+            // print('SCAN RESULT INSIDE LISTEN');
+            for (ScanResult r in results) {
+              // print('SCAN RESULT INSIDE FOR EACH');
+              // print('${r.device.name} found! rssi: ${r.rssi}');
+              if (r.device.name.toLowerCase().contains("lpr")) {
+                // print('SCAN RESULT INSIDE IF ${r.device.name}');
+
+                r.device.connect().catchError((e) {
+                  r.device.state.listen((event) {
+                    if (event == BluetoothDeviceState.connected) {
+                      // print('CONNECTION EVENT ${event}');
+                      r.device.disconnect().then((value) {
+                        r.device.connect().catchError((e) {
+                          // print('SCAN RESULT INSIDE IF ${r.device.name}');
+                          if (mounted) {
+                            setState(() {
+                              isBluetoothConnected = true;
+                              progress = 1.0;
+                              lprSensorProgress = 1.0;
+                              isStartButton = true;
+                            });
+                          }
+                        });
+                      });
+                    }
+                  });
+                });
+
+                bluetoothName = r.device.name;
+                setState(() {
+                  isBluetoothConnected = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                });
+                FlutterBluePlus.instance.stopScan();
+                break;
+              }
+            }
+          });
           getBottomSheet(
               context, size, vesselName, weight, isLocationPermitted);
         }
@@ -682,63 +765,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               child: StatefulBuilder(builder:
                   (BuildContext bottomSheetContext, StateSetter stateSetter) {
                 //FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-                FlutterBluePlus.instance.scanResults.listen((results) async {
-                  print('SCAN RESULT INSIDE LISTEN');
-                  for (ScanResult r in results) {
-                    print('SCAN RESULT INSIDE FOR EACH');
-                    print('${r.device.name} found! rssi: ${r.rssi}');
-                    if (r.device.name.toLowerCase().contains("lpr")) {
-                      print('SCAN RESULT INSIDE IF ${r.device.name}');
 
-                      r.device.connect().catchError((e) {
-                        r.device.state.listen((event) {
-                          if (event == BluetoothDeviceState.connected) {
-                            print('CONNECTION EVENT ${event}');
-                            r.device.disconnect().then((value) {
-                              r.device.connect().catchError((e) {
-                                print('SCAN RESULT INSIDE IF ${r.device.name}');
-                                if (mounted) {
-                                  stateSetter(() {
-                                    isBluetoothConnected = true;
-                                    progress = 1.0;
-                                    lprSensorProgress = 1.0;
-                                    isStartButton = true;
-                                  });
-                                }
-                              });
-                            });
-                          }
-                        });
-                      });
-
-                      /*r.device.disconnect().then((value) {
-                        r.device.connect().catchError((e) {
-                          print('SCAN RESULT INSIDE IF ${r.device.name}');
-                          if (mounted) {
-                            stateSetter(() {
-                              isBluetoothConnected = true;
-                              progress = 1.0;
-                              lprSensorProgress = 1.0;
-                              isStartButton = true;
-                            });
-                          }
-                        });
-                      });*/
-
-                      bluetoothName = r.device.name;
-                      if (mounted) {
-                        stateSetter(() {
-                          isBluetoothConnected = true;
-                          progress = 1.0;
-                          lprSensorProgress = 1.0;
-                          isStartButton = true;
-                        });
-                      }
-                      FlutterBluePlus.instance.stopScan();
-                      break;
-                    }
-                  }
-                });
                 return Container(
                   height: MediaQuery.of(context).size.height * 0.75,
                   decoration: BoxDecoration(
@@ -987,9 +1014,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   end: lprSensorProgress),
                                               builder:
                                                   (context, double value, _) {
-                                                print(
-                                                    "connection to lpr: $value");
-
                                                 return isBluetoothConnected
                                                     ? SizedBox(
                                                         height: 20,
@@ -2067,14 +2091,18 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           child: LPRBluetoothList(
                             dialogContext: dialogContext,
                             onSelected: (value) {
-                              stateSetter(() {
-                                bluetoothName = value;
-                              });
+                              if (mounted) {
+                                stateSetter(() {
+                                  bluetoothName = value;
+                                });
+                              }
                             },
                             onBluetoothConnection: (value) {
-                              stateSetter(() {
-                                isBluetoothConnected = value;
-                              });
+                              if (mounted) {
+                                stateSetter(() {
+                                  isBluetoothConnected = value;
+                                });
+                              }
                             },
                           )),
 
