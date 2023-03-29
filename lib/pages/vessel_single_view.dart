@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -1786,9 +1787,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               print("Tapped on enable Bluetooth");
                               Navigator.pop(context);
                              showBluetoothListDialog(context);
-                             // setState(() {
-                                isBluetoothDialog = true;
-                             // });
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -1911,6 +1909,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         GestureDetector(
                           onTap: (){
                             print("Tapped on scan button");
+                            FlutterBluePlus.instance
+                                          .startScan(timeout: const Duration(seconds: 4));
+
                           },
                           child: Container(
                             decoration: BoxDecoration(

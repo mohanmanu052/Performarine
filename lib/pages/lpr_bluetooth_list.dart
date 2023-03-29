@@ -16,32 +16,38 @@ class _LPRBluetoothListState extends State<LPRBluetoothList> {
             .asyncMap((_) => FlutterBluePlus.instance.bondedDevices),
         initialData: const [],
         builder: (c, snapshot) => Column(
-          children: snapshot.data!
-              .map((d) => ListTile(
+          children: snapshot.data != null ? snapshot.data!
+              .map((d) => GestureDetector(
+            onTap: (){
+              Navigator.pop(context);
+              d.connect(autoConnect: true);
+            },
+                child: ListTile(
             title: Text(d.name),
             subtitle: Text(d.id.toString(),style: TextStyle(fontSize: 13),),
             trailing: StreamBuilder<BluetoothDeviceState>(
-              stream: d.state,
-              initialData: BluetoothDeviceState.disconnected,
-              builder: (c, snapshot) {
-                // if (snapshot.data ==
-                //     BluetoothDeviceState.connected) {
-                  return snapshot.data ==
-                      BluetoothDeviceState.connected ? IconButton(
-                      onPressed: (){
-                        print("tapped on icon");
-                      }, icon: Icon(Icons.check_circle_outline,size: 20,color: Colors.blue,)) :
-                  IconButton(
-                      onPressed: (){
-                        d.connect(autoConnect: true);
-                        print("The state is${d.state}");
-                        print("tapped on icon");
-                        Navigator.pop(context);
-                      }, icon: Icon(Icons.link_outlined,size: 20,color: Colors.grey,));
-              },
+                stream: d.state,
+                initialData: BluetoothDeviceState.disconnected,
+                builder: (c, snapshot) {
+                  // if (snapshot.data ==
+                  //     BluetoothDeviceState.connected) {
+                    return snapshot.data ==
+                        BluetoothDeviceState.connected ? IconButton(
+                        onPressed: (){
+                          print("tapped on icon");
+                        }, icon: Icon(Icons.check_circle_outline,size: 20,color: Colors.blue,)) :
+                    IconButton(
+                        onPressed: (){
+                          // d.connect(autoConnect: true);
+                          // print("The state is${d.state}");
+                          // print("tapped on icon");
+                          // Navigator.pop(context);
+                        }, icon: Icon(Icons.link_outlined,size: 20,color: Colors.grey,));
+                },
             ),
-          ))
-              .toList(),
+          ),
+              ))
+              .toList() : [],
         ),
       ),
     );
