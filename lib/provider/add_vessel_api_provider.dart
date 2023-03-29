@@ -63,7 +63,11 @@ class AddVesselApiProvider with ChangeNotifier {
       Utils.customPrint('built Year ${addVesselRequestModel.builtYear!}');
       Utils.customPrint('user Id ${userId}');
       Utils.customPrint('user Id ${userId}');
+      Utils.customPrint('VESSEL STATUS ${addVesselRequestModel.vesselStatus}');
 
+      /*String vesselStatus = addVesselRequestModel.vesselStatus == 0
+          ? '2'
+          : addVesselRequestModel.vesselStatus!.toString();*/
       request.headers.addAll(headers);
       request.fields['id'] = addVesselRequestModel.id!;
       request.fields['name'] = addVesselRequestModel.name!;

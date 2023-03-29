@@ -442,7 +442,7 @@ class _SyncDataCloudToMobileScreenState
                 vesselSize: value.vessels![i].vesselSize!,
                 capacity: int.parse(value.vessels![i].capacity!),
                 builtYear: int.parse(value.vessels![i].builtYear.toString()),
-                vesselStatus: value.vessels![i].vesselStatus == '2'
+                vesselStatus: value.vessels![i].vesselStatus == 2
                     ? 0
                     : int.parse(value.vessels![i].vesselStatus.toString()),
                 imageURLs: downloadedCompressImageFile,

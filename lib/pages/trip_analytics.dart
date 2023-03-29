@@ -1241,6 +1241,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       commonProvider.addVesselRequestModel!.capacity = vesselData.capacity;
       commonProvider.addVesselRequestModel!.builtYear = vesselData.builtYear;
       commonProvider.addVesselRequestModel!.createdAt = vesselData.createdAt;
+      commonProvider.addVesselRequestModel!.vesselStatus =
+          vesselData.vesselStatus;
       commonProvider.addVesselRequestModel!.batteryCapacity =
           vesselData.batteryCapacity;
       //commonProvider.addVesselRequestModel!.imageURLs = vesselData.imageURLs!;

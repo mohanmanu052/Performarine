@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:app_settings/app_settings.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -530,12 +531,26 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             bool isLocationPermitted =
                                 await Permission.locationAlways.isGranted;
 
+                            bool isBluetoothPermitted =
+                                await Permission.bluetooth.isGranted;
+
                             if (isLocationPermitted) {
-                              vessel!.add(widget.vessel!);
-                              await locationPermissions(
-                                  widget.vessel!.vesselSize!,
-                                  widget.vessel!.name!,
-                                  widget.vessel!.id!);
+                              Utils.customPrint(
+                                  'BLUETTOTH ON OR OFF 1 ${isBluetoothPermitted}');
+
+                              if (isBluetoothPermitted) {
+                                Utils.customPrint(
+                                    'BLUETTOTH ON OR OFF 1 ${isBluetoothPermitted}');
+                                vessel!.add(widget.vessel!);
+                                await locationPermissions(
+                                    widget.vessel!.vesselSize!,
+                                    widget.vessel!.name!,
+                                    widget.vessel!.id!);
+                              } else {
+                                Utils.customPrint(
+                                    'BLUETTOTH ON OR OFF 1 ${isBluetoothPermitted}');
+                                showBluetoothDialog(context);
+                              }
                             } else {
                               /// WIU
                               bool isWIULocationPermitted =
@@ -551,11 +566,24 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               bool isLocationPermitted =
                                   await Permission.locationAlways.isGranted;
                               if (isLocationPermitted) {
-                                vessel!.add(widget.vessel!);
-                                await locationPermissions(
-                                    widget.vessel!.vesselSize!,
-                                    widget.vessel!.name!,
-                                    widget.vessel!.id!);
+                                bool isBluetoothPermitted =
+                                    await Permission.bluetoothConnect.isGranted;
+
+                                Utils.customPrint(
+                                    'BLUETTOTH ON OR OFF 2 ${isBluetoothPermitted}');
+                                if (isBluetoothPermitted) {
+                                  Utils.customPrint(
+                                      'BLUETTOTH ON OR OFF 2 ${isBluetoothPermitted}');
+                                  vessel!.add(widget.vessel!);
+                                  await locationPermissions(
+                                      widget.vessel!.vesselSize!,
+                                      widget.vessel!.name!,
+                                      widget.vessel!.id!);
+                                } else {
+                                  Utils.customPrint(
+                                      'BLUETTOTH ON OR OFF 1 ${isBluetoothPermitted}');
+                                  showBluetoothDialog(context);
+                                }
                               } else {
                                 if (!isLocationDialogBoxOpen) {
                                   showDialog(
@@ -593,21 +621,26 @@ class VesselSingleViewState extends State<VesselSingleView> {
   locationPermissions(dynamic size, String vesselName, String weight) async {
     if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
+      bool isBluetoothPermiteed = await Permission.bluetoothConnect.isGranted;
       if (isLocationPermitted) {
-        await showBluetoothDialog(context);
-        await showBluetoothListDialog(context);
-          getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
-
+        //await showBluetoothDialog(context);
+        //await showBluetoothListDialog(context);
+        if (isBluetoothPermiteed) {
+          getBottomSheet(
+              context, size, vesselName, weight, isLocationPermitted);
+        }
       } else {
-        await showBluetoothDialog(context);
-        await showBluetoothListDialog(context);
-          await Utils.getLocationPermissions(context, scaffoldKey);
-          bool isLocationPermitted = await Permission.locationAlways.isGranted;
-          if (isLocationPermitted) {
+        //await showBluetoothDialog(context);
+        // await showBluetoothListDialog(context);
+        await Utils.getLocationPermissions(context, scaffoldKey);
+        bool isLocationPermitted = await Permission.locationAlways.isGranted;
+        bool isBluetoothPermiteed = await Permission.bluetoothConnect.isGranted;
+        if (isLocationPermitted) {
+          if (isBluetoothPermiteed) {
             getBottomSheet(
                 context, size, vesselName, weight, isLocationPermitted);
           }
-
+        }
       }
     }
   }
@@ -1703,17 +1736,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
         });
   }
 
-  showBluetoothDialog(BuildContext context){
+  showBluetoothDialog(BuildContext context) {
     return showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: StatefulBuilder(
-            builder: (ctx, setDialogState) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(builder: (ctx, setDialogState) {
               return Container(
                 width: displayWidth(context),
                 height: displayHeight(context) * 0.3,
@@ -1730,15 +1762,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
                     Padding(
                       padding: EdgeInsets.only(top: 30),
                       child: Text(
-                          "Turn Bluetooth On",
+                        "Turn Bluetooth On",
                         style: TextStyle(
-                          color: blutoothDialogTitleColor,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w600
-                        ),
+                            color: blutoothDialogTitleColor,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w600),
                       ),
                     ),
-
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
@@ -1746,26 +1776,28 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         style: TextStyle(
                             color: blutoothDialogTxtColor,
                             fontSize: 13.0,
-                            fontWeight: FontWeight.w400
-                        ),
+                            fontWeight: FontWeight.w400),
                         textAlign: TextAlign.center,
                       ),
                     ),
-
                     Padding(
-                      padding: EdgeInsets.only(top: displayWidth(context) * 0.12,left: 15,right: 15),
+                      padding: EdgeInsets.only(
+                          top: displayWidth(context) * 0.12,
+                          left: 15,
+                          right: 15),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               print("Tapped on cancel button");
                               Navigator.pop(context);
                             },
                             child: Container(
                               decoration: BoxDecoration(
                                 color: bluetoothCancelBtnBackColor,
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                               ),
                               height: displayWidth(context) * 0.12,
                               width: displayWidth(context) * 0.34,
@@ -1775,23 +1807,23 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   "Cancel",
                                   style: TextStyle(
                                       fontSize: 15,
-                                      color: bluetoothCancelBtnTxtColor
-                                  ),
+                                      color: bluetoothCancelBtnTxtColor),
                                 ),
                               ),
                             ),
                           ),
-
                           GestureDetector(
-                            onTap: () async{
+                            onTap: () async {
                               print("Tapped on enable Bluetooth");
                               Navigator.pop(context);
-                             showBluetoothListDialog(context);
+
+                              //showBluetoothListDialog(context);
                             },
                             child: Container(
                               decoration: BoxDecoration(
                                 color: bluetoothConnectBtnBackColor,
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                               ),
                               height: displayWidth(context) * 0.12,
                               width: displayWidth(context) * 0.34,
@@ -1801,8 +1833,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   "Enable Bluetooth",
                                   style: TextStyle(
                                       fontSize: 15,
-                                      color: bluetoothConnectBtncolor
-                                  ),
+                                      color: bluetoothConnectBtncolor),
                                 ),
                               ),
                             ),
@@ -1810,139 +1841,128 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         ],
                       ),
                     ),
-
                   ],
                 ),
               );
-            }
-          ),
-        );
-      }
-    );
+            }),
+          );
+        });
   }
 
-  showBluetoothListDialog(BuildContext context){
+  showBluetoothListDialog(BuildContext context) {
     return showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
           return Dialog(
               shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-          ),
-          child: StatefulBuilder(
-          builder: (ctx, setDialogState) {
-            return Container(
-              width: displayWidth(context),
-              height: displayHeight(context) * 0.5,
-              decoration: new BoxDecoration(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.black
-                    : Colors.white,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 30),
-                    child: Text(
-                      "Available Devices",
-                      style: TextStyle(
-                          color: blutoothDialogTitleColor,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w600
-                      ),
-                    ),
+              child: StatefulBuilder(builder: (ctx, setDialogState) {
+                return Container(
+                  width: displayWidth(context),
+                  height: displayHeight(context) * 0.5,
+                  decoration: new BoxDecoration(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.white,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(25),
                   ),
-
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Tap to connect with LPR Devices to\n track Trip details",
-                      style: TextStyle(
-                          color: blutoothDialogTxtColor,
-                          fontSize: 13.0,
-                          fontWeight: FontWeight.w400
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 30),
+                        child: Text(
+                          "Available Devices",
+                          style: TextStyle(
+                              color: blutoothDialogTitleColor,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600),
+                        ),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
 
-                  // Implement listView for bluetooth devices
-                  Container(
-                    width: displayWidth(context),
-                    height: 230,
-                    child: LPRBluetoothList()),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Tap to connect with LPR Devices to\n track Trip details",
+                          style: TextStyle(
+                              color: blutoothDialogTxtColor,
+                              fontSize: 13.0,
+                              fontWeight: FontWeight.w400),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
 
-                  Padding(
-                    padding: EdgeInsets.only(left: 15,right: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: (){
-                            print("Tapped on cancel button");
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: bluetoothCancelBtnBackColor,
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                            ),
-                            height: displayWidth(context) * 0.12,
-                            width: displayWidth(context) * 0.34,
-                            // color: HexColor(AppColors.introButtonColor),
-                            child: Center(
-                              child: Text(
-                                "Cancel",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    color: bluetoothCancelBtnTxtColor
+                      // Implement listView for bluetooth devices
+                      Container(
+                          width: displayWidth(context),
+                          height: 230,
+                          child: LPRBluetoothList()),
+
+                      Padding(
+                        padding: EdgeInsets.only(left: 15, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                print("Tapped on cancel button");
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: bluetoothCancelBtnBackColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                height: displayWidth(context) * 0.12,
+                                width: displayWidth(context) * 0.34,
+                                // color: HexColor(AppColors.introButtonColor),
+                                child: Center(
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: bluetoothCancelBtnTxtColor),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-
-                        GestureDetector(
-                          onTap: (){
-                            print("Tapped on scan button");
-                            FlutterBluePlus.instance
-                                          .startScan(timeout: const Duration(seconds: 4));
-
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: bluetoothConnectBtnBackColor,
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                            ),
-                            height: displayWidth(context) * 0.12,
-                            width: displayWidth(context) * 0.34,
-                            // color: HexColor(AppColors.introButtonColor),
-                            child: Center(
-                              child: Text(
-                                "Scan",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    color: bluetoothConnectBtncolor
+                            GestureDetector(
+                              onTap: () {
+                                print("Tapped on scan button");
+                                FlutterBluePlus.instance.startScan(
+                                    timeout: const Duration(seconds: 4));
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: bluetoothConnectBtnBackColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                height: displayWidth(context) * 0.12,
+                                width: displayWidth(context) * 0.34,
+                                // color: HexColor(AppColors.introButtonColor),
+                                child: Center(
+                                  child: Text(
+                                    "Scan",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: bluetoothConnectBtncolor),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-
-                ],
-              ),
-            );
-          })
-          );
-        }
-    );
+                );
+              }));
+        });
   }
 
   void getVesselAnalytics(String vesselId) async {

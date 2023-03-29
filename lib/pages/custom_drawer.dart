@@ -252,15 +252,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      /* InkWell(
+                      InkWell(
                         onTap: () {
                           Navigator.of(context).pop();
 
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const LprBluetoothWidget()),
+                                builder: (context) => LprBluetoothWidget(
+                                    scaffoldKey: widget.scaffoldKey)),
                           );
                         },
                         child: commonText(
@@ -273,7 +273,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
-                      ),*/
+                      ),
                     ],
                   )
                 ],
@@ -700,7 +700,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     getVesselFuture = await _databaseService.syncAndSignOutVesselList();
     getTrip = await _databaseService.trips();
-    Utils.customPrint("VESSEL SYNC ${getVesselFuture[7].imageURLs}");
+    // Utils.customPrint("VESSEL SYNC ${getVesselFuture[7].imageURLs}");
     Utils.customPrint("VESSEL SYNC TRIP ${getTrip.length}");
     Utils.customPrint("VESSEL SYNC TRIP $vesselsSyncDetails");
     Utils.customPrint("VESSEL SYNC TRIP $tripSyncDetails");
