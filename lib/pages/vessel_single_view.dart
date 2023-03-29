@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -101,6 +102,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   List<String> sensorDataTable = ['ACC', 'UACC', 'GYRO', 'MAGN'];
   bool isBluetoothDialog = false;
+  String? isBluetoothConnected;
 
   getIfServiceIsRunning() async {
     bool data = await service.isRunning();
@@ -594,13 +596,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
     if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
-        await showBluetoothDialog(context);
-        await showBluetoothListDialog(context);
+     //   await showBluetoothDialog(context);
+      //  await showBluetoothListDialog(context);
           getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
 
       } else {
-        await showBluetoothDialog(context);
-        await showBluetoothListDialog(context);
+       // await showBluetoothDialog(context);
+      //  await showBluetoothListDialog(context);
           await Utils.getLocationPermissions(context, scaffoldKey);
           bool isLocationPermitted = await Permission.locationAlways.isGranted;
           if (isLocationPermitted) {
@@ -891,7 +893,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               begin: accSensorProgressBegin,
                                               end: accSensorProgress),
                                           builder: (context, double value, _) {
-                                            return SizedBox(
+                                            print("connection to lpr: $value");
+
+                                            return isBluetoothConnected == true ? SizedBox(
                                               height: 20,
                                               width: 20,
                                               child: Stack(
@@ -915,6 +919,24 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                             0.035),
                                                   )
                                                 ],
+                                              ),
+                                            ) :SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Colors.red,
+                                                        width: 2),
+                                                    shape: BoxShape.circle),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    color: Colors.red,
+                                                    size: 14,
+                                                  ),
+                                                ),
                                               ),
                                             );
                                           }),
@@ -1530,6 +1552,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
           debugPrint('VESSEL SINGLE VIEW RESULT $result');
         }
       }
+    });
+  }
+
+  Future<void> enableBT() async {
+    BluetoothEnable.enableBluetooth.then((value) {
+      isBluetoothConnected = value;
+      print(" bluetooth state$value");
     });
   }
 
