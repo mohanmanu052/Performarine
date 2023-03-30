@@ -57,10 +57,13 @@ onDidReceiveBackgroundNotificationResponse(
 }
 
 @pragma('vm:entry-point')
-Future<void> onStart(ServiceInstance serviceInstance) async {
+Future<bool> onStart(ServiceInstance serviceInstance) async {
+  WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
 
   StartTrip().startTrip(serviceInstance);
+
+  return true;
 }
 
 onDidReceiveLocalNotification(
@@ -85,6 +88,11 @@ Future<void> initializeService() async {
     description: 'This channel is used for important notifications.',
     importance: Importance.low, // importance must be at low or higher level
   );
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>()
+      ?.requestPermissions(sound: true, alert: true, badge: true);
 
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('noti_logo');
@@ -139,11 +147,7 @@ Future<void> initializeService() async {
       foregroundServiceNotificationId: notificationId,
     ),
     iosConfiguration: IosConfiguration(
-        autoStart: true,
-        onForeground: onStart,
-        onBackground: (value) {
-          return true;
-        }),
+        autoStart: true, onForeground: onStart, onBackground: onStart),
   );
   service.startService();
 }

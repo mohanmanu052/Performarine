@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -1601,7 +1602,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isEndTripButton = true;
 
       if (tripIsRunning) {
-        service.invoke("setAsForeground");
+        if (Platform.isAndroid) {
+          service.invoke("setAsForeground");
+        }
         List<String>? tripData = sharedPreferences!.getStringList('trip_data');
         final tripDetails = await _databaseService.getTrip(tripData![0]);
 

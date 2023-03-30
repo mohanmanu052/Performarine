@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -180,7 +182,9 @@ class _IntroScreenState extends State<IntroScreen> {
 
     if (isTripRunningCurrently == null) {
       if (isServiceRunning) {
-        service.invoke("setAsBackground");
+        if (Platform.isAndroid) {
+          service.invoke("setAsBackground");
+        }
         if (positionStream != null) {
           positionStream!.cancel();
         }
@@ -198,7 +202,9 @@ class _IntroScreenState extends State<IntroScreen> {
       });
     } else if (!isTripRunningCurrently!) {
       if (isServiceRunning) {
-        service.invoke("setAsBackground");
+        if (Platform.isAndroid) {
+          service.invoke("setAsBackground");
+        }
         if (positionStream != null) {
           positionStream!.cancel();
         }

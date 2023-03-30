@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:flutter/material.dart';
@@ -142,7 +143,10 @@ class StartTrip {
       double finalTripDistance = 0;
       int finalTripDuration = 0;
 
-      timer = Timer.periodic(const Duration(milliseconds: 300), (timer) async {
+      timer = Timer.periodic(
+          Platform.isAndroid
+              ? const Duration(milliseconds: 300)
+              : const Duration(seconds: 1), (timer) async {
         // to get values in seconds (we are executing value every miliseconds)
         finalTripDuration =
             timer.tick % 5 == 0 ? (timer.tick * 300) : finalTripDuration;
@@ -190,17 +194,20 @@ class StartTrip {
               '',
               'Trip is in progress',
               NotificationDetails(
-                android: AndroidNotificationDetails(
-                    notificationChannelId, 'MY FOREGROUND SERVICE',
-                    icon: '@drawable/noti_logo',
-                    ongoing: true,
-                    /*styleInformation:
+                  android: AndroidNotificationDetails(
+                      notificationChannelId, 'MY FOREGROUND SERVICE',
+                      icon: '@drawable/noti_logo',
+                      ongoing: true,
+                      /*styleInformation:
                         BigTextStyleInformation('', summaryText: '$tripId')*/
-                    styleInformation: BigTextStyleInformation(
+                      styleInformation: BigTextStyleInformation(
+                          'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
+                          htmlFormatContentTitle: true,
+                          summaryText: '')),
+                  iOS: DarwinNotificationDetails(
+                    subtitle:
                         'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
-                        htmlFormatContentTitle: true,
-                        summaryText: '')),
-              ),
+                  )),
             );
 
             pref.setString('tripDistance', tripDistanceForStorage);
@@ -269,6 +276,87 @@ class StartTrip {
 
               Utils.customPrint('GPS $gps');
             }
+          }
+        } else if (serviceInstance is IOSServiceInstance) {
+          print('INSIDE IOS SER INS');
+          flutterLocalNotificationsPlugin
+              .show(
+            888,
+            '',
+            'Trip is in progress',
+            NotificationDetails(
+                iOS: DarwinNotificationDetails(
+              subtitle:
+                  'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
+            )),
+          )
+              .catchError((onError) {
+            print('IOS NOTI ERROR: $onError');
+          });
+
+          pref.setString('tripDistance', tripDistanceForStorage);
+          pref.setString('tripDuration', tripDurationForStorage);
+          // To get values in Km/h
+          pref.setString('tripSpeed', tripSpeedForStorage);
+          pref.setString('tripAvgSpeed', tripAvgSpeedForStorage);
+
+          String filePath = await GetFile().getFile(tripId, mobileFileName);
+          String lprFilePath = await GetFile().getFile(tripId, lprFileName);
+          // File mobileFile = File(filePath[0]);
+          // File lprFile = File(filePath[1]);
+          File file = File(filePath);
+          File lprFile = File(lprFilePath);
+          int fileSize = await GetFile().checkFileSize(file);
+          int lprFileSize = await GetFile().checkFileSize(lprFile);
+          //int mobileFileSize = await GetFile().checkFileSize(mobileFile);
+          //int lprFileSize = await GetFile().checkFileSize(mobileFile);
+
+          /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
+          /// Now File Size is 200000
+          if (fileSize >= 200000 && lprFileSize >= 200000) {
+            Utils.customPrint('STOPPED WRITING');
+            Utils.customPrint('CREATING NEW FILE');
+            // if (timer != null) timer.cancel();
+            // Utils.customPrint('TIMER STOPPED');
+            fileIndex = fileIndex + 1;
+            mobileFileName = 'mobile_$fileIndex.csv';
+            lprFileName = 'lpr_$fileIndex.csv';
+
+            /// STOP WRITING & CREATE NEW FILE
+          } else {
+            Utils.customPrint('WRITING');
+            String gyro = '', acc = '', mag = '', uacc = '';
+            //Utils.customPrint('LAT1 LONG1 $latitude $longitude');
+
+            gyro = CreateTrip().convertDataToString(
+                'GYRO', gyroscopeAvailable ? _gyroscopeValues! : [0.0], tripId);
+
+            acc = CreateTrip().convertDataToString('AAC',
+                accelerometerAvailable ? _accelerometerValues! : [0.0], tripId);
+
+            mag = CreateTrip().convertDataToString('MAG',
+                magnetometerAvailable ? _magnetometerValues! : [0.0], tripId);
+
+            uacc = CreateTrip().convertDataToString(
+                'UACC',
+                userAccelerometerAvailable
+                    ? _userAccelerometerValues ?? [0.0]
+                    : [0.0],
+                tripId);
+
+            String location = '$latitude $longitude';
+            String gps =
+                CreateTrip().convertLocationToString('GPS', location, tripId);
+
+            String finalString = '';
+
+            finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
+
+            file.writeAsString('$finalString\n', mode: FileMode.append);
+            lprFile.writeAsString('$finalString\n', mode: FileMode.append);
+            //lprFile.writeAsString('$finalString\n', mode: FileMode.append);
+
+            Utils.customPrint('GPS $gps');
           }
         }
       });
