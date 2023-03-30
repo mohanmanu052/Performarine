@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_blue_plus/gen/flutterblueplus.pbjson.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 
 class LPRBluetoothList extends StatefulWidget {
   final BuildContext? dialogContext;
@@ -17,18 +18,26 @@ class LPRBluetoothList extends StatefulWidget {
 }
 
 class _LPRBluetoothListState extends State<LPRBluetoothList> {
+  bool isDeviceSelected = false;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: StreamBuilder<List<BluetoothDevice>>(
         stream: Stream.periodic(const Duration(seconds: 1))
-            .asyncMap((_) => FlutterBluePlus.instance.connectedDevices),
+            .asyncMap((_) => FlutterBluePlus.instance.bondedDevices),
         initialData: const [],
         builder: (c, snapshot) => Column(
           children: snapshot.data != null
               ? snapshot.data!
                   .map((d) => GestureDetector(
                         onTap: () {
+                          if (mounted) {
+                            setState(() {
+                              isDeviceSelected = true;
+                            });
+                          }
+
                           var connectedD = d.connect().then((value) {
                             //Navigator.pop(widget.dialogContext!);
                           }).catchError((s) {
@@ -40,16 +49,24 @@ class _LPRBluetoothListState extends State<LPRBluetoothList> {
                                 d.disconnect().then((value) {
                                   d.connect().then((value) {
                                     print('CONNECTION NAME ${d.name}');
+                                    if (mounted) {
+                                      setState(() {
+                                        isDeviceSelected = false;
+                                      });
+                                    }
                                     widget.onSelected!(d.name);
                                     widget.onBluetoothConnection!(true);
+
                                     Navigator.pop(
                                       widget.dialogContext!,
                                     );
 
                                     FlutterBluePlus.instance.stopScan();
+                                  }).catchError((e) {
+                                    Utils.customPrint('D.CONNECT ERROR $e');
                                   });
 
-                                  widget.onBluetoothConnection!(false);
+                                  // widget.onBluetoothConnection!(false);
                                 });
                               }
                             });
