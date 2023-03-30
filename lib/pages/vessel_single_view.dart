@@ -105,6 +105,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   List<String> sensorDataTable = ['ACC', 'UACC', 'GYRO', 'MAGN'];
   bool isBluetoothDialog = false;
   bool isBluetoothConnected = false;
+  bool isRefreshList = false;
 
   getIfServiceIsRunning() async {
     bool data = await service.isRunning();
@@ -2085,14 +2086,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       ),
 
                       // Implement listView for bluetooth devices
-                      Container(
+                    isRefreshList == true ?  Container(
                           width: displayWidth(context),
                           height: 230,
                           child: LPRBluetoothList(
                             dialogContext: dialogContext,
                             onSelected: (value) {
                               if (mounted) {
-                                stateSetter(() {
+                                stateSetter (() {
                                   bluetoothName = value;
                                 });
                               }
@@ -2104,7 +2105,26 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 });
                               }
                             },
-                          )),
+                          )) : Container(
+                        width: displayWidth(context),
+                        height: 230,
+                        child: LPRBluetoothList(
+                          dialogContext: dialogContext,
+                          onSelected: (value) {
+                            if (mounted) {
+                              stateSetter(() {
+                                bluetoothName = value;
+                              });
+                            }
+                          },
+                          onBluetoothConnection: (value) {
+                            if (mounted) {
+                              stateSetter(() {
+                                isBluetoothConnected = value;
+                              });
+                            }
+                          },
+                        )),
 
                       Padding(
                         padding: EdgeInsets.only(left: 15, right: 15),
@@ -2145,13 +2165,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               onTap: () {
                                 print("Tapped on scan button");
                                 FlutterBluePlus.instance.startScan(
-                                    timeout: const Duration(seconds: 4));
-                                stateSetter(() {
-                                  progress = 0.9;
-                                  lprSensorProgress = 0.0;
-                                  isStartButton = false;
-                                  bluetoothName = '';
-                                });
+                                    timeout: const Duration(seconds: 2));
+                                if(mounted){
+                                  stateSetter(() {
+                                    isRefreshList = true;
+                                    progress = 0.9;
+                                    lprSensorProgress = 0.0;
+                                    isStartButton = false;
+                                    bluetoothName = '';
+                                  });
+                                }
+
                               },
                               child: Container(
                                 decoration: BoxDecoration(

@@ -17,30 +17,39 @@ class LPRBluetoothList extends StatefulWidget {
 }
 
 class _LPRBluetoothListState extends State<LPRBluetoothList> {
+bool isConnect = false;
+
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: StreamBuilder<List<BluetoothDevice>>(
-        stream: Stream.periodic(const Duration(seconds: 1))
-            .asyncMap((_) => FlutterBluePlus.instance.connectedDevices),
+      child: StreamBuilder<List<ScanResult>>(
+        stream: FlutterBluePlus.instance.scanResults,
         initialData: const [],
-        builder: (c, snapshot) => Column(
+        builder: (c, snapshot) =>
+            Column(
           children: snapshot.data != null
               ? snapshot.data!
                   .map((d) => GestureDetector(
-                        onTap: () {
-                          var connectedD = d.connect().then((value) {
-                            //Navigator.pop(widget.dialogContext!);
+                        onTap: () async{
+                         var connectedD = d.device.connect(autoConnect: true).then((value) {
+                           setState(() {
+                             isConnect = true;
+                             widget.onBluetoothConnection!(true);
+                             widget.onSelected!(d.device.name);
+                           });
+                           //debugger();
+                            Navigator.pop(widget.dialogContext!);
                           }).catchError((s) {
                             print('ERROR $s');
-                            print('CONNECTION ${d.state.isBroadcast}');
-                            d.state.listen((event) {
+                           print('CONNECTION ${d.device.state.isBroadcast}');
+                            d.device.state.listen((event) {
                               if (event == BluetoothDeviceState.connected) {
                                 print('CONNECTION EVENT ${event}');
-                                d.disconnect().then((value) {
-                                  d.connect().then((value) {
-                                    print('CONNECTION NAME ${d.name}');
-                                    widget.onSelected!(d.name);
+                                d.device.disconnect().then((value) {
+                                  d.device.connect().then((value) {
+                                    print('CONNECTION NAME ${d.device.name}');
+                                    widget.onSelected!(d.device.name);
                                     widget.onBluetoothConnection!(true);
                                     Navigator.pop(
                                       widget.dialogContext!,
@@ -49,7 +58,7 @@ class _LPRBluetoothListState extends State<LPRBluetoothList> {
                                     FlutterBluePlus.instance.stopScan();
                                   });
 
-                                  widget.onBluetoothConnection!(false);
+                                  //widget.onBluetoothConnection!(false);
                                 });
                               }
                             });
@@ -57,19 +66,19 @@ class _LPRBluetoothListState extends State<LPRBluetoothList> {
                           print('ERROR CONNECTED${connectedD}');
                         },
                         child: ListTile(
-                          title: Text(d.name),
+                          title: Text(d.device.name),
                           subtitle: Text(
-                            d.id.toString(),
+                            d.device.id.toString(),
                             style: TextStyle(fontSize: 13),
                           ),
                           trailing: StreamBuilder<BluetoothDeviceState>(
-                            stream: d.state,
+                            stream: d.device.state,
                             initialData: BluetoothDeviceState.disconnected,
                             builder: (c, snapshot) {
                               // if (snapshot.data ==
                               //     BluetoothDeviceState.connected) {
-                              return snapshot.data ==
-                                      FlutterBluePlus.instance.connectedDevices
+                              return isConnect ==
+                                      true
                                   ? IconButton(
                                       onPressed: () {
                                         print("tapped on icon");
