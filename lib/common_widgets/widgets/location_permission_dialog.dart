@@ -11,14 +11,18 @@ class LocationPermissionCustomDialog extends StatelessWidget {
 
   Function()? buttonOnTap;
 
-  bool isPositiveBtnClick = false, isNegativeBtnClick = false;
+  bool isPositiveBtnClick = false,
+      isNegativeBtnClick = false,
+      isLocationDialogBox = false;
 
   dialogContent(BuildContext context) {
     return Stack(
       children: [
         Container(
           width: displayWidth(context),
-          height: displayHeight(context) * 0.76,
+          height: isLocationDialogBox
+              ? displayHeight(context) * 0.76
+              : displayHeight(context) * 0.65,
           margin: EdgeInsets.all(10),
           decoration: new BoxDecoration(
             color: Theme.of(context).brightness == Brightness.dark
@@ -46,7 +50,9 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(top: 10.0, left: 10, right: 10),
                         child: commonText(
-                            text: 'Location Permission Required',
+                            text: isLocationDialogBox
+                                ? 'Location Permission Required'
+                                : 'Nearby Devices Permission Required',
                             context: context,
                             textSize: displayWidth(context) * 0.045,
                             textColor:
@@ -57,15 +63,24 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                       ),
                       Center(
                         child: Container(
-                          child: Image.asset(
-                            'assets/images/location_permission.png',
-                            height: displayHeight(context) * 0.18,
-                            fit: BoxFit.contain,
-                          ),
+                          child: isLocationDialogBox
+                              ? Image.asset(
+                                  'assets/images/location_permission.png',
+                                  height: displayHeight(context) * 0.18,
+                                  fit: BoxFit.contain,
+                                )
+                              : Container(
+                                  padding: EdgeInsets.only(top: 15, bottom: 15),
+                                  child: Icon(
+                                    Icons.bluetooth,
+                                    size: 50,
+                                  ),
+                                ),
                         ),
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 6.0),
+                        alignment: Alignment.center,
                         child: commonText(
                             text: text,
                             context: context,
@@ -74,7 +89,8 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                 Theme.of(context).brightness == Brightness.dark
                                     ? Colors.white
                                     : Colors.black,
-                            fontWeight: FontWeight.w600),
+                            fontWeight: FontWeight.w600,
+                            textAlign: TextAlign.center),
                       ),
                       Container(
                         margin: EdgeInsets.only(
@@ -202,7 +218,9 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                 fontSize: displayWidth(context) * 0.032),
                             children: <TextSpan>[
                               TextSpan(
-                                text: ' Location/GPS',
+                                text: isLocationDialogBox
+                                    ? ' Location/GPS'
+                                    : ' Nearby devices',
                                 recognizer: TapGestureRecognizer()
                                 /*..onTap = () async {
                                       Navigator.push(context,
@@ -221,7 +239,9 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                     fontSize: displayWidth(context) * 0.032),
                               ),
                               TextSpan(
-                                text: ' and change to allow all the time.',
+                                text: isLocationDialogBox
+                                    ? ' and change to allow all the time.'
+                                    : ' and change to allow.',
                                 recognizer: TapGestureRecognizer(),
                                 style: TextStyle(
                                     color: Theme.of(context).brightness ==
@@ -316,5 +336,6 @@ class LocationPermissionCustomDialog extends StatelessWidget {
     this.subText,
     this.buttonText,
     this.buttonOnTap,
+    this.isLocationDialogBox = false,
   });
 }

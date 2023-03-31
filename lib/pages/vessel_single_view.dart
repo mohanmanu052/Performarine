@@ -536,7 +536,91 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 await Permission.locationAlways.isGranted;
 
                             if (isLocationPermitted) {
-                              bool isBluetoothEnable =
+                              bool isNDPermDenied = await Permission
+                                  .bluetoothConnect.isPermanentlyDenied;
+
+                              print('BYEE: $isNDPermDenied');
+                              if (isNDPermDenied) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return LocationPermissionCustomDialog(
+                                        isLocationDialogBox: false,
+                                        text: 'Allow nearby devices',
+                                        subText:
+                                            'Allow nearby devices to connect to the app',
+                                        buttonText: 'OK',
+                                        buttonOnTap: () async {
+                                          Get.back();
+
+                                          await openAppSettings();
+                                        },
+                                      );
+                                    });
+                                return;
+                              } else {
+                                bool isNDPermittedOne =
+                                    await Permission.bluetoothConnect.isGranted;
+
+                                if (isNDPermittedOne) {
+                                  bool isBluetoothEnable =
+                                      await FlutterBluePlus.instance.isOn;
+
+                                  if (isBluetoothEnable) {
+                                    vessel!.add(widget.vessel!);
+                                    await locationPermissions(
+                                        widget.vessel!.vesselSize!,
+                                        widget.vessel!.name!,
+                                        widget.vessel!.id!);
+                                  } else {
+                                    showBluetoothDialog(context);
+                                  }
+                                } else {
+                                  print('HII: $isNDPermittedOne');
+
+                                  await Permission.bluetoothConnect.request();
+                                  bool isNDPermitted = await Permission
+                                      .bluetoothConnect.isGranted;
+                                  if (isNDPermitted) {
+                                    bool isBluetoothEnable =
+                                        await FlutterBluePlus.instance.isOn;
+
+                                    if (isBluetoothEnable) {
+                                      vessel!.add(widget.vessel!);
+                                      await locationPermissions(
+                                          widget.vessel!.vesselSize!,
+                                          widget.vessel!.name!,
+                                          widget.vessel!.id!);
+                                    } else {
+                                      showBluetoothDialog(context);
+                                    }
+                                  } else {
+                                    if (await Permission
+                                            .bluetoothConnect.isDenied ||
+                                        await Permission.bluetoothConnect
+                                            .isPermanentlyDenied) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return LocationPermissionCustomDialog(
+                                              isLocationDialogBox: false,
+                                              text: 'Allow nearby devices',
+                                              subText:
+                                                  'Allow nearby devices to connect to the app',
+                                              buttonText: 'OK',
+                                              buttonOnTap: () async {
+                                                Get.back();
+
+                                                await openAppSettings();
+                                              },
+                                            );
+                                          });
+                                    }
+                                  }
+                                }
+                              }
+
+                              /* bool isBluetoothEnable =
                                   await FlutterBluePlus.instance.isOn;
 
                               if (isBluetoothEnable) {
@@ -546,8 +630,46 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     widget.vessel!.name!,
                                     widget.vessel!.id!);
                               } else {
-                                showBluetoothDialog(context);
-                              }
+                                Utils.customPrint("NOT GIVEN PERMISSION 1");
+
+                                bool isNDPermDenied = await Permission
+                                    .bluetoothConnect.isPermanentlyDenied;
+
+                                if (isNDPermDenied) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return LocationPermissionCustomDialog(
+                                          text: 'Allow nearby devices',
+                                          subText:
+                                              'Allow nearby devices to connect to the app',
+                                          buttonText: 'OK',
+                                          buttonOnTap: () async {
+                                            Get.back();
+
+                                            await openAppSettings();
+                                          },
+                                        );
+                                      });
+                                  return;
+                                } else {
+                                  bool isNDPermitted = await Permission
+                                      .bluetoothConnect.isGranted;
+
+                                  if (isNDPermitted) {
+                                    showBluetoothDialog(context);
+                                  } else {
+                                    await Permission.bluetoothConnect.request();
+                                    bool isNDPermitted = await Permission
+                                        .bluetoothConnect.isGranted;
+                                    if (isNDPermitted) {
+                                      showBluetoothDialog(context);
+                                    }
+                                  }
+                                }
+
+                                //showBluetoothDialog(context);
+                              }*/
                             } else {
                               /// WIU
                               bool isWIULocationPermitted =
@@ -563,17 +685,63 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               bool isLocationPermitted =
                                   await Permission.locationAlways.isGranted;
                               if (isLocationPermitted) {
-                                bool isBluetoothEnable =
-                                    await FlutterBluePlus.instance.isOn;
+                                bool isNDPermDenied = await Permission
+                                    .bluetoothConnect.isPermanentlyDenied;
 
-                                if (isBluetoothEnable) {
-                                  vessel!.add(widget.vessel!);
-                                  await locationPermissions(
-                                      widget.vessel!.vesselSize!,
-                                      widget.vessel!.name!,
-                                      widget.vessel!.id!);
+                                if (isNDPermDenied) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return LocationPermissionCustomDialog(
+                                          isLocationDialogBox: false,
+                                          text: 'Allow nearby devices',
+                                          subText:
+                                              'Allow nearby devices to connect to the app',
+                                          buttonText: 'OK',
+                                          buttonOnTap: () async {
+                                            Get.back();
+
+                                            await openAppSettings();
+                                          },
+                                        );
+                                      });
+                                  return;
                                 } else {
-                                  showBluetoothDialog(context);
+                                  bool isNDPermitted = await Permission
+                                      .bluetoothConnect.isGranted;
+
+                                  if (isNDPermitted) {
+                                    bool isBluetoothEnable =
+                                        await FlutterBluePlus.instance.isOn;
+
+                                    if (isBluetoothEnable) {
+                                      vessel!.add(widget.vessel!);
+                                      await locationPermissions(
+                                          widget.vessel!.vesselSize!,
+                                          widget.vessel!.name!,
+                                          widget.vessel!.id!);
+                                    } else {
+                                      showBluetoothDialog(context);
+                                    }
+                                  } else {
+                                    await Permission.bluetoothConnect.request();
+                                    bool isNDPermitted = await Permission
+                                        .bluetoothConnect.isGranted;
+                                    if (isNDPermitted) {
+                                      bool isBluetoothEnable =
+                                          await FlutterBluePlus.instance.isOn;
+
+                                      if (isBluetoothEnable) {
+                                        vessel!.add(widget.vessel!);
+                                        await locationPermissions(
+                                            widget.vessel!.vesselSize!,
+                                            widget.vessel!.name!,
+                                            widget.vessel!.id!);
+                                      } else {
+                                        showBluetoothDialog(context);
+                                      }
+                                    }
+                                  }
                                 }
                               } else {
                                 if (!isLocationDialogBoxOpen) {
@@ -582,6 +750,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       builder: (BuildContext context) {
                                         isLocationDialogBoxOpen = true;
                                         return LocationPermissionCustomDialog(
+                                          isLocationDialogBox: false,
                                           text:
                                               'Always Allow Access to “Location”',
                                           subText:
@@ -1751,10 +1920,24 @@ class VesselSingleViewState extends State<VesselSingleView> {
   Future<void> enableBT() async {
     BluetoothEnable.enableBluetooth.then((value) async {
       //isBluetoothConnected = value;
-      vessel!.add(widget.vessel!);
-      await locationPermissions(
-          widget.vessel!.vesselSize!, widget.vessel!.name!, widget.vessel!.id!);
-      print(" bluetooth state$value");
+
+      Utils.customPrint("BLUETOOTH ENABLE $value");
+
+      if (value == 'true') {
+        vessel!.add(widget.vessel!);
+        await locationPermissions(widget.vessel!.vesselSize!,
+            widget.vessel!.name!, widget.vessel!.id!);
+        print(" bluetooth state$value");
+      } else {
+        bool isNearByDevicePermitted =
+            await Permission.bluetoothConnect.isGranted;
+
+        if (!isNearByDevicePermitted) {
+          await Permission.bluetoothConnect.request();
+        }
+      }
+    }).catchError((e) {
+      print("ENABLE BT$e");
     });
   }
 
