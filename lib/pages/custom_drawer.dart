@@ -219,14 +219,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               }*/
                             }
                           } else {
-                            Navigator.push(
+                            /*Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
                                       const SyncDataCloudToMobileScreen()),
-                            );
+                            );*/
 
-                            /*if (vesselsSyncDetails || tripSyncDetails) {
+                            if (vesselsSyncDetails || tripSyncDetails) {
                               showDialogBoxToUploadData(
                                   context, widget.scaffoldKey!);
                             } else {
@@ -238,7 +238,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     builder: (context) =>
                                         const SyncDataCloudToMobileScreen()),
                               );
-                            }*/
+                            }
                           }
                         },
                         child: commonText(

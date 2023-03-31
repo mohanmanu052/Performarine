@@ -105,6 +105,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   List<String> sensorDataTable = ['ACC', 'UACC', 'GYRO', 'MAGN'];
   bool isBluetoothDialog = false;
   bool isBluetoothConnected = false;
+  bool isRefreshList = false, isScanningBluetooth = false;
 
   getIfServiceIsRunning() async {
     bool data = await service.isRunning();
@@ -666,6 +667,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
               });
               FlutterBluePlus.instance.stopScan();
               break;
+            } else {
+              r.device
+                  .disconnect()
+                  .then((value) => print("is device disconnected: $value"));
             }
           }
         });
@@ -715,6 +720,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                 });
                 FlutterBluePlus.instance.stopScan();
                 break;
+              } else {
+                r.device
+                    .disconnect()
+                    .then((value) => print("is device disconnected: $value"));
               }
             }
           });
@@ -1103,7 +1112,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               child: commonText(
                                                   context: context,
                                                   text:
-                                                      'Tap to Select Device to connect',
+                                                      'Tap to connect LPR manual',
                                                   fontWeight: FontWeight.w400,
                                                   textColor: Colors.red,
                                                   textSize:
@@ -1409,7 +1418,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               return;
                                             }
 
-                                            if (!isBluetoothConnected) {
+                                            /*if (!isBluetoothConnected) {
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(
                                                 behavior:
@@ -1420,7 +1429,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 backgroundColor: Colors.blue,
                                               ));
                                               return;
-                                            }
+                                            }*/
 
                                             bool isLocationPermitted =
                                                 await Permission
@@ -2085,26 +2094,49 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       ),
 
                       // Implement listView for bluetooth devices
-                      Container(
-                          width: displayWidth(context),
-                          height: 230,
-                          child: LPRBluetoothList(
-                            dialogContext: dialogContext,
-                            onSelected: (value) {
-                              if (mounted) {
-                                stateSetter(() {
-                                  bluetoothName = value;
-                                });
-                              }
-                            },
-                            onBluetoothConnection: (value) {
-                              if (mounted) {
-                                stateSetter(() {
-                                  isBluetoothConnected = value;
-                                });
-                              }
-                            },
-                          )),
+                      isRefreshList == true
+                          ? Container(
+                              width: displayWidth(context),
+                              height: 230,
+                              child: LPRBluetoothList(
+                                dialogContext: dialogContext,
+                                setDialogSet: setDialogState,
+                                onSelected: (value) {
+                                  if (mounted) {
+                                    stateSetter(() {
+                                      bluetoothName = value;
+                                    });
+                                  }
+                                },
+                                onBluetoothConnection: (value) {
+                                  if (mounted) {
+                                    stateSetter(() {
+                                      isBluetoothConnected = value;
+                                    });
+                                  }
+                                },
+                              ))
+                          : Container(
+                              width: displayWidth(context),
+                              height: 230,
+                              child: LPRBluetoothList(
+                                dialogContext: dialogContext,
+                                setDialogSet: setDialogState,
+                                onSelected: (value) {
+                                  if (mounted) {
+                                    stateSetter(() {
+                                      bluetoothName = value;
+                                    });
+                                  }
+                                },
+                                onBluetoothConnection: (value) {
+                                  if (mounted) {
+                                    stateSetter(() {
+                                      isBluetoothConnected = value;
+                                    });
+                                  }
+                                },
+                              )),
 
                       Padding(
                         padding: EdgeInsets.only(left: 15, right: 15),
@@ -2144,33 +2176,81 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             GestureDetector(
                               onTap: () {
                                 print("Tapped on scan button");
+
+                                if (mounted) {
+                                  setDialogState(() {
+                                    isScanningBluetooth = true;
+                                  });
+                                }
+
+                                FlutterBluePlus.instance.stopScan();
+
                                 FlutterBluePlus.instance.startScan(
-                                    timeout: const Duration(seconds: 4));
-                                stateSetter(() {
-                                  progress = 0.9;
-                                  lprSensorProgress = 0.0;
-                                  isStartButton = false;
-                                  bluetoothName = '';
-                                });
+                                    timeout: const Duration(seconds: 2));
+
+                                if (mounted) {
+                                  Future.delayed(Duration(seconds: 2), () {
+                                    setDialogState(() {
+                                      isScanningBluetooth = false;
+                                    });
+                                  });
+                                }
+
+                                /*FlutterBluePlus.instance.isScanning
+                                    .listen((event) {
+                                  print("Tapped on scan button 1");
+                                  if (!event) {
+                                    FlutterBluePlus.instance.stopScan();
+
+                                    FlutterBluePlus.instance
+                                        .startScan(
+                                            timeout: const Duration(seconds: 2))
+                                        .then((value) {
+                                      if (mounted) {
+                                        setState(() {
+                                          isScanningBluetooth = false;
+                                        });
+                                      }
+                                    });
+                                  }
+                                });*/
+
+                                if (mounted) {
+                                  stateSetter(() {
+                                    isRefreshList = true;
+                                    progress = 0.9;
+                                    lprSensorProgress = 0.0;
+                                    isStartButton = false;
+                                    bluetoothName = '';
+                                  });
+                                }
                               },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: bluetoothConnectBtnBackColor,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                ),
-                                height: displayWidth(context) * 0.12,
-                                width: displayWidth(context) * 0.34,
-                                // color: HexColor(AppColors.introButtonColor),
-                                child: Center(
-                                  child: Text(
-                                    "Scan",
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: bluetoothConnectBtncolor),
-                                  ),
-                                ),
-                              ),
+                              child: isScanningBluetooth
+                                  ? Center(
+                                      child: Container(
+                                          width: displayWidth(context) * 0.34,
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator())),
+                                    )
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                        color: bluetoothConnectBtnBackColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                      ),
+                                      height: displayWidth(context) * 0.12,
+                                      width: displayWidth(context) * 0.34,
+                                      // color: HexColor(AppColors.introButtonColor),
+                                      child: Center(
+                                        child: Text(
+                                          "Scan",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: bluetoothConnectBtncolor),
+                                        ),
+                                      ),
+                                    ),
                             ),
                           ],
                         ),
