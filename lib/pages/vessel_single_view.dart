@@ -1281,7 +1281,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               child: commonText(
                                                   context: context,
                                                   text:
-                                                      'Tap to connect LPR manual',
+                                                      'Tap to connect LPR manually',
                                                   fontWeight: FontWeight.w400,
                                                   textColor: Colors.red,
                                                   textSize:

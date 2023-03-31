@@ -42,6 +42,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   late List<CreateVessel> getVesselFuture;
   late List<Trip> getTrip;
   late DeviceInfoPlugin deviceDetails;
+  bool isSync = false;
 
   @override
   void initState() {
@@ -601,7 +602,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               commonText(
                                   context: context,
                                   text:
-                                      'If you click on ok, you are going to loose entire local data which is not uploaded',
+                                      'If you click on sync, you are going to loose entire local data which is not uploaded',
                                   fontWeight: FontWeight.w400,
                                   textColor: Colors.grey,
                                   textSize: displayWidth(context) * 0.032,
@@ -628,8 +629,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             : Colors.grey)),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Cancel', context, primaryColor, () {
-                                    Navigator.of(context).pop();
+                                      'Skip And Sync', context, primaryColor, () {
+                                    //Navigator.of(context).pop();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                          const SyncDataCloudToMobileScreen()),
+                                    );
                                   },
                                       displayWidth(context) * 0.4,
                                       displayHeight(context) * 0.05,
@@ -655,15 +662,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Ok', context, primaryColor, () async {
+                                      'Upload And Sync', context, primaryColor, () async {
                                     Navigator.of(context).pop();
 
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const SyncDataCloudToMobileScreen()),
-                                    );
+                                    bool internet =
+                                    await Utils().check(scaffoldKey);
+                                    setState(() {
+                                      isSync = true;
+                                    });
+                                    if (internet) {
+                                      // setDialogState(() {
+                                      //  // isSigningOut = true;
+                                      // });
+
+                                      syncAndSignOut();
+                                    }
                                   },
                                       displayWidth(context) * 0.4,
                                       displayHeight(context) * 0.05,
@@ -841,7 +854,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
     Navigator.of(context).pop();
 
     if (!vesselErrorOccurred && !tripErrorOccurred) {
-      signOut();
+      if(isSync == true){
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+              const SyncDataCloudToMobileScreen()),
+        );
+      } else{
+        signOut();
+      }
       Utils.customPrint("ERROR WHILE SYNC AND SIGN OUT IF SIGN OUTT");
     } else {
       Utils.showSnackBar(context,
