@@ -2333,7 +2333,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 stateSetter(() {
                                   progress = 0.9;
                                   lprSensorProgress = 0.0;
-                                  isStartButton = false;
+                                  isStartButton = true;
                                   bluetoothName = '';
                                 });
                               },

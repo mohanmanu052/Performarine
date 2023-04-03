@@ -42,7 +42,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   late List<CreateVessel> getVesselFuture;
   late List<Trip> getTrip;
   late DeviceInfoPlugin deviceDetails;
-  bool isSync = false;
+  bool isSync = false, isUploadStarted = false;
 
   @override
   void initState() {
@@ -661,9 +661,22 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   top: 8.0,
                                 ),
                                 child: Center(
-                                  child: CommonButtons.getAcceptButton(
+                                  child: isUploadStarted ?  Center(
+                                    child: Container(
+                                       // width: displayWidth(context) * 0.34,
+                                        child: Center(
+                                            child:
+                                            CircularProgressIndicator())),
+                                  ): CommonButtons.getAcceptButton(
                                       'Upload And Sync', context, primaryColor, () async {
-                                    Navigator.of(context).pop();
+
+                                    if (mounted) {
+                                        setDialogState(() {
+                                          isUploadStarted = true;
+                                        });
+                                    }
+
+                                  //  Navigator.of(context).pop();
 
                                     bool internet =
                                     await Utils().check(scaffoldKey);
@@ -674,7 +687,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       // setDialogState(() {
                                       //  // isSigningOut = true;
                                       // });
-
+                                      // if (mounted) {
+                                      //   setDialogState(() {
+                                      //     isUploadStarted = false;
+                                      //   });
+                                      // }
                                       syncAndSignOut();
                                     }
                                   },
@@ -855,6 +872,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     if (!vesselErrorOccurred && !tripErrorOccurred) {
       if(isSync == true){
+        setState(() {
+          isUploadStarted = false;
+        });
         Navigator.push(
           context,
           MaterialPageRoute(
