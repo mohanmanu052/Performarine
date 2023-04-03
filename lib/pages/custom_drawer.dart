@@ -253,7 +253,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      InkWell(
+                     /* InkWell(
                         onTap: () {
                           Navigator.of(context).pop();
 
@@ -271,7 +271,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             textColor: Colors.black54,
                             textSize: textSize,
                             textAlign: TextAlign.start),
-                      ),
+                      ), */
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
@@ -670,11 +670,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   ): CommonButtons.getAcceptButton(
                                       'Upload And Sync', context, primaryColor, () async {
 
-                                    if (mounted) {
-                                        setDialogState(() {
-                                          isUploadStarted = true;
-                                        });
-                                    }
 
                                   //  Navigator.of(context).pop();
 
@@ -684,6 +679,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       isSync = true;
                                     });
                                     if (internet) {
+
+                                      if (mounted) {
+                                        setDialogState(() {
+                                          isUploadStarted = true;
+                                        });
+                                      }
                                       // setDialogState(() {
                                       //  // isSigningOut = true;
                                       // });
