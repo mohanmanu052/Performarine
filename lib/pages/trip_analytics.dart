@@ -1063,24 +1063,12 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   }
 
   startSensorFunctionality(Trip tripData) async {
-    String deviceId = '', model = '', version = '', make = '', board = '';
-
+    AndroidDeviceInfo? androidDeviceInfo;
+    IosDeviceInfo? iosDeviceInfo;
     if (Platform.isAndroid) {
-      AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
-      deviceId = androidDeviceInfo.id;
-      model = androidDeviceInfo.model;
-      version = androidDeviceInfo.version.release;
-      make = androidDeviceInfo.manufacturer;
-      board = androidDeviceInfo.board;
+      androidDeviceInfo = await deviceDetails.androidInfo;
     } else {
-      IosDeviceInfo iosDeviceInfo = await deviceDetails.iosInfo;
-      deviceId = iosDeviceInfo.identifierForVendor!;
-      model = iosDeviceInfo.model!;
-      version = iosDeviceInfo.systemVersion!;
-      make = iosDeviceInfo.systemName!;
-      board = iosDeviceInfo.localizedModel!;
-
-      print("IOS DETAILS $deviceId \n$model \n$version \n$make \n$board");
+      iosDeviceInfo = await deviceDetails.iosInfo;
     }
 
     String? tripDuration =
@@ -1095,6 +1083,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
     // //'storage/emulated/0/Download/${tripData.id}.zip',
 
+    Directory tripDir = await getApplicationDocumentsDirectory();
+
     var queryParameters;
     queryParameters = {
       "id": tripData.id,
@@ -1103,11 +1093,19 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         {"make": "qualicom", "name": "gps"}
       ],
       "deviceInfo": {
-        "deviceId": deviceId,
-        "model": model,
-        "version": version,
-        "make": make,
-        "board": board,
+        "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',
+        "model": Platform.isAndroid
+            ? androidDeviceInfo!.model
+            : iosDeviceInfo!.model,
+        "version": Platform.isAndroid
+            ? androidDeviceInfo!.version.release
+            : iosDeviceInfo!.utsname.release,
+        "make": Platform.isAndroid
+            ? androidDeviceInfo!.manufacturer
+            : iosDeviceInfo?.utsname.machine,
+        "board": Platform.isAndroid
+            ? androidDeviceInfo!.board
+            : iosDeviceInfo!.utsname.machine,
         "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
       },
       "startPosition": startPosition
@@ -1120,8 +1118,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       "endPosition": endPosition,
       /*json.decode(tripData.endPosition!.toString()).cast<String>().toList()*/
       "vesselId": tripData.vesselId,
-      "filePath":
-          '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip',
+      "filePath": Platform.isAndroid
+          ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'
+          : '${tripDir.path}/${tripData.id}.zip',
       "createdAt": tripData.createdAt,
       "updatedAt": tripData.updatedAt,
       "duration": tripDuration,
@@ -1138,8 +1137,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         .sendSensorInfo(
             Get.context!,
             commonProvider.loginModel!.token!,
-            File(
-                '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'),
+            File(Platform.isAndroid
+                ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'
+                : '${tripDir.path}/${tripData.id}.zip'),
             queryParameters,
             tripData.id!,
             scaffoldKey)

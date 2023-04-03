@@ -19,6 +19,8 @@ class EndTrip {
       {BuildContext? context,
       GlobalKey<ScaffoldState>? scaffoldKey,
       VoidCallback? onEnded}) async {
+    Utils.customPrint("END TRIP FUNCTIONALITY");
+
     String downloadedFilePath = '';
     await sharedPreferences!.reload();
 

@@ -8,6 +8,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -466,7 +467,16 @@ class _TripWidgetState extends State<TripWidget> {
 
     // flutterLocalNotificationsPlugin.cancel(9988);
 
-    AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
+    AndroidDeviceInfo? androidDeviceInfo;
+    IosDeviceInfo? iosDeviceInfo;
+
+    if (Platform.isAndroid) {
+      androidDeviceInfo = await deviceDetails.androidInfo;
+    } else {
+      iosDeviceInfo = await deviceDetails.iosInfo;
+    }
+
+    //AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
 
     String? tripDuration =
         sharedPreferences!.getString("tripDuration") ?? '00:00:00';
@@ -479,6 +489,9 @@ class _TripWidgetState extends State<TripWidget> {
     Utils.customPrint('START POSITION 0 ${startPosition}');
 
     //'storage/emulated/0/Download/${widget.tripList!.id}.zip',
+
+    Directory tripDir = await getApplicationDocumentsDirectory();
+
     var queryParameters;
     queryParameters = {
       "id": tripData.id,
@@ -487,18 +500,27 @@ class _TripWidgetState extends State<TripWidget> {
         {"make": "qualicom", "name": "gps"}
       ],
       "deviceInfo": {
-        "deviceId": androidDeviceInfo.id,
-        "model": androidDeviceInfo.model,
-        "version": androidDeviceInfo.version.release,
-        "make": androidDeviceInfo.manufacturer,
-        "board": androidDeviceInfo.board,
+        "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',
+        "model": Platform.isAndroid
+            ? androidDeviceInfo!.model
+            : iosDeviceInfo!.model,
+        "version": Platform.isAndroid
+            ? androidDeviceInfo!.version.release
+            : iosDeviceInfo!.utsname.release,
+        "make": Platform.isAndroid
+            ? androidDeviceInfo!.manufacturer
+            : iosDeviceInfo?.utsname.machine,
+        "board": Platform.isAndroid
+            ? androidDeviceInfo!.board
+            : iosDeviceInfo!.utsname.machine,
         "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
       },
       "startPosition": startPosition,
       "endPosition": endPosition,
       "vesselId": tripData.vesselId,
-      "filePath":
-          '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip',
+      "filePath": Platform.isAndroid
+          ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'
+          : '${tripDir.path}/${tripData.id}.zip',
       "createdAt": tripData.createdAt,
       "updatedAt": tripData.updatedAt,
       "duration": tripDuration,
@@ -517,8 +539,9 @@ class _TripWidgetState extends State<TripWidget> {
         .sendSensorInfo(
             Get.context!,
             commonProvider.loginModel!.token!,
-            File(
-                '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'),
+            File(Platform.isAndroid
+                ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'
+                : '${tripDir.path}/${tripData.id}.zip'),
             queryParameters,
             tripData.id!,
             widget.scaffoldKey!)

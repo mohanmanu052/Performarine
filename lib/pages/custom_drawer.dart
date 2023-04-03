@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -767,7 +768,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
       for (int i = 0; i < getTrip.length; i++) {
         var tripSyncOrNot = getTrip[i].isSync;
 
-        AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
+        AndroidDeviceInfo? androidDeviceInfo;
+        IosDeviceInfo? iosDeviceInfo;
+        if (Platform.isAndroid) {
+          androidDeviceInfo = await deviceDetails.androidInfo;
+        } else {
+          iosDeviceInfo = await deviceDetails.iosInfo;
+        }
+
+        Directory tripDir = await getApplicationDocumentsDirectory();
 
         if (tripSyncOrNot == 0) {
           var queryParameters;
@@ -778,19 +787,28 @@ class _CustomDrawerState extends State<CustomDrawer> {
               {"make": "qualicom", "name": "gps"}
             ],
             "deviceInfo": {
-              "deviceId": androidDeviceInfo.id,
-              "model": androidDeviceInfo.model,
-              "version": androidDeviceInfo.version.release,
-              "make": androidDeviceInfo.manufacturer,
-              "board": androidDeviceInfo.board,
+              "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',
+              "model": Platform.isAndroid
+                  ? androidDeviceInfo!.model
+                  : iosDeviceInfo!.model,
+              "version": Platform.isAndroid
+                  ? androidDeviceInfo!.version.release
+                  : iosDeviceInfo!.utsname.release,
+              "make": Platform.isAndroid
+                  ? androidDeviceInfo!.manufacturer
+                  : iosDeviceInfo?.utsname.machine,
+              "board": Platform.isAndroid
+                  ? androidDeviceInfo!.board
+                  : iosDeviceInfo!.utsname.machine,
               "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
             },
             "startPosition": getTrip[i].startPosition!.split(','),
             "endPosition": getTrip[i].endPosition!.split(','),
             /*json.decode(tripData.endPosition!.toString()).cast<String>().toList()*/
             "vesselId": getTrip[i].vesselId,
-            "filePath":
-                '/data/user/0/com.performarine.app/app_flutter/${getTrip[i].id}.zip',
+            "filePath": Platform.isAndroid
+                ? '/data/user/0/com.performarine.app/app_flutter/${getTrip[i].id}.zip'
+                : '${tripDir.path}/${getTrip[i].id}.zip',
             "createdAt": getTrip[i].createdAt,
             "updatedAt": getTrip[i].updatedAt,
             "duration": getTrip[i].time,
@@ -806,8 +824,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
               .sendSensorInfo(
                   context,
                   commonProvider.loginModel!.token,
-                  File(
-                      '/data/user/0/com.performarine.app/app_flutter/${getTrip[i].id}.zip'),
+                  File(Platform.isAndroid
+                      ? '/data/user/0/com.performarine.app/app_flutter/${getTrip[i].id}.zip'
+                      : '${tripDir.path}/${getTrip[i].id}.zip'),
                   queryParameters,
                   getTrip[i].id!,
                   widget.scaffoldKey!,
