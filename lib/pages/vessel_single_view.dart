@@ -745,12 +745,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 }
                               } else {
                                 if (!isLocationDialogBoxOpen) {
+                                  Utils.customPrint("ELSE CONDITION");
+
                                   showDialog(
                                       context: scaffoldKey.currentContext!,
                                       builder: (BuildContext context) {
                                         isLocationDialogBoxOpen = true;
                                         return LocationPermissionCustomDialog(
-                                          isLocationDialogBox: false,
+                                          isLocationDialogBox: true,
                                           text:
                                               'Always Allow Access to “Location”',
                                           subText:
@@ -2328,7 +2330,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                print("Tapped on cancel button");
+                                // FlutterBluePlus.instance.
+
                                 Navigator.pop(context);
                                 stateSetter(() {
                                   progress = 0.9;
@@ -2367,7 +2370,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 }
 
                                 FlutterBluePlus.instance.stopScan();
-
                                 FlutterBluePlus.instance.startScan(
                                     timeout: const Duration(seconds: 2));
 
@@ -2378,7 +2380,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     });
                                   });
                                 }
-
                                 /*FlutterBluePlus.instance.isScanning
                                     .listen((event) {
                                   print("Tapped on scan button 1");
@@ -2451,6 +2452,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
           lprSensorProgress = 1.0;
           isStartButton = true;
           isBluetoothConnected = true;
+        });
+      } else {
+        stateSetter(() {
+          // progress = 1.0;
+          // lprSensorProgress = 1.0;
+          // isStartButton = true;
+          isBluetoothConnected = false;
         });
       }
     });

@@ -253,7 +253,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                     /* InkWell(
+                      /* InkWell(
                         onTap: () {
                           Navigator.of(context).pop();
 
@@ -629,13 +629,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             : Colors.grey)),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Skip And Sync', context, primaryColor, () {
+                                      'Skip And Sync', context, primaryColor,
+                                      () {
                                     //Navigator.of(context).pop();
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                          const SyncDataCloudToMobileScreen()),
+                                              const SyncDataCloudToMobileScreen()),
                                     );
                                   },
                                       displayWidth(context) * 0.4,
@@ -645,7 +646,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                               Brightness.dark
                                           ? Colors.white
                                           : Colors.black,
-                                      displayHeight(context) * 0.018,
+                                      displayHeight(context) * 0.014,
                                       Colors.grey.shade400,
                                       '',
                                       fontWeight: FontWeight.w500),
@@ -661,49 +662,50 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   top: 8.0,
                                 ),
                                 child: Center(
-                                  child: isUploadStarted ?  Center(
-                                    child: Container(
-                                       // width: displayWidth(context) * 0.34,
-                                        child: Center(
-                                            child:
-                                            CircularProgressIndicator())),
-                                  ): CommonButtons.getAcceptButton(
-                                      'Upload And Sync', context, primaryColor, () async {
+                                  child: isUploadStarted
+                                      ? Center(
+                                          child: Container(
+                                              // width: displayWidth(context) * 0.34,
+                                              child: Center(
+                                                  child:
+                                                      CircularProgressIndicator())),
+                                        )
+                                      : CommonButtons.getAcceptButton(
+                                          'Upload And Sync',
+                                          context,
+                                          primaryColor, () async {
+                                          //  Navigator.of(context).pop();
 
-
-                                  //  Navigator.of(context).pop();
-
-                                    bool internet =
-                                    await Utils().check(scaffoldKey);
-                                    setState(() {
-                                      isSync = true;
-                                    });
-                                    if (internet) {
-
-                                      if (mounted) {
-                                        setDialogState(() {
-                                          isUploadStarted = true;
-                                        });
-                                      }
-                                      // setDialogState(() {
-                                      //  // isSigningOut = true;
-                                      // });
-                                      // if (mounted) {
-                                      //   setDialogState(() {
-                                      //     isUploadStarted = false;
-                                      //   });
-                                      // }
-                                      syncAndSignOut();
-                                    }
-                                  },
-                                      displayWidth(context) * 0.4,
-                                      displayHeight(context) * 0.05,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.018,
-                                      buttonBGColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
+                                          bool internet =
+                                              await Utils().check(scaffoldKey);
+                                          setState(() {
+                                            isSync = true;
+                                          });
+                                          if (internet) {
+                                            if (mounted) {
+                                              setDialogState(() {
+                                                isUploadStarted = true;
+                                              });
+                                            }
+                                            // setDialogState(() {
+                                            //  // isSigningOut = true;
+                                            // });
+                                            // if (mounted) {
+                                            //   setDialogState(() {
+                                            //     isUploadStarted = false;
+                                            //   });
+                                            // }
+                                            syncAndSignOut();
+                                          }
+                                        },
+                                          displayWidth(context) * 0.4,
+                                          displayHeight(context) * 0.05,
+                                          primaryColor,
+                                          Colors.white,
+                                          displayHeight(context) * 0.014,
+                                          buttonBGColor,
+                                          '',
+                                          fontWeight: FontWeight.w500),
                                 ),
                               ),
                             ),
@@ -872,17 +874,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
     Navigator.of(context).pop();
 
     if (!vesselErrorOccurred && !tripErrorOccurred) {
-      if(isSync == true){
+      if (isSync == true) {
         setState(() {
           isUploadStarted = false;
         });
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-              const SyncDataCloudToMobileScreen()),
+              builder: (context) => const SyncDataCloudToMobileScreen()),
         );
-      } else{
+      } else {
         signOut();
       }
       Utils.customPrint("ERROR WHILE SYNC AND SIGN OUT IF SIGN OUTT");

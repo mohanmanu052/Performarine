@@ -35,7 +35,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           widget.onSingleDeviceTapped!(true);
         });
 
-        widget.device!.connect(autoConnect: true).then((value) {
+        widget.device!.connect().then((value) {
           /*print('ERROR CONNECTED FIRST');
 
           widget.setSetter!(() {
