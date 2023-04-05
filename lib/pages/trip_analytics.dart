@@ -1224,8 +1224,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       ongoing: true,
       indeterminate: false,
     );
-    final NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+    final NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: DarwinNotificationDetails());
     flutterLocalNotificationsPlugin.show(
         9989, 'Uploading vessel details...', '', platformChannelSpecifics,
         payload: 'item x');
@@ -1332,8 +1333,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             priority: Priority.high,
             onlyAlertOnce: true,
             showProgress: false);
-    final NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+    final NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: DarwinNotificationDetails());
     flutterLocalNotificationsPlugin.show(9987, id,
         'Failed to upload. Please try again', platformChannelSpecifics,
         payload: 'item x');
@@ -1351,8 +1353,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             showProgress: true,
             progress: 100,
             maxProgress: 100);
-    final NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+    final NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: DarwinNotificationDetails());
     flutterLocalNotificationsPlugin.show(
         9989, 'Trip uploaded successfully', '', platformChannelSpecifics,
         payload: 'item x');

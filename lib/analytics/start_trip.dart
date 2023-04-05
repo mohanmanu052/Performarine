@@ -188,7 +188,9 @@ class StartTrip {
         });
 
         if (serviceInstance is AndroidServiceInstance) {
+          print('INSIDE IOS SER INS ANDROID 1');
           if (await serviceInstance.isForegroundService()) {
+            print('INSIDE IOS SER INS 2');
             flutterLocalNotificationsPlugin.show(
               888,
               '',
@@ -278,7 +280,7 @@ class StartTrip {
             }
           }
         } else if (serviceInstance is IOSServiceInstance) {
-          print('INSIDE IOS SER INS');
+          print('INSIDE IOS SER INS ${serviceInstance}');
           flutterLocalNotificationsPlugin
               .show(
             888,

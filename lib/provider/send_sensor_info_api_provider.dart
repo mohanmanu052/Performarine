@@ -68,7 +68,9 @@ class SendSensorInfoApiProvider with ChangeNotifier {
                     maxProgress: 100,
                     progress: finalProgress);
             final NotificationDetails platformChannelSpecifics =
-                NotificationDetails(android: androidPlatformChannelSpecifics);
+                NotificationDetails(
+                    android: androidPlatformChannelSpecifics,
+                    iOS: DarwinNotificationDetails());
             flutterLocalNotificationsPlugin.show(
                 9989,
                 '$tripId - $finalProgress/100 %',
