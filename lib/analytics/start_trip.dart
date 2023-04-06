@@ -288,6 +288,7 @@ class StartTrip {
             'Trip is in progress',
             NotificationDetails(
                 iOS: DarwinNotificationDetails(
+              presentAlert: true,
               subtitle:
                   'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
             )),
