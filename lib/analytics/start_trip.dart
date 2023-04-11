@@ -285,12 +285,11 @@ class StartTrip {
               .show(
             888,
             '',
-            'Trip is in progress',
+            'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
             NotificationDetails(
                 iOS: DarwinNotificationDetails(
               presentAlert: true,
-              subtitle:
-                  'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
+              subtitle: '',
             )),
           )
               .catchError((onError) {
