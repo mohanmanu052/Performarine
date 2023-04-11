@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
-
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,7 @@ import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/pages/lpr_bluetooth_list.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -32,6 +34,8 @@ import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+
+import '../lpr_bluetooth_widget.dart';
 
 class VesselSingleView extends StatefulWidget {
   CreateVessel? vessel;
@@ -69,10 +73,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
   String getTripId = '';
   var uuid = Uuid();
 
-  double progress = 1.0;
+  double progress = 0.9;
   double deviceProgress = 1.0;
   double sensorProgress = 1.0;
   double accSensorProgress = 1.0;
+  double lprSensorProgress = 1.0;
   double uaccSensorProgress = 1.0;
   double gyroSensorProgress = 1.0;
   double magnSensorProgress = 1.0;
@@ -84,8 +89,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
   double uaccSensorProgressBegin = 0.0;
   double gyroSensorProgressBegin = 0.0;
   double magnSensorProgressBegin = 0.0;
+  double lprSensorProgressBegin = 0.0;
 
-  String selectedVesselWeight = 'Select Current Load';
+  String selectedVesselWeight = 'Select Current Load', bluetoothName = '';
 
   bool isServiceRunning = false;
   FlutterBackgroundService service = FlutterBackgroundService();
@@ -97,6 +103,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
   Position? location;
 
   List<String> sensorDataTable = ['ACC', 'UACC', 'GYRO', 'MAGN'];
+  bool isBluetoothDialog = false;
+  bool isBluetoothConnected = false;
+  bool isRefreshList = false, isScanningBluetooth = false;
 
   getIfServiceIsRunning() async {
     bool data = await service.isRunning();
@@ -535,11 +544,155 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             }*/
 
                             if (isLocationPermitted) {
-                              vessel!.add(widget.vessel!);
-                              await locationPermissions(
-                                  widget.vessel!.vesselSize!,
-                                  widget.vessel!.name!,
-                                  widget.vessel!.id!);
+                              bool isNDPermDenied = await Permission
+                                  .bluetoothConnect.isPermanentlyDenied;
+
+                              print('BYEE: $isNDPermDenied');
+                              if (isNDPermDenied) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return LocationPermissionCustomDialog(
+                                        isLocationDialogBox: false,
+                                        text: 'Allow nearby devices',
+                                        subText:
+                                            'Allow nearby devices to connect to the app',
+                                        buttonText: 'OK',
+                                        buttonOnTap: () async {
+                                          Get.back();
+
+                                          await openAppSettings();
+                                        },
+                                      );
+                                    });
+                                return;
+                              } else {
+                                if (Platform.isIOS) {
+                                  bool isBluetoothEnable =
+                                      await FlutterBluePlus.instance.isOn;
+
+                                  if (isBluetoothEnable) {
+                                    vessel!.add(widget.vessel!);
+                                    await locationPermissions(
+                                        widget.vessel!.vesselSize!,
+                                        widget.vessel!.name!,
+                                        widget.vessel!.id!);
+                                  } else {
+                                    showBluetoothDialog(context);
+                                  }
+                                } else {
+                                  bool isNDPermittedOne = await Permission
+                                      .bluetoothConnect.isGranted;
+
+                                  if (isNDPermittedOne) {
+                                    bool isBluetoothEnable =
+                                        await FlutterBluePlus.instance.isOn;
+
+                                    if (isBluetoothEnable) {
+                                      vessel!.add(widget.vessel!);
+                                      await locationPermissions(
+                                          widget.vessel!.vesselSize!,
+                                          widget.vessel!.name!,
+                                          widget.vessel!.id!);
+                                    } else {
+                                      showBluetoothDialog(context);
+                                    }
+                                  } else {
+                                    print('HII2: $isNDPermittedOne');
+
+                                    await Permission.bluetoothConnect.request();
+                                    bool isNDPermitted = await Permission
+                                        .bluetoothConnect.isGranted;
+                                    if (isNDPermitted) {
+                                      bool isBluetoothEnable =
+                                          await FlutterBluePlus.instance.isOn;
+
+                                      if (isBluetoothEnable) {
+                                        vessel!.add(widget.vessel!);
+                                        await locationPermissions(
+                                            widget.vessel!.vesselSize!,
+                                            widget.vessel!.name!,
+                                            widget.vessel!.id!);
+                                      } else {
+                                        showBluetoothDialog(context);
+                                      }
+                                    } else {
+                                      if (await Permission
+                                              .bluetoothConnect.isDenied ||
+                                          await Permission.bluetoothConnect
+                                              .isPermanentlyDenied) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return LocationPermissionCustomDialog(
+                                                isLocationDialogBox: false,
+                                                text: 'Allow nearby devices',
+                                                subText:
+                                                    'Allow nearby devices to connect to the app',
+                                                buttonText: 'OK',
+                                                buttonOnTap: () async {
+                                                  Get.back();
+
+                                                  await openAppSettings();
+                                                },
+                                              );
+                                            });
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+
+                              /* bool isBluetoothEnable =
+                                  await FlutterBluePlus.instance.isOn;
+
+                              if (isBluetoothEnable) {
+                                vessel!.add(widget.vessel!);
+                                await locationPermissions(
+                                    widget.vessel!.vesselSize!,
+                                    widget.vessel!.name!,
+                                    widget.vessel!.id!);
+                              } else {
+                                Utils.customPrint("NOT GIVEN PERMISSION 1");
+
+                                bool isNDPermDenied = await Permission
+                                    .bluetoothConnect.isPermanentlyDenied;
+
+                                if (isNDPermDenied) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return LocationPermissionCustomDialog(
+                                          text: 'Allow nearby devices',
+                                          subText:
+                                              'Allow nearby devices to connect to the app',
+                                          buttonText: 'OK',
+                                          buttonOnTap: () async {
+                                            Get.back();
+
+                                            await openAppSettings();
+                                          },
+                                        );
+                                      });
+                                  return;
+                                } else {
+                                  bool isNDPermitted = await Permission
+                                      .bluetoothConnect.isGranted;
+
+                                  if (isNDPermitted) {
+                                    showBluetoothDialog(context);
+                                  } else {
+                                    await Permission.bluetoothConnect.request();
+                                    bool isNDPermitted = await Permission
+                                        .bluetoothConnect.isGranted;
+                                    if (isNDPermitted) {
+                                      showBluetoothDialog(context);
+                                    }
+                                  }
+                                }
+
+                                //showBluetoothDialog(context);
+                              }*/
                             } else {
                               /// WIU
                               bool isWIULocationPermitted =
@@ -555,16 +708,87 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               bool isLocationPermitted =
                                   await Permission.locationAlways.isGranted;
                               if (isLocationPermitted) {
-                                vessel!.add(widget.vessel!);
-                                await locationPermissions(
-                                    widget.vessel!.vesselSize!,
-                                    widget.vessel!.name!,
-                                    widget.vessel!.id!);
+                                bool isNDPermDenied = await Permission
+                                    .bluetoothConnect.isPermanentlyDenied;
+
+                                if (isNDPermDenied) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return LocationPermissionCustomDialog(
+                                          isLocationDialogBox: false,
+                                          text: 'Allow nearby devices',
+                                          subText:
+                                              'Allow nearby devices to connect to the app',
+                                          buttonText: 'OK',
+                                          buttonOnTap: () async {
+                                            Get.back();
+
+                                            await openAppSettings();
+                                          },
+                                        );
+                                      });
+                                  return;
+                                } else {
+                                  bool isNDPermitted = await Permission
+                                      .bluetoothConnect.isGranted;
+
+                                  if (isNDPermitted) {
+                                    bool isBluetoothEnable =
+                                        await FlutterBluePlus.instance.isOn;
+
+                                    if (isBluetoothEnable) {
+                                      vessel!.add(widget.vessel!);
+                                      await locationPermissions(
+                                          widget.vessel!.vesselSize!,
+                                          widget.vessel!.name!,
+                                          widget.vessel!.id!);
+                                    } else {
+                                      showBluetoothDialog(context);
+                                    }
+                                  } else {
+                                    await Permission.bluetoothConnect.request();
+                                    bool isNDPermitted = await Permission
+                                        .bluetoothConnect.isGranted;
+                                    if (isNDPermitted) {
+                                      bool isBluetoothEnable =
+                                          await FlutterBluePlus.instance.isOn;
+
+                                      if (isBluetoothEnable) {
+                                        vessel!.add(widget.vessel!);
+                                        await locationPermissions(
+                                            widget.vessel!.vesselSize!,
+                                            widget.vessel!.name!,
+                                            widget.vessel!.id!);
+                                      } else {
+                                        showBluetoothDialog(context);
+                                      }
+                                    }
+                                  }
+                                }
                               } else {
                                 if (Platform.isIOS) {
                                   await Permission.locationAlways.request();
                                   bool isLocationAlwaysPermitted =
                                       await Permission.locationAlways.isGranted;
+/*=======
+                                if (!isLocationDialogBoxOpen) {
+                                  Utils.customPrint("ELSE CONDITION");
+
+                                  showDialog(
+                                      context: scaffoldKey.currentContext!,
+                                      builder: (BuildContext context) {
+                                        isLocationDialogBoxOpen = true;
+                                        return LocationPermissionCustomDialog(
+                                          isLocationDialogBox: true,
+                                          text:
+                                              'Always Allow Access to “Location”',
+                                          subText:
+                                              "To track your trip while you use other apps we need background access to your location",
+                                          buttonText: 'Ok',
+                                          buttonOnTap: () async {
+                                            Get.back();
+>>>>>>> 75ba3136bd454470bc8ad7fada46d2fa07f45f79*/
 
                                   Utils.customPrint(
                                       'IOS PERMISSION GIVEN OUTSIDE');
@@ -621,11 +845,120 @@ class VesselSingleViewState extends State<VesselSingleView> {
     if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
+        //   await showBluetoothDialog(context);
+        //  await showBluetoothListDialog(context);
+
+        /*FlutterBluePlus.instance.isScanning.listen((event) {
+          print('SCANNING $event');
+
+          if (event) {
+            FlutterBluePlus.instance.stopScan();
+            FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+          } else {
+            FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+          }
+        });*/
+
+        FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+        FlutterBluePlus.instance.scanResults.listen((results) async {
+          // print('SCAN RESULT INSIDE LISTEN');
+          for (ScanResult r in results) {
+            // print('SCAN RESULT INSIDE FOR EACH');
+            // print('${r.device.name} found! rssi: ${r.rssi}');
+            if (r.device.name.toLowerCase().contains("lpr")) {
+              // print('SCAN RESULT INSIDE IF ${r.device.name}');
+              print('FOUND DEVICE AGAIN');
+
+              r.device.connect().catchError((e) {
+                r.device.state.listen((event) {
+                  if (event == BluetoothDeviceState.connected) {
+                    // print('CONNECTION EVENT ${event}');
+                    r.device.disconnect().then((value) {
+                      r.device.connect().catchError((e) {
+                        // print('SCAN RESULT INSIDE IF ${r.device.name}');
+                        if (mounted) {
+                          setState(() {
+                            isBluetoothConnected = true;
+                            progress = 1.0;
+                            lprSensorProgress = 1.0;
+                            isStartButton = true;
+                          });
+                        }
+                      });
+                    });
+                  }
+                });
+              });
+
+              bluetoothName = r.device.name;
+              setState(() {
+                isBluetoothConnected = true;
+                progress = 1.0;
+                lprSensorProgress = 1.0;
+                isStartButton = true;
+              });
+              FlutterBluePlus.instance.stopScan();
+              break;
+            } else {
+              r.device
+                  .disconnect()
+                  .then((value) => print("is device disconnected: $value"));
+            }
+          }
+        });
         getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       } else {
+        // await showBluetoothDialog(context);
+        //  await showBluetoothListDialog(context);
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
+          FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+          FlutterBluePlus.instance.scanResults.listen((results) async {
+            // print('SCAN RESULT INSIDE LISTEN');
+            for (ScanResult r in results) {
+              // print('SCAN RESULT INSIDE FOR EACH');
+              // print('${r.device.name} found! rssi: ${r.rssi}');
+              if (r.device.name.toLowerCase().contains("lpr")) {
+                // print('SCAN RESULT INSIDE IF ${r.device.name}');
+
+                r.device.connect().catchError((e) {
+                  r.device.state.listen((event) {
+                    if (event == BluetoothDeviceState.connected) {
+                      // print('CONNECTION EVENT ${event}');
+                      r.device.disconnect().then((value) {
+                        r.device.connect().catchError((e) {
+                          // print('SCAN RESULT INSIDE IF ${r.device.name}');
+                          if (mounted) {
+                            setState(() {
+                              isBluetoothConnected = true;
+                              progress = 1.0;
+                              lprSensorProgress = 1.0;
+                              isStartButton = true;
+                            });
+                          }
+                        });
+                      });
+                    }
+                  });
+                });
+
+                bluetoothName = r.device.name;
+                setState(() {
+                  isBluetoothConnected = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                });
+                FlutterBluePlus.instance.stopScan();
+                break;
+              } else {
+                r.device
+                    .disconnect()
+                    .then((value) => print("is device disconnected: $value"));
+              }
+            }
+          });
           getBottomSheet(
               context, size, vesselName, weight, isLocationPermitted);
         }
@@ -633,11 +966,120 @@ class VesselSingleViewState extends State<VesselSingleView> {
     } else {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
+        //   await showBluetoothDialog(context);
+        //  await showBluetoothListDialog(context);
+
+        /*FlutterBluePlus.instance.isScanning.listen((event) {
+          print('SCANNING $event');
+
+          if (event) {
+            FlutterBluePlus.instance.stopScan();
+            FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+          } else {
+            FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+          }
+        });*/
+
+        FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+        FlutterBluePlus.instance.scanResults.listen((results) async {
+          // print('SCAN RESULT INSIDE LISTEN');
+          for (ScanResult r in results) {
+            // print('SCAN RESULT INSIDE FOR EACH');
+            // print('${r.device.name} found! rssi: ${r.rssi}');
+            if (r.device.name.toLowerCase().contains("lpr")) {
+              // print('SCAN RESULT INSIDE IF ${r.device.name}');
+              print('FOUND DEVICE AGAIN');
+
+              r.device.connect().catchError((e) {
+                r.device.state.listen((event) {
+                  if (event == BluetoothDeviceState.connected) {
+                    // print('CONNECTION EVENT ${event}');
+                    r.device.disconnect().then((value) {
+                      r.device.connect().catchError((e) {
+                        // print('SCAN RESULT INSIDE IF ${r.device.name}');
+                        if (mounted) {
+                          setState(() {
+                            isBluetoothConnected = true;
+                            progress = 1.0;
+                            lprSensorProgress = 1.0;
+                            isStartButton = true;
+                          });
+                        }
+                      });
+                    });
+                  }
+                });
+              });
+
+              bluetoothName = r.device.name;
+              setState(() {
+                isBluetoothConnected = true;
+                progress = 1.0;
+                lprSensorProgress = 1.0;
+                isStartButton = true;
+              });
+              FlutterBluePlus.instance.stopScan();
+              break;
+            } else {
+              r.device
+                  .disconnect()
+                  .then((value) => print("is device disconnected: $value"));
+            }
+          }
+        });
         getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       } else {
+        // await showBluetoothDialog(context);
+        //  await showBluetoothListDialog(context);
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
+          FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+          FlutterBluePlus.instance.scanResults.listen((results) async {
+            // print('SCAN RESULT INSIDE LISTEN');
+            for (ScanResult r in results) {
+              // print('SCAN RESULT INSIDE FOR EACH');
+              // print('${r.device.name} found! rssi: ${r.rssi}');
+              if (r.device.name.toLowerCase().contains("lpr")) {
+                // print('SCAN RESULT INSIDE IF ${r.device.name}');
+
+                r.device.connect().catchError((e) {
+                  r.device.state.listen((event) {
+                    if (event == BluetoothDeviceState.connected) {
+                      // print('CONNECTION EVENT ${event}');
+                      r.device.disconnect().then((value) {
+                        r.device.connect().catchError((e) {
+                          // print('SCAN RESULT INSIDE IF ${r.device.name}');
+                          if (mounted) {
+                            setState(() {
+                              isBluetoothConnected = true;
+                              progress = 1.0;
+                              lprSensorProgress = 1.0;
+                              isStartButton = true;
+                            });
+                          }
+                        });
+                      });
+                    }
+                  });
+                });
+
+                bluetoothName = r.device.name;
+                setState(() {
+                  isBluetoothConnected = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                });
+                FlutterBluePlus.instance.stopScan();
+                break;
+              } else {
+                r.device
+                    .disconnect()
+                    .then((value) => print("is device disconnected: $value"));
+              }
+            }
+          });
           getBottomSheet(
               context, size, vesselName, weight, isLocationPermitted);
         }
@@ -654,6 +1096,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
     addingDataToDB = false;
     selectedVesselWeight = 'Select Current Load';
     isBottomSheetOpened = true;
+    isBluetoothConnected = false;
+    progress = 0.9;
 
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}');
@@ -682,6 +1126,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
               alignment: Alignment.bottomCenter,
               child: StatefulBuilder(builder:
                   (BuildContext bottomSheetContext, StateSetter stateSetter) {
+                //FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+
                 return Container(
                   height: MediaQuery.of(context).size.height * 0.75,
                   decoration: BoxDecoration(
@@ -903,54 +1349,130 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 Padding(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: displayWidth(context) * 0.08),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      commonText(
-                                          context: context,
-                                          text: 'Connecting with LPR',
-                                          fontWeight: FontWeight.w500,
-                                          textColor: Colors.black,
-                                          textSize:
-                                              displayWidth(context) * 0.032,
-                                          textAlign: TextAlign.start),
-                                      const SizedBox(
-                                        width: 20,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          commonText(
+                                              context: context,
+                                              text: 'Connecting with LPR',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.032,
+                                              textAlign: TextAlign.start),
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+                                          TweenAnimationBuilder(
+                                              duration:
+                                                  const Duration(seconds: 3),
+                                              tween: Tween(
+                                                  begin: lprSensorProgressBegin,
+                                                  end: lprSensorProgress),
+                                              builder:
+                                                  (context, double value, _) {
+                                                return isBluetoothConnected
+                                                    ? SizedBox(
+                                                        height: 20,
+                                                        width: 20,
+                                                        child: Stack(
+                                                          fit: StackFit.expand,
+                                                          children: [
+                                                            CircularProgressIndicator(
+                                                              color:
+                                                                  circularProgressColor,
+                                                              value: value,
+                                                              backgroundColor:
+                                                                  Colors.grey
+                                                                      .shade200,
+                                                              strokeWidth: 2,
+                                                              valueColor:
+                                                                  const AlwaysStoppedAnimation(
+                                                                      Colors
+                                                                          .green),
+                                                            ),
+                                                            Center(
+                                                              child: subTitleProgress(
+                                                                  value,
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.035),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      )
+                                                    : SizedBox(
+                                                        height: 20,
+                                                        width: 20,
+                                                        child: Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(
+                                                                  color: Colors
+                                                                      .red,
+                                                                  width: 2),
+                                                              shape: BoxShape
+                                                                  .circle),
+                                                          child: Center(
+                                                            child: Icon(
+                                                              Icons.close,
+                                                              color: Colors.red,
+                                                              size: 14,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                              }),
+                                        ],
                                       ),
-                                      TweenAnimationBuilder(
-                                          duration: const Duration(seconds: 3),
-                                          tween: Tween(
-                                              begin: accSensorProgressBegin,
-                                              end: accSensorProgress),
-                                          builder: (context, double value, _) {
-                                            return SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: Stack(
-                                                fit: StackFit.expand,
-                                                children: [
-                                                  CircularProgressIndicator(
-                                                    color:
-                                                        circularProgressColor,
-                                                    value: value,
-                                                    backgroundColor:
-                                                        Colors.grey.shade200,
-                                                    strokeWidth: 2,
-                                                    valueColor:
-                                                        const AlwaysStoppedAnimation(
-                                                            Colors.green),
-                                                  ),
-                                                  Center(
-                                                    child: subTitleProgress(
-                                                        value,
+                                      isBluetoothConnected
+                                          ? Row(
+                                              children: [
+                                                commonText(
+                                                    context: context,
+                                                    text: 'Connected with ',
+                                                    fontWeight: FontWeight.w400,
+                                                    textColor: Colors.green,
+                                                    textSize:
                                                         displayWidth(context) *
-                                                            0.035),
-                                                  )
-                                                ],
-                                              ),
-                                            );
-                                          }),
+                                                            0.028,
+                                                    textAlign: TextAlign.start),
+                                                SizedBox(
+                                                  width: 2,
+                                                ),
+                                                commonText(
+                                                    context: context,
+                                                    text: bluetoothName,
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.green,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.028,
+                                                    textAlign: TextAlign.start),
+                                              ],
+                                            )
+                                          : InkWell(
+                                              onTap: () async {
+                                                showBluetoothListDialog(
+                                                    context, stateSetter);
+                                              },
+                                              child: commonText(
+                                                  context: context,
+                                                  text:
+                                                      'Tap to connect LPR manually',
+                                                  fontWeight: FontWeight.w400,
+                                                  textColor: Colors.red,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.028,
+                                                  textAlign: TextAlign.start),
+                                            ),
                                     ],
                                   ),
                                 ),
@@ -1248,6 +1770,19 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               ));
                                               return;
                                             }
+
+                                            /*if (!isBluetoothConnected) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                content: Text(
+                                                    "Please connect with LPR device"),
+                                                duration: Duration(seconds: 1),
+                                                backgroundColor: Colors.blue,
+                                              ));
+                                              return;
+                                            }*/
 
                                             bool isLocationPermitted =
                                                 await Permission
@@ -1625,6 +2160,30 @@ class VesselSingleViewState extends State<VesselSingleView> {
     });
   }
 
+  Future<void> enableBT() async {
+    BluetoothEnable.enableBluetooth.then((value) async {
+      //isBluetoothConnected = value;
+
+      Utils.customPrint("BLUETOOTH ENABLE $value");
+
+      if (value == 'true') {
+        vessel!.add(widget.vessel!);
+        await locationPermissions(widget.vessel!.vesselSize!,
+            widget.vessel!.name!, widget.vessel!.id!);
+        print(" bluetooth state$value");
+      } else {
+        bool isNearByDevicePermitted =
+            await Permission.bluetoothConnect.isGranted;
+
+        if (!isNearByDevicePermitted) {
+          await Permission.bluetoothConnect.request();
+        }
+      }
+    }).catchError((e) {
+      print("ENABLE BT$e");
+    });
+  }
+
   buildProgress(double progress, double size) {
     return commonText(
         context: context,
@@ -1793,6 +2352,357 @@ class VesselSingleViewState extends State<VesselSingleView> {
             ),
           );
         });
+  }
+
+  showBluetoothDialog(BuildContext context) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(builder: (ctx, setDialogState) {
+              return Container(
+                width: displayWidth(context),
+                height: displayHeight(context) * 0.3,
+                decoration: new BoxDecoration(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.white,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 30),
+                      child: Text(
+                        "Turn Bluetooth On",
+                        style: TextStyle(
+                            color: blutoothDialogTitleColor,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "To connect with other devices we require\n you to enable the Bluetooth",
+                        style: TextStyle(
+                            color: blutoothDialogTxtColor,
+                            fontSize: 13.0,
+                            fontWeight: FontWeight.w400),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: displayWidth(context) * 0.12,
+                          left: 15,
+                          right: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              print("Tapped on cancel button");
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: bluetoothCancelBtnBackColor,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                              height: displayWidth(context) * 0.12,
+                              width: displayWidth(context) * 0.34,
+                              // color: HexColor(AppColors.introButtonColor),
+                              child: Center(
+                                child: Text(
+                                  "Cancel",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: bluetoothCancelBtnTxtColor),
+                                ),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              print("Tapped on enable Bluetooth");
+                              Navigator.pop(context);
+                              enableBT();
+                              //showBluetoothListDialog(context);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: bluetoothConnectBtnBackColor,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                              height: displayWidth(context) * 0.12,
+                              width: displayWidth(context) * 0.34,
+                              // color: HexColor(AppColors.introButtonColor),
+                              child: Center(
+                                child: Text(
+                                  "Enable Bluetooth",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: bluetoothConnectBtncolor),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          );
+        });
+  }
+
+  showBluetoothListDialog(BuildContext context, StateSetter stateSetter) {
+    stateSetter(() {
+      progress = 0.9;
+      lprSensorProgress = 0.0;
+      isStartButton = false;
+    });
+
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: StatefulBuilder(builder: (ctx, setDialogState) {
+                return Container(
+                  width: displayWidth(context),
+                  height: displayHeight(context) * 0.5,
+                  decoration: new BoxDecoration(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.white,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 30),
+                        child: Text(
+                          "Available Devices",
+                          style: TextStyle(
+                              color: blutoothDialogTitleColor,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Tap to connect with LPR Devices to\n track Trip details",
+                          style: TextStyle(
+                              color: blutoothDialogTxtColor,
+                              fontSize: 13.0,
+                              fontWeight: FontWeight.w400),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+
+                      // Implement listView for bluetooth devices
+                      isRefreshList == true
+                          ? Container(
+                              width: displayWidth(context),
+                              height: 230,
+                              child: LPRBluetoothList(
+                                dialogContext: dialogContext,
+                                setDialogSet: setDialogState,
+                                onSelected: (value) {
+                                  if (mounted) {
+                                    stateSetter(() {
+                                      bluetoothName = value;
+                                    });
+                                  }
+                                },
+                                onBluetoothConnection: (value) {
+                                  if (mounted) {
+                                    stateSetter(() {
+                                      isBluetoothConnected = value;
+                                    });
+                                  }
+                                },
+                              ))
+                          : Container(
+                              width: displayWidth(context),
+                              height: 230,
+                              child: LPRBluetoothList(
+                                dialogContext: dialogContext,
+                                setDialogSet: setDialogState,
+                                onSelected: (value) {
+                                  if (mounted) {
+                                    stateSetter(() {
+                                      bluetoothName = value;
+                                    });
+                                  }
+                                },
+                                onBluetoothConnection: (value) {
+                                  if (mounted) {
+                                    stateSetter(() {
+                                      isBluetoothConnected = value;
+                                    });
+                                  }
+                                },
+                              )),
+
+                      Padding(
+                        padding: EdgeInsets.only(left: 15, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                // FlutterBluePlus.instance.
+
+                                Navigator.pop(context);
+                                stateSetter(() {
+                                  progress = 0.9;
+                                  lprSensorProgress = 0.0;
+                                  isStartButton = true;
+                                  bluetoothName = '';
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: bluetoothCancelBtnBackColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                height: displayWidth(context) * 0.12,
+                                width: displayWidth(context) * 0.34,
+                                // color: HexColor(AppColors.introButtonColor),
+                                child: Center(
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: bluetoothCancelBtnTxtColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                print("Tapped on scan button");
+
+                                if (mounted) {
+                                  setDialogState(() {
+                                    isScanningBluetooth = true;
+                                  });
+                                }
+
+                                FlutterBluePlus.instance.stopScan();
+                                FlutterBluePlus.instance.startScan(
+                                    timeout: const Duration(seconds: 2));
+
+                                if (mounted) {
+                                  Future.delayed(Duration(seconds: 2), () {
+                                    setDialogState(() {
+                                      isScanningBluetooth = false;
+                                    });
+                                  });
+                                }
+                                /*FlutterBluePlus.instance.isScanning
+                                    .listen((event) {
+                                  print("Tapped on scan button 1");
+                                  if (!event) {
+                                    FlutterBluePlus.instance.stopScan();
+
+                                    FlutterBluePlus.instance
+                                        .startScan(
+                                            timeout: const Duration(seconds: 2))
+                                        .then((value) {
+                                      if (mounted) {
+                                        setState(() {
+                                          isScanningBluetooth = false;
+                                        });
+                                      }
+                                    });
+                                  }
+                                });*/
+
+                                if (mounted) {
+                                  stateSetter(() {
+                                    isRefreshList = true;
+                                    progress = 0.9;
+                                    lprSensorProgress = 0.0;
+                                    isStartButton = false;
+                                    bluetoothName = '';
+                                  });
+                                }
+                              },
+                              child: isScanningBluetooth
+                                  ? Center(
+                                      child: Container(
+                                          width: displayWidth(context) * 0.34,
+                                          child: Center(
+                                              child:
+                                                  CircularProgressIndicator())),
+                                    )
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                        color: bluetoothConnectBtnBackColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                      ),
+                                      height: displayWidth(context) * 0.12,
+                                      width: displayWidth(context) * 0.34,
+                                      // color: HexColor(AppColors.introButtonColor),
+                                      child: Center(
+                                        child: Text(
+                                          "Scan",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: bluetoothConnectBtncolor),
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }));
+        }).then((value) {
+      print('DIALOG VALUE $value');
+
+      if (bluetoothName != '') {
+        stateSetter(() {
+          progress = 1.0;
+          lprSensorProgress = 1.0;
+          isStartButton = true;
+          isBluetoothConnected = true;
+        });
+      } else {
+        stateSetter(() {
+          // progress = 1.0;
+          // lprSensorProgress = 1.0;
+          // isStartButton = true;
+          isBluetoothConnected = false;
+        });
+      }
+    });
   }
 
   void getVesselAnalytics(String vesselId) async {

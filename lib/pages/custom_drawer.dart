@@ -43,6 +43,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   late List<CreateVessel> getVesselFuture;
   late List<Trip> getTrip;
   late DeviceInfoPlugin deviceDetails;
+  bool isSync = false, isUploadStarted = false;
 
   @override
   void initState() {
@@ -220,14 +221,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               }*/
                             }
                           } else {
-                            Navigator.push(
+                            /*Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
                                       const SyncDataCloudToMobileScreen()),
-                            );
+                            );*/
 
-                            /*if (vesselsSyncDetails || tripSyncDetails) {
+                            if (vesselsSyncDetails || tripSyncDetails) {
                               showDialogBoxToUploadData(
                                   context, widget.scaffoldKey!);
                             } else {
@@ -239,7 +240,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     builder: (context) =>
                                         const SyncDataCloudToMobileScreen()),
                               );
-                            }*/
+                            }
                           }
                         },
                         child: commonText(
@@ -253,7 +254,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      InkWell(
+                      /* InkWell(
                         onTap: () {
                           Navigator.of(context).pop();
 
@@ -271,7 +272,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             textColor: Colors.black54,
                             textSize: textSize,
                             textAlign: TextAlign.start),
-                      ),
+                      ), */
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
@@ -602,7 +603,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               commonText(
                                   context: context,
                                   text:
-                                      'If you click on ok, you are going to loose entire local data which is not uploaded',
+                                      'If you click on sync, you are going to loose entire local data which is not uploaded',
                                   fontWeight: FontWeight.w400,
                                   textColor: Colors.grey,
                                   textSize: displayWidth(context) * 0.032,
@@ -629,8 +630,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             : Colors.grey)),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Cancel', context, primaryColor, () {
-                                    Navigator.of(context).pop();
+                                      'Skip And Sync', context, primaryColor,
+                                      () {
+                                    //Navigator.of(context).pop();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SyncDataCloudToMobileScreen()),
+                                    );
                                   },
                                       displayWidth(context) * 0.4,
                                       displayHeight(context) * 0.05,
@@ -639,7 +647,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                               Brightness.dark
                                           ? Colors.white
                                           : Colors.black,
-                                      displayHeight(context) * 0.018,
+                                      displayHeight(context) * 0.014,
                                       Colors.grey.shade400,
                                       '',
                                       fontWeight: FontWeight.w500),
@@ -655,25 +663,50 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   top: 8.0,
                                 ),
                                 child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Ok', context, primaryColor, () async {
-                                    Navigator.of(context).pop();
+                                  child: isUploadStarted
+                                      ? Center(
+                                          child: Container(
+                                              // width: displayWidth(context) * 0.34,
+                                              child: Center(
+                                                  child:
+                                                      CircularProgressIndicator())),
+                                        )
+                                      : CommonButtons.getAcceptButton(
+                                          'Upload And Sync',
+                                          context,
+                                          primaryColor, () async {
+                                          //  Navigator.of(context).pop();
 
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const SyncDataCloudToMobileScreen()),
-                                    );
-                                  },
-                                      displayWidth(context) * 0.4,
-                                      displayHeight(context) * 0.05,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.018,
-                                      buttonBGColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
+                                          bool internet =
+                                              await Utils().check(scaffoldKey);
+                                          setState(() {
+                                            isSync = true;
+                                          });
+                                          if (internet) {
+                                            if (mounted) {
+                                              setDialogState(() {
+                                                isUploadStarted = true;
+                                              });
+                                            }
+                                            // setDialogState(() {
+                                            //  // isSigningOut = true;
+                                            // });
+                                            // if (mounted) {
+                                            //   setDialogState(() {
+                                            //     isUploadStarted = false;
+                                            //   });
+                                            // }
+                                            syncAndSignOut();
+                                          }
+                                        },
+                                          displayWidth(context) * 0.4,
+                                          displayHeight(context) * 0.05,
+                                          primaryColor,
+                                          Colors.white,
+                                          displayHeight(context) * 0.014,
+                                          buttonBGColor,
+                                          '',
+                                          fontWeight: FontWeight.w500),
                                 ),
                               ),
                             ),
@@ -701,7 +734,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     getVesselFuture = await _databaseService.syncAndSignOutVesselList();
     getTrip = await _databaseService.trips();
-    Utils.customPrint("VESSEL SYNC ${getVesselFuture[7].imageURLs}");
+    // Utils.customPrint("VESSEL SYNC ${getVesselFuture[7].imageURLs}");
     Utils.customPrint("VESSEL SYNC TRIP ${getTrip.length}");
     Utils.customPrint("VESSEL SYNC TRIP $vesselsSyncDetails");
     Utils.customPrint("VESSEL SYNC TRIP $tripSyncDetails");
@@ -860,7 +893,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
     Navigator.of(context).pop();
 
     if (!vesselErrorOccurred && !tripErrorOccurred) {
-      signOut();
+      if (isSync == true) {
+        setState(() {
+          isUploadStarted = false;
+        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const SyncDataCloudToMobileScreen()),
+        );
+      } else {
+        signOut();
+      }
       Utils.customPrint("ERROR WHILE SYNC AND SIGN OUT IF SIGN OUTT");
     } else {
       Utils.showSnackBar(context,

@@ -47,6 +47,10 @@
 	<string>Description</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This application requires location services to work</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This application requires bluetooth services to work</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>This application requires bluetooth services to work</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This application requires location services to work</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

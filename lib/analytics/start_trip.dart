@@ -7,6 +7,7 @@ import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart';
 import 'package:performarine/analytics/calculation.dart';
 import 'package:performarine/analytics/get_file.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -27,12 +28,23 @@ class StartTrip {
     List<double>? _gyroscopeValues;
     List<double>? _magnetometerValues;
     final _streamSubscriptions = <StreamSubscription<dynamic>>[];
-    double latitude = 0.0, longitude = 0.0, speed = 0.0;
+    double latitude = 0.0,
+        longitude = 0.0,
+        speed = 0.0,
+        accuracy = 0.0,
+        altitide = 0.0,
+        gpsSpeed = 0.0,
+        heading = 0.0,
+        speedAccuracy = 0.0;
     var tripId = '', vesselName = '';
     //  bool stopSending = false;
 
     // Timer? timer;
-    String mobileFileName = '', firstLat, firstLong, lprFileName = '';
+    String mobileFileName = '',
+        firstLat,
+        firstLong,
+        lprFileName = '',
+        timestamp = '';
     int fileIndex = 1;
 
     // Only available for flutter 3.0.0 and later
@@ -56,6 +68,12 @@ class StartTrip {
           latitude = event.latitude;
           longitude = event.longitude;
           speed = event.speed;
+          accuracy = event.accuracy;
+          altitide = event.altitude;
+          speedAccuracy = event.speedAccuracy;
+          gpsSpeed = event.speed;
+          heading = event.heading;
+          timestamp = event.timestamp!.toUtc().toIso8601String();
         });
       }
     });
@@ -264,7 +282,8 @@ class StartTrip {
                       : [0.0],
                   tripId);
 
-              String location = '$latitude $longitude';
+              String location =
+                  '$latitude $longitude ${accuracy.toStringAsFixed(3)} ${altitide.toStringAsFixed(3)} $heading $speed $speedAccuracy $timestamp';
               String gps =
                   CreateTrip().convertLocationToString('GPS', location, tripId);
 

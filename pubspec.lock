@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.2"
+  bluetooth_enable_fork:
+    dependency: "direct main"
+    description:
+      name: bluetooth_enable_fork
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.6"
   boolean_selector:
     dependency: transitive
     description:
