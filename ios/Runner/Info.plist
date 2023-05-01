@@ -4,7 +4,7 @@
 <dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>dev.flutter.background.refresh</string>
+		<string>com.performarine.ios.app.refresh</string>
 	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
@@ -41,6 +41,14 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSSpeechRecognitionUsageDescription</key>
+    <string>This application requires recognize speech service to work</string>
+	<key>NSMotionUsageDescription</key>
+    <string>This application requires Motion use to work</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>This application requires Photo Library Access to work</string>
+	<key>NSCalendarsUsageDescription</key>
+    <string>This application requires calender service to work</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera usage description</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

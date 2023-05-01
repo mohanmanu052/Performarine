@@ -9,7 +9,7 @@ import flutter_local_notifications
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-  SwiftFlutterBackgroundServicePlugin.taskIdentifier = "dev.flutter.background.refresh"
+  SwiftFlutterBackgroundServicePlugin.taskIdentifier = "com.performarine.ios.app.refresh"
 
   FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
       GeneratedPluginRegistrant.register(with: registry)

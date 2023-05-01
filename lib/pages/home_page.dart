@@ -153,6 +153,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("APP STATE - app in resumed");
+        break;
+      case AppLifecycleState.inactive:
+        print("APP STATE - app in inactive");
+        break;
+      case AppLifecycleState.paused:
+        print("APP STATE - app in paused");
+        break;
+      case AppLifecycleState.detached:
+        print("APP STATE - app in detached");
+        break;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
     return WillPopScope(

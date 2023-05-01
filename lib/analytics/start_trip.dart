@@ -261,6 +261,7 @@ class StartTrip {
               /// STOP WRITING & CREATE NEW FILE
             } else {
               Utils.customPrint('WRITING');
+              //Utils.customPrint('LOCATION DATA $latitude\n$longitude');
               String gyro = '', acc = '', mag = '', uacc = '';
               //Utils.customPrint('LAT1 LONG1 $latitude $longitude');
 
