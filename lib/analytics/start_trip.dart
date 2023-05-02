@@ -18,7 +18,10 @@ import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StartTrip {
+  //bool presentNoti = true;
+
   startTrip(ServiceInstance serviceInstance) async {
+    bool presentNoti = true;
     Utils.customPrint('Background task is running');
 
     var pref = await SharedPreferences.getInstance();
@@ -225,10 +228,13 @@ class StartTrip {
                           htmlFormatContentTitle: true,
                           summaryText: '')),
                   iOS: DarwinNotificationDetails(
+                    presentAlert: presentNoti,
                     subtitle:
                         'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
                   )),
             );
+
+            presentNoti = false;
 
             pref.setString('tripDistance', tripDistanceForStorage);
             pref.setString('tripDuration', tripDurationForStorage);
@@ -308,13 +314,15 @@ class StartTrip {
             'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
             NotificationDetails(
                 iOS: DarwinNotificationDetails(
-              presentAlert: true,
+              presentAlert: presentNoti,
               subtitle: '',
             )),
           )
               .catchError((onError) {
             print('IOS NOTI ERROR: $onError');
           });
+
+          presentNoti = false;
 
           pref.setString('tripDistance', tripDistanceForStorage);
           pref.setString('tripDuration', tripDurationForStorage);

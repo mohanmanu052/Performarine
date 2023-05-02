@@ -24,6 +24,7 @@ bool? isStart;
 Timer? timer;
 Timer? tripDurationTimer;
 Directory? ourDirectory;
+
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final StreamController<String?> selectNotificationStream =
@@ -60,6 +61,7 @@ onDidReceiveBackgroundNotificationResponse(
 Future<bool> onStart(ServiceInstance serviceInstance) async {
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
+  //presentNoti = true;
 
   StartTrip().startTrip(serviceInstance);
 

@@ -2,6 +2,7 @@ import UIKit
 import Flutter
 import flutter_background_service_ios
 import flutter_local_notifications
+import FirebaseCore
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -25,7 +26,7 @@ import flutter_local_notifications
     print("\(content.userInfo)")
     completionHandler([.alert, .badge, .sound]) // Display notification Banner
 } */
-
+    FirebaseApp.configure()
     GeneratedPluginRegistrant.register(with: self)
     return
     super.application(application, didFinishLaunchingWithOptions: launchOptions)
