@@ -16,6 +16,8 @@ const bluetoothConnectBtnBackColor = Color(0xFF1A3154);
 const bluetoothConnectBtncolor = Color(0xFFFFFFFF);
 const bluetoothDeviceActiveColor = Color(0xFF1C75BC);
 const bluetoothDeviceInActiveColor = Color(0xFF797979);
+const dateBackgroundColor = Color(0xFFECF3F8);
+const selectDayBackgroundColor = Color(0xFFE4F5F5);
 
 Map<int, Color> materialPrimaryColor = {
   50: Color(0x1042B5BF),
