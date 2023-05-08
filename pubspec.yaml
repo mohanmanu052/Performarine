@@ -70,6 +70,7 @@ dependencies:
   flutter_blue_plus: ^1.4.0
   bluetooth_enable_fork: ^0.1.6
   table_calendar: ^3.0.0
+  syncfusion_flutter_charts: ^21.2.3
 
 
 dependency_overrides:
@@ -95,6 +96,7 @@ flutter:
   assets:
     - assets/images/
     - assets/lottie/
+    - assets/reports/
 
   fonts:
     - family: Poppins

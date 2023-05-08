@@ -18,6 +18,11 @@ const bluetoothDeviceActiveColor = Color(0xFF1C75BC);
 const bluetoothDeviceInActiveColor = Color(0xFF797979);
 const dateBackgroundColor = Color(0xFFECF3F8);
 const selectDayBackgroundColor = Color(0xFFE4F5F5);
+const reportBackgroundColor = Color(0xFFF5F5F5);
+const reportTabColor = Color(0xFFC5FFBF);
+const tripColumnBarColor = Color(0xFFF9AF75);
+const tripColumnBar1Color = Color(0xFFBFF2B9);
+const tableHeaderColor = Color(0xFF9097BC);
 
 Map<int, Color> materialPrimaryColor = {
   50: Color(0x1042B5BF),
