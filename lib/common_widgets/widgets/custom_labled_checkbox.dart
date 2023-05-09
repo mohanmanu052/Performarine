@@ -9,26 +9,26 @@ enum CheckboxType {
 
 @immutable
 class CustomLabeledCheckbox extends StatelessWidget {
-   CustomLabeledCheckbox({
+  CustomLabeledCheckbox({
     required this.label,
     required this.value,
     required this.onChanged,
     this.checkboxType: CheckboxType.Child,
-     required this.activeColor,
+    required this.activeColor,
   })  : assert(label != null),
         assert(checkboxType != null),
         assert(
-        (checkboxType == CheckboxType.Child && value != null) ||
-            checkboxType == CheckboxType.Parent,
+          (checkboxType == CheckboxType.Child && value != null) ||
+              checkboxType == CheckboxType.Parent,
         ),
         tristate = checkboxType == CheckboxType.Parent ? true : false;
 
-   String label;
-   bool value;
-   bool tristate;
-   ValueChanged<bool> onChanged;
-   CheckboxType checkboxType;
-   Color activeColor;
+  String label;
+  bool value;
+  bool tristate;
+  ValueChanged<bool> onChanged;
+  CheckboxType checkboxType;
+  Color activeColor;
 
   void _onChanged() {
     if (value != null) {
@@ -57,15 +57,12 @@ class CustomLabeledCheckbox extends StatelessWidget {
               onChanged: (_) {
                 _onChanged();
               },
-              activeColor: activeColor ?? themeData.toggleableActiveColor,
+              activeColor: activeColor,
             ),
             SizedBox(width: 8),
             Text(
               label,
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: Colors.blue
-              ),
+              style: TextStyle(fontWeight: FontWeight.w700, color: Colors.blue),
             )
           ],
         ),
@@ -73,21 +70,22 @@ class CustomLabeledCheckbox extends StatelessWidget {
     );
   }
 }
+
 @immutable
 class CustomLabeledCheckboxOne extends StatelessWidget {
-  CustomLabeledCheckboxOne({
-    required this.label,
-    required this.value,
-    required this.onChanged,
-    this.checkboxType: CheckboxType.Child,
-    required this.activeColor,
-    this.dateTime,
-    this.tripId
-  })  : assert(label != null),
+  CustomLabeledCheckboxOne(
+      {required this.label,
+      required this.value,
+      required this.onChanged,
+      this.checkboxType: CheckboxType.Child,
+      required this.activeColor,
+      this.dateTime,
+      this.tripId})
+      : assert(label != null),
         assert(checkboxType != null),
         assert(
-        (checkboxType == CheckboxType.Child && value != null) ||
-            checkboxType == CheckboxType.Parent,
+          (checkboxType == CheckboxType.Child && value != null) ||
+              checkboxType == CheckboxType.Parent,
         ),
         tristate = checkboxType == CheckboxType.Parent ? true : false;
 
@@ -114,13 +112,13 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
 
     return ListTile(
       onTap: _onChanged,
-      leading:  Checkbox(
+      leading: Checkbox(
         tristate: tristate,
         value: value,
         onChanged: (_) {
           _onChanged();
         },
-        activeColor: activeColor ?? themeData.toggleableActiveColor,
+        activeColor: activeColor,
       ),
       title: Text(
         label,
@@ -131,12 +129,12 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
         style: themeData.textTheme.labelLarge,
       ),
       trailing: Text(
-        dateTime != null  ? dateTime! : "",
+        dateTime != null ? dateTime! : "",
         style: themeData.textTheme.labelLarge,
       ),
     );
 
-   /* return InkWell(
+    /* return InkWell(
       onTap: _onChanged,
       child: Padding(
         padding: EdgeInsets.only(left: 0, right: 0),

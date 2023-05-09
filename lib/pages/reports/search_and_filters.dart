@@ -15,7 +15,6 @@ import '../../models/reports_model.dart';
 import '../home_page.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-
 class SearchAndFilters extends StatefulWidget {
   const SearchAndFilters({Key? key}) : super(key: key);
 
@@ -24,7 +23,6 @@ class SearchAndFilters extends StatefulWidget {
 }
 
 class _SearchAndFiltersState extends State<SearchAndFilters> {
-
   String? selectedVessel;
   String? selectedTrip;
   int _selectedOption = 1;
@@ -32,11 +30,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   DateTime focusedDay = DateTime.now();
   DateTime firstDate = DateTime(1980);
   DateTime lastDate = DateTime(2050);
-  List<String> items = [
-    "Start Date",
-    "End Date"
-  ];
-
+  List<String> items = ["Start Date", "End Date"];
 
   bool? parentValue = false;
   List<String>? children;
@@ -48,18 +42,60 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   CalendarFormat format = CalendarFormat.month;
 
   var avgDurations;
-  String? selectedButton = 'Trip Duration';
+  String selectedButton = 'trip duration';
 
   final List<Map<String, String>> data = [
-    {'date': '12 Jan 23', 'tripDetails': 'Trip ID02024884', 'duration': '08:15:36','avgSpeed' : '12.6 nm','fuelUsage': '15.36 g', 'powerUsage': '258.23 w'},
-    {'date': '13 Jan 23', 'tripDetails': 'Trip ID02024884', 'duration': '08:15:36','avgSpeed' : '12.7 nm','fuelUsage': '15.36 g', 'powerUsage': '258.23 w'},
-    {'date': '14 Jan 23', 'tripDetails': 'Trip ID02024884', 'duration': '08:15:36','avgSpeed' : '12.9 nm','fuelUsage': '15.36 g', 'powerUsage': '258.23 w'},
-    {'date': '15 Jan 23', 'tripDetails': 'Trip ID02024884', 'duration': '08:15:36','avgSpeed' : '12.8 nm','fuelUsage': '15.36 g', 'powerUsage': '258.23 w'},
+    {
+      'date': '12 Jan 23',
+      'tripDetails': 'Trip ID02024884',
+      'duration': '08:15:36',
+      'avgSpeed': '12.6 nm',
+      'fuelUsage': '15.36 g',
+      'powerUsage': '258.23 w'
+    },
+    {
+      'date': '13 Jan 23',
+      'tripDetails': 'Trip ID02024884',
+      'duration': '08:15:36',
+      'avgSpeed': '12.7 nm',
+      'fuelUsage': '15.36 g',
+      'powerUsage': '258.23 w'
+    },
+    {
+      'date': '14 Jan 23',
+      'tripDetails': 'Trip ID02024884',
+      'duration': '08:15:36',
+      'avgSpeed': '12.9 nm',
+      'fuelUsage': '15.36 g',
+      'powerUsage': '258.23 w'
+    },
+    {
+      'date': '15 Jan 23',
+      'tripDetails': 'Trip ID02024884',
+      'duration': '08:15:36',
+      'avgSpeed': '12.8 nm',
+      'fuelUsage': '15.36 g',
+      'powerUsage': '258.23 w'
+    },
   ];
 
-  final List<Map<String,String>> finalData = [
-    {'date': '','tripDetails' : 'Total', 'duration' : '08:10:20','avgSpeed': '12.7 nm','fuelUsage': '15.36 g', 'powerUsage': '258.23 w'},
-    {'date': '','tripDetails' : 'Average', 'duration' : '08:10:20','avgSpeed': '12.8 nm','fuelUsage': '15.36 g', 'powerUsage': '258.23 w'}
+  final List<Map<String, String>> finalData = [
+    {
+      'date': '',
+      'tripDetails': 'Total',
+      'duration': '08:10:20',
+      'avgSpeed': '12.7 nm',
+      'fuelUsage': '15.36 g',
+      'powerUsage': '258.23 w'
+    },
+    {
+      'date': '',
+      'tripDetails': 'Average',
+      'duration': '08:10:20',
+      'avgSpeed': '12.8 nm',
+      'fuelUsage': '15.36 g',
+      'powerUsage': '258.23 w'
+    }
   ];
 
   void manageTristate(int index, bool value) {
@@ -97,8 +133,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   List<TripData> tripDataList = [];
   List<Trip> triSpeedList = [];
   ReportModel? reportModel;
-  double? avgSpeed;
-  int? avgDuration;
+  double? avgSpeed = 0.0;
+  int? avgDuration = 0;
   dynamic avgFuelConsumption;
 
   // Fetch content from the json file
@@ -109,32 +145,43 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     avgDuration = durationWithMilli(reportModel!.data.avgInfo.avgDuration);
     avgFuelConsumption = reportModel!.data.avgInfo.avgFuelConsumption;
 
-    triSpeedList = List<Trip>.from(reportModel!.data.trips.map((speed) => Trip(date: speed.date, tripsByDate: speed.tripsByDate)));
-
+    triSpeedList = List<Trip>.from(reportModel!.data.trips.map(
+        (speed) => Trip(date: speed.date, tripsByDate: speed.tripsByDate)));
   }
-  
-  dynamic duration(String duration){
+
+  dynamic duration(String duration) {
     String timeString = duration;
     List<String> parts = timeString.split(':');
-    DateTime dateTime = DateTime(0, 0, 0, int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2],));
+    DateTime dateTime = DateTime(
+        0,
+        0,
+        0,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+        int.parse(
+          parts[2],
+        ));
     int totalMinutes = dateTime.hour * 60 + dateTime.minute;
     print(totalMinutes);
     return totalMinutes;
   }
-  dynamic durationWithMilli(String timeString){
-   String time = timeString;
+
+  dynamic durationWithMilli(String timeString) {
+    String time = timeString;
     Duration duration = Duration(
       hours: int.parse(time.split(':')[0]),
       minutes: int.parse(timeString.split(':')[1]),
       seconds: int.parse(timeString.split(':')[2].split('.')[0]),
       milliseconds: int.parse(timeString.split(':')[2].split('.')[1]),
     );
-     int durationInMinutes = duration.inMinutes;
+    int durationInMinutes = duration.inMinutes;
     return durationInMinutes;
   }
 
   @override
   void initState() {
+    super.initState();
+
     parentValue = false;
 
     readJson();
@@ -146,27 +193,21 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       'Trip4',
     ];
 
-    dateTimeList = [
-      "23-Jan-2023",
-      "24-Jan-2023",
-      "25-Jan-2023",
-      "26-Jan-2023"
-    ];
+    dateTimeList = ["23-Jan-2023", "24-Jan-2023", "25-Jan-2023", "26-Jan-2023"];
 
-    tripIdList = [
-      "226IMS56",
-      "226IMS57",
-      "226IMS58",
-      "226IMS59"
-    ];
+    tripIdList = ["226IMS56", "226IMS57", "226IMS58", "226IMS59"];
 
     childrenValue = List.generate(children!.length, (index) => false);
-    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      setState(() {
+        selectedButton = 'trip duration';
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: reportBackgroundColor,
@@ -174,357 +215,356 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            Padding(
-              padding:  EdgeInsets.only(
-                left: displayWidth(context) * 0.05,
-                right: displayWidth(context) * 0.05,
-                top: displayWidth(context) * 0.05
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      IconButton(
-                        onPressed: ()  {
-                          Navigator.of(context).pop(true);
-                        },
-                        icon: const Icon(Icons.arrow_back,size: 28,),
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                      SizedBox(
-                        width: displayWidth(context) * 0.03,
-                      ),
-                      Text(
-                        "Reports",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,fontFamily: inter
-                        ),
-                      ),
-                      SizedBox(
-                        width: displayWidth(context) * 0.38,
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(right: 8),
-                        child: IconButton(
-                          onPressed: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(builder: (context) => HomePage()),
-                                ModalRoute.withName(""));
-                          },
-                          icon: Image.asset('assets/images/home.png'),
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  ExpansionTile(
-                    collapsedBackgroundColor: dateBackgroundColor,
-                    title: Text(
-                      "Search & Filters",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 13,
-                          fontFamily: inter
-                      ),
-                    ),
-                    trailing: Icon(
-                      Icons.keyboard_arrow_down,color: Colors.black,
-                    ),
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 8.0),
-                        child: CommonDropDownFormFieldOne(
-                          context: context,
-                          value: selectedVessel,
-                          hintText: 'Select Vessel*',
-                          labelText: '',
-                          onChanged: (String value) {
-                            // formKey.currentState!.validate();
-                          },
-                          dataSource: ['Vessel1', 'Vessel2', 'Vessel3'],
-                          borderRadius: 10,
-                          padding: 6,
-                          textColor: Colors.black,
-                          textField: 'key',
-                          valueField: 'value',
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Select vessel';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Expanded(
-                            child: RadioListTile(
-                              title: Text(
-                                "Filter By Date",
-                                style: TextStyle(fontSize: 14),
-                              ),
-                              value: 1,
-                              groupValue: _selectedOption,
-                              onChanged: (int? value) {
-                                setState(() {
-                                  _selectedOption = value!;
-                                });
-                              },
-                            ),
-                          ),
-                          Expanded(
-                            child: RadioListTile(
-                              title: Text(
-                                  "Filter By Trip",
-                                  style: TextStyle(fontSize: 14)
-                              ),
-                              value: 2,
-                              groupValue: _selectedOption,
-                              onChanged: (int? value) {
-                                setState(() {
-                                  _selectedOption = value!;
-                                });
-                              },
-                            ),
-                          ),
-
-                        ],
-                      ),
-                      _selectedOption == 1
-                          ? filterByDate(context)!
-                          : filterByTrip(context)!,
-
-                      SizedBox(
-                        height: displayWidth(context) * 0.08,
-                      ),
-
-                      CommonButtons.getAcceptButton(
-                          "Search",
-                          context,
-                          primaryColor, () {
-                        // Navigator.of(context).pop();
-                      },
-                          displayWidth(context) * 0.8,
-                          displayHeight(context) * 0.065,
-                          Colors.grey.shade400,
-                          Theme.of(context).brightness ==
-                              Brightness.dark
-                              ? Colors.white
-                              : Colors.white,
-                          displayHeight(context) * 0.021,
-                          buttonBGColor,
-                          '',
-                          fontWeight: FontWeight.w500
-                      ),
-
-                      SizedBox(height: displayWidth(context) * 0.1,)
-
-                    ],
-                  ),
-
-                  SizedBox(height: displayWidth(context) * 0.07,),
-
-                  Text(
-                    "Sea Cucumber",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: inter
-                    ),
-                  ),
-
-                  SizedBox(height: displayWidth(context) * 0.04,),
-
-                  Row(
-                    children: [
-                      Text(
-                        "Selected Trips",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: inter
-                        ),
-                      ),
-                      SizedBox(width: displayWidth(context) * 0.05,),
-                      Text(
-                        ":  Trip A, Trip B, Trip C",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: inter
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: displayWidth(context) * 0.06,),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        onTap: (){
-                         setState(() {
-                           selectedButton = 'Trip Duration';
-                         });
-                        },
-                        child: Container(
-                          //  color: dateBackgroundColor,
-                          width: displayWidth(context) * 0.21,
-                          height: displayWidth(context) * 0.09,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: reportTabColor
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(6.0),
-                            child: Center(
-                              child: Text(
-                                "Trip Duration",
-                                style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w400
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            selectedButton = 'Avg Speed';
-                          });
-                        },
-                        child: Container(
-                          //  color: dateBackgroundColor,
-                          width: displayWidth(context) * 0.19,
-                          height: displayWidth(context) * 0.09,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: reportTabColor
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(6.0),
-                            child: Center(
-                              child: Text(
-                                "Avg Speed",
-                                style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w400
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            selectedButton = 'Fuel Usage';
-                          });
-                        },
-                        child: Container(
-                          //  color: dateBackgroundColor,
-                          width: displayWidth(context) * 0.20,
-                          height: displayWidth(context) * 0.09,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: reportTabColor
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(6.0),
-                            child: Center(
-                              child: Text(
-                                "Fuel Usage",
-                                style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w400
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: (){
-                          setState(() {
-                            selectedButton = 'Power Usage';
-                          });
-                        },
-                        child: Container(
-                          //  color: dateBackgroundColor,
-                          width: displayWidth(context) * 0.22,
-                          height: displayWidth(context) * 0.09,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: reportTabColor
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(6.0),
-                            child: Center(
-                              child: Text(
-                                "Power Usage",
-                                style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w400
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: displayWidth(context) * 0.02,),
-                ],
-              ),
-            ),
-
-         //  buildGraph(context)!,
-
-          // tripDurationGraph(context)!,
-              avgSpeedGraph(context)!,
-             // fuelUsageGraph(context)!,
-             // powerUsageGraph(context)!,
-
               Padding(
                 padding: EdgeInsets.only(
-                    right: 20, left: 20),
-                child: Row(
-                  mainAxisAlignment:
-                  MainAxisAlignment
-                      .spaceEvenly,
+                  top: displayWidth(context) * 0.05,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    tripWithColor(backgroundColor,
-                        'Trip A Name'),
-                    tripWithColor(circularProgressColor,
-                        'Trip B Name'),
-                    tripWithColor(tripColumnBarColor,
-                        'Trip C Name'),
+                    Container(
+                      margin: EdgeInsets.only(right: 8, left: 8, bottom: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                                icon: const Icon(
+                                  Icons.arrow_back,
+                                  size: 28,
+                                ),
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                              SizedBox(
+                                width: displayWidth(context) * 0.03,
+                              ),
+                              Text(
+                                "Reports",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: inter),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(right: 8),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomePage()),
+                                    ModalRoute.withName(""));
+                              },
+                              icon: Image.asset('assets/images/home.png'),
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        left: displayWidth(context) * 0.05,
+                        right: displayWidth(context) * 0.05,
+                      ),
+                      child: Column(
+                        children: [
+                          ExpansionTile(
+                            collapsedBackgroundColor: dateBackgroundColor,
+                            title: Text(
+                              "Search & Filters",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 13,
+                                  fontFamily: inter),
+                            ),
+                            trailing: Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black,
+                            ),
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(top: 8.0),
+                                child: CommonDropDownFormFieldOne(
+                                  context: context,
+                                  value: selectedVessel,
+                                  hintText: 'Select Vessel*',
+                                  labelText: '',
+                                  onChanged: (String value) {
+                                    // formKey.currentState!.validate();
+                                  },
+                                  dataSource: ['Vessel1', 'Vessel2', 'Vessel3'],
+                                  borderRadius: 10,
+                                  padding: 6,
+                                  textColor: Colors.black,
+                                  textField: 'key',
+                                  valueField: 'value',
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Select vessel';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Expanded(
+                                    child: RadioListTile(
+                                      title: Text(
+                                        "Filter By Date",
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                      value: 1,
+                                      groupValue: _selectedOption,
+                                      onChanged: (int? value) {
+                                        setState(() {
+                                          _selectedOption = value!;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: RadioListTile(
+                                      title: Text("Filter By Trip",
+                                          style: TextStyle(fontSize: 14)),
+                                      value: 2,
+                                      groupValue: _selectedOption,
+                                      onChanged: (int? value) {
+                                        setState(() {
+                                          _selectedOption = value!;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              _selectedOption == 1
+                                  ? filterByDate(context)!
+                                  : filterByTrip(context)!,
+                              SizedBox(
+                                height: displayWidth(context) * 0.08,
+                              ),
+                              CommonButtons.getAcceptButton(
+                                  "Search", context, primaryColor, () {
+                                // Navigator.of(context).pop();
+                              },
+                                  displayWidth(context) * 0.8,
+                                  displayHeight(context) * 0.065,
+                                  Colors.grey.shade400,
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Colors.white,
+                                  displayHeight(context) * 0.021,
+                                  buttonBGColor,
+                                  '',
+                                  fontWeight: FontWeight.w500),
+                              SizedBox(
+                                height: displayWidth(context) * 0.1,
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: displayWidth(context) * 0.07,
+                          ),
+                          Text(
+                            "Sea Cucumber",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: inter),
+                          ),
+                          SizedBox(
+                            height: displayWidth(context) * 0.04,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                "Selected Trips",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: inter),
+                              ),
+                              SizedBox(
+                                width: displayWidth(context) * 0.05,
+                              ),
+                              Text(
+                                ":  Trip A, Trip B, Trip C",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: inter),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: displayWidth(context) * 0.06,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedButton = 'trip duration';
+                                  });
+                                },
+                                child: Container(
+                                  //  color: dateBackgroundColor,
+                                  width: displayWidth(context) * 0.21,
+                                  height: displayWidth(context) * 0.09,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: reportTabColor),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(6.0),
+                                    child: Center(
+                                      child: Text(
+                                        "Trip Duration",
+                                        style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedButton = 'avg speed';
+                                  });
+                                },
+                                child: Container(
+                                  //  color: dateBackgroundColor,
+                                  width: displayWidth(context) * 0.19,
+                                  height: displayWidth(context) * 0.09,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: reportTabColor),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(6.0),
+                                    child: Center(
+                                      child: Text(
+                                        "Avg Speed",
+                                        style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedButton = 'fuel usage';
+                                  });
+                                },
+                                child: Container(
+                                  //  color: dateBackgroundColor,
+                                  width: displayWidth(context) * 0.20,
+                                  height: displayWidth(context) * 0.09,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: reportTabColor),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(6.0),
+                                    child: Center(
+                                      child: Text(
+                                        "Fuel Usage",
+                                        style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedButton = 'power usage';
+                                  });
+                                },
+                                child: Container(
+                                  //  color: dateBackgroundColor,
+                                  width: displayWidth(context) * 0.22,
+                                  height: displayWidth(context) * 0.09,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: reportTabColor),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(6.0),
+                                    child: Center(
+                                      child: Text(
+                                        "Power Usage",
+                                        style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: displayWidth(context) * 0.02,
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),
 
-           table(context)!,
-              
-            SizedBox(height: displayWidth(context) * 0.08,),
-          ],
+              buildGraph(context),
+
+              // tripDurationGraph(context)!,
+              //avgSpeedGraph(context)!,
+              // fuelUsageGraph(context)!,
+              // powerUsageGraph(context)!,
+
+              Padding(
+                padding: EdgeInsets.only(right: 20, left: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    tripWithColor(backgroundColor, 'Trip A Name'),
+                    tripWithColor(circularProgressColor, 'Trip B Name'),
+                    tripWithColor(tripColumnBarColor, 'Trip C Name'),
+                  ],
+                ),
+              ),
+
+              table(context)!,
+
+              SizedBox(
+                height: displayWidth(context) * 0.08,
+              ),
+            ],
           ),
         ),
       ),
@@ -547,99 +587,119 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             context: context,
             textSize: displayWidth(context) * 0.025,
             textColor: Colors.black,
-          fontWeight: FontWeight.w600
-        )
+            fontWeight: FontWeight.w600)
       ],
     );
   }
 
-  Widget? table(BuildContext context){
+  Widget? table(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
-        padding:  EdgeInsets.all(12.0),
+        padding: EdgeInsets.all(12.0),
         child: DataTable(
           columnSpacing: 25,
           dividerThickness: 1,
           columns: [
-            DataColumn(label: Text('Date',style: TextStyle(color: tableHeaderColor),),),
-            DataColumn(label: Text('Trip Details',style: TextStyle(color: tableHeaderColor))),
-            DataColumn(label: Text('Duration',style: TextStyle(color: tableHeaderColor))),
-            DataColumn(label: Text('Avg Speed',style: TextStyle(color: tableHeaderColor))),
-            DataColumn(label: Text('Fuel Usage',style: TextStyle(color: tableHeaderColor))),
-            DataColumn(label: Text('Power Usage',style: TextStyle(color: tableHeaderColor))),
+            DataColumn(
+              label: Text(
+                'Date',
+                style: TextStyle(color: tableHeaderColor),
+              ),
+            ),
+            DataColumn(
+                label: Text('Trip Details',
+                    style: TextStyle(color: tableHeaderColor))),
+            DataColumn(
+                label: Text('Duration',
+                    style: TextStyle(color: tableHeaderColor))),
+            DataColumn(
+                label: Text('Avg Speed',
+                    style: TextStyle(color: tableHeaderColor))),
+            DataColumn(
+                label: Text('Fuel Usage',
+                    style: TextStyle(color: tableHeaderColor))),
+            DataColumn(
+                label: Text('Power Usage',
+                    style: TextStyle(color: tableHeaderColor))),
           ],
           rows: [
-            ...data.map((person) => DataRow(
-                cells: [
+            ...data.map((person) => DataRow(cells: [
                   DataCell(Text(person['date']!)),
                   DataCell(Text(person['tripDetails']!)),
                   DataCell(Text(person['duration']!)),
                   DataCell(Text(person['avgSpeed']!)),
                   DataCell(Text(person['fuelUsage']!)),
                   DataCell(Text(person['powerUsage']!)),
-                ])
-            ),
-
+                ])),
             ...finalData.map((e) => DataRow(cells: [
-              DataCell(Text(
-                  e['date']!,
-                style: TextStyle(color: Colors.blue),
-              ),),
-              DataCell(Text(
-                e['tripDetails']!,style: TextStyle(color: Colors.blue),
-              )),
-              DataCell(Text(e['duration']!,style: TextStyle(color: Colors.blue),)),
-              DataCell(Text(e['avgSpeed']!,style: TextStyle(color: Colors.blue))),
-              DataCell(Text(e['fuelUsage']!,style: TextStyle(color: Colors.blue))),
-              DataCell(Text(e['powerUsage']!,style: TextStyle(color: Colors.blue))),
-            ]))
-
+                  DataCell(
+                    Text(
+                      e['date']!,
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                  DataCell(Text(
+                    e['tripDetails']!,
+                    style: TextStyle(color: Colors.blue),
+                  )),
+                  DataCell(Text(
+                    e['duration']!,
+                    style: TextStyle(color: Colors.blue),
+                  )),
+                  DataCell(Text(e['avgSpeed']!,
+                      style: TextStyle(color: Colors.blue))),
+                  DataCell(Text(e['fuelUsage']!,
+                      style: TextStyle(color: Colors.blue))),
+                  DataCell(Text(e['powerUsage']!,
+                      style: TextStyle(color: Colors.blue))),
+                ]))
           ],
         ),
       ),
     );
   }
 
-  Widget? buildGraph(BuildContext context) {
-    switch (selectedButton) {
-      case 'Trip Duration':
-        tripDurationGraph(context);
-        break;
-      case 'Avg Speed':
-        avgSpeedGraph(context);
-        break;
-      case 'Fuel Usage':
-         fuelUsageGraph(context);
-          break;
-      case 'Power USage':
-        powerUsageGraph(context);
-        break;
+  buildGraph(BuildContext context) {
+    debugPrint('SELECTED BUTTON Text $selectedButton');
+
+    switch (selectedButton.toLowerCase()) {
+      case 'trip duration':
+        return tripDurationGraph(context);
+      case 'avg speed':
+        return avgSpeedGraph(context);
+      case 'fuel usage':
+        return fuelUsageGraph(context);
+      case 'power usage':
+        return powerUsageGraph(context);
       default:
         return Container();
     }
   }
 
-  Widget? tripDurationGraph(BuildContext context){
-
+  Widget tripDurationGraph(BuildContext context) {
     final List<ChartSeries> columnSeriesData = [
       ColumnSeries<Trip, String>(
         color: circularProgressColor,
         dataSource: triSpeedList,
         xValueMapper: (Trip tripData, _) => tripData.date,
-        yValueMapper: (Trip tripData, _) => duration(tripData.tripsByDate[0].duration.toString()),
+        yValueMapper: (Trip tripData, _) =>
+            duration(tripData.tripsByDate[0].duration.toString()),
         name: 'Duration',
         dataLabelSettings: DataLabelSettings(isVisible: false),
         spacing: 0.6,
       ),
-      // ColumnSeries<TripData, String>(
-      //   color: tripColumnBarColor,
-      //   dataSource: tripDataList,
-      //   xValueMapper: (TripData tripData, _) => tripData.date,
-      //   yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[0]),
-      //   name: 'Longitude',
-      // ),
-
+      ColumnSeries<Trip, String>(
+        color: circularProgressColor,
+        dataSource: triSpeedList,
+        xValueMapper: (Trip tripData, _) => tripData.date,
+        yValueMapper: (Trip tripData, _) => tripData.tripsByDate.length > 1
+            ? duration(tripData.tripsByDate[0].duration.toString())
+            : null,
+        name: 'Duration',
+        dataLabelSettings: DataLabelSettings(isVisible: false),
+        spacing: 0.6,
+      ),
     ];
 
     TooltipBehavior tooltipBehavior = TooltipBehavior(
@@ -647,16 +707,16 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       color: reportBackgroundColor,
       borderWidth: 1,
       //activationMode: ActivationMode.singleTap,
-      builder: (dynamic data, dynamic point, dynamic series, int dataIndex, int pointIndex) {
+      builder: (dynamic data, dynamic point, dynamic series, int dataIndex,
+          int pointIndex) {
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
-           // borderRadius: BorderRadius.all(Radius.circular(40)),
+            // borderRadius: BorderRadius.all(Radius.circular(40)),
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
-              bottomRight: Radius.circular(20)
-            ),
+                bottomRight: Radius.circular(20)),
             color: Colors.black,
           ),
           padding: EdgeInsets.all(9),
@@ -674,31 +734,26 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               SizedBox(height: 5),
               Row(
                 children: [
-                  Text(
-                      "${duration(data.tripsByDate[pointIndex].duration)}",
+                  Text("${duration(data.tripsByDate[pointIndex].duration)}",
                       style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
-                      )
-                  ),
+                      )),
                   Text(' min',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
-                      )
-                  ),
+                      )),
                 ],
               ),
-              TextButton(onPressed: (){
-
-              },
-                child: Text(
-                    'Go to Trip Report',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.blue,
-                  )
-              ),)
+              TextButton(
+                onPressed: () {},
+                child: Text('Go to Trip Report',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.blue,
+                    )),
+              )
             ],
           ),
         );
@@ -714,48 +769,56 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         child: SfCartesianChart(
           //tooltipBehavior: CustomTooltipBehavior(),
           tooltipBehavior: tooltipBehavior,
+          enableSideBySideSeriesPlacement: true,
           primaryXAxis: CategoryAxis(),
           primaryYAxis: NumericAxis(
-            interval: 5,
-            axisLine: AxisLine(width: 2),
-            title: AxisTitle(text: 'Minutes'),
-            majorTickLines: MajorTickLines(width: 0),
-            minorTickLines: MinorTickLines(width: 0),
-            labelStyle: TextStyle(color: Colors.grey),
+              interval: 5,
+              axisLine: AxisLine(width: 2),
+              title: AxisTitle(text: 'Minutes'),
+              majorTickLines: MajorTickLines(width: 0),
+              minorTickLines: MinorTickLines(width: 0),
+              labelStyle: TextStyle(color: Colors.grey),
               plotBands: [
                 PlotBand(
-                  text: 'avg ${avgDuration}min',
-                  isVisible: true,
-                  start: avgDuration,
-                  end: avgDuration,
-                  borderWidth: 2,
-                  borderColor: Colors.grey,
-                  textStyle: TextStyle(color: Colors.black),
-                  dashArray: <double>[3, 3],
-                  horizontalTextAlignment: TextAnchor.start
-                ),
-              ]
-          ),
-         series: columnSeriesData,
+                    text: 'avg ${avgDuration}min',
+                    isVisible: true,
+                    start: avgDuration,
+                    end: avgDuration,
+                    borderWidth: 2,
+                    borderColor: Colors.grey,
+                    textStyle: TextStyle(color: Colors.black),
+                    dashArray: <double>[3, 3],
+                    horizontalTextAlignment: TextAnchor.start),
+              ]),
+          series: columnSeriesData,
         ),
       ),
     );
   }
 
-  Widget? avgSpeedGraph(BuildContext context){
-
+  Widget avgSpeedGraph(BuildContext context) {
     final List<ChartSeries> columnSeriesData = [
-
-      ColumnSeries<Trip,dynamic>(
+      ColumnSeries<Trip, dynamic>(
         color: circularProgressColor,
         dataSource: triSpeedList,
-        xValueMapper: (Trip tripData, _) => tripData.date ?? "",
-        yValueMapper: (Trip tripData, _) => tripData.tripsByDate[0].avgSpeed ?? 0.0,
+        xValueMapper: (Trip tripData, _) => tripData.date,
+        yValueMapper: (Trip tripData, _) => tripData.tripsByDate[0].avgSpeed,
         name: 'Avg Speed',
         dataLabelSettings: DataLabelSettings(isVisible: false),
         spacing: 0.6,
       ),
-    /*  ColumnSeries<Trip,dynamic>(
+      ColumnSeries<Trip, dynamic>(
+        color: circularProgressColor,
+        dataSource: triSpeedList,
+        xValueMapper: (Trip tripData, _) => tripData.date,
+        yValueMapper: (Trip tripData, _) => tripData.tripsByDate.length > 1
+            ? tripData.tripsByDate[1].avgSpeed
+            : null,
+        name: 'Avg Speed',
+        dataLabelSettings: DataLabelSettings(isVisible: false),
+        spacing: 0.6,
+      ),
+      /*  ColumnSeries<Trip,dynamic>(
         color: tripColumnBarColor,
         dataSource: triSpeedList,
         xValueMapper: (Trip tripData, _) => tripData.date ?? "",
@@ -776,7 +839,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       color: reportBackgroundColor,
-      builder: (dynamic data, dynamic point, dynamic series, int dataIndex, int pointIndex) {
+      builder: (dynamic data, dynamic point, dynamic series, int dataIndex,
+          int pointIndex) {
         print("data is: ${data.tripsByDate[pointIndex].avgSpeed}");
         return Container(
           width: displayWidth(context) * 0.4,
@@ -784,8 +848,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20)
-            ),
+                bottomRight: Radius.circular(20)),
             color: Colors.black,
           ),
           padding: EdgeInsets.all(9),
@@ -803,31 +866,26 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               SizedBox(height: 5),
               Row(
                 children: [
-                  Text(
-                      '${data.tripsByDate[pointIndex].avgSpeed}',
+                  Text('${data.tripsByDate[pointIndex].avgSpeed}',
                       style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
-                      )
-                  ),
+                      )),
                   Text('NM',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
-                      )
-                  ),
+                      )),
                 ],
               ),
-              TextButton(onPressed: (){
-
-              },
-                child: Text(
-                    'Go to Trip Report',
+              TextButton(
+                onPressed: () {},
+                child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.blue,
-                    )
-                ),)
+                    )),
+              )
             ],
           ),
         );
@@ -844,9 +902,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           tooltipBehavior: tooltipBehavior,
           primaryXAxis: CategoryAxis(),
           primaryYAxis: NumericAxis(
-            interval: 5,
-            axisLine: AxisLine(width: 2),
-            title: AxisTitle(text: 'Notical Miles'),
+              interval: 5,
+              axisLine: AxisLine(width: 2),
+              title: AxisTitle(text: 'Notical Miles'),
               plotBands: [
                 PlotBand(
                     text: 'avg ${avgSpeed}NM',
@@ -855,31 +913,40 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     end: avgSpeed,
                     borderWidth: 2,
                     borderColor: Colors.grey,
-                    textStyle: TextStyle(color: Colors.black,fontSize: 12),
+                    textStyle: TextStyle(color: Colors.black, fontSize: 12),
                     dashArray: <double>[3, 3],
-                    horizontalTextAlignment: TextAnchor.start
-                ),
-              ]
-          ),
+                    horizontalTextAlignment: TextAnchor.start),
+              ]),
           series: columnSeriesData,
         ),
       ),
     );
   }
 
-  Widget? fuelUsageGraph(BuildContext context){
-
+  Widget fuelUsageGraph(BuildContext context) {
     final List<ChartSeries> columnSeriesData = [
       ColumnSeries<Trip, String>(
         color: circularProgressColor,
         dataSource: triSpeedList,
         xValueMapper: (Trip tripData, _) => tripData.date,
-        yValueMapper: (Trip tripData, _) => tripData.tripsByDate[0].fuelConsumption,
+        yValueMapper: (Trip tripData, _) =>
+            tripData.tripsByDate[0].fuelConsumption,
         name: 'Fuel Usage',
         dataLabelSettings: DataLabelSettings(isVisible: false),
         spacing: 0.6,
       ),
-     /* ColumnSeries<TripData, String>(
+      ColumnSeries<Trip, String>(
+        color: circularProgressColor,
+        dataSource: triSpeedList,
+        xValueMapper: (Trip tripData, _) => tripData.date,
+        yValueMapper: (Trip tripData, _) => tripData.tripsByDate.length > 1
+            ? tripData.tripsByDate[1].fuelConsumption
+            : null,
+        name: 'Fuel Usage',
+        dataLabelSettings: DataLabelSettings(isVisible: false),
+        spacing: 0.6,
+      ),
+      /* ColumnSeries<TripData, String>(
         color: tripColumnBarColor,
         dataSource: tripDataList,
         xValueMapper: (TripData tripData, _) => tripData.date,
@@ -891,15 +958,15 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       color: reportBackgroundColor,
-      builder: (dynamic data, dynamic point, dynamic series, int dataIndex, int pointIndex) {
+      builder: (dynamic data, dynamic point, dynamic series, int dataIndex,
+          int pointIndex) {
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20)
-            ),
+                bottomRight: Radius.circular(20)),
             color: Colors.black,
           ),
           padding: EdgeInsets.all(9),
@@ -917,31 +984,26 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               SizedBox(height: 5),
               Row(
                 children: [
-                  Text(
-                      '${data.tripsByDate[pointIndex].fuelConsumption}',
+                  Text('${data.tripsByDate[pointIndex].fuelConsumption}',
                       style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
-                      )
-                  ),
+                      )),
                   Text('Gal',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
-                      )
-                  ),
+                      )),
                 ],
               ),
-              TextButton(onPressed: (){
-
-              },
-                child: Text(
-                    'Go to Trip Report',
+              TextButton(
+                onPressed: () {},
+                child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.blue,
-                    )
-                ),)
+                    )),
+              )
             ],
           ),
         );
@@ -958,10 +1020,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           tooltipBehavior: tooltipBehavior,
           primaryXAxis: CategoryAxis(),
           primaryYAxis: NumericAxis(
-            labelFormat: '{value} gal',
-            interval: 5,
-            axisLine: AxisLine(width: 2),
-            title: AxisTitle(text: 'Galance'),
+              labelFormat: '{value} gal',
+              interval: 5,
+              axisLine: AxisLine(width: 2),
+              title: AxisTitle(text: 'Galance'),
               plotBands: [
                 PlotBand(
                     text: 'avg ${avgFuelConsumption}gal',
@@ -972,29 +1034,37 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     borderColor: Colors.grey,
                     textStyle: TextStyle(color: Colors.black),
                     dashArray: <double>[3, 3],
-                    horizontalTextAlignment: TextAnchor.start
-                ),
-              ]
-          ),
+                    horizontalTextAlignment: TextAnchor.start),
+              ]),
           series: columnSeriesData,
         ),
       ),
     );
   }
 
-  Widget? powerUsageGraph(BuildContext context){
-
+  Widget powerUsageGraph(BuildContext context) {
     final List<ChartSeries> columnSeriesData = [
-      ColumnSeries<TripData, String>(
+      ColumnSeries<Trip, String>(
         color: circularProgressColor,
-        dataSource: tripDataList,
-        xValueMapper: (TripData tripData, _) => tripData.date,
-        yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[1]),
+        dataSource: triSpeedList,
+        xValueMapper: (Trip tripData, _) => tripData.date,
+        yValueMapper: (Trip tripData, _) => tripData.tripsByDate[0].avgPower,
         name: 'Power Usage',
         dataLabelSettings: DataLabelSettings(isVisible: false),
         spacing: 0.6,
       ),
-     /* ColumnSeries<TripData, String>(
+      ColumnSeries<Trip, String>(
+        color: circularProgressColor,
+        dataSource: triSpeedList,
+        xValueMapper: (Trip tripData, _) => tripData.date,
+        yValueMapper: (Trip tripData, _) => tripData.tripsByDate.length > 1
+            ? tripData.tripsByDate[1].avgPower
+            : null,
+        name: 'Power Usage',
+        dataLabelSettings: DataLabelSettings(isVisible: false),
+        spacing: 0.6,
+      ),
+      /* ColumnSeries<TripData, String>(
         color: tripColumnBarColor,
         dataSource: tripDataList,
         xValueMapper: (TripData tripData, _) => tripData.date,
@@ -1006,15 +1076,15 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       color: reportBackgroundColor,
-      builder: (dynamic data, dynamic point, dynamic series, int dataIndex, int pointIndex) {
+      builder: (dynamic data, dynamic point, dynamic series, int dataIndex,
+          int pointIndex) {
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20)
-            ),
+                bottomRight: Radius.circular(20)),
             color: Colors.black,
           ),
           padding: EdgeInsets.all(9),
@@ -1032,31 +1102,26 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               SizedBox(height: 5),
               Row(
                 children: [
-                  Text(
-                      '${data.tripsByDate[pointIndex].avgPower}',
+                  Text('${data.tripsByDate[pointIndex].avgPower}',
                       style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
-                      )
-                  ),
+                      )),
                   Text('Watts',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
-                      )
-                  ),
+                      )),
                 ],
               ),
-              TextButton(onPressed: (){
-
-              },
-                child: Text(
-                    'Go to Trip Report',
+              TextButton(
+                onPressed: () {},
+                child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.blue,
-                    )
-                ),)
+                    )),
+              )
             ],
           ),
         );
@@ -1073,9 +1138,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           tooltipBehavior: tooltipBehavior,
           primaryXAxis: CategoryAxis(),
           primaryYAxis: NumericAxis(
-            interval: 5,
-            axisLine: AxisLine(width: 2),
-            title: AxisTitle(text: 'Wats'),
+              interval: 5,
+              axisLine: AxisLine(width: 2),
+              title: AxisTitle(text: 'Wats'),
               plotBands: [
                 PlotBand(
                     text: 'avg ${avgFuelConsumption}gal',
@@ -1086,10 +1151,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     borderColor: Colors.grey,
                     textStyle: TextStyle(color: Colors.black),
                     dashArray: <double>[3, 3],
-                    horizontalTextAlignment: TextAnchor.start
-                ),
-              ]
-          ),
+                    horizontalTextAlignment: TextAnchor.start),
+              ]),
           series: columnSeriesData,
           annotations: <CartesianChartAnnotation>[
             CartesianChartAnnotation(
@@ -1110,14 +1173,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     );
   }
 
-  Widget? filterByDate(BuildContext context){
+  Widget? filterByDate(BuildContext context) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 setState(() {
                   isStartDate = true;
                 });
@@ -1128,26 +1191,21 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 height: displayWidth(context) * 0.14,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: dateBackgroundColor
-                ),
+                    color: dateBackgroundColor),
                 child: Padding(
                   padding: EdgeInsets.all(6.0),
                   child: Center(
                     child: Text(
                       "Start Date",
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400
-                      ),
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                     ),
                   ),
                 ),
               ),
             ),
-
-
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 setState(() {
                   isEndDate = true;
                 });
@@ -1158,131 +1216,126 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 height: displayWidth(context) * 0.14,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: dateBackgroundColor
-                ),
+                    color: dateBackgroundColor),
                 child: Padding(
                   padding: EdgeInsets.all(6.0),
                   child: Center(
                     child: Text(
                       "End Date",
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400
-                      ),
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                     ),
                   ),
                 ),
               ),
             )
           ],
-
-
         ),
         SizedBox(
           height: displayWidth(context) * 0.08,
         ),
-
-        isStartDate! || isEndDate == true ?
-        Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: displayWidth(context) * 0.045,right: displayWidth(context) * 0.045),
-              child: Container(
-                width: displayWidth(context),
-                height: 50,
-                decoration: BoxDecoration(
-                  color: selectDayBackgroundColor,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(
-                        30,
+        isStartDate! || isEndDate == true
+            ? Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: displayWidth(context) * 0.045,
+                        right: displayWidth(context) * 0.045),
+                    child: Container(
+                      width: displayWidth(context),
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: selectDayBackgroundColor,
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(
+                              30,
+                            ),
+                            topLeft: Radius.circular(
+                              30,
+                            ),
+                          )),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: displayWidth(context) * 0.03,
+                            top: displayWidth(context) * 0.05),
+                        child: Text(
+                          "Select Day",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
                       ),
-                      topLeft: Radius.circular(
-                        30,
-                      ),
-                    )
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(left: displayWidth(context) * 0.03,top: displayWidth(context) * 0.05),
-                  child: Text(
-                      "Select Day",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding:  EdgeInsets.only(left: displayWidth(context) * 0.045,right: displayWidth(context) * 0.045),
-              child: TableCalendar(
-                daysOfWeekVisible: true,
-                focusedDay: selectedDate,
-                firstDay: firstDate,
-                lastDay: lastDate,
-                onFormatChanged: (CalendarFormat _format){
-
-                },
-                calendarBuilders: CalendarBuilders(
-                  selectedBuilder: (context, date, events) => Container(
-                      margin: const EdgeInsets.all(5.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          shape: BoxShape.circle),
-                      child: Text(
-                        date.day.toString(),
-                        style: TextStyle(color: Colors.white),
-                      )),
-                ),
-                calendarStyle: CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    color: Colors.blue,
-                    shape: BoxShape.circle,
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: displayWidth(context) * 0.045,
+                        right: displayWidth(context) * 0.045),
+                    child: TableCalendar(
+                      daysOfWeekVisible: true,
+                      focusedDay: selectedDate,
+                      firstDay: firstDate,
+                      lastDay: lastDate,
+                      onFormatChanged: (CalendarFormat _format) {},
+                      calendarBuilders: CalendarBuilders(
+                        selectedBuilder: (context, date, events) => Container(
+                            margin: const EdgeInsets.all(5.0),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                shape: BoxShape.circle),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(color: Colors.white),
+                            )),
+                      ),
+                      calendarStyle: CalendarStyle(
+                          todayDecoration: BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          isTodayHighlighted: true,
+                          selectedDecoration: BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          selectedTextStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22.0,
+                              color: Colors.pink),
+                          todayTextStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22.0,
+                              color: Colors.white)),
+                      selectedDayPredicate: (DateTime date) {
+                        return isSameDay(selectedDate, date);
+                      },
+                      startingDayOfWeek: StartingDayOfWeek.monday,
+                      onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
+                        setState(() {
+                          selectedDate = selectDay!;
+                          focusedDay = focusDay!;
+                        });
+                        print(focusDay);
+                      },
+                      headerStyle: HeaderStyle(
+                        formatButtonVisible: false,
+                        formatButtonDecoration: BoxDecoration(
+                          color: Colors.brown,
+                          borderRadius: BorderRadius.circular(22.0),
+                        ),
+                        formatButtonTextStyle: TextStyle(color: Colors.white),
+                        formatButtonShowsNext: false,
+                      ),
+                    ),
                   ),
-                  isTodayHighlighted: true,
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.blue,
-                    shape: BoxShape.circle,
-                  ),
-                  selectedTextStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22.0,
-                      color: Colors.pink),
-                    todayTextStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22.0,
-                        color: Colors.white)
-                ),
-                selectedDayPredicate: (DateTime date){
-                  return isSameDay(selectedDate, date);
-                },
-                startingDayOfWeek: StartingDayOfWeek.monday,
-                onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
-                  setState(() {
-                   selectedDate = selectDay!;
-                   focusedDay = focusDay!;
-                  });
-                  print(focusDay);
-                },
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  formatButtonDecoration: BoxDecoration(
-                    color: Colors.brown,
-                    borderRadius: BorderRadius.circular(22.0),
-                  ),
-                  formatButtonTextStyle: TextStyle(color: Colors.white),
-                  formatButtonShowsNext: false,
-                ),
-              ),
-            ),
-          ],
-        ) : Container(),
+                ],
+              )
+            : Container(),
       ],
     );
   }
 
-  Widget? filterByTrip(BuildContext context){
+  Widget? filterByTrip(BuildContext context) {
     return Column(
       children: [
         Container(
@@ -1309,14 +1362,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             },
           ),
         ),
-
         ListView(
           primary: false,
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           children: <Widget>[
             Padding(
-              padding:  EdgeInsets.only(left: displayWidth(context) * 0.046),
+              padding: EdgeInsets.only(left: displayWidth(context) * 0.046),
               child: CustomLabeledCheckbox(
                 label: 'Select All',
                 value: parentValue != null ? parentValue! : false,
@@ -1368,24 +1420,22 @@ class TripData {
   TripData({required this.date, required this.startPosition});
 }
 
-class TripSpeed{
+class TripSpeed {
   final String date;
   final List<TripsByDate> speed;
 
   TripSpeed({required this.date, required this.speed});
 }
 
-
-
 class CustomTooltipBehavior extends TooltipBehavior {
   CustomTooltipBehavior({
     double duration = 3500,
     TooltipPosition tooltipPosition = TooltipPosition.pointer,
   }) : super(
-    enable: true,
-    duration: duration,
-    tooltipPosition: tooltipPosition,
-  );
+          enable: true,
+          duration: duration,
+          tooltipPosition: tooltipPosition,
+        );
 
   @override
   Widget buildContent(BuildContext context, dynamic data) {
