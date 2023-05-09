@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -10,6 +11,7 @@ import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/widgets/common_drop_down_one.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
 import '../../common_widgets/widgets/custom_labled_checkbox.dart';
+import '../../models/reports_model.dart';
 import '../home_page.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -93,18 +95,42 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   final List<Map<String, dynamic>> finalChartData = [];
 
   List<TripData> tripDataList = [];
+  List<Trip> triSpeedList = [];
+  ReportModel? reportModel;
+  double? avgSpeed;
+  int? avgDuration;
+  dynamic avgFuelConsumption;
 
   // Fetch content from the json file
   Future<void> readJson() async {
     var response = await rootBundle.loadString('assets/reports/reports.json');
-    var data = await json.decode(response);
-    print("json Data: $data");
-     tripDataList = List<TripData>.from(data['data']['trips'].map((trip) =>
-        TripData(date: trip['date'], startPosition: trip['tripsByDate'][0]['startPosition'])
-    ));
-    avgDurations = data['data']['trips']
-        .map((trip) => trip['tripsByDate'][0]['avgSpeed'])
-        .toList();
+    reportModel = ReportModel.fromJson(json.decode(response));
+    avgSpeed = reportModel!.data.avgInfo.avgSpeed;
+    avgDuration = durationWithMilli(reportModel!.data.avgInfo.avgDuration);
+    avgFuelConsumption = reportModel!.data.avgInfo.avgFuelConsumption;
+
+    triSpeedList = List<Trip>.from(reportModel!.data.trips.map((speed) => Trip(date: speed.date, tripsByDate: speed.tripsByDate)));
+
+  }
+  
+  dynamic duration(String duration){
+    String timeString = duration;
+    List<String> parts = timeString.split(':');
+    DateTime dateTime = DateTime(0, 0, 0, int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2],));
+    int totalMinutes = dateTime.hour * 60 + dateTime.minute;
+    print(totalMinutes);
+    return totalMinutes;
+  }
+  dynamic durationWithMilli(String timeString){
+   String time = timeString;
+    Duration duration = Duration(
+      hours: int.parse(time.split(':')[0]),
+      minutes: int.parse(timeString.split(':')[1]),
+      seconds: int.parse(timeString.split(':')[2].split('.')[0]),
+      milliseconds: int.parse(timeString.split(':')[2].split('.')[1]),
+    );
+     int durationInMinutes = duration.inMinutes;
+    return durationInMinutes;
   }
 
   @override
@@ -470,12 +496,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               ),
             ),
 
-          // buildGraph(context)!,
+         //  buildGraph(context)!,
 
-           tripDurationGraph(context)!,
-          //    avgSpeedGraph(context)!,
-           //   fuelUsageGraph(context)!,
-            //  powerUsageGraph(context)!,
+          // tripDurationGraph(context)!,
+              avgSpeedGraph(context)!,
+             // fuelUsageGraph(context)!,
+             // powerUsageGraph(context)!,
 
               Padding(
                 padding: EdgeInsets.only(
@@ -597,41 +623,35 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   Widget? tripDurationGraph(BuildContext context){
 
     final List<ChartSeries> columnSeriesData = [
-      ColumnSeries<TripData, String>(
+      ColumnSeries<Trip, String>(
         color: circularProgressColor,
-        dataSource: tripDataList,
-        xValueMapper: (TripData tripData, _) => tripData.date,
-        yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[1]),
-        name: 'Latitude',
+        dataSource: triSpeedList,
+        xValueMapper: (Trip tripData, _) => tripData.date,
+        yValueMapper: (Trip tripData, _) => duration(tripData.tripsByDate[0].duration.toString()),
+        name: 'Duration',
         dataLabelSettings: DataLabelSettings(isVisible: false),
-        spacing: 0.1,
+        spacing: 0.6,
       ),
-      ColumnSeries<TripData, String>(
-        color: tripColumnBarColor,
-        dataSource: tripDataList,
-        xValueMapper: (TripData tripData, _) => tripData.date,
-        yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[0]),
-        name: 'Longitude',
-      ),
-      LineSeries<TripData, String>(
-          dataSource: tripDataList,
-          xValueMapper: (TripData tripData, _) => tripData.date,
-          yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[0]),
-          color: Colors.grey,
-          dashArray: [3,3],
-          name: 'Fuel Consumption'
-      ) 
+      // ColumnSeries<TripData, String>(
+      //   color: tripColumnBarColor,
+      //   dataSource: tripDataList,
+      //   xValueMapper: (TripData tripData, _) => tripData.date,
+      //   yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[0]),
+      //   name: 'Longitude',
+      // ),
+
     ];
 
-    // final double average =
-    //     chartData.fold(0, (sum, data) => (num.tryParse(sum.toString())!) + data.y) / chartData.length;
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
-      color: Colors.grey.withOpacity(0),
+      color: reportBackgroundColor,
+      borderWidth: 1,
+      //activationMode: ActivationMode.singleTap,
       builder: (dynamic data, dynamic point, dynamic series, int dataIndex, int pointIndex) {
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
+           // borderRadius: BorderRadius.all(Radius.circular(40)),
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
@@ -655,13 +675,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               Row(
                 children: [
                   Text(
-                      '236',
+                      "${duration(data.tripsByDate[pointIndex].duration)}",
                       style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
                       )
                   ),
-                  Text('Gal',
+                  Text(' min',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -692,6 +712,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         physics: NeverScrollableScrollPhysics(),
         //scrollDirection: Axis.horizontal,
         child: SfCartesianChart(
+          //tooltipBehavior: CustomTooltipBehavior(),
           tooltipBehavior: tooltipBehavior,
           primaryXAxis: CategoryAxis(),
           primaryYAxis: NumericAxis(
@@ -701,22 +722,21 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             majorTickLines: MajorTickLines(width: 0),
             minorTickLines: MinorTickLines(width: 0),
             labelStyle: TextStyle(color: Colors.grey),
+              plotBands: [
+                PlotBand(
+                  text: 'avg ${avgDuration}min',
+                  isVisible: true,
+                  start: avgDuration,
+                  end: avgDuration,
+                  borderWidth: 2,
+                  borderColor: Colors.grey,
+                  textStyle: TextStyle(color: Colors.black),
+                  dashArray: <double>[3, 3],
+                  horizontalTextAlignment: TextAnchor.start
+                ),
+              ]
           ),
          series: columnSeriesData,
-         annotations: <CartesianChartAnnotation>[
-            CartesianChartAnnotation(
-              widget: Container(
-                child: Text(
-                  "avg 90min",
-                  style: TextStyle(fontSize: 12),
-                ),
-              ),
-              x: 0.02,
-              y: 23,
-              coordinateUnit: CoordinateUnit.point,
-              region: AnnotationRegion.chart,
-            ),
-          ],
         ),
       ),
     );
@@ -725,38 +745,39 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   Widget? avgSpeedGraph(BuildContext context){
 
     final List<ChartSeries> columnSeriesData = [
-      ColumnSeries<TripData, String>(
+
+      ColumnSeries<Trip,dynamic>(
         color: circularProgressColor,
-        dataSource: tripDataList,
-        xValueMapper: (TripData tripData, _) => tripData.date,
-        yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[1]),
+        dataSource: triSpeedList,
+        xValueMapper: (Trip tripData, _) => tripData.date ?? "",
+        yValueMapper: (Trip tripData, _) => tripData.tripsByDate[0].avgSpeed ?? 0.0,
+        name: 'Avg Speed',
+        dataLabelSettings: DataLabelSettings(isVisible: false),
+        spacing: 0.6,
+      ),
+    /*  ColumnSeries<Trip,dynamic>(
+        color: tripColumnBarColor,
+        dataSource: triSpeedList,
+        xValueMapper: (Trip tripData, _) => tripData.date ?? "",
+        yValueMapper: (Trip tripData, _) => tripData.tripsByDate.length > 1 ? tripData.tripsByDate[1].avgSpeed : tripData.tripsByDate[1].avgSpeed,
         name: 'Latitude',
         dataLabelSettings: DataLabelSettings(isVisible: false),
         spacing: 0.1,
-      ),
-      ColumnSeries<TripData, String>(
-        color: tripColumnBarColor,
-        dataSource: tripDataList,
-        xValueMapper: (TripData tripData, _) => tripData.date,
-        yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[0]),
-        name: 'Longitude',
-      ),
-      LineSeries<TripData, String>(
-          dataSource: tripDataList,
-          xValueMapper: (TripData tripData, _) => tripData.date,
-          yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[0]),
-          color: Colors.grey,
-          dashArray: [3,3],
-          name: 'Fuel Consumption'
-      )
+      ) */
+      // ColumnSeries<TripData, String>(
+      //   color: tripColumnBarColor,
+      //   dataSource: tripDataList,
+      //   xValueMapper: (TripData tripData, _) => tripData.date,
+      //   yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[0]),
+      //   name: 'Longitude',
+      // ),
     ];
 
-    // final double average =
-    //     chartData.fold(0, (sum, data) => (num.tryParse(sum.toString())!) + data.y) / chartData.length;
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
-      color: Colors.grey.withOpacity(0),
+      color: reportBackgroundColor,
       builder: (dynamic data, dynamic point, dynamic series, int dataIndex, int pointIndex) {
+        print("data is: ${data.tripsByDate[pointIndex].avgSpeed}");
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
@@ -783,13 +804,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               Row(
                 children: [
                   Text(
-                      '236',
+                      '${data.tripsByDate[pointIndex].avgSpeed}',
                       style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
                       )
                   ),
-                  Text('Gal',
+                  Text('NM',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -826,22 +847,21 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             interval: 5,
             axisLine: AxisLine(width: 2),
             title: AxisTitle(text: 'Notical Miles'),
+              plotBands: [
+                PlotBand(
+                    text: 'avg ${avgSpeed}NM',
+                    isVisible: true,
+                    start: avgSpeed,
+                    end: avgSpeed,
+                    borderWidth: 2,
+                    borderColor: Colors.grey,
+                    textStyle: TextStyle(color: Colors.black,fontSize: 12),
+                    dashArray: <double>[3, 3],
+                    horizontalTextAlignment: TextAnchor.start
+                ),
+              ]
           ),
           series: columnSeriesData,
-          annotations: <CartesianChartAnnotation>[
-            CartesianChartAnnotation(
-              widget: Container(
-                child: Text(
-                  "avg 5.12NM",
-                  style: TextStyle(fontSize: 12),
-                ),
-              ),
-              x: 0.02,
-              y: 23,
-              coordinateUnit: CoordinateUnit.point,
-              region: AnnotationRegion.chart,
-            ),
-          ],
         ),
       ),
     );
@@ -850,39 +870,27 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   Widget? fuelUsageGraph(BuildContext context){
 
     final List<ChartSeries> columnSeriesData = [
-      ColumnSeries<TripData, String>(
+      ColumnSeries<Trip, String>(
         color: circularProgressColor,
-        dataSource: tripDataList,
-        xValueMapper: (TripData tripData, _) => tripData.date,
-        yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[1]),
-        name: 'Latitude',
+        dataSource: triSpeedList,
+        xValueMapper: (Trip tripData, _) => tripData.date,
+        yValueMapper: (Trip tripData, _) => tripData.tripsByDate[0].fuelConsumption,
+        name: 'Fuel Usage',
         dataLabelSettings: DataLabelSettings(isVisible: false),
-        spacing: 0.1,
+        spacing: 0.6,
       ),
-      ColumnSeries<TripData, String>(
+     /* ColumnSeries<TripData, String>(
         color: tripColumnBarColor,
         dataSource: tripDataList,
         xValueMapper: (TripData tripData, _) => tripData.date,
         yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[0]),
         name: 'Longitude',
-      ),
-
-      LineSeries<TripData, String>(
-          dataSource: tripDataList,
-          xValueMapper: (TripData tripData, _) => tripData.date,
-          yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[0]),
-        color: Colors.grey,
-        dashArray: [3,3],
-        name: 'Fuel Consumption'
-      )
-
+      ), */
     ];
 
-    // final double average =
-    //     chartData.fold(0, (sum, data) => (num.tryParse(sum.toString())!) + data.y) / chartData.length;
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
-      color: Colors.grey.withOpacity(0),
+      color: reportBackgroundColor,
       builder: (dynamic data, dynamic point, dynamic series, int dataIndex, int pointIndex) {
         return Container(
           width: displayWidth(context) * 0.4,
@@ -910,7 +918,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               Row(
                 children: [
                   Text(
-                      '236',
+                      '${data.tripsByDate[pointIndex].fuelConsumption}',
                       style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
@@ -940,10 +948,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       },
     );
 
-    Duration duration = Duration(hours: 0, minutes: 10, seconds: 25, milliseconds: 333);
-    double minutes = duration.inMinutes.toDouble();
-    print(minutes); // output: 10.0
-
     return Container(
       width: MediaQuery.of(context).size.width,
       height: displayHeight(context) * 0.4,
@@ -958,23 +962,21 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             interval: 5,
             axisLine: AxisLine(width: 2),
             title: AxisTitle(text: 'Galance'),
+              plotBands: [
+                PlotBand(
+                    text: 'avg ${avgFuelConsumption}gal',
+                    isVisible: true,
+                    start: 10,
+                    end: 10,
+                    borderWidth: 2,
+                    borderColor: Colors.grey,
+                    textStyle: TextStyle(color: Colors.black),
+                    dashArray: <double>[3, 3],
+                    horizontalTextAlignment: TextAnchor.start
+                ),
+              ]
           ),
           series: columnSeriesData,
-
-           annotations: <CartesianChartAnnotation>[
-           CartesianChartAnnotation(
-              widget: Container(
-                child: Text(
-                  "Avg 7 gal",
-                  style: TextStyle(fontSize: 12),
-                ),
-              ),
-              x: 0.02,
-              y: 23,
-              coordinateUnit: CoordinateUnit.point,
-              region: AnnotationRegion.chart,
-            ),
-          ],
         ),
       ),
     );
@@ -988,32 +990,22 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         dataSource: tripDataList,
         xValueMapper: (TripData tripData, _) => tripData.date,
         yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[1]),
-        name: 'Latitude',
+        name: 'Power Usage',
         dataLabelSettings: DataLabelSettings(isVisible: false),
-        spacing: 0.1,
+        spacing: 0.6,
       ),
-      ColumnSeries<TripData, String>(
+     /* ColumnSeries<TripData, String>(
         color: tripColumnBarColor,
         dataSource: tripDataList,
         xValueMapper: (TripData tripData, _) => tripData.date,
         yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[0]),
         name: 'Longitude',
-      ),
-      LineSeries<TripData, String>(
-          dataSource: tripDataList,
-          xValueMapper: (TripData tripData, _) => tripData.date,
-          yValueMapper: (TripData tripData, _) => double.parse(tripData.startPosition[0]),
-          color: Colors.grey,
-          dashArray: [3,3],
-          name: 'Fuel Consumption'
-      )
+      ), */
     ];
 
-    // final double average =
-    //     chartData.fold(0, (sum, data) => (num.tryParse(sum.toString())!) + data.y) / chartData.length;
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
-      color: Colors.grey.withOpacity(0),
+      color: reportBackgroundColor,
       builder: (dynamic data, dynamic point, dynamic series, int dataIndex, int pointIndex) {
         return Container(
           width: displayWidth(context) * 0.4,
@@ -1041,13 +1033,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               Row(
                 children: [
                   Text(
-                      '236',
+                      '${data.tripsByDate[pointIndex].avgPower}',
                       style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
                       )
                   ),
-                  Text('Gal',
+                  Text('Watts',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -1084,6 +1076,19 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             interval: 5,
             axisLine: AxisLine(width: 2),
             title: AxisTitle(text: 'Wats'),
+              plotBands: [
+                PlotBand(
+                    text: 'avg ${avgFuelConsumption}gal',
+                    isVisible: true,
+                    start: 10,
+                    end: 10,
+                    borderWidth: 2,
+                    borderColor: Colors.grey,
+                    textStyle: TextStyle(color: Colors.black),
+                    dashArray: <double>[3, 3],
+                    horizontalTextAlignment: TextAnchor.start
+                ),
+              ]
           ),
           series: columnSeriesData,
           annotations: <CartesianChartAnnotation>[
@@ -1354,12 +1359,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       ],
     );
   }
-
- /* double getAverage(List<ChartData> data) {
-    double sum = 0;
-    data.forEach((element) => sum += element.y);
-    return sum / data.length;
-  } */
 }
 
 class TripData {
@@ -1367,4 +1366,50 @@ class TripData {
   final List<dynamic> startPosition;
 
   TripData({required this.date, required this.startPosition});
+}
+
+class TripSpeed{
+  final String date;
+  final List<TripsByDate> speed;
+
+  TripSpeed({required this.date, required this.speed});
+}
+
+
+
+class CustomTooltipBehavior extends TooltipBehavior {
+  CustomTooltipBehavior({
+    double duration = 3500,
+    TooltipPosition tooltipPosition = TooltipPosition.pointer,
+  }) : super(
+    enable: true,
+    duration: duration,
+    tooltipPosition: tooltipPosition,
+  );
+
+  @override
+  Widget buildContent(BuildContext context, dynamic data) {
+    return Container(
+      decoration: BoxDecoration(
+        //color: Colors.white,
+        borderRadius: BorderRadius.circular(40),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      padding: EdgeInsets.all(10),
+      child: Text(
+        '${data.x} : ${data.y}',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
 }
