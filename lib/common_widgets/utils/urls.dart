@@ -21,4 +21,7 @@ class Urls {
 
   // Sync Data
   static const String getUserConfig = '/api/auth/getUserConfigbyId';
+
+  // Reports module
+  static const String reportModule = '/api/reports';
 }

@@ -7,16 +7,16 @@ ReportModel reportModelFromJson(String str) => ReportModel.fromJson(json.decode(
 String reportModelToJson(ReportModel data) => json.encode(data.toJson());
 
 class ReportModel {
-  Data data;
-  String message;
-  bool status;
-  int statusCode;
+  Data? data;
+  String? message;
+  bool? status;
+  int? statusCode;
 
   ReportModel({
-    required this.data,
-    required this.message,
-    required this.status,
-    required this.statusCode,
+    this.data,
+    this.message,
+    this.status,
+    this.statusCode,
   });
 
   factory ReportModel.fromJson(Map<String, dynamic> json) => ReportModel(
@@ -27,7 +27,7 @@ class ReportModel {
   );
 
   Map<String, dynamic> toJson() => {
-    "data": data.toJson(),
+    "data": data!.toJson(),
     "message": message,
     "status": status,
     "statusCode": statusCode,
@@ -35,49 +35,49 @@ class ReportModel {
 }
 
 class Data {
-  List<Trip> trips;
-  AvgInfo avgInfo;
+  List<TripModel>? trips;
+  AvgInfo? avgInfo;
 
   Data({
-    required this.trips,
-    required this.avgInfo,
+    this.trips,
+    this.avgInfo,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    trips: List<Trip>.from(json["trips"].map((x) => Trip.fromJson(x))),
+    trips: List<TripModel>.from(json["trips"].map((x) => TripModel.fromJson(x))),
     avgInfo: AvgInfo.fromJson(json["avgInfo"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "trips": List<dynamic>.from(trips.map((x) => x.toJson())),
-    "avgInfo": avgInfo.toJson(),
+    "trips": List<dynamic>.from(trips!.map((x) => x.toJson())),
+    "avgInfo": avgInfo!.toJson(),
   };
 }
 
 class AvgInfo {
-  int count;
+  int? count;
   dynamic avgDuration;
-  double avgSpeed;
-  double avgFuelConsumption;
-  double avgPower;
-  double totalDurationHrs;
+  dynamic avgSpeed;
+  double? avgFuelConsumption;
+  double? avgPower;
+  double? totalDurationHrs;
 
   AvgInfo({
-    required this.count,
-    required this.avgDuration,
-    required this.avgSpeed,
-    required this.avgFuelConsumption,
-    required this.avgPower,
-    required this.totalDurationHrs,
+    this.count,
+    this.avgDuration,
+    this.avgSpeed,
+    this.avgFuelConsumption,
+    this.avgPower,
+    this.totalDurationHrs,
   });
 
   factory AvgInfo.fromJson(Map<String, dynamic> json) => AvgInfo(
     count: json["count"],
-    avgDuration: json["avgDuration"],
-    avgSpeed: json["avgSpeed"]?.toDouble(),
-    avgFuelConsumption: json["avgFuelConsumption"],
-    avgPower: json["avgPower"]?.toDouble(),
-    totalDurationHrs: json["totalDurationHrs"]?.toDouble(),
+    avgDuration: json["avgDuration"] != null ? json["avgDuration"] : 0.0,
+    avgSpeed: json["avgSpeed"] != null ? json["avgSpeed"]?.toDouble() : 0.0,
+    avgFuelConsumption: json["avgFuelConsumption"] != null ? json["avgFuelConsumption"] : 0.0,
+    avgPower: json["avgPower"] != null ? json["avgPower"]?.toDouble() : 0.0,
+    totalDurationHrs: json["totalDurationHrs"] != null ? json["totalDurationHrs"]?.toDouble() : 0.0,
   );
 
   Map<String, dynamic> toJson() => {
@@ -90,48 +90,48 @@ class AvgInfo {
   };
 }
 
-class Trip {
-  String date;
-  List<TripsByDate> tripsByDate;
+class TripModel {
+  String? date;
+  List<TripsByDate>? tripsByDate;
 
-  Trip({
-    required this.date,
-    required this.tripsByDate,
+  TripModel({
+    this.date,
+    this.tripsByDate,
   });
 
-  factory Trip.fromJson(Map<String, dynamic> json) => Trip(
+  factory TripModel.fromJson(Map<String, dynamic> json) => TripModel(
     date: json["date"],
     tripsByDate: List<TripsByDate>.from(json["tripsByDate"].map((x) => TripsByDate.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "date": date,
-    "tripsByDate": List<dynamic>.from(tripsByDate.map((x) => x.toJson())),
+    "tripsByDate": List<dynamic>.from(tripsByDate!.map((x) => x.toJson())),
   };
 }
 
 class TripsByDate {
-  String id;
-  String load;
-  List<String> startPosition;
-  List<String> endPosition;
-  List<SensorInfo> sensorInfo;
-  DeviceInfo deviceInfo;
-  String vesselId;
-  int tripStatus;
-  int dataExtStatus;
-  String createdBy;
-  DateTime createdAt;
-  String updatedBy;
-  DateTime updatedAt;
-  String filePath;
-  DateTime syncCreatedAt;
-  DateTime syncUpdatedAt;
+  String? id;
+  String? load;
+  List<String>? startPosition;
+  List<String>? endPosition;
+  List<SensorInfo>? sensorInfo;
+  DeviceInfo? deviceInfo;
+  String? vesselId;
+  int? tripStatus;
+  int? dataExtStatus;
+  String? createdBy;
+  DateTime? createdAt;
+  String? updatedBy;
+  DateTime? updatedAt;
+  String? filePath;
+  DateTime? syncCreatedAt;
+  DateTime? syncUpdatedAt;
   dynamic duration;
-  double distance;
-  double speed;
-  double avgSpeed;
-  String cloudFilePath;
+  double? distance;
+  double? speed;
+  double? avgSpeed;
+  String? cloudFilePath;
   MissingLineNumbers? missingLineNumbers;
   List<String>? sensorType;
   bool? vesselAnalyticsCalc;
@@ -140,27 +140,27 @@ class TripsByDate {
   double? fuelConsumption;
 
   TripsByDate({
-    required this.id,
-    required this.load,
-    required this.startPosition,
-    required this.endPosition,
-    required this.sensorInfo,
-    required this.deviceInfo,
-    required this.vesselId,
-    required this.tripStatus,
-    required this.dataExtStatus,
-    required this.createdBy,
-    required this.createdAt,
-    required this.updatedBy,
-    required this.updatedAt,
-    required this.filePath,
-    required this.syncCreatedAt,
-    required this.syncUpdatedAt,
-    required this.duration,
-    required this.distance,
-    required this.speed,
-    required this.avgSpeed,
-    required this.cloudFilePath,
+    this.id,
+    this.load,
+    this.startPosition,
+    this.endPosition,
+    this.sensorInfo,
+    this.deviceInfo,
+    this.vesselId,
+    this.tripStatus,
+    this.dataExtStatus,
+    this.createdBy,
+    this.createdAt,
+    this.updatedBy,
+    this.updatedAt,
+    this.filePath,
+    this.syncCreatedAt,
+    this.syncUpdatedAt,
+    this.duration,
+    this.distance,
+    this.speed,
+    this.avgSpeed,
+    this.cloudFilePath,
     this.missingLineNumbers,
     this.sensorType,
     this.vesselAnalyticsCalc,
@@ -202,20 +202,20 @@ class TripsByDate {
   Map<String, dynamic> toJson() => {
     "_id": id,
     "load": load,
-    "startPosition": List<dynamic>.from(startPosition.map((x) => x)),
-    "endPosition": List<dynamic>.from(endPosition.map((x) => x)),
-    "sensorInfo": List<dynamic>.from(sensorInfo.map((x) => x.toJson())),
-    "deviceInfo": deviceInfo.toJson(),
+    "startPosition": List<dynamic>.from(startPosition!.map((x) => x)),
+    "endPosition": List<dynamic>.from(endPosition!.map((x) => x)),
+    "sensorInfo": List<dynamic>.from(sensorInfo!.map((x) => x.toJson())),
+    "deviceInfo": deviceInfo!.toJson(),
     "vesselId": vesselId,
     "tripStatus": tripStatus,
     "dataExtStatus": dataExtStatus,
     "createdBy": createdBy,
-    "createdAt": createdAt.toIso8601String(),
+    "createdAt": createdAt!.toIso8601String(),
     "updatedBy": updatedBy,
-    "updatedAt": updatedAt.toIso8601String(),
+    "updatedAt": updatedAt!.toIso8601String(),
     "filePath": filePath,
-    "syncCreatedAt": syncCreatedAt.toIso8601String(),
-    "syncUpdatedAt": syncUpdatedAt.toIso8601String(),
+    "syncCreatedAt": syncCreatedAt!.toIso8601String(),
+    "syncUpdatedAt": syncUpdatedAt!.toIso8601String(),
     "duration": duration,
     "distance": distance,
     "speed": speed,
@@ -231,20 +231,20 @@ class TripsByDate {
 }
 
 class DeviceInfo {
-  String deviceId;
-  String model;
-  String version;
-  String make;
-  String board;
-  String deviceType;
+  String? deviceId;
+  String? model;
+  String? version;
+  String? make;
+  String? board;
+  String? deviceType;
 
   DeviceInfo({
-    required this.deviceId,
-    required this.model,
-    required this.version,
-    required this.make,
-    required this.board,
-    required this.deviceType,
+    this.deviceId,
+    this.model,
+    this.version,
+    this.make,
+    this.board,
+    this.deviceType,
   });
 
   factory DeviceInfo.fromJson(Map<String, dynamic> json) => DeviceInfo(
@@ -267,12 +267,12 @@ class DeviceInfo {
 }
 
 class MissingLineNumbers {
-  List<dynamic> lpr1Csv;
-  List<dynamic> mobile1Csv;
+  List<dynamic>? lpr1Csv;
+  List<dynamic>? mobile1Csv;
 
   MissingLineNumbers({
-    required this.lpr1Csv,
-    required this.mobile1Csv,
+    this.lpr1Csv,
+    this.mobile1Csv,
   });
 
   factory MissingLineNumbers.fromJson(Map<String, dynamic> json) => MissingLineNumbers(
@@ -281,18 +281,18 @@ class MissingLineNumbers {
   );
 
   Map<String, dynamic> toJson() => {
-    "lpr_1.csv": List<dynamic>.from(lpr1Csv.map((x) => x)),
-    "mobile_1.csv": List<dynamic>.from(mobile1Csv.map((x) => x)),
+    "lpr_1.csv": List<dynamic>.from(lpr1Csv!.map((x) => x)),
+    "mobile_1.csv": List<dynamic>.from(mobile1Csv!.map((x) => x)),
   };
 }
 
 class SensorInfo {
-  String make;
-  String name;
+  String? make;
+  String? name;
 
   SensorInfo({
-    required this.make,
-    required this.name,
+    this.make,
+    this.name,
   });
 
   factory SensorInfo.fromJson(Map<String, dynamic> json) => SensorInfo(

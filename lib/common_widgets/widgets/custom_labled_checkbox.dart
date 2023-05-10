@@ -125,7 +125,7 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
         style: themeData.textTheme.labelLarge,
       ),
       subtitle: Text(
-        "Trip ID: $tripId",
+        "$tripId",
         style: themeData.textTheme.labelLarge,
       ),
       trailing: Text(

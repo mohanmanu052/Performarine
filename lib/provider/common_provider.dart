@@ -16,9 +16,14 @@ import 'package:performarine/provider/add_vessel_api_provider.dart';
 import 'package:performarine/provider/get_user_config_api_provider.dart';
 import 'package:performarine/provider/login_api_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
+import 'package:performarine/provider/report_module_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:sqflite/sqflite.dart';
+
+import '../models/reports_model.dart';
+import '../models/trip_list_model.dart';
+import 'list_vessels_provider.dart';
 
 class CommonProvider with ChangeNotifier {
   LoginModel? loginModel;
@@ -32,6 +37,8 @@ class CommonProvider with ChangeNotifier {
   bool tripStatus = false, isTripUploading = false, exceptionOccurred = false;
   Future<List<Trip>>? getTripsByIdFuture;
   GetUserConfigModel? getUserConfigModel;
+  ReportModel? reportModel;
+  TripList? tripListModel;
 
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
@@ -186,5 +193,33 @@ class CommonProvider with ChangeNotifier {
   updateExceptionOccurredValue(bool value) {
     exceptionOccurred = value;
     notifyListeners();
+  }
+
+  Future<ReportModel?> getReportData(
+      DateTime startDate,
+      DateTime endDate,
+      String? caseType,
+      String? vesselID,
+      String? token,
+      List<String> selectedTripId,
+      BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey)async{
+
+    reportModel = ReportModel();
+    reportModel = await ReportModuleProvider().reportData(startDate,endDate,caseType,vesselID, token, selectedTripId, context, scaffoldKey);
+    notifyListeners();
+    return reportModel;
+  }
+
+  Future<TripList> tripListData(String vesselID,
+      BuildContext context,
+      String accessToken,
+      GlobalKey<ScaffoldState> scaffoldKey,
+      ) async {
+    tripListModel = TripList();
+    tripListModel = await TripListApiProvider()
+        .tripListData(vesselID,context, accessToken, scaffoldKey);
+    notifyListeners();
+    return tripListModel!;
   }
 }
