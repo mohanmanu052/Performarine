@@ -195,7 +195,7 @@ class TripsByDate {
     vesselAnalyticsCalc: json["vesselAnalyticsCalc"],
     cloudFilePath: json["cloudFilePath"],
     avgPower: json["avgPower"] != null ? json["avgPower"].toDouble() :0.0,
-    fuelConsumption:  json["fuelConsumption"] != null ? json["fuelConsumption"] : "",
+    fuelConsumption:  json["fuelConsumption"] != null ? json["fuelConsumption"] : 0.0,
   );
 
   Map<String, dynamic> toJson() => {

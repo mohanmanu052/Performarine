@@ -26,13 +26,17 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../common_widgets/widgets/status_tag.dart';
+import '../models/reports_model.dart';
 
 class TripAnalyticsScreen extends StatefulWidget {
   String? tripId;
+  TripModel? tripModel;
+  List<CreateVessel>? vesselDetails;
   final String? vesselId, calledFrom;
   final bool? tripIsRunningOrNot;
   TripAnalyticsScreen(
       {Key? key,
+       this.tripModel,
       this.tripId,
       this.vesselId,
       this.tripIsRunningOrNot,
@@ -100,16 +104,20 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   }
 
   getData() async {
-    final DatabaseService _databaseService = DatabaseService();
-    final tripDetails = await _databaseService.getTrip(widget.tripId!);
+    if(widget.calledFrom == 'Report'){
 
-    List<CreateVessel> vesselDetails =
-        await _databaseService.getVesselNameByID(widget.vesselId!);
+    }else{
+      final DatabaseService _databaseService = DatabaseService();
+      final tripDetails = await _databaseService.getTrip(widget.tripId!);
 
-    setState(() {
-      tripData = tripDetails;
-      vesselData = vesselDetails[0];
-    });
+      List<CreateVessel> vesselDetails =
+      await _databaseService.getVesselNameByID(widget.vesselId!);
+
+      setState(() {
+        tripData = tripDetails;
+        vesselData = vesselDetails[0];
+      });
+    }
   }
 
   getRealTimeTripDetails() async {
