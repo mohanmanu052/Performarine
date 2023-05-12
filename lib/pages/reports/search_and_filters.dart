@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../common_widgets/utils/colors.dart';
+import '../../common_widgets/utils/utils.dart';
 import '../../common_widgets/widgets/common_drop_down_one.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
 import '../../common_widgets/widgets/custom_labled_checkbox.dart';
@@ -43,7 +44,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   DateTime focusedDay = DateTime.now();
   String? focusedDayString = "";
   DateTime firstDate = DateTime(1980);
-  DateTime lastDate = DateTime(2050);
+  DateTime lastDate = DateTime.now();
   List<String> items = ["Start Date", "End Date"];
   DateTime lastDayFocused = DateTime.now();
   String? lastFocusedDayString = "";
@@ -114,6 +115,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   final List<Color> barsColor =[circularProgressColor,tripColumnBarColor,tripColumnBar1Color];
 
   DropdownItem? selectedValue;
+  bool isSelectStartDate = false;
+  bool isSelectEndDate = false;
+  String? selectedTripsAndDateString = "";
+  String? selectedTripsAndDateDetails = "";
 
   String convertIntoYearMonthDay(String date){
     String dateTimeString = date;
@@ -169,6 +174,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             dateTimeList!.add(value.data![i].createdAt != null && value.data![i].createdAt!.isNotEmpty ? tripDate(value.data![i].createdAt!) : "");
             children!.add("Trip ${i.toString()}");
           }
+          selectedTripsAndDateDetails = children!.join(", ");
           childrenValue = List.generate(children!.length, (index) => false);
 
           print("trip id list: $tripIdList");
@@ -188,29 +194,37 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   getVesselAndTripsData()async{
     try{
-      commonProvider
-          .getUserConfigData(context, commonProvider.loginModel!.userId!,
-          commonProvider.loginModel!.token!, scaffoldKey).then((value){
-         if(value != null){
-           setState(() {
-             isVesselDataLoading = true;
-           });
-           print("value of get user config by id: ${value.vessels}");
-           vesselData = List<DropdownItem>.from(value.vessels!.map((vessel) => DropdownItem(id: vessel.id,name: vessel.name)));
+      bool check = await Utils().check(scaffoldKey);
+      if(check){
+        commonProvider
+            .getUserConfigData(context, commonProvider.loginModel!.userId!,
+            commonProvider.loginModel!.token!, scaffoldKey).then((value){
+          if(value != null){
+            setState(() {
+              isVesselDataLoading = true;
+            });
+            print("value of get user config by id: ${value.vessels}");
+            vesselData = List<DropdownItem>.from(value.vessels!.map((vessel) => DropdownItem(id: vessel.id,name: vessel.name)));
 
-        //   tripData = List<DropdownItem>.from(value.trips!.map((trip) => DropdownItem(id: )));
+            //   tripData = List<DropdownItem>.from(value.trips!.map((trip) => DropdownItem(id: )));
 
-           print("vesselData: ${vesselData.length}");
-         } else{
-           setState(() {
-             isVesselDataLoading = false;
-           });
-         }
-      }).catchError((e){
-        setState(() {
-          isVesselDataLoading = false;
+            print("vesselData: ${vesselData.length}");
+          } else{
+            setState(() {
+              isVesselDataLoading = false;
+            });
+          }
         });
-      });
+      }else{
+        setState(() {
+          isVesselDataLoading = true;
+        });
+      }
+      // .catchError((e){
+      //   setState(() {
+      //     isVesselDataLoading = false;
+      //   });
+      // });
     }catch(e){
       setState(() {
         isVesselDataLoading = false;
@@ -235,70 +249,69 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   getReportsData(int caseType,{String? startDate,String? endDate,String? vesselID,List<String>? selectedTripListID}) async {
     try{
       await commonProvider.getReportData(startDate ?? "",endDate ?? "",caseType,vesselID,commonProvider.loginModel!.token!,selectedTripListID ?? [], context, scaffoldKey).then((value) {
-        setState(() {
-          isReportDataLoading = true;
-        });
         if(value != null){
-          // if(value.message == "Internal Server Error"){
-          //   setState(() {
-          //     isCheckInternalServer = true;
-          //   });
-          // }
+          if(value.message == "Internal Server Error"){
+            setState(() {
+              isCheckInternalServer = true;
+            });
+          } else if(!isCheckInternalServer! && value.statusCode == 200){
+            setState(() {
+              isReportDataLoading = true;
+            });
+            avgSpeed = value.data!.avgInfo!.avgSpeed;
+            avgDuration = durationWithMilli(value.data!.avgInfo!.avgDuration!);
+            avgFuelConsumption = value.data!.avgInfo!.avgFuelConsumption;
+            avgPower = value.data!.avgInfo!.avgPower ?? 0.0;
+            print("avgPower : $avgPower");
+            triSpeedList =  List<TripModel>.from(value.data!.trips!.map((tripData) => TripModel(date: tripData.date, tripsByDate: tripData.tripsByDate)));
 
-          avgSpeed = value.data!.avgInfo!.avgSpeed;
-          avgDuration = durationWithMilli(value.data!.avgInfo!.avgDuration!);
-          avgFuelConsumption = value.data!.avgInfo!.avgFuelConsumption;
-          avgPower = value.data!.avgInfo!.avgPower ?? 0.0;
-          print("avgPower : $avgPower");
-          triSpeedList =  List<TripModel>.from(value.data!.trips!.map((tripData) => TripModel(date: tripData.date, tripsByDate: tripData.tripsByDate)));
-
-          for(int i=0; i< triSpeedList.length; i++){
-            for(int j=0; j < triSpeedList[i].tripsByDate!.length; j++){
-              print("trip duration data is: ${triSpeedList[i].tripsByDate![j].id}");
-              durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                color: barsColor[j],
-                dataSource: triSpeedList,
-                xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                yValueMapper: (TripModel tripData, _) =>
-                    duration(triSpeedList[i].tripsByDate![j].duration.toString()),
-                name: 'Duration',
-                dataLabelSettings: DataLabelSettings(isVisible: false),
-                spacing: 0.2,
-              ));
-              avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                color: barsColor[j],
-                dataSource: triSpeedList,
-                xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                yValueMapper: (TripModel tripData, _) =>
-                triSpeedList[i].tripsByDate![j].avgSpeed,
-                name: 'Avg Speed',
-                dataLabelSettings: DataLabelSettings(isVisible: false),
-                spacing: 0.2,
-              ));
-              fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                color: barsColor[j],
-                dataSource: triSpeedList,
-                xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                yValueMapper: (TripModel tripData, _) =>
-                num.parse(triSpeedList[i].tripsByDate![j].fuelConsumption),
-                name: 'Fuel Usage',
-                dataLabelSettings: DataLabelSettings(isVisible: false),
-                spacing: 0.2,
-              ));
-              powerUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                color: barsColor[j],
-                dataSource: triSpeedList,
-                xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                yValueMapper: (TripModel tripData, _) =>
-                triSpeedList[i].tripsByDate![j].avgPower,
-                name: 'Power Usage',
-                dataLabelSettings: DataLabelSettings(isVisible: false),
-                spacing: 0.2,
-              ));
+            for(int i=0; i< triSpeedList.length; i++){
+              for(int j=0; j < triSpeedList[i].tripsByDate!.length; j++){
+                print("trip duration data is: ${triSpeedList[i].tripsByDate![j].id}");
+                durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  color: barsColor[j],
+                  dataSource: triSpeedList,
+                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                  yValueMapper: (TripModel tripData, _) =>
+                      duration(triSpeedList[i].tripsByDate![j].duration.toString()),
+                  name: 'Duration',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.2,
+                ));
+                avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  color: barsColor[j],
+                  dataSource: triSpeedList,
+                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                  yValueMapper: (TripModel tripData, _) =>
+                  triSpeedList[i].tripsByDate![j].avgSpeed,
+                  name: 'Avg Speed',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.2,
+                ));
+                fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  color: barsColor[j],
+                  dataSource: triSpeedList,
+                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                  yValueMapper: (TripModel tripData, _) =>
+                      num.parse(triSpeedList[i].tripsByDate![j].fuelConsumption),
+                  name: 'Fuel Usage',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.2,
+                ));
+                powerUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  color: barsColor[j],
+                  dataSource: triSpeedList,
+                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                  yValueMapper: (TripModel tripData, _) =>
+                  triSpeedList[i].tripsByDate![j].avgPower,
+                  name: 'Power Usage',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.2,
+                ));
+              }
             }
-          }
 
-      /*    tripList = value.data!.trips!
+            /*    tripList = value.data!.trips!
               .map((trip) => {
             'date': trip.date!,
             'tripDetails': trip.tripsByDate![0].id,
@@ -344,9 +357,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             }
           ]; */
 
-         // print("finalData: $finalData");
-
-
+            // print("finalData: $finalData");
+          } else{
+            setState(() {
+              isCheckInternalServer = false;
+              isReportDataLoading = false;
+            });
+          }
         } else{
           setState(() {
             isReportDataLoading = false;
@@ -409,10 +426,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     super.initState();
     commonProvider = context.read<CommonProvider>();
     parentValue = false;
+    isTripIdListLoading = true;
     Future.delayed(Duration.zero, () {
       getVesselAndTripsData();
     });
 
+    selectedTripsAndDateString = "Date Range";
 
     tripDurationButtonColor = true;
 
@@ -462,7 +481,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                     : Colors.black,
                               ),
                               SizedBox(
-                                width: displayWidth(context) * 0.03,
+                                width: displayWidth(context) * 0.25,
                               ),
                               Text(
                                 "Reports",
@@ -620,6 +639,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         print("id is: ${item?.id} ");
                                         selectedVessel = item!.id;
                                         selectedVesselName = item.name;
+                                        setState(() {
+                                          isTripIdListLoading = false;
+                                        });
+                                        tripIdList!.clear();
+                                        dateTimeList!.clear();
+                                        children!.clear();
                                         getTripListData(item.id!);
 
                                         // state.didChange(item);
@@ -653,6 +678,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                       selectedCaseType = 1;
                                       print("selectedCaseType: $selectedCaseType ");
                                       _selectedOption = value!;
+                                      selectedTripsAndDateString = "Date Range";
                                     });
                                   },
                                 ),
@@ -668,6 +694,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                       selectedCaseType = 2;
                                       print("selectedCaseType: $selectedCaseType ");
                                       _selectedOption = value!;
+                                      selectedTripsAndDateString = "Selected Trips";
                                     });
                                   },
                                 ),
@@ -689,6 +716,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               if(focusedDayString!.isNotEmpty || lastFocusedDayString!.isNotEmpty){
                                  startDate = convertIntoYearMonthDay(focusedDayString!);
                                  endDate =  convertIntoYearMonthDay(lastFocusedDayString!);
+                                 selectedTripsAndDateDetails = "$startDate to $endDate";
                               }
                               if(selectedCaseType == 1){
                                 getReportsData(selectedCaseType!,startDate: startDate,endDate: endDate,vesselID: selectedVessel);
@@ -716,7 +744,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       ),
                     ),
 
-                    isReportDataLoading! ?  Column(
+                    isReportDataLoading! && !isCheckInternalServer! ?  Column(
                         children: [
                           Container(
                             margin: EdgeInsets.only(
@@ -724,6 +752,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               right: displayWidth(context) * 0.05,
                             ),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
                                   height: displayWidth(context) * 0.07,
@@ -742,7 +771,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 Row(
                                   children: [
                                     Text(
-                                      "Selected Trips",
+                                      "$selectedTripsAndDateString",
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 12,
@@ -752,13 +781,17 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                     SizedBox(
                                       width: displayWidth(context) * 0.05,
                                     ),
-                                    Text(
-                                      ":  Trip A, Trip B, Trip C",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: inter),
+                                    Expanded(
+                                      child: Text(
+                                        ":  ${selectedTripsAndDateDetails}",
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: inter),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -901,7 +934,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               ],
                             ),
                           ),
-                          isReportDataLoading! ?  buildGraph(context) : Center(
+                          isReportDataLoading! && !isCheckInternalServer! ?  buildGraph(context) : Center(
                             child: CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation<Color>(
                                   circularProgressColor),
@@ -1570,6 +1603,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 setState(() {
                   isStartDate = true;
                   selectDateOption = 1;
+                  isSelectStartDate = true;
                 });
               },
               child: Container(
@@ -1596,6 +1630,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 setState(() {
                   isEndDate = true;
                   selectDateOption = 2;
+                  isSelectEndDate = true;
                 });
               },
               child: Container(
@@ -1622,7 +1657,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         SizedBox(
           height: displayWidth(context) * 0.08,
         ),
-    selectDateOption == 1
+    selectDateOption == 1 && isSelectStartDate
             ? Column(
                 children: [
                   Padding(
@@ -1647,7 +1682,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             left: displayWidth(context) * 0.03,
                             top: displayWidth(context) * 0.05),
                         child: Text(
-                          "Select Day",
+                          "Select Start Day",
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w600),
                         ),
@@ -1719,7 +1754,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   ),
                 ],
               )
-            : Column(
+            : isSelectEndDate ? Column(
              children: [
                Padding(
                  padding: EdgeInsets.only(
@@ -1743,7 +1778,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   left: displayWidth(context) * 0.03,
                   top: displayWidth(context) * 0.05),
                 child: Text(
-                "Select Day",
+                "Select End Day",
                 style: TextStyle(
                     fontSize: 16, fontWeight: FontWeight.w600),
               ),
@@ -1814,7 +1849,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           ),
         ),
       ],
-    ),
+    ) : Container(),
       ],
     );
   }
@@ -1827,7 +1862,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           children: <Widget>[
-            Padding(
+            tripIdList!.isNotEmpty ? Padding(
               padding: EdgeInsets.only(left: displayWidth(context) * 0.046),
               child: CustomLabeledCheckbox(
                 label: 'Select All',
@@ -1845,7 +1880,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 checkboxType: CheckboxType.Parent,
                 activeColor: Colors.indigo,
               ),
-            ),
+            ) : Container(),
             ListView.builder(
               itemCount: children!.length ?? 0,
               itemBuilder: (context, index) => Column(
