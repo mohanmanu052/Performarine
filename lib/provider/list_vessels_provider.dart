@@ -38,8 +38,8 @@ class TripListApiProvider extends ChangeNotifier {
       if (response.statusCode == HttpStatus.ok) {
         tripListModel = TripList.fromJson(json.decode(response.body));
 
-        Utils.showSnackBar( context,
-            scaffoldKey: scaffoldKey, message: decodedData['message']);
+        // Utils.showSnackBar( context,
+        //     scaffoldKey: scaffoldKey, message: decodedData['message']);
 
         return tripListModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
