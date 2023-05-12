@@ -29,18 +29,24 @@ class SearchAndFilters extends StatefulWidget {
 class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+  final _formKey = GlobalKey<FormState>();
+
   late CommonProvider commonProvider;
 
   bool? isExpansionCollapse = false;
   String? selectedVessel;
+  String? selectedVesselName = "";
   String? selectedTrip;
   int _selectedOption = 1;
-  DateTime selectedDate = DateTime.now();
+  DateTime selectedDateForStartDate = DateTime.now();
+  DateTime selectedDateForEndDate = DateTime.now();
   DateTime focusedDay = DateTime.now();
+  String? focusedDayString = "";
   DateTime firstDate = DateTime(1980);
   DateTime lastDate = DateTime(2050);
   List<String> items = ["Start Date", "End Date"];
   DateTime lastDayFocused = DateTime.now();
+  String? lastFocusedDayString = "";
 
   bool? parentValue = false;
   List<String>? children = [];
@@ -49,24 +55,71 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   List<String>? dateTimeList = [];
   bool? isStartDate = false;
   bool? isEndDate = false;
-  CalendarFormat format = CalendarFormat.month;
+  //CalendarFormat format = CalendarFormat.month;
 
-  var avgDurations;
   String selectedButton = 'trip duration';
-  String? selectedCaseType = "0";
+  int? selectedCaseType = 1;
   int? selectDateOption;
 
-  String formatYearMonthDate(DateTime dateTime) {
-    return DateFormat('yyyy-MM-dd').format(dateTime);
-  }
+  final List<Map<String, dynamic>> finalChartData = [];
 
-  DateTime startDateAndEndDateConvert(String date){
-    String inputDate = date;
-    DateTime dateTime = DateTime.parse(inputDate);
-    final yearMonthDayFormat = DateFormat('yyyy-MM-dd');
-    final formattedDateTimeString = yearMonthDayFormat.format(dateTime);
-   // DateTime formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
-    return yearMonthDayFormat.parse(formattedDateTimeString);
+  List<Map<String, dynamic>> tripList = [];
+
+  List<Map<String, dynamic>> tripAvgList = [];
+
+  List<TripData> tripDataList = [];
+  List<TripModel> triSpeedList = [];
+  List<TripModel> jsonTripData = [];
+  ReportModel? reportModel;
+  double? avgSpeed = 0.0;
+  dynamic avgDuration = 0;
+  dynamic avgFuelConsumption;
+  dynamic avgPower = 0.0;
+
+  dynamic totalDuration = 0;
+  dynamic totalSpeed;
+  dynamic totalFuelConsumption;
+  dynamic totalAvgPower;
+
+  bool? tripDurationButtonColor = false;
+  bool? avgSpeedButtonColor = false;
+  bool? fuelUsageButtonColor = false;
+  bool? powerUsageButtonColor = false;
+
+  bool? isReportDataLoading = false;
+  bool? isCheckInternalServer = false;
+
+  List<Map<String, dynamic>> finalData = [];
+  List<Map<String, dynamic>> totalData = [];
+
+
+  List<Vessels> vesselList = [];
+  List<DropdownItem> vesselData = [];
+
+  List<DropdownItem> tripData = [];
+
+  bool? isVesselDataLoading = false;
+
+  List<String>? selectedTripIdList = [];
+
+  bool? isTripIdListLoading = false;
+
+  final List<ChartSeries> durationColumnSeriesData = [];
+  final List<ChartSeries> avgSpeedColumnSeriesData = [];
+  final List<ChartSeries> fuelUsageColumnSeriesData = [];
+  final List<ChartSeries> powerUsageColumnSeriesData = [];
+
+  final List<Color> barsColor =[circularProgressColor,tripColumnBarColor,tripColumnBar1Color];
+
+  DropdownItem? selectedValue;
+
+  String convertIntoYearMonthDay(String date){
+    String dateTimeString = date;
+    DateTime dateTime = DateTime.parse(dateTimeString);
+    String dateString = dateTime.toString().split(' ')[0];
+
+    print(dateString);
+    return dateString;
   }
 
   void manageTristate(int index, bool value) {
@@ -98,41 +151,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       }
     });
   }
-
-  final List<Map<String, dynamic>> finalChartData = [];
-
-  List<Map<String, dynamic>> tripList = [];
-
-  List<Map<String, dynamic>> tripAvgList = [];
-
-  List<TripData> tripDataList = [];
-  List<TripModel> triSpeedList = [];
-  ReportModel? reportModel;
-  dynamic avgSpeed;
-  dynamic avgDuration = 0;
-  dynamic avgFuelConsumption;
-  dynamic avgPower;
-
-  bool? tripDurationButtonColor = false;
-  bool? avgSpeedButtonColor = false;
-  bool? fuelUsageButtonColor = false;
-  bool? powerUsageButtonColor = false;
-
-  bool? isReportDataLoading = false;
-
-  List<Map<String, String>> finalData = [];
-
-
-  List<Vessels> vesselList = [];
-  List<DropdownItem> vesselData = [];
-
-  List<DropdownItem> tripData = [];
-
-  bool? isVesselDataLoading = false;
-
-  List<String>? selectedTripIdList = [];
-
-  bool? isTripIdListLoading = false;
 
   getTripListData(String vesselID)async{
     try{
@@ -212,50 +230,108 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     return formattedDate;
   }
 
-
-  getReportsData(String caseType,{DateTime? startDate,DateTime? endDate,String? vesselID,List<String>? selectedTripListID}) async {
+  getReportsData(int caseType,{String? startDate,String? endDate,String? vesselID,List<String>? selectedTripListID}) async {
     try{
-      await commonProvider.getReportData(startDate! ?? DateTime(0),endDate! ?? DateTime(0),caseType,vesselID,commonProvider.loginModel!.token!,selectedTripListID!, context, scaffoldKey).then((value) {
+      await commonProvider.getReportData(startDate ?? "",endDate ?? "",caseType,vesselID,commonProvider.loginModel!.token!,selectedTripListID ?? [], context, scaffoldKey).then((value) {
         setState(() {
           isReportDataLoading = true;
         });
         if(value != null){
-          print("value is: $value");
+          // if(value.message == "Internal Server Error"){
+          //   setState(() {
+          //     isCheckInternalServer = true;
+          //   });
+          // }
+
           avgSpeed = value.data!.avgInfo!.avgSpeed;
-          avgDuration = durationWithMilli(value.data!.avgInfo!.avgDuration);
+          avgDuration = durationWithMilli(value.data!.avgInfo!.avgDuration!);
           avgFuelConsumption = value.data!.avgInfo!.avgFuelConsumption;
-          avgPower = value.data!.avgInfo!.avgPower!.toInt();
+          avgPower = value.data!.avgInfo!.avgPower ?? 0.0;
           print("avgPower : $avgPower");
           triSpeedList =  List<TripModel>.from(value.data!.trips!.map((tripData) => TripModel(date: tripData.date, tripsByDate: tripData.tripsByDate)));
 
-          tripList = value.data!.trips!
+          for(int i=0; i< triSpeedList.length; i++){
+            for(int j=0; j < triSpeedList[i].tripsByDate!.length; j++){
+              print("trip duration data is: ${triSpeedList[i].tripsByDate![j].id}");
+              durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                color: barsColor[j],
+                dataSource: triSpeedList,
+                xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                yValueMapper: (TripModel tripData, _) =>
+                    duration(triSpeedList[i].tripsByDate![j].duration.toString()),
+                name: 'Duration',
+                dataLabelSettings: DataLabelSettings(isVisible: false),
+                spacing: 0.2,
+              ));
+              avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                color: barsColor[j],
+                dataSource: triSpeedList,
+                xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                yValueMapper: (TripModel tripData, _) =>
+                triSpeedList[i].tripsByDate![j].avgSpeed,
+                name: 'Avg Speed',
+                dataLabelSettings: DataLabelSettings(isVisible: false),
+                spacing: 0.2,
+              ));
+              fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                color: barsColor[j],
+                dataSource: triSpeedList,
+                xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                yValueMapper: (TripModel tripData, _) =>
+                num.parse(triSpeedList[i].tripsByDate![j].fuelConsumption),
+                name: 'Fuel Usage',
+                dataLabelSettings: DataLabelSettings(isVisible: false),
+                spacing: 0.2,
+              ));
+              powerUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                color: barsColor[j],
+                dataSource: triSpeedList,
+                xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                yValueMapper: (TripModel tripData, _) =>
+                triSpeedList[i].tripsByDate![j].avgPower,
+                name: 'Power Usage',
+                dataLabelSettings: DataLabelSettings(isVisible: false),
+                spacing: 0.2,
+              ));
+            }
+          }
+
+      /*    tripList = value.data!.trips!
               .map((trip) => {
             'date': trip.date!,
             'tripDetails': trip.tripsByDate![0].id,
             'duration': trip.tripsByDate![0].duration,
             'avgSpeed': '${trip.tripsByDate![0].avgSpeed} nm',
-            'fuelUsage': trip.tripsByDate![0].fuelConsumption ?? "0",
-            'powerUsage': trip.tripsByDate![0].avgPower ?? "0"
+            'fuelUsage': trip.tripsByDate![0].fuelConsumption ?? 0.0,
+            'powerUsage': trip.tripsByDate![0].avgPower ?? 0.0
           })
               .toList();
           print("tripList: $tripList");
 
-          int duration1 = durationWithMilli(value.data!.avgInfo!.avgDuration);
+          int duration1 = durationWithMilli(value.data!.avgInfo!.avgDuration!);
           String avgSpeed1 = value.data!.avgInfo!.avgSpeed!.toStringAsFixed(1) + " nm";
-          String fuelUsage = value.data!.avgInfo!.avgFuelConsumption!.toStringAsFixed(2) + " g";
-          String powerUsage = value.data!.avgInfo!.avgPower!.toStringAsFixed(2) + " w";
+          String? fuelUsage = value.data!.avgInfo!.avgFuelConsumption.toString() + " g";
+          String? powerUsage = value.data!.avgInfo!.avgPower.toString() + " w";
 
-          print("duration: $duration,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
+          print("duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
+
+          for(int i = 0; i < tripList.length; i++){
+            totalDuration += duration(tripList[i]['duration']);
+            totalSpeed += tripList[i]['avgSpeed'] ?? 0.0;
+            totalFuelConsumption += tripList[i]['fuelConsumption'];
+            totalAvgPower += tripList[i]['avgPower'] ?? 0.0;
+          }
+
+          totalData = [{
+            'date': '',
+            'tripDetails': 'Total',
+            'duration': "$totalDuration",
+            'avgSpeed': totalSpeed,
+            'fuelUsage': totalFuelConsumption,
+            'powerUsage': totalAvgPower
+          }];
 
            finalData = [
-            {
-              'date': '',
-              'tripDetails': 'Total',
-              'duration': "$duration1",
-              'avgSpeed': avgSpeed1,
-              'fuelUsage': fuelUsage,
-              'powerUsage': powerUsage
-            },
             {
               'date': '',
               'tripDetails': 'Average',
@@ -264,9 +340,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               'fuelUsage': fuelUsage,
               'powerUsage': powerUsage
             }
-          ];
+          ]; */
 
-          print("finalData: $finalData");
+         // print("finalData: $finalData");
 
 
         } else{
@@ -325,24 +401,18 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     return durationInMinutes;
   }
 
-  DropdownItem? selectedValue;
 
   @override
   void initState() {
     super.initState();
     commonProvider = context.read<CommonProvider>();
     parentValue = false;
-    //commonProvider = Provider.of<CommonProvider>(context,listen: false);
     Future.delayed(Duration.zero, () {
       getVesselAndTripsData();
     });
 
-   // getReportsData();
 
     tripDurationButtonColor = true;
-
-   // dateTimeList = ["23-Jan-2023", "24-Jan-2023", "25-Jan-2023", "26-Jan-2023"];
-
 
    /* WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
@@ -482,70 +552,74 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 child: Padding(
                                   padding: EdgeInsets.only(
                                       left: 13, right: displayWidth(context) * 0.45),
-                                  child: DropdownButtonFormField<DropdownItem>(
-                                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                                    dropdownColor:
-                                    Theme.of(context).brightness == Brightness.dark
-                                        ? "Select Vessel" == 'User SubRole'
-                                        ? Colors.white
-                                        : Colors.transparent
-                                        : Colors.white,
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      hintText: "Select Vessel*",
-                                      hintStyle: TextStyle(
+                                  child: Form(
+                                    key: _formKey,
+                                    child: DropdownButtonFormField<DropdownItem>(
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      dropdownColor:
+                                      Theme.of(context).brightness == Brightness.dark
+                                          ? "Select Vessel" == 'User SubRole'
+                                          ? Colors.white
+                                          : Colors.transparent
+                                          : Colors.white,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.zero,
+                                        border: InputBorder.none,
+                                        hintText: "Select Vessel*",
+                                        hintStyle: TextStyle(
+                                            color: Theme.of(context).brightness == Brightness.dark
+                                                ? "Select Vessel" == 'User SubRole'
+                                                ? Colors.black
+                                                : Colors.white
+                                                : Colors.black,
+                                            fontSize: displayWidth(context) * 0.034,
+                                            fontFamily: inter,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      isExpanded: true,
+                                      isDense: true,
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return 'Select Vessel';
+                                        }
+                                        return null;
+                                      },
+                                      icon: Icon(Icons.keyboard_arrow_down,
                                           color: Theme.of(context).brightness == Brightness.dark
                                               ? "Select Vessel" == 'User SubRole'
                                               ? Colors.black
                                               : Colors.white
-                                              : Colors.black,
-                                          fontSize: displayWidth(context) * 0.034,
-                                          fontFamily: inter,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    isExpanded: true,
-                                    isDense: true,
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return 'Select Vessel';
-                                      }
-                                      return null;
-                                    },
-                                    icon: Icon(Icons.keyboard_arrow_down,
-                                        color: Theme.of(context).brightness == Brightness.dark
-                                            ? "Select Vessel" == 'User SubRole'
-                                            ? Colors.black
-                                            : Colors.white
-                                            : Colors.black),
-                                    value: selectedValue,
-                                    // value: selectState,
-                                    items: vesselData.map((item) {
-                                      return DropdownMenuItem<DropdownItem>(
-                                        value: item,
-                                        child: Text(
-                                          item.name!,
-                                          style: TextStyle(
-                                              fontSize: displayWidth(context) * 0.0346,
-                                              color: Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                                  ? "Select Vessel" == 'User SubRole'
-                                                  ? Colors.black
-                                                  : Colors.white
-                                                  : Colors.black,
-                                              fontWeight: FontWeight.w500),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      );
-                                    }).toList(),
-                                    onChanged: (item) {
-                                      print("id is: ${item?.id} ");
-                                      selectedVessel = item!.id;
-                                      getTripListData(item.id!);
+                                              : Colors.black),
+                                      value: selectedValue,
+                                      // value: selectState,
+                                      items: vesselData.map((item) {
+                                        return DropdownMenuItem<DropdownItem>(
+                                          value: item,
+                                          child: Text(
+                                            item.name!,
+                                            style: TextStyle(
+                                                fontSize: displayWidth(context) * 0.0346,
+                                                color: Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                    ? "Select Vessel" == 'User SubRole'
+                                                    ? Colors.black
+                                                    : Colors.white
+                                                    : Colors.black,
+                                                fontWeight: FontWeight.w500),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (item) {
+                                        print("id is: ${item?.id} ");
+                                        selectedVessel = item!.id;
+                                        selectedVesselName = item.name;
+                                        getTripListData(item.id!);
 
-                                      // state.didChange(item);
-                                      // onChanged!(item);
-                                    },
+                                        // state.didChange(item);
+                                        // onChanged!(item);
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
@@ -570,7 +644,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                   groupValue: _selectedOption,
                                   onChanged: (int? value) {
                                     setState(() {
-                                      selectedCaseType = "1";
+                                      selectedCaseType = 1;
                                       print("selectedCaseType: $selectedCaseType ");
                                       _selectedOption = value!;
                                     });
@@ -585,7 +659,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                   groupValue: _selectedOption,
                                   onChanged: (int? value) {
                                     setState(() {
-                                      selectedCaseType = "2";
+                                      selectedCaseType = 2;
                                       print("selectedCaseType: $selectedCaseType ");
                                       _selectedOption = value!;
                                     });
@@ -602,17 +676,20 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           ),
                           CommonButtons.getAcceptButton(
                               "Search", context, primaryColor, () {
-                            _collapseExpansionTile();
-                          DateTime startDate = startDateAndEndDateConvert(focusedDay.toString());
-                          DateTime endDate =  startDateAndEndDateConvert(lastDayFocused.toString());
-
-                            //getReportsData(selectedVessel,selectedTripIdList!);
-                            // Navigator.of(context).pop();
-                                if(selectedCaseType == "1"){
-                                  getReportsData(selectedCaseType!,startDate: startDate,endDate: endDate,vesselID: selectedVessel);
-                                }else if(selectedCaseType == "2"){
-                                  getReportsData(selectedCaseType!,selectedTripListID: selectedTripIdList);
-                                }
+                            if (_formKey.currentState!.validate()) {
+                              _collapseExpansionTile();
+                              String? startDate = "";
+                              String? endDate = "";
+                              if(focusedDayString!.isNotEmpty || lastFocusedDayString!.isNotEmpty){
+                                 startDate = convertIntoYearMonthDay(focusedDayString!);
+                                 endDate =  convertIntoYearMonthDay(lastFocusedDayString!);
+                              }
+                              if(selectedCaseType == 1){
+                                getReportsData(selectedCaseType!,startDate: startDate,endDate: endDate,vesselID: selectedVessel);
+                              }else if(selectedCaseType == 2){
+                                getReportsData(selectedCaseType!,selectedTripListID: selectedTripIdList);
+                              }
+                            }
 
                           },
                               displayWidth(context) * 0.8,
@@ -646,7 +723,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                   height: displayWidth(context) * 0.07,
                                 ),
                                 Text(
-                                  "Sea Cucumber",
+                                  "$selectedVesselName",
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 16,
@@ -842,7 +919,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             ),
                           ),
 
-                          table(context)!,
+                         // table(context)!,
 
                           SizedBox(
                             height: displayWidth(context) * 0.08,
@@ -924,6 +1001,28 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   DataCell(Text(person['fuelUsage']!)),
                   DataCell(Text(person['powerUsage']!)),
                 ])),
+          /*  ...totalData.map((e) => DataRow(cells: [
+              DataCell(
+                Text(
+                  e['date']!,
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
+              DataCell(Text(
+                e['tripDetails']!,
+                style: TextStyle(color: Colors.blue),
+              )),
+              DataCell(Text(
+                e['duration']!,
+                style: TextStyle(color: Colors.blue),
+              )),
+              DataCell(Text(e['avgSpeed']!,
+                  style: TextStyle(color: Colors.blue))),
+              DataCell(Text(e['fuelUsage']!,
+                  style: TextStyle(color: Colors.blue))),
+              DataCell(Text(e['powerUsage']!,
+                  style: TextStyle(color: Colors.blue))),
+            ])), */
             ...finalData.map((e) => DataRow(cells: [
                   DataCell(
                     Text(
@@ -1056,7 +1155,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
      // physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       child: Container(
-        width: displayWidth(context) * 1.3,
+        width: displayWidth(context) * 1.4,
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
           //tooltipBehavior: CustomTooltipBehavior(),
@@ -1082,7 +1181,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     dashArray: <double>[3, 3],
                     horizontalTextAlignment: TextAnchor.start),
               ]),
-          series: columnSeriesData,
+          series: durationColumnSeriesData,
         ),
       ),
     );
@@ -1190,7 +1289,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       //physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       child: Container(
-        width: displayWidth(context) * 1.3,
+        width: displayWidth(context) * 1.4,
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
           tooltipBehavior: tooltipBehavior,
@@ -1212,7 +1311,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     horizontalTextAlignment: TextAnchor.start,
                 ),
               ]),
-          series: columnSeriesData,
+          series: avgSpeedColumnSeriesData,
         ),
       ),
     );
@@ -1309,7 +1408,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
      // physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       child: Container(
-        width: displayWidth(context) * 1.3,
+        width: displayWidth(context) * 1.4,
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
           tooltipBehavior: tooltipBehavior,
@@ -1331,7 +1430,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     dashArray: <double>[3, 3],
                     horizontalTextAlignment: TextAnchor.start),
               ]),
-          series: columnSeriesData,
+          series: fuelUsageColumnSeriesData,
         ),
       ),
     );
@@ -1427,7 +1526,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
      // physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       child: Container(
-        width: displayWidth(context) * 1.3,
+        width: displayWidth(context) * 1.4,
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
           tooltipBehavior: tooltipBehavior,
@@ -1448,7 +1547,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     dashArray: <double>[3, 3],
                     horizontalTextAlignment: TextAnchor.start),
               ]),
-          series: columnSeriesData,
+          series: powerUsageColumnSeriesData,
         ),
       ),
     );
@@ -1555,7 +1654,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         right: displayWidth(context) * 0.045),
                     child: TableCalendar(
                       daysOfWeekVisible: true,
-                      focusedDay: selectedDate,
+                      focusedDay: selectedDateForStartDate,
                       firstDay: firstDate,
                       lastDay: lastDate,
                       onFormatChanged: (CalendarFormat _format) {},
@@ -1590,15 +1689,16 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               fontSize: 22.0,
                               color: Colors.white)),
                       selectedDayPredicate: (DateTime date) {
-                        return isSameDay(selectedDate, date);
+                        return isSameDay(selectedDateForStartDate, date);
                       },
                       startingDayOfWeek: StartingDayOfWeek.monday,
                       onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
                         setState(() {
-                          selectedDate = selectDay!;
+                          selectedDateForStartDate = selectDay!;
                           focusedDay = focusDay!;
+                          focusedDayString = focusDay.toString();
                         });
-                        print(focusDay);
+                        print("focusedDay: $focusDay");
                       },
                       headerStyle: HeaderStyle(
                         formatButtonVisible: false,
@@ -1614,13 +1714,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 ],
               )
             : Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(
-              left: displayWidth(context) * 0.045,
-              right: displayWidth(context) * 0.045),
-          child: Container(
-            width: displayWidth(context),
+             children: [
+               Padding(
+                 padding: EdgeInsets.only(
+                     left: displayWidth(context) * 0.045,
+                     right: displayWidth(context) * 0.045),
+               child: Container(
+                width: displayWidth(context),
             height: 50,
             decoration: BoxDecoration(
                 color: selectDayBackgroundColor,
@@ -1632,11 +1732,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     30,
                   ),
                 )),
-            child: Padding(
+               child: Padding(
               padding: EdgeInsets.only(
                   left: displayWidth(context) * 0.03,
                   top: displayWidth(context) * 0.05),
-              child: Text(
+                child: Text(
                 "Select Day",
                 style: TextStyle(
                     fontSize: 16, fontWeight: FontWeight.w600),
@@ -1644,13 +1744,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             ),
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(
+             Padding(
+              padding: EdgeInsets.only(
               left: displayWidth(context) * 0.045,
               right: displayWidth(context) * 0.045),
-          child: TableCalendar(
+               child: TableCalendar(
             daysOfWeekVisible: true,
-            focusedDay: selectedDate,
+            focusedDay: selectedDateForEndDate,
             firstDay: firstDate,
             lastDay: lastDate,
             onFormatChanged: (CalendarFormat _format) {},
@@ -1685,15 +1785,16 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     fontSize: 22.0,
                     color: Colors.white)),
             selectedDayPredicate: (DateTime date) {
-              return isSameDay(selectedDate, date);
+              return isSameDay(selectedDateForEndDate, date);
             },
             startingDayOfWeek: StartingDayOfWeek.monday,
             onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
               setState(() {
-                selectedDate = selectDay!;
+                selectedDateForEndDate = selectDay!;
                 lastDayFocused= focusDay!;
+                lastFocusedDayString = focusDay.toString();
               });
-              print(lastDayFocused);
+              print("lastDayFocused: $lastDayFocused");
             },
             headerStyle: HeaderStyle(
               formatButtonVisible: false,

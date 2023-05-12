@@ -1,4 +1,6 @@
-
+// To parse this JSON data, do
+//
+//     final reportModel = reportModelFromJson(jsonString);
 
 import 'dart:convert';
 
@@ -13,10 +15,10 @@ class ReportModel {
   int? statusCode;
 
   ReportModel({
-    this.data,
-    this.message,
-    this.status,
-    this.statusCode,
+     this.data,
+     this.message,
+     this.status,
+     this.statusCode,
   });
 
   factory ReportModel.fromJson(Map<String, dynamic> json) => ReportModel(
@@ -39,8 +41,8 @@ class Data {
   AvgInfo? avgInfo;
 
   Data({
-    this.trips,
-    this.avgInfo,
+     this.trips,
+     this.avgInfo,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -56,28 +58,28 @@ class Data {
 
 class AvgInfo {
   int? count;
-  dynamic avgDuration;
-  dynamic avgSpeed;
-  double? avgFuelConsumption;
-  double? avgPower;
+  String? avgDuration;
+  double? avgSpeed;
+  dynamic avgFuelConsumption;
+  dynamic avgPower;
   double? totalDurationHrs;
 
   AvgInfo({
-    this.count,
-    this.avgDuration,
-    this.avgSpeed,
+     this.count,
+     this.avgDuration,
+     this.avgSpeed,
     this.avgFuelConsumption,
     this.avgPower,
-    this.totalDurationHrs,
+     this.totalDurationHrs,
   });
 
   factory AvgInfo.fromJson(Map<String, dynamic> json) => AvgInfo(
     count: json["count"],
-    avgDuration: json["avgDuration"] != null ? json["avgDuration"] : 0.0,
-    avgSpeed: json["avgSpeed"] != null ? json["avgSpeed"]?.toDouble() : 0.0,
+    avgDuration: json["avgDuration"],
+    avgSpeed: json["avgSpeed"]?.toDouble(),
     avgFuelConsumption: json["avgFuelConsumption"] != null ? json["avgFuelConsumption"] : 0.0,
-    avgPower: json["avgPower"] != null ? json["avgPower"]?.toDouble() : 0.0,
-    totalDurationHrs: json["totalDurationHrs"] != null ? json["totalDurationHrs"]?.toDouble() : 0.0,
+    avgPower: json["avgPower"] != null ? json["avgPower"] : 0.0,
+    totalDurationHrs: json["totalDurationHrs"]?.toDouble(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -95,8 +97,8 @@ class TripModel {
   List<TripsByDate>? tripsByDate;
 
   TripModel({
-    this.date,
-    this.tripsByDate,
+     this.date,
+     this.tripsByDate,
   });
 
   factory TripModel.fromJson(Map<String, dynamic> json) => TripModel(
@@ -127,17 +129,16 @@ class TripsByDate {
   String? filePath;
   DateTime? syncCreatedAt;
   DateTime? syncUpdatedAt;
-  dynamic duration;
+  String? duration;
   double? distance;
   double? speed;
   double? avgSpeed;
-  String? cloudFilePath;
   MissingLineNumbers? missingLineNumbers;
   List<String>? sensorType;
   bool? vesselAnalyticsCalc;
-  String? exceptionMsg;
+  String? cloudFilePath;
   double? avgPower;
-  double? fuelConsumption;
+  dynamic fuelConsumption;
 
   TripsByDate({
     this.id,
@@ -160,11 +161,10 @@ class TripsByDate {
     this.distance,
     this.speed,
     this.avgSpeed,
-    this.cloudFilePath,
     this.missingLineNumbers,
     this.sensorType,
     this.vesselAnalyticsCalc,
-    this.exceptionMsg,
+    this.cloudFilePath,
     this.avgPower,
     this.fuelConsumption,
   });
@@ -187,16 +187,15 @@ class TripsByDate {
     syncCreatedAt: DateTime.parse(json["syncCreatedAt"]),
     syncUpdatedAt: DateTime.parse(json["syncUpdatedAt"]),
     duration: json["duration"],
-    distance: json["distance"]?.toDouble(),
-    speed: json["speed"]?.toDouble(),
-    avgSpeed: json["avgSpeed"]?.toDouble(),
-    cloudFilePath: json["cloudFilePath"],
-    missingLineNumbers: json["missingLineNumbers"] == null ? null : MissingLineNumbers.fromJson(json["missingLineNumbers"]),
-    sensorType: json["sensorType"] == null ? [] : List<String>.from(json["sensorType"]!.map((x) => x)),
+    distance: json["distance"].toDouble(),
+    speed: json["speed"].toDouble(),
+    avgSpeed: json["avgSpeed"].toDouble(),
+    missingLineNumbers: json["missingLineNumbers"] != null? MissingLineNumbers.fromJson(json["missingLineNumbers"]) : MissingLineNumbers.fromJson({}),
+    sensorType: json["sensorType"] != null ? List<String>.from(json["sensorType"].map((x) => x)) : List<String>.from({}),
     vesselAnalyticsCalc: json["vesselAnalyticsCalc"],
-    exceptionMsg: json["exceptionMsg"],
-    avgPower: json["avgPower"]?.toDouble(),
-    fuelConsumption: json["fuelConsumption"],
+    cloudFilePath: json["cloudFilePath"],
+    avgPower: json["avgPower"] != null ? json["avgPower"].toDouble() :0.0,
+    fuelConsumption:  json["fuelConsumption"] != null ? json["fuelConsumption"] : "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -220,88 +219,162 @@ class TripsByDate {
     "distance": distance,
     "speed": speed,
     "avgSpeed": avgSpeed,
-    "cloudFilePath": cloudFilePath,
-    "missingLineNumbers": missingLineNumbers?.toJson(),
-    "sensorType": sensorType == null ? [] : List<dynamic>.from(sensorType!.map((x) => x)),
+    "missingLineNumbers": missingLineNumbers!.toJson(),
+    "sensorType": List<dynamic>.from(sensorType!.map((x) => x)),
     "vesselAnalyticsCalc": vesselAnalyticsCalc,
-    "exceptionMsg": exceptionMsg,
+    "cloudFilePath": cloudFilePath,
     "avgPower": avgPower,
     "fuelConsumption": fuelConsumption,
   };
 }
 
+enum AtedBy { THE_640023_F9_CE30_F37_DF289_C4_F9 }
+
+final atedByValues = EnumValues({
+  "640023f9ce30f37df289c4f9": AtedBy.THE_640023_F9_CE30_F37_DF289_C4_F9
+});
+
 class DeviceInfo {
-  String? deviceId;
-  String? model;
+  DeviceId? deviceId;
+  Model? model;
   String? version;
-  String? make;
-  String? board;
-  String? deviceType;
+  DeviceInfoMake? make;
+  Board? board;
+  DeviceType? deviceType;
 
   DeviceInfo({
-    this.deviceId,
-    this.model,
-    this.version,
-    this.make,
-    this.board,
-    this.deviceType,
+     this.deviceId,
+     this.model,
+     this.version,
+     this.make,
+     this.board,
+     this.deviceType,
   });
 
   factory DeviceInfo.fromJson(Map<String, dynamic> json) => DeviceInfo(
-    deviceId: json["deviceId"],
-    model: json["model"],
+    deviceId: deviceIdValues.map[json["deviceId"]],
+    model: modelValues.map[json["model"]],
     version: json["version"],
-    make: json["make"],
-    board: json["board"],
-    deviceType: json["deviceType"],
+    make: deviceInfoMakeValues.map[json["make"]],
+    board: boardValues.map[json["board"]],
+    deviceType: deviceTypeValues.map[json["deviceType"]],
   );
 
   Map<String, dynamic> toJson() => {
-    "deviceId": deviceId,
-    "model": model,
+    "deviceId": deviceIdValues.reverse[deviceId],
+    "model": modelValues.reverse[model],
     "version": version,
-    "make": make,
-    "board": board,
-    "deviceType": deviceType,
+    "make": deviceInfoMakeValues.reverse[make],
+    "board": boardValues.reverse[board],
+    "deviceType": deviceTypeValues.reverse[deviceType],
   };
 }
 
+enum Board { A32_X }
+
+final boardValues = EnumValues({
+  "a32x": Board.A32_X
+});
+
+enum DeviceId { TP1_A_220624014 }
+
+final deviceIdValues = EnumValues({
+  "TP1A.220624.014": DeviceId.TP1_A_220624014
+});
+
+enum DeviceType { ANDROID }
+
+final deviceTypeValues = EnumValues({
+  "Android": DeviceType.ANDROID
+});
+
+enum DeviceInfoMake { SAMSUNG }
+
+final deviceInfoMakeValues = EnumValues({
+  "samsung": DeviceInfoMake.SAMSUNG
+});
+
+enum Model { SM_M326_B }
+
+final modelValues = EnumValues({
+  "SM-M326B": Model.SM_M326_B
+});
+
+enum Load { HALF, EMPTY, FULL, VARIABLE }
+
+final loadValues = EnumValues({
+  "Empty": Load.EMPTY,
+  "Full": Load.FULL,
+  "Half": Load.HALF,
+  "Variable": Load.VARIABLE
+});
+
 class MissingLineNumbers {
-  List<dynamic>? lpr1Csv;
   List<dynamic>? mobile1Csv;
+  List<dynamic>? lpr1Csv;
 
   MissingLineNumbers({
-    this.lpr1Csv,
     this.mobile1Csv,
+    this.lpr1Csv,
   });
 
   factory MissingLineNumbers.fromJson(Map<String, dynamic> json) => MissingLineNumbers(
-    lpr1Csv: List<dynamic>.from(json["lpr_1.csv"].map((x) => x)),
-    mobile1Csv: List<dynamic>.from(json["mobile_1.csv"].map((x) => x)),
+    mobile1Csv: json["mobile_1.csv"] == null ? [] : List<dynamic>.from(json["mobile_1.csv"]!.map((x) => x)),
+    lpr1Csv: json["lpr_1.csv"] == null ? [] : List<dynamic>.from(json["lpr_1.csv"]!.map((x) => x)),
   );
 
   Map<String, dynamic> toJson() => {
-    "lpr_1.csv": List<dynamic>.from(lpr1Csv!.map((x) => x)),
-    "mobile_1.csv": List<dynamic>.from(mobile1Csv!.map((x) => x)),
+    "mobile_1.csv": mobile1Csv == null ? [] : List<dynamic>.from(mobile1Csv!.map((x) => x)),
+    "lpr_1.csv": lpr1Csv == null ? [] : List<dynamic>.from(lpr1Csv!.map((x) => x)),
   };
 }
 
 class SensorInfo {
-  String? make;
-  String? name;
+  SensorInfoMake? make;
+  Name? name;
 
   SensorInfo({
-    this.make,
-    this.name,
+     this.make,
+     this.name,
   });
 
   factory SensorInfo.fromJson(Map<String, dynamic> json) => SensorInfo(
-    make: json["make"],
-    name: json["name"],
+    make: sensorInfoMakeValues.map[json["make"]]!,
+    name: nameValues.map[json["name"]]!,
   );
 
   Map<String, dynamic> toJson() => {
-    "make": make,
-    "name": name,
+    "make": sensorInfoMakeValues.reverse[make],
+    "name": nameValues.reverse[name],
   };
+}
+
+enum SensorInfoMake { QUALICOM }
+
+final sensorInfoMakeValues = EnumValues({
+  "qualicom": SensorInfoMake.QUALICOM
+});
+
+enum Name { GPS }
+
+final nameValues = EnumValues({
+  "gps": Name.GPS
+});
+
+enum VesselId { THE_6407700_E7_BC3_DCFBC74_BB358 }
+
+final vesselIdValues = EnumValues({
+  "6407700e7bc3dcfbc74bb358": VesselId.THE_6407700_E7_BC3_DCFBC74_BB358
+});
+
+class EnumValues<T> {
+  Map<String, T> map;
+  late Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    reverseMap = map.map((k, v) => MapEntry(v, k));
+    return reverseMap;
+  }
 }

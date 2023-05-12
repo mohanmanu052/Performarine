@@ -196,9 +196,9 @@ class CommonProvider with ChangeNotifier {
   }
 
   Future<ReportModel?> getReportData(
-      DateTime startDate,
-      DateTime endDate,
-      String? caseType,
+      String startDate,
+      String endDate,
+      int? caseType,
       String? vesselID,
       String? token,
       List<String> selectedTripId,

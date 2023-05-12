@@ -13,9 +13,9 @@ class ReportModuleProvider with ChangeNotifier {
   ReportModel? reportModel;
 
   Future<ReportModel> reportData(
-      DateTime startDate,
-      DateTime endDate,
-      String? caseType,
+      String startDate,
+      String endDate,
+      int? caseType,
       String? vesselID,
       String? token,
       List<String> selectedTripId,
@@ -30,7 +30,7 @@ class ReportModuleProvider with ChangeNotifier {
 
     var queryParameters;
 
-    if(caseType == "1"){
+    if(caseType == 1){
       queryParameters= {
         "case": caseType,
         "vesselID": vesselID,
