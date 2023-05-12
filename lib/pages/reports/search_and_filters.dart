@@ -104,6 +104,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   bool? isTripIdListLoading = false;
 
+  bool isExpandedTile = false;
+
   final List<ChartSeries> durationColumnSeriesData = [];
   final List<ChartSeries> avgSpeedColumnSeriesData = [];
   final List<ChartSeries> fuelUsageColumnSeriesData = [];
@@ -500,6 +502,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         onExpansionChanged: (isExpanded){
                           setState(() {
                             print("isExpansionCollapse : $isExpanded");
+                            isExpandedTile = !isExpandedTile;
                             isExpansionCollapse = isExpanded;
                           });
                         },
@@ -512,8 +515,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               fontSize: 13,
                               fontFamily: inter),
                         ),
-                        trailing: Icon(
+                        trailing: !isExpandedTile ? Icon(
                           Icons.keyboard_arrow_down,
+                          color: Colors.black,
+                        ) : Icon(
+                          Icons.keyboard_arrow_up,
                           color: Colors.black,
                         ),
                         children: [
