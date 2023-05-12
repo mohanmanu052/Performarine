@@ -516,7 +516,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           width: displayWidth(context),
                           onTap: () async {
                             bool? isTripStarted =
-                                sharedPreferences!.getBool('trip_started');
+                            sharedPreferences!.getBool('trip_started');
 
                             if (isTripStarted != null) {
                               if (isTripStarted) {
@@ -533,15 +533,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             }
 
                             bool isLocationPermitted =
-                                await Permission.locationAlways.isGranted;
-
-                            /* if (Platform.isAndroid) {
-                              isLocationPermitted =
-                                  await Permission.locationAlways.isGranted;
-                            } else if (Platform.isIOS) {
-                              isLocationPermitted =
-                                  await Permission.locationWhenInUse.isGranted;
-                            }*/
+                            await Permission.locationAlways.isGranted;
 
                             if (isLocationPermitted) {
                               bool isNDPermDenied = await Permission
@@ -556,7 +548,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         isLocationDialogBox: false,
                                         text: 'Allow nearby devices',
                                         subText:
-                                            'Allow nearby devices to connect to the app',
+                                        'Allow nearby devices to connect to the app',
                                         buttonText: 'OK',
                                         buttonOnTap: () async {
                                           Get.back();
@@ -567,20 +559,20 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     });
                                 return;
                               } else {
-                                if (Platform.isIOS) {
-                                  bool isBluetoothEnable =
-                                      await FlutterBluePlus.instance.isOn;
+                               if(Platform.isIOS){
+                                 bool isBluetoothEnable =
+                                 await FlutterBluePlus.instance.isOn;
 
-                                  if (isBluetoothEnable) {
-                                    vessel!.add(widget.vessel!);
-                                    await locationPermissions(
-                                        widget.vessel!.vesselSize!,
-                                        widget.vessel!.name!,
-                                        widget.vessel!.id!);
-                                  } else {
-                                    showBluetoothDialog(context);
-                                  }
-                                } else {
+                                 if (isBluetoothEnable) {
+                                   vessel!.add(widget.vessel!);
+                                   await locationPermissions(
+                                       widget.vessel!.vesselSize!,
+                                       widget.vessel!.name!,
+                                       widget.vessel!.id!);
+                                 } else {
+                                   showBluetoothDialog(context);
+                                 }
+                               }else {
                                   bool isNDPermittedOne = await Permission
                                       .bluetoothConnect.isGranted;
 
@@ -598,7 +590,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       showBluetoothDialog(context);
                                     }
                                   } else {
-                                    print('HII2: $isNDPermittedOne');
+                                    print('HII: $isNDPermittedOne');
 
                                     await Permission.bluetoothConnect.request();
                                     bool isNDPermitted = await Permission
@@ -643,60 +635,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 }
                               }
 
-                              /* bool isBluetoothEnable =
-                                  await FlutterBluePlus.instance.isOn;
-
-                              if (isBluetoothEnable) {
-                                vessel!.add(widget.vessel!);
-                                await locationPermissions(
-                                    widget.vessel!.vesselSize!,
-                                    widget.vessel!.name!,
-                                    widget.vessel!.id!);
-                              } else {
-                                Utils.customPrint("NOT GIVEN PERMISSION 1");
-
-                                bool isNDPermDenied = await Permission
-                                    .bluetoothConnect.isPermanentlyDenied;
-
-                                if (isNDPermDenied) {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return LocationPermissionCustomDialog(
-                                          text: 'Allow nearby devices',
-                                          subText:
-                                              'Allow nearby devices to connect to the app',
-                                          buttonText: 'OK',
-                                          buttonOnTap: () async {
-                                            Get.back();
-
-                                            await openAppSettings();
-                                          },
-                                        );
-                                      });
-                                  return;
-                                } else {
-                                  bool isNDPermitted = await Permission
-                                      .bluetoothConnect.isGranted;
-
-                                  if (isNDPermitted) {
-                                    showBluetoothDialog(context);
-                                  } else {
-                                    await Permission.bluetoothConnect.request();
-                                    bool isNDPermitted = await Permission
-                                        .bluetoothConnect.isGranted;
-                                    if (isNDPermitted) {
-                                      showBluetoothDialog(context);
-                                    }
-                                  }
-                                }
-
-                                //showBluetoothDialog(context);
-                              }*/
                             } else {
                               /// WIU
                               bool isWIULocationPermitted =
-                                  await Permission.locationWhenInUse.isGranted;
+                              await Permission.locationWhenInUse.isGranted;
 
                               if (!isWIULocationPermitted) {
                                 await Utils.getLocationPermission(
@@ -706,7 +648,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     isLocationDialogBoxOpen = true;
                                   });*/
                               bool isLocationPermitted =
-                                  await Permission.locationAlways.isGranted;
+                              await Permission.locationAlways.isGranted;
                               if (isLocationPermitted) {
                                 bool isNDPermDenied = await Permission
                                     .bluetoothConnect.isPermanentlyDenied;
@@ -719,7 +661,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           isLocationDialogBox: false,
                                           text: 'Allow nearby devices',
                                           subText:
-                                              'Allow nearby devices to connect to the app',
+                                          'Allow nearby devices to connect to the app',
                                           buttonText: 'OK',
                                           buttonOnTap: () async {
                                             Get.back();
@@ -735,7 +677,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                   if (isNDPermitted) {
                                     bool isBluetoothEnable =
-                                        await FlutterBluePlus.instance.isOn;
+                                    await FlutterBluePlus.instance.isOn;
 
                                     if (isBluetoothEnable) {
                                       vessel!.add(widget.vessel!);
@@ -752,7 +694,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         .bluetoothConnect.isGranted;
                                     if (isNDPermitted) {
                                       bool isBluetoothEnable =
-                                          await FlutterBluePlus.instance.isOn;
+                                      await FlutterBluePlus.instance.isOn;
 
                                       if (isBluetoothEnable) {
                                         vessel!.add(widget.vessel!);
@@ -770,25 +712,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 if (Platform.isIOS) {
                                   await Permission.locationAlways.request();
                                   bool isLocationAlwaysPermitted =
-                                      await Permission.locationAlways.isGranted;
-/*=======
-                                if (!isLocationDialogBoxOpen) {
-                                  Utils.customPrint("ELSE CONDITION");
+                                  await Permission.locationAlways.isGranted;
 
-                                  showDialog(
-                                      context: scaffoldKey.currentContext!,
-                                      builder: (BuildContext context) {
-                                        isLocationDialogBoxOpen = true;
-                                        return LocationPermissionCustomDialog(
-                                          isLocationDialogBox: true,
-                                          text:
-                                              'Always Allow Access to “Location”',
-                                          subText:
-                                              "To track your trip while you use other apps we need background access to your location",
-                                          buttonText: 'Ok',
-                                          buttonOnTap: () async {
-                                            Get.back();
->>>>>>> 75ba3136bd454470bc8ad7fada46d2fa07f45f79*/
 
                                   Utils.customPrint(
                                       'IOS PERMISSION GIVEN OUTSIDE');
@@ -802,21 +727,20 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         widget.vessel!.name!,
                                         widget.vessel!.id!);
                                   }
-                                } else {
-                                  Utils.customPrint(
-                                      'IOS PERMISSION GIVEN OUTSIDE 1');
-
+                                }else{
                                   if (!isLocationDialogBoxOpen) {
-                                    Utils.customPrint('IOS PERMISSION GIVEN 1');
+                                    Utils.customPrint("ELSE CONDITION");
+
                                     showDialog(
                                         context: scaffoldKey.currentContext!,
                                         builder: (BuildContext context) {
                                           isLocationDialogBoxOpen = true;
                                           return LocationPermissionCustomDialog(
+                                            isLocationDialogBox: true,
                                             text:
-                                                'Always Allow Access to “Location”',
+                                            'Always Allow Access to “Location”',
                                             subText:
-                                                "To track your trip while you use other apps we need background access to your location",
+                                            "To track your trip while you use other apps we need background access to your location",
                                             buttonText: 'Ok',
                                             buttonOnTap: () async {
                                               Get.back();
@@ -829,6 +753,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     });
                                   }
                                 }
+
                               }
                             }
                           }),

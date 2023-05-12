@@ -74,7 +74,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     createPasswordController = TextEditingController();
     confirmPasswordController = TextEditingController();
   }
-
+@override
+  void dispose() {
+    // TODO: implement dispose
+  countryController.dispose();
+  countryCodeController.dispose();
+  zipCodeController.dispose();
+  emailController.dispose();
+  phoneController.dispose();
+  createPasswordController.dispose();
+  confirmPasswordController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,12 +231,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               });
                                               Future.delayed(
                                                   Duration(seconds: 2), () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const SignInScreen()),
-                                                );
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => SignInScreen(),
+                                                    ),
+                                                    ModalRoute.withName(""));
+
                                               });
                                             } else {
                                               setState(() {
@@ -518,12 +530,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                                         Future.delayed(Duration(seconds: 2),
                                             () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const SignInScreen()),
-                                          );
+                                              Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => SignInScreen(),
+                                                  ),
+                                                  ModalRoute.withName(""));
                                         });
                                       }
                                     }
@@ -552,10 +564,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               TextSpan(
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () async {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return SignInScreen();
-                                      }));
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => SignInScreen(),
+                                          ),
+                                          ModalRoute.withName(""));
                                     },
                                   text: ' SignIn',
                                   style: TextStyle(
