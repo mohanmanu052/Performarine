@@ -266,10 +266,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           if(value.message == "Internal Server Error"){
             setState(() {
               isCheckInternalServer = true;
+
             });
           } else if(!isCheckInternalServer! && value.statusCode == 200){
             setState(() {
               isReportDataLoading = true;
+              triSpeedList.clear();
             });
             avgSpeed = double.tryParse(value.data!.avgInfo!.avgSpeed!.toStringAsFixed(2));
             avgDuration = value.data!.avgInfo!.avgDuration!.contains(".") ? durationWithMilli(value.data!.avgInfo!.avgDuration!) : duration(value.data!.avgInfo!.avgDuration!) ;
