@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -33,6 +34,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final _formKey = GlobalKey<FormState>();
+
+  String foos = 'One';
+  int? _key;
+  int? newKey;
 
   late CommonProvider commonProvider;
 
@@ -164,6 +169,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       }
     });
   }
+  // _collapse(int _key, int newKey) {
+  //   do {
+  //     _key = new Random().nextInt(100);
+  //   } while(newKey == _key);
+  // }
 
   void _checkAll(bool value) {
     setState(() {
@@ -255,7 +265,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       isExpansionCollapse = false;
     });
   }
-
+  collapseExpansionTileKey() {
+    do {
+      _key = new Random().nextInt(100);
+    } while(newKey == _key);
+  }
   String tripDate(String date){
     String inputDate = date;
     DateTime dateTime = DateTime.parse(inputDate);
@@ -289,6 +303,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               finalData.clear();
               finalChartData.clear();
             });
+            collapseExpansionTileKey();
             avgSpeed = double.parse(value.data!.avgInfo!.avgSpeed!.toStringAsFixed(2));
             avgDuration = value.data!.avgInfo!.avgDuration!.contains(".") ? durationWithMilli2(value.data!.avgInfo!.avgDuration!) : duration(value.data!.avgInfo!.avgDuration!) ;
             avgTotalDuration = value.data!.avgInfo!.avgDuration!.contains(".") ? durationWithMilli(value.data!.avgInfo!.avgDuration!) : durationWithMilli(value.data!.avgInfo!.avgDuration!) ;
@@ -590,10 +605,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       padding:  EdgeInsets.only(left: displayWidth(context) * 0.05,
                           right: displayWidth(context) * 0.05),
                       child: ExpansionTile(
+
+                        key: new Key(_key.toString()),
+                        maintainState: true,
                         initiallyExpanded: isExpansionCollapse!,
                         onExpansionChanged: (isExpanded){
                           setState(() {
                             print("isExpansionCollapse : $isExpanded");
+                            isExpansionCollapse = !isExpansionCollapse!;
                             isExpandedTile = !isExpandedTile;
                             // isExpansionCollapse = isExpanded;
                           });
@@ -787,7 +806,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             if (_formKey.currentState!.validate()) {
                               setState(() {
                                 isBtnClick = true;
-
+                                isExpansionCollapse = false;
                               });
 
                               // _collapseExpansionTile();
@@ -1097,26 +1116,50 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           dividerThickness: 1,
           columns: [
             DataColumn(
-              label: Text(
-                'Date',
-                style: TextStyle(color: tableHeaderColor),
+              label: Expanded(
+                child: Center(
+                  child: Text(
+                    'Date',
+                    style: TextStyle(color: tableHeaderColor),
+                  ),
+                ),
               ),
             ),
             DataColumn(
-                label: Text('Trip Details',
-                    style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center,)),
+                label: Center(
+                  child: Expanded(
+                    child: Text('Trip Details',
+                        style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center,),
+                  ),
+                )),
             DataColumn(
-                label: Text('Duration',
-                    style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center)),
+                label: Center(
+                  child: Expanded(
+                    child: Text('Duration',
+                        style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center),
+                  ),
+                )),
             DataColumn(
-                label: Text('Avg Speed (KT)',
-                    style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center)),
+                label: Center(
+                  child: Expanded(
+                    child: Text('Avg Speed (KT)',
+                        style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center),
+                  ),
+                )),
             DataColumn(
-                label: Text('Fuel Usage (gal)',
-                    style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center)),
+                label: Center(
+                  child: Expanded(
+                    child: Text('Fuel Usage (gal)',
+                        style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center),
+                  ),
+                )),
             DataColumn(
-                label: Text('Power Usage (W)',
-                    style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center)),
+                label: Center(
+                  child: Expanded(
+                    child: Text('Power Usage (W)',
+                        style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center),
+                  ),
+                )),
           ],
           rows: [
             ...tripList.map((person) => DataRow(cells: [

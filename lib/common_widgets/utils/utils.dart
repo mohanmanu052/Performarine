@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
@@ -435,7 +436,11 @@ class Utils {
     return;
   }
 
-
+ static collapseExpansionTileKey(int _key, int newKey) {
+    do {
+      _key = new Random().nextInt(100);
+    } while(newKey == _key);
+  }
   static customPrint(String text) {
     kReleaseMode ? null : debugPrint('$text');
   }
