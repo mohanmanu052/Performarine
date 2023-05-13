@@ -257,6 +257,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           } else if(!isCheckInternalServer! && value.statusCode == 200){
             setState(() {
               isReportDataLoading = true;
+              triSpeedList.clear();
             });
             avgSpeed = value.data!.avgInfo!.avgSpeed;
             avgDuration = durationWithMilli(value.data!.avgInfo!.avgDuration!);
@@ -293,7 +294,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   dataSource: triSpeedList,
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
-                      num.parse(triSpeedList[i].tripsByDate![j].fuelConsumption),
+                      triSpeedList[i].tripsByDate![j].fuelConsumption,
                   name: 'Fuel Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
                   spacing: 0.2,
@@ -311,7 +312,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               }
             }
 
-            /*    tripList = value.data!.trips!
+                tripList = value.data!.trips!
               .map((trip) => {
             'date': trip.date!,
             'tripDetails': trip.tripsByDate![0].id,
@@ -355,7 +356,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               'fuelUsage': fuelUsage,
               'powerUsage': powerUsage
             }
-          ]; */
+          ];
 
             // print("finalData: $finalData");
           } else{
@@ -373,6 +374,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     }catch(e){
       print("Error while getting data from report api : $e");
     }
+
+
 /*
     var response = await rootBundle.loadString('assets/reports/reports.json');
     reportModel = ReportModel.fromJson(json.decode(response));
@@ -383,7 +386,148 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     triSpeedList = await List<Trip>.from(reportModel!.data.trips.map((speed) => Trip(date: speed.date, tripsByDate: speed.tripsByDate)));
   */
   }
+  getReportsDataWithValues(int caseType,{String? startDate,String? endDate,String? vesselID,List<String>? selectedTripListID}) async {
+    try{
+      await commonProvider.getReportData(startDate ?? "",endDate ?? "",caseType,vesselID,commonProvider.loginModel!.token!,selectedTripListID ?? [], context, scaffoldKey).then((value) async {
+        if(value != null){
+          if(value.message == "Internal Server Error"){
+            setState(() {
+              isCheckInternalServer = true;
+            });
+          } else if(!isCheckInternalServer! && value.statusCode == 200){
+            setState(() {
+              isReportDataLoading = true;
+              triSpeedList.clear();
+            });
+            avgSpeed = value.data!.avgInfo!.avgSpeed;
+            avgDuration = durationWithMilli(value.data!.avgInfo!.avgDuration!);
+            avgFuelConsumption = value.data!.avgInfo!.avgFuelConsumption;
+            avgPower = value.data!.avgInfo!.avgPower ?? 0.0;
+            print("avgPower : $avgPower");
 
+            triSpeedList =  List<TripModel>.from(value.data!.trips!.map((tripData) => TripModel(date: tripData.date, tripsByDate: tripData.tripsByDate)));
+
+              Utils.customPrint('${ triSpeedList}');
+            for(int i=0; i< triSpeedList.length; i++){
+              for(int j=0; j < triSpeedList[i].tripsByDate!.length; j++){
+                print("trip duration data is: ${triSpeedList[i].tripsByDate![j].id}");
+                durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  color: barsColor[j],
+                  dataSource: triSpeedList,
+                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                  yValueMapper: (TripModel tripData, _) =>
+                      duration(triSpeedList[i].tripsByDate![j].duration.toString()),
+                  name: 'Duration',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.2,
+                ));
+                avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  color: barsColor[j],
+                  dataSource: triSpeedList,
+                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                  yValueMapper: (TripModel tripData, _) =>
+                  triSpeedList[i].tripsByDate![j].avgSpeed,
+                  name: 'Avg Speed',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.2,
+                ));
+                fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  color: barsColor[j],
+                  dataSource: triSpeedList,
+                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                  yValueMapper: (TripModel tripData, _) =>
+                      triSpeedList[i].tripsByDate![j].fuelConsumption,
+                  name: 'Fuel Usage',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.2,
+                ));
+                powerUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  color: barsColor[j],
+                  dataSource: triSpeedList,
+                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
+                  yValueMapper: (TripModel tripData, _) =>
+                  triSpeedList[i].tripsByDate![j].avgPower,
+                  name: 'Power Usage',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.2,
+                ));
+              }
+            }
+
+            tripList = value.data!.trips!
+                .map((trip) => {
+              'date': trip.date!,
+              'tripDetails': trip.tripsByDate![0].id,
+              'duration': trip.tripsByDate![0].duration,
+              'avgSpeed': '${trip.tripsByDate![0].avgSpeed} nm',
+              'fuelUsage': trip.tripsByDate![0].fuelConsumption ?? 0.0,
+              'powerUsage': trip.tripsByDate![0].avgPower ?? 0.0
+            })
+                .toList();
+            print("tripList: $tripList");
+
+            int duration1 = durationWithMilli(value.data!.avgInfo!.avgDuration!);
+            String avgSpeed1 = value.data!.avgInfo!.avgSpeed!.toStringAsFixed(1) + " nm";
+            String? fuelUsage = value.data!.avgInfo!.avgFuelConsumption.toString() + " g";
+            String? powerUsage = value.data!.avgInfo!.avgPower.toString() + " w";
+
+            print("duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
+
+            for(int i = 0; i < tripList.length; i++){
+              totalDuration += duration(tripList[i]['duration']);
+              totalSpeed += tripList[i]['avgSpeed'] ?? 0.0;
+              totalFuelConsumption += tripList[i]['fuelConsumption'];
+              totalAvgPower += tripList[i]['avgPower'] ?? 0.0;
+            }
+
+            totalData = [{
+              'date': '',
+              'tripDetails': 'Total',
+              'duration': "$totalDuration",
+              'avgSpeed': totalSpeed,
+              'fuelUsage': totalFuelConsumption,
+              'powerUsage': totalAvgPower
+            }];
+
+            finalData = [
+              {
+                'date': '',
+                'tripDetails': 'Average',
+                'duration': "$duration1",
+                'avgSpeed': avgSpeed1,
+                'fuelUsage': fuelUsage,
+                'powerUsage': powerUsage
+              }
+            ];
+
+            // print("finalData: $finalData");
+          } else{
+            setState(() {
+              isCheckInternalServer = false;
+              isReportDataLoading = false;
+            });
+          }
+        } else{
+          setState(() {
+            isReportDataLoading = false;
+          });
+        }
+      });
+    }catch(e){
+      print("Error while getting data from report api : $e");
+    }
+
+
+/*
+    var response = await rootBundle.loadString('assets/reports/reports.json');
+    reportModel = ReportModel.fromJson(json.decode(response));
+    avgSpeed = reportModel!.data.avgInfo.avgSpeed;
+    avgDuration = durationWithMilli(reportModel!.data.avgInfo.avgDuration);
+    avgFuelConsumption = reportModel!.data.avgInfo.avgFuelConsumption;
+
+    triSpeedList = await List<Trip>.from(reportModel!.data.trips.map((speed) => Trip(date: speed.date, tripsByDate: speed.tripsByDate)));
+  */
+  }
   String formatDuration(int seconds) {
     int hours = seconds ~/ 3600;
     int minutes = (seconds % 3600) ~/ 60;
@@ -719,9 +863,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                  selectedTripsAndDateDetails = "$startDate to $endDate";
                               }
                               if(selectedCaseType == 1){
-                                getReportsData(selectedCaseType!,startDate: startDate,endDate: endDate,vesselID: selectedVessel);
+                                getReportsDataWithValues(selectedCaseType!,startDate: startDate,endDate: endDate,vesselID: selectedVessel);
                               }else if(selectedCaseType == 2){
-                                getReportsData(selectedCaseType!,selectedTripListID: selectedTripIdList);
+                                getReportsDataWithValues(selectedCaseType!,selectedTripListID: selectedTripIdList);
                               }
                             }
 
@@ -958,7 +1102,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             ),
                           ),
 
-                         // table(context)!,
+                          table(context)!,
 
                           SizedBox(
                             height: displayWidth(context) * 0.08,
@@ -1003,88 +1147,99 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   Widget? table(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Padding(
-        padding: EdgeInsets.all(12.0),
-        child: DataTable(
-          columnSpacing: 25,
-          dividerThickness: 1,
-          columns: [
-            DataColumn(
-              label: Text(
-                'Date',
-                style: TextStyle(color: tableHeaderColor),
-              ),
-            ),
-            DataColumn(
-                label: Text('Trip Details',
-                    style: TextStyle(color: tableHeaderColor))),
-            DataColumn(
-                label: Text('Duration',
-                    style: TextStyle(color: tableHeaderColor))),
-            DataColumn(
-                label: Text('Avg Speed',
-                    style: TextStyle(color: tableHeaderColor))),
-            DataColumn(
-                label: Text('Fuel Usage',
-                    style: TextStyle(color: tableHeaderColor))),
-            DataColumn(
-                label: Text('Power Usage',
-                    style: TextStyle(color: tableHeaderColor))),
-          ],
-          rows: [
-            ...tripList.map((person) => DataRow(cells: [
-                  DataCell(Text(person['date']!)),
-                  DataCell(Text(person['tripDetails']!)),
-                  DataCell(Text(person['duration']!)),
-                  DataCell(Text(person['avgSpeed']!)),
-                  DataCell(Text(person['fuelUsage']!)),
-                  DataCell(Text(person['powerUsage']!)),
-                ])),
-          /*  ...totalData.map((e) => DataRow(cells: [
-              DataCell(
-                Text(
-                  e['date']!,
-                  style: TextStyle(color: Colors.blue),
+      child: Container(
+
+        child: Padding(
+          padding: EdgeInsets.all(12.0),
+          child: DataTable(
+            columnSpacing: 25,
+            dividerThickness: 1,
+            columns: [
+              DataColumn(
+                label: Text(
+                  'Date',
+                  style: TextStyle(color: tableHeaderColor),
                 ),
               ),
-              DataCell(Text(
-                e['tripDetails']!,
-                style: TextStyle(color: Colors.blue),
-              )),
-              DataCell(Text(
-                e['duration']!,
-                style: TextStyle(color: Colors.blue),
-              )),
-              DataCell(Text(e['avgSpeed']!,
-                  style: TextStyle(color: Colors.blue))),
-              DataCell(Text(e['fuelUsage']!,
-                  style: TextStyle(color: Colors.blue))),
-              DataCell(Text(e['powerUsage']!,
-                  style: TextStyle(color: Colors.blue))),
-            ])), */
-            ...finalData.map((e) => DataRow(cells: [
-                  DataCell(
-                    Text(
-                      e['date']!,
-                      style: TextStyle(color: Colors.blue),
-                    ),
+              DataColumn(
+                  label: Text('Trip Details',
+                      style: TextStyle(color: tableHeaderColor))),
+              DataColumn(
+                  label: Text('Duration',
+                      style: TextStyle(color: tableHeaderColor))),
+              DataColumn(
+                  label: Text('Avg Speed',
+                      style: TextStyle(color: tableHeaderColor))),
+              DataColumn(
+                  label: Text('Fuel Usage',
+                      style: TextStyle(color: tableHeaderColor))),
+              DataColumn(
+                  label: Text('Power Usage',
+                      style: TextStyle(color: tableHeaderColor))),
+            ],
+            rows: [
+            /*  ...tripList.map((person) => DataRow(cells: [
+                    DataCell(Text(person['date']!)),
+                    DataCell(Text(person['tripDetails']!)),
+                    DataCell(Text(person['duration']!)),
+                    DataCell(Text(person['avgSpeed']!)),
+                    DataCell(Text(person['fuelUsage']!)),
+                    DataCell(Text(person['powerUsage'])),
+                  ])),*/
+               ...tripList.map((person) => DataRow(cells: [
+                DataCell(Text(person['date']!)),
+                DataCell(Text(person['tripDetails']!)),
+                DataCell(Text(person['duration']!)),
+                DataCell(Text(person['avgSpeed']!)),
+                DataCell(Text(person['fuelUsage']!)),
+                DataCell(Text(person['powerUsage'])),
+              ])),
+              ...totalData.map((e) => DataRow(cells: [
+                DataCell(
+                  Text(
+                    e['date']!,
+                    style: TextStyle(color: Colors.blue),
                   ),
-                  DataCell(Text(
-                    e['tripDetails']!,
-                    style: TextStyle(color: Colors.blue),
-                  )),
-                  DataCell(Text(
-                    e['duration']!,
-                    style: TextStyle(color: Colors.blue),
-                  )),
-                  DataCell(Text(e['avgSpeed']!,
-                      style: TextStyle(color: Colors.blue))),
-                  DataCell(Text(e['fuelUsage']!,
-                      style: TextStyle(color: Colors.blue))),
-                  DataCell(Text(e['powerUsage']!,
-                      style: TextStyle(color: Colors.blue))),
-                ]))
-          ],
+                ),
+                DataCell(Text(
+                  e['tripDetails'] ?? '',
+                  style: TextStyle(color: Colors.blue),
+                )),
+                DataCell(Text(
+                  e['duration'] ?? '',
+                  style: TextStyle(color: Colors.blue),
+                )),
+                DataCell(Text(e['avgSpeed'] ?? '',
+                    style: TextStyle(color: Colors.blue))),
+                DataCell(Text(e['fuelUsage'] ?? '',
+                    style: TextStyle(color: Colors.blue))),
+                DataCell(Text(e['powerUsage'] ?? '',
+                    style: TextStyle(color: Colors.blue))),
+              ])),
+              ...finalData.map((e) => DataRow(cells: [
+                    DataCell(
+                      Text(
+                        e['date']!,
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                    DataCell(Text(
+                      e['tripDetails']!,
+                      style: TextStyle(color: Colors.blue),
+                    )),
+                    DataCell(Text(
+                      e['duration']!,
+                      style: TextStyle(color: Colors.blue),
+                    )),
+                    DataCell(Text(e['avgSpeed']!,
+                        style: TextStyle(color: Colors.blue))),
+                    DataCell(Text(e['fuelUsage']!,
+                        style: TextStyle(color: Colors.blue))),
+                    DataCell(Text(e['powerUsage']!,
+                        style: TextStyle(color: Colors.blue))),
+                  ]))
+            ],
+          ),
         ),
       ),
     );
@@ -1177,7 +1332,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 ],
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+
+                },
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
