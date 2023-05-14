@@ -1126,36 +1126,36 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               ),
             ),
             DataColumn(
-                label: Center(
-                  child: Expanded(
+                label: Expanded(
+                  child: Center(
                     child: Text('Trip Details',
                         style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center,),
                   ),
                 )),
             DataColumn(
-                label: Center(
-                  child: Expanded(
+                label: Expanded(
+                  child: Center(
                     child: Text('Duration',
                         style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center),
                   ),
                 )),
             DataColumn(
-                label: Center(
-                  child: Expanded(
+                label: Expanded(
+                  child: Center(
                     child: Text('Avg Speed (KT)',
                         style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center),
                   ),
                 )),
             DataColumn(
-                label: Center(
-                  child: Expanded(
+                label: Expanded(
+                  child: Center(
                     child: Text('Fuel Usage (gal)',
                         style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center),
                   ),
                 )),
             DataColumn(
-                label: Center(
-                  child: Expanded(
+                label: Expanded(
+                  child: Center(
                     child: Text('Power Usage (W)',
                         style: TextStyle(color: tableHeaderColor),textAlign: TextAlign.center),
                   ),
@@ -1211,7 +1211,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     ),
                   )),
                   DataCell(Align(alignment: Alignment.center,
-                    child: Text('${e['avgSpeed']!}',
+                    child: Text('${e['avgSpeed'].toStringAsFixed(2)!}',
                         style: TextStyle(color: primaryColor,fontWeight: FontWeight.w800)),
                   )),
                   DataCell(Align(alignment: Alignment.center,
