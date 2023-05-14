@@ -311,7 +311,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             setState(() {
               isCheckInternalServer = true;
               isBtnClick = false;
-              triSpeedList.clear();
+              // triSpeedList.clear();
               totalData.clear();
               finalData.clear();
               finalChartData.clear();
@@ -320,10 +320,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             setState(() {
               isReportDataLoading = true;
               isBtnClick = false;
-              triSpeedList.clear();
-              totalData.clear();
+               triSpeedList.clear();
+              /*totalData.clear();
               finalData.clear();
-              finalChartData.clear();
+              finalChartData.clear();*/
             });
             collapseExpansionTileKey();
             isSHowGraph = true;
@@ -358,7 +358,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   dataSource: triSpeedList,
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) => duration(
-                      triSpeedList[i].tripsByDate![j].duration.toString()),
+                      triSpeedList[i].tripsByDate![j].duration!),
                   name: 'Duration',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
                   spacing: 0.2,
@@ -913,50 +913,61 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                     totalSpeed = 0;
                                     totalFuelConsumption = 0;
                                     totalAvgPower = 0;
-                                    if (focusedDayString!.isNotEmpty ||
-                                        lastFocusedDayString!.isNotEmpty) {
-                                      startDate = convertIntoYearMonthDay(
-                                          selectedDateForStartDate);
-                                      endDate = convertIntoYearMonthDay(
-                                          selectedDateForEndDate);
-                                      selectedTripsAndDateDetails =
-                                          "$startDate to $endDate";
-                                    }
+
 
                                     if (selectedCaseType == 1) {
-                                      if ((selectedVessel?.isNotEmpty ??
-                                              false) &&
-                                          (startDate.isNotEmpty && startDate != null)&&
-                                          (endDate.isNotEmpty && endDate != null)) {
-                                        getReportsData(selectedCaseType!,
-                                            startDate: startDate,
-                                            endDate: endDate,
-                                            vesselID: selectedVessel);
-                                      } else {
-                                        setState(() {
-                                          isBtnClick = false;
-                                        });
-                                        if (startDate.isEmpty &&
-                                            endDate.isEmpty) {
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                                  'Please select the start and end dates',
-                                              duration: 2);
-                                        } else if (startDate.isEmpty) {
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                                  'Please select the start date',
-                                              duration: 2);
-                                        } else if (endDate.isEmpty) {
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                                  'Please select the end date',
-                                              duration: 2);
+                                      if (focusedDayString!.isNotEmpty ||
+                                          lastFocusedDayString!.isNotEmpty) {
+                                        startDate = convertIntoYearMonthDay(
+                                            selectedDateForStartDate);
+                                        endDate = convertIntoYearMonthDay(
+                                            selectedDateForEndDate);
+                                        selectedTripsAndDateDetails =
+                                        "$startDate to $endDate";
+                                      }
+                                      if(selectedDateForEndDate.isBefore(selectedDateForStartDate)){
+                                        isBtnClick = true;
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message:
+                                            'End date ($endDate) should be greater than start date($startDate)',
+                                            duration: 2);
+                                      }else{
+                                        if ((selectedVessel?.isNotEmpty ??
+                                            false) &&
+                                            (startDate.isNotEmpty && startDate != null)&&
+                                            (endDate.isNotEmpty && endDate != null)) {
+                                          getReportsData(selectedCaseType!,
+                                              startDate: startDate,
+                                              endDate: endDate,
+                                              vesselID: selectedVessel);
+                                        } else {
+                                          setState(() {
+                                            isBtnClick = false;
+                                          });
+                                          if (startDate.isEmpty &&
+                                              endDate.isEmpty) {
+                                            Utils.showSnackBar(context,
+                                                scaffoldKey: scaffoldKey,
+                                                message:
+                                                'Please select the start and end dates',
+                                                duration: 2);
+                                          } else if (startDate.isEmpty) {
+                                            Utils.showSnackBar(context,
+                                                scaffoldKey: scaffoldKey,
+                                                message:
+                                                'Please select the start date',
+                                                duration: 2);
+                                          } else if (endDate.isEmpty) {
+                                            Utils.showSnackBar(context,
+                                                scaffoldKey: scaffoldKey,
+                                                message:
+                                                'Please select the end date',
+                                                duration: 2);
+                                          }
                                         }
                                       }
+
                                     } else if (selectedCaseType == 2) {
                                       if (selectedTripIdList?.isNotEmpty ??
                                           false) {
@@ -1234,21 +1245,21 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               // fuelUsageGraph(context)!,
                               // powerUsageGraph(context)!,
 
-                              Padding(
-                                padding: EdgeInsets.only(right: 20, left: 20),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    tripWithColor(
-                                        backgroundColor, 'Trip A Name'),
-                                    tripWithColor(
-                                        circularProgressColor, 'Trip B Name'),
-                                    tripWithColor(
-                                        tripColumnBarColor, 'Trip C Name'),
-                                  ],
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: EdgeInsets.only(right: 20, left: 20),
+                              //   child: Row(
+                              //     mainAxisAlignment:
+                              //         MainAxisAlignment.spaceEvenly,
+                              //     children: [
+                              //       tripWithColor(
+                              //           backgroundColor, 'Trip A Name'),
+                              //       tripWithColor(
+                              //           circularProgressColor, 'Trip B Name'),
+                              //       tripWithColor(
+                              //           tripColumnBarColor, 'Trip C Name'),
+                              //     ],
+                              //   ),
+                              // ),
 
                               table(context)!,
 
