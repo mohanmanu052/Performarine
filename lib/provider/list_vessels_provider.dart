@@ -77,6 +77,6 @@ class TripListApiProvider extends ChangeNotifier {
 
       tripListModel = null;
     }
-    return tripListModel!;
+    return tripListModel ?? TripList();
   }
 }
