@@ -140,6 +140,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   String? selectedTripsAndDateString = "";
   String? selectedTripsAndDateDetails = "";
 
+  String selectedIndex = "";
+
   String convertIntoYearMonthDay(DateTime date) {
     // String dateTimeString = date;
     // DateTime dateTime = DateTime.parse(dateTimeString);
@@ -359,6 +361,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) => duration(
                       triSpeedList[i].tripsByDate![j].duration!),
+                  onPointTap: (ChartPointDetails args) {
+                    if(mounted){
+                      setState(()async {
+                        selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                        print("selected index: $selectedIndex");
+                      });
+                    }
+                  },
                   name: 'Duration',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
                   spacing: 0.2,
@@ -370,6 +380,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
                       triSpeedList[i].tripsByDate![j].avgSpeed,
+                  onPointTap: (ChartPointDetails args) {
+                    if(mounted){
+                      setState(()async {
+                        selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                        print("selected index: $selectedIndex");
+                      });
+                    }
+                  },
                   name: 'Avg Speed',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
                   spacing: 0.4,
@@ -380,6 +398,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
                       triSpeedList[i].tripsByDate![j].fuelConsumption,
+                  onPointTap: (ChartPointDetails args) {
+                    if(mounted){
+                      setState(()async {
+                        selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                        print("selected index: $selectedIndex");
+                      });
+                    }
+                  },
                   name: 'Fuel Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
                   spacing: 0.2,
@@ -390,6 +416,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
                       triSpeedList[i].tripsByDate![j].avgPower,
+                  onPointTap: (ChartPointDetails args) {
+                    if(mounted){
+                      setState(()async {
+                        selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                        print("selected index: $selectedIndex");
+                      });
+                    }
+                  },
                   name: 'Power Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
                   spacing: 0.2,
@@ -1486,8 +1520,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {
         CartesianChartPoint currentPoint = point;
-        final int? yValue = currentPoint.y;
-        print("Duration y data is: ${yValue}");
+        final dynamic yValue = currentPoint.y;
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
@@ -1526,12 +1559,19 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               ),
               TextButton(
                 onPressed: () {
-                  TripAnalyticsScreen(
-                    // tripId: ,
-                    vesselId: selectedVessel,
-                    tripIsRunningOrNot: false,
-                    // vessel: getVesselById[0]
-                  );
+                  print("tapped on go to report button");
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      TripAnalyticsScreen(
+                        tripId: selectedIndex,
+                        vesselName: selectedVesselName,
+                      //  avgInfo: reportModel!.data!.avgInfo,
+                        vesselId: selectedVessel,
+                        tripIsRunningOrNot:
+                        false,
+                        calledFrom: 'Report',
+                        // vessel: getVesselById[0]
+                      )
+                  ));
                 },
                 child: Text('Go to Trip Report',
                     style: TextStyle(
@@ -1586,15 +1626,18 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   Widget avgSpeedGraph(BuildContext context) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
-      //  format: 'point.y',
-      decimalPlaces: 2,
       enable: true,
       color: reportBackgroundColor,
+      borderWidth: 1,
+      activationMode: ActivationMode.singleTap,
+      duration: 5000,
+      // tooltipPosition: TooltipPosition.pointer,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {
         CartesianChartPoint currentPoint = point;
         final double? yValue = currentPoint.y;
-        print("Avg speed y data is: ${yValue}");
+
+
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
@@ -1632,7 +1675,21 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 ],
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  print("tapped on go to report button");
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      TripAnalyticsScreen(
+                        tripId: selectedIndex,
+                        vesselName: selectedVesselName,
+                       // avgInfo: reportModel!.data!.avgInfo,
+                        vesselId: selectedVessel,
+                        tripIsRunningOrNot:
+                        false,
+                        calledFrom: 'Report',
+                        // vessel: getVesselById[0]
+                      )
+                  ));
+                },
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
@@ -1652,6 +1709,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         width: displayWidth(context) * 2.8,
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
+          palette: barsColor,
           tooltipBehavior: tooltipBehavior,
           primaryXAxis: CategoryAxis(),
           primaryYAxis: NumericAxis(
@@ -1723,7 +1781,21 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 ],
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  print("tapped on go to report button");
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      TripAnalyticsScreen(
+                        tripId: selectedIndex,
+                        vesselName: selectedVesselName,
+                       // avgInfo: reportModel!.data!.avgInfo,
+                        vesselId: selectedVessel,
+                        tripIsRunningOrNot:
+                        false,
+                        calledFrom: 'Report',
+                        // vessel: getVesselById[0]
+                      )
+                  ));
+                },
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
@@ -1743,6 +1815,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         width: displayWidth(context) * 2.8,
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
+          palette: barsColor,
           tooltipBehavior: tooltipBehavior,
           primaryXAxis: CategoryAxis(),
           primaryYAxis: NumericAxis(
@@ -1814,7 +1887,21 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 ],
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  print("tapped on go to report button");
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      TripAnalyticsScreen(
+                        tripId: selectedIndex,
+                        vesselName: selectedVesselName,
+                     //   avgInfo: reportModel!.data!.avgInfo,
+                        vesselId: selectedVessel,
+                        tripIsRunningOrNot:
+                        false,
+                        calledFrom: 'Report',
+                        // vessel: getVesselById[0]
+                      )
+                  ));
+                },
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
@@ -1834,6 +1921,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         width: displayWidth(context) * 2.8,
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
+          palette: barsColor,
           tooltipBehavior: tooltipBehavior,
           primaryXAxis: CategoryAxis(),
           primaryYAxis: NumericAxis(
