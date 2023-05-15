@@ -46,14 +46,14 @@ class StartTrip {
     String mobileFileName = '',
         firstLat,
         firstLong,
-        lprFileName = '',
+        // lprFileName = '',
         timestamp = '';
     int fileIndex = 1;
 
     // Only available for flutter 3.0.0 and later
 
     mobileFileName = 'mobile_$fileIndex.csv';
-    lprFileName = 'lpr_$fileIndex.csv';
+    // lprFileName = 'lpr_$fileIndex.csv';
 
     final LocationSettings locationSettings = LocationSettings(
       accuracy: LocationAccuracy.high,
@@ -259,26 +259,26 @@ class StartTrip {
             pref.setString('tripAvgSpeed', tripAvgSpeedForStorage);
 
             String filePath = await GetFile().getFile(tripId, mobileFileName);
-            String lprFilePath = await GetFile().getFile(tripId, lprFileName);
+            // String lprFilePath = await GetFile().getFile(tripId, lprFileName);
             // File mobileFile = File(filePath[0]);
             // File lprFile = File(filePath[1]);
             File file = File(filePath);
-            File lprFile = File(lprFilePath);
+            // File lprFile = File(lprFilePath);
             int fileSize = await GetFile().checkFileSize(file);
-            int lprFileSize = await GetFile().checkFileSize(lprFile);
+            // int lprFileSize = await GetFile().checkFileSize(lprFile);
             //int mobileFileSize = await GetFile().checkFileSize(mobileFile);
             //int lprFileSize = await GetFile().checkFileSize(mobileFile);
 
             /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
             /// Now File Size is 200000
-            if (fileSize >= 200000 && lprFileSize >= 200000) {
+            if (fileSize >= 200000 /*&& lprFileSize >= 200000*/) {
               Utils.customPrint('STOPPED WRITING');
               Utils.customPrint('CREATING NEW FILE');
               // if (timer != null) timer.cancel();
               // Utils.customPrint('TIMER STOPPED');
               fileIndex = fileIndex + 1;
               mobileFileName = 'mobile_$fileIndex.csv';
-              lprFileName = 'lpr_$fileIndex.csv';
+              // lprFileName = 'lpr_$fileIndex.csv';
 
               /// STOP WRITING & CREATE NEW FILE
             } else {
@@ -315,7 +315,7 @@ class StartTrip {
               finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
 
               file.writeAsString('$finalString\n', mode: FileMode.append);
-              lprFile.writeAsString('$finalString\n', mode: FileMode.append);
+              // lprFile.writeAsString('$finalString\n', mode: FileMode.append);
               //lprFile.writeAsString('$finalString\n', mode: FileMode.append);
 
               Utils.customPrint('GPS $gps');
@@ -349,26 +349,26 @@ class StartTrip {
           pref.setString('tripAvgSpeed', tripAvgSpeedForStorage);
 
           String filePath = await GetFile().getFile(tripId, mobileFileName);
-          String lprFilePath = await GetFile().getFile(tripId, lprFileName);
+          // String lprFilePath = await GetFile().getFile(tripId, lprFileName);
           // File mobileFile = File(filePath[0]);
           // File lprFile = File(filePath[1]);
           File file = File(filePath);
-          File lprFile = File(lprFilePath);
+          // File lprFile = File(lprFilePath);
           int fileSize = await GetFile().checkFileSize(file);
-          int lprFileSize = await GetFile().checkFileSize(lprFile);
+          // int lprFileSize = await GetFile().checkFileSize(lprFile);
           //int mobileFileSize = await GetFile().checkFileSize(mobileFile);
           //int lprFileSize = await GetFile().checkFileSize(mobileFile);
 
           /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
           /// Now File Size is 200000
-          if (fileSize >= 200000 && lprFileSize >= 200000) {
+          if (fileSize >= 200000/* && lprFileSize >= 200000*/) {
             Utils.customPrint('STOPPED WRITING');
             Utils.customPrint('CREATING NEW FILE');
             // if (timer != null) timer.cancel();
             // Utils.customPrint('TIMER STOPPED');
             fileIndex = fileIndex + 1;
             mobileFileName = 'mobile_$fileIndex.csv';
-            lprFileName = 'lpr_$fileIndex.csv';
+            // lprFileName = 'lpr_$fileIndex.csv';
 
             /// STOP WRITING & CREATE NEW FILE
           } else {

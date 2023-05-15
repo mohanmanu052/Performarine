@@ -1618,8 +1618,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
 
     /// 3. TripsCount
     ///
-    print('totalDistance $totalDistance');
-    print('avgSpeed $avgSpeed');
-    print('COUNT $tripsCount');
+     Utils.customPrint('totalDistance $totalDistance');
+     Utils.customPrint('avgSpeed $avgSpeed');
+     Utils.customPrint('COUNT $tripsCount');
   }
 }
