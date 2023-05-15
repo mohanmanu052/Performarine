@@ -55,6 +55,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   List<String> items = ["Start Date", "End Date"];
   DateTime lastDayFocused = DateTime.now();
   String? lastFocusedDayString = "";
+  bool? isSelectedStartDay = false;
+  bool? isSelectedEndDay = false;
 
   bool? parentValue = false;
   List<String>? children = [];
@@ -373,14 +375,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) => duration(
                       triSpeedList[i].tripsByDate![j].duration!),
-                  onPointTap: (ChartPointDetails args) async{
-                   // if(mounted){
-                   await updateTripId(triSpeedList[i].tripsByDate![j].id!);
-                      // setState(()async {
-                      //   selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
-                      //   print("selected index: $selectedIndex");
-                      // });
-                   // }
+                  onPointTap: (ChartPointDetails args) {
+                    if(mounted){
+                  // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
+                      setState(()async {
+                        selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                        print("selected index: $selectedIndex");
+                      });
+                    }
                   },
                   name: 'Duration',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
@@ -394,13 +396,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   yValueMapper: (TripModel tripData, _) =>
                       triSpeedList[i].tripsByDate![j].avgSpeed,
                   onPointTap: (ChartPointDetails args) async{
-                    await updateTripId(triSpeedList[i].tripsByDate![j].id!);
-                    // if(mounted){
-                    //   setState(()async {
-                    //     selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
-                    //     print("selected index: $selectedIndex");
-                    //   });
-                    // }
+                    print("selected bar id: ${triSpeedList[i].tripsByDate![j].id!}");
+                    if(mounted){
+                       await updateTripId(triSpeedList[i].tripsByDate![j].id!);
+                      // setState(()async {
+                      //   selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                      //   print("selected index: $selectedIndex");
+                      // });
+                    }
                   },
                   name: 'Avg Speed',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
@@ -412,14 +415,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
                       triSpeedList[i].tripsByDate![j].fuelConsumption,
-                  onPointTap: (ChartPointDetails args) async{
-                    await updateTripId(triSpeedList[i].tripsByDate![j].id!);
-                    // if(mounted){
-                    //   setState(()async {
-                    //     selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
-                    //     print("selected index: $selectedIndex");
-                    //   });
-                    // }
+                  onPointTap: (ChartPointDetails args){
+                    if(mounted){
+                      // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
+                      setState(()async {
+                        selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                        print("selected index: $selectedIndex");
+                      });
+                    }
                   },
                   name: 'Fuel Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
@@ -431,14 +434,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
                       triSpeedList[i].tripsByDate![j].avgPower,
-                  onPointTap: (ChartPointDetails args) async{
-                    await updateTripId(triSpeedList[i].tripsByDate![j].id!);
-                    // if(mounted){
-                    //   setState(()async {
-                    //     selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
-                    //     print("selected index: $selectedIndex");
-                    //   });
-                    // }
+                  onPointTap: (ChartPointDetails args){
+                    if(mounted){
+                      // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
+                      setState(()async {
+                        selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                        print("selected index: $selectedIndex");
+                      });
+                    }
                   },
                   name: 'Power Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
@@ -1018,8 +1021,23 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                               message:
                                               'End date ($endDate) should be greater than start date($startDate)',
                                               duration: 2);
-                                        }else{
-                                          if ((selectedVessel?.isNotEmpty ??
+                                        }
+                                        if(isSelectedStartDay! && isSelectedEndDay! ){
+                                          getReportsData(selectedCaseType!,
+                                              startDate: startDate,
+                                              endDate: endDate,
+                                              vesselID: selectedVessel);
+                                        } else{
+                                          setState(() {
+                                            isBtnClick = false;
+                                          });
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                              'Please select the start and end dates',
+                                              duration: 2);
+                                        }
+                                      /*    if ((selectedVessel?.isNotEmpty ??
                                               false) &&
                                               (startDate.isNotEmpty && startDate != null)&&
                                               (endDate.isNotEmpty && endDate != null)) {
@@ -1038,7 +1056,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 'Please select the start and end dates',
                                                 duration: 2);
                                           }
-                                          else if(startDate.isEmpty){
+                                          else if(!isSelectedStartDay!){
                                             setState(() {
                                               isBtnClick = false;
                                             });
@@ -1047,7 +1065,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 message:
                                                 'Please select the start dates',
                                                 duration: 2);
-                                          } else if(endDate.isEmpty){
+                                          } else if(!isSelectedEndDay!){
                                             setState(() {
                                               isBtnClick = false;
                                             });
@@ -1056,7 +1074,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 message:
                                                 'Please select the end date',
                                                 duration: 2);
-                                          }
+                                          }; */
                                        /*   else {
                                             setState(() {
                                               isBtnClick = false;
@@ -1082,7 +1100,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                   duration: 2);
                                             }
                                           }*/
-                                        }
+
 
                                       } else if (selectedCaseType == 2) {
                                         if (selectedTripIdList?.isNotEmpty ??
@@ -1712,10 +1730,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       enable: true,
       color: reportBackgroundColor,
       borderWidth: 1,
-      activationMode: ActivationMode.doubleTap,
+     // activationMode: ActivationMode.singleTap,
       duration: 5000,
-     // animationDuration: 5000,
-      // tooltipPosition: TooltipPosition.pointer,
+       tooltipPosition: TooltipPosition.pointer,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {
         CartesianChartPoint currentPoint = point;
@@ -2176,6 +2193,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       startingDayOfWeek: StartingDayOfWeek.monday,
                       onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
                         setState(() {
+                          isSelectedStartDay = true;
                           selectedDateForStartDate = selectDay!;
                           focusedDay = focusDay!;
                           focusedDayString = focusDay.toString();
@@ -2282,6 +2300,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           onDaySelected:
                               (DateTime? selectDay, DateTime? focusDay) {
                             setState(() {
+                              isSelectedEndDay = true;
                               selectedDateForEndDate = selectDay!;
                               lastDayFocused = focusDay!;
                               lastFocusedDayString = focusDay.toString();
@@ -2358,6 +2377,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               selectedTripIdList!.add(tripIdList![index]);
                             } else {
                               selectedTripIdList!.remove(tripIdList![index]);
+                              tripIdList!.removeAt(index);
                             }
                             manageTristate(index, value);
                           },
