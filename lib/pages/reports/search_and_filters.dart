@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:math';
@@ -200,7 +201,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           });
           print("value of trip list: ${value.data}");
           //debugger();
-
+          tripIdList!.clear();
           dateTimeList!.clear();
           for (int i = 0; i < value.data!.length; i++) {
             tripIdList!.add(value.data![i].id!);
@@ -291,6 +292,17 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   List<TripModel> durationGraphData = [];
 
+  updateTripId(String? selectedIndx){
+    setState(() {
+      selectedIndex = selectedIndx!;
+    });
+  }
+
+  dynamic duration1;
+  double? avgSpeed1 = 0.0;
+  double? fuelUsage = 0.0;
+  double? powerUsage = 0.0;
+
   getReportsData(int caseType,
       {String? startDate,
       String? endDate,
@@ -361,13 +373,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) => duration(
                       triSpeedList[i].tripsByDate![j].duration!),
-                  onPointTap: (ChartPointDetails args) {
-                    if(mounted){
-                      setState(()async {
-                        selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
-                        print("selected index: $selectedIndex");
-                      });
-                    }
+                  onPointTap: (ChartPointDetails args) async{
+                   // if(mounted){
+                   await updateTripId(triSpeedList[i].tripsByDate![j].id!);
+                      // setState(()async {
+                      //   selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                      //   print("selected index: $selectedIndex");
+                      // });
+                   // }
                   },
                   name: 'Duration',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
@@ -380,13 +393,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
                       triSpeedList[i].tripsByDate![j].avgSpeed,
-                  onPointTap: (ChartPointDetails args) {
-                    if(mounted){
-                      setState(()async {
-                        selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
-                        print("selected index: $selectedIndex");
-                      });
-                    }
+                  onPointTap: (ChartPointDetails args) async{
+                    await updateTripId(triSpeedList[i].tripsByDate![j].id!);
+                    // if(mounted){
+                    //   setState(()async {
+                    //     selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                    //     print("selected index: $selectedIndex");
+                    //   });
+                    // }
                   },
                   name: 'Avg Speed',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
@@ -398,13 +412,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
                       triSpeedList[i].tripsByDate![j].fuelConsumption,
-                  onPointTap: (ChartPointDetails args) {
-                    if(mounted){
-                      setState(()async {
-                        selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
-                        print("selected index: $selectedIndex");
-                      });
-                    }
+                  onPointTap: (ChartPointDetails args) async{
+                    await updateTripId(triSpeedList[i].tripsByDate![j].id!);
+                    // if(mounted){
+                    //   setState(()async {
+                    //     selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                    //     print("selected index: $selectedIndex");
+                    //   });
+                    // }
                   },
                   name: 'Fuel Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
@@ -416,13 +431,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
                       triSpeedList[i].tripsByDate![j].avgPower,
-                  onPointTap: (ChartPointDetails args) {
-                    if(mounted){
-                      setState(()async {
-                        selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
-                        print("selected index: $selectedIndex");
-                      });
-                    }
+                  onPointTap: (ChartPointDetails args) async{
+                    await updateTripId(triSpeedList[i].tripsByDate![j].id!);
+                    // if(mounted){
+                    //   setState(()async {
+                    //     selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
+                    //     print("selected index: $selectedIndex");
+                    //   });
+                    // }
                   },
                   name: 'Power Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
@@ -431,27 +447,43 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               }
             }
 
-            tripList = value.data!.trips!
-                .map((trip) => {
-                      'date': trip.date!,
-                      'tripDetails': trip.tripsByDate![0].id,
-                      'duration': trip.tripsByDate![0].duration,
-                      'avgSpeed': '${trip.tripsByDate![0].avgSpeed}',
-                      'fuelUsage': trip.tripsByDate![0].fuelConsumption ?? 0.0,
-                      'powerUsage': trip.tripsByDate![0].avgPower ?? 0.0
-                    })
-                .toList();
-            print("tripList: $tripList");
+            tripList.clear();
+
+            for (int i = 0; i < triSpeedList.length; i++) {
+              for (int j = 0; j < triSpeedList[i].tripsByDate!.length;j++) {
+                Map<String, dynamic> data= {
+                  'date': triSpeedList[i].date!,
+                  'tripDetails': triSpeedList[i].tripsByDate![j].id,
+                  'duration': triSpeedList[i].tripsByDate![j].duration,
+                  'avgSpeed': '${triSpeedList[i].tripsByDate![j].avgSpeed}',
+                  'fuelUsage': triSpeedList[i].tripsByDate![j].fuelConsumption ?? 0.0,
+                  'powerUsage': triSpeedList[i].tripsByDate![j].avgPower ?? 0.0
+                };
+                tripList.add(data);
+              }
+            }
+            //
+            // tripList = value.data!.trips!
+            //     .map((trip) => {
+            //           'date': trip.date!,
+            //           'tripDetails': trip.tripsByDate![0].id,
+            //           'duration': trip.tripsByDate![0].duration,
+            //           'avgSpeed': '${trip.tripsByDate![0].avgSpeed}',
+            //           'fuelUsage': trip.tripsByDate![0].fuelConsumption ?? 0.0,
+            //           'powerUsage': trip.tripsByDate![0].avgPower ?? 0.0
+            //         })
+            //     .toList();
+            print("tripList: $tripList , length: ${tripList.length}");
 
             /*int duration1 = durationWithMilli(value.data!.avgInfo!.avgDuration!);
           String avgSpeed1 = value.data!.avgInfo!.avgSpeed!.toStringAsFixed(1) + " nm";
           String? fuelUsage = value.data!.avgInfo!.avgFuelConsumption.toString() + " g";
           String? powerUsage = value.data!.avgInfo!.avgPower.toString() + " w";*/
-            dynamic duration1 =
+             duration1 =
                 durationWithMilli(value.data?.avgInfo?.avgDuration ?? '0:0:0.0');
-            double avgSpeed1 = value.data?.avgInfo?.avgSpeed ?? 0.0;
-            double? fuelUsage = value.data?.avgInfo?.avgFuelConsumption ?? 0.0;
-            double? powerUsage = value.data?.avgInfo?.avgPower ??0.0;
+             avgSpeed1 = value.data?.avgInfo?.avgSpeed ?? 0.0;
+             fuelUsage = value.data?.avgInfo?.avgFuelConsumption ?? 0.0;
+             powerUsage = value.data?.avgInfo?.avgPower ??0.0;
 
             /*   int duration1 = durationWithMilli(value.data!.avgInfo!.avgDuration!);
             double avgSpeed1 = value.data!.avgInfo!.avgSpeed! ;
@@ -461,7 +493,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             print(
                 "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
 
-            for (int i = 0; i < tripList.length; i++) {
+         /*   for (int i = 0; i < tripList.length; i++) {
               totalDuration += duration(tripList[i]['duration']);
               totalSpeed = totalSpeed ??
                   0.0 + double.parse(tripList[i]['avgSpeed']) ??
@@ -478,18 +510,18 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           ? double.parse(tripList[i]['avgPower'])
                           : 0.0) ??
                   0.0;
-            }
+            } */
 
-            totalData = [
-              {
-                'date': '',
-                'tripDetails': 'Total',
-                'duration': "$totalDuration",
-                'avgSpeed': totalSpeed,
-                'fuelUsage': totalFuelConsumption,
-                'powerUsage': totalAvgPower
-              }
-            ];
+            // totalData = [
+            //   {
+            //     'date': '',
+            //     'tripDetails': 'Total',
+            //     'duration': "$totalDuration",
+            //     'avgSpeed': totalSpeed,
+            //     'fuelUsage': totalFuelConsumption,
+            //     'powerUsage': totalAvgPower
+            //   }
+            // ];
 
             finalData = [
               {
@@ -628,9 +660,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                  top: displayWidth(context) * 0.05,
-                ),
+                padding: EdgeInsets.only(top: 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -687,107 +717,133 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: displayWidth(context) * 0.05,
-                          right: displayWidth(context) * 0.05),
-                      child: ExpansionTile(
-                        key: new Key(_key.toString()),
-                        maintainState: true,
-                        initiallyExpanded: isExpansionCollapse!,
-                        onExpansionChanged: (isExpanded) {
-                          setState(() {
-                            print("isExpansionCollapse : $isExpanded");
-                            isExpansionCollapse = !isExpansionCollapse!;
-                            isExpandedTile = !isExpandedTile;
-                            // isExpansionCollapse = isExpanded;
-                          });
-                        },
-                        collapsedBackgroundColor: dateBackgroundColor,
-                        title: Text(
-                          "Search & Filters",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 13,
-                              fontFamily: inter),
-                        ),
-                        trailing: !isExpandedTile
-                            ? Icon(
-                                Icons.keyboard_arrow_down,
+                    Theme(
+                      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: displayWidth(context) * 0.05,
+                            right: displayWidth(context) * 0.05),
+                        child: ExpansionTile(
+                          key: new Key(_key.toString()),
+                          maintainState: true,
+                          initiallyExpanded: isExpansionCollapse!,
+                          onExpansionChanged: (isExpanded) {
+                            setState(() {
+                              print("isExpansionCollapse : $isExpanded");
+                              isExpansionCollapse = !isExpansionCollapse!;
+                              isExpandedTile = !isExpandedTile;
+                              // isExpansionCollapse = isExpanded;
+                            });
+                          },
+                          collapsedBackgroundColor: dateBackgroundColor,
+                          title: Text(
+                            "Search & Filters",
+                            style: TextStyle(
                                 color: Colors.black,
-                              )
-                            : Icon(
-                                Icons.keyboard_arrow_up,
-                                color: Colors.black,
-                              ),
-                        children: [
-                          isVesselDataLoading!
-                              ? Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 10,
-                                      right: 10,
-                                      top: displayWidth(context) * 0.025),
-                                  child: Container(
-                                    // margin: EdgeInsets.only(bottom: displayHeight(context) * 0.005),
-                                    child: InputDecorator(
-                                      decoration: InputDecoration(
-                                        focusColor: dropDownBackgroundColor,
-                                        fillColor: dropDownBackgroundColor,
-                                        isDense: true,
-                                        contentPadding: const EdgeInsets.all(3),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5)),
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: Colors.transparent),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 13,
+                                fontFamily: inter),
+                          ),
+                          trailing: !isExpandedTile
+                              ? Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: Colors.black,
+                                )
+                              : Icon(
+                                  Icons.keyboard_arrow_up,
+                                  color: Colors.black,
+                                ),
+                          children: [
+                            isVesselDataLoading!
+                                ? Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 10,
+                                        right: 10,
+                                        top: displayWidth(context) * 0.025),
+                                    child: Container(
+                                      // margin: EdgeInsets.only(bottom: displayHeight(context) * 0.005),
+                                      child: InputDecorator(
+                                        decoration: InputDecoration(
+                                          focusColor: dropDownBackgroundColor,
+                                          fillColor: dropDownBackgroundColor,
+                                          isDense: true,
+                                          contentPadding: const EdgeInsets.all(3),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 1,
+                                                color: Colors.transparent),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            borderSide: BorderSide(
+                                                width: 1,
+                                                color: Colors.transparent),
+                                          ),
+                                          errorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1, color: Colors.red),
+                                          ),
+                                          errorStyle: TextStyle(
+                                              fontFamily: "",
+                                              fontSize:
+                                                  displayWidth(context) * 0.025),
+                                          focusedErrorBorder:
+                                              const UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1, color: Colors.red),
+                                          ),
                                         ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5)),
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: Colors.transparent),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1, color: Colors.red),
-                                        ),
-                                        errorStyle: TextStyle(
-                                            fontFamily: "",
-                                            fontSize:
-                                                displayWidth(context) * 0.025),
-                                        focusedErrorBorder:
-                                            const UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1, color: Colors.red),
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 13,
-                                            right:
-                                                displayWidth(context) * 0.45),
-                                        child: Form(
-                                          key: _formKey,
-                                          child: DropdownButtonFormField<
-                                              DropdownItem>(
-                                            autovalidateMode: AutovalidateMode
-                                                .onUserInteraction,
-                                            dropdownColor:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? "Select Vessel" ==
-                                                            'User SubRole'
-                                                        ? Colors.white
-                                                        : Colors.transparent
-                                                    : Colors.white,
-                                            decoration: InputDecoration(
-                                              contentPadding: EdgeInsets.zero,
-                                              border: InputBorder.none,
-                                              hintText: "Select Vessel*",
-                                              hintStyle: TextStyle(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 13,
+                                              right:
+                                                  displayWidth(context) * 0.45),
+                                          child: Form(
+                                            key: _formKey,
+                                            child: DropdownButtonFormField<
+                                                DropdownItem>(
+                                              autovalidateMode: AutovalidateMode
+                                                  .onUserInteraction,
+                                              dropdownColor:
+                                                  Theme.of(context).brightness ==
+                                                          Brightness.dark
+                                                      ? "Select Vessel" ==
+                                                              'User SubRole'
+                                                          ? Colors.white
+                                                          : Colors.transparent
+                                                      : Colors.white,
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.zero,
+                                                border: InputBorder.none,
+                                                hintText: "Select Vessel*",
+                                                hintStyle: TextStyle(
+                                                    color: Theme.of(context)
+                                                                .brightness ==
+                                                            Brightness.dark
+                                                        ? "Select Vessel" ==
+                                                                'User SubRole'
+                                                            ? Colors.black
+                                                            : Colors.white
+                                                        : Colors.black,
+                                                    fontSize:
+                                                        displayWidth(context) *
+                                                            0.034,
+                                                    fontFamily: inter,
+                                                    fontWeight: FontWeight.w500),
+                                              ),
+                                              isExpanded: true,
+                                              isDense: true,
+                                              validator: (value) {
+                                                if (value == null) {
+                                                  return 'Select Vessel';
+                                                }
+                                                return null;
+                                              },
+                                              icon: Icon(
+                                                  Icons.keyboard_arrow_down,
                                                   color: Theme.of(context)
                                                               .brightness ==
                                                           Brightness.dark
@@ -795,253 +851,280 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                               'User SubRole'
                                                           ? Colors.black
                                                           : Colors.white
-                                                      : Colors.black,
-                                                  fontSize:
-                                                      displayWidth(context) *
-                                                          0.034,
-                                                  fontFamily: inter,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            isExpanded: true,
-                                            isDense: true,
-                                            validator: (value) {
-                                              if (value == null) {
-                                                return 'Select Vessel';
-                                              }
-                                              return null;
-                                            },
-                                            icon: Icon(
-                                                Icons.keyboard_arrow_down,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.dark
-                                                    ? "Select Vessel" ==
-                                                            'User SubRole'
-                                                        ? Colors.black
-                                                        : Colors.white
-                                                    : Colors.black),
-                                            value: selectedValue,
-                                            // value: selectState,
-                                            items: vesselData.map((item) {
-                                              return DropdownMenuItem<
-                                                  DropdownItem>(
-                                                value: item,
-                                                child: Text(
-                                                  item.name!,
-                                                  style: TextStyle(
-                                                      fontSize: displayWidth(
-                                                              context) *
-                                                          0.0346,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.dark
-                                                          ? "Select Vessel" ==
-                                                                  'User SubRole'
-                                                              ? Colors.black
-                                                              : Colors.white
-                                                          : Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              );
-                                            }).toList(),
-                                            onChanged: (item) {
-                                              print("id is: ${item?.id} ");
-                                              selectedVessel = item!.id;
-                                              selectedVesselName = item.name;
-                                              setState(() {
-                                                isTripIdListLoading = false;
-                                                isSHowGraph = false;
-                                              });
-                                              dateTimeList!.clear();
-                                              children!.clear();
-                                               getTripListData(item.id!);
+                                                      : Colors.black),
+                                              value: selectedValue,
+                                              // value: selectState,
+                                              items: vesselData.map((item) {
+                                                return DropdownMenuItem<
+                                                    DropdownItem>(
+                                                  value: item,
+                                                  child: Text(
+                                                    item.name!,
+                                                    style: TextStyle(
+                                                        fontSize: displayWidth(
+                                                                context) *
+                                                            0.0346,
+                                                        color: Theme.of(context)
+                                                                    .brightness ==
+                                                                Brightness.dark
+                                                            ? "Select Vessel" ==
+                                                                    'User SubRole'
+                                                                ? Colors.black
+                                                                : Colors.white
+                                                            : Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                );
+                                              }).toList(),
+                                              onChanged: (item) {
+                                                print("id is: ${item?.id} ");
+                                                parentValue = false;
+                                                selectedVessel = item!.id;
+                                                selectedVesselName = item.name;
+                                                setState(() {
+                                                  isTripIdListLoading = false;
+                                                  isSHowGraph = false;
+                                                  avgSpeed = null;
+                                                  avgDuration = null;
+                                                  avgFuelConsumption = null;
+                                                  avgPower = null;
+                                                  triSpeedList.clear();
+                                                  tripList.clear();
+                                                  duration1 = null;
+                                                  avgSpeed1 = null;
+                                                  fuelUsage = null;
+                                                  powerUsage = null;
+                                                  finalData.clear();
+                                                  durationGraphData.clear();
 
-                                              // state.didChange(item);
-                                              // onChanged!(item);
-                                            },
+                                                  durationColumnSeriesData.clear();
+                                                  avgSpeedColumnSeriesData.clear();
+                                                  fuelUsageColumnSeriesData.clear();
+                                                  powerUsageColumnSeriesData.clear();
+                                                });
+                                                dateTimeList!.clear();
+                                                children!.clear();
+                                                 getTripListData(item.id!);
+
+                                                // state.didChange(item);
+                                                // onChanged!(item);
+                                              },
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                )
-                              : Center(
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        circularProgressColor),
-                                  ),
-                                ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(
-                                child: RadioListTile(
-                                  title: Text(
-                                    "Filter By Date",
-                                    style: TextStyle(fontSize: 14),
-                                  ),
-                                  value: 1,
-                                  groupValue: _selectedOption,
-                                  onChanged: (int? value) {
-                                    setState(() {
-                                      isSHowGraph=false;
-                                      selectedCaseType = 1;
-                                      print(
-                                          "selectedCaseType: $selectedCaseType ");
-                                      _selectedOption = value!;
-                                      selectedTripsAndDateString = "Date Range";
-                                    });
-                                  },
-                                ),
-                              ),
-                              Expanded(
-                                child: RadioListTile(
-                                  title: Text("Filter By Trip",
-                                      style: TextStyle(fontSize: 14)),
-                                  value: 2,
-                                  groupValue: _selectedOption,
-                                  onChanged: (int? value) {
-                                    setState(() {
-                                      selectedCaseType = 2;
-                                      isSHowGraph=false;
-                                      print(
-                                          "selectedCaseType: $selectedCaseType ");
-                                      _selectedOption = value!;
-                                      selectedTripsAndDateString =
-                                          "Selected Trips";
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          _selectedOption == 1
-                              ? filterByDate(context)!
-                              : filterByTrip(context)!,
-                          SizedBox(
-                            height: displayWidth(context) * 0.08,
-                          ),
-                          isBtnClick ?? false
-                              ? Container(
-                                  child: Center(
+                                  )
+                                : Center(
                                     child: CircularProgressIndicator(
-                                      color: buttonBGColor,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          circularProgressColor),
                                     ),
                                   ),
-                                )
-                              : CommonButtons.getAcceptButton(
-                                  "Search", context, primaryColor, () {
-                                  if (_formKey.currentState!.validate()) {
-                                    setState(() {
-                                      isBtnClick = true;
-                                      isExpansionCollapse = false;
-                                    });
-
-                                    // _collapseExpansionTile();
-                                    String? startDate = "";
-                                    String? endDate = "";
-                                    totalDuration = 0;
-                                    totalSpeed = 0;
-                                    totalFuelConsumption = 0;
-                                    totalAvgPower = 0;
-
-
-                                    if (selectedCaseType == 1) {
-                                      if (focusedDayString!.isNotEmpty ||
-                                          lastFocusedDayString!.isNotEmpty) {
-                                        startDate = convertIntoYearMonthDay(
-                                            selectedDateForStartDate);
-                                        endDate = convertIntoYearMonthDay(
-                                            selectedDateForEndDate);
-                                        selectedTripsAndDateDetails =
-                                        "$startDate to $endDate";
-                                      }
-                                      if(selectedDateForEndDate.isBefore(selectedDateForStartDate)){
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Expanded(
+                                  child: RadioListTile(
+                                    title: Text(
+                                      "Filter By Date",
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                    value: 1,
+                                    groupValue: _selectedOption,
+                                    onChanged: (int? value) {
+                                      setState(() {
+                                        isSHowGraph=false;
+                                        selectedCaseType = 1;
+                                        print(
+                                            "selectedCaseType: $selectedCaseType ");
+                                        _selectedOption = value!;
+                                        selectedTripsAndDateString = "Date Range";
+                                      });
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  child: RadioListTile(
+                                    title: Text("Filter By Trip",
+                                        style: TextStyle(fontSize: 14)),
+                                    value: 2,
+                                    groupValue: _selectedOption,
+                                    onChanged: (int? value) {
+                                      setState(() {
+                                        selectedTripsAndDateDetails = "";
+                                        selectedCaseType = 2;
+                                        isSHowGraph=false;
+                                        print(
+                                            "selectedCaseType: $selectedCaseType ");
+                                        _selectedOption = value!;
+                                        selectedTripsAndDateString =
+                                            "Selected Trips";
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            _selectedOption == 1
+                                ? filterByDate(context)!
+                                : filterByTrip(context)!,
+                            SizedBox(
+                              height: displayWidth(context) * 0.08,
+                            ),
+                            isBtnClick ?? false
+                                ? Container(
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        color: circularProgressColor,
+                                      ),
+                                    ),
+                                  )
+                                : CommonButtons.getAcceptButton(
+                                    "Search", context, primaryColor, () {
+                                    if (_formKey.currentState!.validate()) {
+                                      setState(() {
                                         isBtnClick = true;
-                                        Utils.showSnackBar(context,
-                                            scaffoldKey: scaffoldKey,
-                                            message:
-                                            'End date ($endDate) should be greater than start date($startDate)',
-                                            duration: 2);
-                                      }else{
-                                        if ((selectedVessel?.isNotEmpty ??
-                                            false) &&
-                                            (startDate.isNotEmpty && startDate != null)&&
-                                            (endDate.isNotEmpty && endDate != null)) {
-                                          getReportsData(selectedCaseType!,
-                                              startDate: startDate,
-                                              endDate: endDate,
-                                              vesselID: selectedVessel);
-                                        } else {
-                                          setState(() {
-                                            isBtnClick = false;
-                                          });
-                                          if (startDate.isEmpty &&
-                                              endDate.isEmpty) {
+                                        isExpansionCollapse = false;
+
+                                      });
+
+                                      // _collapseExpansionTile();
+                                      String? startDate = "";
+                                      String? endDate = "";
+                                      totalDuration = 0;
+                                      totalSpeed = 0;
+                                      totalFuelConsumption = 0;
+                                      totalAvgPower = 0;
+
+
+                                      if (selectedCaseType == 1) {
+                                        if (focusedDayString!.isNotEmpty ||
+                                            lastFocusedDayString!.isNotEmpty) {
+                                          startDate = convertIntoYearMonthDay(
+                                              selectedDateForStartDate);
+                                          endDate = convertIntoYearMonthDay(
+                                              selectedDateForEndDate);
+                                          selectedTripsAndDateDetails =
+                                          "$startDate to $endDate";
+                                        }
+                                        if(selectedDateForEndDate.isBefore(selectedDateForStartDate)){
+                                          isBtnClick = false;
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                              'End date ($endDate) should be greater than start date($startDate)',
+                                              duration: 2);
+                                        }else{
+                                          if ((selectedVessel?.isNotEmpty ??
+                                              false) &&
+                                              (startDate.isNotEmpty && startDate != null)&&
+                                              (endDate.isNotEmpty && endDate != null)) {
+                                            getReportsData(selectedCaseType!,
+                                                startDate: startDate,
+                                                endDate: endDate,
+                                                vesselID: selectedVessel);
+                                          } else if(startDate.isEmpty &&
+                                              endDate.isEmpty){
+                                            setState(() {
+                                              isBtnClick = false;
+                                            });
                                             Utils.showSnackBar(context,
                                                 scaffoldKey: scaffoldKey,
                                                 message:
                                                 'Please select the start and end dates',
                                                 duration: 2);
-                                          } else if (startDate.isEmpty) {
+                                          }
+                                          else if(startDate.isEmpty){
+                                            setState(() {
+                                              isBtnClick = false;
+                                            });
                                             Utils.showSnackBar(context,
                                                 scaffoldKey: scaffoldKey,
                                                 message:
-                                                'Please select the start date',
+                                                'Please select the start dates',
                                                 duration: 2);
-                                          } else if (endDate.isEmpty) {
+                                          } else if(endDate.isEmpty){
+                                            setState(() {
+                                              isBtnClick = false;
+                                            });
                                             Utils.showSnackBar(context,
                                                 scaffoldKey: scaffoldKey,
                                                 message:
                                                 'Please select the end date',
                                                 duration: 2);
                                           }
+                                       /*   else {
+                                            setState(() {
+                                              isBtnClick = false;
+                                            });
+                                            if (startDate.isEmpty &&
+                                                endDate.isEmpty) {
+                                              Utils.showSnackBar(context,
+                                                  scaffoldKey: scaffoldKey,
+                                                  message:
+                                                  'Please select the start and end dates',
+                                                  duration: 2);
+                                            } else if (startDate.isEmpty) {
+                                              Utils.showSnackBar(context,
+                                                  scaffoldKey: scaffoldKey,
+                                                  message:
+                                                  'Please select the start date',
+                                                  duration: 2);
+                                            } else if (endDate.isEmpty) {
+                                              Utils.showSnackBar(context,
+                                                  scaffoldKey: scaffoldKey,
+                                                  message:
+                                                  'Please select the end date',
+                                                  duration: 2);
+                                            }
+                                          }*/
                                         }
-                                      }
 
-                                    } else if (selectedCaseType == 2) {
-                                      if (selectedTripIdList?.isNotEmpty ??
-                                          false) {
-                                        getReportsData(selectedCaseType!,
-                                            selectedTripListID:
-                                                selectedTripIdList);
-                                      } else {
-                                        setState(() {
-                                          isBtnClick = false;
-                                        });
-                                        if (selectedTripIdList?.isEmpty ??
+                                      } else if (selectedCaseType == 2) {
+                                        if (selectedTripIdList?.isNotEmpty ??
                                             false) {
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                                  'Please select the Trip Id',
-                                              duration: 2);
+                                          getReportsData(selectedCaseType!,
+                                              selectedTripListID:
+                                                  selectedTripIdList);
+                                        } else {
+                                          setState(() {
+                                            isBtnClick = false;
+                                          });
+                                          if (selectedTripIdList?.isEmpty ??
+                                              false) {
+                                            Utils.showSnackBar(context,
+                                                scaffoldKey: scaffoldKey,
+                                                message:
+                                                    'Please select the Trip Id',
+                                                duration: 2);
+                                          }
                                         }
                                       }
                                     }
-                                  }
-                                },
-                                  displayWidth(context) * 0.8,
-                                  displayHeight(context) * 0.065,
-                                  Colors.grey.shade400,
-                                  Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.white,
-                                  displayHeight(context) * 0.021,
-                                  buttonBGColor,
-                                  '',
-                                  fontWeight: FontWeight.w500),
-                          SizedBox(
-                            height: displayWidth(context) * 0.1,
-                          )
-                        ],
+                                  },
+                                    displayWidth(context) * 0.8,
+                                    displayHeight(context) * 0.065,
+                                    Colors.grey.shade400,
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.white,
+                                    displayHeight(context) * 0.021,
+                                    buttonBGColor,
+                                    '',
+                                    fontWeight: FontWeight.w500),
+                            SizedBox(
+                              height: displayWidth(context) * 0.1,
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                    !isSHowGraph! ? Container(): isReportDataLoading! && !isCheckInternalServer!
+                    !isSHowGraph! ? Container(): isReportDataLoading!
                         ? Column(
                             children: [
                               Container(
@@ -1264,7 +1347,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                   ],
                                 ),
                               ),
-                              isReportDataLoading! && !isCheckInternalServer!
+                              isReportDataLoading!
                                   ? buildGraph(context)
                                   : Center(
                                       child: CircularProgressIndicator(
@@ -1453,39 +1536,39 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     Text(
                       e['date']!,
                       style: TextStyle(
-                          color: primaryColor, fontWeight: FontWeight.w800),
+                          color: circularProgressColor, fontWeight: FontWeight.w800),
                     ),
                   ),
                   DataCell(Text(
                     e['tripDetails']!,
                     style: TextStyle(
-                        color: primaryColor, fontWeight: FontWeight.w800),
+                        color: circularProgressColor, fontWeight: FontWeight.w800),
                   )),
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: Text(
                       e['duration']!,
                       style: TextStyle(
-                          color: primaryColor, fontWeight: FontWeight.w800),
+                          color: circularProgressColor, fontWeight: FontWeight.w800),
                     ),
                   )),
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: Text('${e['avgSpeed'].toStringAsFixed(2)!}',
                         style: TextStyle(
-                            color: primaryColor, fontWeight: FontWeight.w800)),
+                            color: circularProgressColor, fontWeight: FontWeight.w800)),
                   )),
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: Text('${e['fuelUsage']!}',
                         style: TextStyle(
-                            color: primaryColor, fontWeight: FontWeight.w800)),
+                            color: circularProgressColor, fontWeight: FontWeight.w800)),
                   )),
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: Text('${e['powerUsage']!}',
                         style: TextStyle(
-                            color: primaryColor, fontWeight: FontWeight.w800)),
+                            color: circularProgressColor, fontWeight: FontWeight.w800)),
                   )),
                 ]))
           ],
@@ -1629,8 +1712,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       enable: true,
       color: reportBackgroundColor,
       borderWidth: 1,
-      activationMode: ActivationMode.singleTap,
+      activationMode: ActivationMode.doubleTap,
       duration: 5000,
+     // animationDuration: 5000,
       // tooltipPosition: TooltipPosition.pointer,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {
@@ -1667,7 +1751,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('NM',
+                  Text('KT',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2229,13 +2313,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             children: [
               // (tripIdList?.isEmpty ?? false) ? Container(width: displayWidth(context),height: 40,child: Center(child: commonText(text: 'No Trip Id available',textSize: displayWidth(context)*0.030)),) :
 
+              tripIdList!.length == 0 ? Container() :
               ListView(
                 primary: false,
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: <Widget>[
-                  tripIdList!.isNotEmpty
-                      ? Padding(
+                  Padding(
                           padding: EdgeInsets.only(
                               left: displayWidth(context) * 0.046),
                           child: CustomLabeledCheckbox(
@@ -2254,10 +2338,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             checkboxType: CheckboxType.Parent,
                             activeColor: Colors.indigo,
                           ),
-                        )
-                      : Container(),
+                        ),
                   ListView.builder(
                     itemCount: children?.length ?? 0,
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
                     itemBuilder: (context, index) => Column(
                       children: [
                         Divider(),
@@ -2281,8 +2366,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         ),
                       ],
                     ),
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
                   ),
                 ],
               )

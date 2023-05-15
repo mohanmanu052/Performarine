@@ -178,6 +178,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         } else if (widget.calledFrom == 'VesselSingleView') {
           Navigator.of(context).pop(isDataUpdated);
           return false;
+        } else if(widget.calledFrom == 'Report'){
+          Navigator.pop(context);
+          return false;
         }
         return false;
       },
