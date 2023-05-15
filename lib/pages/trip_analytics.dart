@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -26,6 +27,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../common_widgets/widgets/status_tag.dart';
+import 'package:timezone/timezone.dart' as tz;
 import '../models/reports_model.dart';
 
 class TripAnalyticsScreen extends StatefulWidget {
@@ -73,7 +75,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       getTripDetailsFromNoti = false;
 
   int progress = 0;
-  Timer? progressTimer;
+  Timer? durationTimer;
   double finalProgress = 0;
 
   List<File?> finalSelectedFiles = [];
@@ -87,7 +89,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     super.initState();
     // getVesselDataById();
 
-    Utils.customPrint('CURRENT TIME TIME ${DateTime.now()}');
+    Utils.customPrint('CURRENT TIME TIME ${widget.tripId}');
 
     sharedPreferences!.remove('sp_key_called_from_noti');
 
@@ -106,7 +108,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   }
 
   getData() async {
-    if(widget.calledFrom == 'Report'){
+    if (widget.calledFrom == 'Report') {
       final DatabaseService _databaseService = DatabaseService();
       final tripDetails = await _databaseService.getTrip(widget.tripId!);
 
@@ -117,7 +119,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         tripData = tripDetails;
         vesselData = vesselDetails[0];
       });
-    }else{
+    } else {
       final DatabaseService _databaseService = DatabaseService();
       final tripDetails = await _databaseService.getTrip(widget.tripId!);
 
@@ -138,17 +140,54 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       });
     }
 
-    service.on('tripAnalyticsData').listen((event) {
-      tripDistance = event!['tripDistance'];
-      tripDuration = event['tripDuration'];
-      tripSpeed = event['tripSpeed'].toString();
-      tripAvgSpeed = event['tripAvgSpeed'].toString();
+    if (Platform.isAndroid) {
+      service.on('tripAnalyticsData').listen((event) {
+        tripDistance = event!['tripDistance'];
+        tripDuration = event['tripDuration'];
+        tripSpeed = event['tripSpeed'].toString();
+        tripAvgSpeed = event['tripAvgSpeed'].toString();
 
-      if (mounted)
-        setState(() {
-          getTripDetailsFromNoti = false;
-        });
-    });
+        if (mounted)
+          setState(() {
+            getTripDetailsFromNoti = false;
+          });
+      });
+    } else {
+      final currentTrip = await _databaseService.getTrip(widget.tripId!);
+
+      DateTime createdAtTime = DateTime.parse(currentTrip.createdAt!);
+
+      durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+        print('##TDATA');
+        tripDistance = sharedPreferences!.getString('tripDistance')!;
+        //tripDuration = sharedPreferences!.getString('tripDuration')!;
+        tripSpeed = sharedPreferences!.getString('tripSpeed')!;
+        tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed')!;
+
+        var durationTime = DateTime.now().toUtc().difference(createdAtTime);
+        // current date time.difference(createdAt);
+        tripDuration = Utils.calculateTripDuration(
+            ((durationTime.inMilliseconds) / 1000).toInt());
+        // tripDuration = durationTime.inMilliseconds.toString();
+        // duration.inmiliseconds;
+
+        print('##TDATA 1212 : $tripDuration');
+
+        if (mounted)
+          setState(() {
+            getTripDetailsFromNoti = false;
+          });
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    if (durationTimer != null) {
+      durationTimer!.cancel();
+    }
   }
 
   @override
@@ -221,7 +260,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                 }
               } else if (widget.calledFrom == 'VesselSingleView') {
                 Navigator.of(context).pop(isDataUpdated);
-              }else if(widget.calledFrom == "Report"){
+              } else if (widget.calledFrom == "Report") {
                 Navigator.pop(context);
               }
             },
@@ -230,8 +269,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                 ? Colors.white
                 : Colors.black,
           ),
-          title: widget.calledFrom == "Report" ?
-          commonText(
+          title: widget.calledFrom == "Report"
+              ? commonText(
             context: context,
             text: widget.vesselName,
             fontWeight: FontWeight.w600,
@@ -326,8 +365,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                   ),
                 ),
               ),
-              widget.calledFrom == 'Report' ?
-              Expanded(
+              widget.calledFrom == 'Report'
+                  ? Expanded(
                 child: Card(
                   color: Colors.white,
                   elevation: 8.0,
@@ -828,7 +867,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                       Expanded(
                         child: SingleChildScrollView(
                           child: Container(
-                            height: displayHeight(context) / 1.8,
+                            height:
+                            displayHeight(context) / 1.8,
                             margin: EdgeInsets.only(
                                 top: 20, left: 17, right: 17),
                             child: Column(
@@ -839,20 +879,25 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                               children: [
                                 Column(
                                   crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                                  CrossAxisAlignment
+                                      .start,
                                   mainAxisAlignment:
                                   MainAxisAlignment.start,
                                   children: [
                                     Container(
-                                      margin: EdgeInsets.symmetric(
+                                      margin: EdgeInsets
+                                          .symmetric(
                                           horizontal: 12),
                                       child: commonText(
                                         context: context,
                                         text: 'Analytics',
-                                        fontWeight: FontWeight.w700,
-                                        textColor: Colors.black87,
+                                        fontWeight:
+                                        FontWeight.w700,
+                                        textColor:
+                                        Colors.black87,
                                         textSize:
-                                        displayWidth(context) *
+                                        displayWidth(
+                                            context) *
                                             0.032,
                                       ),
                                     ),
@@ -884,7 +929,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                 ),
                                 SizedBox(
                                   height:
-                                  displayHeight(context) * 0.01,
+                                  displayHeight(context) *
+                                      0.01,
                                 ),
                               ],
                             ),
@@ -898,37 +944,50 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                               horizontal: 17, vertical: 10),
                           child: isTripEnded
                               ? Center(
-                              child: CircularProgressIndicator(
+                              child:
+                              CircularProgressIndicator(
                                 valueColor:
-                                AlwaysStoppedAnimation<Color>(
+                                AlwaysStoppedAnimation<
+                                    Color>(
                                     circularProgressColor),
                               ))
                               : CommonButtons.getActionButton(
                               title: 'End Trip',
                               context: context,
                               fontSize:
-                              displayWidth(context) * 0.042,
+                              displayWidth(context) *
+                                  0.042,
                               textColor: Colors.white,
-                              buttonPrimaryColor: buttonBGColor,
+                              buttonPrimaryColor:
+                              buttonBGColor,
                               borderColor: buttonBGColor,
-                              width: displayWidth(context),
+                              width:
+                              displayWidth(context),
                               onTap: () async {
                                 Utils.customPrint(
                                     "END TRIP CURRENT TIME ${DateTime.now()}");
 
                                 Utils().showEndTripDialog(
                                     context, () async {
+                                  if (durationTimer !=
+                                      null) {
+                                    durationTimer!
+                                        .cancel();
+                                  }
                                   setState(() {
                                     isTripEnded = true;
                                   });
                                   Navigator.pop(context);
                                   EndTrip().endTrip(
                                       context: context,
-                                      scaffoldKey: scaffoldKey,
+                                      scaffoldKey:
+                                      scaffoldKey,
                                       onEnded: () async {
                                         setState(() {
-                                          tripIsRunning = false;
-                                          isTripEnded = true;
+                                          tripIsRunning =
+                                          false;
+                                          isTripEnded =
+                                          true;
                                         });
                                         Trip tripDetails =
                                         await _databaseService
@@ -945,7 +1004,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                         Utils.customPrint(
                                             'TRIP ENDED DETAILS: ${tripData!.isSync}');
 
-                                        isDataUpdated = true;
+                                        isDataUpdated =
+                                        true;
                                         // Navigator.pop(context);
                                       });
                                 }, () {
@@ -971,9 +1031,12 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                         Expanded(
                           child: SingleChildScrollView(
                             child: Container(
-                              height: displayHeight(context) / 1.8,
+                              height: displayHeight(context) /
+                                  1.8,
                               margin: EdgeInsets.only(
-                                  top: 20, left: 17, right: 17),
+                                  top: 20,
+                                  left: 17,
+                                  right: 17),
                               child: Column(
                                 mainAxisAlignment:
                                 MainAxisAlignment.start,
@@ -982,21 +1045,26 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                 children: [
                                   Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                    CrossAxisAlignment
+                                        .start,
                                     mainAxisAlignment:
-                                    MainAxisAlignment.start,
+                                    MainAxisAlignment
+                                        .start,
                                     children: [
                                       Container(
-                                        margin:
-                                        EdgeInsets.symmetric(
-                                            horizontal: 12),
+                                        margin: EdgeInsets
+                                            .symmetric(
+                                            horizontal:
+                                            12),
                                         child: commonText(
                                           context: context,
                                           text: 'Analytics',
                                           fontWeight:
                                           FontWeight.w700,
-                                          textColor: Colors.black87,
-                                          textSize: displayWidth(
+                                          textColor:
+                                          Colors.black87,
+                                          textSize:
+                                          displayWidth(
                                               context) *
                                               0.032,
                                         ),
@@ -1019,11 +1087,13 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                     ],
                                   ),
                                   SizedBox(
-                                    height: displayHeight(context) *
+                                    height: displayHeight(
+                                        context) *
                                         0.01,
                                   ),
                                   Container(
-                                    margin: EdgeInsets.symmetric(
+                                    margin:
+                                    EdgeInsets.symmetric(
                                         horizontal: 12),
                                     child: Column(
                                       children: [
@@ -1033,12 +1103,15 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                               .spaceBetween,
                                           children: [
                                             commonText(
-                                              context: context,
-                                              text: 'Trip Details',
+                                              context:
+                                              context,
+                                              text:
+                                              'Trip Details',
                                               fontWeight:
-                                              FontWeight.w700,
-                                              textColor:
-                                              Colors.black87,
+                                              FontWeight
+                                                  .w700,
+                                              textColor: Colors
+                                                  .black87,
                                               textSize:
                                               displayWidth(
                                                   context) *
@@ -1047,39 +1120,39 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                             Row(
                                               children: [
                                                 commonText(
-                                                  context: context,
+                                                  context:
+                                                  context,
                                                   text:
                                                   'Trip Status:',
                                                   fontWeight:
                                                   FontWeight
                                                       .w500,
-                                                  textColor: Colors
+                                                  textColor:
+                                                  Colors
                                                       .black87,
                                                   textSize:
-                                                  displayWidth(
-                                                      context) *
+                                                  displayWidth(context) *
                                                       0.03,
                                                 ),
                                                 SizedBox(
                                                   width: 6,
                                                 ),
                                                 commonText(
-                                                  context: context,
+                                                  context:
+                                                  context,
                                                   text: tripIsRunning
                                                       ? 'Trip InProgress'
                                                       : 'Trip Ended',
                                                   fontWeight:
                                                   FontWeight
                                                       .w500,
-                                                  textColor:
-                                                  tripIsRunning
+                                                  textColor: tripIsRunning
                                                       ? Color(
                                                       0xFFAE6827)
                                                       : Colors
                                                       .green,
                                                   textSize:
-                                                  displayWidth(
-                                                      context) *
+                                                  displayWidth(context) *
                                                       0.03,
                                                 ),
                                               ],
@@ -1094,10 +1167,13 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                         Row(
                                           children: [
                                             commonText(
-                                              context: context,
-                                              text: 'Start Date',
+                                              context:
+                                              context,
+                                              text:
+                                              'Start Date',
                                               fontWeight:
-                                              FontWeight.w500,
+                                              FontWeight
+                                                  .w500,
                                               textColor:
                                               Colors.grey,
                                               textSize:
@@ -1111,13 +1187,16 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                   0.04,
                                             ),
                                             commonText(
-                                              context: context,
+                                              context:
+                                              context,
                                               text:
                                               ': ${DateFormat('dd/MM/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
                                               fontWeight:
-                                              FontWeight.w500,
+                                              FontWeight
+                                                  .w500,
                                               textColor:
-                                              Colors.black,
+                                              Colors
+                                                  .black,
                                               textSize:
                                               displayWidth(
                                                   context) *
@@ -1131,10 +1210,13 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                         Row(
                                           children: [
                                             commonText(
-                                              context: context,
-                                              text: 'Start Time',
+                                              context:
+                                              context,
+                                              text:
+                                              'Start Time',
                                               fontWeight:
-                                              FontWeight.w500,
+                                              FontWeight
+                                                  .w500,
                                               textColor:
                                               Colors.grey,
                                               textSize:
@@ -1148,13 +1230,16 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                   0.04,
                                             ),
                                             commonText(
-                                              context: context,
+                                              context:
+                                              context,
                                               text:
                                               ': ${DateFormat('hh:mm').format(DateTime.parse(tripData!.createdAt!))}',
                                               fontWeight:
-                                              FontWeight.w500,
+                                              FontWeight
+                                                  .w500,
                                               textColor:
-                                              Colors.black,
+                                              Colors
+                                                  .black,
                                               textSize:
                                               displayWidth(
                                                   context) *
@@ -1178,10 +1263,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                               FontWeight
                                                   .w500,
                                               textColor:
-                                              Colors.grey,
+                                              Colors
+                                                  .grey,
                                               textSize:
-                                              displayWidth(
-                                                  context) *
+                                              displayWidth(context) *
                                                   0.03,
                                             ),
                                             SizedBox(
@@ -1201,8 +1286,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                               Colors
                                                   .black,
                                               textSize:
-                                              displayWidth(
-                                                  context) *
+                                              displayWidth(context) *
                                                   0.03,
                                             ),
                                           ],
@@ -1223,10 +1307,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                               FontWeight
                                                   .w500,
                                               textColor:
-                                              Colors.grey,
+                                              Colors
+                                                  .grey,
                                               textSize:
-                                              displayWidth(
-                                                  context) *
+                                              displayWidth(context) *
                                                   0.03,
                                             ),
                                             SizedBox(
@@ -1246,8 +1330,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                               Colors
                                                   .black,
                                               textSize:
-                                              displayWidth(
-                                                  context) *
+                                              displayWidth(context) *
                                                   0.03,
                                             ),
                                           ],
@@ -1267,15 +1350,18 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                 horizontal: 17, vertical: 10),
                             child: tripData!.isCloud != 0
                                 ? SizedBox(
-                              width: displayWidth(context),
+                              width:
+                              displayWidth(context),
                               child: CommonButtons
                                   .getActionButton(
                                   title: 'Home',
                                   context: context,
-                                  fontSize: displayWidth(
+                                  fontSize:
+                                  displayWidth(
                                       context) *
                                       0.034,
-                                  textColor: Colors.white,
+                                  textColor: Colors
+                                      .white,
                                   buttonPrimaryColor:
                                   buttonBGColor,
                                   borderColor:
@@ -1288,12 +1374,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                         .pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
-                                          builder:
-                                              (context) =>
+                                          builder: (context) =>
                                               HomePage(),
                                         ),
-                                        ModalRoute
-                                            .withName(
+                                        ModalRoute.withName(
                                             ""));
                                   }),
                             )
@@ -1302,27 +1386,33 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                               MainAxisAlignment
                                   .spaceBetween,
                               children: [
-                                CommonButtons.getActionButton(
+                                CommonButtons
+                                    .getActionButton(
                                     title:
                                     'Download Trip Data',
-                                    context: context,
-                                    fontSize: displayWidth(
-                                        context) *
+                                    context:
+                                    context,
+                                    fontSize:
+                                    displayWidth(context) *
                                         0.034,
-                                    textColor: Colors.white,
+                                    textColor:
+                                    Colors
+                                        .white,
                                     buttonPrimaryColor:
-                                    Color(0xFF889BAB),
-                                    borderColor:
-                                    Color(0xFF889BAB),
+                                    Color(
+                                        0xFF889BAB),
+                                    borderColor: Color(
+                                        0xFF889BAB),
                                     width: displayWidth(
                                         context) /
                                         2.3,
-                                    onTap: () async {
-                                      DownloadTrip()
-                                          .downloadTrip(
+                                    onTap:
+                                        () async {
+                                      DownloadTrip().downloadTrip(
                                           context,
                                           scaffoldKey,
-                                          tripData!.id!);
+                                          tripData!
+                                              .id!);
                                     }),
                                 isTripUploaded
                                     ? Container(
@@ -1333,20 +1423,21 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                   child: Center(
                                       child:
                                       CircularProgressIndicator(
-                                        valueColor:
-                                        AlwaysStoppedAnimation<
+                                        valueColor: AlwaysStoppedAnimation<
                                             Color>(
                                             circularProgressColor),
                                       )),
                                 )
-                                    : tripData?.isSync != 0
+                                    : tripData?.isSync !=
+                                    0
                                     ? CommonButtons
                                     .getActionButton(
-                                    title: 'Home',
+                                    title:
+                                    'Home',
                                     context:
                                     context,
-                                    fontSize: displayWidth(
-                                        context) *
+                                    fontSize:
+                                    displayWidth(context) *
                                         0.034,
                                     textColor:
                                     Colors
@@ -1355,17 +1446,14 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                     buttonBGColor,
                                     borderColor:
                                     buttonBGColor,
-                                    width:
-                                    displayWidth(
-                                        context) /
+                                    width: displayWidth(context) /
                                         2.3,
                                     onTap:
                                         () async {
                                       Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                HomePage(),
+                                            builder: (context) => HomePage(),
                                           ),
                                           ModalRoute.withName(""));
                                     })
@@ -1376,8 +1464,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                     context:
                                     context,
                                     fontSize:
-                                    displayWidth(
-                                        context) *
+                                    displayWidth(context) *
                                         0.034,
                                     textColor:
                                     Colors
@@ -1386,30 +1473,22 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                     buttonBGColor,
                                     borderColor:
                                     buttonBGColor,
-                                    width: displayWidth(
-                                        context) /
+                                    width: displayWidth(context) /
                                         2.3,
                                     onTap:
                                         () async {
                                       await Utils()
-                                          .check(
-                                          scaffoldKey);
+                                          .check(scaffoldKey);
 
-                                      if (tripData
-                                          ?.isSync !=
+                                      if (tripData?.isSync !=
                                           0) {
-                                        Utils.customPrint(
-                                            'UPLOADED ${tripData?.isSync != 0}');
-                                        Utils.customPrint(
-                                            'UPLOADED 1 ${isTripUploaded}');
+                                        Utils.customPrint('UPLOADED ${tripData?.isSync != 0}');
+                                        Utils.customPrint('UPLOADED 1 ${isTripUploaded}');
 
-                                        Utils
-                                            .showSnackBar(
+                                        Utils.showSnackBar(
                                           context,
-                                          scaffoldKey:
-                                          scaffoldKey,
-                                          message:
-                                          'File already uploaded',
+                                          scaffoldKey: scaffoldKey,
+                                          message: 'File already uploaded',
                                         );
                                         return;
                                       }
@@ -1417,26 +1496,19 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                       //downloadTrip(true);
 
                                       var connectivityResult =
-                                      await (Connectivity()
-                                          .checkConnectivity());
+                                      await (Connectivity().checkConnectivity());
                                       if (connectivityResult ==
-                                          ConnectivityResult
-                                              .mobile) {
-                                        Utils.customPrint(
-                                            'Mobile');
+                                          ConnectivityResult.mobile) {
+                                        Utils.customPrint('Mobile');
                                         showDialogBoxToUploadTrip();
                                       } else if (connectivityResult ==
-                                          ConnectivityResult
-                                              .wifi) {
-                                        setState(
-                                                () {
-                                              isTripUploaded =
-                                              true;
-                                            });
+                                          ConnectivityResult.wifi) {
+                                        setState(() {
+                                          isTripUploaded = true;
+                                        });
                                         uploadDataIfDataIsNotSync();
 
-                                        Utils.customPrint(
-                                            'WIFI');
+                                        Utils.customPrint('WIFI');
                                       }
                                     })
                               ],
