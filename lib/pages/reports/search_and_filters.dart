@@ -334,14 +334,39 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               finalChartData.clear();
             });
           } else if (!isCheckInternalServer! && value.statusCode == 200) {
-            setState(() {
-              isReportDataLoading = true;
-              isBtnClick = false;
-              triSpeedList.clear();
-              /*totalData.clear();
+            if(mounted){
+              setState(() {
+                isReportDataLoading = true;
+                isBtnClick = false;
+                triSpeedList.clear();
+                /*totalData.clear();
               finalData.clear();
               finalChartData.clear();*/
-            });
+
+                avgSpeed = null;
+                avgDuration = null;
+                avgFuelConsumption = null;
+                avgPower = null;
+                triSpeedList.clear();
+                tripList.clear();
+                duration1 = null;
+                avgSpeed1 = null;
+                fuelUsage = null;
+                powerUsage = null;
+                finalData.clear();
+                durationGraphData.clear();
+
+                durationColumnSeriesData
+                    .clear();
+                avgSpeedColumnSeriesData
+                    .clear();
+                fuelUsageColumnSeriesData
+                    .clear();
+                powerUsageColumnSeriesData
+                    .clear();
+              });
+            }
+
             collapseExpansionTileKey();
             isSHowGraph = true;
             avgSpeed = double.parse(
@@ -457,6 +482,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
             tripList.clear();
 
+
             for (int i = 0; i < triSpeedList.length; i++) {
               for (int j = 0; j < triSpeedList[i].tripsByDate!.length; j++) {
                 Map<String, dynamic> data = {
@@ -471,18 +497,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 tripList.add(data);
               }
             }
-            //
-            // tripList = value.data!.trips!
-            //     .map((trip) => {
-            //           'date': trip.date!,
-            //           'tripDetails': trip.tripsByDate![0].id,
-            //           'duration': trip.tripsByDate![0].duration,
-            //           'avgSpeed': '${trip.tripsByDate![0].avgSpeed}',
-            //           'fuelUsage': trip.tripsByDate![0].fuelConsumption ?? 0.0,
-            //           'powerUsage': trip.tripsByDate![0].avgPower ?? 0.0
-            //         })
-            //     .toList();
-            print("tripList: $tripList , length: ${tripList.length}");
+            print("length: ${tripList.length}, tripList: $tripList");
 
             /*int duration1 = durationWithMilli(value.data!.avgInfo!.avgDuration!);
           String avgSpeed1 = value.data!.avgInfo!.avgSpeed!.toStringAsFixed(1) + " nm";
@@ -896,31 +911,36 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                           parentValue = false;
                                           selectedVessel = item!.id;
                                           selectedVesselName = item.name;
-                                          setState(() {
-                                            isTripIdListLoading = false;
-                                            isSHowGraph = false;
-                                            avgSpeed = null;
-                                            avgDuration = null;
-                                            avgFuelConsumption = null;
-                                            avgPower = null;
-                                            triSpeedList.clear();
-                                            tripList.clear();
-                                            duration1 = null;
-                                            avgSpeed1 = null;
-                                            fuelUsage = null;
-                                            powerUsage = null;
-                                            finalData.clear();
-                                            durationGraphData.clear();
+                                          if(mounted){
+                                            setState(() {
+                                              isTripIdListLoading = false;
+                                              isSHowGraph = false;
+                                              avgSpeed = null;
+                                              avgDuration = null;
+                                              avgFuelConsumption = null;
+                                              avgPower = null;
+                                              triSpeedList.clear();
+                                              tripList.clear();
+                                              duration1 = null;
+                                              avgSpeed1 = null;
+                                              fuelUsage = null;
+                                              powerUsage = null;
+                                              finalData.clear();
+                                              durationGraphData.clear();
 
-                                            durationColumnSeriesData
-                                                .clear();
-                                            avgSpeedColumnSeriesData
-                                                .clear();
-                                            fuelUsageColumnSeriesData
-                                                .clear();
-                                            powerUsageColumnSeriesData
-                                                .clear();
-                                          });
+                                              durationColumnSeriesData
+                                                  .clear();
+                                              avgSpeedColumnSeriesData
+                                                  .clear();
+                                              fuelUsageColumnSeriesData
+                                                  .clear();
+                                              powerUsageColumnSeriesData
+                                                  .clear();
+                                              selectedTripIdList!.clear();
+                                              selectedTripLabelList!.clear();
+                                            });
+                                          }
+
                                           dateTimeList!.clear();
                                           children!.clear();
                                           getTripListData(item.id!);
@@ -1003,10 +1023,34 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 : CommonButtons.getAcceptButton(
                                 "Search", context, primaryColor, () {
                               if (_formKey.currentState!.validate()) {
-                                setState(() {
-                                  isBtnClick = true;
-                                  isExpansionCollapse = false;
-                                });
+
+                                  setState(() {
+                                    isBtnClick = true;
+                                    isExpansionCollapse = false;
+
+                                    avgSpeed = null;
+                                    avgDuration = null;
+                                    avgFuelConsumption = null;
+                                    avgPower = null;
+                                    triSpeedList.clear();
+                                    tripList.clear();
+                                    duration1 = null;
+                                    avgSpeed1 = null;
+                                    fuelUsage = null;
+                                    powerUsage = null;
+                                    finalData.clear();
+                                    durationGraphData.clear();
+
+                                    durationColumnSeriesData
+                                        .clear();
+                                    avgSpeedColumnSeriesData
+                                        .clear();
+                                    fuelUsageColumnSeriesData
+                                        .clear();
+                                    powerUsageColumnSeriesData
+                                        .clear();
+                                  });
+
 
                                 // _collapseExpansionTile();
                                 String? startDate = "";
@@ -1199,7 +1243,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                   ),
                                   Expanded(
                                     child: Text(
-                                      selectedCaseType == 1 ? "${selectedTripsAndDateDetails}" : ":  ${selectedTripLabelList!.join(', ')}",
+                                      selectedCaseType == 1 ? ": ${selectedTripsAndDateDetails}" : ":  ${selectedTripLabelList!.join(', ')}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
                                       style: TextStyle(
@@ -2375,7 +2419,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         // (tripIdList?.isEmpty ?? false) ? Container(width: displayWidth(context),height: 40,child: Center(child: commonText(text: 'No Trip Id available',textSize: displayWidth(context)*0.030)),) :
 
         tripIdList!.length == 0
-            ? Container()
+            ? Container(child: commonText(text: 'No Trips available',textSize: displayWidth(context)*0.030,textColor: primaryColor))
             : ListView(
           primary: false,
           physics: NeverScrollableScrollPhysics(),
