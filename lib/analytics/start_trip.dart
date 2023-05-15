@@ -306,7 +306,7 @@ class StartTrip {
                   tripId);
 
               String location =
-                  '$latitude $longitude ${accuracy.toStringAsFixed(3)} ${altitide.toStringAsFixed(3)} $heading $speed $speedAccuracy $timestamp';
+                  '$latitude $longitude ${accuracy.toStringAsFixed(3)} ${altitide.toStringAsFixed(3)} $heading $speed $speedAccuracy';
               String gps =
               CreateTrip().convertLocationToString('GPS', location, tripId);
 
