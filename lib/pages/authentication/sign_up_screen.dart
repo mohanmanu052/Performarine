@@ -74,7 +74,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     createPasswordController = TextEditingController();
     confirmPasswordController = TextEditingController();
   }
-
+@override
+  void dispose() {
+    // TODO: implement dispose
+  countryController.dispose();
+  countryCodeController.dispose();
+  zipCodeController.dispose();
+  emailController.dispose();
+  phoneController.dispose();
+  createPasswordController.dispose();
+  confirmPasswordController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -226,6 +237,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       builder: (context) => SignInScreen(),
                                                     ),
                                                     ModalRoute.withName(""));
+// <<<<<<< Report-code-merge
+// =======
+
+// >>>>>>> Bug_loc_reports
                                               });
                                             } else {
                                               setState(() {

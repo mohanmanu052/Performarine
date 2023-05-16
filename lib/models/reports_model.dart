@@ -175,6 +175,7 @@ class TripsByDate {
   });
 
   factory TripsByDate.fromJson(Map<String, dynamic> json) => TripsByDate(
+// <<<<<<< Report-code-merge
         id: json["_id"],
         load: json["load"],
         startPosition: List<String>.from(json["startPosition"].map((x) => x)),
@@ -209,6 +210,35 @@ class TripsByDate {
             ? json["fuelConsumption"].toDouble()
             : 0.0,
       );
+// =======
+//     id: json["_id"],
+//     load: json["load"],
+//     startPosition: List<String>.from(json["startPosition"].map((x) => x)),
+//     endPosition: List<String>.from(json["endPosition"].map((x) => x)),
+//     sensorInfo: List<SensorInfo>.from(json["sensorInfo"].map((x) => SensorInfo.fromJson(x))),
+//     deviceInfo: DeviceInfo.fromJson(json["deviceInfo"]),
+//     vesselId: json["vesselId"],
+//     tripStatus: json["tripStatus"],
+//     dataExtStatus: json["dataExtStatus"],
+//     createdBy: json["createdBy"],
+//     createdAt: DateTime.parse(json["createdAt"]),
+//     updatedBy: json["updatedBy"],
+//     updatedAt: DateTime.parse(json["updatedAt"]),
+//     filePath: json["filePath"],
+//     syncCreatedAt: DateTime.parse(json["syncCreatedAt"]),
+//     syncUpdatedAt: DateTime.parse(json["syncUpdatedAt"]),
+//     duration: json["duration"],
+//     distance: json["distance"].toDouble(),
+//     speed: json["speed"].toDouble(),
+//     avgSpeed: json["avgSpeed"].toDouble(),
+//     missingLineNumbers: json["missingLineNumbers"] != null? MissingLineNumbers.fromJson(json["missingLineNumbers"]) : MissingLineNumbers.fromJson({}),
+//     sensorType: json["sensorType"] != null ? List<String>.from(json["sensorType"].map((x) => x)) : List<String>.from({}),
+//     vesselAnalyticsCalc: json["vesselAnalyticsCalc"],
+//     cloudFilePath: json["cloudFilePath"],
+//     avgPower: json["avgPower"] != null ? json["avgPower"].toDouble() :0.0,
+//     fuelConsumption:  json["fuelConsumption"] != null ? json["fuelConsumption"] : 0.0,
+//   );
+// >>>>>>> Bug_loc_reports
 
   Map<String, dynamic> toJson() => {
         "_id": id,

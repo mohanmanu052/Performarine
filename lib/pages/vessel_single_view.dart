@@ -559,6 +559,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     });
                                 return;
                               } else {
+// <<<<<<< Report-code-merge
                                 if(Platform.isIOS){
                                   bool isBluetoothEnable =
                                   await FlutterBluePlus.instance.isOn;
@@ -573,6 +574,22 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     showBluetoothDialog(context);
                                   }
                                 }else {
+// =======
+//                                if(Platform.isIOS){
+//                                  bool isBluetoothEnable =
+//                                  await FlutterBluePlus.instance.isOn;
+
+//                                  if (isBluetoothEnable) {
+//                                    vessel!.add(widget.vessel!);
+//                                    await locationPermissions(
+//                                        widget.vessel!.vesselSize!,
+//                                        widget.vessel!.name!,
+//                                        widget.vessel!.id!);
+//                                  } else {
+//                                    showBluetoothDialog(context);
+//                                  }
+//                                }else {
+// >>>>>>> Bug_loc_reports
                                   bool isNDPermittedOne = await Permission
                                       .bluetoothConnect.isGranted;
 
