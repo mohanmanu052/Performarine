@@ -516,7 +516,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           width: displayWidth(context),
                           onTap: () async {
                             bool? isTripStarted =
-                            sharedPreferences!.getBool('trip_started');
+                                sharedPreferences!.getBool('trip_started');
 
                             if (isTripStarted != null) {
                               if (isTripStarted) {
@@ -533,7 +533,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             }
 
                             bool isLocationPermitted =
-                            await Permission.locationAlways.isGranted;
+                                await Permission.locationAlways.isGranted;
 
                             if (isLocationPermitted) {
                               bool isNDPermDenied = await Permission
@@ -548,7 +548,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         isLocationDialogBox: false,
                                         text: 'Allow nearby devices',
                                         subText:
-                                        'Allow nearby devices to connect to the app',
+                                            'Allow nearby devices to connect to the app',
                                         buttonText: 'OK',
                                         buttonOnTap: () async {
                                           Get.back();
@@ -560,9 +560,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 return;
                               } else {
 // <<<<<<< Report-code-merge
-                                if(Platform.isIOS){
+                                if (Platform.isIOS) {
                                   bool isBluetoothEnable =
-                                  await FlutterBluePlus.instance.isOn;
+                                      await FlutterBluePlus.instance.isOn;
 
                                   if (isBluetoothEnable) {
                                     vessel!.add(widget.vessel!);
@@ -573,7 +573,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   } else {
                                     showBluetoothDialog(context);
                                   }
-                                }else {
+                                } else {
 // =======
 //                                if(Platform.isIOS){
 //                                  bool isBluetoothEnable =
@@ -595,7 +595,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                   if (isNDPermittedOne) {
                                     bool isBluetoothEnable =
-                                    await FlutterBluePlus.instance.isOn;
+                                        await FlutterBluePlus.instance.isOn;
 
                                     if (isBluetoothEnable) {
                                       vessel!.add(widget.vessel!);
@@ -614,7 +614,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         .bluetoothConnect.isGranted;
                                     if (isNDPermitted) {
                                       bool isBluetoothEnable =
-                                      await FlutterBluePlus.instance.isOn;
+                                          await FlutterBluePlus.instance.isOn;
 
                                       if (isBluetoothEnable) {
                                         vessel!.add(widget.vessel!);
@@ -627,7 +627,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       }
                                     } else {
                                       if (await Permission
-                                          .bluetoothConnect.isDenied ||
+                                              .bluetoothConnect.isDenied ||
                                           await Permission.bluetoothConnect
                                               .isPermanentlyDenied) {
                                         showDialog(
@@ -637,7 +637,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 isLocationDialogBox: false,
                                                 text: 'Allow nearby devices',
                                                 subText:
-                                                'Allow nearby devices to connect to the app',
+                                                    'Allow nearby devices to connect to the app',
                                                 buttonText: 'OK',
                                                 buttonOnTap: () async {
                                                   Get.back();
@@ -651,11 +651,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   }
                                 }
                               }
-
                             } else {
                               /// WIU
                               bool isWIULocationPermitted =
-                              await Permission.locationWhenInUse.isGranted;
+                                  await Permission.locationWhenInUse.isGranted;
 
                               if (!isWIULocationPermitted) {
                                 await Utils.getLocationPermission(
@@ -665,7 +664,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     isLocationDialogBoxOpen = true;
                                   });*/
                               bool isLocationPermitted =
-                              await Permission.locationAlways.isGranted;
+                                  await Permission.locationAlways.isGranted;
                               if (isLocationPermitted) {
                                 bool isNDPermDenied = await Permission
                                     .bluetoothConnect.isPermanentlyDenied;
@@ -678,7 +677,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           isLocationDialogBox: false,
                                           text: 'Allow nearby devices',
                                           subText:
-                                          'Allow nearby devices to connect to the app',
+                                              'Allow nearby devices to connect to the app',
                                           buttonText: 'OK',
                                           buttonOnTap: () async {
                                             Get.back();
@@ -694,7 +693,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                   if (isNDPermitted) {
                                     bool isBluetoothEnable =
-                                    await FlutterBluePlus.instance.isOn;
+                                        await FlutterBluePlus.instance.isOn;
 
                                     if (isBluetoothEnable) {
                                       vessel!.add(widget.vessel!);
@@ -711,7 +710,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         .bluetoothConnect.isGranted;
                                     if (isNDPermitted) {
                                       bool isBluetoothEnable =
-                                      await FlutterBluePlus.instance.isOn;
+                                          await FlutterBluePlus.instance.isOn;
 
                                       if (isBluetoothEnable) {
                                         vessel!.add(widget.vessel!);
@@ -729,8 +728,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 if (Platform.isIOS) {
                                   await Permission.locationAlways.request();
                                   bool isLocationAlwaysPermitted =
-                                  await Permission.locationAlways.isGranted;
-
+                                      await Permission.locationAlways.isGranted;
 
                                   Utils.customPrint(
                                       'IOS PERMISSION GIVEN OUTSIDE');
@@ -744,7 +742,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         widget.vessel!.name!,
                                         widget.vessel!.id!);
                                   }
-                                }else{
+                                } else {
                                   if (!isLocationDialogBoxOpen) {
                                     Utils.customPrint("ELSE CONDITION");
 
@@ -755,9 +753,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           return LocationPermissionCustomDialog(
                                             isLocationDialogBox: true,
                                             text:
-                                            'Always Allow Access to “Location”',
+                                                'Always Allow Access to “Location”',
                                             subText:
-                                            "To track your trip while you use other apps we need background access to your location",
+                                                "To track your trip while you use other apps we need background access to your location",
                                             buttonText: 'Ok',
                                             buttonOnTap: () async {
                                               Get.back();
@@ -770,7 +768,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     });
                                   }
                                 }
-
                               }
                             }
                           }),
@@ -2211,6 +2208,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     service.invoke(
         'tripId', {'tripId': getTripId, 'vesselName': widget.vessel!.name});
+
+    // service.invoke("setAsForeground");
 
     service.invoke("onStartTrip");
 

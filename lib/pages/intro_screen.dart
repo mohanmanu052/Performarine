@@ -319,27 +319,29 @@ class _IntroScreenState extends State<IntroScreen> {
 
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
-      if (isCalledFromNoti == null) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomePage(tripData: tripData ?? [])),
-            ModalRoute.withName(""));
-      } else if (!isCalledFromNoti) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomePage(tripData: tripData ?? [])),
-            ModalRoute.withName(""));
-      } else {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TripAnalyticsScreen(
-                    tripId: tripData![0],
-                    vesselId: tripData[1],
-                    tripIsRunningOrNot: isTripStarted)),
-            ModalRoute.withName(""));
+      if (mounted) {
+        if (isCalledFromNoti == null) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomePage(tripData: tripData ?? [])),
+              ModalRoute.withName(""));
+        } else if (!isCalledFromNoti) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomePage(tripData: tripData ?? [])),
+              ModalRoute.withName(""));
+        } else {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TripAnalyticsScreen(
+                      tripId: tripData![0],
+                      vesselId: tripData[1],
+                      tripIsRunningOrNot: isTripStarted)),
+              ModalRoute.withName(""));
+        }
       }
     } else {
       if (isServiceRunning) {

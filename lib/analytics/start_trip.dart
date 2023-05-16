@@ -82,11 +82,11 @@ class StartTrip {
     });
 
     bool gyroscopeAvailable =
-    await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
+        await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
     bool accelerometerAvailable =
-    await s.SensorManager().isSensorAvailable(s.Sensors.ACCELEROMETER);
+        await s.SensorManager().isSensorAvailable(s.Sensors.ACCELEROMETER);
     bool magnetometerAvailable =
-    await s.SensorManager().isSensorAvailable(s.Sensors.MAGNETIC_FIELD);
+        await s.SensorManager().isSensorAvailable(s.Sensors.MAGNETIC_FIELD);
     bool userAccelerometerAvailable = await s.SensorManager()
         .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
 
@@ -95,7 +95,7 @@ class StartTrip {
     if (accelerometerAvailable) {
       _streamSubscriptions.add(
         accelerometerEvents.listen(
-              (AccelerometerEvent event) {
+          (AccelerometerEvent event) {
             _accelerometerValues = <double>[event.x, event.y, event.z];
           },
         ),
@@ -105,7 +105,7 @@ class StartTrip {
     if (gyroscopeAvailable) {
       _streamSubscriptions.add(
         gyroscopeEvents.listen(
-              (GyroscopeEvent event) {
+          (GyroscopeEvent event) {
             _gyroscopeValues = <double>[event.x, event.y, event.z];
           },
         ),
@@ -115,7 +115,7 @@ class StartTrip {
     if (userAccelerometerAvailable) {
       _streamSubscriptions.add(
         userAccelerometerEvents.listen(
-              (UserAccelerometerEvent event) {
+          (UserAccelerometerEvent event) {
             _userAccelerometerValues = <double>[event.x, event.y, event.z];
           },
         ),
@@ -125,7 +125,7 @@ class StartTrip {
     if (magnetometerAvailable) {
       _streamSubscriptions.add(
         magnetometerEvents.listen(
-              (MagnetometerEvent event) {
+          (MagnetometerEvent event) {
             _magnetometerValues = <double>[event.x, event.y, event.z];
           },
         ),
@@ -172,7 +172,7 @@ class StartTrip {
         // to get values in seconds (we are executing value every miliseconds)
         if (Platform.isAndroid) {
           finalTripDuration =
-          timer.tick % 5 == 0 ? (timer.tick * 300) : finalTripDuration;
+              timer.tick % 5 == 0 ? (timer.tick * 300) : finalTripDuration;
         } else {
           print('1 SEC DUR');
           finalTripDuration = finalTripDuration + 1000;
@@ -190,13 +190,13 @@ class StartTrip {
 
         /// DURATION 00:00:00
         String tripDurationForStorage =
-        Utils.calculateTripDuration((finalTripDuration / 1000).toInt());
+            Utils.calculateTripDuration((finalTripDuration / 1000).toInt());
 
         /// DISTANCE
         finalTripDistance =
-        finalTripDistance < tripDistance ? tripDistance : finalTripDistance;
+            finalTripDistance < tripDistance ? tripDistance : finalTripDistance;
         String tripDistanceForStorage =
-        Calculation().calculateDistance(finalTripDistance);
+            Calculation().calculateDistance(finalTripDistance);
 
         print('FINAL TRIP DIST: $tripDistanceForStorage');
 
@@ -308,13 +308,13 @@ class StartTrip {
               String location =
                   '$latitude $longitude ${accuracy.toStringAsFixed(3)} ${altitide.toStringAsFixed(3)} $heading $speed $speedAccuracy';
               String gps =
-              CreateTrip().convertLocationToString('GPS', location, tripId);
+                  CreateTrip().convertLocationToString('GPS', location, tripId);
 
               String finalString = '';
 
               finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
 
-              file.writeAsString('$finalString\n', mode: FileMode.append);
+              await file.writeAsString('$finalString\n', mode: FileMode.append);
               // lprFile.writeAsString('$finalString\n', mode: FileMode.append);
               //lprFile.writeAsString('$finalString\n', mode: FileMode.append);
 
@@ -326,15 +326,15 @@ class StartTrip {
           flutterLocalNotificationsPlugin
               .show(
             889,
-            'Performarine',
+            'PerforMarine',
             'Trip is in progress',
             /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
             NotificationDetails(
                 iOS: DarwinNotificationDetails(
-                  presentSound: presentNoti,
-                  presentAlert: presentNoti,
-                  subtitle: '',
-                )),
+              presentSound: presentNoti,
+              presentAlert: presentNoti,
+              subtitle: '',
+            )),
           )
               .catchError((onError) {
             print('IOS NOTI ERROR: $onError');
@@ -361,7 +361,7 @@ class StartTrip {
 
           /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
           /// Now File Size is 200000
-          if (fileSize >= 200000/* && lprFileSize >= 200000*/) {
+          if (fileSize >= 200000 /* && lprFileSize >= 200000*/) {
             Utils.customPrint('STOPPED WRITING');
             Utils.customPrint('CREATING NEW FILE');
             // if (timer != null) timer.cancel();
@@ -394,7 +394,7 @@ class StartTrip {
 
             String location = '$latitude $longitude';
             String gps =
-            CreateTrip().convertLocationToString('GPS', location, tripId);
+                CreateTrip().convertLocationToString('GPS', location, tripId);
 
             String finalString = '';
 
