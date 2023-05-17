@@ -34,7 +34,10 @@ class CommonProvider with ChangeNotifier {
   CommonModel? commonModel;
   UploadTripModel? uploadTripModel;
   int tripsCount = 0;
-  bool tripStatus = false, isTripUploading = false, exceptionOccurred = false;
+  bool tripStatus = false,
+      isTripUploading = false,
+      exceptionOccurred = false,
+      internetError = false;
   Future<List<Trip>>? getTripsByIdFuture;
   GetUserConfigModel? getUserConfigModel;
   ReportModel? reportModel;
@@ -176,15 +179,21 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  updateConnectionCloseStatus(bool value) {
+    internetError = value;
+    notifyListeners();
+  }
+
   Future<GetUserConfigModel?> getUserConfigData(
       BuildContext context,
       String userId,
       String accessToken,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+      GlobalKey<ScaffoldState> scaffoldKey,
+      VoidCallback onError) async {
     getUserConfigModel = GetUserConfigModel();
 
     getUserConfigModel = await GetUserConfigApiProvider()
-        .getUserConfigData(context, userId, accessToken, scaffoldKey);
+        .getUserConfigData(context, userId, accessToken, scaffoldKey, onError);
     notifyListeners();
 
     return getUserConfigModel;
@@ -203,22 +212,23 @@ class CommonProvider with ChangeNotifier {
       String? token,
       List<String> selectedTripId,
       BuildContext context,
-      GlobalKey<ScaffoldState> scaffoldKey)async{
-
+      GlobalKey<ScaffoldState> scaffoldKey) async {
     reportModel = ReportModel();
-    reportModel = await ReportModuleProvider().reportData(startDate,endDate,caseType,vesselID, token, selectedTripId, context, scaffoldKey);
+    reportModel = await ReportModuleProvider().reportData(startDate, endDate,
+        caseType, vesselID, token, selectedTripId, context, scaffoldKey);
     notifyListeners();
     return reportModel;
   }
 
-  Future<TripList> tripListData(String vesselID,
-      BuildContext context,
-      String accessToken,
-      GlobalKey<ScaffoldState> scaffoldKey,
-      ) async {
+  Future<TripList> tripListData(
+    String vesselID,
+    BuildContext context,
+    String accessToken,
+    GlobalKey<ScaffoldState> scaffoldKey,
+  ) async {
     tripListModel = TripList();
     tripListModel = await TripListApiProvider()
-        .tripListData(vesselID,context, accessToken, scaffoldKey);
+        .tripListData(vesselID, context, accessToken, scaffoldKey);
     notifyListeners();
     return tripListModel!;
   }

@@ -21,7 +21,8 @@ class GetUserConfigApiProvider with ChangeNotifier {
       BuildContext context,
       String userId,
       String accessToken,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+      GlobalKey<ScaffoldState> scaffoldKey,
+      VoidCallback onError) async {
     commonProvider = context.read<CommonProvider>();
 
     commonProvider!.updateExceptionOccurredValue(false);
@@ -168,6 +169,10 @@ class GetUserConfigApiProvider with ChangeNotifier {
       Future.delayed(Duration(seconds: 3), () {
         Navigator.of(context).pop();
       });
+
+      onError.call();
+
+      commonProvider!.updateConnectionCloseStatus(false);
 
       Utils.customPrint('error caught login:- $exception \n $s');
 
