@@ -115,7 +115,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   List<String>? selectedTripIdList = [];
 
-  bool? isTripIdListLoading = false;
+  bool? isTripIdListLoading = true;
 
   bool isExpandedTile = false;
 
@@ -511,12 +511,17 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 //   ));
                 // }
 
-                avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                  // color: barsColor[i],
-                  dataSource: triSpeedList,
-                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                  yValueMapper: (TripModel tripData, _) => null,
-                  /*  onPointTap: (ChartPointDetails args)  {
+                if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
+                  avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                    // color: barsColor[i],
+                    dataSource: triSpeedList,
+                    xValueMapper: (TripModel tripData, _) =>
+                        triSpeedList[i].date,
+                    yValueMapper: (TripModel tripData, _) =>
+                        triSpeedList[i].tripsByDate![j].avgSpeed! > 0
+                            ? triSpeedList[i].tripsByDate![j].avgSpeed!
+                            : null,
+                    /*  onPointTap: (ChartPointDetails args)  {
                     if (mounted) {
                       Future.delayed(Duration(seconds: 1), () async{
                           selectedIndex = await triSpeedList[i].tripsByDate![j].id!;
@@ -525,18 +530,24 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       //await updateTripId(triSpeedList[i].tripsByDate![j].id!);
                     }
                   },*/
-                  name: 'Avg Speed',
-                  dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.1,
-                ));
-                fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                  // color: barsColor[i],
-                  dataSource: triSpeedList,
-                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                  yValueMapper: (TripModel tripData, _) =>
+                    name: 'Avg Speed',
+                    dataLabelSettings: DataLabelSettings(isVisible: false),
+                    spacing: 0.1,
+                  ));
+                }
+
+                if (triSpeedList[i].tripsByDate![j].fuelConsumption! > 0) {
+                  fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                    // color: barsColor[i],
+                    dataSource: triSpeedList,
+                    xValueMapper: (TripModel tripData, _) =>
+                        triSpeedList[i].date,
+                    yValueMapper: (TripModel tripData, _) =>
 // <<<<<<< Report-code-merge
-                      triSpeedList[i].tripsByDate![j].fuelConsumption,
-                  /*   onPointTap: (ChartPointDetails args) {
+                        triSpeedList[i].tripsByDate![j].fuelConsumption! > 0
+                            ? triSpeedList[i].tripsByDate![j].fuelConsumption!
+                            : null,
+                    /*   onPointTap: (ChartPointDetails args) {
                     if (mounted) {
                       // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
                       setState(() async {
@@ -549,17 +560,24 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 // =======
 //                       triSpeedList[i].tripsByDate![j].fuelConsumption,
 // >>>>>>> Bug_loc_reports
-                  name: 'Fuel Usage',
-                  dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.1,
-                ));
-                powerUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                  // color: barsColor[i],
-                  dataSource: triSpeedList,
-                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                  yValueMapper: (TripModel tripData, _) =>
-                      triSpeedList[i].tripsByDate![j].avgPower,
-                  /*  onPointTap: (ChartPointDetails args) {
+                    name: 'Fuel Usage',
+                    dataLabelSettings: DataLabelSettings(isVisible: false),
+                    spacing: 0.1,
+                  ));
+                }
+
+                if (triSpeedList[i].tripsByDate![j].avgPower! > 0) {
+                  powerUsageColumnSeriesData
+                      .add(ColumnSeries<TripModel, String>(
+                    // color: barsColor[i],
+                    dataSource: triSpeedList,
+                    xValueMapper: (TripModel tripData, _) =>
+                        triSpeedList[i].date,
+                    yValueMapper: (TripModel tripData, _) =>
+                        triSpeedList[i].tripsByDate![j].avgPower! > 0
+                            ? triSpeedList[i].tripsByDate![j].avgPower!
+                            : null,
+                    /*  onPointTap: (ChartPointDetails args) {
                     if (mounted) {
                       // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
                       setState(() async {
@@ -569,10 +587,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       });
                     }
                   }, */
-                  name: 'Power Usage',
-                  dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.1,
-                ));
+                    name: 'Power Usage',
+                    dataLabelSettings: DataLabelSettings(isVisible: false),
+                    spacing: 0.1,
+                  ));
+                }
               }
             }
 //
@@ -2226,7 +2245,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       // physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       child: Container(
-        width: displayWidth(context) * 3.2,
+        width: displayWidth(context) * 2.8,
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
           //tooltipBehavior: CustomTooltipBehavior(),
@@ -2375,7 +2394,15 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         child: SfCartesianChart(
           palette: barsColor,
           tooltipBehavior: tooltipBehavior,
-          primaryXAxis: CategoryAxis(),
+          primaryXAxis: CategoryAxis(
+              autoScrollingMode: AutoScrollingMode.end,
+              labelAlignment: LabelAlignment.center,
+              labelStyle: TextStyle(
+                color: Colors.black,
+                fontSize: displayWidth(context) * 0.034,
+                fontWeight: FontWeight.w500,
+                fontFamily: poppins,
+              )),
           primaryYAxis: NumericAxis(
               // interval: 5,
               axisLine: AxisLine(width: 2),
@@ -2407,7 +2434,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     fontWeight: FontWeight.w500,
                     fontFamily: poppins,
                   ),
-                  dashArray: <double>[3, 3],
+                  dashArray: <double>[4, 8],
                   horizontalTextAlignment: TextAnchor.start,
                 ),
               ]),
@@ -2499,7 +2526,15 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         child: SfCartesianChart(
           palette: barsColor,
           tooltipBehavior: tooltipBehavior,
-          primaryXAxis: CategoryAxis(),
+          primaryXAxis: CategoryAxis(
+              autoScrollingMode: AutoScrollingMode.end,
+              labelAlignment: LabelAlignment.center,
+              labelStyle: TextStyle(
+                color: Colors.black,
+                fontSize: displayWidth(context) * 0.034,
+                fontWeight: FontWeight.w500,
+                fontFamily: poppins,
+              )),
           primaryYAxis: NumericAxis(
               labelFormat: '{value} gal',
               // interval: 5,
@@ -2532,7 +2567,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       fontWeight: FontWeight.w500,
                       fontFamily: poppins,
                     ),
-                    dashArray: <double>[3, 3],
+                    dashArray: <double>[4, 8],
                     horizontalTextAlignment: TextAnchor.start),
               ]),
           series: fuelUsageColumnSeriesData,
@@ -2623,7 +2658,15 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         child: SfCartesianChart(
           palette: barsColor,
           tooltipBehavior: tooltipBehavior,
-          primaryXAxis: CategoryAxis(),
+          primaryXAxis: CategoryAxis(
+              autoScrollingMode: AutoScrollingMode.end,
+              labelAlignment: LabelAlignment.center,
+              labelStyle: TextStyle(
+                color: Colors.black,
+                fontSize: displayWidth(context) * 0.034,
+                fontWeight: FontWeight.w500,
+                fontFamily: poppins,
+              )),
           primaryYAxis: NumericAxis(
               // interval: 5,
               axisLine: AxisLine(width: 2),
@@ -2655,7 +2698,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       fontWeight: FontWeight.w500,
                       fontFamily: poppins,
                     ),
-                    dashArray: <double>[3, 3],
+                    dashArray: <double>[4, 8],
                     horizontalTextAlignment: TextAnchor.start),
               ]),
           series: powerUsageColumnSeriesData,
