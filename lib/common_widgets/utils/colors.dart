@@ -23,6 +23,7 @@ const reportTabColor = Color(0xFFC5FFBF);
 const tripColumnBarColor = Color(0xFFF9AF75);
 const tripColumnBar1Color = Color(0xFFBFF2B9);
 const tableHeaderColor = Color(0xFF9097BC);
+const commonBackgroundColor = Color(0xFFF3FFFB);
 
 Map<int, Color> materialPrimaryColor = {
   50: Color(0x1042B5BF),

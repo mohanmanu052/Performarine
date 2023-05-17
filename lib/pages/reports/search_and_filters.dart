@@ -424,15 +424,23 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 //               for(int j=0; j < triSpeedList[i].tripsByDate!.length; j++){
 //                 print("trip duration data is: ${triSpeedList[i].tripsByDate![j].id}");
 // >>>>>>> Bug_loc_reports
-                durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                  // color: barsColor[i],
-                  // pointColorMapper: barsColor,
+                if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
+                  durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                    // color: barsColor[i],
+                    // pointColorMapper: barsColor,
+                    //width: 0.9,
 
-                  dataSource: triSpeedList,
-                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                  yValueMapper: (TripModel tripData, _) =>
-                      duration(triSpeedList[i].tripsByDate![j].duration!),
-                  /* onPointTap: (ChartPointDetails args) {
+                    dataSource: triSpeedList,
+                    xValueMapper: (TripModel tripData, _) =>
+                        duration(triSpeedList[i].tripsByDate![j].duration!) > 0
+                            ? triSpeedList[i].date
+                            : null,
+                    yValueMapper: (TripModel tripData, _) =>
+                        duration(triSpeedList[i].tripsByDate![j].duration!) > 0
+                            ? duration(
+                                triSpeedList[i].tripsByDate![j].duration!)
+                            : null,
+                    /* onPointTap: (ChartPointDetails args) {
                     if (mounted) {
                       // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
                       setState(() async {
@@ -442,17 +450,72 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       });
                     }
                   }, */
-                  name: 'Duration',
-                  dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.2,
-                ));
+                    name: 'Duration',
+                    emptyPointSettings:
+                        EmptyPointSettings(mode: EmptyPointMode.drop),
+                    dataLabelSettings: DataLabelSettings(isVisible: false),
+                    spacing: 0.1,
+                  ));
+                }
+
+//                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
+//                   durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+//                     // color: barsColor[i],
+//                     // pointColorMapper: barsColor,
+//                     //width: 0.9,
+//
+//                     dataSource: triSpeedList,
+//                     xValueMapper: (TripModel tripData, _) =>
+//                         triSpeedList[i].date,
+//                     yValueMapper: (TripModel tripData, _) =>
+//                         duration(triSpeedList[i].tripsByDate![j].duration!),
+//                     /* onPointTap: (ChartPointDetails args) {
+//                     if (mounted) {
+//                       // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
+//                       setState(() async {
+//                         selectedIndex =
+//                         await triSpeedList[i].tripsByDate![j].id!;
+//                         print("selected index: $selectedIndex");
+//                       });
+//                     }
+//                   }, */
+//                     name: 'Duration',
+//                     dataLabelSettings: DataLabelSettings(isVisible: false),
+//                     spacing: 0.1,
+//                   ));
+//                 }
+                // else {
+                //   durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                //     // color: barsColor[i],
+                //     // pointColorMapper: barsColor,
+                //     //width: 0.9,
+                //
+                //     dataSource: triSpeedList,
+                //     xValueMapper: (TripModel tripData, _) =>
+                //         triSpeedList[i].date,
+                //     yValueMapper: (TripModel tripData, _) =>
+                //         duration(triSpeedList[i].tripsByDate![j].duration!),
+                //     /* onPointTap: (ChartPointDetails args) {
+                //     if (mounted) {
+                //       // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
+                //       setState(() async {
+                //         selectedIndex =
+                //         await triSpeedList[i].tripsByDate![j].id!;
+                //         print("selected index: $selectedIndex");
+                //       });
+                //     }
+                //   }, */
+                //     name: 'Duration',
+                //     dataLabelSettings: DataLabelSettings(isVisible: false),
+                //     spacing: 0.1,
+                //   ));
+                // }
 
                 avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
                   // color: barsColor[i],
                   dataSource: triSpeedList,
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                  yValueMapper: (TripModel tripData, _) =>
-                      triSpeedList[i].tripsByDate![j].avgSpeed,
+                  yValueMapper: (TripModel tripData, _) => null,
                   /*  onPointTap: (ChartPointDetails args)  {
                     if (mounted) {
                       Future.delayed(Duration(seconds: 1), () async{
@@ -464,7 +527,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   },*/
                   name: 'Avg Speed',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.4,
+                  spacing: 0.1,
                 ));
                 fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
                   // color: barsColor[i],
@@ -488,7 +551,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 // >>>>>>> Bug_loc_reports
                   name: 'Fuel Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.2,
+                  spacing: 0.1,
                 ));
                 powerUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
                   // color: barsColor[i],
@@ -508,7 +571,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   }, */
                   name: 'Power Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.2,
+                  spacing: 0.1,
                 ));
               }
             }
@@ -714,6 +777,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 print(
                     "trip duration data is: ${triSpeedList[i].tripsByDate![j].id}");
                 durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  width: 0.9,
                   color: barsColor[j],
                   dataSource: triSpeedList,
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
@@ -721,7 +785,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       triSpeedList[i].tripsByDate![j].duration.toString()),
                   name: 'Duration',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.2,
+                  spacing: 0.1,
                 ));
                 avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
                   color: barsColor[j],
@@ -731,7 +795,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       triSpeedList[i].tripsByDate![j].avgSpeed,
                   name: 'Avg Speed',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.2,
+                  spacing: 0.1,
                 ));
                 fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
                   color: barsColor[j],
@@ -741,7 +805,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       triSpeedList[i].tripsByDate![j].fuelConsumption,
                   name: 'Fuel Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.2,
+                  spacing: 0.1,
                 ));
                 powerUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
                   color: barsColor[j],
@@ -751,7 +815,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       triSpeedList[i].tripsByDate![j].avgPower,
                   name: 'Power Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.2,
+                  spacing: 0.1,
                 ));
               }
             }
@@ -857,8 +921,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           parts[2],
         ));
     int totalMinutes = dateTime.hour * 60 + dateTime.minute;
-    print(totalMinutes);
-    return totalMinutes;
+    print('TOTAL MIN: $totalMinutes');
+    return double.parse('$totalMinutes.${parts[2]}');
   }
 
   dynamic dateWithZeros(String timesString) {
@@ -2162,33 +2226,61 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       // physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       child: Container(
-        width: displayWidth(context) * 2.8,
+        width: displayWidth(context) * 3.2,
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
           //tooltipBehavior: CustomTooltipBehavior(),
           palette: barsColor,
+
           // borderWidth: 6,
           tooltipBehavior: tooltipBehavior,
           enableSideBySideSeriesPlacement: true,
-          primaryXAxis: CategoryAxis(autoScrollingMode: AutoScrollingMode.end),
+          primaryXAxis: CategoryAxis(
+              autoScrollingMode: AutoScrollingMode.end,
+              labelAlignment: LabelAlignment.center,
+              labelStyle: TextStyle(
+                color: Colors.black,
+                fontSize: displayWidth(context) * 0.034,
+                fontWeight: FontWeight.w500,
+                fontFamily: poppins,
+              )),
           primaryYAxis: NumericAxis(
               // interval: 5,
 
-              axisLine: AxisLine(width: 2),
-              title: AxisTitle(text: 'Minutes'),
+              axisLine: AxisLine(
+                width: 0,
+              ),
+              title: AxisTitle(
+                  text: 'Minutes',
+                  textStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: displayWidth(context) * 0.028,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: poppins,
+                  )),
               majorTickLines: MajorTickLines(width: 0),
               minorTickLines: MinorTickLines(width: 0),
-              labelStyle: TextStyle(color: Colors.grey),
+              labelStyle: TextStyle(
+                color: Colors.black,
+                fontSize: displayWidth(context) * 0.034,
+                fontWeight: FontWeight.w500,
+                fontFamily: poppins,
+              ),
               plotBands: [
                 PlotBand(
-                    text: 'avg ${avgDuration}min',
+                    text: 'avg ${avgDuration} min',
                     isVisible: true,
                     start: avgDuration,
                     end: avgDuration,
                     borderWidth: 2,
-                    borderColor: Colors.grey,
-                    textStyle: TextStyle(color: Colors.black),
-                    dashArray: <double>[3, 3],
+                    borderColor: Colors.grey.shade400,
+                    textStyle: TextStyle(
+                      color: Colors.black,
+                      fontSize: displayWidth(context) * 0.028,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: poppins,
+                    ),
+                    dashArray: <double>[4, 8],
                     horizontalTextAlignment: TextAnchor.start),
               ]),
           series: durationColumnSeriesData,
@@ -2287,7 +2379,20 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           primaryYAxis: NumericAxis(
               // interval: 5,
               axisLine: AxisLine(width: 2),
-              title: AxisTitle(text: 'Knots'),
+              title: AxisTitle(
+                  text: 'Knots',
+                  textStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: displayWidth(context) * 0.028,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: poppins,
+                  )),
+              labelStyle: TextStyle(
+                color: Colors.black,
+                fontSize: displayWidth(context) * 0.034,
+                fontWeight: FontWeight.w500,
+                fontFamily: poppins,
+              ),
               plotBands: <PlotBand>[
                 PlotBand(
                   text: 'avg ${avgSpeed}KT',
@@ -2296,7 +2401,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   end: avgSpeed,
                   borderWidth: 2,
                   borderColor: Colors.grey,
-                  textStyle: TextStyle(color: Colors.black, fontSize: 12),
+                  textStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: displayWidth(context) * 0.028,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: poppins,
+                  ),
                   dashArray: <double>[3, 3],
                   horizontalTextAlignment: TextAnchor.start,
                 ),
@@ -2394,7 +2504,20 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               labelFormat: '{value} gal',
               // interval: 5,
               axisLine: AxisLine(width: 2),
-              title: AxisTitle(text: 'Galance'),
+              title: AxisTitle(
+                  text: 'Galance',
+                  textStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: displayWidth(context) * 0.028,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: poppins,
+                  )),
+              labelStyle: TextStyle(
+                color: Colors.black,
+                fontSize: displayWidth(context) * 0.034,
+                fontWeight: FontWeight.w500,
+                fontFamily: poppins,
+              ),
               plotBands: [
                 PlotBand(
                     text: 'avg ${avgFuelConsumption}gal',
@@ -2403,7 +2526,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     end: avgFuelConsumption,
                     borderWidth: 2,
                     borderColor: Colors.grey,
-                    textStyle: TextStyle(color: Colors.black),
+                    textStyle: TextStyle(
+                      color: Colors.black,
+                      fontSize: displayWidth(context) * 0.028,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: poppins,
+                    ),
                     dashArray: <double>[3, 3],
                     horizontalTextAlignment: TextAnchor.start),
               ]),
@@ -2499,7 +2627,20 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           primaryYAxis: NumericAxis(
               // interval: 5,
               axisLine: AxisLine(width: 2),
-              title: AxisTitle(text: 'Wats'),
+              title: AxisTitle(
+                  text: 'Wats',
+                  textStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: displayWidth(context) * 0.028,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: poppins,
+                  )),
+              labelStyle: TextStyle(
+                color: Colors.black,
+                fontSize: displayWidth(context) * 0.034,
+                fontWeight: FontWeight.w500,
+                fontFamily: poppins,
+              ),
               plotBands: [
                 PlotBand(
                     text: 'avg ${avgPower.toStringAsFixed(2)}W',
@@ -2508,7 +2649,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     end: avgPower,
                     borderWidth: 2,
                     borderColor: Colors.grey,
-                    textStyle: TextStyle(color: Colors.black),
+                    textStyle: TextStyle(
+                      color: Colors.black,
+                      fontSize: displayWidth(context) * 0.028,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: poppins,
+                    ),
                     dashArray: <double>[3, 3],
                     horizontalTextAlignment: TextAnchor.start),
               ]),
@@ -2521,62 +2667,73 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   Widget? filterByDate(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        Column(
           children: [
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  isStartDate = true;
-                  selectDateOption = 1;
-                  isSelectStartDate = true;
-                });
-              },
-              child: Container(
-                //  color: dateBackgroundColor,
-                width: displayWidth(context) * 0.3,
-                height: displayWidth(context) * 0.14,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: dateBackgroundColor),
-                child: Padding(
-                  padding: EdgeInsets.all(6.0),
-                  child: Center(
-                    child: Text(
-                      "Start Date",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isStartDate = true;
+                      selectDateOption = 1;
+                      isSelectStartDate = true;
+                    });
+                  },
+                  child: Container(
+                    //  color: dateBackgroundColor,
+                    width: displayWidth(context) * 0.3,
+                    height: displayWidth(context) * 0.14,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: dateBackgroundColor),
+                    child: Padding(
+                      padding: EdgeInsets.all(6.0),
+                      child: Center(
+                        child: Text(
+                          "Start Date",
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w400),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isEndDate = true;
+                      selectDateOption = 2;
+                      isSelectEndDate = true;
+                    });
+                  },
+                  child: Container(
+                    //  color: dateBackgroundColor,
+                    width: displayWidth(context) * 0.3,
+                    height: displayWidth(context) * 0.14,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: dateBackgroundColor),
+                    child: Padding(
+                      padding: EdgeInsets.all(6.0),
+                      child: Center(
+                        child: Text(
+                          "End Date",
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  isEndDate = true;
-                  selectDateOption = 2;
-                  isSelectEndDate = true;
-                });
-              },
-              child: Container(
-                //  color: dateBackgroundColor,
-                width: displayWidth(context) * 0.3,
-                height: displayWidth(context) * 0.14,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: dateBackgroundColor),
-                child: Padding(
-                  padding: EdgeInsets.all(6.0),
-                  child: Center(
-                    child: Text(
-                      "End Date",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ),
-                ),
-              ),
+            SizedBox(
+              height: displayWidth(context) * 0.02,
+            ),
+            Text(
+              '${DateFormat('yyyy-MM-dd').format(selectedDateForStartDate)}  to  ${DateFormat('yyyy-MM-dd').format(selectedDateForEndDate)}',
+              style: TextStyle(fontSize: 14),
             )
           ],
         ),
@@ -2805,9 +2962,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               tripIdList!.length == 0
                   ? Container(
                       child: commonText(
-                          text: 'No Trips available',
-                          textSize: displayWidth(context) * 0.030,
-                          textColor: primaryColor))
+                        text: 'No Trips available',
+                        textSize: displayWidth(context) * 0.030,
+                        textColor: primaryColor,
+                      ),
+                    )
                   : ListView(
                       primary: false,
                       physics: NeverScrollableScrollPhysics(),
