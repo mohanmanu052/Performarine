@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 
 enum CheckboxType {
   Parent,
@@ -122,15 +123,27 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
       ),
       title: Text(
         label,
-        style: themeData.textTheme.labelLarge,
+        style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontFamily: inter,
+            fontSize: displayWidth(context) * 0.042,
+            color: blutoothDialogTxtColor),
       ),
       subtitle: Text(
         "$tripId",
-        style: themeData.textTheme.labelLarge,
+        style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontFamily: inter,
+            fontSize: displayWidth(context) * 0.032,
+            color: blutoothDialogTxtColor),
       ),
       trailing: Text(
         dateTime != null ? dateTime! : "",
-        style: themeData.textTheme.labelLarge,
+        style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontFamily: inter,
+            fontSize: displayWidth(context) * 0.032,
+            color: dateColor),
       ),
     );
 

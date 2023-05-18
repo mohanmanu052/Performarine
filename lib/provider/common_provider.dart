@@ -188,12 +188,11 @@ class CommonProvider with ChangeNotifier {
       BuildContext context,
       String userId,
       String accessToken,
-      GlobalKey<ScaffoldState> scaffoldKey,
-      VoidCallback onError) async {
+      GlobalKey<ScaffoldState> scaffoldKey) async {
     getUserConfigModel = GetUserConfigModel();
 
     getUserConfigModel = await GetUserConfigApiProvider()
-        .getUserConfigData(context, userId, accessToken, scaffoldKey, onError);
+        .getUserConfigData(context, userId, accessToken, scaffoldKey);
     notifyListeners();
 
     return getUserConfigModel;

@@ -299,7 +299,7 @@ class _SyncDataCloudToMobileScreenState
 
     commonProvider
         .getUserConfigData(context, commonProvider.loginModel!.userId!,
-            commonProvider.loginModel!.token!, scaffoldKey, () {})
+            commonProvider.loginModel!.token!, scaffoldKey)
         .then((value) async {
       if (value != null) {
         if (value.status!) {

@@ -21,8 +21,7 @@ class GetUserConfigApiProvider with ChangeNotifier {
       BuildContext context,
       String userId,
       String accessToken,
-      GlobalKey<ScaffoldState> scaffoldKey,
-      VoidCallback onError) async {
+      GlobalKey<ScaffoldState> scaffoldKey) async {
     commonProvider = context.read<CommonProvider>();
 
     commonProvider!.updateExceptionOccurredValue(false);
@@ -169,8 +168,6 @@ class GetUserConfigApiProvider with ChangeNotifier {
       Future.delayed(Duration(seconds: 3), () {
         Navigator.of(context).pop();
       });
-
-      onError.call();
 
       commonProvider!.updateConnectionCloseStatus(false);
 
