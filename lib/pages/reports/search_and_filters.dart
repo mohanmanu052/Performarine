@@ -956,6 +956,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   dynamic durationWithMilli(String timesString) {
     String time = timesString;
+    print('TIME STRING: $timesString');
     // Duration duration = Duration(
     //   hours: int.parse(time.split(':')[0]),
     //   minutes: int.parse(timeString.split(':')[1]),
