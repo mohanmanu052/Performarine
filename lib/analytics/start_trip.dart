@@ -751,7 +751,7 @@ class StartTrip {
     return;
   }
 
-  Future<void> startBGLocatorTrip() async {
+  Future<void> startBGLocatorTrip(String tripId) async {
     ReceivePort port = ReceivePort();
 
     if (IsolateNameServer.lookupPortByName(
