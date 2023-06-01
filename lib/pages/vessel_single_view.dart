@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/end_trip.dart';
+import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -33,6 +34,7 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../lpr_bluetooth_widget.dart';
@@ -57,6 +59,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   IosDeviceInfo? iosDeviceInfo;
   AndroidDeviceInfo? androidDeviceInfo;
+
+  Position? startTripPosition;
+  DateTime startDateTime = DateTime.now();
+  SharedPreferences? pref;
 
   bool isStartButton = false,
       isEndTripButton = false,
@@ -2206,12 +2212,161 @@ class VesselSingleViewState extends State<VesselSingleView> {
       Utils.customPrint('Future delayed duration Ended');
     });
 
-    service.invoke(
-        'tripId', {'tripId': getTripId, 'vesselName': widget.vessel!.name});
+    if (Platform.isAndroid) {
+      service.invoke(
+          'tripId', {'tripId': getTripId, 'vesselName': widget.vessel!.name});
 
-    // service.invoke("setAsForeground");
+      // service.invoke("setAsForeground");
 
-    service.invoke("onStartTrip");
+      service.invoke("onStartTrip");
+    } else {
+      await sharedPreferences!.setBool('trip_started', true);
+      await sharedPreferences!.setStringList('trip_data', [
+        getTripId,
+        widget.vessel!.id!,
+        widget.vessel!.name!,
+        selectedVesselWeight
+      ]);
+      startTripPosition = await Geolocator.getCurrentPosition();
+      startDateTime = DateTime.now();
+
+      // Position? endTripPosition;
+      pref = await SharedPreferences.getInstance();
+
+      await pref!.setBool('trip_started', true);
+      await pref!.setStringList('trip_data', [
+        getTripId,
+        widget.vessel!.id!,
+        widget.vessel!.name!,
+        selectedVesselWeight
+      ]);
+
+      await StartTrip().initIOSTrip();
+
+      // TODO Send sensor data to start trip for ios
+
+      gyroscopeAvailable =
+          await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
+      accelerometerAvailable =
+          await s.SensorManager().isSensorAvailable(s.Sensors.ACCELEROMETER);
+      magnetometerAvailable =
+          await s.SensorManager().isSensorAvailable(s.Sensors.MAGNETIC_FIELD);
+      userAccelerometerAvailable = await s.SensorManager()
+          .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
+
+      Position pos = await Geolocator.getCurrentPosition();
+
+      if (pos != null) {
+        await StartTrip().startIOSTrip2(
+          startDateTime,
+          //int.parse(event.content),
+          0,
+          startTripPosition!,
+          pos.latitude,
+          pos.longitude,
+          getTripId,
+          widget.vessel!.name!,
+          pos.speed,
+          pref!,
+          1,
+          gyroscopeAvailable!,
+          accelerometerAvailable!,
+          magnetometerAvailable!,
+          userAccelerometerAvailable!,
+          /*_accelerometerValues! == null ? [0.0] : _accelerometerValues!,
+          _gyroscopeValues! == null ? [0.0] : _gyroscopeValues!,
+          _userAccelerometerValues == null ? [0.0] : _userAccelerometerValues,
+          _magnetometerValues == null ? [0.0] : _magnetometerValues,*/
+        );
+      }
+
+      // await Future.delayed(const Duration(seconds: 2));
+      // Timer timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+      //   sec = sec++;
+      // });
+
+      // bg.BackgroundGeolocation.getCurrentPosition(
+      //     persist: true, // <-- do not persist this location
+      //     desiredAccuracy: 40, // <-- desire an accuracy of 40 meters or less
+      //     maximumAge: 10000, // <-- Up to 10s old is fine.
+      //     timeout: 30, // <-- wait 30s before giving up.
+      //     samples: 3, // <-- sample just 1 location
+      //     extras: {"getCurrentPosition": true}).then((bg.Location location) {
+      //   print('[getCurrentPosition] - $location');
+      // }).catchError((error) {
+      //   print('[getCurrentPosition] ERROR: $error');
+      // });
+
+      // callback(bg.State state) async {
+      //   print('[start] success: $state');
+      //   setState(() {
+      //     _enabled = state.enabled;
+      //     _isMoving = state.isMoving!;
+      //   });
+      // }
+
+      // bg.State state = await bg.BackgroundGeolocation.state;
+      // if (state.enabled) {
+      //   await bg.BackgroundGeolocation.start().then(callback);
+      //   // registerEventListeners();
+      //   // bg.BackgroundGeolocation.changePace(true).then((bool isMoving) {
+      //   //   print('[changePace] success $isMoving');
+      //   // }).catchError((e) {
+      //   //   print('[changePace] ERROR: ' + e.code.toString());
+      //   // });
+      // } else {
+      //   bg.BackgroundGeolocation.startGeofences().then(callback);
+      // }
+      //
+      // bg.BackgroundGeolocation.changePace(true).then((bool isMoving) {
+      //   print('[changePace] success $isMoving');
+      // }).catchError((e) {
+      //   print('[changePace] ERROR: ' + e.code.toString());
+      // });
+
+      // final result = await backgroundExecutor.runImmediatelyBackgroundTask(
+      //   callback: immediately,
+      //   cancellable: true,
+      //   withMessages: true,
+      // );
+      //
+      // result.connector?.messageStream.listen((event) {});
+      // backgroundExecutor.createConnector().messageStream.listen((event) async {
+      //   // if (!mounted) return;
+      //   // setState(() {
+      //   //   _message = 'Message from ${event.from}:\n${event.content}';
+      //   // });
+      //
+      //   debugPrint("USER ACC $userAccelerometerAvailable");
+      //   // Position endTripPosition = await Geolocator.getCurrentPosition();
+      //   //
+      //   // Utils.customPrint(endTripPosition == null
+      //   //     ? 'Unknown'
+      //   //     : 'END POS: ${endTripPosition.latitude.toString()}, ${endTripPosition.longitude.toString()}');
+      //
+      //   if (endTripPosition != null) {
+      //     await StartTrip().startIOSTrip2(
+      //         int.parse(event.content),
+      //         0,
+      //         startTripPosition,
+      //         endTripPosition!,
+      //         getTripId,
+      //         widget.vessel!.name!,
+      //         pref,
+      //         1,
+      //         gyroscopeAvailable,
+      //         accelerometerAvailable,
+      //         magnetometerAvailable,
+      //         userAccelerometerAvailable,
+      //         _accelerometerValues == null ? [0.0] : _accelerometerValues,
+      //         _gyroscopeValues == null ? [0.0] : _gyroscopeValues,
+      //         _userAccelerometerValues == null
+      //             ? [0.0]
+      //             : _userAccelerometerValues,
+      //         _magnetometerValues == null ? [0.0] : _magnetometerValues);
+      //   }
+      // });
+    }
 
     await sharedPreferences!.setBool('trip_started', true);
     await sharedPreferences!.setStringList('trip_data', [
