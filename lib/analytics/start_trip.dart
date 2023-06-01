@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
+import 'package:background_locator_2/location_dto.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -11,6 +14,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:performarine/analytics/calculation.dart';
 import 'package:performarine/analytics/get_file.dart';
+import 'package:performarine/analytics/location_service_repository.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
@@ -563,8 +567,8 @@ class StartTrip {
       // longitude = event.longitude;
       endTripLatitude = event.latitude;
       endTripLongitude = event.longitude;
-      speed = event.speed;
-      // Utils.customPrint('SPEED SPEED ${speed}');
+      speed = event.speed < 0 ? 0 : event.speed;
+      Utils.customPrint('SPEED SPEED 1212 ${speed}');
       // accuracy = event.accuracy;
       // altitide = event.altitude;
       // speedAccuracy = event.speedAccuracy;
@@ -655,7 +659,7 @@ class StartTrip {
     /// SPEED
     String tripSpeedForStorage = Calculation().calculateCurrentSpeed(speed);
 
-    print('FINAL TRIP SPEED: $tripSpeedForStorage');
+    print('FINAL TRIP SPEED: $tripSpeedForStorage}');
 
     /// AVG. SPEED
     String tripAvgSpeedForStorage =
@@ -669,10 +673,16 @@ class StartTrip {
 
     presentNoti = false;
 
-    // pref.setString('tripDistance', tripDistanceForStorage);
+    var num = double.parse(tripSpeedForStorage) < 0
+        ? 0.0
+        : double.parse(tripSpeedForStorage);
+
+    Utils.customPrint('SPEED SPEED SPEED 666: $num');
+
+    //pref.setString('tripDistance', tripDistanceForStorage);
     pref.setString('tripDuration', tripDurationForStorage);
     // To get values in Km/h
-    pref.setString('tripSpeed', tripSpeedForStorage);
+    pref.setString('tripSpeed', num.toString());
     pref.setString('tripAvgSpeed', tripAvgSpeedForStorage);
 
     String filePath = await GetFile().getFile(tripId, mobileFileName);
@@ -739,5 +749,249 @@ class StartTrip {
     }
 
     return;
+  }
+
+  Future<void> startBGLocatorTrip() async {
+    ReceivePort port = ReceivePort();
+
+    if (IsolateNameServer.lookupPortByName(
+            LocationServiceRepository.isolateName) !=
+        null) {
+      IsolateNameServer.removePortNameMapping(
+          LocationServiceRepository.isolateName);
+    }
+
+    IsolateNameServer.registerPortWithName(
+        port.sendPort, LocationServiceRepository.isolateName);
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    DateTime currentDateTime = DateTime.now();
+
+    Duration diff = currentDateTime.difference(DateTime.now());
+
+    int fileIndex = 0;
+
+    gyroscopeAvailable =
+        await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
+    accelerometerAvailable =
+        await s.SensorManager().isSensorAvailable(s.Sensors.ACCELEROMETER);
+    magnetometerAvailable =
+        await s.SensorManager().isSensorAvailable(s.Sensors.MAGNETIC_FIELD);
+    userAccelerometerAvailable = await s.SensorManager()
+        .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
+
+    print("INSIDE BG LOCATOR 2");
+    print("INSIDE BG LOCATOR 2: $gyroscopeAvailable");
+    print("INSIDE BG LOCATOR 2: $accelerometerAvailable");
+    print("INSIDE BG LOCATOR 2: $magnetometerAvailable");
+    print("INSIDE BG LOCATOR 2: $userAccelerometerAvailable");
+
+    if (accelerometerAvailable) {
+      accelerometerEvents.listen(
+        (AccelerometerEvent event) {
+          _accelerometerValues = <double>[event.x, event.y, event.z];
+        },
+      );
+    }
+
+    if (gyroscopeAvailable) {
+      gyroscopeEvents.listen(
+        (GyroscopeEvent event) {
+          _gyroscopeValues = <double>[event.x, event.y, event.z];
+        },
+      );
+    }
+
+    if (userAccelerometerAvailable) {
+      userAccelerometerEvents.listen(
+        (UserAccelerometerEvent event) {
+          _userAccelerometerValues = <double>[event.x, event.y, event.z];
+        },
+      );
+    }
+
+    if (magnetometerAvailable) {
+      magnetometerEvents.listen(
+        (MagnetometerEvent event) {
+          _magnetometerValues = <double>[event.x, event.y, event.z];
+        },
+      );
+    }
+    double endTripLatitude = 0.0;
+    double endTripLongitude = 0.0;
+    double finalTripDistance = 0.0;
+    double speed = 0.0;
+
+    String mobileFileName = 'mobile_$fileIndex.csv';
+    String lprFileName = 'lpr_$fileIndex.csv';
+
+    port.listen((dynamic data) async {
+      LocationDto? locationDto =
+          data != null ? LocationDto.fromJson(data) : null;
+      if (locationDto != null) {
+        endTripLatitude = locationDto.latitude;
+        endTripLongitude = locationDto.longitude;
+        speed = locationDto.speed < 0 ? 0 : locationDto.speed;
+        Utils.customPrint('SPEED SPEED 1212 ${speed}');
+
+        List<String> currentLocList =
+            pref.getStringList('current_loc_list') ?? [];
+
+        Position _currentPosition = Position(
+            latitude: locationDto.latitude,
+            longitude: locationDto.longitude,
+            timestamp: null,
+            accuracy: 0.0,
+            speed: 0.0,
+            speedAccuracy: 0.0,
+            heading: 0.0,
+            altitude: 0.0);
+
+        String currentPosStr =
+            [_currentPosition.latitude, _currentPosition.longitude].join(',');
+
+        currentLocList.add(currentPosStr);
+        pref.setStringList("current_loc_list", currentLocList);
+
+        if (currentLocList.length > 1) {
+          String previousPosStr =
+              currentLocList.elementAt(currentLocList.length - 2);
+          Position _previousPosition = Position(
+              latitude: double.parse(previousPosStr.split(',').first.trim()),
+              longitude: double.parse(previousPosStr.split(',').last.trim()),
+              timestamp: null,
+              accuracy: 0.0,
+              speed: 0.0,
+              speedAccuracy: 0.0,
+              heading: 0.0,
+              altitude: 0.0);
+
+          var _distanceBetweenLastTwoLocations = Geolocator.distanceBetween(
+            _previousPosition.latitude,
+            _previousPosition.longitude,
+            _currentPosition.latitude,
+            _currentPosition.longitude,
+          );
+
+          finalTripDistance += _distanceBetweenLastTwoLocations;
+          print('Total Distance: $finalTripDistance');
+          pref.setDouble('temp_trip_dist', finalTripDistance);
+          String tripDistanceForStorage =
+              Calculation().calculateDistance(finalTripDistance);
+
+          print('FINAL TRIP DIST: $tripDistanceForStorage');
+          print('FINAL TRIP DIST 2: $finalTripDistance');
+
+          pref.setString('tripDistance', tripDistanceForStorage);
+
+          int finalTripDuration = (diff.inMilliseconds);
+          print('FINAL TRIP DUR: $finalTripDuration');
+
+          /// DURATION 00:00:00
+          String tripDurationForStorage =
+              Utils.calculateTripDuration((finalTripDuration ~/ 1000).toInt());
+
+          /// DISTANCE
+          /*finalTripDistance =
+        finalTripDistance < tripDistance ? tripDistance : finalTripDistance;*/
+          // String tripDistanceForStorage =
+          //     Calculation().calculateDistance(finalTripDistance);
+
+          /// SPEED
+          String tripSpeedForStorage =
+              Calculation().calculateCurrentSpeed(speed);
+          print('FINAL TRIP SPEED: $tripSpeedForStorage}');
+
+          /// AVG. SPEED
+          String tripAvgSpeedForStorage = Calculation()
+              .calculateAvgSpeed(finalTripDistance, finalTripDuration);
+          // finalTripAvgSpeed = (((finalTripDistance / 1852) / (finalTripDuration / 1000)) * 1.944);
+
+          // Utils.customPrint('TRIP DISTANCE: $tripDistanceForStorage');
+          Utils.customPrint('TRIP DURATION: $tripDurationForStorage');
+          Utils.customPrint('TRIP SPEED 1212: $tripSpeedForStorage');
+          Utils.customPrint('AVG SPEED: $tripAvgSpeedForStorage');
+
+          var num = double.parse(tripSpeedForStorage) < 0
+              ? 0.0
+              : double.parse(tripSpeedForStorage);
+
+          Utils.customPrint('SPEED SPEED SPEED 666: $num');
+
+          //pref.setString('tripDistance', tripDistanceForStorage);
+          pref.setString('tripDuration', tripDurationForStorage);
+          // To get values in Km/h
+          pref.setString('tripSpeed', num.toString());
+          pref.setString('tripAvgSpeed', tripAvgSpeedForStorage);
+
+          String filePath = await GetFile().getFile(tripId, mobileFileName);
+          String lprFilePath = await GetFile().getFile(tripId, lprFileName);
+          // File mobileFile = File(filePath[0]);
+          // File lprFile = File(filePath[1]);
+          File file = File(filePath);
+          File lprFile = File(lprFilePath);
+          int fileSize = await GetFile().checkFileSize(file);
+          int lprFileSize = await GetFile().checkFileSize(lprFile);
+          //int mobileFileSize = await GetFile().checkFileSize(mobileFile);
+          //int lprFileSize = await GetFile().checkFileSize(mobileFile);
+
+          /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
+          /// Now File Size is 200000
+          if (fileSize >= 200000 && lprFileSize >= 200000) {
+            Utils.customPrint('STOPPED WRITING');
+            Utils.customPrint('CREATING NEW FILE');
+            // if (timer != null) timer.cancel();
+            // Utils.customPrint('TIMER STOPPED');
+            fileIndex = fileIndex + 1;
+            mobileFileName = 'mobile_$fileIndex.csv';
+            lprFileName = 'lpr_$fileIndex.csv';
+
+            /// STOP WRITING & CREATE NEW FILE
+          } else {
+            Utils.customPrint('WRITING');
+            String gyro = '', acc = '', mag = '', uacc = '';
+            //Utils.customPrint('LAT1 LONG1 $latitude $longitude');
+
+            gyro = CreateTrip().convertDataToString('GYRO',
+                gyroscopeAvailable ? _gyroscopeValues ?? [0.0] : [0.0], tripId);
+
+            acc = CreateTrip().convertDataToString(
+                'AAC',
+                accelerometerAvailable ? _accelerometerValues ?? [0.0] : [0.0],
+                tripId);
+
+            mag = CreateTrip().convertDataToString(
+                'MAG',
+                magnetometerAvailable ? _magnetometerValues ?? [0.0] : [0.0],
+                tripId);
+
+            uacc = CreateTrip().convertDataToString(
+                'UACC',
+                userAccelerometerAvailable
+                    ? _userAccelerometerValues ?? [0.0]
+                    : [0.0],
+                tripId);
+
+            String location = '${endTripLatitude} ${endTripLongitude}';
+            String gps =
+                CreateTrip().convertLocationToString('GPS', location, tripId);
+
+            String finalString = '';
+
+            finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
+
+            debugPrint(
+                'FILE WRITING CURRENT TIME ${Utils.getCurrentTZDateTime()}');
+            file.writeAsString('$finalString\n', mode: FileMode.append);
+            // file.writeAsString('$finalString\n -> $data', mode: FileMode.append);
+            //lprFile.writeAsString('$finalString\n', mode: FileMode.append);
+            //lprFile.writeAsString('$finalString\n', mode: FileMode.append);
+
+            Utils.customPrint('GPS $gps');
+          }
+        }
+      }
+    });
   }
 }

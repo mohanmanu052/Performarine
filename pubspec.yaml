@@ -71,6 +71,7 @@ dependencies:
   bluetooth_enable_fork: ^0.1.6
   table_calendar: ^3.0.0
   syncfusion_flutter_charts: ^21.2.3
+  background_locator_2: ^2.0.6
 
 
 dependency_overrides:

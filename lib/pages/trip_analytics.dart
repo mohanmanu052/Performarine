@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_background_executor/flutter_background_executor.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -62,8 +63,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   String tripDistance = '0.00';
   String tripDuration = '00:00:00';
-  String tripSpeed = '0.0';
-  String tripAvgSpeed = '0.0';
+  String tripSpeed = '0.1';
+  String tripAvgSpeed = '0.1';
 
   String? finalTripDuration, finalTripDistance, finalAvgSpeed;
 
@@ -160,20 +161,23 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       await sharedPreferences!.reload();
 
       durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-        print('##TDATA');
-        tripDistance = sharedPreferences!.getString('tripDistance')!;
+        print('##TDATA updated time delay from 1 sec to 400 MS by abhi');
+        tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
         //tripDuration = sharedPreferences!.getString('tripDuration')!;
-        tripSpeed = sharedPreferences!.getString('tripSpeed')!;
-        tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed')!;
+        tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
+        tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
+
+        debugPrint("TRIP ANALYTICS SPEED $tripSpeed");
+        debugPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
 
         var durationTime = DateTime.now().toUtc().difference(createdAtTime);
         // current date time.difference(createdAt);
         tripDuration = Utils.calculateTripDuration(
-            ((durationTime.inMilliseconds) / 1000).toInt());
+            ((durationTime.inMilliseconds) ~/ 1000).toInt());
         // tripDuration = durationTime.inMilliseconds.toString();
         // duration.inmiliseconds;
 
-        print('##TDATA 1212 : $tripDuration');
+        // print('##TDATA 1212 : $tripDuration');
 
         if (mounted)
           setState(() {
@@ -423,7 +427,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                           : '${tripData!.distance} ',
                                                       tripIsRunning
                                                           ? '$tripSpeed '
-                                                          : '${tripData!.speed}',
+                                                          : '${tripData!.speed} ',
                                                       tripIsRunning
                                                           ? '$tripAvgSpeed '
                                                           : '${tripData!.avgSpeed} ',
@@ -525,7 +529,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                         commonText(
                                                           context: context,
                                                           text:
-                                                              ': ${DateFormat('dd/MM/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
+                                                              ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
                                                           fontWeight:
                                                               FontWeight.w500,
                                                           textColor:
@@ -605,7 +609,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                 context:
                                                                     context,
                                                                 text:
-                                                                    ': ${DateFormat('dd/MM/yyyy').format(DateTime.parse(tripData!.updatedAt!))}',
+                                                                    ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.updatedAt!))}',
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -966,6 +970,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                     width:
                                                         displayWidth(context),
                                                     onTap: () async {
+                                                      //BgGeoTrip().endTrip();
+
                                                       Utils.customPrint(
                                                           "END TRIP CURRENT TIME ${DateTime.now()}");
 
@@ -980,22 +986,61 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                           isTripEnded = true;
                                                         });
                                                         Navigator.pop(context);
+
+                                                        // final currentTrip =
+                                                        //     await _databaseService
+                                                        //         .getTrip(widget
+                                                        //             .tripId!);
+
+                                                        // DateTime createdAtTime =
+                                                        //     DateTime.parse(
+                                                        //         currentTrip
+                                                        //             .createdAt!);
+
+                                                        // var durationTime =
+                                                        //     DateTime.now()
+                                                        //         .toUtc()
+                                                        //         .difference(
+                                                        //             createdAtTime);
+                                                        // current date time.difference(createdAt);
+                                                        // tripDuration = Utils
+                                                        //     .calculateTripDuration(
+                                                        //         ((durationTime
+                                                        //                     .inMilliseconds) /
+                                                        //                 1000)
+                                                        //             .toInt());
+
                                                         EndTrip().endTrip(
                                                             context: context,
                                                             scaffoldKey:
                                                                 scaffoldKey,
+                                                            duration:
+                                                                tripDuration,
+                                                            IOSAvgSpeed:
+                                                                tripAvgSpeed,
+                                                            IOSpeed: tripSpeed,
+                                                            IOStripDistance:
+                                                                tripDistance,
                                                             onEnded: () async {
                                                               setState(() {
                                                                 tripIsRunning =
                                                                     false;
                                                                 isTripEnded =
-                                                                    true;
+                                                                    false;
                                                               });
                                                               Trip tripDetails =
                                                                   await _databaseService
                                                                       .getTrip(
                                                                           tripData!
                                                                               .id!);
+                                                              debugPrint(
+                                                                  "abhi:${tripDetails.time}");
+                                                              debugPrint(
+                                                                  "abhi:${tripDuration}");
+                                                              debugPrint(
+                                                                  "abhi:${tripAvgSpeed}");
+                                                              debugPrint(
+                                                                  "abhi:${tripSpeed}");
                                                               setState(() {
                                                                 tripData =
                                                                     tripDetails;
@@ -1192,7 +1237,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                 context:
                                                                     context,
                                                                 text:
-                                                                    ': ${DateFormat('dd/MM/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
+                                                                    ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -1280,7 +1325,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                       context:
                                                                           context,
                                                                       text:
-                                                                          ': ${DateFormat('dd/MM/yyyy').format(DateTime.parse(tripData!.updatedAt!))}',
+                                                                          ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.updatedAt!))}',
                                                                       fontWeight:
                                                                           FontWeight
                                                                               .w500,
@@ -1670,11 +1715,21 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       iosDeviceInfo = await deviceDetails.iosInfo;
     }
 
-    String? tripDuration =
-        sharedPreferences!.getString("tripDuration") ?? '00:00:00';
-    String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
-    String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
-    String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
+    String tripDuration = '';
+    if (Platform.isAndroid) {
+      tripDuration = tripData.time ?? '00:00:00';
+    } else {
+      DateTime createdAtTime = DateTime.parse(tripData.createdAt!);
+      DateTime updatedAtTime = DateTime.parse(tripData.updatedAt!);
+
+      var durationTime = updatedAtTime.difference(createdAtTime);
+      tripDuration = Utils.calculateTripDuration(
+          ((durationTime.inMilliseconds) / 1000).toInt());
+    }
+
+    String? tripDistance = tripData.distance ?? '1';
+    String? tripSpeed = tripData.speed ?? '1';
+    String? tripAvgSpeed = tripData.avgSpeed ?? '1';
 
     var startPosition = tripData.startPosition!.split(",");
     var endPosition = tripData.endPosition!.split(",");

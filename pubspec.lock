@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.9.0"
+  background_locator_2:
+    dependency: "direct main"
+    description:
+      name: background_locator_2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.6"
   bluetooth_enable_fork:
     dependency: "direct main"
     description:

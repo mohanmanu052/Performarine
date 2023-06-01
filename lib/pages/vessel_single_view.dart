@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
+import 'package:background_locator_2/background_locator.dart';
+import 'package:background_locator_2/settings/ios_settings.dart';
+import 'package:background_locator_2/settings/android_settings.dart' as bglas;
+import 'package:background_locator_2/settings/locator_settings.dart' as bgls;
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -13,6 +17,8 @@ import 'package:get/get.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/end_trip.dart';
+import 'package:performarine/analytics/file_manager.dart';
+import 'package:performarine/analytics/location_callback_handler.dart';
 import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -488,6 +494,28 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     isTripEndedOrNot = true;
                                   });
 
+                                  List<String>? tripData = sharedPreferences!
+                                      .getStringList('trip_data');
+
+                                  String tripId = '';
+                                  if (tripData != null) {
+                                    tripId = tripData[0];
+                                  }
+
+                                  final currentTrip =
+                                      await _databaseService.getTrip(tripId);
+
+                                  DateTime createdAtTime =
+                                      DateTime.parse(currentTrip.createdAt!);
+
+                                  var durationTime = DateTime.now()
+                                      .toUtc()
+                                      .difference(createdAtTime);
+                                  String tripDuration =
+                                      Utils.calculateTripDuration(
+                                          ((durationTime.inMilliseconds) / 1000)
+                                              .toInt());
+
                                   Navigator.of(context).pop();
 
                                   Utils.customPrint(
@@ -496,6 +524,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   EndTrip().endTrip(
                                       context: context,
                                       scaffoldKey: scaffoldKey,
+                                      duration: tripDuration,
                                       onEnded: () async {
                                         Utils.customPrint('TRIPPPPPP ENDEDDD:');
                                         setState(() {
@@ -2227,6 +2256,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
         widget.vessel!.name!,
         selectedVesselWeight
       ]);
+
+      await initPlatformStateBGL();
+
+      StartTrip().startBGLocatorTrip();
+
+      await tripIsRunningOrNot();
+
+      Navigator.pop(bottomSheetContext);
+      return;
+
       startTripPosition = await Geolocator.getCurrentPosition();
       startDateTime = DateTime.now();
 
@@ -2379,6 +2418,44 @@ class VesselSingleViewState extends State<VesselSingleView> {
     await tripIsRunningOrNot();
 
     Navigator.pop(bottomSheetContext);
+  }
+
+  Future<void> initPlatformStateBGL() async {
+    print('Initializing...');
+    await BackgroundLocator.initialize();
+    String logStr = await FileManager.readLogFile();
+    print('Initialization done');
+    final _isRunning = await BackgroundLocator.isServiceRunning();
+    setState(() {
+      // isRunning = _isRunning;
+    });
+
+    Map<String, dynamic> data = {'countInit': 1};
+    return await BackgroundLocator.registerLocationUpdate(
+        LocationCallbackHandler.callback,
+        initCallback: LocationCallbackHandler.initCallback,
+        initDataCallback: data,
+        disposeCallback: LocationCallbackHandler.disposeCallback,
+        iosSettings: IOSSettings(
+            accuracy: bgls.LocationAccuracy.NAVIGATION,
+            distanceFilter: 0,
+            stopWithTerminate: true),
+        autoStop: false,
+        androidSettings: bglas.AndroidSettings(
+            accuracy: bgls.LocationAccuracy.NAVIGATION,
+            interval: 5,
+            distanceFilter: 0,
+            client: bglas.LocationClient.google,
+            androidNotificationSettings: bglas.AndroidNotificationSettings(
+                notificationChannelName: 'Location tracking',
+                notificationTitle: 'Start Location Tracking',
+                notificationMsg: 'Track location in background',
+                notificationBigMsg:
+                    'Background location is on to keep the app up-tp-date with your location. This is required for main features to work properly when the app is not running.',
+                notificationIconColor: Colors.grey,
+                notificationTapCallback:
+                    LocationCallbackHandler.notificationCallback)));
+    // print('Running ${isRunning.toString()}');
   }
 
   showDialogBox() {

@@ -7,6 +7,8 @@ PODS:
   - AppAuth/Core (1.6.2)
   - AppAuth/ExternalUserAgent (1.6.2):
     - AppAuth/Core
+  - background_locator_2 (0.0.1):
+    - Flutter
   - bluetooth_enable_fork (0.1.4):
     - Flutter
   - connectivity_plus (0.0.1):
@@ -235,6 +237,7 @@ PODS:
 
 DEPENDENCIES:
   - app_settings (from `.symlinks/plugins/app_settings/ios`)
+  - background_locator_2 (from `.symlinks/plugins/background_locator_2/ios`)
   - bluetooth_enable_fork (from `.symlinks/plugins/bluetooth_enable_fork/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -295,6 +298,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   app_settings:
     :path: ".symlinks/plugins/app_settings/ios"
+  background_locator_2:
+    :path: ".symlinks/plugins/background_locator_2/ios"
   bluetooth_enable_fork:
     :path: ".symlinks/plugins/bluetooth_enable_fork/ios"
   connectivity_plus:
@@ -349,6 +354,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   app_settings: d103828c9f5d515c4df9ee754dabd443f7cedcf3
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
+  background_locator_2: bc8a422343ab656d5bd98e08694c6f89fef20418
   bluetooth_enable_fork: 73b8ca6e67230a9baa04010cd5c1e824e00d2797
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
