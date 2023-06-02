@@ -186,8 +186,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                SearchAndFilters()),
+                                builder: (context) => SearchAndFilters()),
                           );
                         },
                         child: commonText(
@@ -386,13 +385,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       textSize: displayWidth(context) * 0.03,
                       textColor: Colors.black54,
                       fontWeight: FontWeight.w400),
-                  commonText(
+                  /* commonText(
                       text: 'Release Date - 23 Mar 2023',
                       //${DateFormat('dd MMM yyyy').format(DateTime.now())}
                       context: context,
                       textSize: displayWidth(context) * 0.03,
                       textColor: Colors.black54,
-                      fontWeight: FontWeight.w400),
+                      fontWeight: FontWeight.w400),*/
                 ],
               ),
             ),

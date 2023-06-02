@@ -2259,7 +2259,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
       await initPlatformStateBGL();
 
-      StartTrip().startBGLocatorTrip(getTripId);
+      StartTrip().startBGLocatorTrip(getTripId, DateTime.now());
 
       await tripIsRunningOrNot();
 

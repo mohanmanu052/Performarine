@@ -8,14 +8,14 @@ class Calculation {
   // 1.10/1852 = 0.000594 in (NM)
   //Link: https://www.google.com/search?q=meter+into+nautical+mile&oq=meter+into+nautical+mile&aqs=chrome..69i57j0i5i7i15i30j0i5i13i15i30j0i390l2.10685j0j9&sourceid=chrome&ie=UTF-8
   String calculateDistance(double distance) {
-    return (distance / 1852).toStringAsFixed(6);
+    return (distance / 1852).toStringAsFixed(2);
   }
 
   //Example (2.7) // speed in m/s
   // 2.7 * 1.944 = 5.2488 (KT)
   // Link: https://www.google.com/search?q=meter+into+nautical+mile&oq=meter+into+nautical+mile&aqs=chrome..69i57j0i5i7i15i30j0i5i13i15i30j0i390l2.10685j0j9&sourceid=chrome&ie=UTF-8
   String calculateCurrentSpeed(double speed) {
-    return (speed * 1.944).toStringAsFixed(6); // Knots
+    return (speed * 1.944).toStringAsFixed(1); // Knots
   }
 
   //Example calculateAvgSpeed // distance in meters - 0.09, duration in seconds - 10 min= 600(s)
@@ -28,7 +28,7 @@ class Calculation {
     } else if (value.isInfinite) {
       return '0.0';
     } else {
-      return value.toStringAsFixed(6);
+      return value.toStringAsFixed(1);
     }
   }
 }

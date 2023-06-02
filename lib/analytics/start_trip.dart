@@ -19,11 +19,14 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/services/create_trip.dart';
+import 'package:performarine/services/database_service.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StartTrip {
   //bool presentNoti = true;
+
+  final DatabaseService _databaseService = DatabaseService();
 
   startTrip(ServiceInstance serviceInstance) async {
     bool presentNoti = true;
@@ -751,7 +754,24 @@ class StartTrip {
     return;
   }
 
-  Future<void> startBGLocatorTrip(String tripId) async {
+  Future<void> startBGLocatorTrip(String tripId, DateTime dateTime) async {
+    flutterLocalNotificationsPlugin
+        .show(
+      889,
+      'PerforMarine',
+      'Trip is in progress',
+      /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
+      NotificationDetails(
+          iOS: DarwinNotificationDetails(
+        presentSound: true,
+        presentAlert: true,
+        subtitle: '',
+      )),
+    )
+        .catchError((onError) {
+      print('IOS NOTI ERROR: $onError');
+    });
+
     ReceivePort port = ReceivePort();
 
     if (IsolateNameServer.lookupPortByName(
@@ -766,9 +786,13 @@ class StartTrip {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
 
-    DateTime currentDateTime = DateTime.now();
+    DateTime currentDateTime = DateTime.now().toUtc();
 
-    Duration diff = currentDateTime.difference(DateTime.now());
+    final currentTrip = await _databaseService.getTrip(tripId);
+
+    DateTime createdAtTime = DateTime.parse(currentTrip.createdAt!);
+
+    //Duration diff = currentDateTime.difference(createdAtTime);
 
     int fileIndex = 0;
 
@@ -833,6 +857,11 @@ class StartTrip {
         endTripLatitude = locationDto.latitude;
         endTripLongitude = locationDto.longitude;
         speed = locationDto.speed < 0 ? 0 : locationDto.speed;
+        accuracy = locationDto.accuracy;
+        altitide = locationDto.altitude;
+        heading = locationDto.heading;
+        speedAccuracy = locationDto.speedAccuracy;
+
         Utils.customPrint('SPEED SPEED 1212 ${speed}');
 
         List<String> currentLocList =
@@ -880,13 +909,20 @@ class StartTrip {
           String tripDistanceForStorage =
               Calculation().calculateDistance(finalTripDistance);
 
+          Duration diff = DateTime.now().toUtc().difference(createdAtTime);
+
+          print('FINAL TRIP DIST: ${DateTime.now().toUtc()}');
+          print('FINAL TRIP DIST: $createdAtTime');
           print('FINAL TRIP DIST: $tripDistanceForStorage');
           print('FINAL TRIP DIST 2: $finalTripDistance');
+          print('FINAL TRIP DIST 3: ${diff.inMilliseconds}');
 
           pref.setString('tripDistance', tripDistanceForStorage);
 
           int finalTripDuration = (diff.inMilliseconds);
-          print('FINAL TRIP DUR: $finalTripDuration');
+
+          //TODO Here is the actual trip duration
+          print('FINAL TRIP DUR RRR : $finalTripDuration');
 
           /// DURATION 00:00:00
           String tripDurationForStorage =
@@ -904,6 +940,7 @@ class StartTrip {
           print('FINAL TRIP SPEED: $tripSpeedForStorage}');
 
           /// AVG. SPEED
+
           String tripAvgSpeedForStorage = Calculation()
               .calculateAvgSpeed(finalTripDistance, finalTripDuration);
           // finalTripAvgSpeed = (((finalTripDistance / 1852) / (finalTripDuration / 1000)) * 1.944);
@@ -973,7 +1010,8 @@ class StartTrip {
                     : [0.0],
                 tripId);
 
-            String location = '${endTripLatitude} ${endTripLongitude}';
+            String location =
+                '${endTripLatitude} ${endTripLongitude} ${accuracy.toStringAsFixed(3)} ${altitide.toStringAsFixed(3)} $heading $speed $speedAccuracy';
             String gps =
                 CreateTrip().convertLocationToString('GPS', location, tripId);
 
