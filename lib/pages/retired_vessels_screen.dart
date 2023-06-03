@@ -47,7 +47,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
         ),
         title: commonText(
           context: context,
-          text: 'Retried Vessels',
+          text: 'Retired Vessels',
           fontWeight: FontWeight.w600,
           textColor: Colors.black87,
           textSize: displayWidth(context) * 0.045,
@@ -69,7 +69,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
             ),
           ),
         ],
-        backgroundColor: Colors.white,
+        backgroundColor: commonBackgroundColor,
       ),
       body: Container(
         color: Colors.white,
@@ -100,7 +100,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                 );
               } else {
                 return Container(
-                  color: Colors.transparent,
+                  color: commonBackgroundColor,
                   padding: const EdgeInsets.only(
                       left: 8.0, right: 8.0, top: 8, bottom: 70),
                   child: ListView.builder(

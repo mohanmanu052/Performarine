@@ -90,10 +90,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.white,
+      backgroundColor: commonBackgroundColor,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.white,
+        backgroundColor: commonBackgroundColor,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();

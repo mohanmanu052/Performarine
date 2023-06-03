@@ -50,7 +50,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: Colors.white,
+        backgroundColor: commonBackgroundColor,
         bottomNavigationBar: Container(
           margin: EdgeInsets.symmetric(
               horizontal: displayHeight(context) * 0.03,
@@ -83,7 +83,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
         ),
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Colors.white,
+          backgroundColor: commonBackgroundColor,
           leading: IconButton(
             onPressed: () {
               if (widget.isEdit!) {

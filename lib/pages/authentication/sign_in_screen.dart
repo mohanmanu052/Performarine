@@ -111,10 +111,10 @@ class _SignInScreenState extends State<SignInScreen> {
     return Scaffold(
       //resizeToAvoidBottomInset: false,
       key: scaffoldKey,
-      backgroundColor: Colors.white,
+      backgroundColor: commonBackgroundColor,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Colors.white,
+        backgroundColor: commonBackgroundColor,
         /*leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();

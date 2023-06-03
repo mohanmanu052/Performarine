@@ -153,7 +153,7 @@ class _TripWidgetState extends State<TripWidget> {
                         ? commonText(
                             context: context,
                             text:
-                                '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
+                                '${DateFormat('MM/dd/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
                             fontWeight: FontWeight.w500,
                             textColor: Colors.black,
                             textSize: displayWidth(context) * 0.018,
@@ -161,7 +161,7 @@ class _TripWidgetState extends State<TripWidget> {
                         : commonText(
                             context: context,
                             text:
-                                '${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('dd/MM/yyyy hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
+                                '${DateFormat('MM/dd/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('MM/dd/yyyy hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
                             fontWeight: FontWeight.w500,
                             textColor: Colors.black,
                             textSize: displayWidth(context) * 0.018,
@@ -478,11 +478,10 @@ class _TripWidgetState extends State<TripWidget> {
 
     //AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
 
-    String? tripDuration =
-        sharedPreferences!.getString("tripDuration") ?? '00:00:00';
-    String? tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
-    String? tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '1';
-    String? tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '1';
+    String? tripDuration = tripData.time ?? '00:00:00';
+    String? tripDistance = tripData.distance ?? '1';
+    String? tripSpeed = tripData.speed ?? '1';
+    String? tripAvgSpeed = tripData.avgSpeed ?? '1';
 
     var startPosition = tripData.startPosition!.split(",");
     var endPosition = tripData.endPosition!.split(",");

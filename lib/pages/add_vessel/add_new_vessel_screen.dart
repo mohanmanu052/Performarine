@@ -9,6 +9,8 @@ import 'package:performarine/pages/add_vessel/add_new_vessel_step_one.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_step_two.dart';
 import 'package:performarine/pages/home_page.dart';
 
+import '../../common_widgets/utils/colors.dart';
+
 class AddNewVesselScreen extends StatefulWidget {
   //final
   final bool? isEdit;
@@ -62,10 +64,10 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: Colors.white,
+        backgroundColor: commonBackgroundColor,
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Colors.white,
+          backgroundColor: commonBackgroundColor,
           leading: IconButton(
             onPressed: () {
               if (widget.calledFrom == 'SuccessFullScreen') {

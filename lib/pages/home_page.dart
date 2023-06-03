@@ -180,6 +180,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
+          backgroundColor: commonBackgroundColor,
           key: scaffoldKey,
           appBar: AppBar(
             elevation: 0,
@@ -245,7 +246,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   width: displayWidth(context) * 0.45,
                   decoration: BoxDecoration(
                       color:
-                          currentTabIndex == 0 ? buttonBGColor : Colors.white,
+                          currentTabIndex == 0 ? buttonBGColor : commonBackgroundColor,
                       border: Border.all(color: buttonBGColor),
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
@@ -268,7 +269,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   width: displayWidth(context) * 0.45,
                   decoration: BoxDecoration(
                       color:
-                          currentTabIndex == 1 ? buttonBGColor : Colors.white,
+                          currentTabIndex == 1 ? buttonBGColor : commonBackgroundColor,
                       border: Border.all(color: buttonBGColor),
                       borderRadius: BorderRadius.only(
                           topRight: Radius.circular(20),
@@ -289,7 +290,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ],
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: commonBackgroundColor,
           ),
           drawer: CustomDrawer(
             scaffoldKey: scaffoldKey,

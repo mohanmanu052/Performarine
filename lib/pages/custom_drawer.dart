@@ -62,6 +62,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     // Utils.customPrint('X-TOKEN ${commonProvider.loginModel!.userEmail}');
 
     return Drawer(
+      backgroundColor: commonBackgroundColor,
       child: Container(
         margin: const EdgeInsets.only(left: 30, right: 10.0, top: 10.0),
         child: Column(
@@ -170,7 +171,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         },
                         child: commonText(
                             context: context,
-                            text: 'Retried vessels',
+                            text: 'Retired vessels',
                             fontWeight: FontWeight.w500,
                             textColor: Colors.black54,
                             textSize: textSize,
