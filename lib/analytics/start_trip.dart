@@ -851,6 +851,23 @@ class StartTrip {
     String lprFileName = 'lpr_$fileIndex.csv';
 
     port.listen((dynamic data) async {
+      flutterLocalNotificationsPlugin
+          .show(
+        889,
+        'PerforMarine',
+        'Trip is in progress',
+        /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
+        NotificationDetails(
+            iOS: DarwinNotificationDetails(
+          presentSound: false,
+          presentAlert: false,
+          subtitle: '',
+        )),
+      )
+          .catchError((onError) {
+        print('IOS NOTI ERROR: $onError');
+      });
+
       LocationDto? locationDto =
           data != null ? LocationDto.fromJson(data) : null;
       if (locationDto != null) {
@@ -862,7 +879,8 @@ class StartTrip {
         heading = locationDto.heading;
         speedAccuracy = locationDto.speedAccuracy;
 
-        Utils.customPrint('SPEED SPEED 1212 ${speed}');
+        Utils.customPrint('SPEED SPEED 1111 ${speed}');
+        Utils.customPrint('SPEED SPEED 2222 ${locationDto.speed}');
 
         List<String> currentLocList =
             pref.getStringList('current_loc_list') ?? [];

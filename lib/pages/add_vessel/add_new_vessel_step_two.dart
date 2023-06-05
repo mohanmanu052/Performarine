@@ -88,6 +88,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
 
+    super.build(context);
+
     return Form(
         key: formKey,
         child: SingleChildScrollView(

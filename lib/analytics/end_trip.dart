@@ -28,7 +28,7 @@ class EndTrip {
     IOSAvgSpeed = "",
   }) async {
     Utils.customPrint("END TRIP FUNCTIONALITY");
-
+    WidgetsFlutterBinding.ensureInitialized();
     String downloadedFilePath = '';
     await sharedPreferences!.reload();
     debugPrint("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance");
@@ -81,6 +81,8 @@ class EndTrip {
     sharedPreferences!.remove('tripDistance');
     sharedPreferences!.remove('tripSpeed');
     sharedPreferences!.remove('tripAvgSpeed');
+    sharedPreferences!.remove('current_loc_list');
+    sharedPreferences!.remove('temp_trip_dist');
 
     Position? currentLocationData =
         await Utils.getLocationPermission(context, scaffoldKey!);

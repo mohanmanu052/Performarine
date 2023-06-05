@@ -417,7 +417,7 @@ class _TripWidgetState extends State<TripWidget> {
                                                     width:
                                                         displayWidth(context) *
                                                             0.38,
-                                                    title: 'Upload Trip')),
+                                                    title: 'Upload Trip ')),
                               )
                             ],
                           )

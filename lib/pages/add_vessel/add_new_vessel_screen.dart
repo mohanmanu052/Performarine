@@ -118,11 +118,12 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                   },
                   children: [
                     AddVesselStepOne(
-                        pageController: pageController,
-                        scaffoldKey: scaffoldKey,
-                        addVesselData:
-                            widget.isEdit! ? widget.createVessel : null,
-                        isEdit: widget.isEdit),
+                      pageController: pageController,
+                      scaffoldKey: scaffoldKey,
+                      addVesselData:
+                          widget.isEdit! ? widget.createVessel : null,
+                      isEdit: widget.isEdit,
+                    ),
                     AddNewVesselStepTwo(
                       pageController: pageController,
                       scaffoldKey: scaffoldKey,

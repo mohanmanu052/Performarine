@@ -20,12 +20,28 @@ class AddVesselStepOne extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final CreateVessel? addVesselData;
   final bool? isEdit;
+  final FocusNode? nameFocusNode,
+      modelFocusNode,
+      builderNameFocusNode,
+      registrationNumberFocusNode,
+      mmsiFocusNode,
+      fuelCapacityFocusNode,
+      batteryCapacityFocusNode,
+      weightFocusNode;
   const AddVesselStepOne(
       {Key? key,
       this.pageController,
       this.scaffoldKey,
       this.addVesselData,
-      this.isEdit})
+      this.isEdit,
+      this.nameFocusNode,
+      this.modelFocusNode,
+      this.builderNameFocusNode,
+      this.registrationNumberFocusNode,
+      this.mmsiFocusNode,
+      this.fuelCapacityFocusNode,
+      this.batteryCapacityFocusNode,
+      this.weightFocusNode})
       : super(key: key);
 
   @override
@@ -651,6 +667,8 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                         Utils.customPrint(
                             'Step ONE VESSEL NAME: ${nameController.text}');
                         //Utils.customPrint('Step ONE VESSEL NAME: ${nameController.text}');
+
+                        FocusScope.of(context).requestFocus(new FocusNode());
 
                         widget.pageController!.nextPage(
                             duration: Duration(milliseconds: 300),

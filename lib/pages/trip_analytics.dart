@@ -158,6 +158,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
       DateTime createdAtTime = DateTime.parse(currentTrip.createdAt!);
 
+      WidgetsFlutterBinding.ensureInitialized();
+
       await sharedPreferences!.reload();
 
       durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -1857,6 +1859,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   }
 
   uploadDataIfDataIsNotSync() async {
+    commonProvider.updateTripUploadingStatus(true);
     await vesselIsSyncOrNot(tripData!.vesselId.toString());
     Utils.customPrint('VESSEL STATUS isSync $vesselIsSync');
 
