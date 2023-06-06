@@ -141,7 +141,7 @@ Future<void> initializeService() async {
     androidConfiguration: AndroidConfiguration(
       initialNotificationTitle: 'PerforMarine',
       onStart: onStart,
-      autoStart: true,
+      autoStart: false,
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
       initialNotificationContent: 'PerforMarine consuming background services.',
@@ -149,9 +149,9 @@ Future<void> initializeService() async {
       foregroundServiceNotificationId: notificationId,
     ),
     iosConfiguration: IosConfiguration(
-        autoStart: true, onForeground: onStart, onBackground: onStart),
+        autoStart: false, onForeground: onStart, onBackground: onStart),
   );
-  service.startService();
+  //service.startService();
 }
 
 class MyApp extends StatefulWidget {

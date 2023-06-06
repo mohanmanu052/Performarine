@@ -755,22 +755,48 @@ class StartTrip {
   }
 
   Future<void> startBGLocatorTrip(String tripId, DateTime dateTime) async {
-    flutterLocalNotificationsPlugin
-        .show(
-      889,
-      'PerforMarine',
-      'Trip is in progress',
-      /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
-      NotificationDetails(
-          iOS: DarwinNotificationDetails(
-        presentSound: true,
-        presentAlert: true,
-        subtitle: '',
-      )),
-    )
-        .catchError((onError) {
-      print('IOS NOTI ERROR: $onError');
-    });
+    if (Platform.isAndroid) {
+      flutterLocalNotificationsPlugin.show(
+        888,
+        '',
+        'Android Trip is in progress',
+        NotificationDetails(
+            android: AndroidNotificationDetails(
+                notificationChannelId, 'MY FOREGROUND SERVICE',
+                icon: '@drawable/noti_logo',
+                ongoing: true,
+                // styleInformation:
+                //     BigTextStyleInformation('', summaryText: '$tripId')
+                styleInformation: BigTextStyleInformation('',
+                    //'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
+                    htmlFormatContentTitle: true,
+                    summaryText: '')),
+            iOS: DarwinNotificationDetails(
+              presentSound: presentNoti,
+              presentAlert: presentNoti,
+              /*subtitle:
+                        'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
+                  */
+            )),
+      );
+    } else {
+      flutterLocalNotificationsPlugin
+          .show(
+        889,
+        'PerforMarine',
+        'Trip is in progress',
+        /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
+        NotificationDetails(
+            iOS: DarwinNotificationDetails(
+          presentSound: true,
+          presentAlert: true,
+          subtitle: '',
+        )),
+      )
+          .catchError((onError) {
+        print('IOS NOTI ERROR: $onError');
+      });
+    }
 
     ReceivePort port = ReceivePort();
 
@@ -851,22 +877,24 @@ class StartTrip {
     String lprFileName = 'lpr_$fileIndex.csv';
 
     port.listen((dynamic data) async {
-      flutterLocalNotificationsPlugin
-          .show(
-        889,
-        'PerforMarine',
-        'Trip is in progress',
-        /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
-        NotificationDetails(
-            iOS: DarwinNotificationDetails(
-          presentSound: false,
-          presentAlert: false,
-          subtitle: '',
-        )),
-      )
-          .catchError((onError) {
-        print('IOS NOTI ERROR: $onError');
-      });
+      if (Platform.isIOS) {
+        flutterLocalNotificationsPlugin
+            .show(
+          889,
+          'PerforMarine',
+          'Trip is in progress',
+          /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
+          NotificationDetails(
+              iOS: DarwinNotificationDetails(
+            presentSound: false,
+            presentAlert: false,
+            subtitle: '',
+          )),
+        )
+            .catchError((onError) {
+          print('IOS NOTI ERROR: $onError');
+        });
+      }
 
       LocationDto? locationDto =
           data != null ? LocationDto.fromJson(data) : null;

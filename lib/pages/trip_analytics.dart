@@ -141,7 +141,40 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       });
     }
 
-    if (Platform.isAndroid) {
+    final currentTrip = await _databaseService.getTrip(widget.tripId!);
+
+    DateTime createdAtTime = DateTime.parse(currentTrip.createdAt!);
+
+    WidgetsFlutterBinding.ensureInitialized();
+
+    await sharedPreferences!.reload();
+
+    durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      print('##TDATA updated time delay from 1 sec to 400 MS by abhi');
+      tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
+      //tripDuration = sharedPreferences!.getString('tripDuration')!;
+      tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
+      tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
+
+      debugPrint("TRIP ANALYTICS SPEED $tripSpeed");
+      debugPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
+
+      var durationTime = DateTime.now().toUtc().difference(createdAtTime);
+      // current date time.difference(createdAt);
+      tripDuration = Utils.calculateTripDuration(
+          ((durationTime.inMilliseconds) ~/ 1000).toInt());
+      // tripDuration = durationTime.inMilliseconds.toString();
+      // duration.inmiliseconds;
+
+      // print('##TDATA 1212 : $tripDuration');
+
+      if (mounted)
+        setState(() {
+          getTripDetailsFromNoti = false;
+        });
+    });
+
+    /* if (Platform.isAndroid) {
       service.on('tripAnalyticsData').listen((event) {
         tripDistance = event!['tripDistance'];
         tripDuration = event['tripDuration'];
@@ -153,7 +186,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             getTripDetailsFromNoti = false;
           });
       });
-    } else {
+    }
+    else {
       final currentTrip = await _databaseService.getTrip(widget.tripId!);
 
       DateTime createdAtTime = DateTime.parse(currentTrip.createdAt!);
@@ -186,7 +220,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             getTripDetailsFromNoti = false;
           });
       });
-    }
+    }*/
   }
 
   @override

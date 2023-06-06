@@ -47,7 +47,7 @@ import '../lpr_bluetooth_widget.dart';
 
 class VesselSingleView extends StatefulWidget {
   CreateVessel? vessel;
-  bool? isCalledFromSuccessScreen;
+  final bool? isCalledFromSuccessScreen;
 
   VesselSingleView({this.vessel, this.isCalledFromSuccessScreen = false});
   @override
@@ -876,7 +876,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             } else {
               r.device
                   .disconnect()
-                  .then((value) => print("is device disconnected: $value"));
+                  .then((value) => print("is device disconnected:"));
             }
           }
         });
@@ -929,7 +929,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               } else {
                 r.device
                     .disconnect()
-                    .then((value) => print("is device disconnected: $value"));
+                    .then((value) => print("is device disconnected: "));
               }
             }
           });
@@ -997,7 +997,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             } else {
               r.device
                   .disconnect()
-                  .then((value) => print("is device disconnected: $value"));
+                  .then((value) => print("is device disconnected: "));
             }
           }
         });
@@ -1050,7 +1050,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               } else {
                 r.device
                     .disconnect()
-                    .then((value) => print("is device disconnected: $value"));
+                    .then((value) => print("is device disconnected: "));
               }
             }
           });
@@ -2241,14 +2241,32 @@ class VesselSingleViewState extends State<VesselSingleView> {
       Utils.customPrint('Future delayed duration Ended');
     });
 
-    if (Platform.isAndroid) {
+    await sharedPreferences!.setBool('trip_started', true);
+    await sharedPreferences!.setStringList('trip_data', [
+      getTripId,
+      widget.vessel!.id!,
+      widget.vessel!.name!,
+      selectedVesselWeight
+    ]);
+
+    await initPlatformStateBGL();
+
+    StartTrip().startBGLocatorTrip(getTripId, DateTime.now());
+
+    await tripIsRunningOrNot();
+
+    Navigator.pop(bottomSheetContext);
+    return;
+
+    /* if (Platform.isAndroid) {
       service.invoke(
           'tripId', {'tripId': getTripId, 'vesselName': widget.vessel!.name});
 
       // service.invoke("setAsForeground");
 
       service.invoke("onStartTrip");
-    } else {
+    }
+    else {
       await sharedPreferences!.setBool('trip_started', true);
       await sharedPreferences!.setStringList('trip_data', [
         getTripId,
@@ -2312,10 +2330,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
           accelerometerAvailable!,
           magnetometerAvailable!,
           userAccelerometerAvailable!,
-          /*_accelerometerValues! == null ? [0.0] : _accelerometerValues!,
+          */ /*_accelerometerValues! == null ? [0.0] : _accelerometerValues!,
           _gyroscopeValues! == null ? [0.0] : _gyroscopeValues!,
           _userAccelerometerValues == null ? [0.0] : _userAccelerometerValues,
-          _magnetometerValues == null ? [0.0] : _magnetometerValues,*/
+          _magnetometerValues == null ? [0.0] : _magnetometerValues,*/ /*
         );
       }
 
@@ -2406,7 +2424,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       //   }
       // });
     }
-
+*/
     await sharedPreferences!.setBool('trip_started', true);
     await sharedPreferences!.setStringList('trip_data', [
       getTripId,
