@@ -868,6 +868,9 @@ class StartTrip {
         },
       );
     }
+
+    print("AFTER SESNOR DATA");
+
     double endTripLatitude = 0.0;
     double endTripLongitude = 0.0;
     double finalTripDistance = 0.0;
@@ -876,7 +879,11 @@ class StartTrip {
     String mobileFileName = 'mobile_$fileIndex.csv';
     String lprFileName = 'lpr_$fileIndex.csv';
 
+    print("BEFORE PORT LISTEN");
+
     port.listen((dynamic data) async {
+      print("INSIDE PORT LISTEN");
+
       if (Platform.isIOS) {
         flutterLocalNotificationsPlugin
             .show(
@@ -895,6 +902,8 @@ class StartTrip {
           print('IOS NOTI ERROR: $onError');
         });
       }
+
+      print("AFTER NOTIFICATION IN PORT LISTEN");
 
       LocationDto? locationDto =
           data != null ? LocationDto.fromJson(data) : null;

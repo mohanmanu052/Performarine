@@ -57,6 +57,10 @@ class EndTrip {
       tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '0.1';
     }
 
+    /*await BackgroundLocator.unRegisterLocationUpdate();
+    IsolateNameServer.removePortNameMapping(
+        LocationServiceRepository.isolateName);*/
+
     if (Platform.isAndroid) {
       service.invoke('stopService');
     } else {
