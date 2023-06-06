@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/location_dto.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
@@ -755,31 +756,7 @@ class StartTrip {
   }
 
   Future<void> startBGLocatorTrip(String tripId, DateTime dateTime) async {
-    if (Platform.isAndroid) {
-      flutterLocalNotificationsPlugin.show(
-        888,
-        '',
-        'Android Trip is in progress',
-        NotificationDetails(
-            android: AndroidNotificationDetails(
-                notificationChannelId, 'MY FOREGROUND SERVICE',
-                icon: '@drawable/noti_logo',
-                ongoing: true,
-                // styleInformation:
-                //     BigTextStyleInformation('', summaryText: '$tripId')
-                styleInformation: BigTextStyleInformation('',
-                    //'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
-                    htmlFormatContentTitle: true,
-                    summaryText: '')),
-            iOS: DarwinNotificationDetails(
-              presentSound: presentNoti,
-              presentAlert: presentNoti,
-              /*subtitle:
-                        'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
-                  */
-            )),
-      );
-    } else {
+    if (Platform.isIOS) {
       flutterLocalNotificationsPlugin
           .show(
         889,
@@ -1011,6 +988,12 @@ class StartTrip {
 
           Utils.customPrint('SPEED SPEED SPEED 666: $num');
 
+          await BackgroundLocator.updateNotificationText(
+              title: 'Performarine',
+              msg: 'Trip is in progress',
+              bigMsg:
+                  'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot');
+
           //pref.setString('tripDistance', tripDistanceForStorage);
           pref.setString('tripDuration', tripDurationForStorage);
           // To get values in Km/h
@@ -1076,7 +1059,9 @@ class StartTrip {
 
             debugPrint(
                 'FILE WRITING CURRENT TIME ${Utils.getCurrentTZDateTime()}');
+
             file.writeAsString('$finalString\n', mode: FileMode.append);
+
             // file.writeAsString('$finalString\n -> $data', mode: FileMode.append);
             //lprFile.writeAsString('$finalString\n', mode: FileMode.append);
             //lprFile.writeAsString('$finalString\n', mode: FileMode.append);

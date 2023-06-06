@@ -57,17 +57,17 @@ class EndTrip {
       tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '0.1';
     }
 
-    /*await BackgroundLocator.unRegisterLocationUpdate();
+    await BackgroundLocator.unRegisterLocationUpdate();
     IsolateNameServer.removePortNameMapping(
-        LocationServiceRepository.isolateName);*/
+        LocationServiceRepository.isolateName);
 
-    if (Platform.isAndroid) {
+    /* if (Platform.isAndroid) {
       service.invoke('stopService');
     } else {
       await BackgroundLocator.unRegisterLocationUpdate();
       IsolateNameServer.removePortNameMapping(
           LocationServiceRepository.isolateName);
-    }
+    }*/
 
     if (positionStream != null) {
       positionStream!.cancel();
@@ -106,8 +106,8 @@ class EndTrip {
     await DatabaseService().updateVesselDataWithDurationSpeedDistance(
         tripDuration, tripDistance, tripSpeed, tripAvgSpeed, vesselId);
 
-    await flutterLocalNotificationsPlugin
-        .cancel(Platform.isAndroid ? 888 : 889);
+    // await flutterLocalNotificationsPlugin.cancel(888);
+    await flutterLocalNotificationsPlugin.cancel(889);
 
     if (onEnded != null) onEnded.call();
   }

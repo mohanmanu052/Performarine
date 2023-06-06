@@ -2227,11 +2227,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
       addingDataToDB = true;
     });
 
-    if (!isServiceRunning) {
-      await service.startService();
-
-      Utils.customPrint('View Single: $isServiceRunning');
-    }
+    // if (!isServiceRunning) {
+    //   await service.startService();
+    //
+    //   Utils.customPrint('View Single: $isServiceRunning');
+    // }
 
     getTripId = ObjectId().toString();
 
@@ -2466,11 +2466,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
             client: bglas.LocationClient.google,
             androidNotificationSettings: bglas.AndroidNotificationSettings(
                 notificationChannelName: 'Location tracking',
-                notificationTitle: 'Start Location Tracking',
-                notificationMsg: 'Track location in background',
-                notificationBigMsg:
-                    'Background location is on to keep the app up-tp-date with your location. This is required for main features to work properly when the app is not running.',
+                notificationTitle: 'Trip is in progress',
+                notificationMsg: '',
+                notificationBigMsg: '',
                 notificationIconColor: Colors.grey,
+                notificationIcon: '@drawable/noti_logo',
                 notificationTapCallback:
                     LocationCallbackHandler.notificationCallback)));
     // print('Running ${isRunning.toString()}');
