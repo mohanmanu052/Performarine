@@ -33,7 +33,6 @@ class ReportModuleProvider with ChangeNotifier {
     Utils.customPrint("filter by date:$startDate, $endDate ");
     var tempStartDate = DateFormat('yyyy-MM-dd').format(DateTime.parse(startDate+" 00:00:00.000").toUtc());
     var tempEndDate = DateFormat('yyyy-MM-dd').format(DateTime.parse(endDate+" 23:11:59.000").toUtc());
-    // var test=DateFormat('MM-dd-yyyy').format(tempStartDate);
     Utils.customPrint("filter by date:$tempStartDate, $tempEndDate");
 
     if(caseType == 1){

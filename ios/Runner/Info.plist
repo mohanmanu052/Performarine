@@ -63,6 +63,12 @@
 	<string>This application requires recognize speech service to work</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+    <key>NSAllowsArbitraryLoadsInWebContent</key>
+    <true/>
+    <key>io.flutter.embedded_views_preview</key>
+    <string>YES</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

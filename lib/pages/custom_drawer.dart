@@ -16,6 +16,7 @@ import 'package:performarine/lpr_bluetooth_widget.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/Routemap.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -26,6 +27,9 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../common_widgets/utils/urls.dart';
 
 class CustomDrawer extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
@@ -172,6 +176,27 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         child: commonText(
                             context: context,
                             text: 'Retired vessels',
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.black54,
+                            textSize: textSize,
+                            textAlign: TextAlign.start),
+                      ),
+                      SizedBox(
+                        height: displayHeight(context) * 0.02,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _launchURL();
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => RouteMap()),
+                          // );
+                        },
+                        child: commonText(
+                            context: context,
+                            text: 'Reports Route',
                             fontWeight: FontWeight.w500,
                             textColor: Colors.black54,
                             textSize: textSize,
@@ -431,6 +456,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
         context,
         MaterialPageRoute(builder: (context) => const SignInScreen()),
         ModalRoute.withName(""));
+  }
+  _launchURL() async {
+    final Uri url = Uri.parse('https://${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9');
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch https://+"${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9');
+    }
   }
 
   showDialogBox(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {

@@ -23,7 +23,9 @@ import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../common_widgets/utils/urls.dart';
 import '../../common_widgets/widgets/status_tage.dart';
 
 class TripWidget extends StatefulWidget {
@@ -224,46 +226,70 @@ class _TripWidgetState extends State<TripWidget> {
                 ),
                 widget.tripList?.tripStatus != 0
                     ? widget.tripList!.isCloud != 0
-                        ? SizedBox(
-                            height: displayHeight(context) * 0.038,
-                            width: displayWidth(context),
-                            child: CommonButtons.getRichTextActionButton(
-                                buttonPrimaryColor: buttonBGColor,
-                                fontSize: displayWidth(context) * 0.026,
-                                onTap: () async {
-                                  getVesselById =
-                                      await _databaseService.getVesselNameByID(
-                                          widget.tripList!.vesselId.toString());
+                        ? Row(
+                  children: [
+                    SizedBox(
+                        height: displayHeight(context) * 0.038,
+                        width: displayWidth(context)*.4,
+                        child: CommonButtons.getRichTextActionButton(
+                            buttonPrimaryColor: buttonBGColor,
+                            fontSize: displayWidth(context) * 0.026,
+                            onTap: () async {
+                              _launchURL();
+                            },
+                            icon: Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Icon(
+                                Icons.map_outlined,
+                                size: 18,
+                              ),
+                            ),
+                            context: context,
+                            width: displayWidth(context) * 0.38,
+                            title: 'Route Map')),
+                    SizedBox(width: 10,),
+                    SizedBox(
+                        height: displayHeight(context) * 0.038,
+                        width: displayWidth(context)*.4,
+                        child: CommonButtons.getRichTextActionButton(
+                            buttonPrimaryColor: buttonBGColor,
+                            fontSize: displayWidth(context) * 0.026,
+                            onTap: () async {
+                              getVesselById =
+                              await _databaseService.getVesselNameByID(
+                                  widget.tripList!.vesselId.toString());
 
-                                  Utils.customPrint(
-                                      'VESSEL DATA ${getVesselById[0].imageURLs}');
+                              Utils.customPrint(
+                                  'VESSEL DATA ${getVesselById[0].imageURLs}');
 
-                                  if (!isTripUploaded) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            TripAnalyticsScreen(
-                                                tripId: widget.tripList!.id,
-                                                vesselId: getVesselById[0].id,
-                                                tripIsRunningOrNot: false,
-                                                calledFrom: widget.calledFrom
-                                                // vessel: getVesselById[0]
-                                                ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                icon: Padding(
-                                  padding: const EdgeInsets.only(right: 8),
-                                  child: Icon(
-                                    Icons.analytics_outlined,
-                                    size: 18,
+                              if (!isTripUploaded) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        TripAnalyticsScreen(
+                                            tripId: widget.tripList!.id,
+                                            vesselId: getVesselById[0].id,
+                                            tripIsRunningOrNot: false,
+                                            calledFrom: widget.calledFrom
+                                          // vessel: getVesselById[0]
+                                        ),
                                   ),
-                                ),
-                                context: context,
-                                width: displayWidth(context) * 0.38,
-                                title: 'Trip Analytics'))
+                                );
+                              }
+                            },
+                            icon: Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Icon(
+                                Icons.analytics_outlined,
+                                size: 18,
+                              ),
+                            ),
+                            context: context,
+                            width: displayWidth(context) * 0.38,
+                            title: 'Trip Analytics'))
+                  ],
+                )
                         : Row(
                             children: [
                               Expanded(
@@ -461,7 +487,12 @@ class _TripWidgetState extends State<TripWidget> {
 
     return result;
   }
-
+  _launchURL() async {
+    final Uri url = Uri.parse('https://${Urls.baseUrl}/goeMaps/${widget.tripList!.id}');
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch https://+"${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9');
+    }
+  }
   startSensorFunctionality(Trip tripData) async {
     //fileName = '$fileIndex.csv';
 
