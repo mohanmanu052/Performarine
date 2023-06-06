@@ -215,9 +215,9 @@ PODS:
   - PromisesObjC (2.2.0)
   - Protobuf (3.23.2)
   - ReachabilitySwift (5.0.0)
-  - SDWebImage (5.15.8):
-    - SDWebImage/Core (= 5.15.8)
-  - SDWebImage/Core (5.15.8)
+  - SDWebImage (5.16.0):
+    - SDWebImage/Core (= 5.16.0)
+  - SDWebImage/Core (5.16.0)
   - SDWebImageWebPCoder (0.11.0):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.15)
@@ -395,7 +395,7 @@ SPEC CHECKSUMS:
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
   Protobuf: 5df4e9d2abd535fb675c68d171f6bc87983d27a6
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  SDWebImage: cb032eba469c54e0000e78bcb0a13cdde0a52798
+  SDWebImage: 2aea163b50bfcb569a2726b6a754c54a4506fcf6
   SDWebImageWebPCoder: 295a6573c512f54ad2dd58098e64e17dcf008499
   sensors_plus: 5717760720f7e6acd96fdbd75b7428f5ad755ec2
   shared_preferences_foundation: e2dae3258e06f44cc55f49d42024fd8dd03c590c
@@ -407,4 +407,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 5e113a5ae39d5d5c2cb3e2ffcb0001f26b8065a7
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.1

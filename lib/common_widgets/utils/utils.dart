@@ -442,6 +442,7 @@ class Utils {
     } while(newKey == _key);
   }
   static customPrint(String text) {
-    kReleaseMode ? null : debugPrint('$text');
+    // kReleaseMode ? null : debugPrint('$text');
+    debugPrint('$text');
   }
 }

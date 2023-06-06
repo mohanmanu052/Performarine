@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../common_widgets/utils/urls.dart';
 import '../common_widgets/utils/utils.dart';
@@ -29,13 +30,18 @@ class ReportModuleProvider with ChangeNotifier {
     Uri uri = Uri.https(Urls.baseUrl, Urls.reportModule);
 
     var queryParameters;
+    Utils.customPrint("filter by date:$startDate, $endDate ");
+    var tempStartDate = DateFormat('yyyy-MM-dd').format(DateTime.parse(startDate+" 00:00:00.000").toUtc());
+    var tempEndDate = DateFormat('yyyy-MM-dd').format(DateTime.parse(endDate+" 23:11:59.000").toUtc());
+    // var test=DateFormat('MM-dd-yyyy').format(tempStartDate);
+    Utils.customPrint("filter by date:$tempStartDate, $tempEndDate");
 
     if(caseType == 1){
       queryParameters= {
         "case": caseType,
         "vesselID": vesselID,
-        "startDate": startDate,
-        "endDate": endDate
+        "startDate": tempStartDate,
+        "endDate": tempEndDate
       };
     } else{
       queryParameters= {
@@ -48,7 +54,7 @@ class ReportModuleProvider with ChangeNotifier {
 
 
 
-    Utils.customPrint('Report module REQ $queryParameters');
+    Utils.customPrint('Report module REQ $queryParameters\ntoken:$token');
 
     try {
       final response = await http.post(uri,

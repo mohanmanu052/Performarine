@@ -43,8 +43,9 @@ android {
         applicationId "com.performarine.app"
         minSdkVersion 28
         targetSdkVersion 33
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 1
+        versionName "0.0.1+2"
+        multiDexEnabled true
     }
 
     buildTypes {
