@@ -19,8 +19,8 @@ class CustomLabeledCheckbox extends StatelessWidget {
   })  : assert(label != null),
         assert(checkboxType != null),
         assert(
-          (checkboxType == CheckboxType.Child && value != null) ||
-              checkboxType == CheckboxType.Parent,
+        (checkboxType == CheckboxType.Child && value != null) ||
+            checkboxType == CheckboxType.Parent,
         ),
         tristate = checkboxType == CheckboxType.Parent ? true : false;
 
@@ -76,17 +76,17 @@ class CustomLabeledCheckbox extends StatelessWidget {
 class CustomLabeledCheckboxOne extends StatelessWidget {
   CustomLabeledCheckboxOne(
       {required this.label,
-      required this.value,
-      required this.onChanged,
-      this.checkboxType: CheckboxType.Child,
-      required this.activeColor,
-      this.dateTime,
-      this.tripId})
+        required this.value,
+        required this.onChanged,
+        this.checkboxType: CheckboxType.Child,
+        required this.activeColor,
+        this.dateTime,
+        this.tripId})
       : assert(label != null),
         assert(checkboxType != null),
         assert(
-          (checkboxType == CheckboxType.Child && value != null) ||
-              checkboxType == CheckboxType.Parent,
+        (checkboxType == CheckboxType.Child && value != null) ||
+            checkboxType == CheckboxType.Parent,
         ),
         tristate = checkboxType == CheckboxType.Parent ? true : false;
 
@@ -126,7 +126,7 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
         style: TextStyle(
             fontWeight: FontWeight.w600,
             fontFamily: inter,
-            fontSize: displayWidth(context) * 0.042,
+            fontSize: displayWidth(context) * 0.041,
             color: blutoothDialogTxtColor),
       ),
       subtitle: Text(
@@ -134,7 +134,7 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
         style: TextStyle(
             fontWeight: FontWeight.w500,
             fontFamily: inter,
-            fontSize: displayWidth(context) * 0.032,
+            fontSize: displayWidth(context) * 0.031,
             color: blutoothDialogTxtColor),
       ),
       trailing: Text(
@@ -142,7 +142,7 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
         style: TextStyle(
             fontWeight: FontWeight.w500,
             fontFamily: inter,
-            fontSize: displayWidth(context) * 0.032,
+            fontSize: displayWidth(context) * 0.028,
             color: dateColor),
       ),
     );
