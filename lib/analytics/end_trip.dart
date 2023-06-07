@@ -46,7 +46,7 @@ class EndTrip {
     String tripAvgSpeed;
 
     if (Platform.isAndroid) {
-      tripDuration = sharedPreferences!.getString("tripDuration") ?? '00:00:00';
+      tripDuration = duration;
       tripDistance = sharedPreferences!.getString("tripDistance") ?? '1';
       tripSpeed = sharedPreferences!.getString("tripSpeed") ?? '0.1';
       tripAvgSpeed = sharedPreferences!.getString("tripAvgSpeed") ?? '0.1';
@@ -71,6 +71,10 @@ class EndTrip {
 
     if (positionStream != null) {
       positionStream!.cancel();
+    }
+
+    if (tripDurationTimer != null) {
+      tripDurationTimer!.cancel();
     }
 
     File file = await CreateZip().createZipFolder(context!, tripId);

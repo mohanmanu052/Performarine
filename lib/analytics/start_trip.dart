@@ -789,8 +789,6 @@ class StartTrip {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
 
-    DateTime currentDateTime = DateTime.now().toUtc();
-
     final currentTrip = await _databaseService.getTrip(tripId);
 
     DateTime createdAtTime = DateTime.parse(currentTrip.createdAt!);
@@ -988,11 +986,25 @@ class StartTrip {
 
           Utils.customPrint('SPEED SPEED SPEED 666: $num');
 
-          await BackgroundLocator.updateNotificationText(
-              title: 'Performarine',
-              msg: 'Trip is in progress',
-              bigMsg:
-                  'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot');
+          if (tripDurationTimer != null) {
+            if (tripDurationTimer!.isActive) {
+              tripDurationTimer!.cancel();
+            }
+          }
+
+          tripDurationTimer =
+              Timer.periodic(Duration(seconds: 1), (timer) async {
+            var durationTime = DateTime.now().toUtc().difference(createdAtTime);
+            // current date time.difference(createdAt);
+            String tripDuration = Utils.calculateTripDuration(
+                ((durationTime.inMilliseconds) ~/ 1000).toInt());
+
+            await BackgroundLocator.updateNotificationText(
+                title: 'Performarine',
+                msg: 'Trip is in progress',
+                bigMsg:
+                    'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot');
+          });
 
           //pref.setString('tripDistance', tripDistanceForStorage);
           pref.setString('tripDuration', tripDurationForStorage);

@@ -73,6 +73,7 @@ dependencies:
   syncfusion_flutter_charts: ^21.2.3
   background_locator_2: ^2.0.6
   webview_flutter: ^2.0.14
+  airplane_mode_checker: ^2.0.0
 
 
 dependency_overrides:

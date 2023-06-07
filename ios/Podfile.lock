@@ -1,4 +1,6 @@
 PODS:
+  - airplane_mode_checker (0.0.1):
+    - Flutter
   - "app_settings (3.0.0+1)":
     - Flutter
   - AppAuth (1.6.2):
@@ -110,6 +112,9 @@ PODS:
     - Flutter
   - flutter_sensors (0.0.1):
     - Flutter
+  - fluttertoast (0.0.2):
+    - Flutter
+    - Toast
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -230,6 +235,7 @@ PODS:
     - Flutter
     - FMDB (>= 2.7.5)
   - SwiftyGif (5.4.4)
+  - Toast (4.0.0)
   - TOCropViewController (2.6.1)
   - url_launcher_ios (0.0.1):
     - Flutter
@@ -238,6 +244,7 @@ PODS:
   - ZIPFoundation (0.9.13)
 
 DEPENDENCIES:
+  - airplane_mode_checker (from `.symlinks/plugins/airplane_mode_checker/ios`)
   - app_settings (from `.symlinks/plugins/app_settings/ios`)
   - background_locator_2 (from `.symlinks/plugins/background_locator_2/ios`)
   - bluetooth_enable_fork (from `.symlinks/plugins/bluetooth_enable_fork/ios`)
@@ -254,6 +261,7 @@ DEPENDENCIES:
   - flutter_image_compress (from `.symlinks/plugins/flutter_image_compress/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_sensors (from `.symlinks/plugins/flutter_sensors/ios`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - GoogleUtilities
@@ -295,10 +303,13 @@ SPEC REPOS:
     - SDWebImage
     - SDWebImageWebPCoder
     - SwiftyGif
+    - Toast
     - TOCropViewController
     - ZIPFoundation
 
 EXTERNAL SOURCES:
+  airplane_mode_checker:
+    :path: ".symlinks/plugins/airplane_mode_checker/ios"
   app_settings:
     :path: ".symlinks/plugins/app_settings/ios"
   background_locator_2:
@@ -327,6 +338,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_sensors:
     :path: ".symlinks/plugins/flutter_sensors/ios"
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/ios"
   google_sign_in_ios:
@@ -357,6 +370,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
+  airplane_mode_checker: 9b8bad217c83930f615c116da57127646d123471
   app_settings: d103828c9f5d515c4df9ee754dabd443f7cedcf3
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
   background_locator_2: bc8a422343ab656d5bd98e08694c6f89fef20418
@@ -379,6 +393,7 @@ SPEC CHECKSUMS:
   flutter_image_compress: 5a5e9aee05b6553048b8df1c3bc456d0afaac433
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_sensors: dc6eed3291e7724bf8f4138d7d14c4071b42bd29
+  fluttertoast: fafc4fa4d01a6a9e4f772ecd190ffa525e9e2d9c
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
   google_sign_in_ios: 1256ff9d941db546373826966720b0c24804bcdd
@@ -406,6 +421,7 @@ SPEC CHECKSUMS:
   shared_preferences_foundation: e2dae3258e06f44cc55f49d42024fd8dd03c590c
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
+  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f

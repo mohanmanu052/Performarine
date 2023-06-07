@@ -13,6 +13,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
+//import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
@@ -2471,9 +2472,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
         autoStop: false,
         androidSettings: bglas.AndroidSettings(
             accuracy: bgls.LocationAccuracy.NAVIGATION,
-            interval: 5,
+            interval: 1,
             distanceFilter: 0,
-            client: bglas.LocationClient.google,
+            //client: bglas.LocationClient.android,
             androidNotificationSettings: bglas.AndroidNotificationSettings(
                 notificationChannelName: 'Location tracking',
                 notificationTitle: 'Trip is in progress',

@@ -142,9 +142,11 @@ class Utils {
             'Location permissions are permanently denied, we cannot request permissions.');
       }
 
-      return await Geolocator.getCurrentPosition();
+      return await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
     });
-    return await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
   }
 
   static Future<SharedPreferences> initSharedPreferences() async {
@@ -436,11 +438,12 @@ class Utils {
     return;
   }
 
- static collapseExpansionTileKey(int _key, int newKey) {
+  static collapseExpansionTileKey(int _key, int newKey) {
     do {
       _key = new Random().nextInt(100);
-    } while(newKey == _key);
+    } while (newKey == _key);
   }
+
   static customPrint(String text) {
     // kReleaseMode ? null : debugPrint('$text');
     debugPrint('$text');
