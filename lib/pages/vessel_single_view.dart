@@ -776,6 +776,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         widget.vessel!.vesselSize!,
                                         widget.vessel!.name!,
                                         widget.vessel!.id!);
+                                  } else {
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message:
+                                            'Location permissions are denied without permissions we are unable to start the trip');
+
+                                    Future.delayed(Duration(seconds: 3),
+                                        () async {
+                                      await openAppSettings();
+                                    });
                                   }
                                 } else {
                                   if (!isLocationDialogBoxOpen) {

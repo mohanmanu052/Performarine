@@ -184,7 +184,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      InkWell(
+                      /*InkWell(
                         onTap: () {
                           Navigator.of(context).pop();
                           _launchURL();
@@ -204,7 +204,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
-                      ),
+                      ),*/
                       InkWell(
                         onTap: () {
                           Navigator.of(context).pop();
@@ -457,10 +457,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
         MaterialPageRoute(builder: (context) => const SignInScreen()),
         ModalRoute.withName(""));
   }
+
   _launchURL() async {
-    final Uri url = Uri.parse('https://${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9');
+    final Uri url =
+        Uri.parse('https://${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9');
     if (!await launchUrl(url)) {
-      throw Exception('Could not launch https://+"${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9');
+      throw Exception(
+          'Could not launch https://+"${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9');
     }
   }
 

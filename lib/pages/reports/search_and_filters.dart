@@ -167,6 +167,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     print(dateString);
     return dateString;
   }
+
   String convertIntoYearMonthDayToShow(DateTime date) {
     // String dateTimeString = date;
     // DateTime dateTime = DateTime.parse(dateTimeString);
@@ -217,7 +218,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     try {
       commonProvider
           .tripListData(
-          vesselID, context, commonProvider.loginModel!.token!, scaffoldKey)
+              vesselID, context, commonProvider.loginModel!.token!, scaffoldKey)
           .then((value) {
         if (value != null) {
           setState(() {
@@ -230,7 +231,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           for (int i = 0; i < value.data!.length; i++) {
             tripIdList!.add(value.data![i].id!);
             dateTimeList!.add(value.data![i].createdAt != null &&
-                value.data![i].createdAt!.isNotEmpty
+                    value.data![i].createdAt!.isNotEmpty
                 ? tripDate(value.data![i].createdAt!)
                 : "");
             children!.add("Trip ${i.toString()}");
@@ -268,7 +269,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         });
         commonProvider
             .getUserConfigData(context, commonProvider.loginModel!.userId!,
-            commonProvider.loginModel!.token!, scaffoldKey)
+                commonProvider.loginModel!.token!, scaffoldKey)
             .then((value) {
           print("value is: ${value!.status}");
           if (value != null) {
@@ -278,7 +279,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             });
             print("value of get user config by id: ${value.vessels}");
             vesselData = List<DropdownItem>.from(value.vessels!.map(
-                    (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
+                (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
 
             //   tripData = List<DropdownItem>.from(value.trips!.map((trip) => DropdownItem(id: )));
 
@@ -341,20 +342,20 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   getReportsData(int caseType,
       {String? startDate,
-        String? endDate,
-        String? vesselID,
-        List<String>? selectedTripListID}) async {
+      String? endDate,
+      String? vesselID,
+      List<String>? selectedTripListID}) async {
     try {
       await commonProvider
           .getReportData(
-          startDate ?? "",
-          endDate ?? "",
-          caseType,
-          vesselID,
-          commonProvider.loginModel!.token!,
-          selectedTripListID ?? [],
-          context,
-          scaffoldKey)
+              startDate ?? "",
+              endDate ?? "",
+              caseType,
+              vesselID,
+              commonProvider.loginModel!.token!,
+              selectedTripListID ?? [],
+              context,
+              scaffoldKey)
           .then((value) {
         if (value != null) {
           if (value.message == "Internal Server Error") {
@@ -402,11 +403,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             avgSpeed = double.parse(
                 value.data?.avgInfo?.avgSpeed?.toStringAsFixed(2) ?? '0');
             var myAvgDuration =
-            (value.data?.avgInfo?.avgDuration ?? '').contains(".")
-                ? durationWithMilli3(
-                value.data?.avgInfo?.avgDuration ?? '0:0:0.0')
-                : durationWithSeconds(
-                value.data!.avgInfo!.avgDuration ?? '0:0:0');
+                (value.data?.avgInfo?.avgDuration ?? '').contains(".")
+                    ? durationWithMilli3(
+                        value.data?.avgInfo?.avgDuration ?? '0:0:0.0')
+                    : durationWithSeconds(
+                        value.data!.avgInfo!.avgDuration ?? '0:0:0');
             avgDuration = myAvgDuration ?? 0;
 
             avgFuelConsumption = value.data?.avgInfo?.avgFuelConsumption;
@@ -414,7 +415,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             print(
                 "duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed");
             triSpeedList = List<TripModel>.from(value.data!.trips!.map(
-                    (tripData) => TripModel(
+                (tripData) => TripModel(
                     date: tripData.date, tripsByDate: tripData.tripsByDate)));
 
             durationGraphData = triSpeedList;
@@ -435,8 +436,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
             for (int i = 0; i < durationGraphData.length; i++) {
               for (int j = 0;
-              j < durationGraphData[i].tripsByDate!.length;
-              j++) {
+                  j < durationGraphData[i].tripsByDate!.length;
+                  j++) {
                 print(
                     "trip duration data is: ${durationGraphData[i].tripsByDate![j].id}");
 // =======
@@ -464,18 +465,18 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     enableTooltip: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, _) =>
-                    durationWithSeconds(
-                        triSpeedList[i].tripsByDate![j].duration!) >
-                        0
-                        ? triSpeedList[i].date
-                        : null,
+                        durationWithSeconds(
+                                    triSpeedList[i].tripsByDate![j].duration!) >
+                                0
+                            ? triSpeedList[i].date
+                            : null,
                     yValueMapper: (TripModel tripData, _) =>
-                    durationWithSeconds(
-                        triSpeedList[i].tripsByDate![j].duration!) >
-                        0
-                        ? durationWithSeconds(
-                        triSpeedList[i].tripsByDate![j].duration!)
-                        : null,
+                        durationWithSeconds(
+                                    triSpeedList[i].tripsByDate![j].duration!) >
+                                0
+                            ? durationWithSeconds(
+                                triSpeedList[i].tripsByDate![j].duration!)
+                            : null,
                     onPointTap: (ChartPointDetails args) {
                       if (mounted) {
                         // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
@@ -487,7 +488,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     },
                     name: 'Trip Duration',
                     emptyPointSettings:
-                    EmptyPointSettings(mode: EmptyPointMode.drop),
+                        EmptyPointSettings(mode: EmptyPointMode.drop),
                     dataLabelSettings: DataLabelSettings(isVisible: false),
                     spacing: 0.1,
                   ));
@@ -553,11 +554,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     width: 0.4,
                     enableTooltip: true,
                     xValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].date,
+                        triSpeedList[i].date,
                     yValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].tripsByDate![j].avgSpeed! > 0
-                        ? triSpeedList[i].tripsByDate![j].avgSpeed!
-                        : null,
+                        triSpeedList[i].tripsByDate![j].avgSpeed! > 0
+                            ? triSpeedList[i].tripsByDate![j].avgSpeed!
+                            : null,
                     onPointTap: (ChartPointDetails args) {
                       if (mounted) {
                         // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
@@ -580,18 +581,18 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     enableTooltip: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].date,
+                        triSpeedList[i].date,
                     yValueMapper: (TripModel tripData, _) =>
 // <<<<<<< Report-code-merge
-                    triSpeedList[i].tripsByDate![j].fuelConsumption! > 0
-                        ? triSpeedList[i].tripsByDate![j].fuelConsumption!
-                        : null,
+                        triSpeedList[i].tripsByDate![j].fuelConsumption! > 0
+                            ? triSpeedList[i].tripsByDate![j].fuelConsumption!
+                            : null,
                     onPointTap: (ChartPointDetails args) {
                       if (mounted) {
                         // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
                         setState(() async {
                           selectedIndex =
-                          await triSpeedList[i].tripsByDate![j].id!;
+                              await triSpeedList[i].tripsByDate![j].id!;
                           print("selected index: $selectedIndex");
                         });
                       }
@@ -613,18 +614,17 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     enableTooltip: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].date,
+                        triSpeedList[i].date,
                     yValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].tripsByDate![j].avgPower! > 0
-                        ? triSpeedList[i].tripsByDate![j].avgPower!
-                        : null,
+                        triSpeedList[i].tripsByDate![j].avgPower! > 0
+                            ? triSpeedList[i].tripsByDate![j].avgPower!
+                            : null,
                     onPointTap: (ChartPointDetails args) {
                       if (mounted) {
                         // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
                         setState(() async {
                           selectedIndex =
-                          await triSpeedList[i].tripsByDate![j].id!;
-                          print("selected index: $selectedIndex");
+                              await triSpeedList[i].tripsByDate![j].id!;
                         });
                       }
                     },
@@ -635,8 +635,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 }
               }
             }
-//
-// <<<<<<< Report-code-merge
             tripList.clear();
 
             for (int i = 0; i < triSpeedList.length; i++) {
@@ -647,13 +645,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   'duration': triSpeedList[i].tripsByDate![j].duration,
                   'avgSpeed': '${triSpeedList[i].tripsByDate![j].avgSpeed}',
                   'fuelUsage':
-                  triSpeedList[i].tripsByDate![j].fuelConsumption ?? 0.0,
+                      triSpeedList[i].tripsByDate![j].fuelConsumption ?? 0.0,
                   'powerUsage': triSpeedList[i].tripsByDate![j].avgPower ?? 0.0
                 };
                 tripList.add(data);
               }
             }
-            print("length: ${tripList.length}, tripList: $tripList");
 
             /*int duration1 = durationWithMilli(value.data!.avgInfo!.avgDuration!);
           String avgSpeed1 = value.data!.avgInfo!.avgSpeed!.toStringAsFixed(1) + " nm";
@@ -669,9 +666,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             double avgSpeed1 = value.data!.avgInfo!.avgSpeed! ;
             double? fuelUsage = value.data!.avgInfo!.avgFuelConsumption;
             double? powerUsage = value.data!.avgInfo!.avgPower;*/
-
-            print(
-                "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
 
             /*   for (int i = 0; i < tripList.length; i++) {
               totalDuration += duration(tripList[i]['duration']);
@@ -705,7 +699,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
             finalData = [
               {
-                'date': '',
+                'date': 'Average',
                 'tripDetails': 'Average',
                 'duration': "$duration1",
                 'avgSpeed': avgSpeed1,
@@ -713,7 +707,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 'powerUsage': powerUsage
               }
             ];
-// =======
 //                 tripList = value.data!.trips!
 //               .map((trip) => {
 //             'date': trip.date!,
@@ -796,20 +789,20 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   getReportsDataWithValues(int caseType,
       {String? startDate,
-        String? endDate,
-        String? vesselID,
-        List<String>? selectedTripListID}) async {
+      String? endDate,
+      String? vesselID,
+      List<String>? selectedTripListID}) async {
     try {
       await commonProvider
           .getReportData(
-          startDate ?? "",
-          endDate ?? "",
-          caseType,
-          vesselID,
-          commonProvider.loginModel!.token!,
-          selectedTripListID ?? [],
-          context,
-          scaffoldKey)
+              startDate ?? "",
+              endDate ?? "",
+              caseType,
+              vesselID,
+              commonProvider.loginModel!.token!,
+              selectedTripListID ?? [],
+              context,
+              scaffoldKey)
           .then((value) async {
         if (value != null) {
           if (value.message == "Internal Server Error") {
@@ -828,7 +821,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             print("avgPower : $avgPower");
 
             triSpeedList = List<TripModel>.from(value.data!.trips!.map(
-                    (tripData) => TripModel(
+                (tripData) => TripModel(
                     date: tripData.date, tripsByDate: tripData.tripsByDate)));
 
             Utils.customPrint('${triSpeedList}');
@@ -855,7 +848,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   dataSource: triSpeedList,
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
-                  triSpeedList[i].tripsByDate![j].avgSpeed,
+                      triSpeedList[i].tripsByDate![j].avgSpeed,
                   name: 'Avg Speed',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
                   spacing: 0.1,
@@ -867,7 +860,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   dataSource: triSpeedList,
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
-                  triSpeedList[i].tripsByDate![j].fuelConsumption,
+                      triSpeedList[i].tripsByDate![j].fuelConsumption,
                   name: 'Fuel Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
                   spacing: 0.1,
@@ -879,7 +872,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   dataSource: triSpeedList,
                   xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
                   yValueMapper: (TripModel tripData, _) =>
-                  triSpeedList[i].tripsByDate![j].avgPower,
+                      triSpeedList[i].tripsByDate![j].avgPower,
                   name: 'Power Usage',
                   dataLabelSettings: DataLabelSettings(isVisible: false),
                   spacing: 0.1,
@@ -889,18 +882,18 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
             tripList = value.data!.trips!
                 .map((trip) => {
-              'date': trip.date!,
-              'tripDetails': trip.tripsByDate![0].id,
-              'duration': trip.tripsByDate![0].duration,
-              'avgSpeed': '${trip.tripsByDate![0].avgSpeed} nm',
-              'fuelUsage': trip.tripsByDate![0].fuelConsumption ?? 0.0,
-              'powerUsage': trip.tripsByDate![0].avgPower ?? 0.0
-            })
+                      'date': trip.date!,
+                      'tripDetails': trip.tripsByDate![0].id,
+                      'duration': trip.tripsByDate![0].duration,
+                      'avgSpeed': '${trip.tripsByDate![0].avgSpeed} nm',
+                      'fuelUsage': trip.tripsByDate![0].fuelConsumption ?? 0.0,
+                      'powerUsage': trip.tripsByDate![0].avgPower ?? 0.0
+                    })
                 .toList();
             print("tripList: $tripList");
 
             int duration1 =
-            durationWithMilli(value.data!.avgInfo!.avgDuration!);
+                durationWithMilli(value.data!.avgInfo!.avgDuration!);
             String avgSpeed1 =
                 value.data!.avgInfo!.avgSpeed!.toStringAsFixed(1) + " nm";
             String? fuelUsage =
@@ -931,8 +924,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
             finalData = [
               {
-                'date': '',
-                'tripDetails': 'Average',
+                'date': 'Average',
+                // 'tripDetails': 'Average',
                 'duration': "$duration1",
                 'avgSpeed': avgSpeed1,
                 'fuelUsage': fuelUsage,
@@ -1022,7 +1015,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     minutes = minutes % 60;
 
     Duration duration =
-    Duration(hours: hours, minutes: minutes, seconds: seconds);
+        Duration(hours: hours, minutes: minutes, seconds: seconds);
     print("duration: $duration");
     formattedDuration = formatDurations(duration);
 // formattedDuration = duration.toString().split(".")[0];
@@ -1253,196 +1246,194 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         ),
                         trailing: isExpandedTile
                             ? Icon(
-                          Icons.keyboard_arrow_down,
-                          color: Colors.black,
-                        )
+                                Icons.keyboard_arrow_down,
+                                color: Colors.black,
+                              )
                             : Icon(
-                          Icons.keyboard_arrow_up,
-                          color: Colors.black,
-                        ),
+                                Icons.keyboard_arrow_up,
+                                color: Colors.black,
+                              ),
                         children: [
                           isVesselDataLoading!
                               ? Padding(
-                            padding: EdgeInsets.only(
-                                left: 10,
-                                right: 10,
-                                top: displayWidth(context) * 0.025),
-                            child: Container(
-                              // margin: EdgeInsets.only(bottom: displayHeight(context) * 0.005),
-                              child: InputDecorator(
-                                decoration: InputDecoration(
-                                  focusColor: dropDownBackgroundColor,
-                                  fillColor: dropDownBackgroundColor,
-                                  isDense: true,
-                                  contentPadding:
-                                  const EdgeInsets.all(3),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(5)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color: Colors.transparent),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(5)),
-                                    borderSide: BorderSide(
-                                        width: 1,
-                                        color: Colors.transparent),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.red),
-                                  ),
-                                  errorStyle: TextStyle(
-                                      fontFamily: "",
-                                      fontSize: displayWidth(context) *
-                                          0.025),
-                                  focusedErrorBorder:
-                                  const UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.red),
-                                  ),
-                                ),
-                                child: Padding(
                                   padding: EdgeInsets.only(
-                                      left: 13,
-                                      right:
-                                      displayWidth(context) * 0.45),
-                                  child: Form(
-                                    key: _formKey,
-                                    child: DropdownButtonFormField<
-                                        DropdownItem>(
-                                      autovalidateMode: AutovalidateMode
-                                          .onUserInteraction,
-                                      dropdownColor: Theme.of(context)
-                                          .brightness ==
-                                          Brightness.dark
-                                          ? "Select Vessel" ==
-                                          'User SubRole'
-                                          ? Colors.white
-                                          : Colors.transparent
-                                          : Colors.white,
+                                      left: 10,
+                                      right: 10,
+                                      top: displayWidth(context) * 0.025),
+                                  child: Container(
+                                    // margin: EdgeInsets.only(bottom: displayHeight(context) * 0.005),
+                                    child: InputDecorator(
                                       decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.zero,
-                                        border: InputBorder.none,
-                                        hintText: "Select Vessel*",
-                                        hintStyle: TextStyle(
-                                            color: Theme.of(context)
-                                                .brightness ==
-                                                Brightness.dark
-                                                ? "Select Vessel" ==
-                                                'User SubRole'
-                                                ? Colors.black
-                                                : Colors.white
-                                                : Colors.black,
+                                        focusColor: dropDownBackgroundColor,
+                                        fillColor: dropDownBackgroundColor,
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.all(3),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                          borderSide: BorderSide(
+                                              width: 1,
+                                              color: Colors.transparent),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                          borderSide: BorderSide(
+                                              width: 1,
+                                              color: Colors.transparent),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1, color: Colors.red),
+                                        ),
+                                        errorStyle: TextStyle(
+                                            fontFamily: "",
                                             fontSize:
-                                            displayWidth(context) *
-                                                0.034,
-                                            fontFamily: inter,
-                                            fontWeight:
-                                            FontWeight.w500),
+                                                displayWidth(context) * 0.025),
+                                        focusedErrorBorder:
+                                            const UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1, color: Colors.red),
+                                        ),
                                       ),
-                                      isExpanded: true,
-                                      isDense: true,
-                                      validator: (value) {
-                                        if (value == null) {
-                                          return 'Select Vessel';
-                                        }
-                                        return null;
-                                      },
-                                      icon: Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: Theme.of(context)
-                                              .brightness ==
-                                              Brightness.dark
-                                              ? "Select Vessel" ==
-                                              'User SubRole'
-                                              ? Colors.black
-                                              : Colors.white
-                                              : Colors.black),
-                                      value: selectedValue,
-                                      // value: selectState,
-                                      items: vesselData.map((item) {
-                                        return DropdownMenuItem<
-                                            DropdownItem>(
-                                          value: item,
-                                          child: Text(
-                                            item.name!,
-                                            style: TextStyle(
-                                                fontSize: displayWidth(
-                                                    context) *
-                                                    0.0346,
-                                                color: Theme.of(context)
-                                                    .brightness ==
-                                                    Brightness.dark
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 13,
+                                            right:
+                                                displayWidth(context) * 0.45),
+                                        child: Form(
+                                          key: _formKey,
+                                          child: DropdownButtonFormField<
+                                              DropdownItem>(
+                                            autovalidateMode: AutovalidateMode
+                                                .onUserInteraction,
+                                            dropdownColor:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.dark
                                                     ? "Select Vessel" ==
-                                                    'User SubRole'
-                                                    ? Colors.black
-                                                    : Colors.white
-                                                    : Colors.black,
-                                                fontWeight:
-                                                FontWeight.w500),
-                                            overflow:
-                                            TextOverflow.ellipsis,
+                                                            'User SubRole'
+                                                        ? Colors.white
+                                                        : Colors.transparent
+                                                    : Colors.white,
+                                            decoration: InputDecoration(
+                                              contentPadding: EdgeInsets.zero,
+                                              border: InputBorder.none,
+                                              hintText: "Select Vessel*",
+                                              hintStyle: TextStyle(
+                                                  color: Theme.of(context)
+                                                              .brightness ==
+                                                          Brightness.dark
+                                                      ? "Select Vessel" ==
+                                                              'User SubRole'
+                                                          ? Colors.black
+                                                          : Colors.white
+                                                      : Colors.black,
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.034,
+                                                  fontFamily: inter,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            isExpanded: true,
+                                            isDense: true,
+                                            validator: (value) {
+                                              if (value == null) {
+                                                return 'Select Vessel';
+                                              }
+                                              return null;
+                                            },
+                                            icon: Icon(
+                                                Icons.keyboard_arrow_down,
+                                                color: Theme.of(context)
+                                                            .brightness ==
+                                                        Brightness.dark
+                                                    ? "Select Vessel" ==
+                                                            'User SubRole'
+                                                        ? Colors.black
+                                                        : Colors.white
+                                                    : Colors.black),
+                                            value: selectedValue,
+                                            // value: selectState,
+                                            items: vesselData.map((item) {
+                                              return DropdownMenuItem<
+                                                  DropdownItem>(
+                                                value: item,
+                                                child: Text(
+                                                  item.name!,
+                                                  style: TextStyle(
+                                                      fontSize: displayWidth(
+                                                              context) *
+                                                          0.0346,
+                                                      color: Theme.of(context)
+                                                                  .brightness ==
+                                                              Brightness.dark
+                                                          ? "Select Vessel" ==
+                                                                  'User SubRole'
+                                                              ? Colors.black
+                                                              : Colors.white
+                                                          : Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              );
+                                            }).toList(),
+                                            onChanged: (item) {
+                                              print("id is: ${item?.id} ");
+                                              parentValue = false;
+                                              selectedVessel = item!.id;
+                                              selectedVesselName = item.name;
+                                              if (mounted) {
+                                                setState(() {
+                                                  isTripIdListLoading = false;
+                                                  isSHowGraph = false;
+                                                  avgSpeed = null;
+                                                  avgDuration = null;
+                                                  avgFuelConsumption = null;
+                                                  avgPower = null;
+                                                  triSpeedList.clear();
+                                                  tripList.clear();
+                                                  duration1 = null;
+                                                  avgSpeed1 = null;
+                                                  fuelUsage = null;
+                                                  powerUsage = null;
+                                                  finalData.clear();
+                                                  durationGraphData.clear();
+
+                                                  durationColumnSeriesData
+                                                      .clear();
+                                                  avgSpeedColumnSeriesData
+                                                      .clear();
+                                                  fuelUsageColumnSeriesData
+                                                      .clear();
+                                                  powerUsageColumnSeriesData
+                                                      .clear();
+                                                  selectedTripIdList!.clear();
+                                                  selectedTripLabelList!
+                                                      .clear();
+                                                });
+                                              }
+
+                                              dateTimeList!.clear();
+                                              children!.clear();
+                                              getTripListData(item.id!);
+
+                                              // state.didChange(item);
+                                              // onChanged!(item);
+                                            },
                                           ),
-                                        );
-                                      }).toList(),
-                                      onChanged: (item) {
-                                        print("id is: ${item?.id} ");
-                                        parentValue = false;
-                                        selectedVessel = item!.id;
-                                        selectedVesselName = item.name;
-                                        if (mounted) {
-                                          setState(() {
-                                            isTripIdListLoading = false;
-                                            isSHowGraph = false;
-                                            avgSpeed = null;
-                                            avgDuration = null;
-                                            avgFuelConsumption = null;
-                                            avgPower = null;
-                                            triSpeedList.clear();
-                                            tripList.clear();
-                                            duration1 = null;
-                                            avgSpeed1 = null;
-                                            fuelUsage = null;
-                                            powerUsage = null;
-                                            finalData.clear();
-                                            durationGraphData.clear();
-
-                                            durationColumnSeriesData
-                                                .clear();
-                                            avgSpeedColumnSeriesData
-                                                .clear();
-                                            fuelUsageColumnSeriesData
-                                                .clear();
-                                            powerUsageColumnSeriesData
-                                                .clear();
-                                            selectedTripIdList!.clear();
-                                            selectedTripLabelList!
-                                                .clear();
-                                          });
-                                        }
-
-                                        dateTimeList!.clear();
-                                        children!.clear();
-                                        getTripListData(item.id!);
-
-                                        // state.didChange(item);
-                                        // onChanged!(item);
-                                      },
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          )
+                                )
                               : Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  circularProgressColor),
-                            ),
-                          ),
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        circularProgressColor),
+                                  ),
+                                ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -1461,8 +1452,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                       print(
                                           "selectedCaseType: $selectedCaseType ");
                                       _selectedOption = value!;
-                                      selectedTripsAndDateString =
-                                      "Date Range";
+                                      selectedTripsAndDateString = "Date Range";
                                     });
                                   },
                                 ),
@@ -1482,7 +1472,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                           "selectedCaseType: $selectedCaseType ");
                                       _selectedOption = value!;
                                       selectedTripsAndDateString =
-                                      "Selected Trips";
+                                          "Selected Trips";
                                     });
                                   },
                                 ),
@@ -1497,88 +1487,92 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           ),
                           isBtnClick ?? false
                               ? Container(
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: circularProgressColor,
-                              ),
-                            ),
-                          )
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: circularProgressColor,
+                                    ),
+                                  ),
+                                )
                               : CommonButtons.getAcceptButton(
-                              "Search", context, primaryColor, () {
-                            if (_formKey.currentState!.validate()) {
-                              setState(() {
-                                isSHowGraph = false;
-                                isBtnClick = true;
-                                isExpansionCollapse = false;
-                                isExpandedTile = true;
-                                avgSpeed = null;
-                                avgDuration = null;
-                                avgFuelConsumption = null;
-                                avgPower = null;
-                                triSpeedList.clear();
-                                tripList.clear();
-                                duration1 = null;
-                                avgSpeed1 = null;
-                                fuelUsage = null;
-                                powerUsage = null;
-                                finalData.clear();
-                                durationGraphData.clear();
+                                  "Search", context, primaryColor, () {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      isSHowGraph = false;
+                                      isBtnClick = true;
+                                      isExpansionCollapse = false;
+                                      isExpandedTile = true;
+                                      avgSpeed = null;
+                                      avgDuration = null;
+                                      avgFuelConsumption = null;
+                                      avgPower = null;
+                                      triSpeedList.clear();
+                                      tripList.clear();
+                                      duration1 = null;
+                                      avgSpeed1 = null;
+                                      fuelUsage = null;
+                                      powerUsage = null;
+                                      finalData.clear();
+                                      durationGraphData.clear();
 
-                                durationColumnSeriesData.clear();
-                                avgSpeedColumnSeriesData.clear();
-                                fuelUsageColumnSeriesData.clear();
-                                powerUsageColumnSeriesData.clear();
-                              });
+                                      durationColumnSeriesData.clear();
+                                      avgSpeedColumnSeriesData.clear();
+                                      fuelUsageColumnSeriesData.clear();
+                                      powerUsageColumnSeriesData.clear();
+                                    });
 
-                              // _collapseExpansionTile();
-                              String? startDate = "";
-                              String? endDate = "";
-                              String? startDateToDispaly = "";
-                              String? endDateToDispaly = "";
-                              totalDuration = 0;
-                              totalSpeed = 0;
-                              totalFuelConsumption = 0;
-                              totalAvgPower = 0;
+                                    // _collapseExpansionTile();
+                                    String? startDate = "";
+                                    String? endDate = "";
+                                    String? startDateToDispaly = "";
+                                    String? endDateToDispaly = "";
+                                    totalDuration = 0;
+                                    totalSpeed = 0;
+                                    totalFuelConsumption = 0;
+                                    totalAvgPower = 0;
 
-                              if (selectedCaseType == 1) {
-                                if (focusedDayString!.isNotEmpty ||
-                                    lastFocusedDayString!.isNotEmpty) {
-                                  startDate = convertIntoYearMonthDay(
-                                      selectedDateForStartDate);
-                                  endDate = convertIntoYearMonthDay(
-                                      selectedDateForEndDate);
-                                  startDateToDispaly =  convertIntoYearMonthDayToShow(selectedDateForStartDate);
-                                  endDateToDispaly =  convertIntoYearMonthDayToShow(selectedDateForEndDate);
-                                  selectedTripsAndDateDetails =
-                                  "$startDateToDispaly to $endDateToDispaly";
-                                }
-                                if (selectedDateForEndDate.isBefore(
-                                    selectedDateForStartDate)) {
-                                  isBtnClick = false;
-                                  Utils.showSnackBar(context,
-                                      scaffoldKey: scaffoldKey,
-                                      message:
-                                      'End date ($endDate) should be greater than start date($startDate)',
-                                      duration: 2);
-                                }
-                                if (isSelectedStartDay! &&
-                                    isSelectedEndDay!) {
-                                  getReportsData(selectedCaseType!,
-                                      startDate: startDate,
-                                      endDate: endDate,
-                                      vesselID: selectedVessel);
-                                } else {
-                                  setState(() {
-                                    isBtnClick = false;
-                                  });
+                                    if (selectedCaseType == 1) {
+                                      if (focusedDayString!.isNotEmpty ||
+                                          lastFocusedDayString!.isNotEmpty) {
+                                        startDate = convertIntoYearMonthDay(
+                                            selectedDateForStartDate);
+                                        endDate = convertIntoYearMonthDay(
+                                            selectedDateForEndDate);
+                                        startDateToDispaly =
+                                            convertIntoYearMonthDayToShow(
+                                                selectedDateForStartDate);
+                                        endDateToDispaly =
+                                            convertIntoYearMonthDayToShow(
+                                                selectedDateForEndDate);
+                                        selectedTripsAndDateDetails =
+                                            "$startDateToDispaly to $endDateToDispaly";
+                                      }
+                                      if (selectedDateForEndDate
+                                          .isBefore(selectedDateForStartDate)) {
+                                        isBtnClick = false;
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message:
+                                                'End date ($endDate) should be greater than start date($startDate)',
+                                            duration: 2);
+                                        // return null;
+                                      } else if (isSelectedStartDay! &&
+                                          isSelectedEndDay!) {
+                                        getReportsData(selectedCaseType!,
+                                            startDate: startDate,
+                                            endDate: endDate,
+                                            vesselID: selectedVessel);
+                                      } else {
+                                        setState(() {
+                                          isBtnClick = false;
+                                        });
 // <<<<<<< Report-code-merge
-                                  Utils.showSnackBar(context,
-                                      scaffoldKey: scaffoldKey,
-                                      message:
-                                      'Please select the start and end dates',
-                                      duration: 2);
-                                }
-                                /*    if ((selectedVessel?.isNotEmpty ??
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message:
+                                                'Please select the start and end dates',
+                                            duration: 2);
+                                      }
+                                      /*    if ((selectedVessel?.isNotEmpty ??
                                             false) &&
                                             (startDate.isNotEmpty && startDate != null)&&
                                             (endDate.isNotEmpty && endDate != null)) {
@@ -1616,7 +1610,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                               'Please select the end date',
                                               duration: 2);
                                         }; */
-                                /*   else {
+                                      /*   else {
                                           setState(() {
                                             isBtnClick = false;
                                           });
@@ -1642,26 +1636,26 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                           }
                                         }*/
 
-                              } else if (selectedCaseType == 2) {
-                                if (selectedTripIdList?.isNotEmpty ??
-                                    false) {
-                                  getReportsData(selectedCaseType!,
-                                      selectedTripListID:
-                                      selectedTripIdList);
-                                } else {
-                                  setState(() {
-                                    isBtnClick = false;
-                                  });
-                                  if (selectedTripIdList?.isEmpty ??
-                                      false) {
-                                    Utils.showSnackBar(context,
-                                        scaffoldKey: scaffoldKey,
-                                        message:
-                                        'Please select the Trip Id',
-                                        duration: 2);
-                                  }
-                                }
-                              }
+                                    } else if (selectedCaseType == 2) {
+                                      if (selectedTripIdList?.isNotEmpty ??
+                                          false) {
+                                        getReportsData(selectedCaseType!,
+                                            selectedTripListID:
+                                                selectedTripIdList);
+                                      } else {
+                                        setState(() {
+                                          isBtnClick = false;
+                                        });
+                                        if (selectedTripIdList?.isEmpty ??
+                                            false) {
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'Please select the Trip Id',
+                                              duration: 2);
+                                        }
+                                      }
+                                    }
 // =======
 //                                   },
 //                                 ),
@@ -1690,19 +1684,19 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 //                               }else if(selectedCaseType == 2){
 //                                 getReportsDataWithValues(selectedCaseType!,selectedTripListID: selectedTripIdList);
 // >>>>>>> Bug_loc_reports
-                            }
-                          },
-                              displayWidth(context) * 0.8,
-                              displayHeight(context) * 0.065,
-                              Colors.grey.shade400,
-                              Theme.of(context).brightness ==
-                                  Brightness.dark
-                                  ? Colors.white
-                                  : Colors.white,
-                              displayHeight(context) * 0.021,
-                              buttonBGColor,
-                              '',
-                              fontWeight: FontWeight.w500),
+                                  }
+                                },
+                                  displayWidth(context) * 0.8,
+                                  displayHeight(context) * 0.065,
+                                  Colors.grey.shade400,
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Colors.white,
+                                  displayHeight(context) * 0.021,
+                                  buttonBGColor,
+                                  '',
+                                  fontWeight: FontWeight.w500),
                           SizedBox(
                             height: displayWidth(context) * 0.1,
                           )
@@ -1713,261 +1707,245 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   !isSHowGraph!
                       ? Container()
                       : isReportDataLoading!
-                      ? Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                          left: displayWidth(context) * 0.05,
-                          right: displayWidth(context) * 0.05,
-                        ),
-                        child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: displayWidth(context) * 0.07,
-                            ),
-                            Text(
-                              "$selectedVesselName",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: inter),
-                            ),
-                            SizedBox(
-                              height: displayWidth(context) * 0.04,
-                            ),
-                            Row(
+                          ? Column(
                               children: [
-                                Text(
-                                  "$selectedTripsAndDateString",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      fontFamily: inter),
-                                ),
-                                SizedBox(
-                                  width:
-                                  displayWidth(context) * 0.05,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    selectedCaseType == 1
-                                        ? ": ${selectedTripsAndDateDetails}"
-                                        : ":  ${selectedTripLabelList!.join(', ')}",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                        fontFamily: inter),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                    left: displayWidth(context) * 0.05,
+                                    right: displayWidth(context) * 0.05,
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: displayWidth(context) * 0.06,
-                            ),
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedButton =
-                                      'trip duration';
-                                      tripDurationButtonColor =
-                                      true;
-                                      avgSpeedButtonColor = false;
-                                      fuelUsageButtonColor = false;
-                                      powerUsageButtonColor = false;
-                                    });
-                                  },
-                                  child: Container(
-                                    //  color: dateBackgroundColor,
-                                    width: displayWidth(context) *
-                                        0.21,
-                                    height: displayWidth(context) *
-                                        0.09,
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            20),
-                                        color:
-                                        !tripDurationButtonColor!
-                                            ? reportTabColor
-                                            : Colors.blue),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(6.0),
-                                      child: Center(
-                                        child: Text(
-                                          "Trip Duration",
-                                          style: TextStyle(
-                                              color:
-                                              tripDurationButtonColor!
-                                                  ? Colors.white
-                                                  : Colors
-                                                  .black,
-                                              fontSize: 11,
-                                              fontWeight:
-                                              FontWeight.w400),
-                                        ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: displayWidth(context) * 0.07,
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedButton = 'avg speed';
-                                      tripDurationButtonColor =
-                                      false;
-                                      avgSpeedButtonColor = true;
-                                      fuelUsageButtonColor = false;
-                                      powerUsageButtonColor = false;
-                                    });
-                                  },
-                                  child: Container(
-                                    //  color: dateBackgroundColor,
-                                    width: displayWidth(context) *
-                                        0.19,
-                                    height: displayWidth(context) *
-                                        0.09,
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            20),
-                                        color: !avgSpeedButtonColor!
-                                            ? reportTabColor
-                                            : Colors.blue),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(6.0),
-                                      child: Center(
-                                        child: Text(
-                                          "Avg Speed",
-                                          style: TextStyle(
-                                              color:
-                                              avgSpeedButtonColor!
-                                                  ? Colors.white
-                                                  : Colors
-                                                  .black,
-                                              fontSize: 11,
-                                              fontWeight:
-                                              FontWeight.w400),
-                                        ),
+                                      Text(
+                                        "$selectedVesselName",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: inter),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedButton = 'fuel usage';
-                                      tripDurationButtonColor =
-                                      false;
-                                      avgSpeedButtonColor = false;
-                                      fuelUsageButtonColor = true;
-                                      powerUsageButtonColor = false;
-                                    });
-                                  },
-                                  child: Container(
-                                    //  color: dateBackgroundColor,
-                                    width: displayWidth(context) *
-                                        0.20,
-                                    height: displayWidth(context) *
-                                        0.09,
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            20),
-                                        color:
-                                        !fuelUsageButtonColor!
-                                            ? reportTabColor
-                                            : Colors.blue),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(6.0),
-                                      child: Center(
-                                        child: Text(
-                                          "Fuel Usage",
-                                          style: TextStyle(
-                                              color:
-                                              fuelUsageButtonColor!
-                                                  ? Colors.white
-                                                  : Colors
-                                                  .black,
-                                              fontSize: 11,
-                                              fontWeight:
-                                              FontWeight.w400),
-                                        ),
+                                      SizedBox(
+                                        height: displayWidth(context) * 0.04,
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedButton =
-                                      'power usage';
-                                      tripDurationButtonColor =
-                                      false;
-                                      avgSpeedButtonColor = false;
-                                      fuelUsageButtonColor = false;
-                                      powerUsageButtonColor = true;
-                                    });
-                                  },
-                                  child: Container(
-                                    //  color: dateBackgroundColor,
-                                    width: displayWidth(context) *
-                                        0.22,
-                                    height: displayWidth(context) *
-                                        0.09,
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(
-                                            20),
-                                        color:
-                                        !powerUsageButtonColor!
-                                            ? reportTabColor
-                                            : Colors.blue),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(6.0),
-                                      child: Center(
-                                        child: Text(
-                                          "Power Usage",
-                                          style: TextStyle(
-                                              color:
-                                              powerUsageButtonColor!
-                                                  ? Colors.white
-                                                  : Colors
-                                                  .black,
-                                              fontSize: 11,
-                                              fontWeight:
-                                              FontWeight.w400),
-                                        ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "$selectedTripsAndDateString",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: inter),
+                                          ),
+                                          SizedBox(
+                                            width: displayWidth(context) * 0.05,
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              selectedCaseType == 1
+                                                  ? ": ${selectedTripsAndDateDetails}"
+                                                  : ":  ${selectedTripLabelList!.join(', ')}",
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontFamily: inter),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
+                                      SizedBox(
+                                        height: displayWidth(context) * 0.06,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                selectedButton =
+                                                    'trip duration';
+                                                tripDurationButtonColor = true;
+                                                avgSpeedButtonColor = false;
+                                                fuelUsageButtonColor = false;
+                                                powerUsageButtonColor = false;
+                                              });
+                                            },
+                                            child: Container(
+                                              //  color: dateBackgroundColor,
+                                              width:
+                                                  displayWidth(context) * 0.21,
+                                              height:
+                                                  displayWidth(context) * 0.09,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color:
+                                                      !tripDurationButtonColor!
+                                                          ? reportTabColor
+                                                          : Colors.blue),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(6.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Trip Duration",
+                                                    style: TextStyle(
+                                                        color:
+                                                            tripDurationButtonColor!
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                        fontSize: 11,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                selectedButton = 'avg speed';
+                                                tripDurationButtonColor = false;
+                                                avgSpeedButtonColor = true;
+                                                fuelUsageButtonColor = false;
+                                                powerUsageButtonColor = false;
+                                              });
+                                            },
+                                            child: Container(
+                                              //  color: dateBackgroundColor,
+                                              width:
+                                                  displayWidth(context) * 0.19,
+                                              height:
+                                                  displayWidth(context) * 0.09,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: !avgSpeedButtonColor!
+                                                      ? reportTabColor
+                                                      : Colors.blue),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(6.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Avg Speed",
+                                                    style: TextStyle(
+                                                        color:
+                                                            avgSpeedButtonColor!
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                        fontSize: 11,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                selectedButton = 'fuel usage';
+                                                tripDurationButtonColor = false;
+                                                avgSpeedButtonColor = false;
+                                                fuelUsageButtonColor = true;
+                                                powerUsageButtonColor = false;
+                                              });
+                                            },
+                                            child: Container(
+                                              //  color: dateBackgroundColor,
+                                              width:
+                                                  displayWidth(context) * 0.20,
+                                              height:
+                                                  displayWidth(context) * 0.09,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: !fuelUsageButtonColor!
+                                                      ? reportTabColor
+                                                      : Colors.blue),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(6.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Fuel Usage",
+                                                    style: TextStyle(
+                                                        color:
+                                                            fuelUsageButtonColor!
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                        fontSize: 11,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                selectedButton = 'power usage';
+                                                tripDurationButtonColor = false;
+                                                avgSpeedButtonColor = false;
+                                                fuelUsageButtonColor = false;
+                                                powerUsageButtonColor = true;
+                                              });
+                                            },
+                                            child: Container(
+                                              //  color: dateBackgroundColor,
+                                              width:
+                                                  displayWidth(context) * 0.22,
+                                              height:
+                                                  displayWidth(context) * 0.09,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: !powerUsageButtonColor!
+                                                      ? reportTabColor
+                                                      : Colors.blue),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(6.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Power Usage",
+                                                    style: TextStyle(
+                                                        color:
+                                                            powerUsageButtonColor!
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                        fontSize: 11,
+                                                        fontWeight:
+                                                            FontWeight.w400),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: displayWidth(context) * 0.02,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: displayWidth(context) * 0.02,
-                            ),
-                          ],
-                        ),
 // <<<<<<< Report-code-merge
-                      ),
-                      isReportDataLoading!
-                          ? buildGraph(context)
-                          : Center(
-                        child: CircularProgressIndicator(
-                          valueColor:
-                          AlwaysStoppedAnimation<Color>(
-                              circularProgressColor),
+                                ),
+                                isReportDataLoading!
+                                    ? buildGraph(context)
+                                    : Center(
+                                        child: CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  circularProgressColor),
 // =======
 
 //                           table(context)!,
@@ -1975,38 +1953,38 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 //                           SizedBox(
 //                             height: displayWidth(context) * 0.08,
 // >>>>>>> Bug_loc_reports
-                        ),
-                      ),
+                                        ),
+                                      ),
 
-                      // tripDurationGraph(context)!,
-                      //avgSpeedGraph(context)!,
-                      // fuelUsageGraph(context)!,
-                      // powerUsageGraph(context)!,
+                                // tripDurationGraph(context)!,
+                                //avgSpeedGraph(context)!,
+                                // fuelUsageGraph(context)!,
+                                // powerUsageGraph(context)!,
 
-                      // Padding(
-                      //   padding: EdgeInsets.only(right: 20, left: 20),
-                      //   child: Row(
-                      //     mainAxisAlignment:
-                      //         MainAxisAlignment.spaceEvenly,
-                      //     children: [
-                      //       tripWithColor(
-                      //           backgroundColor, 'Trip A Name'),
-                      //       tripWithColor(
-                      //           circularProgressColor, 'Trip B Name'),
-                      //       tripWithColor(
-                      //           tripColumnBarColor, 'Trip C Name'),
-                      //     ],
-                      //   ),
-                      // ),
+                                // Padding(
+                                //   padding: EdgeInsets.only(right: 20, left: 20),
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceEvenly,
+                                //     children: [
+                                //       tripWithColor(
+                                //           backgroundColor, 'Trip A Name'),
+                                //       tripWithColor(
+                                //           circularProgressColor, 'Trip B Name'),
+                                //       tripWithColor(
+                                //           tripColumnBarColor, 'Trip C Name'),
+                                //     ],
+                                //   ),
+                                // ),
 
-                      table(context)!,
+                                table(context)!,
 
-                      SizedBox(
-                        height: displayWidth(context) * 0.08,
-                      ),
-                    ],
-                  )
-                      : Container(),
+                                SizedBox(
+                                  height: displayWidth(context) * 0.08,
+                                ),
+                              ],
+                            )
+                          : Container(),
                 ],
               ),
             ),
@@ -2057,80 +2035,80 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 ),
               ),
             ),
-            DataColumn(
-                label: Expanded(
-                  child: Center(
-                    child: Text(
-                      'Trip Details',
-                      style: TextStyle(color: tableHeaderColor),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )),
+            // DataColumn(
+            //     label: Expanded(
+            //       child: Center(
+            //         child: Text(
+            //           'Trip Details',
+            //           style: TextStyle(color: tableHeaderColor),
+            //           textAlign: TextAlign.center,
+            //         ),
+            //       ),
+            //     )),
             DataColumn(label: _verticalDivider),
             DataColumn(
                 label: Expanded(
-                  child: Center(
-                    child: Text('Duration',
-                        style: TextStyle(color: tableHeaderColor),
-                        textAlign: TextAlign.center),
-                  ),
-                )),
+              child: Center(
+                child: Text('Duration',
+                    style: TextStyle(color: tableHeaderColor),
+                    textAlign: TextAlign.center),
+              ),
+            )),
             DataColumn(
                 label: Expanded(
-                  child: Center(
-                    child: Text('Avg Speed (KT)',
-                        style: TextStyle(color: tableHeaderColor),
-                        textAlign: TextAlign.center),
-                  ),
-                )),
+              child: Center(
+                child: Text('Avg Speed (KT)',
+                    style: TextStyle(color: tableHeaderColor),
+                    textAlign: TextAlign.center),
+              ),
+            )),
             DataColumn(
                 label: Expanded(
-                  child: Center(
-                    child: Text('Fuel Usage (gal)',
-                        style: TextStyle(color: tableHeaderColor),
-                        textAlign: TextAlign.center),
-                  ),
-                )),
+              child: Center(
+                child: Text('Fuel Usage (gal)',
+                    style: TextStyle(color: tableHeaderColor),
+                    textAlign: TextAlign.center),
+              ),
+            )),
             DataColumn(
                 label: Expanded(
-                  child: Center(
-                    child: Text('Power Usage (W)',
-                        style: TextStyle(color: tableHeaderColor),
-                        textAlign: TextAlign.center),
-                  ),
-                )),
+              child: Center(
+                child: Text('Power Usage (W)',
+                    style: TextStyle(color: tableHeaderColor),
+                    textAlign: TextAlign.center),
+              ),
+            )),
           ],
           rows: [
             ...tripList.map((person) => DataRow(cells: [
-              DataCell(
-                Align(
-                    alignment: Alignment.center,
-                    child: Text(dateWithZeros(person['date'])!,
-                        textAlign: TextAlign.center)),
-              ),
-              DataCell(Align(
-                  alignment: Alignment.center,
-                  child: Text(person['tripDetails']!,
-                      textAlign: TextAlign.center))),
-              DataCell(_verticalDivider),
-              DataCell(Align(
-                  alignment: Alignment.center,
-                  child: Text(person['duration']!,
-                      textAlign: TextAlign.center))),
-              DataCell(Align(
-                  alignment: Alignment.center,
-                  child: Text('${person['avgSpeed']!}',
-                      textAlign: TextAlign.center))),
-              DataCell(Align(
-                  alignment: Alignment.center,
-                  child: Text('${person['fuelUsage']}',
-                      textAlign: TextAlign.center))),
-              DataCell(Align(
-                  alignment: Alignment.center,
-                  child: Text('${person['powerUsage']}',
-                      textAlign: TextAlign.center))),
-            ])),
+                  DataCell(
+                    Align(
+                        alignment: Alignment.center,
+                        child: Text(dateWithZeros(person['date'])!,
+                            textAlign: TextAlign.center)),
+                  ),
+                  // DataCell(Align(
+                  //     alignment: Alignment.center,
+                  //     child: Text(person['tripDetails']!,
+                  //         textAlign: TextAlign.center))),
+                  DataCell(_verticalDivider),
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text(person['duration']!,
+                          textAlign: TextAlign.center))),
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('${person['avgSpeed']!}',
+                          textAlign: TextAlign.center))),
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('${person['fuelUsage']}',
+                          textAlign: TextAlign.center))),
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text('${person['powerUsage']}',
+                          textAlign: TextAlign.center))),
+                ])),
 
             /* ...totalData.map((e) => DataRow(cells: [
               DataCell(
@@ -2155,52 +2133,52 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   style: TextStyle(color: Colors.blue))),
             ])),*/
             ...finalData.map((e) => DataRow(cells: [
-              DataCell(
-                Text(
-                  e['date']!,
-                  style: TextStyle(
-                      color: circularProgressColor,
-                      fontWeight: FontWeight.w800),
-                ),
-              ),
-              DataCell(Text(
-                e['tripDetails']!,
-                style: TextStyle(
-                    color: circularProgressColor,
-                    fontWeight: FontWeight.w800),
-              )),
-              DataCell(_verticalDivider),
-              DataCell(Align(
-                alignment: Alignment.center,
-                child: Text(
-                  e['duration']!,
-                  style: TextStyle(
-                      color: circularProgressColor,
-                      fontWeight: FontWeight.w800),
-                ),
-              )),
-              DataCell(Align(
-                alignment: Alignment.center,
-                child: Text('${e['avgSpeed'].toStringAsFixed(2)!}',
-                    style: TextStyle(
-                        color: circularProgressColor,
-                        fontWeight: FontWeight.w800)),
-              )),
-              DataCell(Align(
-                alignment: Alignment.center,
-                child: Text('${e['fuelUsage']!}',
-                    style: TextStyle(
-                        color: circularProgressColor,
-                        fontWeight: FontWeight.w800)),
-              )),
-              DataCell(Align(
-                alignment: Alignment.center,
-                child: Text('${e['powerUsage']!}',
-                    style: TextStyle(
-                        color: circularProgressColor,
-                        fontWeight: FontWeight.w800)),
-              )),
-            ]))
+                  DataCell(
+                    Text(
+                      e['date']!,
+                      style: TextStyle(
+                          color: circularProgressColor,
+                          fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                  // DataCell(Text(
+                  //   e['tripDetails']!,
+                  //   style: TextStyle(
+                  //       color: circularProgressColor,
+                  //       fontWeight: FontWeight.w800),
+                  // )),
+                  DataCell(_verticalDivider),
+                  DataCell(Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      e['duration']!,
+                      style: TextStyle(
+                          color: circularProgressColor,
+                          fontWeight: FontWeight.w800),
+                    ),
+                  )),
+                  DataCell(Align(
+                    alignment: Alignment.center,
+                    child: Text('${e['avgSpeed'].toStringAsFixed(2)!}',
+                        style: TextStyle(
+                            color: circularProgressColor,
+                            fontWeight: FontWeight.w800)),
+                  )),
+                  DataCell(Align(
+                    alignment: Alignment.center,
+                    child: Text('${e['fuelUsage']!}',
+                        style: TextStyle(
+                            color: circularProgressColor,
+                            fontWeight: FontWeight.w800)),
+                  )),
+                  DataCell(Align(
+                    alignment: Alignment.center,
+                    child: Text('${e['powerUsage']!}',
+                        style: TextStyle(
+                            color: circularProgressColor,
+                            fontWeight: FontWeight.w800)),
+                  )),
+                ]))
           ],
 // =======
 //       child: Container(
@@ -2380,14 +2358,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => TripAnalyticsScreen(
-                                tripId: selectedIndex,
-                                vesselName: selectedVesselName,
-                                // avgInfo: reportModel!.data!.avgInfo,
-                                vesselId: selectedVessel,
-                                tripIsRunningOrNot: false,
-                                calledFrom: 'Report',
-                                // vessel: getVesselById[0]
-                              )));
+                                    tripId: selectedIndex,
+                                    vesselName: selectedVesselName,
+                                    // avgInfo: reportModel!.data!.avgInfo,
+                                    vesselId: selectedVessel,
+                                    tripIsRunningOrNot: false,
+                                    calledFrom: 'Report',
+                                    // vessel: getVesselById[0]
+                                  )));
                     },
                     child: Text('Go to Trip Report',
                         style: TextStyle(
@@ -2426,7 +2404,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 fontFamily: poppins,
               )),
           primaryYAxis: NumericAxis(
-            // interval: 5,
+              // interval: 5,
 
               axisLine: AxisLine(
                 width: 0,
@@ -2526,14 +2504,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => TripAnalyticsScreen(
-                            tripId: selectedIndex,
-                            vesselName: selectedVesselName,
-                            // avgInfo: reportModel!.data!.avgInfo,
-                            vesselId: selectedVessel,
-                            tripIsRunningOrNot: false,
-                            calledFrom: 'Report',
-                            // vessel: getVesselById[0]
-                          )));
+                                tripId: selectedIndex,
+                                vesselName: selectedVesselName,
+                                // avgInfo: reportModel!.data!.avgInfo,
+                                vesselId: selectedVessel,
+                                tripIsRunningOrNot: false,
+                                calledFrom: 'Report',
+                                // vessel: getVesselById[0]
+                              )));
                 },
                 child: Text('Go to Trip Report',
                     style: TextStyle(
@@ -2568,7 +2546,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 fontFamily: poppins,
               )),
           primaryYAxis: NumericAxis(
-            // interval: 5,
+              // interval: 5,
               axisLine: AxisLine(width: 2),
               title: AxisTitle(
                   text: 'Knots',
@@ -2660,14 +2638,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => TripAnalyticsScreen(
-                            tripId: selectedIndex,
-                            vesselName: selectedVesselName,
-                            // avgInfo: reportModel!.data!.avgInfo,
-                            vesselId: selectedVessel,
-                            tripIsRunningOrNot: false,
-                            calledFrom: 'Report',
-                            // vessel: getVesselById[0]
-                          )));
+                                tripId: selectedIndex,
+                                vesselName: selectedVesselName,
+                                // avgInfo: reportModel!.data!.avgInfo,
+                                vesselId: selectedVessel,
+                                tripIsRunningOrNot: false,
+                                calledFrom: 'Report',
+                                // vessel: getVesselById[0]
+                              )));
                 },
                 child: Text('Go to Trip Report',
                     style: TextStyle(
@@ -2794,14 +2772,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => TripAnalyticsScreen(
-                            tripId: selectedIndex,
-                            vesselName: selectedVesselName,
-                            //   avgInfo: reportModel!.data!.avgInfo,
-                            vesselId: selectedVessel,
-                            tripIsRunningOrNot: false,
-                            calledFrom: 'Report',
-                            // vessel: getVesselById[0]
-                          )));
+                                tripId: selectedIndex,
+                                vesselName: selectedVesselName,
+                                //   avgInfo: reportModel!.data!.avgInfo,
+                                vesselId: selectedVessel,
+                                tripIsRunningOrNot: false,
+                                calledFrom: 'Report',
+                                // vessel: getVesselById[0]
+                              )));
                 },
                 child: Text('Go to Trip Report',
                     style: TextStyle(
@@ -2836,7 +2814,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 fontFamily: poppins,
               )),
           primaryYAxis: NumericAxis(
-            // interval: 5,
+              // interval: 5,
               axisLine: AxisLine(width: 2),
               title: AxisTitle(
                   text: 'Wats',
@@ -2899,7 +2877,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         borderRadius: BorderRadius.circular(10),
                         color: dateBackgroundColor),
                     child: Padding(
-                      padding:  EdgeInsets.only(left: displayWidth(context) * 0.05,right: displayWidth(context) * 0.05),
+                      padding: EdgeInsets.only(
+                          left: displayWidth(context) * 0.05,
+                          right: displayWidth(context) * 0.05),
                       child: Row(
                         children: [
                           Text(
@@ -2907,7 +2887,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             style: TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.w400),
                           ),
-                          SizedBox(width: displayWidth(context) * 0.02,),
+                          SizedBox(
+                            width: displayWidth(context) * 0.02,
+                          ),
                           Icon(
                             Icons.calendar_today_outlined,
                             size: 20,
@@ -2933,7 +2915,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         borderRadius: BorderRadius.circular(10),
                         color: dateBackgroundColor),
                     child: Padding(
-                      padding: EdgeInsets.only(left: displayWidth(context) * 0.05,right: displayWidth(context) * 0.05),
+                      padding: EdgeInsets.only(
+                          left: displayWidth(context) * 0.05,
+                          right: displayWidth(context) * 0.05),
                       child: Row(
                         children: [
                           Text(
@@ -2941,7 +2925,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             style: TextStyle(
                                 fontSize: 15, fontWeight: FontWeight.w400),
                           ),
-                          SizedBox(width: displayWidth(context) * 0.02,),
+                          SizedBox(
+                            width: displayWidth(context) * 0.02,
+                          ),
                           Icon(
                             Icons.calendar_today_outlined,
                             size: 20,
@@ -2960,217 +2946,217 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         ),
         selectDateOption == 1 && isSelectStartDate
             ? Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  left: displayWidth(context) * 0.045,
-                  right: displayWidth(context) * 0.045),
-              child: Container(
-                width: displayWidth(context),
-                height: 50,
-                decoration: BoxDecoration(
-                    color: selectDayBackgroundColor,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(
-                        30,
-                      ),
-                      topLeft: Radius.circular(
-                        30,
-                      ),
-                    )),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      left: displayWidth(context) * 0.03,
-                      top: displayWidth(context) * 0.05),
-                  child: Text(
-                    "Select Start Date",
-                    style: TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: displayWidth(context) * 0.045,
-                  right: displayWidth(context) * 0.045),
-              child: TableCalendar(
-                daysOfWeekVisible: true,
-                focusedDay: selectedDateForStartDate,
-                firstDay: firstDate,
-                lastDay: lastDate,
-                onFormatChanged: (CalendarFormat _format) {},
-                calendarBuilders: CalendarBuilders(
-                  selectedBuilder: (context, date, events) => Container(
-                      margin: const EdgeInsets.all(5.0),
-                      alignment: Alignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: displayWidth(context) * 0.045,
+                        right: displayWidth(context) * 0.045),
+                    child: Container(
+                      width: displayWidth(context),
+                      height: 50,
                       decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          shape: BoxShape.circle),
-                      child: Text(
-                        date.day.toString(),
-                        style: TextStyle(color: Colors.white),
-                      )),
-                ),
-                calendarStyle: CalendarStyle(
-                    todayDecoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.blue,
-                        )),
-                    isTodayHighlighted: true,
-                    selectedDecoration: BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
-                    selectedTextStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22.0,
-                        color: Colors.pink),
-                    todayTextStyle: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 16.0,
-                        color: selectedDateForStartDate == DateTime.now()
-                            ? Colors.white
-                            : Colors.blue)),
-                selectedDayPredicate: (DateTime date) {
-                  return isSameDay(selectedDateForStartDate, date);
-                },
-                startingDayOfWeek: StartingDayOfWeek.monday,
-                onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
-                  setState(() {
-                    isSelectedStartDay = true;
-                    selectedDateForStartDate = selectDay!;
-                    focusedDay = focusDay!;
-                    focusedDayString = focusDay.toString();
-                    pickStartDate = convertIntoMonthDayYear(selectDay);
-                    print("pick start date: $pickStartDate");
-                  });
-                  print("focusedDay: $focusDay");
-                },
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  // rightChevronVisible: DateTime(lastDate.year, lastDate.month , lastDate.day) == DateTime(now.year, now.month , now.day)  ? true:false,
-
-                  formatButtonDecoration: BoxDecoration(
-                    color: Colors.brown,
-                    borderRadius: BorderRadius.circular(22.0),
-                  ),
-                  formatButtonTextStyle: TextStyle(color: Colors.white),
-                  formatButtonShowsNext: false,
-                ),
-              ),
-            ),
-          ],
-        )
-            : isSelectEndDate
-            ? Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  left: displayWidth(context) * 0.045,
-                  right: displayWidth(context) * 0.045),
-              child: Container(
-                width: displayWidth(context),
-                height: 50,
-                decoration: BoxDecoration(
-                    color: selectDayBackgroundColor,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(
-                        30,
-                      ),
-                      topLeft: Radius.circular(
-                        30,
-                      ),
-                    )),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      left: displayWidth(context) * 0.03,
-                      top: displayWidth(context) * 0.05),
-                  child: Text(
-                    "Select End Date",
-                    style: TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: displayWidth(context) * 0.045,
-                  right: displayWidth(context) * 0.045),
-              child: TableCalendar(
-                daysOfWeekVisible: true,
-                focusedDay: selectedDateForEndDate,
-                firstDay: firstDate,
-                lastDay: lastDate,
-                onFormatChanged: (CalendarFormat _format) {},
-                calendarBuilders: CalendarBuilders(
-                  selectedBuilder: (context, date, events) =>
-                      Container(
-                          margin: const EdgeInsets.all(5.0),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              shape: BoxShape.circle),
-                          child: Text(
-                            date.day.toString(),
-                            style: TextStyle(color: Colors.white),
+                          color: selectDayBackgroundColor,
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(
+                              30,
+                            ),
+                            topLeft: Radius.circular(
+                              30,
+                            ),
                           )),
-                ),
-                calendarStyle: CalendarStyle(
-                    todayDecoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.blue,
-                        )),
-                    isTodayHighlighted: true,
-                    selectedDecoration: BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: displayWidth(context) * 0.03,
+                            top: displayWidth(context) * 0.05),
+                        child: Text(
+                          "Select Start Date",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                      ),
                     ),
-                    selectedTextStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22.0,
-                        color: Colors.pink),
-                    todayTextStyle: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 16.0,
-                        color:
-                        selectedDateForEndDate == DateTime.now()
-                            ? Colors.white
-                            : Colors.blue)),
-                selectedDayPredicate: (DateTime date) {
-                  return isSameDay(selectedDateForEndDate, date);
-                },
-                startingDayOfWeek: StartingDayOfWeek.monday,
-                onDaySelected:
-                    (DateTime? selectDay, DateTime? focusDay) {
-                  setState(() {
-                    isSelectedEndDay = true;
-                    selectedDateForEndDate = selectDay!;
-                    lastDayFocused = focusDay!;
-                    lastFocusedDayString = focusDay.toString();
-                    pickEndDate = convertIntoMonthDayYear(selectDay);
-                    print("pick end date: $pickEndDate");
-                  });
-                  print("lastDayFocused: $lastDayFocused");
-                },
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  formatButtonDecoration: BoxDecoration(
-                    color: Colors.brown,
-                    borderRadius: BorderRadius.circular(22.0),
                   ),
-                  formatButtonTextStyle:
-                  TextStyle(color: Colors.white),
-                  formatButtonShowsNext: false,
-                ),
-              ),
-            ),
-          ],
-        )
-            : Container(),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: displayWidth(context) * 0.045,
+                        right: displayWidth(context) * 0.045),
+                    child: TableCalendar(
+                      daysOfWeekVisible: true,
+                      focusedDay: selectedDateForStartDate,
+                      firstDay: firstDate,
+                      lastDay: lastDate,
+                      onFormatChanged: (CalendarFormat _format) {},
+                      calendarBuilders: CalendarBuilders(
+                        selectedBuilder: (context, date, events) => Container(
+                            margin: const EdgeInsets.all(5.0),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                shape: BoxShape.circle),
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(color: Colors.white),
+                            )),
+                      ),
+                      calendarStyle: CalendarStyle(
+                          todayDecoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.blue,
+                              )),
+                          isTodayHighlighted: true,
+                          selectedDecoration: BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          selectedTextStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22.0,
+                              color: Colors.pink),
+                          todayTextStyle: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              fontSize: 16.0,
+                              color: selectedDateForStartDate == DateTime.now()
+                                  ? Colors.white
+                                  : Colors.blue)),
+                      selectedDayPredicate: (DateTime date) {
+                        return isSameDay(selectedDateForStartDate, date);
+                      },
+                      startingDayOfWeek: StartingDayOfWeek.monday,
+                      onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
+                        setState(() {
+                          isSelectedStartDay = true;
+                          selectedDateForStartDate = selectDay!;
+                          focusedDay = focusDay!;
+                          focusedDayString = focusDay.toString();
+                          pickStartDate = convertIntoMonthDayYear(selectDay);
+                          print("pick start date: $pickStartDate");
+                        });
+                        print("focusedDay: $focusDay");
+                      },
+                      headerStyle: HeaderStyle(
+                        formatButtonVisible: false,
+                        // rightChevronVisible: DateTime(lastDate.year, lastDate.month , lastDate.day) == DateTime(now.year, now.month , now.day)  ? true:false,
+
+                        formatButtonDecoration: BoxDecoration(
+                          color: Colors.brown,
+                          borderRadius: BorderRadius.circular(22.0),
+                        ),
+                        formatButtonTextStyle: TextStyle(color: Colors.white),
+                        formatButtonShowsNext: false,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : isSelectEndDate
+                ? Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: displayWidth(context) * 0.045,
+                            right: displayWidth(context) * 0.045),
+                        child: Container(
+                          width: displayWidth(context),
+                          height: 50,
+                          decoration: BoxDecoration(
+                              color: selectDayBackgroundColor,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(
+                                  30,
+                                ),
+                                topLeft: Radius.circular(
+                                  30,
+                                ),
+                              )),
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: displayWidth(context) * 0.03,
+                                top: displayWidth(context) * 0.05),
+                            child: Text(
+                              "Select End Date",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: displayWidth(context) * 0.045,
+                            right: displayWidth(context) * 0.045),
+                        child: TableCalendar(
+                          daysOfWeekVisible: true,
+                          focusedDay: selectedDateForEndDate,
+                          firstDay: firstDate,
+                          lastDay: lastDate,
+                          onFormatChanged: (CalendarFormat _format) {},
+                          calendarBuilders: CalendarBuilders(
+                            selectedBuilder: (context, date, events) =>
+                                Container(
+                                    margin: const EdgeInsets.all(5.0),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        shape: BoxShape.circle),
+                                    child: Text(
+                                      date.day.toString(),
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                          ),
+                          calendarStyle: CalendarStyle(
+                              todayDecoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.blue,
+                                  )),
+                              isTodayHighlighted: true,
+                              selectedDecoration: BoxDecoration(
+                                color: Colors.blue,
+                                shape: BoxShape.circle,
+                              ),
+                              selectedTextStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22.0,
+                                  color: Colors.pink),
+                              todayTextStyle: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16.0,
+                                  color:
+                                      selectedDateForEndDate == DateTime.now()
+                                          ? Colors.white
+                                          : Colors.blue)),
+                          selectedDayPredicate: (DateTime date) {
+                            return isSameDay(selectedDateForEndDate, date);
+                          },
+                          startingDayOfWeek: StartingDayOfWeek.monday,
+                          onDaySelected:
+                              (DateTime? selectDay, DateTime? focusDay) {
+                            setState(() {
+                              isSelectedEndDay = true;
+                              selectedDateForEndDate = selectDay!;
+                              lastDayFocused = focusDay!;
+                              lastFocusedDayString = focusDay.toString();
+                              pickEndDate = convertIntoMonthDayYear(selectDay);
+                              print("pick end date: $pickEndDate");
+                            });
+                            print("lastDayFocused: $lastDayFocused");
+                          },
+                          headerStyle: HeaderStyle(
+                            formatButtonVisible: false,
+                            formatButtonDecoration: BoxDecoration(
+                              color: Colors.brown,
+                              borderRadius: BorderRadius.circular(22.0),
+                            ),
+                            formatButtonTextStyle:
+                                TextStyle(color: Colors.white),
+                            formatButtonShowsNext: false,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
       ],
     );
   }
@@ -3178,99 +3164,99 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   Widget? filterByTrip(BuildContext context) {
     return isTripIdListLoading!
         ? Column(
-      children: [
-        // (tripIdList?.isEmpty ?? false) ? Container(width: displayWidth(context),height: 40,child: Center(child: commonText(text: 'No Trip Id available',textSize: displayWidth(context)*0.030)),) :
+            children: [
+              // (tripIdList?.isEmpty ?? false) ? Container(width: displayWidth(context),height: 40,child: Center(child: commonText(text: 'No Trip Id available',textSize: displayWidth(context)*0.030)),) :
 
-        tripIdList!.length == 0
-            ? Container(
-            child: commonText(
-                text: 'No Trips available',
-                textSize: displayWidth(context) * 0.030,
-                textColor: primaryColor))
-            : ListView(
-          primary: false,
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(
-                  left: displayWidth(context) * 0.046),
-              child: CustomLabeledCheckbox(
-                label: 'Select All',
-                value: parentValue != null ? parentValue! : false,
-                onChanged: (value) {
-                  if (value) {
-                    print("select all status: $value");
-                    // Checked/Unchecked
-                    //selectedTripIdList = tripIdList;
-                    selectedTripIdList!.addAll(tripIdList!);
-                    selectedTripLabelList!.clear();
-                    selectedTripLabelList!.addAll(children!);
-                    Utils.customPrint(
-                        "selected trip label list: ${selectedTripLabelList}");
-                    _checkAll(value);
-                  } else if (!value) {
-                    // Tristate
-                    selectedTripIdList!.clear();
-                    selectedTripLabelList!.clear();
-                    _checkAll(false);
-                  }
-                },
-                checkboxType: CheckboxType.Parent,
-                activeColor: Colors.indigo,
-              ),
-            ),
-            ListView.builder(
-              itemCount: children?.length ?? 0,
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              itemBuilder: (context, index) => Column(
-                children: [
-                  Divider(
-                    height: 0,
-                    thickness: 0.5,
-                    color: dividerColor,
-                  ),
-                  CustomLabeledCheckboxOne(
-                    label: children![index],
-                    value: childrenValue![index],
-                    tripId: tripIdList![index],
-                    dateTime: dateTimeList![index],
-                    onChanged: (value) {
-                      print("trip list id: ${tripIdList![index]}");
-                      if (!selectedTripIdList!
-                          .contains(tripIdList![index])) {
-                        selectedTripIdList!.add(tripIdList![index]);
-                        selectedTripLabelList!
-                            .add(children![index]);
-                        Utils.customPrint(
-                            "selected trip label list: ${selectedTripLabelList}");
-                      } else {
-                        selectedTripIdList!
-                            .remove(tripIdList![index]);
-                        // tripIdList!.removeAt(index);
-                        selectedTripLabelList!
-                            .remove(children![index]);
-                        Utils.customPrint(
-                            "selected trip label list: ${selectedTripLabelList}");
-                      }
-                      manageTristate(index, value);
-                    },
-                    checkboxType: CheckboxType.Child,
-                    activeColor: Colors.indigo,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        )
-      ],
-    )
+              tripIdList!.length == 0
+                  ? Container(
+                      child: commonText(
+                          text: 'No Trips available',
+                          textSize: displayWidth(context) * 0.030,
+                          textColor: primaryColor))
+                  : ListView(
+                      primary: false,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: displayWidth(context) * 0.046),
+                          child: CustomLabeledCheckbox(
+                            label: 'Select All',
+                            value: parentValue != null ? parentValue! : false,
+                            onChanged: (value) {
+                              if (value) {
+                                print("select all status: $value");
+                                // Checked/Unchecked
+                                //selectedTripIdList = tripIdList;
+                                selectedTripIdList!.addAll(tripIdList!);
+                                selectedTripLabelList!.clear();
+                                selectedTripLabelList!.addAll(children!);
+                                Utils.customPrint(
+                                    "selected trip label list: ${selectedTripLabelList}");
+                                _checkAll(value);
+                              } else if (!value) {
+                                // Tristate
+                                selectedTripIdList!.clear();
+                                selectedTripLabelList!.clear();
+                                _checkAll(false);
+                              }
+                            },
+                            checkboxType: CheckboxType.Parent,
+                            activeColor: Colors.indigo,
+                          ),
+                        ),
+                        ListView.builder(
+                          itemCount: children?.length ?? 0,
+                          shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
+                          itemBuilder: (context, index) => Column(
+                            children: [
+                              Divider(
+                                height: 0,
+                                thickness: 0.5,
+                                color: dividerColor,
+                              ),
+                              CustomLabeledCheckboxOne(
+                                label: children![index],
+                                value: childrenValue![index],
+                                tripId: tripIdList![index],
+                                dateTime: dateTimeList![index],
+                                onChanged: (value) {
+                                  print("trip list id: ${tripIdList![index]}");
+                                  if (!selectedTripIdList!
+                                      .contains(tripIdList![index])) {
+                                    selectedTripIdList!.add(tripIdList![index]);
+                                    selectedTripLabelList!
+                                        .add(children![index]);
+                                    Utils.customPrint(
+                                        "selected trip label list: ${selectedTripLabelList}");
+                                  } else {
+                                    selectedTripIdList!
+                                        .remove(tripIdList![index]);
+                                    // tripIdList!.removeAt(index);
+                                    selectedTripLabelList!
+                                        .remove(children![index]);
+                                    Utils.customPrint(
+                                        "selected trip label list: ${selectedTripLabelList}");
+                                  }
+                                  manageTristate(index, value);
+                                },
+                                checkboxType: CheckboxType.Child,
+                                activeColor: Colors.indigo,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+            ],
+          )
         : Center(
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(circularProgressColor),
-      ),
-    );
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(circularProgressColor),
+            ),
+          );
   }
 }
 
@@ -3293,10 +3279,10 @@ class CustomTooltipBehavior extends TooltipBehavior {
     double duration = 3500,
     TooltipPosition tooltipPosition = TooltipPosition.pointer,
   }) : super(
-    enable: true,
-    duration: duration,
-    tooltipPosition: tooltipPosition,
-  );
+          enable: true,
+          duration: duration,
+          tooltipPosition: tooltipPosition,
+        );
 
   @override
   Widget buildContent(BuildContext context, dynamic data) {

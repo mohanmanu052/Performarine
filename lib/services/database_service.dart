@@ -132,7 +132,7 @@ class DatabaseService {
   }*/
 
   /// Method to get AllTrips data By Vessel Id
-  Future<List<Trip>> getAllTripsByVesselId(String id) async {
+  /* Future<List<Trip>> getAllTripsByVesselId(String id) async {
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps = await db.query(
       'trips',
@@ -141,7 +141,7 @@ class DatabaseService {
       orderBy: 'isSync',
     );
     return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
-  }
+  }*/
 
   Future<List<CreateVessel>> getVesselNameByID(String id) async {
     final db = await _databaseService.database;
@@ -492,6 +492,39 @@ class DatabaseService {
     }
     //return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
 
+    return finalTripList;
+  }
+
+  /// Method to get AllTrips data By Vessel Id
+  Future<List<Trip>> getAllTripsByVesselId(String id) async {
+    final db = await _databaseService.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'trips',
+      where: 'vesselId = ?',
+      whereArgs: [id],
+      orderBy: 'isSync',
+    );
+
+    List<Trip> finalTripList = [];
+    List<Trip> tempList =
+        List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
+
+    if (tempList.isNotEmpty) {
+      List<Trip> unSyncedList =
+          tempList.where((element) => element.isSync == 0).toList();
+      List<Trip> syncedList =
+          tempList.where((element) => element.isSync == 1).toList();
+
+      syncedList.sort(((b, a) {
+        return DateTime.parse(a.updatedAt!)
+            .compareTo(DateTime.parse(b.updatedAt!));
+      }));
+
+      finalTripList.addAll(unSyncedList);
+      finalTripList.addAll(syncedList);
+    }
+
+    //return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
     return finalTripList;
   }
 }

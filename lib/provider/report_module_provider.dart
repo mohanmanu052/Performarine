@@ -30,28 +30,26 @@ class ReportModuleProvider with ChangeNotifier {
     Uri uri = Uri.https(Urls.baseUrl, Urls.reportModule);
 
     var queryParameters;
-    Utils.customPrint("filter by date:$startDate, $endDate ");
-    var tempStartDate = DateFormat('yyyy-MM-dd').format(DateTime.parse(startDate+" 00:00:00.000").toUtc());
-    var tempEndDate = DateFormat('yyyy-MM-dd').format(DateTime.parse(endDate+" 23:11:59.000").toUtc());
-    Utils.customPrint("filter by date:$tempStartDate, $tempEndDate");
-
-    if(caseType == 1){
-      queryParameters= {
+    var tempStartDate;
+    var tempEndDate;
+    if (startDate.isNotEmpty && endDate.isNotEmpty) {
+      Utils.customPrint("filter by date:$startDate, $endDate ");
+      tempStartDate = DateFormat('yyyy-MM-dd')
+          .format(DateTime.parse(startDate + " 00:00:00.000").toUtc());
+      tempEndDate = DateFormat('yyyy-MM-dd')
+          .format(DateTime.parse(endDate + " 23:11:59.000").toUtc());
+      Utils.customPrint("filter by date:$tempStartDate, $tempEndDate");
+    }
+    if (caseType == 1) {
+      queryParameters = {
         "case": caseType,
         "vesselID": vesselID,
         "startDate": tempStartDate,
         "endDate": tempEndDate
       };
-    } else{
-      queryParameters= {
-        "case": caseType,
-        "tripIds" : selectedTripId
-      };
+    } else {
+      queryParameters = {"case": caseType, "tripIds": selectedTripId};
     }
-
-
-
-
 
     Utils.customPrint('Report module REQ $queryParameters\ntoken:$token');
 
@@ -69,8 +67,6 @@ class ReportModuleProvider with ChangeNotifier {
         final pref = await Utils.initSharedPreferences();
 
         reportModel = ReportModel.fromJson(json.decode(response.body));
-
-
 
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
