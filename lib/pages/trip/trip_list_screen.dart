@@ -249,9 +249,24 @@ class _TripListScreenState extends State<TripListScreen> {
                                   snapshot.data![index].isEndTripClicked = true;
                                 });
 
+                                final currentTrip = await _databaseService
+                                    .getTrip(snapshot.data![index].id!);
+
+                                DateTime createdAtTime =
+                                    DateTime.parse(currentTrip.createdAt!);
+
+                                var durationTime = DateTime.now()
+                                    .toUtc()
+                                    .difference(createdAtTime);
+                                String tripDuration =
+                                    Utils.calculateTripDuration(
+                                        ((durationTime.inMilliseconds) / 1000)
+                                            .toInt());
+
                                 EndTrip().endTrip(
                                     context: context,
                                     scaffoldKey: scaffoldKey,
+                                    duration: tripDuration,
                                     onEnded: () {
                                       setState(() {
                                         future = _databaseService

@@ -2248,9 +2248,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     await onSave('', bottomSheetContext, true);
 
-    await Future.delayed(Duration(seconds: 4), () {
+    /*await Future.delayed(Duration(seconds: 4), () {
       Utils.customPrint('Future delayed duration Ended');
-    });
+    });*/
 
     await sharedPreferences!.setBool('trip_started', true);
     await sharedPreferences!.setStringList('trip_data', [

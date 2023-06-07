@@ -130,9 +130,25 @@ class _TripViewListingState extends State<TripViewListing> {
                                             true;
                                       });
 
+                                      final currentTrip = await _databaseService
+                                          .getTrip(snapshot.data![index].id!);
+
+                                      DateTime createdAtTime = DateTime.parse(
+                                          currentTrip.createdAt!);
+
+                                      var durationTime = DateTime.now()
+                                          .toUtc()
+                                          .difference(createdAtTime);
+                                      String tripDuration =
+                                          Utils.calculateTripDuration(
+                                              ((durationTime.inMilliseconds) /
+                                                      1000)
+                                                  .toInt());
+
                                       EndTrip().endTrip(
                                           context: context,
                                           scaffoldKey: widget.scaffoldKey,
+                                          duration: tripDuration,
                                           onEnded: () async {
                                             setState(() {
                                               //future = _databaseService.trips();
