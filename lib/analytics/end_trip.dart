@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:background_locator_2/background_locator.dart';
+import 'package:background_locator_2/location_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -32,7 +34,18 @@ class EndTrip {
     String downloadedFilePath = '';
     await sharedPreferences!.reload();
     debugPrint("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance");
+    ReceivePort port = ReceivePort();
+    String? latitude,longitude;
+    port.listen((dynamic data) async {
+      LocationDto? locationDto =
+      data != null ?await LocationDto.fromJson(data) : null;
+      if (locationDto != null) {
+        latitude=locationDto!.latitude.toString();
+        longitude=locationDto!.longitude.toString();
+      };
+    });
 
+    debugPrint("endtrip location:$latitude");
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
     Utils.customPrint(
@@ -81,7 +94,7 @@ class EndTrip {
 
     ///Download
     //  downloadTrip(context!, tripId);
-    Utils.customPrint('FINAL ZIP FILE PATH: ${file.path}');
+    // Utils.customPrint('FINAL ZIP FILE PATH: ${file.path}');
 
     sharedPreferences!.remove('trip_data');
     sharedPreferences!.remove('trip_started');

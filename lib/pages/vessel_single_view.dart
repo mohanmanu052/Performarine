@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:ui';
 import 'package:background_locator_2/background_locator.dart';
+import 'package:background_locator_2/location_dto.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/android_settings.dart' as bglas;
 import 'package:background_locator_2/settings/locator_settings.dart' as bgls;
@@ -2193,14 +2195,24 @@ class VesselSingleViewState extends State<VesselSingleView> {
       bool savingDataWhileStartService) async {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
-    Position? locationData =
-        await Utils.getLocationPermission(context, scaffoldKey);
+    // Position? locationData =
+    //     await Utils.getLocationPermission(context, scaffoldKey);
+    ReceivePort port = ReceivePort();
+    String? latitude,longitude;
+    port.listen((dynamic data) async {
+      LocationDto? locationDto =
+      data != null ? LocationDto.fromJson(data) : null;
+      if (locationDto != null) {
+        latitude=locationDto!.latitude.toString();
+        longitude=locationDto!.longitude.toString();
+      };
+    });
     await fetchDeviceData();
 
     Utils.customPrint(
         'hello device details: ${deviceDetails!.toJson().toString()}');
-    String latitude = locationData!.latitude.toString();
-    String longitude = locationData.longitude.toString();
+    // String latitude = locationData!.latitude.toString();
+    // String longitude = locationData.longitude.toString();
 
     Utils.customPrint("current lod:$currentLoad");
     Utils.customPrint("current PATH:$file");
@@ -2245,7 +2257,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     // }
 
     getTripId = ObjectId().toString();
-
+    await initPlatformStateBGL();
     await onSave('', bottomSheetContext, true);
 
     /*await Future.delayed(Duration(seconds: 4), () {
@@ -2260,7 +2272,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       selectedVesselWeight
     ]);
 
-    await initPlatformStateBGL();
+
 
     StartTrip().startBGLocatorTrip(getTripId, DateTime.now());
 

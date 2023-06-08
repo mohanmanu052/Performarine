@@ -639,7 +639,7 @@ class StartTrip {
     String mobileFileName = 'mobile_$fileIndex.csv';
     String lprFileName = 'lpr_$fileIndex.csv';
 
-    print('1 SEC DUR');
+    // print('1 SEC DUR');
     int finalTripDuration = (diff.inMilliseconds);
     print('FINAL TRIP DUR: $finalTripDuration');
     debugPrint("USER ACC 1 $_userAccelerometerValues");
@@ -806,11 +806,11 @@ class StartTrip {
     userAccelerometerAvailable = await s.SensorManager()
         .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
 
-    print("INSIDE BG LOCATOR 2");
-    print("INSIDE BG LOCATOR 2: $gyroscopeAvailable");
-    print("INSIDE BG LOCATOR 2: $accelerometerAvailable");
-    print("INSIDE BG LOCATOR 2: $magnetometerAvailable");
-    print("INSIDE BG LOCATOR 2: $userAccelerometerAvailable");
+    // print("INSIDE BG LOCATOR 2");
+    // print("INSIDE BG LOCATOR 2: $gyroscopeAvailable");
+    // print("INSIDE BG LOCATOR 2: $accelerometerAvailable");
+    // print("INSIDE BG LOCATOR 2: $magnetometerAvailable");
+    // print("INSIDE BG LOCATOR 2: $userAccelerometerAvailable");
 
     if (accelerometerAvailable) {
       accelerometerEvents.listen(
@@ -855,28 +855,39 @@ class StartTrip {
     String lprFileName = 'lpr_$fileIndex.csv';
 
     print("BEFORE PORT LISTEN");
+    Future<bool> hasActiveNotifications() async {
+      var activeNotifications =
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+          ?.getActiveNotifications();
 
+      return activeNotifications?.isEmpty ?? true;
+    }
+
+//Todo: Notification spanning on port listen it will generate the notification continuously
     port.listen((dynamic data) async {
       print("INSIDE PORT LISTEN");
-
-      if (Platform.isIOS) {
-        flutterLocalNotificationsPlugin
-            .show(
-          889,
-          'PerforMarine',
-          'Trip is in progress',
-          /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
-          NotificationDetails(
-              iOS: DarwinNotificationDetails(
-            presentSound: false,
-            presentAlert: false,
-            subtitle: '',
-          )),
-        )
-            .catchError((onError) {
-          print('IOS NOTI ERROR: $onError');
-        });
-      }
+      // if (await hasActiveNotifications()) {
+      //   if (Platform.isIOS) {
+      //     flutterLocalNotificationsPlugin
+      //         .show(
+      //       889,
+      //       'PerforMarine',
+      //       'Trip is in progress',
+      //       /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
+      //       NotificationDetails(
+      //           iOS: DarwinNotificationDetails(
+      //             presentSound: false,
+      //             presentAlert: false,
+      //             subtitle: '',
+      //           )),
+      //     )
+      //         .catchError((onError) {
+      //       print('IOS NOTI ERROR: $onError');
+      //     });
+      //   }
+      // };
 
       print("AFTER NOTIFICATION IN PORT LISTEN");
 

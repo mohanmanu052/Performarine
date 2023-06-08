@@ -1,8 +1,8 @@
 class Urls {
   //dev
-  static const String baseUrl = 'goeapidev.azurewebsites.net';
+  // static const String baseUrl = 'goeapidev.azurewebsites.net';
   //UAT
-  //static const String baseUrl = 'goeapiuat.azurewebsites.net';
+  static const String baseUrl = 'goeapiuat.azurewebsites.net';
 
   // Auth
   static const String registrationUrl = '/api/auth/signup';
