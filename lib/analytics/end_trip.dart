@@ -34,7 +34,19 @@ class EndTrip {
     String downloadedFilePath = '';
     await sharedPreferences!.reload();
     debugPrint("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance");
+    ReceivePort port = ReceivePort();
+    String? latitude, longitude;
+    port.listen((dynamic data) async {
+      LocationDto? locationDto =
+          data != null ? await LocationDto.fromJson(data) : null;
+      if (locationDto != null) {
+        latitude = locationDto!.latitude.toString();
+        longitude = locationDto!.longitude.toString();
+      }
+      ;
+    });
 
+    debugPrint("endtrip location:$latitude");
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
     Utils.customPrint(
@@ -71,9 +83,9 @@ class EndTrip {
           LocationServiceRepository.isolateName);
     }*/
 
-    if (positionStream != null) {
+    /*if (positionStream != null) {
       positionStream!.cancel();
-    }
+    }*/
 
     if (tripDurationTimer != null) {
       tripDurationTimer!.cancel();
@@ -83,7 +95,7 @@ class EndTrip {
 
     ///Download
     //  downloadTrip(context!, tripId);
-    Utils.customPrint('FINAL ZIP FILE PATH: ${file.path}');
+    // Utils.customPrint('FINAL ZIP FILE PATH: ${file.path}');
 
     sharedPreferences!.remove('trip_data');
     sharedPreferences!.remove('trip_started');
@@ -96,20 +108,6 @@ class EndTrip {
 
     /*Position? currentLocationData =
         await Utils.getLocationPermission(context, scaffoldKey!);*/
-
-    String? latitude;
-    String? longitude;
-
-    ReceivePort port = ReceivePort();
-    LocationDto? locationDto;
-    port.listen((dynamic data) async {
-      locationDto = data != null ? LocationDto.fromJson(data) : null;
-    });
-
-    if (locationDto != null) {
-      latitude = locationDto!.latitude.toString();
-      longitude = locationDto!.longitude.toString();
-    }
 
     debugPrint("END TRIP 1 $latitude");
     debugPrint("END TRIP 2 $longitude");

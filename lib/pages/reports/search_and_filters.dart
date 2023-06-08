@@ -48,6 +48,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   int _selectedOption = 1;
   DateTime selectedDateForStartDate = DateTime.now();
   DateTime selectedDateForEndDate = DateTime.now();
+  DateTime? selectedStartDateFromCal;
+  DateTime? selectedEndDateFromCal;
   DateTime focusedDay = DateTime.now();
   String? focusedDayString = "";
   DateTime firstDate = DateTime(1980);
@@ -230,10 +232,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           dateTimeList!.clear();
           for (int i = 0; i < value.data!.length; i++) {
             tripIdList!.add(value.data![i].id!);
-            dateTimeList!.add(value.data![i].createdAt != null &&
-                    value.data![i].createdAt!.isNotEmpty
-                ? tripDate(value.data![i].createdAt!)
-                : "");
+            if (value.data![i].createdAt != null) {
+              dateTimeList!.add(tripDate(value.data![i].createdAt.toString()));
+            }
             children!.add("Trip ${i.toString()}");
           }
           // selectedTripsAndDateDetails = children!.join(", ");
@@ -625,6 +626,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         setState(() async {
                           selectedIndex =
                               await triSpeedList[i].tripsByDate![j].id!;
+                          print("selected index: $selectedIndex");
                         });
                       }
                     },
@@ -635,6 +637,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 }
               }
             }
+//
+// <<<<<<< Report-code-merge
             tripList.clear();
 
             for (int i = 0; i < triSpeedList.length; i++) {
@@ -651,6 +655,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 tripList.add(data);
               }
             }
+            print("length: ${tripList.length}, tripList: $tripList");
 
             /*int duration1 = durationWithMilli(value.data!.avgInfo!.avgDuration!);
           String avgSpeed1 = value.data!.avgInfo!.avgSpeed!.toStringAsFixed(1) + " nm";
@@ -666,6 +671,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             double avgSpeed1 = value.data!.avgInfo!.avgSpeed! ;
             double? fuelUsage = value.data!.avgInfo!.avgFuelConsumption;
             double? powerUsage = value.data!.avgInfo!.avgPower;*/
+
+            print(
+                "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
 
             /*   for (int i = 0; i < tripList.length; i++) {
               totalDuration += duration(tripList[i]['duration']);
@@ -699,7 +707,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
             finalData = [
               {
-                'date': 'Average',
+                'date': '',
                 'tripDetails': 'Average',
                 'duration': "$duration1",
                 'avgSpeed': avgSpeed1,
@@ -707,6 +715,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 'powerUsage': powerUsage
               }
             ];
+// =======
 //                 tripList = value.data!.trips!
 //               .map((trip) => {
 //             'date': trip.date!,
@@ -924,8 +933,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
             finalData = [
               {
-                'date': 'Average',
-                // 'tripDetails': 'Average',
+                'date': '',
+                'tripDetails': 'Average',
                 'duration': "$duration1",
                 'avgSpeed': avgSpeed1,
                 'fuelUsage': fuelUsage,
@@ -1546,22 +1555,30 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         selectedTripsAndDateDetails =
                                             "$startDateToDispaly to $endDateToDispaly";
                                       }
-                                      if (selectedDateForEndDate
-                                          .isBefore(selectedDateForStartDate)) {
+
+                                      if ((selectedStartDateFromCal != null &&
+                                              selectedEndDateFromCal != null) &&
+                                          selectedDateForEndDate!.isBefore(
+                                              selectedDateForStartDate)) {
                                         isBtnClick = false;
+                                        setState(() {
+                                          isSelectedStartDay = false;
+                                          isSelectedEndDay = false;
+                                        });
                                         Utils.showSnackBar(context,
                                             scaffoldKey: scaffoldKey,
                                             message:
                                                 'End date ($endDate) should be greater than start date($startDate)',
                                             duration: 2);
-                                        // return null;
-                                      } else if (isSelectedStartDay! &&
-                                          isSelectedEndDay!) {
+                                        return;
+                                      }
+                                      if ((isSelectedStartDay! &&
+                                          isSelectedEndDay!)) {
                                         getReportsData(selectedCaseType!,
                                             startDate: startDate,
                                             endDate: endDate,
                                             vesselID: selectedVessel);
-                                      } else {
+                                      } else if (!isSelectedStartDay!) {
                                         setState(() {
                                           isBtnClick = false;
                                         });
@@ -1569,76 +1586,29 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         Utils.showSnackBar(context,
                                             scaffoldKey: scaffoldKey,
                                             message:
-                                                'Please select the start and end dates',
+                                                'Please select the start date',
+                                            duration: 2);
+                                      } else if (!isSelectedEndDay!) {
+                                        setState(() {
+                                          isBtnClick = false;
+                                        });
+// <<<<<<< Report-code-merge
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message:
+                                                'Please select the end date',
                                             duration: 2);
                                       }
-                                      /*    if ((selectedVessel?.isNotEmpty ??
-                                            false) &&
-                                            (startDate.isNotEmpty && startDate != null)&&
-                                            (endDate.isNotEmpty && endDate != null)) {
-                                          getReportsData(selectedCaseType!,
-                                              startDate: startDate,
-                                              endDate: endDate,
-                                              vesselID: selectedVessel);
-                                        } else if(startDate.isEmpty &&
-                                            endDate.isEmpty){
-                                          setState(() {
-                                            isBtnClick = false;
-                                          });
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                              'Please select the start and end dates',
-                                              duration: 2);
-                                        }
-                                        else if(!isSelectedStartDay!){
-                                          setState(() {
-                                            isBtnClick = false;
-                                          });
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                              'Please select the start dates',
-                                              duration: 2);
-                                        } else if(!isSelectedEndDay!){
-                                          setState(() {
-                                            isBtnClick = false;
-                                          });
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                              'Please select the end date',
-                                              duration: 2);
-                                        }; */
-                                      /*   else {
-                                          setState(() {
-                                            isBtnClick = false;
-                                          });
-                                          if (startDate.isEmpty &&
-                                              endDate.isEmpty) {
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                'Please select the start and end dates',
-                                                duration: 2);
-                                          } else if (startDate.isEmpty) {
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                'Please select the start date',
-                                                duration: 2);
-                                          } else if (endDate.isEmpty) {
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                'Please select the end date',
-                                                duration: 2);
-                                          }
-                                        }*/
-
                                     } else if (selectedCaseType == 2) {
                                       if (selectedTripIdList?.isNotEmpty ??
                                           false) {
+                                        selectedTripLabelList!.sort((a, b) {
+                                          int numberA =
+                                              int.parse(a.split(" ")[1]);
+                                          int numberB =
+                                              int.parse(b.split(" ")[1]);
+                                          return numberA.compareTo(numberB);
+                                        });
                                         getReportsData(selectedCaseType!,
                                             selectedTripListID:
                                                 selectedTripIdList);
@@ -2035,16 +2005,16 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 ),
               ),
             ),
-            // DataColumn(
-            //     label: Expanded(
-            //       child: Center(
-            //         child: Text(
-            //           'Trip Details',
-            //           style: TextStyle(color: tableHeaderColor),
-            //           textAlign: TextAlign.center,
-            //         ),
-            //       ),
-            //     )),
+            DataColumn(
+                label: Expanded(
+              child: Center(
+                child: Text(
+                  'Trip Details',
+                  style: TextStyle(color: tableHeaderColor),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )),
             DataColumn(label: _verticalDivider),
             DataColumn(
                 label: Expanded(
@@ -2087,10 +2057,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         child: Text(dateWithZeros(person['date'])!,
                             textAlign: TextAlign.center)),
                   ),
-                  // DataCell(Align(
-                  //     alignment: Alignment.center,
-                  //     child: Text(person['tripDetails']!,
-                  //         textAlign: TextAlign.center))),
+                  DataCell(Align(
+                      alignment: Alignment.center,
+                      child: Text(person['tripDetails']!,
+                          textAlign: TextAlign.center))),
                   DataCell(_verticalDivider),
                   DataCell(Align(
                       alignment: Alignment.center,
@@ -2141,12 +2111,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           fontWeight: FontWeight.w800),
                     ),
                   ),
-                  // DataCell(Text(
-                  //   e['tripDetails']!,
-                  //   style: TextStyle(
-                  //       color: circularProgressColor,
-                  //       fontWeight: FontWeight.w800),
-                  // )),
+                  DataCell(Text(
+                    e['tripDetails']!,
+                    style: TextStyle(
+                        color: circularProgressColor,
+                        fontWeight: FontWeight.w800),
+                  )),
                   DataCell(_verticalDivider),
                   DataCell(Align(
                     alignment: Alignment.center,
@@ -3030,6 +3000,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           focusedDay = focusDay!;
                           focusedDayString = focusDay.toString();
                           pickStartDate = convertIntoMonthDayYear(selectDay);
+                          selectedStartDateFromCal = selectDay;
                           print("pick start date: $pickStartDate");
                         });
                         print("focusedDay: $focusDay");
@@ -3138,6 +3109,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               lastDayFocused = focusDay!;
                               lastFocusedDayString = focusDay.toString();
                               pickEndDate = convertIntoMonthDayYear(selectDay);
+                              selectedEndDateFromCal = selectDay;
                               print("pick end date: $pickEndDate");
                             });
                             print("lastDayFocused: $lastDayFocused");

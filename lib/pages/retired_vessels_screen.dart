@@ -72,7 +72,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
         backgroundColor: commonBackgroundColor,
       ),
       body: Container(
-        color: Colors.white,
+        color: commonBackgroundColor,
         child: FutureBuilder<List<CreateVessel>>(
           future: getVesselFuture,
           builder: (context, snapshot) {

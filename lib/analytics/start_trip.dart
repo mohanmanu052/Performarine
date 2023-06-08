@@ -29,7 +29,7 @@ class StartTrip {
 
   final DatabaseService _databaseService = DatabaseService();
 
-  startTrip(ServiceInstance serviceInstance) async {
+  /*startTrip(ServiceInstance serviceInstance) async {
     bool presentNoti = true;
     Utils.customPrint('Background task is running');
 
@@ -253,9 +253,9 @@ class StartTrip {
                   iOS: DarwinNotificationDetails(
                     presentSound: presentNoti,
                     presentAlert: presentNoti,
-                    /*subtitle:
+                    */ /*subtitle:
                         'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
-                  */
+                  */ /*
                   )),
             );
 
@@ -280,7 +280,7 @@ class StartTrip {
 
             /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
             /// Now File Size is 200000
-            if (fileSize >= 200000 /*&& lprFileSize >= 200000*/) {
+            if (fileSize >= 200000 */ /*&& lprFileSize >= 200000*/ /*) {
               Utils.customPrint('STOPPED WRITING');
               Utils.customPrint('CREATING NEW FILE');
               // if (timer != null) timer.cancel();
@@ -337,7 +337,7 @@ class StartTrip {
             889,
             'PerforMarine',
             'Trip is in progress',
-            /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
+            */ /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/ /*
             NotificationDetails(
                 iOS: DarwinNotificationDetails(
               presentSound: presentNoti,
@@ -370,7 +370,7 @@ class StartTrip {
 
           /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
           /// Now File Size is 200000
-          if (fileSize >= 200000 /* && lprFileSize >= 200000*/) {
+          if (fileSize >= 200000 */ /* && lprFileSize >= 200000*/ /*) {
             Utils.customPrint('STOPPED WRITING');
             Utils.customPrint('CREATING NEW FILE');
             // if (timer != null) timer.cancel();
@@ -418,7 +418,7 @@ class StartTrip {
         }
       });
     });
-  }
+  }*/
 
   bool presentNoti = true;
 
@@ -458,7 +458,7 @@ class StartTrip {
       magnetometerAvailable = false,
       userAccelerometerAvailable = false;
 
-  Future initIOSTrip() async {
+  /* Future initIOSTrip() async {
     pref = await SharedPreferences.getInstance();
 
     mobileFileName = 'mobile_$fileIndex.csv';
@@ -484,7 +484,7 @@ class StartTrip {
       889,
       'PerforMarine',
       'Trip is in progress',
-      /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
+      */ /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/ /*
       NotificationDetails(
           iOS: DarwinNotificationDetails(
         presentSound: true,
@@ -497,9 +497,9 @@ class StartTrip {
     });
 
     return;
-  }
+  }*/
 
-  Future startIOSTrip2(
+  /* Future startIOSTrip2(
     DateTime startDateTime,
     double finalTripDistance,
     Position startTripPosition,
@@ -514,11 +514,12 @@ class StartTrip {
     bool accelerometerAvailable,
     bool magnetometerAvailable,
     bool userAccelerometerAvailable,
-    /*List<double>? _accelerometerValues,
+    */ /*List<double>? _accelerometerValues,
       List<double>? _gyroscopeValues,
       List<double>? _userAccelerometerValues,
-      List<double>? _magnetometerValues*/
-  ) async {
+      List<double>? _magnetometerValues*/ /*
+  ) async
+  {
     DateTime currentDateTime = DateTime.now();
 
     Duration diff = currentDateTime.difference(startDateTime);
@@ -639,24 +640,24 @@ class StartTrip {
     String mobileFileName = 'mobile_$fileIndex.csv';
     String lprFileName = 'lpr_$fileIndex.csv';
 
-    print('1 SEC DUR');
+    // print('1 SEC DUR');
     int finalTripDuration = (diff.inMilliseconds);
     print('FINAL TRIP DUR: $finalTripDuration');
     debugPrint("USER ACC 1 $_userAccelerometerValues");
 
     // Position endTripPosition =
     //     await Geolocator.getCurrentPosition(timeLimit: Duration(seconds: 1));
-    /*double tripDistance = Geolocator.distanceBetween(startTripPosition.latitude,
+    */ /*double tripDistance = Geolocator.distanceBetween(startTripPosition.latitude,
         startTripPosition.longitude, endTripLatitude, endTripLongitude);
-    print('FINAL TRIP DIST: $tripDistance');*/
+    print('FINAL TRIP DIST: $tripDistance');*/ /*
 
     /// DURATION 00:00:00
     String tripDurationForStorage =
         Utils.calculateTripDuration((finalTripDuration ~/ 1000).toInt());
 
     /// DISTANCE
-    /*finalTripDistance =
-        finalTripDistance < tripDistance ? tripDistance : finalTripDistance;*/
+    */ /*finalTripDistance =
+        finalTripDistance < tripDistance ? tripDistance : finalTripDistance;*/ /*
     // String tripDistanceForStorage =
     //     Calculation().calculateDistance(finalTripDistance);
 
@@ -753,7 +754,7 @@ class StartTrip {
     }
 
     return;
-  }
+  }*/
 
   Future<void> startBGLocatorTrip(String tripId, DateTime dateTime) async {
     if (Platform.isIOS) {
@@ -806,11 +807,11 @@ class StartTrip {
     userAccelerometerAvailable = await s.SensorManager()
         .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
 
-    print("INSIDE BG LOCATOR 2");
-    print("INSIDE BG LOCATOR 2: $gyroscopeAvailable");
-    print("INSIDE BG LOCATOR 2: $accelerometerAvailable");
-    print("INSIDE BG LOCATOR 2: $magnetometerAvailable");
-    print("INSIDE BG LOCATOR 2: $userAccelerometerAvailable");
+    // print("INSIDE BG LOCATOR 2");
+    // print("INSIDE BG LOCATOR 2: $gyroscopeAvailable");
+    // print("INSIDE BG LOCATOR 2: $accelerometerAvailable");
+    // print("INSIDE BG LOCATOR 2: $magnetometerAvailable");
+    // print("INSIDE BG LOCATOR 2: $userAccelerometerAvailable");
 
     if (accelerometerAvailable) {
       accelerometerEvents.listen(
@@ -855,33 +856,46 @@ class StartTrip {
     String lprFileName = 'lpr_$fileIndex.csv';
 
     print("BEFORE PORT LISTEN");
+    Future<bool> hasActiveNotifications() async {
+      var activeNotifications = await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.getActiveNotifications();
 
+      return activeNotifications?.isEmpty ?? true;
+    }
+
+//Todo: Notification spanning on port listen it will generate the notification continuously
     port.listen((dynamic data) async {
       print("INSIDE PORT LISTEN");
-
-      if (Platform.isIOS) {
-        flutterLocalNotificationsPlugin
-            .show(
-          889,
-          'PerforMarine',
-          'Trip is in progress',
-          /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
-          NotificationDetails(
-              iOS: DarwinNotificationDetails(
-            presentSound: false,
-            presentAlert: false,
-            subtitle: '',
-          )),
-        )
-            .catchError((onError) {
-          print('IOS NOTI ERROR: $onError');
-        });
-      }
+      // if (await hasActiveNotifications()) {
+      //   if (Platform.isIOS) {
+      //     flutterLocalNotificationsPlugin
+      //         .show(
+      //       889,
+      //       'PerforMarine',
+      //       'Trip is in progress',
+      //       /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
+      //       NotificationDetails(
+      //           iOS: DarwinNotificationDetails(
+      //             presentSound: false,
+      //             presentAlert: false,
+      //             subtitle: '',
+      //           )),
+      //     )
+      //         .catchError((onError) {
+      //       print('IOS NOTI ERROR: $onError');
+      //     });
+      //   }
+      // };
 
       print("AFTER NOTIFICATION IN PORT LISTEN");
 
       LocationDto? locationDto =
           data != null ? LocationDto.fromJson(data) : null;
+
+      print("LOCATION DTO $locationDto");
+
       if (locationDto != null) {
         endTripLatitude = locationDto.latitude;
         endTripLongitude = locationDto.longitude;
@@ -890,6 +904,8 @@ class StartTrip {
         altitide = locationDto.altitude;
         heading = locationDto.heading;
         speedAccuracy = locationDto.speedAccuracy;
+
+        print("LOCATION DTO 1212 $endTripLongitude");
 
         Utils.customPrint('SPEED SPEED 1111 ${speed}');
         Utils.customPrint('SPEED SPEED 2222 ${locationDto.speed}');
@@ -1071,6 +1087,9 @@ class StartTrip {
 
             debugPrint(
                 'FILE WRITING CURRENT TIME ${Utils.getCurrentTZDateTime()}');
+
+            debugPrint(
+                'FILE WRITING CURRENT TIME LAT LONG ${endTripLatitude} $endTripLongitude');
 
             file.writeAsString('$finalString\n', mode: FileMode.append);
 

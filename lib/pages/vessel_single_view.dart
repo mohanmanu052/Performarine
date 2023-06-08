@@ -15,7 +15,6 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
-//import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
@@ -69,7 +68,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   IosDeviceInfo? iosDeviceInfo;
   AndroidDeviceInfo? androidDeviceInfo;
 
-  Position? startTripPosition;
+  //Position? startTripPosition;
   DateTime startDateTime = DateTime.now();
   SharedPreferences? pref;
 
@@ -115,7 +114,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     return await _databaseService.getAllTripsByVesselId(id);
   }
 
-  Position? location;
+  //Position? location;
 
   List<String> sensorDataTable = ['ACC', 'UACC', 'GYRO', 'MAGN'];
   bool isBluetoothDialog = false;
@@ -2195,27 +2194,25 @@ class VesselSingleViewState extends State<VesselSingleView> {
       bool savingDataWhileStartService) async {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
-    /*Position? locationData =
-        await Utils.getLocationPermission(context, scaffoldKey);*/
+    // Position? locationData =
+    //     await Utils.getLocationPermission(context, scaffoldKey);
+    ReceivePort port = ReceivePort();
+    String? latitude, longitude;
+    port.listen((dynamic data) async {
+      LocationDto? locationDto =
+          data != null ? LocationDto.fromJson(data) : null;
+      if (locationDto != null) {
+        latitude = locationDto!.latitude.toString();
+        longitude = locationDto!.longitude.toString();
+      }
+      ;
+    });
     await fetchDeviceData();
 
     Utils.customPrint(
         'hello device details: ${deviceDetails!.toJson().toString()}');
-    /* String latitude = locationData!.latitude.toString();
-    String longitude = locationData.longitude.toString();*/
-
-    ReceivePort port = ReceivePort();
-    LocationDto? locationDto;
-    port.listen((dynamic data) async {
-      locationDto = data != null ? LocationDto.fromJson(data) : null;
-    });
-
-    String? newLat, newLong;
-
-    if (locationDto != null) {
-      newLat = locationDto!.latitude.toString();
-      newLong = locationDto!.longitude.toString();
-    }
+    // String latitude = locationData!.latitude.toString();
+    // String longitude = locationData.longitude.toString();
 
     Utils.customPrint("current lod:$currentLoad");
     Utils.customPrint("current PATH:$file");
@@ -2260,7 +2257,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     // }
 
     getTripId = ObjectId().toString();
-
+    await initPlatformStateBGL();
     await onSave('', bottomSheetContext, true);
 
     /*await Future.delayed(Duration(seconds: 4), () {
@@ -2274,8 +2271,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
       widget.vessel!.name!,
       selectedVesselWeight
     ]);
-
-    await initPlatformStateBGL();
 
     StartTrip().startBGLocatorTrip(getTripId, DateTime.now());
 

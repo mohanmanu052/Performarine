@@ -185,9 +185,9 @@ class _IntroScreenState extends State<IntroScreen> {
         if (Platform.isAndroid) {
           service.invoke("setAsBackground");
         }
-        if (positionStream != null) {
+        /*if (positionStream != null) {
           positionStream!.cancel();
-        }
+        }*/
         //var service2 = FlutterBackgroundService();
         bool isServiceRunning = await service.isRunning();
 
@@ -205,9 +205,9 @@ class _IntroScreenState extends State<IntroScreen> {
         if (Platform.isAndroid) {
           service.invoke("setAsBackground");
         }
-        if (positionStream != null) {
+        /*if (positionStream != null) {
           positionStream!.cancel();
-        }
+        }*/
       }
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) {
@@ -285,9 +285,9 @@ class _IntroScreenState extends State<IntroScreen> {
     if (isTripStarted == null) {
       if (isServiceRunning) {
         service.invoke("stopService");
-        if (positionStream != null) {
+        /*if (positionStream != null) {
           positionStream!.cancel();
-        }
+        }*/
       }
 
       if (isUserLoggedIn == null) {
@@ -346,9 +346,9 @@ class _IntroScreenState extends State<IntroScreen> {
     } else {
       if (isServiceRunning) {
         service.invoke("stopService");
-        if (positionStream != null) {
+        /*if (positionStream != null) {
           positionStream!.cancel();
-        }
+        }*/
       }
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(

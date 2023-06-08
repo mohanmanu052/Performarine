@@ -909,17 +909,17 @@ class _TripListScreenState extends State<TripListScreen> {
     }
   }
 
-  Future<pos.Position> getLocationData() async {
-    pos.Position? locationData =
-        await Utils.getLocationPermission(context, scaffoldKey);
+  Future<void> getLocationData() async {
+    // pos.Position? locationData =
+    //     await Utils.getLocationPermission(context, scaffoldKey);
 
-    latitude = locationData!.latitude.toString();
-    longitude = locationData.longitude.toString();
+    latitude = '0.0';
+    longitude = '0.0';
 
     Utils.customPrint('LAT ${latitude}');
     Utils.customPrint('LONG ${longitude}');
 
-    return locationData;
+    return;
   }
 
   startSensorFunctionality(StateSetter stateSetter) async {
@@ -969,11 +969,11 @@ class _TripListScreenState extends State<TripListScreen> {
     } else {
       Utils.customPrint('WRITING');
 
-      pos.Position? locationData =
-          await Utils.getLocationPermission(context, scaffoldKey);
+      // pos.Position? locationData =
+      //     await Utils.getLocationPermission(context, scaffoldKey);
 
-      latitude = locationData!.latitude.toString();
-      longitude = locationData.longitude.toString();
+      latitude = '0.0';
+      longitude = '0.0';
 
       Utils.customPrint('LAT ${latitude}');
       Utils.customPrint('LONG ${longitude}');
@@ -1063,16 +1063,16 @@ class _TripListScreenState extends State<TripListScreen> {
   Future<void> onSave(File file) async {
     final vesselName = widget.vesselName;
     final currentLoad = selectedVesselWeight;
-    pos.Position? locationData =
-        await Utils.getLocationPermission(context, scaffoldKey);
+    // pos.Position? locationData =
+    //     await Utils.getLocationPermission(context, scaffoldKey);
     // await fetchDeviceInfo();
     await fetchDeviceData();
 
     Utils.customPrint(
         'hello device details: ${deviceDetails!.toJson().toString()}');
     // Utils.customPrint(" locationData!.latitude!.toString():${ locationData!.latitude!.toString()}");
-    String latitude = locationData!.latitude.toString();
-    String longitude = locationData.longitude.toString();
+    String latitude = '0.0';
+    String longitude = '0.0';
 
     Utils.customPrint("current lod:$currentLoad");
     var uuid = Uuid();

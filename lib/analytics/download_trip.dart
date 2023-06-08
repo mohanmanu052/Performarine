@@ -213,7 +213,7 @@ class DownloadTrip {
         } on d.DioError catch (e) {
           print('DOWNLOAD EXE: ${e.error}');
 
-          Navigator.pop(context);
+         // Navigator.pop(context);
         }
       }
     } else {

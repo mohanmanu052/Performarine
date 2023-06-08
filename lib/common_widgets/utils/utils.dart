@@ -105,11 +105,42 @@ class Utils {
     return Future.value(true);
   }
 
-  static Future<Position?> getLocationPermission(
+  static Future<void> getLocationPermission(
       BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) async {
     bool isPermissionGranted = false;
 
-    await Geolocator.requestPermission().then((value) async {
+    bool isGranted = await Permission.locationWhenInUse.isGranted;
+
+    if (isGranted) {
+      return;
+    } else {
+      PermissionStatus status = await Permission.locationWhenInUse.status;
+      if (status == PermissionStatus.denied) {
+        await Permission.locationWhenInUse.request();
+        bool isGranted = await Permission.locationWhenInUse.isGranted;
+        if (!isGranted) {
+          Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey,
+              message:
+                  'Location permissions are denied without permissions we are unable to start the trip');
+          Future.delayed(Duration(seconds: 2), () async {
+            await openAppSettings();
+          });
+        }
+      } else if (status == PermissionStatus.permanentlyDenied) {
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey,
+            message:
+                'Location permissions are denied without permissions we are unable to start the trip');
+        Future.delayed(Duration(seconds: 2), () async {
+          await openAppSettings();
+        });
+      }
+    }
+
+    return;
+
+    /*await Geolocator.requestPermission().then((value) async {
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -145,8 +176,8 @@ class Utils {
       return await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.bestForNavigation);
     });
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
+    // return await Geolocator.getCurrentPosition(
+    //     desiredAccuracy: LocationAccuracy.bestForNavigation);*/
   }
 
   static Future<SharedPreferences> initSharedPreferences() async {

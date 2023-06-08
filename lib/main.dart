@@ -29,7 +29,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final StreamController<String?> selectNotificationStream =
     StreamController<String?>.broadcast();
-StreamSubscription<Position>? positionStream;
+//StreamSubscription<Position>? positionStream;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,7 +57,7 @@ onDidReceiveBackgroundNotificationResponse(
   /// APP RESTART
 }
 
-@pragma('vm:entry-point')
+/*@pragma('vm:entry-point')
 Future<bool> onStart(ServiceInstance serviceInstance) async {
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
@@ -66,7 +66,7 @@ Future<bool> onStart(ServiceInstance serviceInstance) async {
   StartTrip().startTrip(serviceInstance);
 
   return true;
-}
+}*/
 
 onDidReceiveLocalNotification(
     int id, String? title, String? body, String? payload) {
@@ -137,7 +137,7 @@ Future<void> initializeService() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
-  await service.configure(
+  /*await service.configure(
     androidConfiguration: AndroidConfiguration(
       initialNotificationTitle: 'PerforMarine',
       onStart: onStart,
@@ -145,12 +145,12 @@ Future<void> initializeService() async {
       isForegroundMode: true,
       notificationChannelId: notificationChannelId,
       initialNotificationContent: 'PerforMarine consuming background services.',
-      /*'Trip Data Collection in progress...',*/
+      */ /*'Trip Data Collection in progress...',*/ /*
       foregroundServiceNotificationId: notificationId,
     ),
     iosConfiguration: IosConfiguration(
         autoStart: false, onForeground: onStart, onBackground: onStart),
-  );
+  );*/
   //service.startService();
 }
 
