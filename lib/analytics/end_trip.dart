@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:background_locator_2/background_locator.dart';
+import 'package:background_locator_2/location_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -92,15 +94,30 @@ class EndTrip {
     sharedPreferences!.remove('current_loc_list');
     sharedPreferences!.remove('temp_trip_dist');
 
-    Position? currentLocationData =
-        await Utils.getLocationPermission(context, scaffoldKey!);
+    /*Position? currentLocationData =
+        await Utils.getLocationPermission(context, scaffoldKey!);*/
 
+    String? latitude;
+    String? longitude;
+
+    ReceivePort port = ReceivePort();
+    LocationDto? locationDto;
+    port.listen((dynamic data) async {
+      locationDto = data != null ? LocationDto.fromJson(data) : null;
+    });
+
+    if (locationDto != null) {
+      latitude = locationDto!.latitude.toString();
+      longitude = locationDto!.longitude.toString();
+    }
+
+    debugPrint("END TRIP 1 $latitude");
+    debugPrint("END TRIP 2 $longitude");
     await DatabaseService().updateTripStatus(
         1,
         file.path,
         DateTime.now().toUtc().toString(),
-        [currentLocationData!.latitude, currentLocationData.longitude]
-            .join(","),
+        [latitude, longitude].join(","),
         tripDuration,
         tripDistance,
         tripSpeed,
