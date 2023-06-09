@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -169,10 +169,10 @@ class _IntroScreenState extends State<IntroScreen> {
     bool? isTripStarted = pref.getBool('trip_started');
     bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
 
-    var service = FlutterBackgroundService();
-    bool isServiceRunning = await service.isRunning();
+    //var service = FlutterBackgroundService();
+    // bool isServiceRunning = await service.isRunning();
 
-    Utils.customPrint('IS SERVICE RUNNING:$isServiceRunning');
+    // Utils.customPrint('IS SERVICE RUNNING:$isServiceRunning');
 
     Utils.customPrint('INTRO START $isTripStarted');
 
@@ -181,18 +181,18 @@ class _IntroScreenState extends State<IntroScreen> {
     });
 
     if (isTripRunningCurrently == null) {
-      if (isServiceRunning) {
-        if (Platform.isAndroid) {
-          service.invoke("setAsBackground");
-        }
-        /*if (positionStream != null) {
-          positionStream!.cancel();
-        }*/
-        //var service2 = FlutterBackgroundService();
-        bool isServiceRunning = await service.isRunning();
-
-        Utils.customPrint('IS SERVICE RUNNING 222:$isServiceRunning');
-      }
+      // if (isServiceRunning) {
+      //   if (Platform.isAndroid) {
+      //     service.invoke("setAsBackground");
+      //   }
+      //   /*if (positionStream != null) {
+      //     positionStream!.cancel();
+      //   }*/
+      //   //var service2 = FlutterBackgroundService();
+      //   bool isServiceRunning = await service.isRunning();
+      //
+      //   Utils.customPrint('IS SERVICE RUNNING 222:$isServiceRunning');
+      // }
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) {
           setState(() {
@@ -201,14 +201,14 @@ class _IntroScreenState extends State<IntroScreen> {
         }
       });
     } else if (!isTripRunningCurrently!) {
-      if (isServiceRunning) {
+      /*if (isServiceRunning) {
         if (Platform.isAndroid) {
           service.invoke("setAsBackground");
         }
-        /*if (positionStream != null) {
+        */ /*if (positionStream != null) {
           positionStream!.cancel();
-        }*/
-      }
+        }*/ /*
+      }*/
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) {
           setState(() {
@@ -279,16 +279,16 @@ class _IntroScreenState extends State<IntroScreen> {
 
     Utils.customPrint('ISUSERLOGEDIN $isUserLoggedIn');
 
-    var service = FlutterBackgroundService();
-    bool isServiceRunning = await service.isRunning();
+    // var service = FlutterBackgroundService();
+    //bool isServiceRunning = await service.isRunning();
 
     if (isTripStarted == null) {
-      if (isServiceRunning) {
+      /*if (isServiceRunning) {
         service.invoke("stopService");
-        /*if (positionStream != null) {
+        */ /*if (positionStream != null) {
           positionStream!.cancel();
-        }*/
-      }
+        }*/ /*
+      }*/
 
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(
@@ -344,12 +344,12 @@ class _IntroScreenState extends State<IntroScreen> {
         }
       }
     } else {
-      if (isServiceRunning) {
+      /*if (isServiceRunning) {
         service.invoke("stopService");
-        /*if (positionStream != null) {
+        */ /*if (positionStream != null) {
           positionStream!.cancel();
-        }*/
-      }
+        }*/ /*
+      }*/
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(
             context,

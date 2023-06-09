@@ -5,12 +5,12 @@ import 'dart:isolate';
 import 'dart:ui';
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/location_dto.dart';
-import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
+//import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+//import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:performarine/analytics/calculation.dart';
@@ -1016,7 +1016,7 @@ class StartTrip {
                 ((durationTime.inMilliseconds) ~/ 1000).toInt());
 
             await BackgroundLocator.updateNotificationText(
-                title: 'Performarine',
+                title: '',
                 msg: 'Trip is in progress',
                 bigMsg:
                     'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot');

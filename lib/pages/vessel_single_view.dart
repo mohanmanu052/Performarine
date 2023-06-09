@@ -11,7 +11,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:geolocator/geolocator.dart';
@@ -108,7 +108,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   String selectedVesselWeight = 'Select Current Load', bluetoothName = '';
 
   bool isServiceRunning = false;
-  FlutterBackgroundService service = FlutterBackgroundService();
+  // FlutterBackgroundService service = FlutterBackgroundService();
 
   Future<List<Trip>> getTripListByVesselId(String id) async {
     return await _databaseService.getAllTripsByVesselId(id);
@@ -121,14 +121,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
   bool isBluetoothConnected = false;
   bool isRefreshList = false, isScanningBluetooth = false;
 
-  getIfServiceIsRunning() async {
+  /*getIfServiceIsRunning() async {
     bool data = await service.isRunning();
     Utils.customPrint('IS SERVICE RUNNING: $data');
     setState(() {
       isServiceRunning = data;
     });
   }
-
+*/
   DeviceInfo? deviceDetails;
 
   fetchDeviceInfo() async {
@@ -2123,9 +2123,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isEndTripButton = true;
 
       if (tripIsRunning) {
-        if (Platform.isAndroid) {
+        /*if (Platform.isAndroid) {
           service.invoke("setAsForeground");
-        }
+        }*/
         List<String>? tripData = sharedPreferences!.getStringList('trip_data');
         final tripDetails = await _databaseService.getTrip(tripData![0]);
 
@@ -2242,7 +2242,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   startWritingDataToDB(
       BuildContext bottomSheetContext, StateSetter stateSetter) async {
-    bool isServiceRunning = await service.isRunning();
+    // bool isServiceRunning = await service.isRunning();
 
     Utils.customPrint('ISSSSS XXXXXXX: $isServiceRunning');
 

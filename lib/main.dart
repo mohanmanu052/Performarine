@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:geolocator/geolocator.dart';
@@ -78,7 +78,7 @@ onDidReceiveLocalNotification(
 // this will be used for notification id, So you can update your custom notification with this id.
 const notificationId = 888;
 Future<void> initializeService() async {
-  final service = FlutterBackgroundService();
+  //final service = FlutterBackgroundService();
   isStart = false;
 
   final appDirectory = await getApplicationDocumentsDirectory();

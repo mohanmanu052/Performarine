@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:get/get.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -25,7 +25,7 @@ class TripViewListing extends StatefulWidget {
 
 class _TripViewListingState extends State<TripViewListing> {
   final DatabaseService _databaseService = DatabaseService();
-  FlutterBackgroundService service = FlutterBackgroundService();
+  //FlutterBackgroundService service = FlutterBackgroundService();
   late CommonProvider commonProvider;
 
   bool tripIsRunning = false;

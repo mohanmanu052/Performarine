@@ -6,7 +6,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_background_executor/flutter_background_executor.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -68,7 +68,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   String? finalTripDuration, finalTripDistance, finalAvgSpeed;
 
-  FlutterBackgroundService service = FlutterBackgroundService();
+  // FlutterBackgroundService service = FlutterBackgroundService();
 
   bool isTripUploaded = false,
       vesselIsSync = false,

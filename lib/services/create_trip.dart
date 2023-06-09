@@ -1,7 +1,7 @@
-import 'package:flutter_background_service/flutter_background_service.dart';
+//import 'package:flutter_background_service/flutter_background_service.dart';
 
 class CreateTrip {
-  FlutterBackgroundService service = FlutterBackgroundService();
+  //FlutterBackgroundService service = FlutterBackgroundService();
 
   String convertDataToString(
       String type, List<double> sensorData, String tripId) {

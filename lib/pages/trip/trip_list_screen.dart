@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
     as pos;
 import 'package:get/get.dart';
@@ -39,7 +39,7 @@ class TripListScreen extends StatefulWidget {
 
 class _TripListScreenState extends State<TripListScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-  FlutterBackgroundService service = FlutterBackgroundService();
+  // FlutterBackgroundService service = FlutterBackgroundService();
 
   IosDeviceInfo? iosDeviceInfo;
   AndroidDeviceInfo? androidDeviceInfo;

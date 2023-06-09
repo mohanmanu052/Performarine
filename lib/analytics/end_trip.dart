@@ -6,7 +6,7 @@ import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/location_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/create_zip.dart';
@@ -18,7 +18,7 @@ import 'package:performarine/services/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EndTrip {
-  FlutterBackgroundService service = FlutterBackgroundService();
+  //FlutterBackgroundService service = FlutterBackgroundService();
 
   endTrip({
     BuildContext? context,
