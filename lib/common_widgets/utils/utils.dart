@@ -1,22 +1,17 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
-import 'package:performarine/main.dart';
-import 'package:performarine/pages/home_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -25,6 +20,7 @@ import 'package:url_launcher/url_launcher.dart';
 class Utils {
   static DateTime? currentBackPressedTime;
 
+  //Select images from local photos
   static Future<List<File>> pickCameraImages() async {
     final ImagePicker _picker = ImagePicker();
     bool _inProcess = false;
@@ -35,6 +31,7 @@ class Utils {
     return [new File(photo!.path)];
   }
 
+  // select images from gallery
   static Future<List<File>> pickImages() async {
     FilePickerResult? result = await FilePicker.platform
         .pickFiles(allowMultiple: false, type: FileType.image);
@@ -51,6 +48,8 @@ class Utils {
     }
   }
 
+
+  //To display snackbar
   static void showSnackBar(BuildContext context,
       {GlobalKey<ScaffoldState>? scaffoldKey,
       String? message,
@@ -88,6 +87,7 @@ class Utils {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
+  // Trigger when user tap on back button of device
   static Future<bool> onAppExitCallBack(
     BuildContext context,
     GlobalKey<ScaffoldState> scaffoldKey,
@@ -105,6 +105,7 @@ class Utils {
     return Future.value(true);
   }
 
+  // To get user location permission
   static Future<void> getLocationPermission(
       BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) async {
     bool isPermissionGranted = false;
@@ -139,51 +140,14 @@ class Utils {
     }
 
     return;
-
-    /*await Geolocator.requestPermission().then((value) async {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          isPermissionGranted = false;
-
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey,
-              message:
-                  'Location permissions are denied without permissions we are unable to start the trip');
-
-          return Future.error('Location permissions are denied');
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        isPermissionGranted = false;
-        Utils.customPrint('PD');
-
-        isPermissionGranted = await openAppSettings();
-        Utils.customPrint("isPermissionGranted:$isPermissionGranted");
-
-        Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey,
-            message:
-                'Location permissions are denied without permissions we are unable to start the trip');
-
-        // Permissions are denied forever, handle appropriately.
-        return Future.error(
-            'Location permissions are permanently denied, we cannot request permissions.');
-      }
-
-      return await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.bestForNavigation);
-    });
-    // return await Geolocator.getCurrentPosition(
-    //     desiredAccuracy: LocationAccuracy.bestForNavigation);*/
   }
 
+  //Get an instance of shared preferences
   static Future<SharedPreferences> initSharedPreferences() async {
     return await SharedPreferences.getInstance();
   }
 
+  //Get location permission of user
   static Future<bool> getLocationPermissions(
       BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) async {
     bool isPermissionGranted = false;
@@ -205,6 +169,7 @@ class Utils {
     return isPermissionGranted;
   }
 
+  //To get storage permission of user
   static Future<bool> getStoragePermission(BuildContext context,
       [Permission permission = Permission.storage]) async {
     bool isPermissionGranted = false;
@@ -242,7 +207,7 @@ class Utils {
 
     return isPermissionGranted;
   }
-
+  // Check user is connected to internet or not
   Future<bool> check(GlobalKey<ScaffoldState> scaffoldKey,
       {bool userConfig = false, VoidCallback? onRetryTap}) async {
     try {
@@ -273,38 +238,7 @@ class Utils {
     return false;
   }
 
-  static void showActionSnackBar(BuildContext context,
-      GlobalKey<ScaffoldState> scaffoldKey, String message) {
-    final snackBar = new SnackBar(
-      backgroundColor: Colors.blue,
-      content: Row(
-        children: [
-          Icon(
-            Icons.download_rounded,
-            color: Colors.white,
-          ),
-          SizedBox(
-            width: 5,
-          ),
-          Flexible(
-              child: Text(
-            message,
-            softWrap: true,
-            overflow: TextOverflow.clip,
-          )),
-        ],
-      ),
-      behavior: SnackBarBehavior.floating,
-      duration: Duration(seconds: 4),
-      /*action: SnackBarAction(
-        label: 'OPEN',
-        textColor: Colors.white,
-        onPressed: onTap,
-      ),*/
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
+  //To get user notification permission
   static Future<bool> getNotificationPermission(BuildContext context,
       [Permission permission = Permission.notification]) async {
     bool isPermissionGranted = false;
@@ -337,6 +271,7 @@ class Utils {
     return isPermissionGranted;
   }
 
+  //End trip dialog for user confirmation to end trip
   showEndTripDialog(BuildContext context, Function() endTripBtnClick,
       Function() onCancelClick) {
     return showDialog(
@@ -443,6 +378,7 @@ class Utils {
         });
   }
 
+  //Get current time zone of Canada/Pacific
   static String getCurrentTZDateTime() {
     var canada = tz.getLocation('Canada/Pacific');
     var now = tz.TZDateTime.now(canada).toUtc();
@@ -456,6 +392,7 @@ class Utils {
     return now.toString();
   }
 
+  //Calculate trip duration
   static String calculateTripDuration(int seconds) {
     Duration duration = Duration(seconds: seconds); // 00:00:00
     String twoDigit(int n) => n.toString().padLeft(2, "0");
@@ -464,17 +401,13 @@ class Utils {
     return "${twoDigit(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 
+  //Launch Url from custom(side) menu
   static Future<void> launchURL(String url) async {
     await launchUrl(Uri.parse(url));
     return;
   }
 
-  static collapseExpansionTileKey(int _key, int newKey) {
-    do {
-      _key = new Random().nextInt(100);
-    } while (newKey == _key);
-  }
-
+  // Custom print through out the project
   static customPrint(String text) {
     // kReleaseMode ? null : debugPrint('$text');
     debugPrint('$text');

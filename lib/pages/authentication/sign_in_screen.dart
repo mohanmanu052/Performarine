@@ -13,12 +13,11 @@ import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/zig_zag_line_widget.dart';
 import 'package:performarine/pages/authentication/sign_up_screen.dart';
-import 'package:performarine/pages/home_page.dart';
-import 'package:performarine/pages/lets_get_started_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 
+//Sign in page
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
 
@@ -30,9 +29,6 @@ class _SignInScreenState extends State<SignInScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  //GlobalKey<FormFieldState> emailFormFieldKey = GlobalKey<FormFieldState>();
-  //GlobalKey<FormFieldState> passwordFormFieldKey = GlobalKey<FormFieldState>();
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -60,20 +56,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Timer? searchOnStoppedTyping;
 
-  _onChangeHandler(value) {
-    const duration = Duration(
-        milliseconds:
-            800); // set the duration that you want call search() after that.
-    if (searchOnStoppedTyping != null) {
-      setState(() => searchOnStoppedTyping!.cancel()); // clear timer
-    }
-    setState(
-        () => searchOnStoppedTyping = new Timer(duration, () => search(value)));
-  }
-
-  search(value) {
-    Utils.customPrint('hello world from search . the value is $value');
-  }
 
   @override
   void initState() {
@@ -115,22 +97,6 @@ class _SignInScreenState extends State<SignInScreen> {
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: commonBackgroundColor,
-        /*leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-
-            */ /*Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LetsGetStartedScreen(),
-                ),
-                ModalRoute.withName(""));*/ /*
-          },
-          icon: const Icon(Icons.arrow_back),
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white
-              : Colors.black,
-        ),*/
         centerTitle: true,
         title: commonText(
             context: context,
