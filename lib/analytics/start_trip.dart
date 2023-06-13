@@ -37,6 +37,7 @@ class StartTrip {
       magnetometerAvailable = false,
       userAccelerometerAvailable = false;
 
+  /// In this function we start to listen to the data coming from background locator port
   Future<void> startBGLocatorTrip(String tripId, DateTime dateTime) async {
     if (Platform.isIOS) {
       flutterLocalNotificationsPlugin
