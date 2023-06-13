@@ -4,6 +4,7 @@ import 'dart:math' as math;
 
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 
+//To show dashed rectangle
 class DashedRect extends StatelessWidget {
   final Color? color;
   final double? strokeWidth;

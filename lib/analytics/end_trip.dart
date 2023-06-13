@@ -97,7 +97,7 @@ class EndTrip {
     await DatabaseService().updateVesselDataWithDurationSpeedDistance(
         tripDuration, tripDistance, tripSpeed, tripAvgSpeed, vesselId);
 
-    await flutterLocalNotificationsPlugin.cancel(888);
+    //await flutterLocalNotificationsPlugin.cancel(888);
     await flutterLocalNotificationsPlugin.cancel(889);
 
     if (onEnded != null) onEnded.call();

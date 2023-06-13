@@ -10,6 +10,7 @@ import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 
+//Successfully added screen
 class SuccessfullyAddedScreen extends StatefulWidget {
   final bool? isEdit;
   final CreateVessel? data;

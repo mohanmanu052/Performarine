@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +12,6 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/utils.dart';
-import '../../common_widgets/widgets/common_drop_down_one.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
 import '../../common_widgets/widgets/custom_labled_checkbox.dart';
 import '../../models/reports_model.dart';
@@ -35,16 +32,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final _formKey = GlobalKey<FormState>();
 
-  String foos = 'One';
   int? _key;
   int? newKey;
-  DateTime now = DateTime.now();
   late CommonProvider commonProvider;
   bool? isSHowGraph = false;
   bool? isExpansionCollapse = false;
   String? selectedVessel;
   String? selectedVesselName = "";
-  String? selectedTrip;
   int _selectedOption = 1;
   DateTime selectedDateForStartDate = DateTime.now();
   DateTime selectedDateForEndDate = DateTime.now();
@@ -54,7 +48,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   String? focusedDayString = "";
   DateTime firstDate = DateTime(1980);
   DateTime lastDate = DateTime.now();
-  //List<String> items = ["Start Date", "End Date"];
   DateTime lastDayFocused = DateTime.now();
   String? lastFocusedDayString = "";
   bool? isSelectedStartDay = false;
@@ -70,25 +63,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   bool? isEndDate = false;
   bool? isBtnClick = false;
 
-  //CalendarFormat format = CalendarFormat.month;
-
   String selectedButton = 'trip duration';
   int? selectedCaseType = 1;
   int? selectDateOption;
 
-  final List<Map<String, dynamic>> finalChartData = [];
-
   List<Map<String, dynamic>> tripList = [];
-
-  List<Map<String, dynamic>> tripAvgList = [];
-
-  List<TripData> tripDataList = [];
   List<TripModel> triSpeedList = [];
-  List<TripModel> jsonTripData = [];
-  ReportModel? reportModel;
   double? avgSpeed = 0.0;
   dynamic avgDuration = 0;
-  dynamic avgTotalDuration = 0;
   dynamic avgFuelConsumption;
   dynamic avgPower = 0.0;
 
@@ -108,10 +90,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   List<Map<String, dynamic>> finalData = [];
   List<Map<String, dynamic>> totalData = [];
 
-  List<Vessels> vesselList = [];
   List<DropdownItem> vesselData = [];
-
-  List<DropdownItem> tripData = [];
 
   bool? isVesselDataLoading = false;
 
@@ -150,36 +129,37 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   String? pickStartDate = "Start Date";
   String? pickEndDate = "End Date";
 
-  String convertIntoYearMonthDay(DateTime date) {
-    // String dateTimeString = date;
-    // DateTime dateTime = DateTime.parse(dateTimeString);
-    // String dateString = dateTime.toString().split(' ')[0];
+  List<TripModel> durationGraphData = [];
+  double chartWidth = 0.0;
 
+  dynamic duration1;
+  double? avgSpeed1 = 0.0;
+  double? fuelUsage = 0.0;
+  double? powerUsage = 0.0;
+
+  //Convertion of date time into year-month-day format
+  String convertIntoYearMonthDay(DateTime date) {
     String dateString = DateFormat('yyyy-MM-dd').format(date);
     print(dateString);
     return dateString;
   }
 
+  //Convertion of date time into month/day/year format
   String convertIntoMonthDayYear(DateTime date) {
-    // String dateTimeString = date;
-    // DateTime dateTime = DateTime.parse(dateTimeString);
-    // String dateString = dateTime.toString().split(' ')[0];
-
     String dateString = DateFormat('MM/dd/yyyy').format(date);
     print(dateString);
     return dateString;
   }
 
+  //Convertion of date time into year-month-day format
   String convertIntoYearMonthDayToShow(DateTime date) {
-    // String dateTimeString = date;
-    // DateTime dateTime = DateTime.parse(dateTimeString);
-    // String dateString = dateTime.toString().split(' ')[0];
-
     String dateString = DateFormat('MM-dd-yyyy').format(date);
     print(dateString);
     return dateString;
   }
 
+
+  //Manage tri state on selectin trip from trip by id
   void manageTristate(int index, bool value) {
     setState(() {
       if (value) {
@@ -200,12 +180,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     });
   }
 
-  // _collapse(int _key, int newKey) {
-  //   do {
-  //     _key = new Random().nextInt(100);
-  //   } while(newKey == _key);
-  // }
-
+//To select all trips from trip list on trip by id
   void _checkAll(bool value) {
     setState(() {
       parentValue = value;
@@ -216,6 +191,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     });
   }
 
+
+  //To get all trip details based on vessel Id
   getTripListData(String vesselID) async {
     try {
       commonProvider
@@ -261,6 +238,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     }
   }
 
+  //To get all vessels while enter into report screen
   getVesselAndTripsData() async {
     try {
       bool check = await Utils().check(scaffoldKey);
@@ -281,8 +259,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             print("value of get user config by id: ${value.vessels}");
             vesselData = List<DropdownItem>.from(value.vessels!.map(
                 (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
-
-            //   tripData = List<DropdownItem>.from(value.trips!.map((trip) => DropdownItem(id: )));
 
             print("vesselData: ${vesselData.length}");
           } else {
@@ -308,39 +284,22 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     }
   }
 
-  void _collapseExpansionTile() {
-    setState(() {
-      isExpansionCollapse = true;
-    });
-  }
-
+  //To collapse expansion tile on reports page
   collapseExpansionTileKey() {
     do {
       _key = new Random().nextInt(100);
     } while (newKey == _key);
   }
 
+  //To show date on trips list on filter by trip
   String tripDate(String date) {
     String inputDate = date;
     DateTime dateTime = DateTime.parse(inputDate);
-    String formattedDate = DateFormat('dd-MM-yyyy').format(dateTime);
+    String formattedDate = DateFormat('MM-dd-yyyy').format(dateTime);
     return formattedDate;
   }
 
-  List<TripModel> durationGraphData = [];
-  double chartWidth = 0.0;
-
-  updateTripId(String? selectedIndx) {
-    setState(() {
-      selectedIndex = selectedIndx!;
-    });
-  }
-
-  dynamic duration1;
-  double? avgSpeed1 = 0.0;
-  double? fuelUsage = 0.0;
-  double? powerUsage = 0.0;
-
+  //Get reports data api to get all details about reports
   getReportsData(int caseType,
       {String? startDate,
       String? endDate,
@@ -366,18 +325,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               // triSpeedList.clear();
               totalData.clear();
               finalData.clear();
-              finalChartData.clear();
             });
-// <<<<<<< Report-code-merge
           } else if (!isCheckInternalServer! && value.statusCode == 200) {
             if (mounted) {
               setState(() {
                 isReportDataLoading = true;
                 isBtnClick = false;
                 triSpeedList.clear();
-                /*totalData.clear();
-              finalData.clear();
-              finalChartData.clear();*/
 
                 avgSpeed = null;
                 avgDuration = null;
@@ -441,23 +395,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   j++) {
                 print(
                     "trip duration data is: ${durationGraphData[i].tripsByDate![j].id}");
-// =======
-//           } else if(!isCheckInternalServer! && value.statusCode == 200){
-//             setState(() {
-//               isReportDataLoading = true;
-//               triSpeedList.clear();
-//             });
-//             avgSpeed = value.data!.avgInfo!.avgSpeed;
-//             avgDuration = durationWithMilli(value.data!.avgInfo!.avgDuration!);
-//             avgFuelConsumption = value.data!.avgInfo!.avgFuelConsumption;
-//             avgPower = value.data!.avgInfo!.avgPower ?? 0.0;
-//             print("avgPower : $avgPower");
-//             triSpeedList =  List<TripModel>.from(value.data!.trips!.map((tripData) => TripModel(date: tripData.date, tripsByDate: tripData.tripsByDate)));
-
-//             for(int i=0; i< triSpeedList.length; i++){
-//               for(int j=0; j < triSpeedList[i].tripsByDate!.length; j++){
-//                 print("trip duration data is: ${triSpeedList[i].tripsByDate![j].id}");
-// >>>>>>> Bug_loc_reports
                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
                   durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
                     color: circularProgressColor,
@@ -494,60 +431,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     spacing: 0.1,
                   ));
                 }
-
-//                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
-//                   durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
-//                     // color: barsColor[i],
-//                     // pointColorMapper: barsColor,
-//                     //width: 0.9,
-//
-//                     dataSource: triSpeedList,
-//                     xValueMapper: (TripModel tripData, _) =>
-//                         triSpeedList[i].date,
-//                     yValueMapper: (TripModel tripData, _) =>
-//                         duration(triSpeedList[i].tripsByDate![j].duration!),
-//                     /* onPointTap: (ChartPointDetails args) {
-//                     if (mounted) {
-//                       // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
-//                       setState(() async {
-//                         selectedIndex =
-//                         await triSpeedList[i].tripsByDate![j].id!;
-//                         print("selected index: $selectedIndex");
-//                       });
-//                     }
-//                   }, */
-//                     name: 'Duration',
-//                     dataLabelSettings: DataLabelSettings(isVisible: false),
-//                     spacing: 0.1,
-//                   ));
-//                 }
-                // else {
-                //   durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                //     // color: barsColor[i],
-                //     // pointColorMapper: barsColor,
-                //     //width: 0.9,
-                //
-                //     dataSource: triSpeedList,
-                //     xValueMapper: (TripModel tripData, _) =>
-                //         triSpeedList[i].date,
-                //     yValueMapper: (TripModel tripData, _) =>
-                //         duration(triSpeedList[i].tripsByDate![j].duration!),
-                //     /* onPointTap: (ChartPointDetails args) {
-                //     if (mounted) {
-                //       // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
-                //       setState(() async {
-                //         selectedIndex =
-                //         await triSpeedList[i].tripsByDate![j].id!;
-                //         print("selected index: $selectedIndex");
-                //       });
-                //     }
-                //   }, */
-                //     name: 'Duration',
-                //     dataLabelSettings: DataLabelSettings(isVisible: false),
-                //     spacing: 0.1,
-                //   ));
-                // }
-
                 if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
                   avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
                     color: circularProgressColor,
@@ -584,7 +467,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     xValueMapper: (TripModel tripData, _) =>
                         triSpeedList[i].date,
                     yValueMapper: (TripModel tripData, _) =>
-// <<<<<<< Report-code-merge
                         triSpeedList[i].tripsByDate![j].fuelConsumption! > 0
                             ? triSpeedList[i].tripsByDate![j].fuelConsumption!
                             : null,
@@ -598,9 +480,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         });
                       }
                     },
-// =======
-//                       triSpeedList[i].tripsByDate![j].fuelConsumption,
-// >>>>>>> Bug_loc_reports
                     name: 'Fuel Usage',
                     dataLabelSettings: DataLabelSettings(isVisible: false),
                     spacing: 0.1,
@@ -637,8 +516,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 }
               }
             }
-//
-// <<<<<<< Report-code-merge
             tripList.clear();
 
             for (int i = 0; i < triSpeedList.length; i++) {
@@ -656,54 +533,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               }
             }
             print("length: ${tripList.length}, tripList: $tripList");
-
-            /*int duration1 = durationWithMilli(value.data!.avgInfo!.avgDuration!);
-          String avgSpeed1 = value.data!.avgInfo!.avgSpeed!.toStringAsFixed(1) + " nm";
-          String? fuelUsage = value.data!.avgInfo!.avgFuelConsumption.toString() + " g";
-          String? powerUsage = value.data!.avgInfo!.avgPower.toString() + " w";*/
             duration1 = durationWithMilli(
                 value.data?.avgInfo?.avgDuration ?? '0:0:0.0');
             avgSpeed1 = value.data?.avgInfo?.avgSpeed ?? 0.0;
             fuelUsage = value.data?.avgInfo?.avgFuelConsumption ?? 0.0;
             powerUsage = value.data?.avgInfo?.avgPower ?? 0.0;
-
-            /*   int duration1 = durationWithMilli(value.data!.avgInfo!.avgDuration!);
-            double avgSpeed1 = value.data!.avgInfo!.avgSpeed! ;
-            double? fuelUsage = value.data!.avgInfo!.avgFuelConsumption;
-            double? powerUsage = value.data!.avgInfo!.avgPower;*/
-
             print(
                 "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
-
-            /*   for (int i = 0; i < tripList.length; i++) {
-              totalDuration += duration(tripList[i]['duration']);
-              totalSpeed = totalSpeed ??
-                  0.0 + double.parse(tripList[i]['avgSpeed']) ??
-                  0.0;
-              totalFuelConsumption = totalFuelConsumption ??
-                  0.0 +
-                      (tripList[i]['fuelConsumption'] != null
-                          ? double.parse(tripList[i]['fuelConsumption'])
-                          : 0.0) ??
-                  0.0;
-              totalAvgPower = totalAvgPower ??
-                  0.0 +
-                      (tripList[i]['avgPower'] != null
-                          ? double.parse(tripList[i]['avgPower'])
-                          : 0.0) ??
-                  0.0;
-            } */
-
-            // totalData = [
-            //   {
-            //     'date': '',
-            //     'tripDetails': 'Total',
-            //     'duration': "$totalDuration",
-            //     'avgSpeed': totalSpeed,
-            //     'fuelUsage': totalFuelConsumption,
-            //     'powerUsage': totalAvgPower
-            //   }
-            // ];
 
             finalData = [
               {
@@ -715,55 +551,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 'powerUsage': powerUsage
               }
             ];
-// =======
-//                 tripList = value.data!.trips!
-//               .map((trip) => {
-//             'date': trip.date!,
-//             'tripDetails': trip.tripsByDate![0].id,
-//             'duration': trip.tripsByDate![0].duration,
-//             'avgSpeed': '${trip.tripsByDate![0].avgSpeed} nm',
-//             'fuelUsage': trip.tripsByDate![0].fuelConsumption ?? 0.0,
-//             'powerUsage': trip.tripsByDate![0].avgPower ?? 0.0
-//           })
-//               .toList();
-//           print("tripList: $tripList");
-
-//           int duration1 = durationWithMilli(value.data!.avgInfo!.avgDuration!);
-//           String avgSpeed1 = value.data!.avgInfo!.avgSpeed!.toStringAsFixed(1) + " nm";
-//           String? fuelUsage = value.data!.avgInfo!.avgFuelConsumption.toString() + " g";
-//           String? powerUsage = value.data!.avgInfo!.avgPower.toString() + " w";
-
-//           print("duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
-
-//           for(int i = 0; i < tripList.length; i++){
-//             totalDuration += duration(tripList[i]['duration']);
-//             totalSpeed += tripList[i]['avgSpeed'] ?? 0.0;
-//             totalFuelConsumption += tripList[i]['fuelConsumption'];
-//             totalAvgPower += tripList[i]['avgPower'] ?? 0.0;
-//           }
-
-//           totalData = [{
-//             'date': '',
-//             'tripDetails': 'Total',
-//             'duration': "$totalDuration",
-//             'avgSpeed': totalSpeed,
-//             'fuelUsage': totalFuelConsumption,
-//             'powerUsage': totalAvgPower
-//           }];
-
-//            finalData = [
-//             {
-//               'date': '',
-//               'tripDetails': 'Average',
-//               'duration': "$duration1",
-//               'avgSpeed': avgSpeed1,
-//               'fuelUsage': fuelUsage,
-//               'powerUsage': powerUsage
-//             }
-//           ];
-// >>>>>>> Bug_loc_reports
-
-            // print("finalData: $finalData");
           } else {
             setState(() {
               isBtnClick = false;
@@ -784,199 +571,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       });
       print("Error while getting data from report api : $e \n $s");
     }
-
-/*
-    var response = await rootBundle.loadString('assets/reports/reports.json');
-    reportModel = ReportModel.fromJson(json.decode(response));
-    avgSpeed = reportModel!.data.avgInfo.avgSpeed;
-    avgDuration = durationWithMilli(reportModel!.data.avgInfo.avgDuration);
-    avgFuelConsumption = reportModel!.data.avgInfo.avgFuelConsumption;
-
-    triSpeedList = await List<Trip>.from(reportModel!.data.trips.map((speed) => Trip(date: speed.date, tripsByDate: speed.tripsByDate)));
-  */
   }
 
-  getReportsDataWithValues(int caseType,
-      {String? startDate,
-      String? endDate,
-      String? vesselID,
-      List<String>? selectedTripListID}) async {
-    try {
-      await commonProvider
-          .getReportData(
-              startDate ?? "",
-              endDate ?? "",
-              caseType,
-              vesselID,
-              commonProvider.loginModel!.token!,
-              selectedTripListID ?? [],
-              context,
-              scaffoldKey)
-          .then((value) async {
-        if (value != null) {
-          if (value.message == "Internal Server Error") {
-            setState(() {
-              isCheckInternalServer = true;
-            });
-          } else if (!isCheckInternalServer! && value.statusCode == 200) {
-            setState(() {
-              isReportDataLoading = true;
-              triSpeedList.clear();
-            });
-            avgSpeed = value.data!.avgInfo!.avgSpeed;
-            avgDuration = durationWithMilli(value.data!.avgInfo!.avgDuration!);
-            avgFuelConsumption = value.data!.avgInfo!.avgFuelConsumption;
-            avgPower = value.data!.avgInfo!.avgPower ?? 0.0;
-            print("avgPower : $avgPower");
-
-            triSpeedList = List<TripModel>.from(value.data!.trips!.map(
-                (tripData) => TripModel(
-                    date: tripData.date, tripsByDate: tripData.tripsByDate)));
-
-            Utils.customPrint('${triSpeedList}');
-            for (int i = 0; i < triSpeedList.length; i++) {
-              for (int j = 0; j < triSpeedList[i].tripsByDate!.length; j++) {
-                print(
-                    "trip duration data is: ${triSpeedList[i].tripsByDate![j].id}");
-                durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                  width: 0.4,
-                  enableTooltip: true,
-                  color: barsColor[j],
-                  dataSource: triSpeedList,
-                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                  yValueMapper: (TripModel tripData, _) => duration(
-                      triSpeedList[i].tripsByDate![j].duration.toString()),
-                  name: 'Duration',
-                  dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.1,
-                ));
-                avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                  enableTooltip: true,
-                  width: 0.4,
-                  color: barsColor[j],
-                  dataSource: triSpeedList,
-                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                  yValueMapper: (TripModel tripData, _) =>
-                      triSpeedList[i].tripsByDate![j].avgSpeed,
-                  name: 'Avg Speed',
-                  dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.1,
-                ));
-                fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                  enableTooltip: true,
-                  width: 0.4,
-                  color: barsColor[j],
-                  dataSource: triSpeedList,
-                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                  yValueMapper: (TripModel tripData, _) =>
-                      triSpeedList[i].tripsByDate![j].fuelConsumption,
-                  name: 'Fuel Usage',
-                  dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.1,
-                ));
-                powerUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                  enableTooltip: true,
-                  width: 0.4,
-                  color: barsColor[j],
-                  dataSource: triSpeedList,
-                  xValueMapper: (TripModel tripData, _) => triSpeedList[i].date,
-                  yValueMapper: (TripModel tripData, _) =>
-                      triSpeedList[i].tripsByDate![j].avgPower,
-                  name: 'Power Usage',
-                  dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.1,
-                ));
-              }
-            }
-
-            tripList = value.data!.trips!
-                .map((trip) => {
-                      'date': trip.date!,
-                      'tripDetails': trip.tripsByDate![0].id,
-                      'duration': trip.tripsByDate![0].duration,
-                      'avgSpeed': '${trip.tripsByDate![0].avgSpeed} nm',
-                      'fuelUsage': trip.tripsByDate![0].fuelConsumption ?? 0.0,
-                      'powerUsage': trip.tripsByDate![0].avgPower ?? 0.0
-                    })
-                .toList();
-            print("tripList: $tripList");
-
-            int duration1 =
-                durationWithMilli(value.data!.avgInfo!.avgDuration!);
-            String avgSpeed1 =
-                value.data!.avgInfo!.avgSpeed!.toStringAsFixed(1) + " nm";
-            String? fuelUsage =
-                value.data!.avgInfo!.avgFuelConsumption.toString() + " g";
-            String? powerUsage =
-                value.data!.avgInfo!.avgPower.toString() + " w";
-
-            print(
-                "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
-
-            for (int i = 0; i < tripList.length; i++) {
-              totalDuration += duration(tripList[i]['duration']);
-              totalSpeed += tripList[i]['avgSpeed'] ?? 0.0;
-              totalFuelConsumption += tripList[i]['fuelConsumption'];
-              totalAvgPower += tripList[i]['avgPower'] ?? 0.0;
-            }
-
-            totalData = [
-              {
-                'date': '',
-                'tripDetails': 'Total',
-                'duration': "$totalDuration",
-                'avgSpeed': totalSpeed,
-                'fuelUsage': totalFuelConsumption,
-                'powerUsage': totalAvgPower
-              }
-            ];
-
-            finalData = [
-              {
-                'date': '',
-                'tripDetails': 'Average',
-                'duration': "$duration1",
-                'avgSpeed': avgSpeed1,
-                'fuelUsage': fuelUsage,
-                'powerUsage': powerUsage
-              }
-            ];
-
-            // print("finalData: $finalData");
-          } else {
-            setState(() {
-              isCheckInternalServer = false;
-              isReportDataLoading = false;
-            });
-          }
-        } else {
-          setState(() {
-            isReportDataLoading = false;
-          });
-        }
-      });
-    } catch (e) {
-      print("Error while getting data from report api : $e");
-    }
-
-/*
-    var response = await rootBundle.loadString('assets/reports/reports.json');
-    reportModel = ReportModel.fromJson(json.decode(response));
-    avgSpeed = reportModel!.data.avgInfo.avgSpeed;
-    avgDuration = durationWithMilli(reportModel!.data.avgInfo.avgDuration);
-    avgFuelConsumption = reportModel!.data.avgInfo.avgFuelConsumption;
-
-    triSpeedList = await List<Trip>.from(reportModel!.data.trips.map((speed) => Trip(date: speed.date, tripsByDate: speed.tripsByDate)));
-  */
-  }
-
-  String formatDuration(int seconds) {
-    int hours = seconds ~/ 3600;
-    int minutes = (seconds % 3600) ~/ 60;
-    seconds = seconds % 60;
-    return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
-  }
-
+  //It returns total minutes along with seconds
   dynamic duration(String duration) {
     String timeString = duration;
     List<String> parts = timeString.split(':');
@@ -994,6 +591,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     return double.parse('$totalMinutes.${parts[2]}');
   }
 
+  //Returns duration with seconds
   dynamic durationWithSeconds(String duration) {
     String timeString = duration;
     List<String> parts = timeString.split(':');
@@ -1011,6 +609,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     return double.parse('$totalMinutes.${parts[2]}');
   }
 
+  //Returns trip duration on tap of column bar in Avg Duration tab
   dynamic tripDuration(String tripDuration) {
     print("DDDDD: $tripDuration");
     String inputDuration = tripDuration;
@@ -1033,12 +632,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     return formattedDuration;
   }
 
+  //To get format of HH:mm:ss
   String formatDurations(Duration duration) {
     final formatter = DateFormat('HH:mm:ss');
     final formattedTime = formatter.format(DateTime(0, 1, 1).add(duration));
     return formattedTime;
   }
 
+  //returns duration with milli seconds
   dynamic durationWithMilli3(String timeString) {
     String time = timeString;
     Duration duration = Duration(
@@ -1052,6 +653,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         "${durationInMinutes}.${int.parse(timeString.split(':')[2].split('.')[0])}");
   }
 
+  //Returns date time along with zero like 2023-03-03 instead of 2023-3-3
   dynamic dateWithZeros(String timesString) {
     String dateString = timesString;
     List<String> dateParts = dateString.split('-'); // ['3', '3', '2023']
@@ -1062,32 +664,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     return formattedDate;
   }
 
+  //Duration with milli seconds
   dynamic durationWithMilli(String timesString) {
     String time = timesString;
     print('TIME STRING: $timesString');
-    // Duration duration = Duration(
-    //   hours: int.parse(time.split(':')[0]),
-    //   minutes: int.parse(timeString.split(':')[1]),
-    //   seconds: int.parse(timeString.split(':')[2].split('.')[0]),
-    //   milliseconds: int.parse(timeString.split(':')[2].split('.')[1]),
-    // );
     String timeString = time;
     String integerTimeString = timeString.split('.')[0];
-    // int durationInMinutes = duration.inMinutes;
-    // double timeInSeconds = double.parse(integerTimeString.replaceAll(':', ''));
     return integerTimeString;
-  }
-
-  dynamic durationWithMilli2(String timeString) {
-    String time = timeString;
-    Duration duration = Duration(
-      hours: int.parse(time.split(':')[0]),
-      minutes: int.parse(timeString.split(':')[1]),
-      seconds: int.parse(timeString.split(':')[2].split('.')[0]),
-      milliseconds: int.parse(timeString.split(':')[2].split('.')[1]),
-    );
-    int durationInMinutes = duration.inMinutes;
-    return durationInMinutes;
   }
 
   @override
@@ -1104,12 +687,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     selectedTripsAndDateString = "Date Range";
 
     tripDurationButtonColor = true;
-
-    /* WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        selectedButton = 'trip duration';
-      });
-    });*/
   }
 
   @override
@@ -1129,16 +706,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         leading: IconButton(
           onPressed: () async {
             Navigator.of(context).pop(true);
-            // if (widget.isCalledFromSuccessScreen! || tripIsEnded) {
-            //   Navigator.pushAndRemoveUntil(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (context) => HomePage(),
-            //       ),
-            //       ModalRoute.withName(""));
-            // } else {
-            //   Navigator.of(context).pop(true);
-            // }
           },
           icon: const Icon(Icons.arrow_back),
           color: Theme.of(context).brightness == Brightness.dark
@@ -1172,59 +739,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Container(
-                  //   margin: EdgeInsets.only(right: 8, left: 8, bottom: 8),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       Row(
-                  //         children: [
-                  //           IconButton(
-                  //             onPressed: () {
-                  //               Navigator.of(context).pop(true);
-                  //             },
-                  //             icon: const Icon(
-                  //               Icons.arrow_back,
-                  //               size: 28,
-                  //             ),
-                  //             color: Theme.of(context).brightness ==
-                  //                 Brightness.dark
-                  //                 ? Colors.white
-                  //                 : Colors.black,
-                  //           ),
-                  //           SizedBox(
-                  //             width: displayWidth(context) * 0.25,
-                  //           ),
-                  //           Text(
-                  //             "Reports",
-                  //             style: TextStyle(
-                  //                 color: Colors.black,
-                  //                 fontSize: 20,
-                  //                 fontWeight: FontWeight.w600,
-                  //                 fontFamily: inter),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       Container(
-                  //         margin: EdgeInsets.only(right: 8),
-                  //         child: IconButton(
-                  //           onPressed: () {
-                  //             Navigator.pushAndRemoveUntil(
-                  //                 context,
-                  //                 MaterialPageRoute(
-                  //                     builder: (context) => HomePage()),
-                  //                 ModalRoute.withName(""));
-                  //           },
-                  //           icon: Image.asset('assets/images/home.png'),
-                  //           color: Theme.of(context).brightness ==
-                  //               Brightness.dark
-                  //               ? Colors.white
-                  //               : Colors.black,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                   Theme(
                     data: Theme.of(context)
                         .copyWith(dividerColor: Colors.transparent),
@@ -1582,7 +1096,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         setState(() {
                                           isBtnClick = false;
                                         });
-// <<<<<<< Report-code-merge
                                         Utils.showSnackBar(context,
                                             scaffoldKey: scaffoldKey,
                                             message:
@@ -1592,7 +1105,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         setState(() {
                                           isBtnClick = false;
                                         });
-// <<<<<<< Report-code-merge
                                         Utils.showSnackBar(context,
                                             scaffoldKey: scaffoldKey,
                                             message:
@@ -1626,34 +1138,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         }
                                       }
                                     }
-// =======
-//                                   },
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                           _selectedOption == 1
-//                               ? filterByDate(context)!
-//                               : filterByTrip(context)!,
-//                           SizedBox(
-//                             height: displayWidth(context) * 0.08,
-//                           ),
-//                           CommonButtons.getAcceptButton(
-//                               "Search", context, primaryColor, () {
-//                             if (_formKey.currentState!.validate()) {
-//                               _collapseExpansionTile();
-//                               String? startDate = "";
-//                               String? endDate = "";
-//                               if(focusedDayString!.isNotEmpty || lastFocusedDayString!.isNotEmpty){
-//                                  startDate = convertIntoYearMonthDay(focusedDayString!);
-//                                  endDate =  convertIntoYearMonthDay(lastFocusedDayString!);
-//                                  selectedTripsAndDateDetails = "$startDate to $endDate";
-//                               }
-//                               if(selectedCaseType == 1){
-//                                 getReportsDataWithValues(selectedCaseType!,startDate: startDate,endDate: endDate,vesselID: selectedVessel);
-//                               }else if(selectedCaseType == 2){
-//                                 getReportsDataWithValues(selectedCaseType!,selectedTripListID: selectedTripIdList);
-// >>>>>>> Bug_loc_reports
                                   }
                                 },
                                   displayWidth(context) * 0.8,
@@ -1907,7 +1391,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                       ),
                                     ],
                                   ),
-// <<<<<<< Report-code-merge
                                 ),
                                 isReportDataLoading!
                                     ? buildGraph(context)
@@ -1916,37 +1399,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                           valueColor:
                                               AlwaysStoppedAnimation<Color>(
                                                   circularProgressColor),
-// =======
-
-//                           table(context)!,
-
-//                           SizedBox(
-//                             height: displayWidth(context) * 0.08,
-// >>>>>>> Bug_loc_reports
                                         ),
                                       ),
-
-                                // tripDurationGraph(context)!,
-                                //avgSpeedGraph(context)!,
-                                // fuelUsageGraph(context)!,
-                                // powerUsageGraph(context)!,
-
-                                // Padding(
-                                //   padding: EdgeInsets.only(right: 20, left: 20),
-                                //   child: Row(
-                                //     mainAxisAlignment:
-                                //         MainAxisAlignment.spaceEvenly,
-                                //     children: [
-                                //       tripWithColor(
-                                //           backgroundColor, 'Trip A Name'),
-                                //       tripWithColor(
-                                //           circularProgressColor, 'Trip B Name'),
-                                //       tripWithColor(
-                                //           tripColumnBarColor, 'Trip C Name'),
-                                //     ],
-                                //   ),
-                                // ),
-
                                 table(context)!,
 
                                 SizedBox(
@@ -1964,31 +1418,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     );
   }
 
-  Widget tripWithColor(Color rangeColor, String rangeText) {
-    return Row(
-      children: [
-        Container(
-          height: 13,
-          width: 13,
-          color: rangeColor,
-        ),
-        SizedBox(
-          width: 5,
-        ),
-        commonText(
-            text: rangeText,
-            context: context,
-            textSize: displayWidth(context) * 0.025,
-            textColor: Colors.black,
-            fontWeight: FontWeight.w600)
-      ],
-    );
-  }
-
+  //Table which we are showing in reports page
   Widget? table(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-// <<<<<<< Report-code-merge
       child: Padding(
         padding: EdgeInsets.all(12.0),
         child: DataTable(
@@ -2079,29 +1512,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       child: Text('${person['powerUsage']}',
                           textAlign: TextAlign.center))),
                 ])),
-
-            /* ...totalData.map((e) => DataRow(cells: [
-              DataCell(
-                Text(
-                  e['date']!,
-                  style: TextStyle(color: Colors.blue),
-                ),
-              ),
-              DataCell(Text(
-                e['tripDetails']!,
-                style: TextStyle(color: Colors.blue),
-              )),
-              DataCell(Text(
-                e['duration']!,
-                style: TextStyle(color: Colors.blue),
-              )),
-              DataCell(Text('${e['avgSpeed']!}',
-                  style: TextStyle(color: Colors.blue))),
-              DataCell(Text('${e['fuelUsage']!}',
-                  style: TextStyle(color: Colors.blue))),
-              DataCell(Text('${e['powerUsage']!}',
-                  style: TextStyle(color: Colors.blue))),
-            ])),*/
             ...finalData.map((e) => DataRow(cells: [
                   DataCell(
                     Text(
@@ -2150,111 +1560,18 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   )),
                 ]))
           ],
-// =======
-//       child: Container(
-
-//         child: Padding(
-//           padding: EdgeInsets.all(12.0),
-//           child: DataTable(
-//             columnSpacing: 25,
-//             dividerThickness: 1,
-//             columns: [
-//               DataColumn(
-//                 label: Text(
-//                   'Date',
-//                   style: TextStyle(color: tableHeaderColor),
-//                 ),
-//               ),
-//               DataColumn(
-//                   label: Text('Trip Details',
-//                       style: TextStyle(color: tableHeaderColor))),
-//               DataColumn(
-//                   label: Text('Duration',
-//                       style: TextStyle(color: tableHeaderColor))),
-//               DataColumn(
-//                   label: Text('Avg Speed',
-//                       style: TextStyle(color: tableHeaderColor))),
-//               DataColumn(
-//                   label: Text('Fuel Usage',
-//                       style: TextStyle(color: tableHeaderColor))),
-//               DataColumn(
-//                   label: Text('Power Usage',
-//                       style: TextStyle(color: tableHeaderColor))),
-//             ],
-//             rows: [
-//             /*  ...tripList.map((person) => DataRow(cells: [
-//                     DataCell(Text(person['date']!)),
-//                     DataCell(Text(person['tripDetails']!)),
-//                     DataCell(Text(person['duration']!)),
-//                     DataCell(Text(person['avgSpeed']!)),
-//                     DataCell(Text(person['fuelUsage']!)),
-//                     DataCell(Text(person['powerUsage'])),
-//                   ])),*/
-//                ...tripList.map((person) => DataRow(cells: [
-//                 DataCell(Text(person['date']!)),
-//                 DataCell(Text(person['tripDetails']!)),
-//                 DataCell(Text(person['duration']!)),
-//                 DataCell(Text(person['avgSpeed']!)),
-//                 DataCell(Text(person['fuelUsage']!)),
-//                 DataCell(Text(person['powerUsage'])),
-//               ])),
-//               ...totalData.map((e) => DataRow(cells: [
-//                 DataCell(
-//                   Text(
-//                     e['date']!,
-//                     style: TextStyle(color: Colors.blue),
-//                   ),
-//                 ),
-//                 DataCell(Text(
-//                   e['tripDetails'] ?? '',
-//                   style: TextStyle(color: Colors.blue),
-//                 )),
-//                 DataCell(Text(
-//                   e['duration'] ?? '',
-//                   style: TextStyle(color: Colors.blue),
-//                 )),
-//                 DataCell(Text(e['avgSpeed'] ?? '',
-//                     style: TextStyle(color: Colors.blue))),
-//                 DataCell(Text(e['fuelUsage'] ?? '',
-//                     style: TextStyle(color: Colors.blue))),
-//                 DataCell(Text(e['powerUsage'] ?? '',
-//                     style: TextStyle(color: Colors.blue))),
-//               ])),
-//               ...finalData.map((e) => DataRow(cells: [
-//                     DataCell(
-//                       Text(
-//                         e['date']!,
-//                         style: TextStyle(color: Colors.blue),
-//                       ),
-//                     ),
-//                     DataCell(Text(
-//                       e['tripDetails']!,
-//                       style: TextStyle(color: Colors.blue),
-//                     )),
-//                     DataCell(Text(
-//                       e['duration']!,
-//                       style: TextStyle(color: Colors.blue),
-//                     )),
-//                     DataCell(Text(e['avgSpeed']!,
-//                         style: TextStyle(color: Colors.blue))),
-//                     DataCell(Text(e['fuelUsage']!,
-//                         style: TextStyle(color: Colors.blue))),
-//                     DataCell(Text(e['powerUsage']!,
-//                         style: TextStyle(color: Colors.blue))),
-//                   ]))
-//             ],
-//           ),
-// >>>>>>> Bug_loc_reports
         ),
       ),
     );
   }
 
+  //Vertical divider in table
   Widget _verticalDivider = const VerticalDivider(
     color: dividerColor,
     thickness: 1,
   );
 
+  //Custom selection graph
   buildGraph(BuildContext context) {
     debugPrint('SELECTED BUTTON Text $selectedButton');
 
@@ -2272,6 +1589,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     }
   }
 
+  //Trip duration graph
   Widget tripDurationGraph(BuildContext context) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
@@ -2418,6 +1736,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     );
   }
 
+  // Average speed graph in reports
   Widget avgSpeedGraph(BuildContext context) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
@@ -2556,6 +1875,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     );
   }
 
+  // Fuel usage graph on reports
   Widget fuelUsageGraph(BuildContext context) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
@@ -2690,6 +2010,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     );
   }
 
+  // Power usage graph on reports
   Widget powerUsageGraph(BuildContext context) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
@@ -2823,6 +2144,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     );
   }
 
+  // Widget for filter by date in reports
   Widget? filterByDate(BuildContext context) {
     return Column(
       children: [
@@ -3133,11 +2455,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     );
   }
 
+  //Filter by trip in reports
   Widget? filterByTrip(BuildContext context) {
     return isTripIdListLoading!
         ? Column(
             children: [
-              // (tripIdList?.isEmpty ?? false) ? Container(width: displayWidth(context),height: 40,child: Center(child: commonText(text: 'No Trip Id available',textSize: displayWidth(context)*0.030)),) :
 
               tripIdList!.length == 0
                   ? Container(
@@ -3229,57 +2551,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               valueColor: AlwaysStoppedAnimation<Color>(circularProgressColor),
             ),
           );
-  }
-}
-
-class TripData {
-  final String date;
-  final List<dynamic> startPosition;
-
-  TripData({required this.date, required this.startPosition});
-}
-
-class TripSpeed {
-  final String date;
-  final List<TripsByDate> speed;
-
-  TripSpeed({required this.date, required this.speed});
-}
-
-class CustomTooltipBehavior extends TooltipBehavior {
-  CustomTooltipBehavior({
-    double duration = 3500,
-    TooltipPosition tooltipPosition = TooltipPosition.pointer,
-  }) : super(
-          enable: true,
-          duration: duration,
-          tooltipPosition: tooltipPosition,
-        );
-
-  @override
-  Widget buildContent(BuildContext context, dynamic data) {
-    return Container(
-      decoration: BoxDecoration(
-        //color: Colors.white,
-        borderRadius: BorderRadius.circular(40),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      padding: EdgeInsets.all(10),
-      child: Text(
-        '${data.x} : ${data.y}',
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-        ),
-      ),
-    );
   }
 }
 

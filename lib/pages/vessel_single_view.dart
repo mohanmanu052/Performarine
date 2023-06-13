@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:airplane_mode_checker/airplane_mode_checker.dart';
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/location_dto.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
@@ -1689,12 +1688,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                             .isGranted;
 
                                                     if (isNotificationPermitted) {
-                                                      final status =
-                                                          await AirplaneModeChecker
-                                                              .checkAirplaneMode();
-                                                      print(
-                                                          "AIRPLANE MODE IS !!!! ${status}");
-
                                                       startWritingDataToDB(
                                                           bottomSheetContext,
                                                           stateSetter);
