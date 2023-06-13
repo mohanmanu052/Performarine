@@ -12,7 +12,7 @@ class TripListApiProvider extends ChangeNotifier {
   Client client = Client();
   TripList? tripListModel;
 
-  Future<TripList> tripListData(String vesselID,BuildContext context,
+  Future<TripList> tripListData(String vesselID, BuildContext context,
       String? accessToken, GlobalKey<ScaffoldState> scaffoldKey) async {
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
@@ -20,12 +20,11 @@ class TripListApiProvider extends ChangeNotifier {
     };
     Uri uri = Uri.https(Urls.baseUrl, Urls.GetTripList);
 
-    var body = {
-      "vesselID" : vesselID
-    };
+    var body = {"vesselID": vesselID};
 
     try {
-      final response = await client.post(uri, headers: headers,body: json.encode(body));
+      final response =
+          await client.post(uri, headers: headers, body: json.encode(body));
 
       var decodedData = json.decode(response.body);
 
@@ -38,9 +37,6 @@ class TripListApiProvider extends ChangeNotifier {
       if (response.statusCode == HttpStatus.ok) {
         tripListModel = TripList.fromJson(json.decode(response.body));
 
-        // Utils.showSnackBar( context,
-        //     scaffoldKey: scaffoldKey, message: decodedData['message']);
-
         return tripListModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         kReleaseMode
@@ -49,14 +45,14 @@ class TripListApiProvider extends ChangeNotifier {
         kReleaseMode ? null : debugPrint('EXE RESP: $response');
 
         if (scaffoldKey != null) {
-          Utils.showSnackBar( context,
+          Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
         tripListModel = null;
       } else {
         if (scaffoldKey != null) {
-          Utils.showSnackBar( context,
+          Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 

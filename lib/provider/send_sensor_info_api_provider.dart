@@ -78,10 +78,6 @@ class SendSensorInfoApiProvider with ChangeNotifier {
                 platformChannelSpecifics,
                 payload: 'item x');
           }
-
-          /*if (sent == total) {
-            await flutterLocalNotificationsPlugin.cancel(9989);
-          }*/
         },
       ).then((response) {
         Utils.customPrint('RESPONSE: ${response.statusCode}');

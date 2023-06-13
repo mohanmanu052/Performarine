@@ -33,15 +33,6 @@ class _VesselFormPageState extends State<VesselFormPage> {
   final TextEditingController _sizeController = TextEditingController();
   final TextEditingController _capacityController = TextEditingController();
   final TextEditingController _builtyearController = TextEditingController();
-  static final List<Color> _colors = [
-    Color(0xFF000000),
-    Color(0xFFFFFFFF),
-    Color(0xFF947867),
-    Color(0xFFC89234),
-    Color(0xFF862F07),
-    Color(0xFF2F1B15),
-  ];
-  static final List<Trip> _trips = [];
 
   final DatabaseService _databaseService = DatabaseService();
 
@@ -69,6 +60,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
     }
   }
 
+  /// To insert and update vessel details into local database
   Future<void> _onVesselSave() async {
     final vesselName = _nameController.text;
     final builder = _builderController.text;

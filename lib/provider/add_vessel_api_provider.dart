@@ -7,7 +7,6 @@ import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/models/add_vessel_model.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 
 class AddVesselApiProvider with ChangeNotifier {
   AddVesselModel? addVesselModel;
@@ -31,8 +30,6 @@ class AddVesselApiProvider with ChangeNotifier {
         'POST',
         uri,
       );
-
-      //Utils.customPrint('VESSEl IMAGE ${addVesselRequestModel!.selectedImages!}');
 
       if (addVesselRequestModel!.selectedImages == null ||
           addVesselRequestModel.selectedImages!.isEmpty) {
@@ -65,9 +62,6 @@ class AddVesselApiProvider with ChangeNotifier {
       Utils.customPrint('user Id ${userId}');
       Utils.customPrint('VESSEL STATUS ${addVesselRequestModel.vesselStatus}');
 
-      /*String vesselStatus = addVesselRequestModel.vesselStatus == 0
-          ? '2'
-          : addVesselRequestModel.vesselStatus!.toString();*/
       request.headers.addAll(headers);
       request.fields['id'] = addVesselRequestModel.id!;
       request.fields['name'] = addVesselRequestModel.name!;
@@ -101,11 +95,6 @@ class AddVesselApiProvider with ChangeNotifier {
 
       Utils.customPrint('Add VESSEL RESP : ' + responseValue.body);
 
-      Utils.customPrint(
-          'Add VESSEL RESP : ' + responseValue.statusCode.toString());
-
-      Utils.customPrint('Add VESSEL RESP : ' + jsonEncode(responseValue.body));
-
       var decodedData = json.decode(responseValue.body);
 
       if (responseValue.statusCode == HttpStatus.ok) {
@@ -113,9 +102,6 @@ class AddVesselApiProvider with ChangeNotifier {
 
         addVesselModel =
             AddVesselModel.fromJson(json.decode(responseValue.body));
-
-        /* Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey, message: decodedData['message']);*/
 
         return addVesselModel!;
       } else if (responseValue.statusCode == HttpStatus.gatewayTimeout) {

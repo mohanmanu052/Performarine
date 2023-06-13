@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:get/get.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -25,7 +23,6 @@ class TripViewListing extends StatefulWidget {
 
 class _TripViewListingState extends State<TripViewListing> {
   final DatabaseService _databaseService = DatabaseService();
-  //FlutterBackgroundService service = FlutterBackgroundService();
   late CommonProvider commonProvider;
 
   bool tripIsRunning = false;
@@ -151,7 +148,6 @@ class _TripViewListingState extends State<TripViewListing> {
                                           duration: tripDuration,
                                           onEnded: () async {
                                             setState(() {
-                                              //future = _databaseService.trips();
                                               snapshot.data![index].tripStatus =
                                                   1;
                                             });
@@ -213,6 +209,7 @@ class _TripViewListingState extends State<TripViewListing> {
     );
   }
 
+  /// To Check trip is Running or not
   Future<bool> tripIsRunningOrNot(Trip trip) async {
     bool result = await _databaseService.tripIsRunning();
 

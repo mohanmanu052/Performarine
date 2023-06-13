@@ -1,15 +1,14 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:dio/dio.dart' as d;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DownloadTrip {
+  /// To Download trip
   Future<String> downloadTrip(BuildContext context,
       GlobalKey<ScaffoldState> scaffoldKey, String tripId) async {
     String downloadedZipPath = '';
@@ -109,7 +108,6 @@ class DownloadTrip {
         }
       }
     } else {
-      //File copiedFile = File('${ourDirectory!.path}.zip');
       File copiedFile = File('${ourDirectory!.path}/${tripId}.zip');
 
       Utils.customPrint('DIR PATH RT ${copiedFile.path}');
@@ -143,10 +141,10 @@ class DownloadTrip {
     return downloadedZipPath;
   }
 
+  /// TO Downlaod Image while fetching data from api
   Future<String> downloadImageFromCloud(BuildContext context,
       GlobalKey<ScaffoldState> scaffoldKey, String imageUrl) async {
     String cloudImagePath = '';
-    Response resp;
     d.Dio dio = d.Dio();
     Utils.customPrint('CLOUD IMAGE DOWNLOAD Started!!!');
 
@@ -213,7 +211,7 @@ class DownloadTrip {
         } on d.DioError catch (e) {
           print('DOWNLOAD EXE: ${e.error}');
 
-         // Navigator.pop(context);
+          // Navigator.pop(context);
         }
       }
     } else {
@@ -244,58 +242,4 @@ class DownloadTrip {
 
     return cloudImagePath;
   }
-
-  /*Future<String> downloadImageFromCloud(BuildContext context,
-      GlobalKey<ScaffoldState> scaffoldKey, String imageUrl) async {
-    bool isPermissionGranted = await Utils.getStoragePermission(context);
-    print('IS PERMISSION GRANTED: $isPermissionGranted');
-
-    Directory directory;
-
-    directory = await getApplicationDocumentsDirectory();
-
-    if (isPermissionGranted) {
-      bool doesExist = await directory.exists();
-      print(doesExist);
-
-      print('FILE URL: $imageUrl');
-      print('DOWNLOAD DIRECTORY PATH: ${directory.path}');
-
-      //showLoaderDialog(context);
-    }
-
-    Response resp;
-    d.Dio dio = d.Dio();
-
-    String fileName = imageUrl.split('/').last;
-    print('FILE NAME: $fileName');
-    String name = '${Random().nextInt(9999).toString()}${fileName.trim()}';
-
-    String directoryPath = '${directory.path}/$name';
-    print('DOWNLOAD DIRECTORY PATH WITH FILENAME: $directoryPath');
-
-      try {
-      dio.download(imageUrl, directoryPath,
-          onReceiveProgress: (progress, total) {
-        // pr.update(progress: double.parse(((progress/total)*100).toStringAsFixed(0)));
-
-        if (progress == total) {
-             if(pr.isShowing()) pr.hide();
-              pr.update(progress: 0.0);
-          Navigator.pop(context);
-
-          Utils.showActionSnackBar(
-              context, scaffoldKey, 'File located at: $directoryPath');
-        }
-      });
-    } on d.DioError catch (e) {
-      print('DOWNLOAD EXE: ${e.error}');
-
-      Navigator.pop(context);
-    }
-
-    // pr.update(progress: 0.0);
-
-    return directoryPath;
-  }*/
 }

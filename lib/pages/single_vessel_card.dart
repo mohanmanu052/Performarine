@@ -28,15 +28,15 @@ class _SingleVesselCardState extends State<SingleVesselCard> {
     checkTripRunning();
   }
 
+  /// To Check trip is running or not
   checkTripRunning() async {
     bool result = await databaseService
         .checkIfTripIsRunningForSpecificVessel(widget.vessel!.id!);
-    if(mounted){
+    if (mounted) {
       setState(() {
         isTripRunning = result;
       });
     }
-
   }
 
   @override

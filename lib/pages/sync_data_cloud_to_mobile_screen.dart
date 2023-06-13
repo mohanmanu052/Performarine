@@ -9,7 +9,6 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
@@ -60,6 +59,7 @@ class _SyncDataCloudToMobileScreenState
     getUserData();
   }
 
+  /// To get user data from api if internet connection is on
   getUserData() async {
     var bool = await Utils()
         .check(scaffoldKey, userConfig: true, onRetryTap: () => getUserData());
@@ -72,12 +72,6 @@ class _SyncDataCloudToMobileScreenState
       setState(() {
         commonProvider.updateExceptionOccurredValue(true);
       });
-      /* Future.delayed(Duration(seconds: 1), () {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-            ModalRoute.withName(""));
-      }); */
     }
   }
 
@@ -232,6 +226,7 @@ class _SyncDataCloudToMobileScreenState
     );
   }
 
+  /// To show the progress
   stepperWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8),
@@ -294,6 +289,7 @@ class _SyncDataCloudToMobileScreenState
     );
   }
 
+  /// Getting user details from the api
   getUserConfigData() {
     Utils.customPrint("CLOUDE USER ID ${commonProvider.loginModel!.userId}");
 
@@ -324,8 +320,6 @@ class _SyncDataCloudToMobileScreenState
             String cloudImage;
             if (value.vessels![i].imageURLs!.length > 1) {
               cloudImage = value.vessels![i].imageURLs![0];
-
-              // Utils.customPrint('USER CONFIG DATA CLOUD IMAGE ARRAY $cloudImage');
             } else {
               cloudImage = value.vessels![i].imageURLs == []
                   ? ''

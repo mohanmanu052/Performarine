@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -51,7 +50,6 @@ class TripWidget extends StatefulWidget {
 
 class _TripWidgetState extends State<TripWidget> {
   final DatabaseService _databaseService = DatabaseService();
-  //FlutterBackgroundService service = FlutterBackgroundService();
 
   List<File?> finalSelectedFiles = [];
 
@@ -84,15 +82,11 @@ class _TripWidgetState extends State<TripWidget> {
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    // double height = 150;
     Size size = MediaQuery.of(context).size;
     return InkWell(
       onTap: () async {
         getVesselById = await _databaseService
             .getVesselNameByID(widget.tripList!.vesselId.toString());
-
-        Utils.customPrint('VESSEL DATA ${getVesselById[0].imageURLs}');
-        Utils.customPrint('VESSEL DATA 1212 ${commonProvider.tripStatus}');
 
         if (!isTripUploaded) {
           var result = await Navigator.push(
@@ -131,13 +125,9 @@ class _TripWidgetState extends State<TripWidget> {
             width: size.width - 60,
             //height: 110,
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                //  borderRadius: BorderRadius.circular(8),
-                //color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.09), blurRadius: 2)
-                ]),
+            decoration: BoxDecoration(boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.09), blurRadius: 2)
+            ]),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -485,6 +475,7 @@ class _TripWidgetState extends State<TripWidget> {
     );
   }
 
+  /// Will get Sync value of Vessel
   Future<bool> vesselIsSyncOrNot(String vesselId) async {
     bool result = await _databaseService.getVesselIsSyncOrNot(vesselId);
 
@@ -496,6 +487,7 @@ class _TripWidgetState extends State<TripWidget> {
     return result;
   }
 
+  /// TO Launch Route Map of the Trip
   _launchURL() async {
     final Uri url =
         Uri.parse('https://${Urls.baseUrl}/goeMaps/${widget.tripList!.id}');
@@ -505,11 +497,8 @@ class _TripWidgetState extends State<TripWidget> {
     }
   }
 
+  /// Send Data to SendSensor api
   startSensorFunctionality(Trip tripData) async {
-    //fileName = '$fileIndex.csv';
-
-    // flutterLocalNotificationsPlugin.cancel(9988);
-
     AndroidDeviceInfo? androidDeviceInfo;
     IosDeviceInfo? iosDeviceInfo;
 
@@ -519,8 +508,6 @@ class _TripWidgetState extends State<TripWidget> {
       iosDeviceInfo = await deviceDetails.iosInfo;
     }
 
-    //AndroidDeviceInfo androidDeviceInfo = await deviceDetails.androidInfo;
-
     String? tripDuration = tripData.time ?? '00:00:00';
     String? tripDistance = tripData.distance ?? '1';
     String? tripSpeed = tripData.speed ?? '1';
@@ -529,8 +516,6 @@ class _TripWidgetState extends State<TripWidget> {
     var startPosition = tripData.startPosition!.split(",");
     var endPosition = tripData.endPosition!.split(",");
     Utils.customPrint('START POSITION 0 ${startPosition}');
-
-    //'storage/emulated/0/Download/${widget.tripList!.id}.zip',
 
     Directory tripDir = await getApplicationDocumentsDirectory();
 
@@ -569,11 +554,9 @@ class _TripWidgetState extends State<TripWidget> {
       "distance": double.parse(tripDistance),
       "speed": double.parse(tripSpeed),
       "avgSpeed": double.parse(tripAvgSpeed),
-      //"userID": commonProvider.loginModel!.userId!
     };
 
     Utils.customPrint('CREATE TRIP: $queryParameters');
-    //Utils.customPrint('CREATE TRIP FILE PATH: ${tripData.filePath}');
     Utils.customPrint(
         'CREATE TRIP FILE PATH: ${'/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'}');
 
@@ -632,22 +615,19 @@ class _TripWidgetState extends State<TripWidget> {
           isTripUploaded = false;
         });
       }
-      // showFailedNoti(tripData.id!);
       Utils.customPrint('ON ERROR $onError \n $s');
     });
   }
 
+  /// To cancel Ongoing Notification
   Future<void> cancelOnGoingProgressNotification(String id) async {
-    //progressTimer!.cancel();
     flutterLocalNotificationsPlugin.cancel(9989);
-    // setState(() {
-    //   progress = 100;
-    // });
+
     return;
   }
 
+  /// If Upload trip failed then to show the progress
   showFailedNoti(String id, [String? message]) async {
-    // progressTimer!.cancel();
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('progress channel', 'progress channel',
             channelDescription: 'progress channel description',
@@ -667,8 +647,8 @@ class _TripWidgetState extends State<TripWidget> {
         payload: 'item x');
   }
 
+  /// if trip uploaded successfully
   showSuccessNoti() async {
-    // progressTimer!.cancel();
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('progress channel', 'progress channel',
             channelDescription: 'progress channel description',
@@ -687,6 +667,7 @@ class _TripWidgetState extends State<TripWidget> {
         payload: 'item x');
   }
 
+  /// If user using own internet then shown dialog box
   showDialogBox() {
     return showDialog(
         barrierDismissible: false,
@@ -808,12 +789,13 @@ class _TripWidgetState extends State<TripWidget> {
         });
   }
 
+  /// If data is not sync then using this function we can upload data
+  /// First it will add vessel if its new and then trip
   uploadDataIfDataIsNotSync() async {
     commonProvider.updateTripUploadingStatus(true);
     await vesselIsSyncOrNot(widget.tripList!.vesselId.toString());
     Utils.customPrint('VESSEL STATUS isSync $vesselIsSync');
 
-    const int maxProgress = 10;
     progress = 0;
 
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
@@ -925,6 +907,7 @@ class _TripWidgetState extends State<TripWidget> {
     }
   }
 
+  /// To Check trip is Running or not
   Future<bool> tripIsRunningOrNot() async {
     bool result = await _databaseService.tripIsRunning();
 
@@ -940,103 +923,4 @@ class _TripWidgetState extends State<TripWidget> {
 
     return result;
   }
-
-  /*downloadTrip(bool isuploadTrip) async {
-    Utils.customPrint('DOWLOAD Started!!!');
-
-    final androidInfo = await DeviceInfoPlugin().androidInfo;
-
-    var isStoragePermitted;
-    if (androidInfo.version.sdkInt < 29) {
-      isStoragePermitted = await Permission.storage.status;
-
-      if (isStoragePermitted.isGranted) {
-        //File copiedFile = File('${ourDirectory!.path}.zip');
-        File copiedFile =
-            File('${ourDirectory!.path}/${widget.tripList!.id}.zip');
-
-        Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
-
-        Directory directory;
-
-        if (Platform.isAndroid) {
-          directory = Directory(
-              "storage/emulated/0/Download/${widget.tripList!.id}.zip");
-        } else {
-          directory = await getApplicationDocumentsDirectory();
-        }
-
-        copiedFile.copy(directory.path);
-
-        Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-        if (copiedFile.existsSync()) {
-          if (!isuploadTrip) {
-            Utils.showSnackBar(
-              context,
-              scaffoldKey: widget.scaffoldKey,
-              message: 'File downloaded successfully',
-            );
-          }
-        }
-      } else {
-        await Utils.getStoragePermission(context);
-        var isStoragePermitted = await Permission.storage.status;
-
-        if (isStoragePermitted.isGranted) {
-          File copiedFile = File('${ourDirectory!.path}.zip');
-
-          Directory directory;
-
-          if (Platform.isAndroid) {
-            directory = Directory(
-                "storage/emulated/0/Download/${widget.tripList!.id}.zip");
-          } else {
-            directory = await getApplicationDocumentsDirectory();
-          }
-
-          copiedFile.copy(directory.path);
-
-          Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-          if (copiedFile.existsSync()) {
-            Utils.showSnackBar(
-              context,
-              scaffoldKey: widget.scaffoldKey,
-              message: 'File downloaded successfully',
-            );
-          }
-        }
-      }
-    } else {
-      //File copiedFile = File('${ourDirectory!.path}.zip');
-      File copiedFile =
-          File('${ourDirectory!.path}/${widget.tripList!.id}.zip');
-
-      Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
-
-      Directory directory;
-
-      if (Platform.isAndroid) {
-        directory =
-            Directory("storage/emulated/0/Download/${widget.tripList!.id}.zip");
-      } else {
-        directory = await getApplicationDocumentsDirectory();
-      }
-
-      copiedFile.copy(directory.path);
-
-      Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-
-      if (copiedFile.existsSync()) {
-        if (!isuploadTrip) {
-          Utils.showSnackBar(
-            context,
-            scaffoldKey: widget.scaffoldKey,
-            message: 'File downloaded successfully',
-          );
-        }
-      }
-    }
-  }*/
 }

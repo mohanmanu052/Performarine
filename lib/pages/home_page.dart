@@ -76,14 +76,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  checkNotificationPermission() async {
-    bool isNotificationPermitted = await Permission.notification.isGranted;
-
-    if (!isNotificationPermitted) {
-      await Utils.getNotificationPermission(context);
-    }
-  }
-
   //TODO future reference code
   /*@override
   void didChangeDependencies() {
@@ -119,38 +111,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       });
     }
   }*/
-
-  fetchDeviceData() async {
-    await fetchDeviceInfo();
-
-    deviceDetails = Platform.isAndroid
-        ? DeviceInfo(
-            board: androidDeviceInfo?.board,
-            deviceId: androidDeviceInfo?.id,
-            deviceType: androidDeviceInfo?.type,
-            make: androidDeviceInfo?.manufacturer,
-            model: androidDeviceInfo?.model,
-            version: androidDeviceInfo?.version.release)
-        : DeviceInfo(
-            board: iosDeviceInfo?.utsname.machine,
-            deviceId: '',
-            deviceType: iosDeviceInfo?.utsname.machine,
-            make: iosDeviceInfo?.utsname.machine,
-            model: iosDeviceInfo?.model,
-            version: iosDeviceInfo?.utsname.release);
-    Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
-  }
-
-  fetchDeviceInfo() async {
-    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-    if (Platform.isAndroid) {
-      androidDeviceInfo = await deviceInfoPlugin.androidInfo;
-      return androidDeviceInfo;
-    } else if (Platform.isIOS) {
-      iosDeviceInfo = await deviceInfoPlugin.iosInfo;
-      return iosDeviceInfo;
-    }
-  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -222,9 +182,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                       ],
                     )),
-                    // TextSpan(
-                    //   text: " to add",
-                    // ),
                   ],
                 ),
               ),
@@ -245,8 +202,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   margin: EdgeInsets.only(right: 2),
                   width: displayWidth(context) * 0.45,
                   decoration: BoxDecoration(
-                      color:
-                          currentTabIndex == 0 ? buttonBGColor : commonBackgroundColor,
+                      color: currentTabIndex == 0
+                          ? buttonBGColor
+                          : commonBackgroundColor,
                       border: Border.all(color: buttonBGColor),
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20),
@@ -268,8 +226,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   margin: EdgeInsets.only(left: 2),
                   width: displayWidth(context) * 0.45,
                   decoration: BoxDecoration(
-                      color:
-                          currentTabIndex == 1 ? buttonBGColor : commonBackgroundColor,
+                      color: currentTabIndex == 1
+                          ? buttonBGColor
+                          : commonBackgroundColor,
                       border: Border.all(color: buttonBGColor),
                       borderRadius: BorderRadius.only(
                           topRight: Radius.circular(20),
@@ -285,7 +244,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           currentTabIndex == 1 ? Colors.white : Colors.black,
                       textSize: displayWidth(context) * 0.036,
                     ),
-                    // Text('Activity (${tripsCount.toString()})'),
                   ),
                 ),
               ],

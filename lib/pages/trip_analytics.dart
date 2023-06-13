@@ -1,12 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_background_executor/flutter_background_executor.dart';
-//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -24,11 +21,9 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../common_widgets/widgets/status_tag.dart';
-import 'package:timezone/timezone.dart' as tz;
 import '../models/reports_model.dart';
 
 class TripAnalyticsScreen extends StatefulWidget {
@@ -68,8 +63,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   String? finalTripDuration, finalTripDistance, finalAvgSpeed;
 
-  // FlutterBackgroundService service = FlutterBackgroundService();
-
   bool isTripUploaded = false,
       vesselIsSync = false,
       isDataUpdated = false,
@@ -88,7 +81,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // getVesselDataById();
 
     Utils.customPrint('CURRENT TIME TIME ${widget.tripId}');
 
@@ -152,7 +144,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       print('##TDATA updated time delay from 1 sec to 400 MS by abhi');
       tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
-      //tripDuration = sharedPreferences!.getString('tripDuration')!;
       tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
       tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
 
@@ -160,72 +151,18 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       debugPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
 
       var durationTime = DateTime.now().toUtc().difference(createdAtTime);
-      // current date time.difference(createdAt);
       tripDuration = Utils.calculateTripDuration(
           ((durationTime.inMilliseconds) ~/ 1000).toInt());
-      // tripDuration = durationTime.inMilliseconds.toString();
-      // duration.inmiliseconds;
-
-      // print('##TDATA 1212 : $tripDuration');
 
       if (mounted)
         setState(() {
           getTripDetailsFromNoti = false;
         });
     });
-
-    /* if (Platform.isAndroid) {
-      service.on('tripAnalyticsData').listen((event) {
-        tripDistance = event!['tripDistance'];
-        tripDuration = event['tripDuration'];
-        tripSpeed = event['tripSpeed'].toString();
-        tripAvgSpeed = event['tripAvgSpeed'].toString();
-
-        if (mounted)
-          setState(() {
-            getTripDetailsFromNoti = false;
-          });
-      });
-    }
-    else {
-      final currentTrip = await _databaseService.getTrip(widget.tripId!);
-
-      DateTime createdAtTime = DateTime.parse(currentTrip.createdAt!);
-
-      WidgetsFlutterBinding.ensureInitialized();
-
-      await sharedPreferences!.reload();
-
-      durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-        print('##TDATA updated time delay from 1 sec to 400 MS by abhi');
-        tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
-        //tripDuration = sharedPreferences!.getString('tripDuration')!;
-        tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
-        tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
-
-        debugPrint("TRIP ANALYTICS SPEED $tripSpeed");
-        debugPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
-
-        var durationTime = DateTime.now().toUtc().difference(createdAtTime);
-        // current date time.difference(createdAt);
-        tripDuration = Utils.calculateTripDuration(
-            ((durationTime.inMilliseconds) ~/ 1000).toInt());
-        // tripDuration = durationTime.inMilliseconds.toString();
-        // duration.inmiliseconds;
-
-        // print('##TDATA 1212 : $tripDuration');
-
-        if (mounted)
-          setState(() {
-            getTripDetailsFromNoti = false;
-          });
-      });
-    }*/
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     if (durationTimer != null) {
       durationTimer!.cancel();
@@ -370,14 +307,12 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                     ),
                   ),
           ],
-          //backgroundColor: Colors.white,
         ),
         body: tripData == null && vesselData == null
             ? Center(
                 child: CircularProgressIndicator(),
               )
             : Container(
-                //margin: EdgeInsets.symmetric(horizontal: 17),
                 child: Column(
                   children: [
                     SizedBox(
@@ -1023,29 +958,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                         });
                                                         Navigator.pop(context);
 
-                                                        // final currentTrip =
-                                                        //     await _databaseService
-                                                        //         .getTrip(widget
-                                                        //             .tripId!);
-
-                                                        // DateTime createdAtTime =
-                                                        //     DateTime.parse(
-                                                        //         currentTrip
-                                                        //             .createdAt!);
-
-                                                        // var durationTime =
-                                                        //     DateTime.now()
-                                                        //         .toUtc()
-                                                        //         .difference(
-                                                        //             createdAtTime);
-                                                        // current date time.difference(createdAt);
-                                                        // tripDuration = Utils
-                                                        //     .calculateTripDuration(
-                                                        //         ((durationTime
-                                                        //                     .inMilliseconds) /
-                                                        //                 1000)
-                                                        //             .toInt());
-
                                                         EndTrip().endTrip(
                                                             context: context,
                                                             scaffoldKey:
@@ -1089,7 +1001,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                                               isDataUpdated =
                                                                   true;
-                                                              // Navigator.pop(context);
                                                             });
                                                       }, () {
                                                         Navigator.pop(context);
@@ -1610,6 +1521,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     );
   }
 
+  /// Check vessel is sync or not
   Future<bool> vesselIsSyncOrNot(String vesselId) async {
     bool result = await _databaseService.getVesselIsSyncOrNot(vesselId);
 
@@ -1742,6 +1654,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         });
   }
 
+  /// upload sensor data to database
   startSensorFunctionality(Trip tripData) async {
     AndroidDeviceInfo? androidDeviceInfo;
     IosDeviceInfo? iosDeviceInfo;
@@ -1771,8 +1684,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     var endPosition = tripData.endPosition!.split(",");
     Utils.customPrint('START POSITION 0 ${startPosition}');
 
-    // //'storage/emulated/0/Download/${tripData.id}.zip',
-
     Directory tripDir = await getApplicationDocumentsDirectory();
 
     var queryParameters;
@@ -1798,15 +1709,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             : iosDeviceInfo!.utsname.machine,
         "deviceType": Platform.isAndroid ? 'Android' : 'IOS'
       },
-      "startPosition": startPosition
-      /*json
-          .decode(tripData.startPosition!.toString())
-          .cast<String>()
-          .toList()*/
-
-      ,
+      "startPosition": startPosition,
       "endPosition": endPosition,
-      /*json.decode(tripData.endPosition!.toString()).cast<String>().toList()*/
       "vesselId": tripData.vesselId,
       "filePath": Platform.isAndroid
           ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'
@@ -1817,11 +1721,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       "distance": double.parse(tripDistance),
       "speed": double.parse(tripSpeed),
       "avgSpeed": double.parse(tripAvgSpeed),
-      //"userID": commonProvider.loginModel!.userId!
     };
 
     Utils.customPrint('Send Sensor Data: $queryParameters');
-    //Utils.customPrint('TRIP ANALYTICS FILE PATH : ${tripData.filePath!}');
 
     commonProvider
         .sendSensorInfo(
@@ -1881,25 +1783,24 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           isTripUploaded = false;
         });
       }
-      // showFailedNoti(tripData.id!);
       Utils.customPrint('ON ERROR $onError \n $s');
     });
   }
 
+  /// To cancel notification
   Future<void> cancelOnGoingProgressNotification(String id) async {
     flutterLocalNotificationsPlugin.cancel(9989);
 
     return;
   }
 
+  /// if data is not sync then it will upload first vessel and then trip
   uploadDataIfDataIsNotSync() async {
     commonProvider.updateTripUploadingStatus(true);
     await vesselIsSyncOrNot(tripData!.vesselId.toString());
     Utils.customPrint('VESSEL STATUS isSync $vesselIsSync');
 
     commonProvider.updateTripUploadingStatus(true);
-
-    const int maxProgress = 10;
     progress = 0;
 
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
@@ -1955,7 +1856,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           vesselData.vesselStatus;
       commonProvider.addVesselRequestModel!.batteryCapacity =
           vesselData.batteryCapacity;
-      //commonProvider.addVesselRequestModel!.imageURLs = vesselData.imageURLs!;
 
       if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
         finalSelectedFiles.add(File(vesselData.imageURLs!));
@@ -1977,7 +1877,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           .then((value) async {
         if (value != null) {
           if (value.status!) {
-            // Utils.customPrint('DATA');
             await _databaseService.updateIsSyncStatus(
                 1, tripData!.vesselId.toString());
 
@@ -2014,8 +1913,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     }
   }
 
+  /// To show failed notification if error occure while uploading trip
   showFailedNoti(String id) async {
-    // progressTimer!.cancel();
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('progress channel', 'progress channel',
             channelDescription: 'progress channel description',
@@ -2032,8 +1931,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         payload: 'item x');
   }
 
+  /// To show success notification after uploading trip
   showSuccessNoti() async {
-    // progressTimer!.cancel();
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails('progress channel', 'progress channel',
             channelDescription: 'progress channel description',

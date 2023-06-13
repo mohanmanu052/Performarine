@@ -1,17 +1,23 @@
-import 'dart:io';
+import 'dart:ui';
 
+import 'package:background_locator_2/background_locator.dart';
+import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:performarine/analytics/file_manager.dart';
+import 'package:performarine/analytics/location_callback_handler.dart';
+import 'package:performarine/analytics/location_service_repository.dart';
+import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
-import 'package:performarine/pages/lets_get_started_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
+import 'package:background_locator_2/settings/locator_settings.dart' as bgls;
+import 'package:background_locator_2/settings/android_settings.dart' as bglas;
 
 import '../common_widgets/utils/constants.dart';
 
@@ -41,7 +47,6 @@ class _IntroScreenState extends State<IntroScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        //backgroundColor: const Color(0xff00575B),
         body: Stack(
           children: [
             Image.asset(
@@ -75,10 +80,8 @@ class _IntroScreenState extends State<IntroScreen> {
                       Image.asset(
                         'assets/images/logo.png',
                         fit: BoxFit.cover,
-                        //color: Colors.white,
                         height: displayHeight(context) * 0.15,
                       ),
-                      //SizedBox(height: displayHeight(context) * 0.04),
                     ],
                   ),
                 ),
@@ -127,31 +130,6 @@ class _IntroScreenState extends State<IntroScreen> {
                                     textAlign: TextAlign.center),
                               ),
                               SizedBox(height: displayHeight(context) * 0.02),
-                              /*GestureDetector(
-                                onTap: () {
-                                  checkIfUserIsLoggedIn();
-                                },
-                                child: Container(
-                                  height: displayHeight(context) * 0.11,
-                                  width: displayHeight(context) * 0.11,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey.shade800,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: Colors.grey.shade400,
-                                          width: 8)),
-                                  child: Center(
-                                    child: commonText(
-                                        context: context,
-                                        text: 'START',
-                                        fontWeight: FontWeight.w600,
-                                        textColor:
-                                            Colors.white.withOpacity(0.8),
-                                        textSize: displayWidth(context) * 0.04,
-                                        textAlign: TextAlign.center),
-                                  ),
-                                ),
-                              ),*/
                             ],
                           ),
                         )
@@ -163,16 +141,12 @@ class _IntroScreenState extends State<IntroScreen> {
     );
   }
 
+  /// To Check trip is running or not
   checkIfTripIsRunning() async {
     var pref = await Utils.initSharedPreferences();
 
     bool? isTripStarted = pref.getBool('trip_started');
     bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
-
-    //var service = FlutterBackgroundService();
-    // bool isServiceRunning = await service.isRunning();
-
-    // Utils.customPrint('IS SERVICE RUNNING:$isServiceRunning');
 
     Utils.customPrint('INTRO START $isTripStarted');
 
@@ -181,18 +155,6 @@ class _IntroScreenState extends State<IntroScreen> {
     });
 
     if (isTripRunningCurrently == null) {
-      // if (isServiceRunning) {
-      //   if (Platform.isAndroid) {
-      //     service.invoke("setAsBackground");
-      //   }
-      //   /*if (positionStream != null) {
-      //     positionStream!.cancel();
-      //   }*/
-      //   //var service2 = FlutterBackgroundService();
-      //   bool isServiceRunning = await service.isRunning();
-      //
-      //   Utils.customPrint('IS SERVICE RUNNING 222:$isServiceRunning');
-      // }
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) {
           setState(() {
@@ -201,14 +163,6 @@ class _IntroScreenState extends State<IntroScreen> {
         }
       });
     } else if (!isTripRunningCurrently!) {
-      /*if (isServiceRunning) {
-        if (Platform.isAndroid) {
-          service.invoke("setAsBackground");
-        }
-        */ /*if (positionStream != null) {
-          positionStream!.cancel();
-        }*/ /*
-      }*/
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) {
           setState(() {
@@ -269,6 +223,7 @@ class _IntroScreenState extends State<IntroScreen> {
     }
   }
 
+  /// To check user already log in or new user
   checkIfUserIsLoggedIn() async {
     var pref = await Utils.initSharedPreferences();
 
@@ -278,18 +233,9 @@ class _IntroScreenState extends State<IntroScreen> {
     bool? isFirstTimeUser = pref.getBool('isFirstTimeUser');
 
     Utils.customPrint('ISUSERLOGEDIN $isUserLoggedIn');
-
-    // var service = FlutterBackgroundService();
-    //bool isServiceRunning = await service.isRunning();
+    Utils.customPrint('ISUSERLOGEDIN 1212 $isTripStarted');
 
     if (isTripStarted == null) {
-      /*if (isServiceRunning) {
-        service.invoke("stopService");
-        */ /*if (positionStream != null) {
-          positionStream!.cancel();
-        }*/ /*
-      }*/
-
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(
             context,
@@ -317,7 +263,25 @@ class _IntroScreenState extends State<IntroScreen> {
     } else if (isTripStarted) {
       Utils.customPrint('INTRO TRIP IS RUNNING $isTripStarted');
 
+      final _isRunning = await BackgroundLocator.isServiceRunning();
+
+      Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
+
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
+
+      reInitializeService();
+
+      Utils.customPrint('INTRO SCREEN TRIP ID ${tripData![0]}');
+
+      final isRunning1 = await BackgroundLocator.isServiceRunning();
+
+      Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
+
+      StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
+
+      final isRunning2 = await BackgroundLocator.isServiceRunning();
+
+      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
 
       if (mounted) {
         if (isCalledFromNoti == null) {
@@ -367,5 +331,40 @@ class _IntroScreenState extends State<IntroScreen> {
             ModalRoute.withName(""));
       }
     }
+  }
+
+  /// Reinitialized service after user killed app while trip is running
+  reInitializeService() async {
+    print('RE-Initializing...');
+    await BackgroundLocator.initialize();
+    String logStr = await FileManager.readLogFile();
+    print('RE-Initialization done');
+    final _isRunning = await BackgroundLocator.isServiceRunning();
+
+    Map<String, dynamic> data = {'countInit': 1};
+    return await BackgroundLocator.registerLocationUpdate(
+        LocationCallbackHandler.callback,
+        initCallback: LocationCallbackHandler.initCallback,
+        initDataCallback: data,
+        disposeCallback: LocationCallbackHandler.disposeCallback,
+        iosSettings: IOSSettings(
+            accuracy: bgls.LocationAccuracy.NAVIGATION,
+            distanceFilter: 0,
+            stopWithTerminate: true),
+        autoStop: false,
+        androidSettings: bglas.AndroidSettings(
+            accuracy: bgls.LocationAccuracy.NAVIGATION,
+            interval: 1,
+            distanceFilter: 0,
+            //client: bglas.LocationClient.android,
+            androidNotificationSettings: bglas.AndroidNotificationSettings(
+                notificationChannelName: 'Location tracking',
+                notificationTitle: 'Trip is in progress',
+                notificationMsg: '',
+                notificationBigMsg: '',
+                notificationIconColor: Colors.grey,
+                notificationIcon: '@drawable/noti_logo',
+                notificationTapCallback:
+                    LocationCallbackHandler.notificationCallback)));
   }
 }

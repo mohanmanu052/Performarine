@@ -19,7 +19,6 @@ import 'package:performarine/provider/registration_api_provider.dart';
 import 'package:performarine/provider/report_module_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
 import 'package:performarine/services/database_service.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../models/reports_model.dart';
 import '../models/trip_list_model.dart';
@@ -52,6 +51,7 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
+  /// Login
   Future<LoginModel> login(
     BuildContext context,
     String email,
@@ -69,6 +69,7 @@ class CommonProvider with ChangeNotifier {
     return loginModel!;
   }
 
+  /// Sign Up
   Future<RegistrationModel> registerUser(
     BuildContext context,
     String email,
@@ -105,6 +106,7 @@ class CommonProvider with ChangeNotifier {
     return registrationModel!;
   }
 
+  /// Add Vessel
   Future<AddVesselModel?> addVessel(
       BuildContext context,
       CreateVessel? addVesselRequestModel,
@@ -121,6 +123,7 @@ class CommonProvider with ChangeNotifier {
     return addVesselModel;
   }
 
+  /// Send Sensor data
   Future<UploadTripModel?> sendSensorInfo(
       BuildContext context,
       accessToken,
@@ -150,20 +153,22 @@ class CommonProvider with ChangeNotifier {
     return uploadTripModel;
   }
 
+  /// To get trip count from local database
   getTripsCount() async {
     final DatabaseService _databaseService = DatabaseService();
     List<Trip> trips = await _databaseService.trips();
 
     tripsCount = trips.length;
     notifyListeners();
-    // return tripsCount.toString();
   }
 
+  /// it will update trip status
   updateTripStatus(bool value) async {
     tripStatus = value;
     notifyListeners();
   }
 
+  /// get trips by vessel id
   Future<List<Trip>>? getTripsByVesselId(String? vesselId) {
     if (vesselId == null || vesselId == "") {
       getTripsByIdFuture = DatabaseService().trips();
@@ -174,16 +179,19 @@ class CommonProvider with ChangeNotifier {
     return getTripsByIdFuture!;
   }
 
+  /// It will update trip uploading status
   updateTripUploadingStatus(bool value) {
     isTripUploading = value;
     notifyListeners();
   }
 
+  /// it will update if there is any internet issue
   updateConnectionCloseStatus(bool value) {
     internetError = value;
     notifyListeners();
   }
 
+  /// get User data
   Future<GetUserConfigModel?> getUserConfigData(
       BuildContext context,
       String userId,
@@ -198,11 +206,13 @@ class CommonProvider with ChangeNotifier {
     return getUserConfigModel;
   }
 
+  /// if any exception occured it will update the status
   updateExceptionOccurredValue(bool value) {
     exceptionOccurred = value;
     notifyListeners();
   }
 
+  /// Report
   Future<ReportModel?> getReportData(
       String startDate,
       String endDate,
@@ -219,6 +229,7 @@ class CommonProvider with ChangeNotifier {
     return reportModel;
   }
 
+  /// All Trip list
   Future<TripList> tripListData(
     String vesselID,
     BuildContext context,

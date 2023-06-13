@@ -10,18 +10,6 @@ class GetFile {
     return sensorDataFile.path;
   }
 
-  /*Future<List<String>> getFile(String tripId, String fileName) async {
-    // List<String> folderPath = await GetOrCreateFolder().getOrCreateFolder(tripId);
-     List<> folderPath = await GetOrCreateFolder().getOrCreateFolder(tripId);
-
-    File mobileSensorDataFile = File('${folderPath[0]}/$fileName');
-
-    File lprDataFile = File('${folderPath[1]}/$fileName');
-    File sensorDataFile = File('$folderPath/$fileName');
-    // return sensorDataFile.path;
-    return [mobileSensorDataFile.path, lprDataFile.path];
-  }*/
-
   int checkFileSize(File file) {
     if (file.existsSync()) {
       var bytes = file.lengthSync();

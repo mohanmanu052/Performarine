@@ -6,14 +6,12 @@ import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
 import 'package:performarine/models/get_user_config_model.dart';
-import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 
 class GetUserConfigApiProvider with ChangeNotifier {
   GetUserConfigModel? getUserConfigModel;
-  final DatabaseService _databaseService = DatabaseService();
 
   CommonProvider? commonProvider;
 
@@ -75,9 +73,6 @@ class GetUserConfigApiProvider with ChangeNotifier {
             Navigator.of(context).pop();
           });
         }
-
-        /* Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey, message: decodedData['message']);*/
 
         return getUserConfigModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {

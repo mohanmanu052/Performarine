@@ -4,19 +4,15 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
-import 'package:performarine/lpr_bluetooth_widget.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/pages/Routemap.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -25,11 +21,7 @@ import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import '../common_widgets/utils/urls.dart';
 
 class CustomDrawer extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
@@ -63,7 +55,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
   @override
   Widget build(BuildContext context) {
     textSize = displayWidth(context) * 0.038;
-    // Utils.customPrint('X-TOKEN ${commonProvider.loginModel!.userEmail}');
 
     return Drawer(
       backgroundColor: commonBackgroundColor,
@@ -184,27 +175,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      /*InkWell(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          _launchURL();
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) => RouteMap()),
-                          // );
-                        },
-                        child: commonText(
-                            context: context,
-                            text: 'Reports Route',
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.black54,
-                            textSize: textSize,
-                            textAlign: TextAlign.start),
-                      ),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),*/
                       InkWell(
                         onTap: () {
                           Navigator.of(context).pop();
@@ -253,29 +223,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     builder: (context) =>
                                         const SyncDataCloudToMobileScreen()),
                               );
-
-                              /*if (vesselsSyncDetails || tripSyncDetails) {
-                                showDialogBoxToUploadData(
-                                    context, widget.scaffoldKey!);
-                              } else {
-                                Navigator.of(context).pop();
-
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SyncDataCloudToMobileScreen()),
-                                );
-                              }*/
                             }
                           } else {
-                            /*Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SyncDataCloudToMobileScreen()),
-                            );*/
-
                             if (vesselsSyncDetails || tripSyncDetails) {
                               showDialogBoxToUploadData(
                                   context, widget.scaffoldKey!);
@@ -302,25 +251,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      /* InkWell(
-                        onTap: () {
-                          Navigator.of(context).pop();
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LprBluetoothWidget(
-                                    scaffoldKey: widget.scaffoldKey)),
-                          );
-                        },
-                        child: commonText(
-                            context: context,
-                            text: 'LPR Connection',
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.black54,
-                            textSize: textSize,
-                            textAlign: TextAlign.start),
-                      ), */
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
@@ -411,13 +341,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       textSize: displayWidth(context) * 0.03,
                       textColor: Colors.black54,
                       fontWeight: FontWeight.w400),
-                  /* commonText(
-                      text: 'Release Date - 23 Mar 2023',
-                      //${DateFormat('dd MMM yyyy').format(DateTime.now())}
-                      context: context,
-                      textSize: displayWidth(context) * 0.03,
-                      textColor: Colors.black54,
-                      fontWeight: FontWeight.w400),*/
                 ],
               ),
             ),
@@ -435,6 +358,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     });
   }
 
+  /// Normal Sign out without uploading data
   signOut() async {
     var vesselDelete = await _databaseService.deleteDataFromVesselTable();
     var tripsDelete = await _databaseService.deleteDataFromTripTable();
@@ -456,15 +380,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
         context,
         MaterialPageRoute(builder: (context) => const SignInScreen()),
         ModalRoute.withName(""));
-  }
-
-  _launchURL() async {
-    final Uri url =
-        Uri.parse('https://${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9');
-    if (!await launchUrl(url)) {
-      throw Exception(
-          'Could not launch https://+"${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9');
-    }
   }
 
   showDialogBox(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
@@ -582,14 +497,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                                             syncAndSignOut();
                                           }
-
-                                          /*var vesselDelete = await _databaseService
-                                        .deleteDataFromVesselTable();
-                                    var tripsDelete = await _databaseService
-                                        .deleteDataFromTripTable();
-
-                                    Utils.customPrint('DELETE $vesselDelete');
-                                    Utils.customPrint('DELETE $tripsDelete');*/
                                         },
                                             displayWidth(context) * 0.4,
                                             displayHeight(context) * 0.05,
@@ -617,6 +524,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         });
   }
 
+  ///To fetch data from cloud (Database)
   showDialogBoxToUploadData(
       BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
     return showDialog(
@@ -689,7 +597,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   child: CommonButtons.getAcceptButton(
                                       'Skip And Sync', context, primaryColor,
                                       () {
-                                    //Navigator.of(context).pop();
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -745,14 +652,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                                 isUploadStarted = true;
                                               });
                                             }
-                                            // setDialogState(() {
-                                            //  // isSigningOut = true;
-                                            // });
-                                            // if (mounted) {
-                                            //   setDialogState(() {
-                                            //     isUploadStarted = false;
-                                            //   });
-                                            // }
                                             syncAndSignOut();
                                           }
                                         },
@@ -782,6 +681,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         });
   }
 
+  /// If user have trip which is not uploaded then to sync data and sign out
   syncAndSignOut() async {
     bool vesselErrorOccurred = false;
     bool tripErrorOccurred = false;
@@ -829,11 +729,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   calledFromSignOut: true)
               .then((value) async {
             if (value!.status!) {
-              //Utils.customPrint("VESSEL SUCCESS MESSAGE ${value.message}");
               await _databaseService.updateIsSyncStatus(
                   1, getVesselFuture[i].id.toString());
             } else {
-              //Utils.customPrint("VESSEL MESSAGE ${value.message}");
               setState(() {
                 vesselErrorOccurred = true;
               });
@@ -843,9 +741,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
             setState(() {
               vesselErrorOccurred = true;
             });
-            /*Utils.showSnackBar(context,
-                scaffoldKey: widget.scaffoldKey,
-                message: 'Failed to sync data to cloud. Please try again.');*/
           });
         } else {
           Utils.customPrint("VESSEL DATA NOT Uploaded");

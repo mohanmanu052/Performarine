@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:flutter_blue_plus/gen/flutterblueplus.pbjson.dart';
 import 'package:performarine/pages/single_lpr_device.dart';
 
 class LPRBluetoothList extends StatefulWidget {

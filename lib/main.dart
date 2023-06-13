@@ -3,13 +3,10 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-//import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/intro_screen.dart';
@@ -29,7 +26,6 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final StreamController<String?> selectNotificationStream =
     StreamController<String?>.broadcast();
-//StreamSubscription<Position>? positionStream;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,17 +52,6 @@ onDidReceiveBackgroundNotificationResponse(
 
   /// APP RESTART
 }
-
-/*@pragma('vm:entry-point')
-Future<bool> onStart(ServiceInstance serviceInstance) async {
-  WidgetsFlutterBinding.ensureInitialized();
-  DartPluginRegistrant.ensureInitialized();
-  //presentNoti = true;
-
-  StartTrip().startTrip(serviceInstance);
-
-  return true;
-}*/
 
 onDidReceiveLocalNotification(
     int id, String? title, String? body, String? payload) {
@@ -123,10 +108,6 @@ Future<void> initializeService() async {
     }
     return;
 
-    await Get.deleteAll(force: true);
-    Phoenix.rebirth(Get.context!);
-    Get.reset();
-
     /// APP RESTART
   },
       onDidReceiveBackgroundNotificationResponse:
@@ -136,22 +117,6 @@ Future<void> initializeService() async {
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
-
-  /*await service.configure(
-    androidConfiguration: AndroidConfiguration(
-      initialNotificationTitle: 'PerforMarine',
-      onStart: onStart,
-      autoStart: false,
-      isForegroundMode: true,
-      notificationChannelId: notificationChannelId,
-      initialNotificationContent: 'PerforMarine consuming background services.',
-      */ /*'Trip Data Collection in progress...',*/ /*
-      foregroundServiceNotificationId: notificationId,
-    ),
-    iosConfiguration: IosConfiguration(
-        autoStart: false, onForeground: onStart, onBackground: onStart),
-  );*/
-  //service.startService();
 }
 
 class MyApp extends StatefulWidget {

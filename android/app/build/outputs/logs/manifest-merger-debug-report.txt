@@ -1,0 +1,763 @@
+-- Merging decision tree log ---
+application
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:50:5-135:19
+MERGED from [:firebase_core] /Users/abhiram/Paccore/Projects/GOE/performarine/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-15:19
+MERGED from [:firebase_core] /Users/abhiram/Paccore/Projects/GOE/performarine/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-15:19
+MERGED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-17:19
+MERGED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-17:19
+MERGED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:15:5-32:19
+MERGED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:15:5-32:19
+MERGED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-19:19
+MERGED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-19:19
+MERGED from [:url_launcher_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-14:19
+MERGED from [:url_launcher_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-14:19
+MERGED from [:open_file] /Users/abhiram/Paccore/Projects/GOE/performarine/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-21:19
+MERGED from [:open_file] /Users/abhiram/Paccore/Projects/GOE/performarine/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-21:19
+MERGED from [com.google.android.material:material:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/597f368155877a647e5275db9f35fb18/transformed/material-1.0.0/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/597f368155877a647e5275db9f35fb18/transformed/material-1.0.0/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:22:5-38:19
+MERGED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:22:5-38:19
+MERGED from [com.google.android.gms:play-services-location:21.0.1] /Users/abhiram/.gradle/caches/transforms-3/85c48a12d97d81fa2c2275757788cd39/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-location:21.0.1] /Users/abhiram/.gradle/caches/transforms-3/85c48a12d97d81fa2c2275757788cd39/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-fido:20.0.1] /Users/abhiram/.gradle/caches/transforms-3/5e7dcc5bb3a32c85887e16bf557a0aa1/transformed/jetified-play-services-fido-20.0.1/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.android.gms:play-services-fido:20.0.1] /Users/abhiram/.gradle/caches/transforms-3/5e7dcc5bb3a32c85887e16bf557a0aa1/transformed/jetified-play-services-fido-20.0.1/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/abhiram/.gradle/caches/transforms-3/44ac009e8d95e9369676832f723f86dd/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/abhiram/.gradle/caches/transforms-3/44ac009e8d95e9369676832f723f86dd/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:24:5-37:19
+MERGED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:24:5-37:19
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/abhiram/.gradle/caches/transforms-3/87fb9fe7452959597350a73f1430b462/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/abhiram/.gradle/caches/transforms-3/87fb9fe7452959597350a73f1430b462/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-basement:18.2.0] /Users/abhiram/.gradle/caches/transforms-3/97e71f3be8709fbcc3d333ac1eea9130/transformed/jetified-play-services-basement-18.2.0/AndroidManifest.xml:20:5-24:19
+MERGED from [com.google.android.gms:play-services-basement:18.2.0] /Users/abhiram/.gradle/caches/transforms-3/97e71f3be8709fbcc3d333ac1eea9130/transformed/jetified-play-services-basement-18.2.0/AndroidManifest.xml:20:5-24:19
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/4a29f4c2cf5f9e22e622ef993c4413ee/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:24:5-31:19
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/4a29f4c2cf5f9e22e622ef993c4413ee/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:24:5-31:19
+MERGED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:28:5-89
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/aebe80234aea2b886535eb26339906af/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/aebe80234aea2b886535eb26339906af/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/e3cfdfbc3c3dbc5a1863c3d50b8c83e8/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/e3cfdfbc3c3dbc5a1863c3d50b8c83e8/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:28:18-86
+	android:name
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml
+provider#androidx.core.content.FileProvider
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:124:9-134:20
+	android:authorities
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml
+manifest
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:1:1-159:12
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:1:1-159:12
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:1:1-159:12
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:1:1-159:12
+MERGED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:1:1-159:12
+MERGED from [:firebase_core] /Users/abhiram/Paccore/Projects/GOE/performarine/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-17:12
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-21:12
+MERGED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-19:12
+MERGED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-34:12
+MERGED from [:file_picker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-19:12
+MERGED from [:sensors_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/sensors_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:path_provider_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/path_provider_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:background_locator_2] /Users/abhiram/Paccore/Projects/GOE/performarine/build/background_locator_2/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:airplane_mode_checker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/airplane_mode_checker/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:shared_preferences_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/shared_preferences_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:fluttertoast] /Users/abhiram/Paccore/Projects/GOE/performarine/build/fluttertoast/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:flutter_sensors] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_sensors/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-21:12
+MERGED from [:flutter_plugin_android_lifecycle] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_plugin_android_lifecycle/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:image_gallery_saver] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_gallery_saver/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:app_settings] /Users/abhiram/Paccore/Projects/GOE/performarine/build/app_settings/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:sqflite] /Users/abhiram/Paccore/Projects/GOE/performarine/build/sqflite/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:url_launcher_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-16:12
+MERGED from [:google_sign_in_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/google_sign_in_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [:connectivity_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/connectivity_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [:image_cropper] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_cropper/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:webview_flutter_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/webview_flutter_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:permission_handler_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/permission_handler_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:flutter_archive] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_archive/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:open_file] /Users/abhiram/Paccore/Projects/GOE/performarine/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-23:12
+MERGED from [:package_info_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/package_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:device_info_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/device_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:flutter_image_compress] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_image_compress/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [:bluetooth_enable_fork] /Users/abhiram/Paccore/Projects/GOE/performarine/build/bluetooth_enable_fork/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-11:12
+MERGED from [com.google.android.material:material:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/597f368155877a647e5275db9f35fb18/transformed/material-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.github.yalantis:ucrop:2.2.8] /Users/abhiram/.gradle/caches/transforms-3/2a607a95e48dad58a41e22ddd30758a6/transformed/jetified-ucrop-2.2.8/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.appcompat:appcompat:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/0d63f85f6b1d511b313f3c641920c93e/transformed/appcompat-1.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:17:1-40:12
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/b29e4a6236bce9b56cdb79df754885f8/transformed/legacy-support-v4-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.gms:play-services-location:21.0.1] /Users/abhiram/.gradle/caches/transforms-3/85c48a12d97d81fa2c2275757788cd39/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.1] /Users/abhiram/.gradle/caches/transforms-3/fbfa2a8810add44bbabd97fdf7e7ef52/transformed/jetified-play-services-auth-api-phone-18.0.1/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-auth-base:18.0.4] /Users/abhiram/.gradle/caches/transforms-3/845a594b2f0b707112b003dbe904b794/transformed/jetified-play-services-auth-base-18.0.4/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-fido:20.0.1] /Users/abhiram/.gradle/caches/transforms-3/5e7dcc5bb3a32c85887e16bf557a0aa1/transformed/jetified-play-services-fido-20.0.1/AndroidManifest.xml:2:1-10:12
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/abhiram/.gradle/caches/transforms-3/44ac009e8d95e9369676832f723f86dd/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:16:1-24:12
+MERGED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:15:1-39:12
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/abhiram/.gradle/caches/transforms-3/87fb9fe7452959597350a73f1430b462/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-basement:18.2.0] /Users/abhiram/.gradle/caches/transforms-3/97e71f3be8709fbcc3d333ac1eea9130/transformed/jetified-play-services-basement-18.2.0/AndroidManifest.xml:16:1-26:12
+MERGED from [androidx.fragment:fragment:1.3.4] /Users/abhiram/.gradle/caches/transforms-3/ef1909d42295dec5b6861b872dfb2f68/transformed/fragment-1.3.4/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity:1.7.1] /Users/abhiram/.gradle/caches/transforms-3/078499784cbfc86e7ac72bc45c3a7a98/transformed/jetified-activity-1.7.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.media:media:1.1.0] /Users/abhiram/.gradle/caches/transforms-3/15eb5ff89211d664cbca94a28af3e853/transformed/media-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.webkit:webkit:1.5.0] /Users/abhiram/.gradle/caches/transforms-3/2e1192e00b1716543031eef37ddc41b2/transformed/webkit-1.5.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.window:window-java:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/38cf60b6dcc0be87a5f9e317f8530d3c/transformed/jetified-window-java-1.0.0-beta04/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.recyclerview:recyclerview:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/f81903c13c49d2be6967604e015396a1/transformed/recyclerview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/8fdb88e94fe44bb5de768eb251d7106b/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/ed92792eddd08dec6989c8caf1e731df/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/f0f4b34cfb1fdcd2dc68ad837aa7d3b7/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.transition:transition:1.4.1] /Users/abhiram/.gradle/caches/transforms-3/eede99bd72527cecca3911453373c4ea/transformed/transition-1.4.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/d45eb25309a57ad4cfb868e04325463b/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/4a29f4c2cf5f9e22e622ef993c4413ee/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/be5365f6ab1a86a092047afce36ed6f6/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/769e7a6a071ee2280c60a119ee27968f/transformed/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/682f791290b4e12b36aaec2c34bdd2be/transformed/slidingpanelayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/79e6b2485b9742c0426f495643bc4649/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/08c6ab11bd3fcd07004bf0785d0e0502/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/a3a3bbba8be04472920e9fe8ca9125d7/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core-ktx:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/3d209332af6b6fe3987d6863af4b6dde/transformed/jetified-core-ktx-1.10.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.appcompat:appcompat-resources:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/d1116b95b5e57d54f6c036433ad12304/transformed/jetified-appcompat-resources-1.3.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/abhiram/.gradle/caches/transforms-3/d3ed1889983f72556a43874cf4f91763/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/abhiram/.gradle/caches/transforms-3/7b9e20109c8af8f2858714b8cbd22a6d/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/abhiram/.gradle/caches/transforms-3/ca97d97fdaec6699e68bfbb727ff9d35/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/0311481252661f3ed0def7c48951b536/transformed/lifecycle-livedata-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/beae06bfe773db89a87476e370a7cce5/transformed/lifecycle-livedata-core-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/9bace0d1e0e160221ab24ec205c7f35a/transformed/lifecycle-viewmodel-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/0bfbffdc7bc1d0c9be48f1cd199bc7b9/transformed/lifecycle-runtime-2.6.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/87a7be650bc7b3e90c0a0fa4fb805d15/transformed/jetified-lifecycle-viewmodel-savedstate-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.exifinterface:exifinterface:1.3.6] /Users/abhiram/.gradle/caches/transforms-3/d89e214617a01703e55ee5d41819769e/transformed/exifinterface-1.3.6/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.heifwriter:heifwriter:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/62a253432d9bfc86173aeee19fe77fdf/transformed/heifwriter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/aebe80234aea2b886535eb26339906af/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/e8dc6af8a16a1d211ee313ebb4adc850/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/111ffeda637664e6c6321f4bd02fd2c4/transformed/cardview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/a9f615fced7a7542c78cecf9eeb1b7de/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/e3cfdfbc3c3dbc5a1863c3d50b8c83e8/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [com.google.firebase:firebase-components:17.1.0] /Users/abhiram/.gradle/caches/transforms-3/6e3fe62ef32e3398755ce84679c5813f/transformed/jetified-firebase-components-17.1.0/AndroidManifest.xml:15:1-22:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/e54cbc88fd618819557a2be17aaade60/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/e299916d0338224a2d2f3b35176892e3/transformed/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/ede462a2082f12ce1e62da29bad937ac/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/1f42a54788c524ee368f16b0fbfd9498/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/abhiram/.gradle/caches/transforms-3/4d51528029b784096dbfd4ebbe7e70bf/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/41f380dc40eea13a8217061cb76cb985/transformed/jetified-annotation-experimental-1.3.0/AndroidManifest.xml:17:1-22:12
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+	package
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:3:5-35
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/debug/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:1:1-159:12
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/debug/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:2:5-51
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:2:5-51
+	android:versionCode
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:1:1-159:12
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/debug/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.SCHEDULE_EXACT_ALARM
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:4:5-79
+MERGED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:5-79
+MERGED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:5-79
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:4:22-76
+uses-permission#android.permission.ACCESS_BACKGROUND_LOCATION
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:5:5-84
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:5:22-82
+uses-permission#android.permission.INTERNET
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:6:5-66
+MERGED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:6:5-66
+MERGED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:6:5-66
+MERGED from [:google_sign_in_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/google_sign_in_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-67
+MERGED from [:google_sign_in_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/google_sign_in_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-67
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:6:22-64
+uses-permission#android.permission.CAMERA
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:7:5-65
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:7:22-62
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:8:5-9:38
+MERGED from [:file_picker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-80
+MERGED from [:file_picker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-80
+	android:maxSdkVersion
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:9:9-35
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:8:22-77
+uses-permission#android.permission.ACCESS_MEDIA_LOCATION
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:10:5-79
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:10:22-77
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:11:5-82
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:11:22-78
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:12:5-80
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:12:22-78
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:13:5-78
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:19:5-79
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:19:5-79
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:13:22-76
+uses-permission#android.permission.READ_MEDIA_IMAGES
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:14:5-76
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:14:22-73
+uses-permission#android.permission.WAKE_LOCK
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:15:5-68
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:15:22-65
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:16:5-76
+MERGED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-77
+MERGED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-77
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:16:22-74
+uses-permission#android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:17:5-95
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:17:22-92
+uses-permission#android.permission.ACCESS_LOCATION_EXTRA_COMMANDS
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:18:5-89
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:18:22-86
+uses-permission#android.hardware.location.gps
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:19:5-69
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:19:22-66
+uses-permission#android.permission.MANAGE_EXTERNAL_STORAGE
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:20:5-82
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:20:22-79
+uses-permission#android.permission.POST_NOTIFICATIONS
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:21:5-76
+MERGED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-77
+MERGED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-77
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:21:22-74
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:23:5-78
+MERGED from [:connectivity_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/connectivity_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-79
+MERGED from [:connectivity_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/connectivity_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-79
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:23:22-76
+uses-permission#android.permission.READ_MEDIA_VIDEO
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:29:5-75
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:29:22-72
+uses-permission#android.permission.READ_MEDIA_AUDIO
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:33:5-75
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:33:22-72
+uses-permission#android.permission.BLUETOOTH
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:36:5-38:38
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:17:5-68
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:17:5-68
+	android:maxSdkVersion
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:38:9-35
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:37:9-52
+uses-permission#android.permission.BLUETOOTH_ADMIN
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:39:5-41:38
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:18:5-74
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:18:5-74
+	android:maxSdkVersion
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:41:9-35
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:40:9-58
+uses-permission#android.permission.BLUETOOTH_CONNECT
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:44:5-76
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:14:5-76
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:14:5-76
+MERGED from [:bluetooth_enable_fork] /Users/abhiram/Paccore/Projects/GOE/performarine/build/bluetooth_enable_fork/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-76
+MERGED from [:bluetooth_enable_fork] /Users/abhiram/Paccore/Projects/GOE/performarine/build/bluetooth_enable_fork/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-76
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:44:22-73
+uses-permission#android.permission.BLUETOOTH_SCAN
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:45:5-47:58
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-73
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-73
+	android:usesPermissionFlags
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:47:9-55
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:46:9-57
+uses-permission#android.permission.BLUETOOTH_ADVERTISE
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:48:5-78
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:48:22-75
+queries
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:137:5-158:15
+MERGED from [:file_picker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-17:15
+MERGED from [:file_picker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-17:15
+intent#action:name:android.intent.action.VIEW+data:scheme:https
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:139:9-142:18
+action#android.intent.action.VIEW
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:140:13-65
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:140:21-62
+data
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:141:13-44
+	android:scheme
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:141:19-41
+intent#action:name:android.intent.action.DIAL+data:scheme:tel
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:144:9-147:18
+action#android.intent.action.DIAL
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:145:13-65
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:145:21-62
+intent#action:name:android.intent.action.SENDTO+data:scheme:smsto
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:149:9-152:18
+action#android.intent.action.SENDTO
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:150:13-67
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:150:21-64
+intent#action:name:android.intent.action.SEND+data:mimeType:*/*
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:154:9-157:18
+action#android.intent.action.SEND
+ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:155:13-65
+	android:name
+		ADDED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml:155:21-62
+uses-sdk
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml
+MERGED from [:firebase_core] /Users/abhiram/Paccore/Projects/GOE/performarine/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:firebase_core] /Users/abhiram/Paccore/Projects/GOE/performarine/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_blue_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_blue_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:file_picker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:file_picker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:sensors_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/sensors_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:sensors_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/sensors_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:path_provider_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/path_provider_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:path_provider_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/path_provider_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:background_locator_2] /Users/abhiram/Paccore/Projects/GOE/performarine/build/background_locator_2/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:background_locator_2] /Users/abhiram/Paccore/Projects/GOE/performarine/build/background_locator_2/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:airplane_mode_checker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/airplane_mode_checker/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:airplane_mode_checker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/airplane_mode_checker/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:shared_preferences_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/shared_preferences_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:shared_preferences_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/shared_preferences_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:fluttertoast] /Users/abhiram/Paccore/Projects/GOE/performarine/build/fluttertoast/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:fluttertoast] /Users/abhiram/Paccore/Projects/GOE/performarine/build/fluttertoast/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_sensors] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_sensors/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_sensors] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_sensors/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_plugin_android_lifecycle] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_plugin_android_lifecycle/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_plugin_android_lifecycle] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_plugin_android_lifecycle/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:image_gallery_saver] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_gallery_saver/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:image_gallery_saver] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_gallery_saver/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:app_settings] /Users/abhiram/Paccore/Projects/GOE/performarine/build/app_settings/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:app_settings] /Users/abhiram/Paccore/Projects/GOE/performarine/build/app_settings/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:sqflite] /Users/abhiram/Paccore/Projects/GOE/performarine/build/sqflite/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:sqflite] /Users/abhiram/Paccore/Projects/GOE/performarine/build/sqflite/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:url_launcher_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:url_launcher_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:google_sign_in_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/google_sign_in_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:google_sign_in_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/google_sign_in_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:connectivity_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/connectivity_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:connectivity_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/connectivity_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:image_cropper] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_cropper/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:image_cropper] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_cropper/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:webview_flutter_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/webview_flutter_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:webview_flutter_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/webview_flutter_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:permission_handler_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/permission_handler_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:permission_handler_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/permission_handler_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_archive] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_archive/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_archive] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_archive/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:open_file] /Users/abhiram/Paccore/Projects/GOE/performarine/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:6:5-8:41
+MERGED from [:open_file] /Users/abhiram/Paccore/Projects/GOE/performarine/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:6:5-8:41
+MERGED from [:package_info_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/package_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:package_info_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/package_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:device_info_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/device_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:device_info_plus] /Users/abhiram/Paccore/Projects/GOE/performarine/build/device_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_image_compress] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_image_compress/intermediates/merged_manifest/debug/AndroidManifest.xml:6:5-9:55
+MERGED from [:flutter_image_compress] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_image_compress/intermediates/merged_manifest/debug/AndroidManifest.xml:6:5-9:55
+MERGED from [:bluetooth_enable_fork] /Users/abhiram/Paccore/Projects/GOE/performarine/build/bluetooth_enable_fork/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:bluetooth_enable_fork] /Users/abhiram/Paccore/Projects/GOE/performarine/build/bluetooth_enable_fork/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [com.google.android.material:material:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/597f368155877a647e5275db9f35fb18/transformed/material-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/597f368155877a647e5275db9f35fb18/transformed/material-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.github.yalantis:ucrop:2.2.8] /Users/abhiram/.gradle/caches/transforms-3/2a607a95e48dad58a41e22ddd30758a6/transformed/jetified-ucrop-2.2.8/AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.yalantis:ucrop:2.2.8] /Users/abhiram/.gradle/caches/transforms-3/2a607a95e48dad58a41e22ddd30758a6/transformed/jetified-ucrop-2.2.8/AndroidManifest.xml:7:5-9:41
+MERGED from [androidx.appcompat:appcompat:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/0d63f85f6b1d511b313f3c641920c93e/transformed/appcompat-1.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/0d63f85f6b1d511b313f3c641920c93e/transformed/appcompat-1.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/b29e4a6236bce9b56cdb79df754885f8/transformed/legacy-support-v4-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/b29e4a6236bce9b56cdb79df754885f8/transformed/legacy-support-v4-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-location:21.0.1] /Users/abhiram/.gradle/caches/transforms-3/85c48a12d97d81fa2c2275757788cd39/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-location:21.0.1] /Users/abhiram/.gradle/caches/transforms-3/85c48a12d97d81fa2c2275757788cd39/transformed/jetified-play-services-location-21.0.1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.1] /Users/abhiram/.gradle/caches/transforms-3/fbfa2a8810add44bbabd97fdf7e7ef52/transformed/jetified-play-services-auth-api-phone-18.0.1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-api-phone:18.0.1] /Users/abhiram/.gradle/caches/transforms-3/fbfa2a8810add44bbabd97fdf7e7ef52/transformed/jetified-play-services-auth-api-phone-18.0.1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-base:18.0.4] /Users/abhiram/.gradle/caches/transforms-3/845a594b2f0b707112b003dbe904b794/transformed/jetified-play-services-auth-base-18.0.4/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-base:18.0.4] /Users/abhiram/.gradle/caches/transforms-3/845a594b2f0b707112b003dbe904b794/transformed/jetified-play-services-auth-base-18.0.4/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-fido:20.0.1] /Users/abhiram/.gradle/caches/transforms-3/5e7dcc5bb3a32c85887e16bf557a0aa1/transformed/jetified-play-services-fido-20.0.1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-fido:20.0.1] /Users/abhiram/.gradle/caches/transforms-3/5e7dcc5bb3a32c85887e16bf557a0aa1/transformed/jetified-play-services-fido-20.0.1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/abhiram/.gradle/caches/transforms-3/44ac009e8d95e9369676832f723f86dd/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /Users/abhiram/.gradle/caches/transforms-3/44ac009e8d95e9369676832f723f86dd/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/abhiram/.gradle/caches/transforms-3/87fb9fe7452959597350a73f1430b462/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /Users/abhiram/.gradle/caches/transforms-3/87fb9fe7452959597350a73f1430b462/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.2.0] /Users/abhiram/.gradle/caches/transforms-3/97e71f3be8709fbcc3d333ac1eea9130/transformed/jetified-play-services-basement-18.2.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.2.0] /Users/abhiram/.gradle/caches/transforms-3/97e71f3be8709fbcc3d333ac1eea9130/transformed/jetified-play-services-basement-18.2.0/AndroidManifest.xml:18:5-43
+MERGED from [androidx.fragment:fragment:1.3.4] /Users/abhiram/.gradle/caches/transforms-3/ef1909d42295dec5b6861b872dfb2f68/transformed/fragment-1.3.4/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.3.4] /Users/abhiram/.gradle/caches/transforms-3/ef1909d42295dec5b6861b872dfb2f68/transformed/fragment-1.3.4/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.7.1] /Users/abhiram/.gradle/caches/transforms-3/078499784cbfc86e7ac72bc45c3a7a98/transformed/jetified-activity-1.7.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.7.1] /Users/abhiram/.gradle/caches/transforms-3/078499784cbfc86e7ac72bc45c3a7a98/transformed/jetified-activity-1.7.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.media:media:1.1.0] /Users/abhiram/.gradle/caches/transforms-3/15eb5ff89211d664cbca94a28af3e853/transformed/media-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.media:media:1.1.0] /Users/abhiram/.gradle/caches/transforms-3/15eb5ff89211d664cbca94a28af3e853/transformed/media-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.webkit:webkit:1.5.0] /Users/abhiram/.gradle/caches/transforms-3/2e1192e00b1716543031eef37ddc41b2/transformed/webkit-1.5.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.webkit:webkit:1.5.0] /Users/abhiram/.gradle/caches/transforms-3/2e1192e00b1716543031eef37ddc41b2/transformed/webkit-1.5.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window-java:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/38cf60b6dcc0be87a5f9e317f8530d3c/transformed/jetified-window-java-1.0.0-beta04/AndroidManifest.xml:19:5-21:41
+MERGED from [androidx.window:window-java:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/38cf60b6dcc0be87a5f9e317f8530d3c/transformed/jetified-window-java-1.0.0-beta04/AndroidManifest.xml:19:5-21:41
+MERGED from [androidx.recyclerview:recyclerview:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/f81903c13c49d2be6967604e015396a1/transformed/recyclerview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.recyclerview:recyclerview:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/f81903c13c49d2be6967604e015396a1/transformed/recyclerview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/8fdb88e94fe44bb5de768eb251d7106b/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/8fdb88e94fe44bb5de768eb251d7106b/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/ed92792eddd08dec6989c8caf1e731df/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/ed92792eddd08dec6989c8caf1e731df/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/f0f4b34cfb1fdcd2dc68ad837aa7d3b7/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/f0f4b34cfb1fdcd2dc68ad837aa7d3b7/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.transition:transition:1.4.1] /Users/abhiram/.gradle/caches/transforms-3/eede99bd72527cecca3911453373c4ea/transformed/transition-1.4.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.4.1] /Users/abhiram/.gradle/caches/transforms-3/eede99bd72527cecca3911453373c4ea/transformed/transition-1.4.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/d45eb25309a57ad4cfb868e04325463b/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/d45eb25309a57ad4cfb868e04325463b/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/4a29f4c2cf5f9e22e622ef993c4413ee/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.window:window:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/4a29f4c2cf5f9e22e622ef993c4413ee/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/be5365f6ab1a86a092047afce36ed6f6/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/be5365f6ab1a86a092047afce36ed6f6/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/769e7a6a071ee2280c60a119ee27968f/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/769e7a6a071ee2280c60a119ee27968f/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/682f791290b4e12b36aaec2c34bdd2be/transformed/slidingpanelayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/682f791290b4e12b36aaec2c34bdd2be/transformed/slidingpanelayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/79e6b2485b9742c0426f495643bc4649/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/79e6b2485b9742c0426f495643bc4649/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/08c6ab11bd3fcd07004bf0785d0e0502/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/08c6ab11bd3fcd07004bf0785d0e0502/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/a3a3bbba8be04472920e9fe8ca9125d7/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/a3a3bbba8be04472920e9fe8ca9125d7/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-ktx:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/3d209332af6b6fe3987d6863af4b6dde/transformed/jetified-core-ktx-1.10.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/3d209332af6b6fe3987d6863af4b6dde/transformed/jetified-core-ktx-1.10.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/d1116b95b5e57d54f6c036433ad12304/transformed/jetified-appcompat-resources-1.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/d1116b95b5e57d54f6c036433ad12304/transformed/jetified-appcompat-resources-1.3.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/abhiram/.gradle/caches/transforms-3/d3ed1889983f72556a43874cf4f91763/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/abhiram/.gradle/caches/transforms-3/d3ed1889983f72556a43874cf4f91763/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/abhiram/.gradle/caches/transforms-3/7b9e20109c8af8f2858714b8cbd22a6d/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/abhiram/.gradle/caches/transforms-3/7b9e20109c8af8f2858714b8cbd22a6d/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/abhiram/.gradle/caches/transforms-3/ca97d97fdaec6699e68bfbb727ff9d35/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/abhiram/.gradle/caches/transforms-3/ca97d97fdaec6699e68bfbb727ff9d35/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/0311481252661f3ed0def7c48951b536/transformed/lifecycle-livedata-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/0311481252661f3ed0def7c48951b536/transformed/lifecycle-livedata-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/beae06bfe773db89a87476e370a7cce5/transformed/lifecycle-livedata-core-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/beae06bfe773db89a87476e370a7cce5/transformed/lifecycle-livedata-core-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/9bace0d1e0e160221ab24ec205c7f35a/transformed/lifecycle-viewmodel-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/9bace0d1e0e160221ab24ec205c7f35a/transformed/lifecycle-viewmodel-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/0bfbffdc7bc1d0c9be48f1cd199bc7b9/transformed/lifecycle-runtime-2.6.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/0bfbffdc7bc1d0c9be48f1cd199bc7b9/transformed/lifecycle-runtime-2.6.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/87a7be650bc7b3e90c0a0fa4fb805d15/transformed/jetified-lifecycle-viewmodel-savedstate-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /Users/abhiram/.gradle/caches/transforms-3/87a7be650bc7b3e90c0a0fa4fb805d15/transformed/jetified-lifecycle-viewmodel-savedstate-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.exifinterface:exifinterface:1.3.6] /Users/abhiram/.gradle/caches/transforms-3/d89e214617a01703e55ee5d41819769e/transformed/exifinterface-1.3.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.6] /Users/abhiram/.gradle/caches/transforms-3/d89e214617a01703e55ee5d41819769e/transformed/exifinterface-1.3.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.heifwriter:heifwriter:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/62a253432d9bfc86173aeee19fe77fdf/transformed/heifwriter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.heifwriter:heifwriter:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/62a253432d9bfc86173aeee19fe77fdf/transformed/heifwriter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/aebe80234aea2b886535eb26339906af/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/aebe80234aea2b886535eb26339906af/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/e8dc6af8a16a1d211ee313ebb4adc850/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/e8dc6af8a16a1d211ee313ebb4adc850/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/111ffeda637664e6c6321f4bd02fd2c4/transformed/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/111ffeda637664e6c6321f4bd02fd2c4/transformed/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/a9f615fced7a7542c78cecf9eeb1b7de/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/a9f615fced7a7542c78cecf9eeb1b7de/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/e3cfdfbc3c3dbc5a1863c3d50b8c83e8/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/e3cfdfbc3c3dbc5a1863c3d50b8c83e8/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.firebase:firebase-components:17.1.0] /Users/abhiram/.gradle/caches/transforms-3/6e3fe62ef32e3398755ce84679c5813f/transformed/jetified-firebase-components-17.1.0/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.firebase:firebase-components:17.1.0] /Users/abhiram/.gradle/caches/transforms-3/6e3fe62ef32e3398755ce84679c5813f/transformed/jetified-firebase-components-17.1.0/AndroidManifest.xml:18:5-20:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/e54cbc88fd618819557a2be17aaade60/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/e54cbc88fd618819557a2be17aaade60/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/e299916d0338224a2d2f3b35176892e3/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/e299916d0338224a2d2f3b35176892e3/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/ede462a2082f12ce1e62da29bad937ac/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/ede462a2082f12ce1e62da29bad937ac/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/1f42a54788c524ee368f16b0fbfd9498/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/abhiram/.gradle/caches/transforms-3/1f42a54788c524ee368f16b0fbfd9498/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/abhiram/.gradle/caches/transforms-3/4d51528029b784096dbfd4ebbe7e70bf/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/abhiram/.gradle/caches/transforms-3/4d51528029b784096dbfd4ebbe7e70bf/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/41f380dc40eea13a8217061cb76cb985/transformed/jetified-annotation-experimental-1.3.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/41f380dc40eea13a8217061cb76cb985/transformed/jetified-annotation-experimental-1.3.0/AndroidManifest.xml:20:5-44
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/debug/AndroidManifest.xml
+INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/debug/AndroidManifest.xml
+	tools:overrideLibrary
+		ADDED from [:flutter_image_compress] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_image_compress/intermediates/merged_manifest/debug/AndroidManifest.xml:9:9-52
+	android:targetSdkVersion
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/debug/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/abhiram/Paccore/Projects/GOE/performarine/android/app/src/debug/AndroidManifest.xml
+service#com.google.firebase.components.ComponentDiscoveryService
+ADDED from [:firebase_core] /Users/abhiram/Paccore/Projects/GOE/performarine/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-14:19
+MERGED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:32:9-36:35
+MERGED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:32:9-36:35
+	android:exported
+		ADDED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:35:13-37
+	tools:targetApi
+		ADDED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:36:13-32
+	android:directBootAware
+		ADDED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:34:13-43
+	android:name
+		ADDED from [:firebase_core] /Users/abhiram/Paccore/Projects/GOE/performarine/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:10:18-89
+meta-data#com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar
+ADDED from [:firebase_core] /Users/abhiram/Paccore/Projects/GOE/performarine/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+	android:value
+		ADDED from [:firebase_core] /Users/abhiram/Paccore/Projects/GOE/performarine/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+	android:name
+		ADDED from [:firebase_core] /Users/abhiram/Paccore/Projects/GOE/performarine/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
+service#com.baseflow.geolocator.GeolocatorLocationService
+ADDED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:56
+	android:enabled
+		ADDED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-35
+	android:exported
+		ADDED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-37
+	android:foregroundServiceType
+		ADDED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-53
+	android:name
+		ADDED from [:geolocator_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-77
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-81
+	android:name
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-78
+uses-permission#android.permission.VIBRATE
+ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-66
+	android:name
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:10:22-63
+uses-permission#android.permission.USE_FULL_SCREEN_INTENT
+ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-81
+	android:name
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:22-78
+receiver#com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver
+ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-18:40
+	android:exported
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-37
+	android:name
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-91
+receiver#com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver
+ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:19:9-21:40
+	android:exported
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-37
+	android:name
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-97
+receiver#com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver
+ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:22:9-31:20
+	android:exported
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:24:13-37
+	android:name
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-101
+intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.MY_PACKAGE_REPLACED+action:name:android.intent.action.QUICKBOOT_POWERON+action:name:com.htc.intent.action.QUICKBOOT_POWERON
+ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:25:13-30:29
+action#android.intent.action.BOOT_COMPLETED
+ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:26:17-79
+	android:name
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:26:25-76
+action#android.intent.action.MY_PACKAGE_REPLACED
+ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:27:17-84
+	android:name
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:27:25-81
+action#android.intent.action.QUICKBOOT_POWERON
+ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:28:17-82
+	android:name
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:28:25-79
+action#com.htc.intent.action.QUICKBOOT_POWERON
+ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:29:17-82
+	android:name
+		ADDED from [:flutter_local_notifications] /Users/abhiram/Paccore/Projects/GOE/performarine/build/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:29:25-79
+intent#action:name:android.intent.action.GET_CONTENT+data:mimeType:*/*
+ADDED from [:file_picker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:18
+action#android.intent.action.GET_CONTENT
+ADDED from [:file_picker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-72
+	android:name
+		ADDED from [:file_picker] /Users/abhiram/Paccore/Projects/GOE/performarine/build/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:21-69
+provider#io.flutter.plugins.imagepicker.ImagePickerFileProvider
+ADDED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-18:20
+	android:grantUriPermissions
+		ADDED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-47
+	android:authorities
+		ADDED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-74
+	android:exported
+		ADDED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-37
+	android:name
+		ADDED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-82
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-17:75
+	android:resource
+		ADDED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:17:17-72
+	android:name
+		ADDED from [:image_picker_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-67
+activity#io.flutter.plugins.urllauncher.WebViewActivity
+ADDED from [:url_launcher_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-13:74
+	android:exported
+		ADDED from [:url_launcher_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-37
+	android:theme
+		ADDED from [:url_launcher_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-71
+	android:name
+		ADDED from [:url_launcher_android] /Users/abhiram/Paccore/Projects/GOE/performarine/build/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-74
+provider#com.crazecoder.openfile.FileProvider
+ADDED from [:open_file] /Users/abhiram/Paccore/Projects/GOE/performarine/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:11:9-20:20
+	android:grantUriPermissions
+		ADDED from [:open_file] /Users/abhiram/Paccore/Projects/GOE/performarine/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-47
+	android:authorities
+		ADDED from [:open_file] /Users/abhiram/Paccore/Projects/GOE/performarine/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-88
+	android:exported
+		ADDED from [:open_file] /Users/abhiram/Paccore/Projects/GOE/performarine/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-37
+	tools:replace
+		ADDED from [:open_file] /Users/abhiram/Paccore/Projects/GOE/performarine/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-48
+	android:name
+		ADDED from [:open_file] /Users/abhiram/Paccore/Projects/GOE/performarine/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-64
+activity#com.google.android.gms.auth.api.signin.internal.SignInHubActivity
+ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:23:9-27:75
+	android:excludeFromRecents
+		ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:25:13-46
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:26:13-37
+	android:theme
+		ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:27:13-72
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:24:13-93
+service#com.google.android.gms.auth.api.signin.RevocationBoundService
+ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:33:9-37:51
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:35:13-36
+	android:visibleToInstantApps
+		ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:37:13-48
+	android:permission
+		ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:36:13-107
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:20.5.0] /Users/abhiram/.gradle/caches/transforms-3/e0703251d02b917c543e1b8e5d7caa0e/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:34:13-89
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/abhiram/.gradle/caches/transforms-3/44ac009e8d95e9369676832f723f86dd/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:9-22:45
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/abhiram/.gradle/caches/transforms-3/44ac009e8d95e9369676832f723f86dd/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:22:19-43
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/abhiram/.gradle/caches/transforms-3/44ac009e8d95e9369676832f723f86dd/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:21:19-78
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /Users/abhiram/.gradle/caches/transforms-3/44ac009e8d95e9369676832f723f86dd/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:19-85
+provider#com.google.firebase.provider.FirebaseInitProvider
+ADDED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:25:9-30:39
+	android:authorities
+		ADDED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:27:13-72
+	android:exported
+		ADDED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:29:13-37
+	android:directBootAware
+		ADDED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:28:13-43
+	android:initOrder
+		ADDED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:30:13-36
+	android:name
+		ADDED from [com.google.firebase:firebase-common:20.3.2] /Users/abhiram/.gradle/caches/transforms-3/5e1fd28e8ae2c8a7750161de787373ad/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:26:13-77
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:18.2.0] /Users/abhiram/.gradle/caches/transforms-3/97e71f3be8709fbcc3d333ac1eea9130/transformed/jetified-play-services-basement-18.2.0/AndroidManifest.xml:21:9-23:69
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:18.2.0] /Users/abhiram/.gradle/caches/transforms-3/97e71f3be8709fbcc3d333ac1eea9130/transformed/jetified-play-services-basement-18.2.0/AndroidManifest.xml:23:13-66
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:18.2.0] /Users/abhiram/.gradle/caches/transforms-3/97e71f3be8709fbcc3d333ac1eea9130/transformed/jetified-play-services-basement-18.2.0/AndroidManifest.xml:22:13-58
+uses-library#androidx.window.extensions
+ADDED from [androidx.window:window:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/4a29f4c2cf5f9e22e622ef993c4413ee/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
+	android:required
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/4a29f4c2cf5f9e22e622ef993c4413ee/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/4a29f4c2cf5f9e22e622ef993c4413ee/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:26:13-54
+uses-library#androidx.window.sidecar
+ADDED from [androidx.window:window:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/4a29f4c2cf5f9e22e622ef993c4413ee/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:28:9-30:40
+	android:required
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/4a29f4c2cf5f9e22e622ef993c4413ee/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
+	android:name
+		ADDED from [androidx.window:window:1.0.0-beta04] /Users/abhiram/.gradle/caches/transforms-3/4a29f4c2cf5f9e22e622ef993c4413ee/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:23:9-81
+permission#com.performarine.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:26:22-94
+uses-permission#com.performarine.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.10.1] /Users/abhiram/.gradle/caches/transforms-3/fe42033b107c99448303fdb83d8c6965/transformed/core-1.10.1/AndroidManifest.xml:26:22-94
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/aebe80234aea2b886535eb26339906af/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/abhiram/.gradle/caches/transforms-3/aebe80234aea2b886535eb26339906af/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/abhiram/.gradle/caches/transforms-3/fc67a8c26d3d91a0e34d141f2ef06eec/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:25-92

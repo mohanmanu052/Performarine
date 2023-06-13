@@ -13,7 +13,6 @@ class ComingSoonScreen extends StatefulWidget {
 class _ComingSoonScreenState extends State<ComingSoonScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 

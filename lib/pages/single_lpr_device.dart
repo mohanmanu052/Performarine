@@ -35,17 +35,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           widget.onSingleDeviceTapped!(true);
         });
 
-        widget.device!.connect().then((value) {
-          /*print('ERROR CONNECTED FIRST');
-
-          widget.setSetter!(() {
-            isConnect = false;
-            widget.onBluetoothConnection!(true);
-            widget.onSelected!(widget.device!.name);
-          });
-          //debugger();
-          Navigator.pop(widget.dialogContext!);*/
-        }).catchError((s) {
+        widget.device!.connect().then((value) {}).catchError((s) {
           print('ERROR $s');
           widget.device!.state.listen((event) {
             if (event == BluetoothDeviceState.connected) {

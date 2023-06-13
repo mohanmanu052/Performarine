@@ -1,7 +1,7 @@
 import UIKit
 import Flutter
-import flutter_background_service_ios
 import flutter_local_notifications
+// import flutter_background_service_ios
 import FirebaseCore
 import path_provider_foundation
 import background_locator_2
@@ -16,7 +16,7 @@ func registerPlugins(registry: FlutterPluginRegistry) {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-  SwiftFlutterBackgroundServicePlugin.taskIdentifier = "com.performarine.ios.app.refresh"
+  // SwiftFlutterBackgroundServicePlugin.taskIdentifier = "com.performarine.ios.app.refresh"
   BackgroundLocatorPlugin.setPluginRegistrantCallback(registerPlugins)
 
   registerOtherPlugins()

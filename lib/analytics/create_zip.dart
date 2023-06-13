@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 
 class CreateZip {
+  /// To create trip zip folder
   Future<File> createZipFolder(BuildContext context, String tripId) async {
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}');

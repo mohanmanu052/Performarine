@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:airplane_mode_checker/airplane_mode_checker.dart';
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/location_dto.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
@@ -11,15 +12,11 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/end_trip.dart';
-import 'package:performarine/analytics/file_manager.dart';
 import 'package:performarine/analytics/location_callback_handler.dart';
 import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -45,8 +42,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
-import '../lpr_bluetooth_widget.dart';
-
 class VesselSingleView extends StatefulWidget {
   CreateVessel? vessel;
   final bool? isCalledFromSuccessScreen;
@@ -68,7 +63,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
   IosDeviceInfo? iosDeviceInfo;
   AndroidDeviceInfo? androidDeviceInfo;
 
-  //Position? startTripPosition;
   DateTime startDateTime = DateTime.now();
   SharedPreferences? pref;
 
@@ -108,29 +102,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
   String selectedVesselWeight = 'Select Current Load', bluetoothName = '';
 
   bool isServiceRunning = false;
-  // FlutterBackgroundService service = FlutterBackgroundService();
-
-  Future<List<Trip>> getTripListByVesselId(String id) async {
-    return await _databaseService.getAllTripsByVesselId(id);
-  }
-
-  //Position? location;
 
   List<String> sensorDataTable = ['ACC', 'UACC', 'GYRO', 'MAGN'];
   bool isBluetoothDialog = false;
   bool isBluetoothConnected = false;
   bool isRefreshList = false, isScanningBluetooth = false;
 
-  /*getIfServiceIsRunning() async {
-    bool data = await service.isRunning();
-    Utils.customPrint('IS SERVICE RUNNING: $data');
-    setState(() {
-      isServiceRunning = data;
-    });
-  }
-*/
   DeviceInfo? deviceDetails;
 
+  /// To get device details
   fetchDeviceInfo() async {
     final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
     if (Platform.isAndroid) {
@@ -142,6 +122,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     }
   }
 
+  /// To fetch device data
   fetchDeviceData() async {
     await fetchDeviceInfo();
 
@@ -163,11 +144,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
     Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
   }
 
+  /// To delete vessel and add into retired vessel list
   Future<void> _onVesselDelete(CreateVessel vessel) async {
     await _databaseService.deleteVessel(vessel.id.toString());
     setState(() {});
   }
 
+  /// TO delete trip from vessel
   Future<void> _onDeleteTripsByVesselID(String vesselId) async {
     await _databaseService.deleteTripBasedOnVesselId(vesselId);
     setState(() {});
@@ -209,6 +192,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     getVesselAnalytics(widget.vessel!.id!);
   }
 
+  /// To get running trip details
   getRunningTripDetails() async {
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
     Trip tripDetails = await _databaseService.getTrip(tripData![0]);
@@ -224,6 +208,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     }
   }
 
+  /// Check sensor is available or not
   checkSensorAvailabelOrNot() async {
     gyroscopeAvailable =
         await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
@@ -235,6 +220,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
   }
 
+  /// Check trip is running or not
   Future<bool> tripIsRunningOrNot() async {
     bool result = await _databaseService.tripIsRunning();
 
@@ -335,8 +321,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      // your widgets,
-                      // Container(height: 900,color: Colors.red,),
                       ExpansionCard(
                           scaffoldKey,
                           widget.vessel,
@@ -416,7 +400,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       SizedBox(
                         height: 10,
                       ),
-
                       Theme(
                         data: Theme.of(context).copyWith(
                             colorScheme: ColorScheme.light(
@@ -596,7 +579,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     });
                                 return;
                               } else {
-// <<<<<<< Report-code-merge
                                 if (Platform.isIOS) {
                                   bool isBluetoothEnable =
                                       await FlutterBluePlus.instance.isOn;
@@ -611,22 +593,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     showBluetoothDialog(context);
                                   }
                                 } else {
-// =======
-//                                if(Platform.isIOS){
-//                                  bool isBluetoothEnable =
-//                                  await FlutterBluePlus.instance.isOn;
-
-//                                  if (isBluetoothEnable) {
-//                                    vessel!.add(widget.vessel!);
-//                                    await locationPermissions(
-//                                        widget.vessel!.vesselSize!,
-//                                        widget.vessel!.name!,
-//                                        widget.vessel!.id!);
-//                                  } else {
-//                                    showBluetoothDialog(context);
-//                                  }
-//                                }else {
-// >>>>>>> Bug_loc_reports
                                   bool isNDPermittedOne = await Permission
                                       .bluetoothConnect.isGranted;
 
@@ -644,8 +610,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       showBluetoothDialog(context);
                                     }
                                   } else {
-                                    print('HII: $isNDPermittedOne');
-
                                     await Permission.bluetoothConnect.request();
                                     bool isNDPermitted = await Permission
                                         .bluetoothConnect.isGranted;
@@ -697,9 +661,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 await Utils.getLocationPermission(
                                     context, scaffoldKey);
                               }
-                              /*setState(() {
-                                    isLocationDialogBoxOpen = true;
-                                  });*/
+
                               bool isLocationPermitted =
                                   await Permission.locationAlways.isGranted;
                               if (isLocationPermitted) {
@@ -827,41 +789,22 @@ class VesselSingleViewState extends State<VesselSingleView> {
     );
   }
 
+  /// Check location permission
   locationPermissions(dynamic size, String vesselName, String weight) async {
     if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
-        //   await showBluetoothDialog(context);
-        //  await showBluetoothListDialog(context);
-
-        /*FlutterBluePlus.instance.isScanning.listen((event) {
-          print('SCANNING $event');
-
-          if (event) {
-            FlutterBluePlus.instance.stopScan();
-            FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-          } else {
-            FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-          }
-        });*/
-
         FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
         FlutterBluePlus.instance.scanResults.listen((results) async {
-          // print('SCAN RESULT INSIDE LISTEN');
           for (ScanResult r in results) {
-            // print('SCAN RESULT INSIDE FOR EACH');
-            // print('${r.device.name} found! rssi: ${r.rssi}');
             if (r.device.name.toLowerCase().contains("lpr")) {
-              // print('SCAN RESULT INSIDE IF ${r.device.name}');
               print('FOUND DEVICE AGAIN');
 
               r.device.connect().catchError((e) {
                 r.device.state.listen((event) {
                   if (event == BluetoothDeviceState.connected) {
-                    // print('CONNECTION EVENT ${event}');
                     r.device.disconnect().then((value) {
                       r.device.connect().catchError((e) {
-                        // print('SCAN RESULT INSIDE IF ${r.device.name}');
                         if (mounted) {
                           setState(() {
                             isBluetoothConnected = true;
@@ -892,29 +835,21 @@ class VesselSingleViewState extends State<VesselSingleView> {
             }
           }
         });
+
         getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       } else {
-        // await showBluetoothDialog(context);
-        //  await showBluetoothListDialog(context);
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
           FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
           FlutterBluePlus.instance.scanResults.listen((results) async {
-            // print('SCAN RESULT INSIDE LISTEN');
             for (ScanResult r in results) {
-              // print('SCAN RESULT INSIDE FOR EACH');
-              // print('${r.device.name} found! rssi: ${r.rssi}');
               if (r.device.name.toLowerCase().contains("lpr")) {
-                // print('SCAN RESULT INSIDE IF ${r.device.name}');
-
                 r.device.connect().catchError((e) {
                   r.device.state.listen((event) {
                     if (event == BluetoothDeviceState.connected) {
-                      // print('CONNECTION EVENT ${event}');
                       r.device.disconnect().then((value) {
                         r.device.connect().catchError((e) {
-                          // print('SCAN RESULT INSIDE IF ${r.device.name}');
                           if (mounted) {
                             setState(() {
                               isBluetoothConnected = true;
@@ -952,37 +887,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
     } else {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
-        //   await showBluetoothDialog(context);
-        //  await showBluetoothListDialog(context);
-
-        /*FlutterBluePlus.instance.isScanning.listen((event) {
-          print('SCANNING $event');
-
-          if (event) {
-            FlutterBluePlus.instance.stopScan();
-            FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-          } else {
-            FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-          }
-        });*/
-
         FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
         FlutterBluePlus.instance.scanResults.listen((results) async {
-          // print('SCAN RESULT INSIDE LISTEN');
           for (ScanResult r in results) {
-            // print('SCAN RESULT INSIDE FOR EACH');
-            // print('${r.device.name} found! rssi: ${r.rssi}');
             if (r.device.name.toLowerCase().contains("lpr")) {
-              // print('SCAN RESULT INSIDE IF ${r.device.name}');
               print('FOUND DEVICE AGAIN');
 
               r.device.connect().catchError((e) {
                 r.device.state.listen((event) {
                   if (event == BluetoothDeviceState.connected) {
-                    // print('CONNECTION EVENT ${event}');
                     r.device.disconnect().then((value) {
                       r.device.connect().catchError((e) {
-                        // print('SCAN RESULT INSIDE IF ${r.device.name}');
                         if (mounted) {
                           setState(() {
                             isBluetoothConnected = true;
@@ -1015,27 +930,18 @@ class VesselSingleViewState extends State<VesselSingleView> {
         });
         getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       } else {
-        // await showBluetoothDialog(context);
-        //  await showBluetoothListDialog(context);
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
           FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
           FlutterBluePlus.instance.scanResults.listen((results) async {
-            // print('SCAN RESULT INSIDE LISTEN');
             for (ScanResult r in results) {
-              // print('SCAN RESULT INSIDE FOR EACH');
-              // print('${r.device.name} found! rssi: ${r.rssi}');
               if (r.device.name.toLowerCase().contains("lpr")) {
-                // print('SCAN RESULT INSIDE IF ${r.device.name}');
-
                 r.device.connect().catchError((e) {
                   r.device.state.listen((event) {
                     if (event == BluetoothDeviceState.connected) {
-                      // print('CONNECTION EVENT ${event}');
                       r.device.disconnect().then((value) {
                         r.device.connect().catchError((e) {
-                          // print('SCAN RESULT INSIDE IF ${r.device.name}');
                           if (mounted) {
                             setState(() {
                               isBluetoothConnected = true;
@@ -1112,8 +1018,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
               alignment: Alignment.bottomCenter,
               child: StatefulBuilder(builder:
                   (BuildContext bottomSheetContext, StateSetter stateSetter) {
-                //FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-
                 return Container(
                   height: MediaQuery.of(context).size.height * 0.75,
                   decoration: BoxDecoration(
@@ -1757,19 +1661,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               return;
                                             }
 
-                                            /*if (!isBluetoothConnected) {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(SnackBar(
-                                                behavior:
-                                                    SnackBarBehavior.floating,
-                                                content: Text(
-                                                    "Please connect with LPR device"),
-                                                duration: Duration(seconds: 1),
-                                                backgroundColor: Colors.blue,
-                                              ));
-                                              return;
-                                            }*/
-
                                             bool isLocationPermitted =
                                                 await Permission
                                                     .location.isGranted;
@@ -1798,6 +1689,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                             .isGranted;
 
                                                     if (isNotificationPermitted) {
+                                                      final status =
+                                                          await AirplaneModeChecker
+                                                              .checkAirplaneMode();
+                                                      print(
+                                                          "AIRPLANE MODE IS !!!! ${status}");
+
                                                       startWritingDataToDB(
                                                           bottomSheetContext,
                                                           stateSetter);
@@ -2123,9 +2020,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isEndTripButton = true;
 
       if (tripIsRunning) {
-        /*if (Platform.isAndroid) {
-          service.invoke("setAsForeground");
-        }*/
         List<String>? tripData = sharedPreferences!.getStringList('trip_data');
         final tripDetails = await _databaseService.getTrip(tripData![0]);
 
@@ -2146,10 +2040,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
     });
   }
 
+  /// To enable Bluetooth
   Future<void> enableBT() async {
     BluetoothEnable.enableBluetooth.then((value) async {
-      //isBluetoothConnected = value;
-
       Utils.customPrint("BLUETOOTH ENABLE $value");
 
       if (value == 'true') {
@@ -2190,35 +2083,24 @@ class VesselSingleViewState extends State<VesselSingleView> {
     }
   }
 
+  /// It will save data to local database when trip is start
   Future<void> onSave(String file, BuildContext context,
       bool savingDataWhileStartService) async {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
-    // Position? locationData =
-    //     await Utils.getLocationPermission(context, scaffoldKey);
+
     ReceivePort port = ReceivePort();
     String? latitude, longitude;
     port.listen((dynamic data) async {
       LocationDto? locationDto =
           data != null ? LocationDto.fromJson(data) : null;
       if (locationDto != null) {
-        latitude = locationDto!.latitude.toString();
-        longitude = locationDto!.longitude.toString();
+        latitude = locationDto.latitude.toString();
+        longitude = locationDto.longitude.toString();
       }
       ;
     });
     await fetchDeviceData();
-
-    Utils.customPrint(
-        'hello device details: ${deviceDetails!.toJson().toString()}');
-    // String latitude = locationData!.latitude.toString();
-    // String longitude = locationData.longitude.toString();
-
-    Utils.customPrint("current lod:$currentLoad");
-    Utils.customPrint("current PATH:$file");
-
-    Utils.customPrint("ON SAVE FIRST INSERT :$getTripId");
-    Utils.customPrint("ON SAVE FIRST INSERT :$getTripId");
 
     try {
       await _databaseService.insertTrip(Trip(
@@ -2240,29 +2122,18 @@ class VesselSingleViewState extends State<VesselSingleView> {
     return;
   }
 
+  /// It will start trip and called startBGLocatorTrip function from StartTrip.dart file
   startWritingDataToDB(
       BuildContext bottomSheetContext, StateSetter stateSetter) async {
-    // bool isServiceRunning = await service.isRunning();
-
     Utils.customPrint('ISSSSS XXXXXXX: $isServiceRunning');
 
     stateSetter(() {
       addingDataToDB = true;
     });
 
-    // if (!isServiceRunning) {
-    //   await service.startService();
-    //
-    //   Utils.customPrint('View Single: $isServiceRunning');
-    // }
-
     getTripId = ObjectId().toString();
     await initPlatformStateBGL();
     await onSave('', bottomSheetContext, true);
-
-    /*await Future.delayed(Duration(seconds: 4), () {
-      Utils.customPrint('Future delayed duration Ended');
-    });*/
 
     await sharedPreferences!.setBool('trip_started', true);
     await sharedPreferences!.setStringList('trip_data', [
@@ -2278,196 +2149,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     Navigator.pop(bottomSheetContext);
     return;
-
-    /* if (Platform.isAndroid) {
-      service.invoke(
-          'tripId', {'tripId': getTripId, 'vesselName': widget.vessel!.name});
-
-      // service.invoke("setAsForeground");
-
-      service.invoke("onStartTrip");
-    }
-    else {
-      await sharedPreferences!.setBool('trip_started', true);
-      await sharedPreferences!.setStringList('trip_data', [
-        getTripId,
-        widget.vessel!.id!,
-        widget.vessel!.name!,
-        selectedVesselWeight
-      ]);
-
-      await initPlatformStateBGL();
-
-      StartTrip().startBGLocatorTrip(getTripId, DateTime.now());
-
-      await tripIsRunningOrNot();
-
-      Navigator.pop(bottomSheetContext);
-      return;
-
-      startTripPosition = await Geolocator.getCurrentPosition();
-      startDateTime = DateTime.now();
-
-      // Position? endTripPosition;
-      pref = await SharedPreferences.getInstance();
-
-      await pref!.setBool('trip_started', true);
-      await pref!.setStringList('trip_data', [
-        getTripId,
-        widget.vessel!.id!,
-        widget.vessel!.name!,
-        selectedVesselWeight
-      ]);
-
-      await StartTrip().initIOSTrip();
-
-      // TODO Send sensor data to start trip for ios
-
-      gyroscopeAvailable =
-          await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
-      accelerometerAvailable =
-          await s.SensorManager().isSensorAvailable(s.Sensors.ACCELEROMETER);
-      magnetometerAvailable =
-          await s.SensorManager().isSensorAvailable(s.Sensors.MAGNETIC_FIELD);
-      userAccelerometerAvailable = await s.SensorManager()
-          .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
-
-      Position pos = await Geolocator.getCurrentPosition();
-
-      if (pos != null) {
-        await StartTrip().startIOSTrip2(
-          startDateTime,
-          //int.parse(event.content),
-          0,
-          startTripPosition!,
-          pos.latitude,
-          pos.longitude,
-          getTripId,
-          widget.vessel!.name!,
-          pos.speed,
-          pref!,
-          1,
-          gyroscopeAvailable!,
-          accelerometerAvailable!,
-          magnetometerAvailable!,
-          userAccelerometerAvailable!,
-          */ /*_accelerometerValues! == null ? [0.0] : _accelerometerValues!,
-          _gyroscopeValues! == null ? [0.0] : _gyroscopeValues!,
-          _userAccelerometerValues == null ? [0.0] : _userAccelerometerValues,
-          _magnetometerValues == null ? [0.0] : _magnetometerValues,*/ /*
-        );
-      }
-
-      // await Future.delayed(const Duration(seconds: 2));
-      // Timer timer = Timer.periodic(Duration(seconds: 1), (timer) async {
-      //   sec = sec++;
-      // });
-
-      // bg.BackgroundGeolocation.getCurrentPosition(
-      //     persist: true, // <-- do not persist this location
-      //     desiredAccuracy: 40, // <-- desire an accuracy of 40 meters or less
-      //     maximumAge: 10000, // <-- Up to 10s old is fine.
-      //     timeout: 30, // <-- wait 30s before giving up.
-      //     samples: 3, // <-- sample just 1 location
-      //     extras: {"getCurrentPosition": true}).then((bg.Location location) {
-      //   print('[getCurrentPosition] - $location');
-      // }).catchError((error) {
-      //   print('[getCurrentPosition] ERROR: $error');
-      // });
-
-      // callback(bg.State state) async {
-      //   print('[start] success: $state');
-      //   setState(() {
-      //     _enabled = state.enabled;
-      //     _isMoving = state.isMoving!;
-      //   });
-      // }
-
-      // bg.State state = await bg.BackgroundGeolocation.state;
-      // if (state.enabled) {
-      //   await bg.BackgroundGeolocation.start().then(callback);
-      //   // registerEventListeners();
-      //   // bg.BackgroundGeolocation.changePace(true).then((bool isMoving) {
-      //   //   print('[changePace] success $isMoving');
-      //   // }).catchError((e) {
-      //   //   print('[changePace] ERROR: ' + e.code.toString());
-      //   // });
-      // } else {
-      //   bg.BackgroundGeolocation.startGeofences().then(callback);
-      // }
-      //
-      // bg.BackgroundGeolocation.changePace(true).then((bool isMoving) {
-      //   print('[changePace] success $isMoving');
-      // }).catchError((e) {
-      //   print('[changePace] ERROR: ' + e.code.toString());
-      // });
-
-      // final result = await backgroundExecutor.runImmediatelyBackgroundTask(
-      //   callback: immediately,
-      //   cancellable: true,
-      //   withMessages: true,
-      // );
-      //
-      // result.connector?.messageStream.listen((event) {});
-      // backgroundExecutor.createConnector().messageStream.listen((event) async {
-      //   // if (!mounted) return;
-      //   // setState(() {
-      //   //   _message = 'Message from ${event.from}:\n${event.content}';
-      //   // });
-      //
-      //   debugPrint("USER ACC $userAccelerometerAvailable");
-      //   // Position endTripPosition = await Geolocator.getCurrentPosition();
-      //   //
-      //   // Utils.customPrint(endTripPosition == null
-      //   //     ? 'Unknown'
-      //   //     : 'END POS: ${endTripPosition.latitude.toString()}, ${endTripPosition.longitude.toString()}');
-      //
-      //   if (endTripPosition != null) {
-      //     await StartTrip().startIOSTrip2(
-      //         int.parse(event.content),
-      //         0,
-      //         startTripPosition,
-      //         endTripPosition!,
-      //         getTripId,
-      //         widget.vessel!.name!,
-      //         pref,
-      //         1,
-      //         gyroscopeAvailable,
-      //         accelerometerAvailable,
-      //         magnetometerAvailable,
-      //         userAccelerometerAvailable,
-      //         _accelerometerValues == null ? [0.0] : _accelerometerValues,
-      //         _gyroscopeValues == null ? [0.0] : _gyroscopeValues,
-      //         _userAccelerometerValues == null
-      //             ? [0.0]
-      //             : _userAccelerometerValues,
-      //         _magnetometerValues == null ? [0.0] : _magnetometerValues);
-      //   }
-      // });
-    }
-*/
-    await sharedPreferences!.setBool('trip_started', true);
-    await sharedPreferences!.setStringList('trip_data', [
-      getTripId,
-      widget.vessel!.id!,
-      widget.vessel!.name!,
-      selectedVesselWeight
-    ]);
-
-    await tripIsRunningOrNot();
-
-    Navigator.pop(bottomSheetContext);
   }
 
+  /// It will initialize background_locator_2
   Future<void> initPlatformStateBGL() async {
     print('Initializing...');
     await BackgroundLocator.initialize();
-    String logStr = await FileManager.readLogFile();
     print('Initialization done');
-    final _isRunning = await BackgroundLocator.isServiceRunning();
-    setState(() {
-      // isRunning = _isRunning;
-    });
 
     Map<String, dynamic> data = {'countInit': 1};
     return await BackgroundLocator.registerLocationUpdate(
@@ -2484,7 +2172,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
             accuracy: bgls.LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
-            //client: bglas.LocationClient.android,
             androidNotificationSettings: bglas.AndroidNotificationSettings(
                 notificationChannelName: 'Location tracking',
                 notificationTitle: 'Trip is in progress',
@@ -2494,7 +2181,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                 notificationIcon: '@drawable/noti_logo',
                 notificationTapCallback:
                     LocationCallbackHandler.notificationCallback)));
-    // print('Running ${isRunning.toString()}');
   }
 
   showDialogBox() {
@@ -2833,24 +2519,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     });
                                   });
                                 }
-                                /*FlutterBluePlus.instance.isScanning
-                                    .listen((event) {
-                                  print("Tapped on scan button 1");
-                                  if (!event) {
-                                    FlutterBluePlus.instance.stopScan();
-
-                                    FlutterBluePlus.instance
-                                        .startScan(
-                                            timeout: const Duration(seconds: 2))
-                                        .then((value) {
-                                      if (mounted) {
-                                        setState(() {
-                                          isScanningBluetooth = false;
-                                        });
-                                      }
-                                    });
-                                  }
-                                });*/
 
                                 if (mounted) {
                                   stateSetter(() {
@@ -2908,15 +2576,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
         });
       } else {
         stateSetter(() {
-          // progress = 1.0;
-          // lprSensorProgress = 1.0;
-          // isStartButton = true;
           isBluetoothConnected = false;
         });
       }
     });
   }
 
+  /// To get all the data of vessel (trip count, avg trip speed etc)
   void getVesselAnalytics(String vesselId) async {
     if (!tripIsRunning) {
       setState(() {
@@ -2933,15 +2599,5 @@ class VesselSingleViewState extends State<VesselSingleView> {
       totalDuration = analyticsData[3];
       vesselAnalytics = false;
     });
-
-    /// 1. TotalDistanceSum
-
-    /// 2. AvgSpeed
-
-    /// 3. TripsCount
-    ///
-    print('totalDistance $totalDistance');
-    print('avgSpeed $avgSpeed');
-    print('COUNT $tripsCount');
   }
 }
