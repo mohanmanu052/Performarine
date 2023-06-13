@@ -6,6 +6,7 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 
+//Location permission custom dialog
 class LocationPermissionCustomDialog extends StatelessWidget {
   String? text, subText, buttonText;
 

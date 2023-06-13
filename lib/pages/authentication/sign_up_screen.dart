@@ -16,6 +16,7 @@ import 'package:performarine/pages/coming_soon_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 
+//Sign up page
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
@@ -644,8 +645,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  bool hasThreeDigitsLetters(String s) {
-    RegExp exp = RegExp(r"(^[A-Z]\d[A-Z] ?\d[A-Z]\d)");
-    return exp.hasMatch(s);
-  }
 }

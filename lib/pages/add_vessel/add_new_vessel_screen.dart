@@ -11,6 +11,7 @@ import 'package:performarine/pages/home_page.dart';
 
 import '../../common_widgets/utils/colors.dart';
 
+//Add new vessel page
 class AddNewVesselScreen extends StatefulWidget {
   //final
   final bool? isEdit;

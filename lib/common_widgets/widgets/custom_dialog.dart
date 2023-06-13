@@ -3,8 +3,8 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/pages/home_page.dart';
 
+//It return custom dialog
 class CustomDialog extends StatelessWidget {
   String? text, subText, positiveBtn, cancelBtn;
 
@@ -62,69 +62,7 @@ class CustomDialog extends StatelessWidget {
                 ),
                 isError!
                     ? SizedBox()
-                    : /*userConfig!
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin:
-                                      EdgeInsets.only(top: 10.0, bottom: 20.0),
-                                  child: CommonButtons.getAcceptButton(
-                                      positiveBtn!,
-                                      context,
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.white,
-                                      positiveBtnOnTap,
-                                      displayWidth(context),
-                                      displayHeight(context) * 0.05,
-                                      primaryColor,
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.white,
-                                      displayHeight(context) * 0.014,
-                                      buttonBGColor,
-                                      ''),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Container(
-                                  margin:
-                                      EdgeInsets.only(top: 10.0, bottom: 20.0),
-                                  child: CommonButtons.getAcceptButton(
-                                      cancelBtn!,
-                                      context,
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.white, () {
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => HomePage()),
-                                        ModalRoute.withName(""));
-                                  },
-                                      displayWidth(context),
-                                      displayHeight(context) * 0.05,
-                                      primaryColor,
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.white,
-                                      displayHeight(context) * 0.014,
-                                      buttonBGColor,
-                                      ''),
-                                ),
-                              )
-                            ],
-                          )
-                        : */
+                    :
                     Container(
                         margin: EdgeInsets.only(top: 10.0, bottom: 20.0),
                         child: Row(

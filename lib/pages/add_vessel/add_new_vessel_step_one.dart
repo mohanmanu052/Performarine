@@ -15,6 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
+// Add new vessel step one
 class AddVesselStepOne extends StatefulWidget {
   final PageController? pageController;
   final GlobalKey<ScaffoldState>? scaffoldKey;
@@ -685,6 +686,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
         ));
   }
 
+  //Upload images from adding new vessel page
   uploadImageFunction() async {
     if (Platform.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;

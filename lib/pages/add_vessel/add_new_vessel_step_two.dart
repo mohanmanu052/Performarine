@@ -17,6 +17,7 @@ import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
 
+// Add new vessel step two
 class AddNewVesselStepTwo extends StatefulWidget {
   final PageController? pageController;
   final GlobalKey<ScaffoldState>? scaffoldKey;

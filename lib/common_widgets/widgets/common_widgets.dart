@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -13,6 +12,7 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+//custom text widget
 Widget commonText(
     {String? text,
     BuildContext? context,
@@ -35,6 +35,7 @@ Widget commonText(
   );
 }
 
+//select images from gallery
 Widget? selectImage(
   context,
   Color buttonPrimaryColor,
@@ -127,50 +128,8 @@ Widget? selectImage(
       });
 }
 
-Widget richText(
-    {String? modelName,
-    String? builderName,
-    BuildContext? context,
-    Color? color}) {
-  return Row(
-    children: [
-      Expanded(
-        child: RichText(
-          text: TextSpan(
-              text: modelName,
-              style: TextStyle(
-                color: Theme.of(context!).brightness == Brightness.dark
-                    ? Colors.white
-                    : color,
-                fontSize: displayWidth(context) * 0.04,
-              ),
-              children: <TextSpan>[
-                TextSpan(
-                  text: ' | ',
-                  style: TextStyle(
-                      color: Colors.blueAccent,
-                      fontSize: displayWidth(context) * 0.04,
-                      fontWeight: FontWeight.bold),
-                ),
-                TextSpan(
-                    text: builderName,
-                    style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : color,
-                      fontSize: displayWidth(context) * 0.04,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        // navigate to desired screen
-                      })
-              ]),
-        ),
-      ),
-    ],
-  );
-}
 
+// Dashboard rich text on vesselSingleViewCard
 Widget dashboardRichText(
     {String? modelName,
     String? builderName,
@@ -224,6 +183,8 @@ Widget dashboardRichText(
   );
 }
 
+
+// Vessel single view card
 Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
     Function(CreateVessel) onTap, GlobalKey<ScaffoldState> scaffoldKey,
     {bool isTripIsRunning = false}) {
@@ -675,6 +636,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
   );
 }
 
+// To show dialog box
 showDialogBox(BuildContext context, CreateVessel vesselData,
     GlobalKey<ScaffoldState> scaffoldKey) {
   return showDialog(
@@ -816,6 +778,7 @@ showDialogBox(BuildContext context, CreateVessel vesselData,
       });
 }
 
+//Widget for vessel Analytics on vessel analytics screen
 Widget vesselAnalytics(BuildContext context, String duration, String distance,
     String currentSpeed, String avgSpeed, bool isTripIsRunning) {
   //double avgSpeed = int.parse(distance) / int.parse(duration);
@@ -1000,6 +963,7 @@ Widget vesselAnalytics(BuildContext context, String duration, String distance,
   );
 }
 
+//Vessel single view analytics on vessel single view screen
 Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
     String distance, String totalCount, String avgSpeed) {
   double finalAvgSpeed = double.parse(avgSpeed);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 
+//Zig Zag line widget in authentication screens
 class ZigZagLineWidget extends StatelessWidget {
   const ZigZagLineWidget({Key? key}) : super(key: key);
 

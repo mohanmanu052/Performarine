@@ -8,6 +8,7 @@ enum CheckboxType {
   Child,
 }
 
+// Custom labeled check box on reports module
 @immutable
 class CustomLabeledCheckbox extends StatelessWidget {
   CustomLabeledCheckbox({
@@ -72,6 +73,7 @@ class CustomLabeledCheckbox extends StatelessWidget {
   }
 }
 
+// Custom labeled check box to select all trips on reports module
 @immutable
 class CustomLabeledCheckboxOne extends StatelessWidget {
   CustomLabeledCheckboxOne(

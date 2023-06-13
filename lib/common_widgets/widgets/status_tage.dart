@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//check status tag with respect to trip
 class StatusTag extends CustomPainter {
   final Color? color;
   StatusTag({this.color});

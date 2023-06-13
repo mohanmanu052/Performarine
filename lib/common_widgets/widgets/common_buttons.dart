@@ -4,37 +4,8 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/dash_rect.dart';
 
 class CommonButtons {
-  static Widget getTextButton(
-      {String? title,
-      BuildContext? context,
-      Color? textColor,
-      double? textSize,
-      bool? isClickLink = false,
-      FontWeight? fontWeight,
-      Function()? onTap}) {
-    return Column(
-      children: [
-        TextButton(
-          onPressed: onTap,
-          child: Text(
-            title!,
-            style: isClickLink!
-                ? TextStyle(
-                    decoration: TextDecoration.underline,
-                    decorationStyle: TextDecorationStyle.dashed,
-                    fontSize: textSize,
-                    color: textColor,
-                    fontWeight: fontWeight)
-                : TextStyle(
-                    fontSize: textSize,
-                    color: textColor,
-                    fontWeight: fontWeight),
-          ),
-        ),
-      ],
-    );
-  }
 
+  //Custom action button
   static Widget getRichTextActionButton(
       {String? title,
       BuildContext? context,
@@ -78,6 +49,7 @@ class CommonButtons {
         ));
   }
 
+  // Action button
   static Widget getActionButton(
       {String? title,
       BuildContext? context,
@@ -109,6 +81,7 @@ class CommonButtons {
         ));
   }
 
+  //custom button along with dots
   static Widget getDottedButton(String title, BuildContext context,
       Function() onTap, Color primaryTextColor,
       [double? height]) {
@@ -136,6 +109,7 @@ class CommonButtons {
     );
   }
 
+  //custom button with id
   static Widget getAcceptButton(
     String? title,
     BuildContext context,
