@@ -162,7 +162,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isCheckingPermission = false,
       isTripEndedOrNot = false,
       vesselAnalytics = false,
-      isVesselParticularExpanded = false;
+      isVesselParticularExpanded = false,
+      anotherVesselEndTrip = false;
 
   late CommonProvider commonProvider;
 
@@ -2234,7 +2235,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               commonText(
                                   context: context,
                                   text:
-                                      'There is a trip in progress from another vessel. Please end that trip and come back here.',
+                                      'There is a trip in progress from another vessel. Do you want to end trip ?',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,
@@ -2243,21 +2244,133 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           ),
                         ),
                         SizedBox(
-                          height: displayHeight(context) * 0.02,
+                          height: displayHeight(context) * 0.012,
                         ),
                         Center(
-                          child: CommonButtons.getAcceptButton(
-                              'OK', context, primaryColor, () async {
-                            Navigator.of(context).pop();
-                          },
-                              displayWidth(context) * 0.4,
-                              displayHeight(context) * 0.05,
-                              primaryColor,
-                              Colors.white,
-                              displayHeight(context) * 0.018,
-                              buttonBGColor,
-                              '',
-                              fontWeight: FontWeight.w500),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    top: 8.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.white
+                                              : Colors.grey)),
+                                  child: Center(
+                                    child: CommonButtons.getAcceptButton(
+                                        'Cancel', context, primaryColor, () {
+                                      Navigator.of(context).pop();
+                                    },
+                                        displayWidth(context) * 0.5,
+                                        displayHeight(context) * 0.05,
+                                        primaryColor,
+                                        Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey,
+                                        displayHeight(context) * 0.015,
+                                        Colors.transparent,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 15.0,
+                              ),
+                              Expanded(
+                                child: anotherVesselEndTrip
+                                    ? Center(child: CircularProgressIndicator())
+                                    : Container(
+                                        margin: EdgeInsets.only(
+                                          top: 8.0,
+                                        ),
+                                        child: Center(
+                                          child: CommonButtons.getAcceptButton(
+                                              'End Trip', context, primaryColor,
+                                              () async {
+                                            setDialogState(() {
+                                              isTripEndedOrNot = true;
+                                              anotherVesselEndTrip = true;
+                                            });
+
+                                            List<String>? tripData =
+                                                sharedPreferences!
+                                                    .getStringList('trip_data');
+
+                                            String tripId = '';
+                                            if (tripData != null) {
+                                              tripId = tripData[0];
+                                            }
+
+                                            debugPrint("TripID $tripId");
+                                            debugPrint(
+                                                "TripID ${tripData![1]}");
+                                            debugPrint("TripID ${tripData[2]}");
+
+                                            final currentTrip =
+                                                await _databaseService
+                                                    .getTrip(tripId);
+
+                                            DateTime createdAtTime =
+                                                DateTime.parse(
+                                                    currentTrip.createdAt!);
+
+                                            var durationTime = DateTime.now()
+                                                .toUtc()
+                                                .difference(createdAtTime);
+                                            String tripDuration =
+                                                Utils.calculateTripDuration(
+                                                    ((durationTime
+                                                                .inMilliseconds) /
+                                                            1000)
+                                                        .toInt());
+
+                                            Utils.customPrint(
+                                                'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+
+                                            EndTrip().endTrip(
+                                                context: context,
+                                                scaffoldKey: scaffoldKey,
+                                                duration: tripDuration,
+                                                onEnded: () async {
+                                                  Utils.customPrint(
+                                                      'TRIPPPPPP ENDEDDD:');
+                                                  setDialogState(() {
+                                                    isEndTripButton = false;
+                                                    anotherVesselEndTrip =
+                                                        false;
+                                                    tripIsEnded = true;
+                                                    commonProvider
+                                                        .getTripsByVesselId(
+                                                            tripData[1]);
+                                                    // isZipFileCreate = true;
+                                                  });
+                                                  await tripIsRunningOrNot();
+                                                  getVesselAnalytics(
+                                                      tripData[1]);
+                                                });
+
+                                            Navigator.of(context).pop();
+                                          },
+                                              displayWidth(context) * 0.5,
+                                              displayHeight(context) * 0.05,
+                                              primaryColor,
+                                              Colors.white,
+                                              displayHeight(context) * 0.015,
+                                              buttonBGColor,
+                                              '',
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBox(
                           height: displayHeight(context) * 0.01,
