@@ -11,6 +11,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:get/get.dart';
 import 'package:objectid/objectid.dart';
@@ -2125,6 +2126,29 @@ class VesselSingleViewState extends State<VesselSingleView> {
     });
 
     getTripId = ObjectId().toString();
+
+    flutterLocalNotificationsPlugin
+        .show(
+      889,
+      'PerforMarine',
+      'Trip is in progress',
+      /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
+      NotificationDetails(
+          android: AndroidNotificationDetails(
+              'performarine_trip_$getTripId', '$getTripId',
+              channelDescription: 'Description',
+              importance: Importance.max,
+              priority: Priority.high),
+          iOS: DarwinNotificationDetails(
+            presentSound: true,
+            presentAlert: true,
+            subtitle: '',
+          )),
+    )
+        .catchError((onError) {
+      print('IOS NOTI ERROR: $onError');
+    });
+
     await initPlatformStateBGL();
     await onSave('', bottomSheetContext, true);
 
@@ -2152,28 +2176,31 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     Map<String, dynamic> data = {'countInit': 1};
     return await BackgroundLocator.registerLocationUpdate(
-        LocationCallbackHandler.callback,
-        initCallback: LocationCallbackHandler.initCallback,
-        initDataCallback: data,
-        disposeCallback: LocationCallbackHandler.disposeCallback,
-        iosSettings: IOSSettings(
-            accuracy: bgls.LocationAccuracy.NAVIGATION,
-            distanceFilter: 0,
-            stopWithTerminate: true),
-        autoStop: false,
-        androidSettings: bglas.AndroidSettings(
-            accuracy: bgls.LocationAccuracy.NAVIGATION,
-            interval: 1,
-            distanceFilter: 0,
-            androidNotificationSettings: bglas.AndroidNotificationSettings(
-                notificationChannelName: 'Location tracking',
-                notificationTitle: 'Trip is in progress',
-                notificationMsg: '',
-                notificationBigMsg: '',
-                notificationIconColor: Colors.grey,
-                notificationIcon: '@drawable/noti_logo',
-                notificationTapCallback:
-                    LocationCallbackHandler.notificationCallback)));
+            LocationCallbackHandler.callback,
+            initCallback: LocationCallbackHandler.initCallback,
+            initDataCallback: data,
+            disposeCallback: LocationCallbackHandler.disposeCallback,
+            iosSettings: IOSSettings(
+                accuracy: bgls.LocationAccuracy.NAVIGATION,
+                distanceFilter: 0,
+                stopWithTerminate: true),
+            autoStop: false,
+            androidSettings: bglas.AndroidSettings(
+                accuracy: bgls.LocationAccuracy.NAVIGATION,
+                interval: 1,
+                distanceFilter: 0,
+                androidNotificationSettings: bglas.AndroidNotificationSettings(
+                    notificationChannelName: 'Location tracking',
+                    notificationTitle: '',
+                    notificationMsg: 'Trip is in progress',
+                    notificationBigMsg: '',
+                    notificationIconColor: Colors.grey,
+                    notificationIcon: '@drawable/noti_logo',
+                    notificationTapCallback:
+                        LocationCallbackHandler.notificationCallback)))
+        .then((value) async {
+      await flutterLocalNotificationsPlugin.cancel(889);
+    });
   }
 
   showDialogBox() {

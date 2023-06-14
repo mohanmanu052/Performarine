@@ -39,25 +39,6 @@ class StartTrip {
 
   /// In this function we start to listen to the data coming from background locator port
   Future<void> startBGLocatorTrip(String tripId, DateTime dateTime) async {
-    if (Platform.isIOS) {
-      flutterLocalNotificationsPlugin
-          .show(
-        889,
-        'PerforMarine',
-        'Trip is in progress',
-        /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
-        NotificationDetails(
-            iOS: DarwinNotificationDetails(
-          presentSound: true,
-          presentAlert: true,
-          subtitle: '',
-        )),
-      )
-          .catchError((onError) {
-        print('IOS NOTI ERROR: $onError');
-      });
-    }
-
     ReceivePort port = ReceivePort();
 
     if (IsolateNameServer.lookupPortByName(
@@ -130,14 +111,19 @@ class StartTrip {
     String lprFileName = 'lpr_$fileIndex.csv';
 
     print("BEFORE PORT LISTEN");
-    Future<bool> hasActiveNotifications() async {
-      var activeNotifications = await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.getActiveNotifications();
+    // Future<bool> hasActiveNotifications() async {
+    //   var activeNotifications = await flutterLocalNotificationsPlugin
+    //       .resolvePlatformSpecificImplementation<
+    //           AndroidFlutterLocalNotificationsPlugin>()
+    //       ?.getActiveNotifications();
+    //
+    //   return activeNotifications?.isEmpty ?? true;
+    // }
 
-      return activeNotifications?.isEmpty ?? true;
-    }
+    var activeNotifications = await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.getActiveNotifications();
 
 //Todo: Notification spanning on port listen it will generate the notification continuously
     port.listen((dynamic data) async {
@@ -242,6 +228,7 @@ class StartTrip {
             }
           }
 
+          await flutterLocalNotificationsPlugin.cancel(889);
           tripDurationTimer =
               Timer.periodic(Duration(seconds: 1), (timer) async {
             var durationTime = DateTime.now().toUtc().difference(createdAtTime);
