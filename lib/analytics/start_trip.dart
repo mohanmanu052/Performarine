@@ -183,6 +183,11 @@ class StartTrip {
             _currentPosition.longitude,
           );
 
+          debugPrint("PREV LAT ${_previousPosition.latitude}");
+          debugPrint("PREV LONG ${_previousPosition.longitude}");
+          debugPrint("CURR LAT ${_currentPosition.latitude}");
+          debugPrint("CURR LONG ${_currentPosition.longitude}");
+
           finalTripDistance += _distanceBetweenLastTwoLocations;
           debugPrint('Total Distance: $finalTripDistance');
           pref.setDouble('temp_trip_dist', finalTripDistance);
@@ -228,7 +233,7 @@ class StartTrip {
             }
           }
 
-          await flutterLocalNotificationsPlugin.cancel(889);
+          // await flutterLocalNotificationsPlugin.cancel(889);
           tripDurationTimer =
               Timer.periodic(Duration(seconds: 1), (timer) async {
             var durationTime = DateTime.now().toUtc().difference(createdAtTime);

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
@@ -30,6 +31,8 @@ final StreamController<String?> selectNotificationStream =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  configEasyLoading();
+
   initializeService();
 
   tz.initializeTimeZones();
@@ -40,6 +43,19 @@ void main() async {
   });
 }
 
+configEasyLoading() {
+  EasyLoading.instance
+    ..indicatorType = EasyLoadingIndicatorType.threeBounce
+    ..indicatorSize = 20.0
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..backgroundColor = Colors.white
+    ..indicatorColor = Colors.black
+    ..textColor = Colors.black
+    ..maskColor = Colors.blue.withOpacity(1)
+    ..radius = 12.0
+    ..textStyle = TextStyle(fontWeight: FontWeight.bold);
+}
+
 const notificationChannelId = 'my_foreground';
 
 @pragma('vm:entry-point')
@@ -48,7 +64,17 @@ onDidReceiveBackgroundNotificationResponse(
   DartPluginRegistrant.ensureInitialized();
   var pref = await SharedPreferences.getInstance();
   pref.setBool('sp_key_called_from_noti', true);
-  Utils.customPrint('APP RESTART 2');
+  Utils.customPrint('APP RESTART 24');
+
+  /// APP RESTART
+}
+
+@pragma('vm:entry-point')
+void bgLocationCallBack() async {
+  DartPluginRegistrant.ensureInitialized();
+  var pref = await SharedPreferences.getInstance();
+  pref.setBool('sp_key_called_from_noti', true);
+  Utils.customPrint('APP RESTART 23');
 
   /// APP RESTART
 }
@@ -94,7 +120,7 @@ Future<void> initializeService() async {
       onDidReceiveNotificationResponse: (value) async {
     Utils.customPrint('APP RESTART 1');
 
-    if (value.id == 888) {
+    if (value.id == 889) {
       Utils.customPrint('NOTIFICATION ID: ${value.id}');
       var pref = await SharedPreferences.getInstance();
       pref.setBool('sp_key_called_from_noti', true);
@@ -125,6 +151,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -150,11 +178,77 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         title: 'PerforMarine',
         debugShowCheckedModeBanner: false,
         initialRoute: "/",
+        builder: EasyLoading.init(),
         getPages: [
           GetPage(name: '/', page: () => IntroScreen()),
           GetPage(name: '/HomePage', page: () => HomePage()),
         ],
       ),
     );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print('\n\n**********resumed');
+
+        EasyLoading.show(
+            status: 'Loading your current trip',
+            maskType: EasyLoadingMaskType.black);
+        // var pref = await SharedPreferences.getInstance();
+        sharedPreferences!.reload().then((value) {
+          Future.delayed(Duration(seconds: 3), () async {
+            bool? result =
+                sharedPreferences!.getBool('sp_key_called_from_noti');
+
+            print('********$result');
+
+            if (result != null) {
+              if (result) {
+                List<String>? tripData =
+                    sharedPreferences!.getStringList('trip_data');
+                bool? isTripStarted =
+                    sharedPreferences!.getBool('trip_started');
+
+                EasyLoading.dismiss();
+
+                Get.to(TripAnalyticsScreen(
+                    tripId: tripData![0],
+                    vesselId: tripData[1],
+                    tripIsRunningOrNot: isTripStarted));
+
+                // Navigator.pushAndRemoveUntil(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => TripAnalyticsScreen(
+                //             tripId: tripData![0],
+                //             vesselId: tripData[1],
+                //             tripIsRunningOrNot: isTripStarted)),
+                //     ModalRoute.withName(""));
+              } else {
+                EasyLoading.dismiss();
+              }
+            } else {
+              EasyLoading.dismiss();
+              sharedPreferences!.reload();
+              bool? result =
+                  sharedPreferences!.getBool('sp_key_called_from_noti');
+
+              print('********$result');
+            }
+          });
+        });qaa
+        break;
+      case AppLifecycleState.inactive:
+        print('\n\ninactive');
+        break;
+      case AppLifecycleState.paused:
+        print('\n\npaused');
+        break;
+      case AppLifecycleState.detached:
+        print('\n\ndetached');
+        break;
+    }
   }
 }

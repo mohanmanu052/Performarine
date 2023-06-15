@@ -60,6 +60,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
+  Timer? notiTimer;
+
   IosDeviceInfo? iosDeviceInfo;
   AndroidDeviceInfo? androidDeviceInfo;
 
@@ -2200,7 +2202,35 @@ class VesselSingleViewState extends State<VesselSingleView> {
                     notificationTapCallback:
                         LocationCallbackHandler.notificationCallback)))
         .then((value) async {
-      await flutterLocalNotificationsPlugin.cancel(889);
+      notiTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
+        var activeNotifications = await flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin>()
+            ?.getActiveNotifications();
+
+        if (activeNotifications != null && activeNotifications.isNotEmpty) {
+          if (activeNotifications[0].channelId == 'app.yukams/locator_plugin') {
+            debugPrint("CHANNEL ID MATCH");
+
+            await flutterLocalNotificationsPlugin.cancel(889);
+
+            if (notiTimer != null) {
+              notiTimer!.cancel();
+            }
+          }
+          /*for (int i = 0; i <= activeNotifications.length; i++) {
+            if (activeNotifications[i].channelId ==
+                'app.yukams/locator_plugin') {
+              debugPrint("CHANNEL ID MATCH");
+
+              if (notiTimer != null) {
+                notiTimer!.cancel();
+              }
+            }
+          }*/
+        }
+      });
+      //await flutterLocalNotificationsPlugin.cancel(889);
     });
   }
 
