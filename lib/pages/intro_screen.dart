@@ -263,25 +263,17 @@ class _IntroScreenState extends State<IntroScreen> {
     } else if (isTripStarted) {
       Utils.customPrint('INTRO TRIP IS RUNNING $isTripStarted');
 
-      final _isRunning = await BackgroundLocator.isServiceRunning();
-
-      Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
-
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
-      reInitializeService();
+      // reInitializeService();
 
-      Utils.customPrint('INTRO SCREEN TRIP ID ${tripData![0]}');
 
-      final isRunning1 = await BackgroundLocator.isServiceRunning();
+      // final isRunning1 = await BackgroundLocator.isServiceRunning();
+      //
+      // StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
+      //
+      // final isRunning2 = await BackgroundLocator.isServiceRunning();
 
-      Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
-
-      StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
-
-      final isRunning2 = await BackgroundLocator.isServiceRunning();
-
-      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
 
       if (mounted) {
         if (isCalledFromNoti == null) {
@@ -335,11 +327,11 @@ class _IntroScreenState extends State<IntroScreen> {
 
   /// Reinitialized service after user killed app while trip is running
   reInitializeService() async {
-    print('RE-Initializing...');
+    // print('RE-Initializing...');
     await BackgroundLocator.initialize();
-    String logStr = await FileManager.readLogFile();
-    print('RE-Initialization done');
-    final _isRunning = await BackgroundLocator.isServiceRunning();
+    // String logStr = await FileManager.readLogFile();
+    // print('RE-Initialization done');
+    // final _isRunning = await BackgroundLocator.isServiceRunning();
 
     Map<String, dynamic> data = {'countInit': 1};
     return await BackgroundLocator.registerLocationUpdate(
