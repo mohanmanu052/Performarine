@@ -17,7 +17,7 @@
   - open Runner.xcworkspace(open the project in xcode)
   - flutter create . (to install the latest flutter sdk changes)
 ## Read Documentation
-  ### By using the above commands we can view the documentation in the local server with 8080 port and open the local host http://localhost:8080/
+  ### By using the below commands we can view the documentation in the local server with 8080 port and open the local host http://localhost:8080/
   - dart pub global activate dhttpd 
   - dhttpd --path doc/api
 
