@@ -16,5 +16,9 @@
   - pod updates (update the ios dependencies)
   - open Runner.xcworkspace(open the project in xcode)
   - flutter create . (to install the latest flutter sdk changes)
+## Read Documentation
+  - dart pub global activate dhttpd 
+  - dhttpd --path doc/api
+by using the above commands we can run the local server with 8080 port and open the local host http://localhost:8080/
 ## Preview
 <img src="screenshots/ss.png" />
