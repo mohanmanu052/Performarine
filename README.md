@@ -1,6 +1,6 @@
 # Performarine
 
-##Project Setup:
+## Project Setup:
 - setup the flutter and IDE: https://docs.flutter.dev/get-started/editor
 - post configuring the application use the below commands
   - flutter doctor (to check the set up status and issues)
