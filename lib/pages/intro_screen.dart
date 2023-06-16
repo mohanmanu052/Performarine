@@ -273,9 +273,12 @@ class _IntroScreenState extends State<IntroScreen> {
 
       /*reInitializeService();
 
-      Utils.customPrint('INTRO SCREEN TRIP ID ${tripData![0]}');
+      // final isRunning1 = await BackgroundLocator.isServiceRunning();
+      //
+      // StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
+      //
+      // final isRunning2 = await BackgroundLocator.isServiceRunning();
 
-      final isRunning1 = await BackgroundLocator.isServiceRunning();
 
       Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
 
@@ -337,11 +340,11 @@ class _IntroScreenState extends State<IntroScreen> {
 
   /// Reinitialized service after user killed app while trip is running
   reInitializeService() async {
-    print('RE-Initializing...');
+    // print('RE-Initializing...');
     await BackgroundLocator.initialize();
-    String logStr = await FileManager.readLogFile();
-    print('RE-Initialization done');
-    final _isRunning = await BackgroundLocator.isServiceRunning();
+    // String logStr = await FileManager.readLogFile();
+    // print('RE-Initialization done');
+    // final _isRunning = await BackgroundLocator.isServiceRunning();
 
     Map<String, dynamic> data = {'countInit': 1};
     return await BackgroundLocator.registerLocationUpdate(
