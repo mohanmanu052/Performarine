@@ -4,9 +4,9 @@ import 'dart:isolate';
 import 'dart:ui';
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/location_dto.dart';
+import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
-import 'package:background_locator_2/settings/android_settings.dart' as bglas;
-import 'package:background_locator_2/settings/locator_settings.dart' as bgls;
+import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -2184,15 +2184,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
             initDataCallback: data,
             disposeCallback: LocationCallbackHandler.disposeCallback,
             iosSettings: IOSSettings(
-                accuracy: bgls.LocationAccuracy.NAVIGATION,
+                accuracy: LocationAccuracy.NAVIGATION,
                 distanceFilter: 0,
                 stopWithTerminate: true),
             autoStop: false,
-            androidSettings: bglas.AndroidSettings(
-                accuracy: bgls.LocationAccuracy.NAVIGATION,
+            androidSettings: AndroidSettings(
+                accuracy: LocationAccuracy.NAVIGATION,
                 interval: 1,
                 distanceFilter: 0,
-                androidNotificationSettings: bglas.AndroidNotificationSettings(
+                androidNotificationSettings: AndroidNotificationSettings(
                     notificationChannelName: 'Location tracking',
                     notificationTitle: '',
                     notificationMsg: 'Trip is in progress',

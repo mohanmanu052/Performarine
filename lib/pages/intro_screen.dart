@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 import 'package:background_locator_2/background_locator.dart';
+import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
+import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:performarine/analytics/file_manager.dart';
@@ -16,8 +18,6 @@ import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
-import 'package:background_locator_2/settings/locator_settings.dart' as bgls;
-import 'package:background_locator_2/settings/android_settings.dart' as bglas;
 
 import '../common_widgets/utils/constants.dart';
 
@@ -263,13 +263,15 @@ class _IntroScreenState extends State<IntroScreen> {
     } else if (isTripStarted) {
       Utils.customPrint('INTRO TRIP IS RUNNING $isTripStarted');
 
-      final _isRunning = await BackgroundLocator.isServiceRunning();
+      /*flutterLocalNotificationsPlugin.cancel(1);
 
-      Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
+      final _isRunning = await BackgroundLocator();
+
+      Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');*/
 
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
-      reInitializeService();
+      /*reInitializeService();
 
       Utils.customPrint('INTRO SCREEN TRIP ID ${tripData![0]}');
 
@@ -281,7 +283,7 @@ class _IntroScreenState extends State<IntroScreen> {
 
       final isRunning2 = await BackgroundLocator.isServiceRunning();
 
-      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
+      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');*/
 
       if (mounted) {
         if (isCalledFromNoti == null) {
@@ -348,16 +350,16 @@ class _IntroScreenState extends State<IntroScreen> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: bgls.LocationAccuracy.NAVIGATION,
+            accuracy: LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
-        androidSettings: bglas.AndroidSettings(
-            accuracy: bgls.LocationAccuracy.NAVIGATION,
+        androidSettings: AndroidSettings(
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             //client: bglas.LocationClient.android,
-            androidNotificationSettings: bglas.AndroidNotificationSettings(
+            androidNotificationSettings: AndroidNotificationSettings(
                 notificationChannelName: 'Location tracking',
                 notificationTitle: 'Trip is in progress',
                 notificationMsg: '',

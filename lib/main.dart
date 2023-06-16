@@ -192,59 +192,74 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         print('\n\n**********resumed');
-
-        EasyLoading.show(
-            status: 'Loading your current trip',
-            maskType: EasyLoadingMaskType.black);
         // var pref = await SharedPreferences.getInstance();
-        sharedPreferences!.reload().then((value) {
-          Future.delayed(Duration(seconds: 3), () async {
-            bool? result =
-                sharedPreferences!.getBool('sp_key_called_from_noti');
 
-            print('********$result');
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+          await Future.delayed(Duration(seconds: 1), () async {
+            sharedPreferences = await SharedPreferences.getInstance();
+          });
 
-            if (result != null) {
-              if (result) {
-                List<String>? tripData =
-                    sharedPreferences!.getStringList('trip_data');
-                bool? isTripStarted =
-                    sharedPreferences!.getBool('trip_started');
+          sharedPreferences!.reload().then((value) {
+            bool? isTripStarted = sharedPreferences!.getBool('trip_started');
 
-                EasyLoading.dismiss();
-
-                Get.to(TripAnalyticsScreen(
-                    tripId: tripData![0],
-                    vesselId: tripData[1],
-                    tripIsRunningOrNot: isTripStarted));
-
-                // Navigator.pushAndRemoveUntil(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => TripAnalyticsScreen(
-                //             tripId: tripData![0],
-                //             vesselId: tripData[1],
-                //             tripIsRunningOrNot: isTripStarted)),
-                //     ModalRoute.withName(""));
-              } else {
-                EasyLoading.dismiss();
+            if (isTripStarted != null) {
+              if (isTripStarted) {
+                EasyLoading.show(
+                    status: 'Loading your current trip',
+                    maskType: EasyLoadingMaskType.black);
               }
-            } else {
-              EasyLoading.dismiss();
-              sharedPreferences!.reload();
+            }
+
+            Future.delayed(Duration(seconds: 3), () async {
               bool? result =
                   sharedPreferences!.getBool('sp_key_called_from_noti');
 
               print('********$result');
-            }
+
+              if (result != null) {
+                if (result) {
+                  List<String>? tripData =
+                      sharedPreferences!.getStringList('trip_data');
+                  bool? isTripStarted =
+                      sharedPreferences!.getBool('trip_started');
+
+                  EasyLoading.dismiss();
+
+                  Get.to(TripAnalyticsScreen(
+                      tripId: tripData![0],
+                      vesselId: tripData[1],
+                      tripIsRunningOrNot: isTripStarted));
+
+                  // Navigator.pushAndRemoveUntil(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => TripAnalyticsScreen(
+                  //             tripId: tripData![0],
+                  //             vesselId: tripData[1],
+                  //             tripIsRunningOrNot: isTripStarted)),
+                  //     ModalRoute.withName(""));
+                } else {
+                  EasyLoading.dismiss();
+                }
+              } else {
+                EasyLoading.dismiss();
+                sharedPreferences!.reload();
+                bool? result =
+                    sharedPreferences!.getBool('sp_key_called_from_noti');
+
+                print('********$result');
+              }
+            });
           });
-        });qaa
+        });
         break;
       case AppLifecycleState.inactive:
         print('\n\ninactive');
         break;
       case AppLifecycleState.paused:
         print('\n\npaused');
+        sharedPreferences = await SharedPreferences.getInstance();
+        sharedPreferences!.reload();
         break;
       case AppLifecycleState.detached:
         print('\n\ndetached');
