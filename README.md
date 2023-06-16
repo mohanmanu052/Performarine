@@ -19,7 +19,7 @@
 ## Read Documentation
   ### By using the below commands we can view the documentation in the local server with 8080 port and open the local host http://localhost:8080/
   - dart pub global activate dhttpd 
-  - dhttpd --path doc/api
+  - dhttpd --path documentation
 
 ## Preview
 <img src="screenshots/ss.png" />
