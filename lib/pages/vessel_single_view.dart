@@ -549,7 +549,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     .getTrip(tripData![0]);
 
                                 if (tripDetails.vesselId != widget.vessel!.id) {
-                                  showDialogBox();
+                                  showDialogBox(context);
                                   return;
                                 }
                               }
@@ -2133,7 +2133,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     flutterLocalNotificationsPlugin
         .show(
       889,
-      'PerforMarine',
+      '',
       'Trip is in progress',
       /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
       NotificationDetails(
@@ -2234,7 +2234,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     });
   }
 
-  showDialogBox() {
+  showDialogBox(BuildContext context) {
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -2314,79 +2314,54 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 width: 15.0,
                               ),
                               Expanded(
-                                child: anotherVesselEndTrip
-                                    ? Center(child: CircularProgressIndicator())
-                                    : Container(
+                                child: Container(
                                         margin: EdgeInsets.only(
                                           top: 8.0,
                                         ),
                                         child: Center(
                                           child: CommonButtons.getAcceptButton(
-                                              'End Trip', context, primaryColor,
+                                              'Go to trip', context, primaryColor,
                                               () async {
-                                            setDialogState(() {
-                                              isTripEndedOrNot = true;
-                                              anotherVesselEndTrip = true;
-                                            });
 
-                                            List<String>? tripData =
-                                                sharedPreferences!
-                                                    .getStringList('trip_data');
+                                                debugPrint("Click on GO TO TRIP 1");
 
-                                            String tripId = '';
-                                            if (tripData != null) {
-                                              tripId = tripData[0];
-                                            }
+                                                List<String>? tripData =
+                                                sharedPreferences!.getStringList('trip_data');
+                                                bool? runningTrip = sharedPreferences!.getBool("trip_started");
 
-                                            debugPrint("TripID $tripId");
-                                            debugPrint(
-                                                "TripID ${tripData![1]}");
-                                            debugPrint("TripID ${tripData[2]}");
+                                                String tripId = '', vesselName = '';
+                                                if (tripData != null) {
+                                                  tripId = tripData[0];
+                                                  vesselName = tripData[1];
+                                                }
 
-                                            final currentTrip =
-                                                await _databaseService
-                                                    .getTrip(tripId);
+                                                debugPrint("Click on GO TO TRIP 2");
 
-                                            DateTime createdAtTime =
-                                                DateTime.parse(
-                                                    currentTrip.createdAt!);
+                                                Navigator.of(dialogContext).pop();
 
-                                            var durationTime = DateTime.now()
-                                                .toUtc()
-                                                .difference(createdAtTime);
-                                            String tripDuration =
-                                                Utils.calculateTripDuration(
-                                                    ((durationTime
-                                                                .inMilliseconds) /
-                                                            1000)
-                                                        .toInt());
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
+                                                      tripId: tripId,
+                                                      vesselId: tripData![1],
+                                                      tripIsRunningOrNot: runningTrip)),
+                                                );
 
-                                            Utils.customPrint(
-                                                'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
 
-                                            EndTrip().endTrip(
-                                                context: context,
-                                                scaffoldKey: scaffoldKey,
-                                                duration: tripDuration,
-                                                onEnded: () async {
-                                                  Utils.customPrint(
-                                                      'TRIPPPPPP ENDEDDD:');
-                                                  setDialogState(() {
-                                                    isEndTripButton = false;
-                                                    anotherVesselEndTrip =
-                                                        false;
-                                                    tripIsEnded = true;
-                                                    commonProvider
-                                                        .getTripsByVesselId(
-                                                            tripData[1]);
-                                                    // isZipFileCreate = true;
-                                                  });
-                                                  await tripIsRunningOrNot();
-                                                  getVesselAnalytics(
-                                                      tripData[1]);
-                                                });
 
-                                            Navigator.of(context).pop();
+                                                /*Get.to(() => TripAnalyticsScreen(
+                                                    tripId: tripId,
+                                                    vesselId: tripData![1],
+                                                    tripIsRunningOrNot: tripIsRunning));*/
+
+                                                /*Get.to(TripAnalyticsScreen(
+                                                    tripId: tripId,
+                                                    vesselId: tripData![1],
+                                                    tripIsRunningOrNot: tripIsRunning));*/
+
+                                                debugPrint("Click on GO TO TRIP 3");
+
+                                            //Navigator.of(context).pop();
                                           },
                                               displayWidth(context) * 0.5,
                                               displayHeight(context) * 0.05,

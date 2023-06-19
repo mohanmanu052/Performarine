@@ -83,6 +83,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     super.initState();
 
     Utils.customPrint('CURRENT TIME TIME ${widget.tripId}');
+    Utils.customPrint('CURRENT TIME TIME ${widget.vesselId}');
+    Utils.customPrint('CURRENT TIME TIME ${widget.tripIsRunningOrNot}');
 
     sharedPreferences!.remove('sp_key_called_from_noti');
 
