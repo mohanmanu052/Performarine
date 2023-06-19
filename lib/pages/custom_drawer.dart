@@ -19,9 +19,13 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/reports/search_and_filters.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
+import 'package:performarine/pages/web_navigation/privacy_and_policy_web_view.dart';
+import 'package:performarine/pages/web_navigation/terms_and_condition_web_view.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
+
+import 'authentication/change_password.dart';
 
 class CustomDrawer extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
@@ -264,6 +268,69 @@ class _CustomDrawerState extends State<CustomDrawer> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TermsAndConditionsWebView()),
+                      );
+                    },
+                    child: commonText(
+                        context: context,
+                        text: 'T&C',
+                        fontWeight: FontWeight.w500,
+                        textColor: Colors.black54,
+                        textSize: textSize,
+                        textAlign: TextAlign.start),
+                  ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.02,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PrivacyAndPolicyWebView()),
+                      );
+                    },
+                    child: commonText(
+                        context: context,
+                        text: 'Privacy Policy',
+                        fontWeight: FontWeight.w500,
+                        textColor: Colors.black54,
+                        textSize: textSize,
+                        textAlign: TextAlign.start),
+                  ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.02,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChangePassword()),
+                      );
+                    },
+                    child: commonText(
+                        context: context,
+                        text: 'Change Password',
+                        fontWeight: FontWeight.w500,
+                        textColor: Colors.black54,
+                        textSize: textSize,
+                        textAlign: TextAlign.start),
+                  ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.02,
+                  ),
                   InkWell(
                     onTap: () async {
                       bool? isTripStarted =

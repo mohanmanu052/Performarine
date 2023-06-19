@@ -13,10 +13,12 @@ import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/upload_trip_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/provider/add_vessel_api_provider.dart';
+import 'package:performarine/provider/change_password_provider.dart';
 import 'package:performarine/provider/get_user_config_api_provider.dart';
 import 'package:performarine/provider/login_api_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
 import 'package:performarine/provider/report_module_provider.dart';
+import 'package:performarine/provider/reset_password_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
 import 'package:performarine/services/database_service.dart';
 
@@ -241,5 +243,34 @@ class CommonProvider with ChangeNotifier {
         .tripListData(vesselID, context, accessToken, scaffoldKey);
     notifyListeners();
     return tripListModel!;
+  }
+
+  ///Reset password
+  Future<LoginModel> resetPassword(
+      BuildContext context,
+      String emailOrPhone,
+      GlobalKey<ScaffoldState> scaffoldKey,
+      ) async {
+    loginModel = LoginModel();
+
+    loginModel = await ResetPasswordProvider().resetPassword(context, emailOrPhone,scaffoldKey);
+    notifyListeners();
+
+    return loginModel!;
+  }
+
+
+  ///Change password
+  Future<LoginModel> changePassword(
+      BuildContext context,
+      String password,
+      GlobalKey<ScaffoldState> scaffoldKey,
+      ) async {
+    loginModel = LoginModel();
+
+    loginModel = await ChangePasswordProvider().changePassword(context, password,scaffoldKey);
+    notifyListeners();
+
+    return loginModel!;
   }
 }

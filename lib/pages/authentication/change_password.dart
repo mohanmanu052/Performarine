@@ -1,0 +1,242 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import '../../common_widgets/utils/colors.dart';
+import '../../common_widgets/utils/common_size_helper.dart';
+import '../../common_widgets/utils/utils.dart';
+import '../../common_widgets/widgets/common_buttons.dart';
+import '../../common_widgets/widgets/common_text_feild.dart';
+import '../../common_widgets/widgets/common_widgets.dart';
+import '../../common_widgets/widgets/zig_zag_line_widget.dart';
+
+class ChangePassword extends StatefulWidget {
+  const ChangePassword({Key? key}) : super(key: key);
+
+  @override
+  State<ChangePassword> createState() => _ChangePasswordState();
+}
+
+class _ChangePasswordState extends State<ChangePassword> {
+
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  TextEditingController enterPasswordController = TextEditingController();
+  TextEditingController reenterPasswordController = TextEditingController();
+
+  FocusNode enterPasswordFocusNode = FocusNode();
+  FocusNode reenterPasswordFocusNode = FocusNode();
+  bool isConfirmPasswordValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    enterPasswordController = TextEditingController();
+    reenterPasswordController = TextEditingController();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: scaffoldKey,
+      backgroundColor: commonBackgroundColor,
+      appBar: AppBar(
+        elevation: 0.0,
+        backgroundColor: commonBackgroundColor,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Colors.black,
+        ),
+        centerTitle: true,
+        title: commonText(
+            context: context,
+            text: 'Reset Password',
+            fontWeight: FontWeight.w600,
+            textColor: Colors.black,
+            textSize: displayWidth(context) * 0.05,
+            textAlign: TextAlign.start),
+      ),
+      body: Stack(
+        children: [
+          Positioned(
+              left: 0,
+              bottom: displayHeight(context) * 0.06,
+              child: ZigZagLineWidget()),
+          Form(
+              key: formKey,
+              child: Container(
+                height: displayHeight(context),
+                margin: const EdgeInsets.symmetric(horizontal: 25),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: displayHeight(context) * 0.08),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 25),
+                        child: Image.asset(
+                          'assets/images/sign_in_img.png',
+                        ),
+                      ),
+
+                      SizedBox(height: displayHeight(context) * 0.1),
+
+                      CommonTextField(
+                        //key: emailFormFieldKey,
+                          controller: enterPasswordController,
+                          focusNode: enterPasswordFocusNode,
+                          labelText: 'Enter your New Password',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          maxLength: 52,
+                          prefixIcon: null,
+                          requestFocusNode: reenterPasswordFocusNode,
+                          obscureText: true,
+                          readOnly: false,
+                          onTap: () {},
+                          onChanged: (value) {},
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter your New Password';
+                            } else if (!RegExp(
+                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
+                                .hasMatch(value)) {
+                              return 'Password must contain at least 8 characters and \n include : \n * At least one lowercase letter (a-z) \n '
+                                  '* At least one uppercase letter (A-Z) \n * At least one number (0-9) \n * At least one special character (e.g: !.@#\$&*~)';
+                            }
+                            return null;
+                          },
+                          onFieldSubmitted: (value) {
+                            //emailFormFieldKey.currentState!.validate();
+                            /* FocusScope.of(context)
+                              .requestFocus(passwordFocusNode);*/
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                          }),
+                      SizedBox(height: displayWidth(context) * 0.03),
+
+                      CommonTextField(
+                        //key: emailFormFieldKey,
+                          controller: reenterPasswordController,
+                          focusNode: reenterPasswordFocusNode,
+                          labelText: 'Re-Enter your New Password',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.emailAddress,
+                          textCapitalization: TextCapitalization.words,
+                          maxLength: 52,
+                          prefixIcon: null,
+                          requestFocusNode: null,
+                          obscureText: true,
+                          readOnly: false,
+                          onTap: () {},
+                          onChanged: (value) {},
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              isConfirmPasswordValid = false;
+                              return 'Enter Confirm Password';
+                            } else if (reenterPasswordController.text !=
+                                enterPasswordController.text) {
+                              isConfirmPasswordValid = false;
+                              return "Passwords don\'t match";
+                            }
+
+                            isConfirmPasswordValid = true;
+
+                            return null;
+                          },
+                          onFieldSubmitted: (value) {
+                            //emailFormFieldKey.currentState!.validate();
+                            /* FocusScope.of(context)
+                              .requestFocus(passwordFocusNode);*/
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                          }),
+
+                      SizedBox(height: displayHeight(context) * 0.2),
+
+                      CommonButtons.getActionButton(
+                          title: 'Reset Password',
+                          context: context,
+                          fontSize: displayWidth(context) * 0.044,
+                          textColor: Colors.white,
+                          buttonPrimaryColor: buttonBGColor,
+                          borderColor: buttonBGColor,
+                          width: displayWidth(context),
+                          onTap: () async {
+                            if (formKey.currentState!.validate()) {
+                              bool check = await Utils().check(scaffoldKey);
+
+                              Utils.customPrint("NETWORK $check");
+
+                              FocusScope.of(context)
+                                  .requestFocus(FocusNode());
+
+                              /* if (check) {
+                              setState(() {
+                                isLoginBtnClicked = true;
+                              });
+
+                              if (isLoginByEmailId) {
+                                commonProvider
+                                    .login(
+                                    context,
+                                    emailController.text.trim(),
+                                    passwordController.text.trim(),
+                                    false,
+                                    "",
+                                    scaffoldKey)
+                                    .then((value) {
+                                  setState(() {
+                                    isLoginBtnClicked = false;
+                                  });
+
+                                  if (value != null) {
+                                    if (value.status!) {
+                                      /*Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HomePage(),
+                                            ),
+                                            ModalRoute.withName(""));*/
+
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                SyncDataCloudToMobileScreen(),
+                                          ),
+                                          ModalRoute.withName(""));
+                                    }
+                                  }
+                                }).catchError((e) {
+                                  setState(() {
+                                    isLoginBtnClicked = false;
+                                  });
+                                });
+                              } else {}
+                            } */
+                            }
+                          }),
+                    ],
+                  ),
+                ),
+              )
+          )
+        ],
+      ),
+    );
+  }
+}
+

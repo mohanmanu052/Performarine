@@ -23,4 +23,5 @@ const tableHeaderColor = Color(0xFF9097BC);
 const commonBackgroundColor = Color(0xFFF3FFFB);
 const dateColor = Color(0xFF6B6363);
 const dividerColor = Color(0xFFDADADA);
+const checkColor = Color(0xFF41C1C8);
 

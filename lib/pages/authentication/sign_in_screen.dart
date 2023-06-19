@@ -17,6 +17,11 @@ import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../web_navigation/privacy_and_policy_web_view.dart';
+import '../web_navigation/terms_and_condition_web_view.dart';
+import 'change_password.dart';
+import 'forgot_password.dart';
+
 //Sign in page
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -43,7 +48,7 @@ class _SignInScreenState extends State<SignInScreen> {
   bool validateCountryCodeWidget = false,
       isLoginByEmailId = true,
       isLoginByMobileNumber = false;
-  bool? isLoginBtnClicked = false, isGoogleSignInBtnClicked = false;
+  bool? isLoginBtnClicked = false, isGoogleSignInBtnClicked = false,isChecked = false;
 
   late CommonProvider commonProvider;
 
@@ -193,7 +198,62 @@ class _SignInScreenState extends State<SignInScreen> {
                         onSaved: (String value) {
                           Utils.customPrint(value);
                         }),
-                    SizedBox(height: displayHeight(context) * 0.04),
+                    SizedBox(height: displayHeight(context) * 0.03),
+                    CircularRadioTile(
+                      isChecked: isChecked,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isChecked = !isChecked!;
+                        });},
+                      value: isChecked,
+                      title: RichText(
+                        text: TextSpan(
+                          text: 'By clicking on register you accept',
+                          style: TextStyle(
+                            fontFamily: poppins,
+                            color: Colors.black,
+                            fontSize: displayWidth(context) * 0.03,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: ' T&C',
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) {
+                                          return TermsAndConditionsWebView();
+                                        }));
+                                  },
+                                style: TextStyle(
+                                    fontFamily: poppins,
+                                    color: Color(0xFF42B5BF),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: displayWidth(context) * 0.032)),
+                            TextSpan(
+                                text: '\nand ',
+                                style: TextStyle(
+                                    fontFamily: poppins,
+                                    color: Colors.black,
+                                    fontSize: displayWidth(context) * 0.03)),
+                            TextSpan(
+                                text: ' Privacy Policy',
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) {
+                                          return PrivacyAndPolicyWebView();
+                                        }));
+                                  },
+                                style: TextStyle(
+                                    fontFamily: poppins,
+                                    color: Color(0xFF42B5BF),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: displayWidth(context) * 0.032)),
+                          ],
+                        ),
+                      ),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -312,7 +372,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: displayHeight(context) * 0.04),
+                    SizedBox(height: displayHeight(context) * 0.02),
                     isLoginBtnClicked!
                         ? Center(
                             child: CircularProgressIndicator(
@@ -328,7 +388,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             borderColor: buttonBGColor,
                             width: displayWidth(context),
                             onTap: () async {
-                              if (formKey.currentState!.validate()) {
+                              if (formKey.currentState!.validate() && isChecked!) {
                                 bool check = await Utils().check(scaffoldKey);
 
                                 Utils.customPrint("NETWORK $check");
@@ -381,6 +441,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                     });
                                   } else {}
                                 }
+                              } else if(!isChecked!){
+                                Utils.showSnackBar(context,
+                                    scaffoldKey: scaffoldKey, message: "Please accept terms and conditions.");
                               }
                             }),
                     SizedBox(
@@ -413,6 +476,34 @@ class _SignInScreenState extends State<SignInScreen> {
                                     fontSize: displayWidth(context) * 0.035)),
                           ]),
                     ),
+
+                    TextButton(
+                        onPressed: (){
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                                return ResetPassword();
+                              }));
+                    }, child: commonText(
+                        context: context,
+                        text: 'Forgot Password?',
+                        fontWeight: FontWeight.w500,
+                        textColor: Colors.black,
+                        textSize: displayWidth(context) * 0.036,
+                        textAlign: TextAlign.start)),
+
+                    TextButton(
+                        onPressed: (){
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                                return ChangePassword();
+                              }));
+                        }, child: commonText(
+                        context: context,
+                        text: 'Change Password',
+                        fontWeight: FontWeight.w500,
+                        textColor: Colors.black,
+                        textSize: displayWidth(context) * 0.036,
+                        textAlign: TextAlign.start))
                   ],
                 ),
               ),
