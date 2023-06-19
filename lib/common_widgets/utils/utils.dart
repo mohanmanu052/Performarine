@@ -325,7 +325,7 @@ class Utils {
                                   child: CommonButtons.getAcceptButton(
                                       'Cancel',
                                       context,
-                                      primaryColor,
+                                      buttonBGColor,
                                       onCancelClick,
                                       displayWidth(context) * 0.5,
                                       displayHeight(context) * 0.05,
@@ -353,7 +353,7 @@ class Utils {
                                   child: CommonButtons.getAcceptButton(
                                       'OK',
                                       context,
-                                      primaryColor,
+                                      buttonBGColor,
                                       endTripBtnClick,
                                       displayWidth(context) * 0.5,
                                       displayHeight(context) * 0.05,

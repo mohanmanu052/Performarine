@@ -138,7 +138,7 @@ class CommonButtons {
           height: height,
           width: width,
           decoration: BoxDecoration(
-            border: Border.all(color: buttonPrimaryColor, width: 1.5),
+            border: Border.all(color: borderColor, width: 1.5),
             borderRadius: BorderRadius.circular(5),
             color: buttonPrimaryColor,
           ),

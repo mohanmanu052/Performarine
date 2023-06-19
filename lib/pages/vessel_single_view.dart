@@ -2246,7 +2246,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.3,
+                  height: displayHeight(context) * 0.45,
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -2258,6 +2258,23 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         SizedBox(
                           height: displayHeight(context) * 0.02,
                         ),
+
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(context) * 0.1,
+                                width: displayWidth(context),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 8),
                           child: Column(
@@ -2265,7 +2282,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               commonText(
                                   context: context,
                                   text:
-                                      'There is a trip in progress from another vessel. Do you want to end trip ?',
+                                      'There is a trip in progress from another Vessel. Please end the trip and come back here',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,
@@ -2277,103 +2294,91 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           height: displayHeight(context) * 0.012,
                         ),
                         Center(
-                          child: Row(
+                          child: Column(
                             children: [
-                              Expanded(
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                    top: 8.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(
-                                          color: Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Colors.white
-                                              : Colors.grey)),
-                                  child: Center(
-                                    child: CommonButtons.getAcceptButton(
-                                        'Cancel', context, primaryColor, () {
-                                      Navigator.of(context).pop();
-                                    },
-                                        displayWidth(context) * 0.5,
-                                        displayHeight(context) * 0.05,
-                                        primaryColor,
-                                        Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.white
-                                            : Colors.grey,
-                                        displayHeight(context) * 0.015,
-                                        Colors.transparent,
-                                        '',
-                                        fontWeight: FontWeight.w500),
-                                  ),
+                              Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Go to trip', context, buttonBGColor,
+                                          () async {
+
+                                        debugPrint("Click on GO TO TRIP 1");
+
+                                        List<String>? tripData =
+                                        sharedPreferences!.getStringList('trip_data');
+                                        bool? runningTrip = sharedPreferences!.getBool("trip_started");
+
+                                        String tripId = '', vesselName = '';
+                                        if (tripData != null) {
+                                          tripId = tripData[0];
+                                          vesselName = tripData[1];
+                                        }
+
+                                        debugPrint("Click on GO TO TRIP 2");
+
+                                        Navigator.of(dialogContext).pop();
+
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
+                                              tripId: tripId,
+                                              vesselId: tripData![1],
+                                              tripIsRunningOrNot: runningTrip)),
+                                        );
+
+                                        /*Get.to(() => TripAnalyticsScreen(
+                                                  tripId: tripId,
+                                                  vesselId: tripData![1],
+                                                  tripIsRunningOrNot: tripIsRunning));
+
+                                        Get.to(TripAnalyticsScreen(
+                                                  tripId: tripId,
+                                                  vesselId: tripData![1],
+                                                  tripIsRunningOrNot: tripIsRunning));*/
+
+                                        debugPrint("Click on GO TO TRIP 3");
+
+                                        //Navigator.of(context).pop();
+                                      },
+                                      displayWidth(context) * 0.65,
+                                      displayHeight(context) * 0.054,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.015,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ),
                               SizedBox(
-                                width: 15.0,
+                                height: 15.0,
                               ),
-                              Expanded(
-                                child: Container(
-                                        margin: EdgeInsets.only(
-                                          top: 8.0,
-                                        ),
-                                        child: Center(
-                                          child: CommonButtons.getAcceptButton(
-                                              'Go to trip', context, primaryColor,
-                                              () async {
-
-                                                debugPrint("Click on GO TO TRIP 1");
-
-                                                List<String>? tripData =
-                                                sharedPreferences!.getStringList('trip_data');
-                                                bool? runningTrip = sharedPreferences!.getBool("trip_started");
-
-                                                String tripId = '', vesselName = '';
-                                                if (tripData != null) {
-                                                  tripId = tripData[0];
-                                                  vesselName = tripData[1];
-                                                }
-
-                                                debugPrint("Click on GO TO TRIP 2");
-
-                                                Navigator.of(dialogContext).pop();
-
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
-                                                      tripId: tripId,
-                                                      vesselId: tripData![1],
-                                                      tripIsRunningOrNot: runningTrip)),
-                                                );
-
-
-
-                                                /*Get.to(() => TripAnalyticsScreen(
-                                                    tripId: tripId,
-                                                    vesselId: tripData![1],
-                                                    tripIsRunningOrNot: tripIsRunning));*/
-
-                                                /*Get.to(TripAnalyticsScreen(
-                                                    tripId: tripId,
-                                                    vesselId: tripData![1],
-                                                    tripIsRunningOrNot: tripIsRunning));*/
-
-                                                debugPrint("Click on GO TO TRIP 3");
-
-                                            //Navigator.of(context).pop();
-                                          },
-                                              displayWidth(context) * 0.5,
-                                              displayHeight(context) * 0.05,
-                                              primaryColor,
-                                              Colors.white,
-                                              displayHeight(context) * 0.015,
-                                              buttonBGColor,
-                                              '',
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                      ),
+                              Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Ok go back', context, buttonBGColor, () {
+                                    Navigator.of(context).pop();
+                                  },
+                                      displayWidth(context) * 0.65,
+                                      displayHeight(context) * 0.054,
+                                      primaryColor,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.grey,
+                                      displayHeight(context) * 0.015,
+                                      Colors.white,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
                               ),
+
                             ],
                           ),
                         ),
