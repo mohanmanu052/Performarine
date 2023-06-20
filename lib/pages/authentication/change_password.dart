@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:performarine/pages/authentication/sign_in_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/common_size_helper.dart';
@@ -8,9 +10,11 @@ import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/common_text_feild.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
 import '../../common_widgets/widgets/zig_zag_line_widget.dart';
+import '../../provider/common_provider.dart';
 
 class ChangePassword extends StatefulWidget {
-  const ChangePassword({Key? key}) : super(key: key);
+  final String? token;
+   ChangePassword({this.token,Key? key}) : super(key: key);
 
   @override
   State<ChangePassword> createState() => _ChangePasswordState();
@@ -31,15 +35,20 @@ class _ChangePasswordState extends State<ChangePassword> {
   FocusNode reenterPasswordFocusNode = FocusNode();
   bool isConfirmPasswordValid = false;
 
+  late CommonProvider commonProvider;
+  bool? isBtnClick = false;
+
   @override
   void initState() {
     super.initState();
+    commonProvider = context.read<CommonProvider>();
     currentPasswordController = TextEditingController();
     newPasswordController = TextEditingController();
     reenterPasswordController = TextEditingController();
   }
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: commonBackgroundColor,
@@ -201,7 +210,12 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                       SizedBox(height: displayHeight(context) * 0.2),
 
-                      CommonButtons.getActionButton(
+                      isBtnClick! ? Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                circularProgressColor),
+                          ))
+                          :     CommonButtons.getActionButton(
                           title: 'Update Password',
                           context: context,
                           fontSize: displayWidth(context) * 0.044,
@@ -217,52 +231,40 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                               FocusScope.of(context)
                                   .requestFocus(FocusNode());
+                              if(check){
+                                setState(() {
+                                  isBtnClick = true;
+                                });
 
-                              /* if (check) {
-                              setState(() {
-                                isLoginBtnClicked = true;
-                              });
-
-                              if (isLoginByEmailId) {
-                                commonProvider
-                                    .login(
-                                    context,
-                                    emailController.text.trim(),
-                                    passwordController.text.trim(),
-                                    false,
-                                    "",
-                                    scaffoldKey)
-                                    .then((value) {
-                                  setState(() {
-                                    isLoginBtnClicked = false;
-                                  });
-
-                                  if (value != null) {
-                                    if (value.status!) {
-                                      /*Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomePage(),
-                                            ),
-                                            ModalRoute.withName(""));*/
-
+                                commonProvider.changePassword(context, "", newPasswordController.text, scaffoldKey).then((value){
+                                  if(value != null){
+                                    setState(() {
+                                      isBtnClick = false;
+                                    });
+                                    print("Status code of change password is: ${value.statusCode}");
+                                    if(value.statusCode == 200){
                                       Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                SyncDataCloudToMobileScreen(),
+                                            builder: (context) => SignInScreen(),
                                           ),
                                           ModalRoute.withName(""));
                                     }
+                                  } else{
+                                    setState(() {
+                                      isBtnClick = false;
+                                    });
                                   }
-                                }).catchError((e) {
+                                }).catchError((e){
                                   setState(() {
-                                    isLoginBtnClicked = false;
+                                    isBtnClick = false;
                                   });
                                 });
-                              } else {}
-                            } */
+                              } else{
+                                setState(() {
+                                  isBtnClick = false;
+                                });
+                              }
                             }
                           }),
                     ],

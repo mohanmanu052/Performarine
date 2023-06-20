@@ -271,7 +271,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   SizedBox(
                     height: displayHeight(context) * 0.02,
                   ),
-                  InkWell(
+               commonProvider.loginModel!.loginType == "regular" ?   InkWell(
                     onTap: () {
                       Navigator.of(context).pop();
 
@@ -288,7 +288,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         textColor: Colors.black54,
                         textSize: textSize,
                         textAlign: TextAlign.start),
-                  ),
+                  ) : Container(),
                   SizedBox(
                     height: displayHeight(context) * 0.02,
                   ),

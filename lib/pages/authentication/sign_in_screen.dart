@@ -16,10 +16,6 @@ import 'package:performarine/pages/authentication/sign_up_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
-
-import '../web_navigation/privacy_and_policy_web_view.dart';
-import '../web_navigation/terms_and_condition_web_view.dart';
-import 'change_password.dart';
 import 'forgot_password.dart';
 
 //Sign in page

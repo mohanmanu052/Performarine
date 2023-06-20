@@ -3,12 +3,14 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/pages/authentication/change_password.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/intro_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
@@ -16,6 +18,7 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:uni_links/uni_links.dart';
 
 SharedPreferences? sharedPreferences;
 bool? isStart;
@@ -152,18 +155,41 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool isLoading = false;
+  StreamSubscription? _sub;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    initDeepLinkListener();
     Utils.customPrint('APP IN BG INIT');
+  }
+
+  void initDeepLinkListener() async {
+    try {
+      _sub = uriLinkStream.listen((Uri? uri) {
+        if (uri != null) {
+          print('Deep link received: $uri');
+          var finalUri = Uri.parse(uri.toString());
+          List<String> segments = finalUri.pathSegments;
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) {
+                return ChangePassword(token: segments.last);
+              }));
+        }
+      }, onError: (err) {
+        print('Error handling deep link: $err');
+      });
+    } on PlatformException {
+
+    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     // positionStream!.cancle
+    _sub?.cancel();
     super.dispose();
     Utils.customPrint('APP IN BG DISPOSE');
   }

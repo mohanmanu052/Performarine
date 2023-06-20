@@ -22,6 +22,7 @@ import 'package:performarine/provider/reset_password_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
 import 'package:performarine/services/database_service.dart';
 
+import '../models/change_password_model.dart';
 import '../models/forgot_password_model.dart';
 import '../models/reports_model.dart';
 import '../models/trip_list_model.dart';
@@ -45,6 +46,7 @@ class CommonProvider with ChangeNotifier {
   ReportModel? reportModel;
   TripList? tripListModel;
   ForgotPasswordModel? forgotPasswordModel;
+  ChangePasswordModel? changePasswordModel;
 
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
@@ -263,16 +265,17 @@ class CommonProvider with ChangeNotifier {
 
 
   ///Change password
-  Future<LoginModel> changePassword(
+  Future<ChangePasswordModel> changePassword(
       BuildContext context,
+      String token,
       String password,
       GlobalKey<ScaffoldState> scaffoldKey,
       ) async {
-    loginModel = LoginModel();
+    changePasswordModel = ChangePasswordModel();
 
-    loginModel = await ChangePasswordProvider().changePassword(context, password,scaffoldKey);
+    changePasswordModel = await ChangePasswordProvider().changePassword(context,token, password,scaffoldKey);
     notifyListeners();
 
-    return loginModel!;
+    return changePasswordModel!;
   }
 }

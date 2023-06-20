@@ -5,22 +5,24 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
-import 'package:performarine/models/login_model.dart';
+import '../models/change_password_model.dart';
 
 class ChangePasswordProvider with ChangeNotifier {
-  LoginModel? loginModel;
+  ChangePasswordModel? changePasswordModel;
 
-  Future<LoginModel> changePassword(
+  Future<ChangePasswordModel> changePassword(
       BuildContext context,
+      String token,
       String password,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
-    Uri uri = Uri.https(Urls.baseUrl, Urls.loginUrl);
+    Uri uri = Uri.https(Urls.baseUrl, Urls.changePassword);
 
     var queryParameters = {
+      "reset_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY4NzI2NzIyNiwianRpIjoiZGE5MDBkYjEtZDhiOS00NGNlLWE0ZWEtNDczNTQ1ZDA0OWZmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjY0OTE2MGQwZmY4MzU5Y2E5MDRhMDVlNSIsIm5iZiI6MTY4NzI2NzIyNiwiZXhwIjoxNjg3MzUzNjI2fQ.PVeMqBQaWK-EMBYS6POjGx_-9W9NrjCCCC4huMf5sBM",
       "password": password
     };
 
@@ -39,12 +41,12 @@ class ChangePasswordProvider with ChangeNotifier {
 
         final pref = await Utils.initSharedPreferences();
 
-        loginModel = LoginModel.fromJson(json.decode(response.body));
+        changePasswordModel = ChangePasswordModel.fromJson(json.decode(response.body));
 
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
 
-        return loginModel!;
+        return changePasswordModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
@@ -54,7 +56,7 @@ class ChangePasswordProvider with ChangeNotifier {
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        loginModel = null;
+        changePasswordModel = null;
       } else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -64,17 +66,17 @@ class ChangePasswordProvider with ChangeNotifier {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
       }
-      loginModel = null;
+      changePasswordModel = null;
     } on SocketException catch (_) {
       await Utils().check(scaffoldKey);
 
       Utils.customPrint('Socket Exception');
 
-      loginModel = null;
+      changePasswordModel = null;
     } catch (exception, s) {
       Utils.customPrint('error caught change password:- $exception \n $s');
-      loginModel = null;
+      changePasswordModel = null;
     }
-    return loginModel ?? LoginModel();
+    return changePasswordModel ?? ChangePasswordModel();
   }
 }
