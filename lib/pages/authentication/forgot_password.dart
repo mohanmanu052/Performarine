@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/common_size_helper.dart';
@@ -9,6 +10,7 @@ import '../../common_widgets/widgets/common_text_feild.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
 import '../../common_widgets/widgets/custom_dialog_new.dart';
 import '../../common_widgets/widgets/zig_zag_line_widget.dart';
+import '../../provider/common_provider.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({Key? key}) : super(key: key);
@@ -25,14 +27,18 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   TextEditingController emailController = TextEditingController();
   FocusNode emailFocusNode = FocusNode();
+  late CommonProvider commonProvider;
+  bool? isBtnClick = false;
 
   @override
   void initState() {
     super.initState();
+    commonProvider = context.read<CommonProvider>();
     emailController = TextEditingController();
   }
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: commonBackgroundColor,
@@ -51,7 +57,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         centerTitle: true,
         title: commonText(
             context: context,
-            text: 'Reset Password',
+            text: 'Forgot Password',
             fontWeight: FontWeight.w600,
             textColor: Colors.black,
             textSize: displayWidth(context) * 0.05,
@@ -85,7 +91,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                       //key: emailFormFieldKey,
                         controller: emailController,
                         focusNode: emailFocusNode,
-                        labelText: 'Email/Phone',
+                        labelText: 'Email',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -100,7 +106,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         onChanged: (value) {},
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Enter Email or Phone Number';
+                            return 'Enter Email';
                           }
                           return null;
                         },
@@ -115,8 +121,13 @@ class _ResetPasswordState extends State<ResetPassword> {
 
                     SizedBox(height: displayHeight(context) * 0.2),
 
-                    CommonButtons.getActionButton(
-                        title: 'Reset Password',
+                  isBtnClick! ? Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            circularProgressColor),
+                      ))
+                      :   CommonButtons.getActionButton(
+                        title: 'Send Reset link',
                         context: context,
                         fontSize: displayWidth(context) * 0.044,
                         textColor: Colors.white,
@@ -124,17 +135,46 @@ class _ResetPasswordState extends State<ResetPassword> {
                         borderColor: buttonBGColor,
                         width: displayWidth(context),
                         onTap: () async {
-                        return showDialog(
-                            context: context,
-                            builder: (context) => CustomDialogNew(
-                              imagePath: 'assets/images/mail.png',
-                              text: 'A reset password link has been sent to your registered mail id “<user email>”',
-                              onPressed: () {
-                                Utils.customPrint("Clicked on go to email button");
-                                Navigator.pop(context);
-                              },
-                            ),
-                          );
+                          if(formKey.currentState!.validate()){
+                            bool check = await Utils().check(scaffoldKey);
+                            if(check){
+                              setState(() {
+                                isBtnClick = true;
+                              });
+                              commonProvider.resetPassword(context, emailController.text.toLowerCase(), scaffoldKey).then((value){
+                                if(value != null && value.status!){
+                                  setState(() {
+                                    isBtnClick = false;
+                                  });
+                                  print("status code of forgot password: ${value.statusCode}");
+                                  return showDialog(
+                                    context: context,
+                                    builder: (context) => CustomDialogNew(
+                                      imagePath: 'assets/images/mail.png',
+                                      text: 'A reset password link has been sent to your registered mail id ${emailController.text}',
+                                      onPressed: () {
+                                        Utils.customPrint("Clicked on go to email button");
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  );
+                                } else{
+                                  setState(() {
+                                    isBtnClick = false;
+                                  });
+                                }
+                              }).catchError((e){
+                                setState(() {
+                                  isBtnClick = false;
+                                });
+                              });
+                            } else{
+                              setState(() {
+                                isBtnClick = false;
+                              });
+                            }
+                          }
+
                         /*  if (formKey.currentState!.validate()) {
                             bool check = await Utils().check(scaffoldKey);
 

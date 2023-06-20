@@ -554,64 +554,67 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             borderColor: buttonBGColor,
                             width: displayWidth(context),
                             onTap: () async {
-                              if (formKey.currentState!.validate() && isChecked) {
-                                bool check = await Utils().check(scaffoldKey);
+                              if (formKey.currentState!.validate()) {
+                                if(isChecked){
+                                  bool check = await Utils().check(scaffoldKey);
 
-                                if (check) {
-                                  setState(() {
-                                    isRegistrationBtnClicked = true;
-                                  });
-
-                                  commonProvider
-                                      .registerUser(
-                                          context,
-                                          emailController.text,
-                                          createPasswordController.text,
-                                          "+1",
-                                          phoneController.text,
-                                          selectedCountry!,
-                                          zipCodeController.text,
-                                          "",
-                                          "",
-                                          false,
-                                          "",
-                                          "",
-                                          scaffoldKey)
-                                      .then((value) {
+                                  if (check) {
                                     setState(() {
-                                      isRegistrationBtnClicked = false;
+                                      isRegistrationBtnClicked = true;
                                     });
 
-                                    if (value != null) {
+                                    commonProvider
+                                        .registerUser(
+                                        context,
+                                        emailController.text,
+                                        createPasswordController.text,
+                                        "+1",
+                                        phoneController.text,
+                                        selectedCountry!,
+                                        zipCodeController.text,
+                                        "",
+                                        "",
+                                        false,
+                                        "",
+                                        "",
+                                        scaffoldKey)
+                                        .then((value) {
                                       setState(() {
                                         isRegistrationBtnClicked = false;
                                       });
 
-                                      if (value.status!) {
+                                      if (value != null) {
                                         setState(() {
                                           isRegistrationBtnClicked = false;
                                         });
 
-                                        Future.delayed(Duration(seconds: 2),
-                                            () {
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => SignInScreen(),
-                                                  ),
-                                                  ModalRoute.withName(""));
-                                        });
+                                        if (value.status!) {
+                                          setState(() {
+                                            isRegistrationBtnClicked = false;
+                                          });
+
+                                          Future.delayed(Duration(seconds: 2),
+                                                  () {
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => SignInScreen(),
+                                                    ),
+                                                    ModalRoute.withName(""));
+                                              });
+                                        }
                                       }
-                                    }
-                                  }).catchError((e) {
-                                    setState(() {
-                                      isRegistrationBtnClicked = false;
+                                    }).catchError((e) {
+                                      setState(() {
+                                        isRegistrationBtnClicked = false;
+                                      });
                                     });
-                                  });
+                                  }
+                                } else{
+                                  Utils.showSnackBar(context,
+                                      scaffoldKey: scaffoldKey, message: "Please accept terms and conditions.");
                                 }
-                              } else if(!isChecked){
-                                Utils.showSnackBar(context,
-                                    scaffoldKey: scaffoldKey, message: "Please accept terms and conditions.");
+
                               }
                             }),
                     SizedBox(
@@ -638,7 +641,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           ),
                                           ModalRoute.withName(""));
                                     },
-                                  text: ' SignIn',
+                                  text: ' Sign In',
                                   style: TextStyle(
                                       color: primaryColor,
                                       fontWeight: FontWeight.w600,

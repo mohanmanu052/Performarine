@@ -22,17 +22,20 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  TextEditingController enterPasswordController = TextEditingController();
+  TextEditingController currentPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
   TextEditingController reenterPasswordController = TextEditingController();
 
-  FocusNode enterPasswordFocusNode = FocusNode();
+  FocusNode currentPasswordFocusNode = FocusNode();
+  FocusNode newPasswordFocusNode = FocusNode();
   FocusNode reenterPasswordFocusNode = FocusNode();
   bool isConfirmPasswordValid = false;
 
   @override
   void initState() {
     super.initState();
-    enterPasswordController = TextEditingController();
+    currentPasswordController = TextEditingController();
+    newPasswordController = TextEditingController();
     reenterPasswordController = TextEditingController();
   }
   @override
@@ -55,7 +58,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         centerTitle: true,
         title: commonText(
             context: context,
-            text: 'Reset Password',
+            text: 'Change Password',
             fontWeight: FontWeight.w600,
             textColor: Colors.black,
             textSize: displayWidth(context) * 0.05,
@@ -84,12 +87,45 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
 
                       SizedBox(height: displayHeight(context) * 0.1),
+                      CommonTextField(
+                        //key: emailFormFieldKey,
+                          controller: currentPasswordController,
+                          focusNode: currentPasswordFocusNode,
+                          labelText: 'Current Password',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.emailAddress,
+                          textCapitalization: TextCapitalization.words,
+                          maxLength: 52,
+                          prefixIcon: null,
+                          requestFocusNode: newPasswordFocusNode,
+                          obscureText: true,
+                          readOnly: false,
+                          onTap: () {},
+                          onChanged: (value) {},
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter Current Password';
+                            }
+                            return null;
+                          },
+                          onFieldSubmitted: (value) {
+                            //emailFormFieldKey.currentState!.validate();
+                            /* FocusScope.of(context)
+                              .requestFocus(passwordFocusNode);*/
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                          }),
+
+                      SizedBox(height: displayWidth(context) * 0.03),
 
                       CommonTextField(
                         //key: emailFormFieldKey,
-                          controller: enterPasswordController,
-                          focusNode: enterPasswordFocusNode,
-                          labelText: 'Enter your New Password',
+                          controller: newPasswordController,
+                          focusNode: newPasswordFocusNode,
+                          labelText: 'Enter New Password',
                           hintText: '',
                           suffixText: null,
                           textInputAction: TextInputAction.next,
@@ -104,7 +140,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           onChanged: (value) {},
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Enter your New Password';
+                              return 'Enter New Password';
                             } else if (!RegExp(
                                 r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
                                 .hasMatch(value)) {
@@ -127,7 +163,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         //key: emailFormFieldKey,
                           controller: reenterPasswordController,
                           focusNode: reenterPasswordFocusNode,
-                          labelText: 'Re-Enter your New Password',
+                          labelText: 'Re-Enter New Password',
                           hintText: '',
                           suffixText: null,
                           textInputAction: TextInputAction.next,
@@ -143,9 +179,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               isConfirmPasswordValid = false;
-                              return 'Enter Confirm Password';
+                              return 'Re-Enter New Password';
                             } else if (reenterPasswordController.text !=
-                                enterPasswordController.text) {
+                                newPasswordController.text) {
                               isConfirmPasswordValid = false;
                               return "Passwords don\'t match";
                             }
@@ -166,7 +202,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       SizedBox(height: displayHeight(context) * 0.2),
 
                       CommonButtons.getActionButton(
-                          title: 'Reset Password',
+                          title: 'Update Password',
                           context: context,
                           fontSize: displayWidth(context) * 0.044,
                           textColor: Colors.white,

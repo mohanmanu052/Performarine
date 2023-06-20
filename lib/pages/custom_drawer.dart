@@ -268,6 +268,30 @@ class _CustomDrawerState extends State<CustomDrawer> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(
+                    height: displayHeight(context) * 0.02,
+                  ),
+                  commonProvider.loginModel!.loginType != "email" ?   InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChangePassword()),
+                      );
+                    },
+                    child: commonText(
+                        context: context,
+                        text: 'Change Password',
+                        fontWeight: FontWeight.w500,
+                        textColor: Colors.black54,
+                        textSize: textSize,
+                        textAlign: TextAlign.start),
+                  ) : Container(),
+                  SizedBox(
+                    height: displayHeight(context) * 0.02,
+                  ),
                   InkWell(
                     onTap: () {
                       Navigator.of(context).pop();
@@ -280,7 +304,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     },
                     child: commonText(
                         context: context,
-                        text: 'T&C',
+                        text: 'Terms & Conditions',
                         fontWeight: FontWeight.w500,
                         textColor: Colors.black54,
                         textSize: textSize,
@@ -302,27 +326,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     child: commonText(
                         context: context,
                         text: 'Privacy Policy',
-                        fontWeight: FontWeight.w500,
-                        textColor: Colors.black54,
-                        textSize: textSize,
-                        textAlign: TextAlign.start),
-                  ),
-                  SizedBox(
-                    height: displayHeight(context) * 0.02,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.of(context).pop();
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChangePassword()),
-                      );
-                    },
-                    child: commonText(
-                        context: context,
-                        text: 'Change Password',
                         fontWeight: FontWeight.w500,
                         textColor: Colors.black54,
                         textSize: textSize,

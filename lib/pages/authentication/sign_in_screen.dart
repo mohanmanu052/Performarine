@@ -199,61 +199,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           Utils.customPrint(value);
                         }),
                     SizedBox(height: displayHeight(context) * 0.03),
-                    CircularRadioTile(
-                      isChecked: isChecked,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          isChecked = !isChecked!;
-                        });},
-                      value: isChecked,
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'By clicking on register you accept',
-                          style: TextStyle(
-                            fontFamily: poppins,
-                            color: Colors.black,
-                            fontSize: displayWidth(context) * 0.03,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ' T&C',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () async {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) {
-                                          return TermsAndConditionsWebView();
-                                        }));
-                                  },
-                                style: TextStyle(
-                                    fontFamily: poppins,
-                                    color: Color(0xFF42B5BF),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: displayWidth(context) * 0.032)),
-                            TextSpan(
-                                text: '\nand ',
-                                style: TextStyle(
-                                    fontFamily: poppins,
-                                    color: Colors.black,
-                                    fontSize: displayWidth(context) * 0.03)),
-                            TextSpan(
-                                text: ' Privacy Policy',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () async {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) {
-                                          return PrivacyAndPolicyWebView();
-                                        }));
-                                  },
-                                style: TextStyle(
-                                    fontFamily: poppins,
-                                    color: Color(0xFF42B5BF),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: displayWidth(context) * 0.032)),
-                          ],
-                        ),
-                      ),
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -388,36 +333,36 @@ class _SignInScreenState extends State<SignInScreen> {
                             borderColor: buttonBGColor,
                             width: displayWidth(context),
                             onTap: () async {
-                              if (formKey.currentState!.validate() && isChecked!) {
-                                bool check = await Utils().check(scaffoldKey);
+                              if (formKey.currentState!.validate()) {
+                                  bool check = await Utils().check(scaffoldKey);
 
-                                Utils.customPrint("NETWORK $check");
+                                  Utils.customPrint("NETWORK $check");
 
-                                FocusScope.of(context)
-                                    .requestFocus(FocusNode());
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
 
-                                if (check) {
-                                  setState(() {
-                                    isLoginBtnClicked = true;
-                                  });
+                                  if (check) {
+                                    setState(() {
+                                      isLoginBtnClicked = true;
+                                    });
 
-                                  if (isLoginByEmailId) {
-                                    commonProvider
-                                        .login(
-                                            context,
-                                            emailController.text.trim(),
-                                            passwordController.text.trim(),
-                                            false,
-                                            "",
-                                            scaffoldKey)
-                                        .then((value) {
-                                      setState(() {
-                                        isLoginBtnClicked = false;
-                                      });
+                                    if (isLoginByEmailId) {
+                                      commonProvider
+                                          .login(
+                                          context,
+                                          emailController.text.trim(),
+                                          passwordController.text.trim(),
+                                          false,
+                                          "",
+                                          scaffoldKey)
+                                          .then((value) {
+                                        setState(() {
+                                          isLoginBtnClicked = false;
+                                        });
 
-                                      if (value != null) {
-                                        if (value.status!) {
-                                          /*Navigator.pushAndRemoveUntil(
+                                        if (value != null) {
+                                          if (value.status!) {
+                                            /*Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
@@ -425,25 +370,23 @@ class _SignInScreenState extends State<SignInScreen> {
                                             ),
                                             ModalRoute.withName(""));*/
 
-                                          Navigator.pushAndRemoveUntil(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SyncDataCloudToMobileScreen(),
-                                              ),
-                                              ModalRoute.withName(""));
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SyncDataCloudToMobileScreen(),
+                                                ),
+                                                ModalRoute.withName(""));
+                                          }
                                         }
-                                      }
-                                    }).catchError((e) {
-                                      setState(() {
-                                        isLoginBtnClicked = false;
+                                      }).catchError((e) {
+                                        setState(() {
+                                          isLoginBtnClicked = false;
+                                        });
                                       });
-                                    });
-                                  } else {}
-                                }
-                              } else if(!isChecked!){
-                                Utils.showSnackBar(context,
-                                    scaffoldKey: scaffoldKey, message: "Please accept terms and conditions.");
+                                    } else {}
+                                  }
+
                               }
                             }),
                     SizedBox(
@@ -467,7 +410,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       return SignUpScreen();
                                     }));
                                   },
-                                text: ' SignUp',
+                                text: ' Sign Up',
                                 style: TextStyle(
                                     color: primaryColor,
                                     fontWeight: FontWeight.w600,
@@ -487,23 +430,9 @@ class _SignInScreenState extends State<SignInScreen> {
                         context: context,
                         text: 'Forgot Password?',
                         fontWeight: FontWeight.w500,
-                        textColor: Colors.black,
+                        textColor: primaryColor,
                         textSize: displayWidth(context) * 0.036,
                         textAlign: TextAlign.start)),
-
-                    TextButton(
-                        onPressed: (){
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                                return ChangePassword();
-                              }));
-                        }, child: commonText(
-                        context: context,
-                        text: 'Change Password',
-                        fontWeight: FontWeight.w500,
-                        textColor: Colors.black,
-                        textSize: displayWidth(context) * 0.036,
-                        textAlign: TextAlign.start))
                   ],
                 ),
               ),
