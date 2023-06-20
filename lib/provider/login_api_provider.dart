@@ -27,14 +27,14 @@ class LoginApiProvider with ChangeNotifier {
 
     if (isLoginWithGoogle) {
       queryParameters = {
-        "userEmail": email,
+        "userEmail": email.toLowerCase(),
         "password": password,
         "loginType": "gmail",
         "socialLoginId": socialLoginId
       };
     } else {
       queryParameters = {
-        "userEmail": email,
+        "userEmail": email.toLowerCase(),
         "password": password,
         "loginType": "regular",
         "socialLoginId": ""

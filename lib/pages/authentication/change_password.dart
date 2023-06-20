@@ -238,7 +238,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   isBtnClick = true;
                                 });
 
-                                commonProvider.changePassword(context, "", newPasswordController.text, scaffoldKey).then((value){
+                                commonProvider.changePassword(context, widget.token!, newPasswordController.text, scaffoldKey).then((value){
                                   if(value != null){
                                     setState(() {
                                       isBtnClick = false;
