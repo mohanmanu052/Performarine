@@ -22,7 +22,7 @@ class ChangePasswordProvider with ChangeNotifier {
     Uri uri = Uri.https(Urls.baseUrl, Urls.changePassword);
 
     var queryParameters = {
-      "reset_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY4NzI2NzIyNiwianRpIjoiZGE5MDBkYjEtZDhiOS00NGNlLWE0ZWEtNDczNTQ1ZDA0OWZmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjY0OTE2MGQwZmY4MzU5Y2E5MDRhMDVlNSIsIm5iZiI6MTY4NzI2NzIyNiwiZXhwIjoxNjg3MzUzNjI2fQ.PVeMqBQaWK-EMBYS6POjGx_-9W9NrjCCCC4huMf5sBM",
+      "reset_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY4NzI3MDE0NiwianRpIjoiZmQ3NDBjNjgtZTIwZC00ZmJjLTlkNjUtYWI4MjNkMjZiMzUxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjY0OTE2MGQwZmY4MzU5Y2E5MDRhMDVlNSIsIm5iZiI6MTY4NzI3MDE0NiwiZXhwIjoxNjg3MzU2NTQ2fQ.DiAbB2WskfbQA1jy0PjofuUlMQUMSsh9_KrAY56dIOw",
       "password": password
     };
 

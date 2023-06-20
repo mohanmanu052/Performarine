@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +11,7 @@ import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/common_text_feild.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
 import '../../common_widgets/widgets/zig_zag_line_widget.dart';
+import '../../main.dart';
 import '../../provider/common_provider.dart';
 
 class ChangePassword extends StatefulWidget {
@@ -243,12 +245,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     });
                                     print("Status code of change password is: ${value.statusCode}");
                                     if(value.statusCode == 200){
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => SignInScreen(),
-                                          ),
-                                          ModalRoute.withName(""));
+                                      signOut();
                                     }
                                   } else{
                                     setState(() {
@@ -275,6 +272,24 @@ class _ChangePasswordState extends State<ChangePassword> {
         ],
       ),
     );
+  }
+
+  signOut() async {
+
+    sharedPreferences!.clear();
+    GoogleSignIn googleSignIn = GoogleSignIn(
+      scopes: <String>[
+        'email',
+        'https://www.googleapis.com/auth/userinfo.profile',
+      ],
+    );
+
+    googleSignIn.signOut();
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const SignInScreen()),
+        ModalRoute.withName(""));
   }
 }
 
