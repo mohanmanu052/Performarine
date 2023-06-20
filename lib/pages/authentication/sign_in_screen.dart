@@ -17,6 +17,11 @@ import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../web_navigation/privacy_and_policy_web_view.dart';
+import '../web_navigation/terms_and_condition_web_view.dart';
+import 'change_password.dart';
+import 'forgot_password.dart';
+
 //Sign in page
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -43,7 +48,7 @@ class _SignInScreenState extends State<SignInScreen> {
   bool validateCountryCodeWidget = false,
       isLoginByEmailId = true,
       isLoginByMobileNumber = false;
-  bool? isLoginBtnClicked = false, isGoogleSignInBtnClicked = false;
+  bool? isLoginBtnClicked = false, isGoogleSignInBtnClicked = false,isChecked = false;
 
   late CommonProvider commonProvider;
 
@@ -193,7 +198,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         onSaved: (String value) {
                           Utils.customPrint(value);
                         }),
-                    SizedBox(height: displayHeight(context) * 0.04),
+                    SizedBox(height: displayHeight(context) * 0.03),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -312,7 +317,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: displayHeight(context) * 0.04),
+                    SizedBox(height: displayHeight(context) * 0.02),
                     isLoginBtnClicked!
                         ? Center(
                             child: CircularProgressIndicator(
@@ -329,35 +334,35 @@ class _SignInScreenState extends State<SignInScreen> {
                             width: displayWidth(context),
                             onTap: () async {
                               if (formKey.currentState!.validate()) {
-                                bool check = await Utils().check(scaffoldKey);
+                                  bool check = await Utils().check(scaffoldKey);
 
-                                Utils.customPrint("NETWORK $check");
+                                  Utils.customPrint("NETWORK $check");
 
-                                FocusScope.of(context)
-                                    .requestFocus(FocusNode());
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
 
-                                if (check) {
-                                  setState(() {
-                                    isLoginBtnClicked = true;
-                                  });
+                                  if (check) {
+                                    setState(() {
+                                      isLoginBtnClicked = true;
+                                    });
 
-                                  if (isLoginByEmailId) {
-                                    commonProvider
-                                        .login(
-                                            context,
-                                            emailController.text.trim(),
-                                            passwordController.text.trim(),
-                                            false,
-                                            "",
-                                            scaffoldKey)
-                                        .then((value) {
-                                      setState(() {
-                                        isLoginBtnClicked = false;
-                                      });
+                                    if (isLoginByEmailId) {
+                                      commonProvider
+                                          .login(
+                                          context,
+                                          emailController.text.trim(),
+                                          passwordController.text.trim(),
+                                          false,
+                                          "",
+                                          scaffoldKey)
+                                          .then((value) {
+                                        setState(() {
+                                          isLoginBtnClicked = false;
+                                        });
 
-                                      if (value != null) {
-                                        if (value.status!) {
-                                          /*Navigator.pushAndRemoveUntil(
+                                        if (value != null) {
+                                          if (value.status!) {
+                                            /*Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
@@ -365,22 +370,23 @@ class _SignInScreenState extends State<SignInScreen> {
                                             ),
                                             ModalRoute.withName(""));*/
 
-                                          Navigator.pushAndRemoveUntil(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SyncDataCloudToMobileScreen(),
-                                              ),
-                                              ModalRoute.withName(""));
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SyncDataCloudToMobileScreen(),
+                                                ),
+                                                ModalRoute.withName(""));
+                                          }
                                         }
-                                      }
-                                    }).catchError((e) {
-                                      setState(() {
-                                        isLoginBtnClicked = false;
+                                      }).catchError((e) {
+                                        setState(() {
+                                          isLoginBtnClicked = false;
+                                        });
                                       });
-                                    });
-                                  } else {}
-                                }
+                                    } else {}
+                                  }
+
                               }
                             }),
                     SizedBox(
@@ -404,7 +410,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       return SignUpScreen();
                                     }));
                                   },
-                                text: ' SignUp',
+                                text: ' Sign Up',
                                 style: TextStyle(
                                     color: primaryColor,
                                     fontWeight: FontWeight.w600,
@@ -413,6 +419,20 @@ class _SignInScreenState extends State<SignInScreen> {
                                     fontSize: displayWidth(context) * 0.035)),
                           ]),
                     ),
+
+                    TextButton(
+                        onPressed: (){
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                                return ResetPassword();
+                              }));
+                    }, child: commonText(
+                        context: context,
+                        text: 'Forgot Password?',
+                        fontWeight: FontWeight.w500,
+                        textColor: primaryColor,
+                        textSize: displayWidth(context) * 0.036,
+                        textAlign: TextAlign.start)),
                   ],
                 ),
               ),

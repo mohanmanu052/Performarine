@@ -16,6 +16,9 @@ import 'package:performarine/pages/coming_soon_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../web_navigation/privacy_and_policy_web_view.dart';
+import '../web_navigation/terms_and_condition_web_view.dart';
+
 //Sign up page
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -51,6 +54,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       isConfirmPasswordValid = false,
       isRegistrationBtnClicked = false,
       isGoogleSignInBtnClicked = false;
+  bool isChecked = false;
 
   late CommonProvider commonProvider;
 
@@ -479,6 +483,62 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Utils.customPrint(value);
                         }),
                     SizedBox(height: displayHeight(context) * 0.03),
+                    CircularRadioTile(
+                      isChecked: isChecked,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isChecked = !isChecked;
+                        });},
+                      value: isChecked,
+                      title: RichText(
+                        text: TextSpan(
+                          text: 'By clicking on register you accept',
+                          style: TextStyle(
+                            fontFamily: poppins,
+                            color: Colors.black,
+                            fontSize: displayWidth(context) * 0.03,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: ' T&C',
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) {
+                                          return TermsAndConditionsWebView();
+                                        }));
+                                  },
+                                style: TextStyle(
+                                    fontFamily: poppins,
+                                    color: Color(0xFF42B5BF),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: displayWidth(context) * 0.032)),
+                            TextSpan(
+                                text: '\nand ',
+                                style: TextStyle(
+                                    fontFamily: poppins,
+                                    color: Colors.black,
+                                    fontSize: displayWidth(context) * 0.03)),
+                            TextSpan(
+                                text: ' Privacy Policy',
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) {
+                                          return PrivacyAndPolicyWebView();
+                                        }));
+                                  },
+                                style: TextStyle(
+                                    fontFamily: poppins,
+                                    color: Color(0xFF42B5BF),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: displayWidth(context) * 0.032)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: displayHeight(context) * 0.03),
                     isRegistrationBtnClicked
                         ? Center(
                             child: CircularProgressIndicator(
@@ -495,60 +555,66 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             width: displayWidth(context),
                             onTap: () async {
                               if (formKey.currentState!.validate()) {
-                                bool check = await Utils().check(scaffoldKey);
+                                if(isChecked){
+                                  bool check = await Utils().check(scaffoldKey);
 
-                                if (check) {
-                                  setState(() {
-                                    isRegistrationBtnClicked = true;
-                                  });
-
-                                  commonProvider
-                                      .registerUser(
-                                          context,
-                                          emailController.text,
-                                          createPasswordController.text,
-                                          "+1",
-                                          phoneController.text,
-                                          selectedCountry!,
-                                          zipCodeController.text,
-                                          "",
-                                          "",
-                                          false,
-                                          "",
-                                          "",
-                                          scaffoldKey)
-                                      .then((value) {
+                                  if (check) {
                                     setState(() {
-                                      isRegistrationBtnClicked = false;
+                                      isRegistrationBtnClicked = true;
                                     });
 
-                                    if (value != null) {
+                                    commonProvider
+                                        .registerUser(
+                                        context,
+                                        emailController.text,
+                                        createPasswordController.text,
+                                        "+1",
+                                        phoneController.text,
+                                        selectedCountry!,
+                                        zipCodeController.text,
+                                        "",
+                                        "",
+                                        false,
+                                        "",
+                                        "",
+                                        scaffoldKey)
+                                        .then((value) {
                                       setState(() {
                                         isRegistrationBtnClicked = false;
                                       });
 
-                                      if (value.status!) {
+                                      if (value != null) {
                                         setState(() {
                                           isRegistrationBtnClicked = false;
                                         });
 
-                                        Future.delayed(Duration(seconds: 2),
-                                            () {
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => SignInScreen(),
-                                                  ),
-                                                  ModalRoute.withName(""));
-                                        });
+                                        if (value.status!) {
+                                          setState(() {
+                                            isRegistrationBtnClicked = false;
+                                          });
+
+                                          Future.delayed(Duration(seconds: 2),
+                                                  () {
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => SignInScreen(),
+                                                    ),
+                                                    ModalRoute.withName(""));
+                                              });
+                                        }
                                       }
-                                    }
-                                  }).catchError((e) {
-                                    setState(() {
-                                      isRegistrationBtnClicked = false;
+                                    }).catchError((e) {
+                                      setState(() {
+                                        isRegistrationBtnClicked = false;
+                                      });
                                     });
-                                  });
+                                  }
+                                } else{
+                                  Utils.showSnackBar(context,
+                                      scaffoldKey: scaffoldKey, message: "Please accept terms and conditions.");
                                 }
+
                               }
                             }),
                     SizedBox(
@@ -575,7 +641,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           ),
                                           ModalRoute.withName(""));
                                     },
-                                  text: ' SignIn',
+                                  text: ' Sign In',
                                   style: TextStyle(
                                       color: primaryColor,
                                       fontWeight: FontWeight.w600,
@@ -588,53 +654,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     SizedBox(
                       height: displayHeight(context) * 0.03,
                     ),
-                    RichText(
-                      text: TextSpan(
-                        text: 'By clicking on register you accept',
-                        style: TextStyle(
-                          fontFamily: poppins,
-                          color: Colors.black,
-                          fontSize: displayWidth(context) * 0.03,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: ' T&C',
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () async {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return ComingSoonScreen();
-                                  }));
-                                },
-                              style: TextStyle(
-                                  fontFamily: poppins,
-                                  color: Color(0xFF42B5BF),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: displayWidth(context) * 0.032)),
-                          TextSpan(
-                              text: '\nand ',
-                              style: TextStyle(
-                                  fontFamily: poppins,
-                                  color: Colors.black,
-                                  fontSize: displayWidth(context) * 0.03)),
-                          TextSpan(
-                              text: ' Privacy Policy',
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () async {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return ComingSoonScreen();
-                                  }));
-                                },
-                              style: TextStyle(
-                                  fontFamily: poppins,
-                                  color: Color(0xFF42B5BF),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: displayWidth(context) * 0.032)),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -645,4 +664,53 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+}
+
+
+class CircularRadioTile extends StatelessWidget {
+  final bool? value;
+  final ValueChanged<bool>? onChanged;
+  final Widget? title;
+  final bool? isChecked;
+
+   CircularRadioTile({
+     this.value,
+     this.onChanged,
+     this.title,
+    this.isChecked = false
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        onChanged!(!value!);
+      },
+      child: Row(
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: isChecked! ? checkColor : Colors.transparent,
+              border: Border.all(
+                color: isChecked! ? Colors.transparent : Colors.grey,
+                width: 2,
+              ),
+            ),
+            child: isChecked!
+                ? Icon(
+              Icons.check,
+              color: Colors.white,
+              size: 16,
+            )
+                : null,
+          ),
+          SizedBox(width: 16),
+          Expanded(child: title!),
+        ],
+      ),
+    );
+  }
 }
