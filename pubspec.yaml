@@ -72,10 +72,11 @@ dependencies:
   table_calendar: ^3.0.0
   syncfusion_flutter_charts: ^21.2.3
   background_locator_2:
-    path: ./background_locator_fixed-master 3
+    path: ./performarine_location_tracker
   webview_flutter: ^2.0.14
   flutter_easyloading: ^3.0.5
   #airplane_mode_checker: ^2.0.0
+  location_permissions: ^3.0.0+1
 
 
 dependency_overrides:

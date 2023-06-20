@@ -1656,7 +1656,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         });
   }
 
-  /// upload sensor data to database
+  /// Upload sensor data to database
   startSensorFunctionality(Trip tripData) async {
     AndroidDeviceInfo? androidDeviceInfo;
     IosDeviceInfo? iosDeviceInfo;
@@ -1796,7 +1796,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     return;
   }
 
-  /// if data is not sync then it will upload first vessel and then trip
+  /// If data is not sync then it will upload first vessel and then trip
   uploadDataIfDataIsNotSync() async {
     commonProvider.updateTripUploadingStatus(true);
     await vesselIsSyncOrNot(tripData!.vesselId.toString());

@@ -25,7 +25,7 @@ packages:
   background_locator_2:
     dependency: "direct main"
     description:
-      path: "background_locator_fixed-master 3"
+      path: performarine_location_tracker
       relative: true
     source: path
     version: "2.0.6"
@@ -569,6 +569,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.4"
+  location_permissions:
+    dependency: "direct main"
+    description:
+      name: location_permissions
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0+1"
   lottie:
     dependency: "direct main"
     description:

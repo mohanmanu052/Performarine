@@ -28,7 +28,6 @@ class StartTrip {
   List<double>? _magnetometerValues;
   double accuracy = 0.0,
       altitide = 0.0,
-      gpsSpeed = 0.0,
       heading = 0.0,
       speedAccuracy = 0.0;
 
@@ -38,9 +37,11 @@ class StartTrip {
       userAccelerometerAvailable = false;
 
   /// In this function we start to listen to the data coming from background locator port
+  /// From sensor we are getting values of x,y & z in double format
   Future<void> startBGLocatorTrip(String tripId, DateTime dateTime) async {
     ReceivePort port = ReceivePort();
 
+    /// Connect to the port and listen to location updates coming from background_locator_2 plugin.
     if (IsolateNameServer.lookupPortByName(
             LocationServiceRepository.isolateName) !=
         null) {
@@ -51,14 +52,18 @@ class StartTrip {
     IsolateNameServer.registerPortWithName(
         port.sendPort, LocationServiceRepository.isolateName);
 
+    /// Initialization of SharedPreferences
     SharedPreferences pref = await SharedPreferences.getInstance();
 
+    /// Get trips data from database to get start time of the trip
     final currentTrip = await _databaseService.getTrip(tripId);
 
+    /// Conversion of String to DateTime
     DateTime createdAtTime = DateTime.parse(currentTrip.createdAt!);
 
     int fileIndex = 0;
 
+    /// To Check whether sensor are available in the mobile device
     gyroscopeAvailable =
         await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
     accelerometerAvailable =
@@ -68,6 +73,7 @@ class StartTrip {
     userAccelerometerAvailable = await s.SensorManager()
         .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
 
+    /// To get data from sensor only if that sensor is available
     if (accelerometerAvailable) {
       accelerometerEvents.listen(
         (AccelerometerEvent event) {
@@ -102,11 +108,12 @@ class StartTrip {
 
     print("AFTER SESNOR DATA");
 
-    double endTripLatitude = 0.0;
-    double endTripLongitude = 0.0;
+    double latitude = 0.0;
+    double longitude = 0.0;
     double finalTripDistance = 0.0;
     double speed = 0.0;
 
+    /// Initialization of file name
     String mobileFileName = 'mobile_$fileIndex.csv';
     String lprFileName = 'lpr_$fileIndex.csv';
 
@@ -126,15 +133,20 @@ class StartTrip {
         ?.getActiveNotifications();
 
 //Todo: Notification spanning on port listen it will generate the notification continuously
+
+    /// Listening to the port to get location updates
     port.listen((dynamic data) async {
+
+      /// Conversion of events coming from port into LocationDto(POJO class)
       LocationDto? locationDto =
           data != null ? LocationDto.fromJson(data) : null;
 
       print("LOCATION DTO $locationDto");
 
       if (locationDto != null) {
-        endTripLatitude = locationDto.latitude;
-        endTripLongitude = locationDto.longitude;
+
+        latitude = locationDto.latitude;
+        longitude = locationDto.longitude;
         speed = locationDto.speed < 0 ? 0 : locationDto.speed;
         accuracy = locationDto.accuracy;
         altitide = locationDto.altitude;
@@ -144,9 +156,12 @@ class StartTrip {
         Utils.customPrint('SPEED SPEED 1111 ${speed}');
         Utils.customPrint('SPEED SPEED 2222 ${locationDto.speed}');
 
+        /// To get each and every location of ongoing trip from shared preferences
+        /// this is use to calculate distance by current position and prev position store in the list
         List<String> currentLocList =
             pref.getStringList('current_loc_list') ?? [];
 
+        /// Conversion of current lat long into position
         Position _currentPosition = Position(
             latitude: locationDto.latitude,
             longitude: locationDto.longitude,
@@ -157,6 +172,7 @@ class StartTrip {
             heading: 0.0,
             altitude: 0.0);
 
+        /// Adding current position into the list to store in shared preferences
         String currentPosStr =
             [_currentPosition.latitude, _currentPosition.longitude].join(',');
 
@@ -164,6 +180,8 @@ class StartTrip {
         pref.setStringList("current_loc_list", currentLocList);
 
         if (currentLocList.length > 1) {
+
+          /// Conversion previous lat long into Position
           String previousPosStr =
               currentLocList.elementAt(currentLocList.length - 2);
           Position _previousPosition = Position(
@@ -176,6 +194,7 @@ class StartTrip {
               heading: 0.0,
               altitude: 0.0);
 
+          /// Calculation of distance between current and previous position
           var _distanceBetweenLastTwoLocations = Geolocator.distanceBetween(
             _previousPosition.latitude,
             _previousPosition.longitude,
@@ -191,11 +210,15 @@ class StartTrip {
           finalTripDistance += _distanceBetweenLastTwoLocations;
           debugPrint('Total Distance: $finalTripDistance');
           pref.setDouble('temp_trip_dist', finalTripDistance);
+
+          /// Calculate distance with formula
           String tripDistanceForStorage =
               Calculation().calculateDistance(finalTripDistance);
 
+          /// Calculating duration by using created time of ongoing trip
           Duration diff = DateTime.now().toUtc().difference(createdAtTime);
 
+          /// Storing trip distance into shared preferences
           pref.setString('tripDistance', tripDistanceForStorage);
 
           int finalTripDuration = (diff.inMilliseconds);
@@ -213,7 +236,6 @@ class StartTrip {
           print('FINAL TRIP SPEED: $tripSpeedForStorage}');
 
           /// AVG. SPEED
-
           String tripAvgSpeedForStorage = Calculation()
               .calculateAvgSpeed(finalTripDistance, finalTripDuration);
 
@@ -227,6 +249,7 @@ class StartTrip {
 
           Utils.customPrint('SPEED SPEED SPEED 666: $num');
 
+          /// To cancel TripDurationTimer
           if (tripDurationTimer != null) {
             if (tripDurationTimer!.isActive) {
               tripDurationTimer!.cancel();
@@ -234,12 +257,16 @@ class StartTrip {
           }
 
           // await flutterLocalNotificationsPlugin.cancel(889);
+
           tripDurationTimer =
               Timer.periodic(Duration(seconds: 1), (timer) async {
             var durationTime = DateTime.now().toUtc().difference(createdAtTime);
+
+            /// To calculate trip duration periodically
             String tripDuration = Utils.calculateTripDuration(
                 ((durationTime.inMilliseconds) ~/ 1000).toInt());
 
+            /// To update notification content
             await BackgroundLocator.updateNotificationText(
                 title: '',
                 msg: 'Trip is in progress',
@@ -247,11 +274,13 @@ class StartTrip {
                     'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot');
           });
 
+          ///
           pref.setString('tripDuration', tripDurationForStorage);
           // To get values in Km/h
           pref.setString('tripSpeed', num.toString());
           pref.setString('tripAvgSpeed', tripAvgSpeedForStorage);
 
+          /// To get files path
           String filePath = await GetFile().getFile(tripId, mobileFileName);
           String lprFilePath = await GetFile().getFile(tripId, lprFileName);
           File file = File(filePath);
@@ -273,6 +302,7 @@ class StartTrip {
             Utils.customPrint('WRITING');
             String gyro = '', acc = '', mag = '', uacc = '';
 
+            /// To convert sensor values into String
             gyro = CreateTrip().convertDataToString('GYRO',
                 gyroscopeAvailable ? _gyroscopeValues ?? [0.0] : [0.0], tripId);
 
@@ -293,15 +323,20 @@ class StartTrip {
                     : [0.0],
                 tripId);
 
+            /// We are getting accuracy, altitude, heading, speedAccuracy from location updates coming from port.
             String location =
-                '${endTripLatitude} ${endTripLongitude} ${accuracy.toStringAsFixed(3)} ${altitide.toStringAsFixed(3)} $heading $speed $speedAccuracy';
+                '${latitude} ${longitude} ${accuracy.toStringAsFixed(3)} ${altitide.toStringAsFixed(3)} $heading $speed $speedAccuracy';
+
+            /// To converting location data into String
             String gps =
                 CreateTrip().convertLocationToString('GPS', location, tripId);
 
             String finalString = '';
 
+            /// Creating csv file Strings by combining all the values
             finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
 
+            /// Writing into a csv file
             file.writeAsString('$finalString\n', mode: FileMode.append);
 
             Utils.customPrint('GPS $gps');

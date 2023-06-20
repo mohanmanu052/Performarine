@@ -148,7 +148,7 @@ class DatabaseService {
     return result;
   }
 
-  /// update trip status while end trip
+  /// Update trip status while end trip
   Future<void> updateTripStatus(
       int status,
       String filePath,
@@ -176,7 +176,7 @@ class DatabaseService {
     Utils.customPrint('updated: $count');
   }
 
-  /// it will change vessel to retired vessel
+  /// It will change vessel to retired vessel
   Future<void> deleteVessel(String id) async {
     final db = await _databaseService.database;
     // await db.delete('vessels', where: 'id = ?', whereArgs: [id]);
@@ -217,7 +217,7 @@ class DatabaseService {
     return exists == 1;
   }
 
-  /// to check trip is running for which vessel
+  /// To check trip is running for which vessel
   Future<bool> checkIfTripIsRunningForSpecificVessel(String vesselId) async {
     final db = await _databaseService.database;
     var result = await db.rawQuery(
@@ -228,7 +228,7 @@ class DatabaseService {
     return exists == 1;
   }
 
-  /// to get retird vessel list
+  /// To get retird vessel list
   Future<List<CreateVessel>> retiredVessels() async {
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps =
@@ -263,7 +263,7 @@ class DatabaseService {
     }
   }
 
-  /// update sync status
+  /// Update sync status
   Future<int> updateIsSyncStatus(int isSyncValue, String id) async {
     final db = await _databaseService.database;
     int update = await db.rawUpdate(
@@ -272,7 +272,7 @@ class DatabaseService {
     return update;
   }
 
-  /// update trip sync status
+  /// Update trip sync status
   Future<void> updateTripIsSyncStatus(int isSyncValue, String id) async {
     final db = await _databaseService.database;
     await db.rawUpdate(
@@ -280,14 +280,14 @@ class DatabaseService {
     return;
   }
 
-  /// update vessel name
+  /// Update vessel name
   Future<void> updateVesselName(String vesselName, String vesselId) async {
     final db = await _databaseService.database;
     await db.rawUpdate('''UPDATE trips SET vesselName = ? WHERE vesselId = ?''',
         [vesselName, vesselId]);
   }
 
-  /// update vessel details with analytics
+  /// Update vessel details with analytics
   Future<void> updateVesselDataWithDurationSpeedDistance(String time,
       String distance, String speed, String avgSpeed, String vesselId) async {
     final db = await _databaseService.database;
@@ -297,7 +297,7 @@ class DatabaseService {
     Utils.customPrint('updated: $count');
   }
 
-  /// to get trip sync details
+  /// To get trip sync details
   Future<bool> tripSyncDetails() async {
     final db = await _databaseService.database;
     var result = await db.rawQuery(
@@ -308,7 +308,7 @@ class DatabaseService {
     return exists == 1;
   }
 
-  /// to get vessel sync details
+  /// To get vessel sync details
   Future<bool> vesselsSyncDetails() async {
     final db = await _databaseService.database;
     var result = await db.rawQuery(
@@ -337,7 +337,7 @@ class DatabaseService {
     return exists == 1;
   }
 
-  /// to check vessel is exist in cloud
+  /// To check vessel is exist in cloud
   Future<bool> vesselsExistInCloud(String vesselId) async {
     final db = await _databaseService.database;
     var result = await db.rawQuery(

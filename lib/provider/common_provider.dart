@@ -162,13 +162,13 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// it will update trip status
+  /// It will update trip status
   updateTripStatus(bool value) async {
     tripStatus = value;
     notifyListeners();
   }
 
-  /// get trips by vessel id
+  /// Get trips by vessel id
   Future<List<Trip>>? getTripsByVesselId(String? vesselId) {
     if (vesselId == null || vesselId == "") {
       getTripsByIdFuture = DatabaseService().trips();
@@ -185,13 +185,13 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// it will update if there is any internet issue
+  /// It will update if there is any internet issue
   updateConnectionCloseStatus(bool value) {
     internetError = value;
     notifyListeners();
   }
 
-  /// get User data
+  /// Get User data
   Future<GetUserConfigModel?> getUserConfigData(
       BuildContext context,
       String userId,
@@ -206,7 +206,7 @@ class CommonProvider with ChangeNotifier {
     return getUserConfigModel;
   }
 
-  /// if any exception occured it will update the status
+  /// If any exception occured it will update the status
   updateExceptionOccurredValue(bool value) {
     exceptionOccurred = value;
     notifyListeners();

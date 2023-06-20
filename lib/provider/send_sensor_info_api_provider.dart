@@ -156,7 +156,7 @@ class MultipartRequest extends http.MultipartRequest {
   final Uri url;
 
   /// Freezes all mutable fields and returns a single-subscription [ByteStream]
-  /// that will emit the request body.
+  /// That will emit the request body.
   http.ByteStream finalize() {
     final byteStream = super.finalize();
     if (onProgress == null) return byteStream;
