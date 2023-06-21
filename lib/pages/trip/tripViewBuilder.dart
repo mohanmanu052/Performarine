@@ -88,7 +88,7 @@ class _TripViewListingState extends State<TripViewListing> {
                     builder: (BuildContext context, StateSetter setter) {
                     Utils.customPrint("TRIP DETAILS ${snapshot.data!.length}");
                     Utils.customPrint(
-                        "TRIP DETAILS 1 ${snapshot.data!.isEmpty}");
+                        "TRIP DETAILS 1 ${snapshot.data![0].distance}");
                     return Padding(
                       padding: const EdgeInsets.only(
                           left: 8.0, right: 8.0, top: 8.0),
@@ -141,6 +141,8 @@ class _TripViewListingState extends State<TripViewListing> {
                                               ((durationTime.inMilliseconds) /
                                                       1000)
                                                   .toInt());
+
+                                      print('***DIST: ${currentTrip.toJson()}');
 
                                       EndTrip().endTrip(
                                           context: context,

@@ -82,6 +82,7 @@ class EndTrip {
 
     debugPrint("END TRIP 1 $latitude");
     debugPrint("END TRIP 2 $longitude");
+    debugPrint("END TRIP 3 $tripDistance");
     await DatabaseService().updateTripStatus(
         1,
         file.path,

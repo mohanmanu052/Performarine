@@ -436,6 +436,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   setState(() {
                                     tripIsEnded = true;
                                   });
+                                  commonProvider.getTripsByVesselId(widget.vessel!.id!);
                                   getVesselAnalytics(widget.vessel!.id!);
                                 },
                               ),

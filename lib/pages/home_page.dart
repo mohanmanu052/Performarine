@@ -300,6 +300,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: TripViewListing(
                   scaffoldKey: scaffoldKey,
                   calledFrom: 'HomePage',
+                  onTripEnded: (){
+                    commonProvider.getTripsByVesselId('');
+                  },
                 ),
               ),
             ],
