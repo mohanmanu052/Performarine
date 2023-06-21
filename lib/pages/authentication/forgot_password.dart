@@ -1,5 +1,7 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/utils/colors.dart';
@@ -94,7 +96,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         labelText: 'Email',
                         hintText: '',
                         suffixText: null,
-                        textInputAction: TextInputAction.next,
+                        textInputAction: TextInputAction.done,
                         textInputType: TextInputType.emailAddress,
                         textCapitalization: TextCapitalization.words,
                         maxLength: 52,
@@ -107,6 +109,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Enter Email';
+                          }else if (!EmailValidator.validate(value)) {
+                            return 'Enter valid email';
                           }
                           return null;
                         },
@@ -119,7 +123,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           Utils.customPrint(value);
                         }),
 
-                    SizedBox(height: displayHeight(context) * 0.2),
+                    SizedBox(height: displayHeight(context) * 0.27),
 
                   isBtnClick! ? Center(
                       child: CircularProgressIndicator(
@@ -147,17 +151,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     isBtnClick = false;
                                   });
                                   print("status code of forgot password: ${value.statusCode}");
-                                  return showDialog(
-                                    context: context,
-                                    builder: (context) => CustomDialogNew(
-                                      imagePath: 'assets/images/mail.png',
-                                      text: 'A reset password link has been sent to your registered mail id ${emailController.text}',
-                                      onPressed: () {
-                                        Utils.customPrint("Clicked on go to email button");
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  );
+                                  if(value.statusCode == 200){
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              SignInScreen(),
+                                        ),
+                                        ModalRoute.withName(""));
+                                  }
                                 } else{
                                   setState(() {
                                     isBtnClick = false;
@@ -174,61 +176,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               });
                             }
                           }
-
-                        /*  if (formKey.currentState!.validate()) {
-                            bool check = await Utils().check(scaffoldKey);
-
-                            Utils.customPrint("NETWORK $check");
-
-                            FocusScope.of(context)
-                                .requestFocus(FocusNode());
-
-                           /* if (check) {
-                              setState(() {
-                                isLoginBtnClicked = true;
-                              });
-
-                              if (isLoginByEmailId) {
-                                commonProvider
-                                    .login(
-                                    context,
-                                    emailController.text.trim(),
-                                    passwordController.text.trim(),
-                                    false,
-                                    "",
-                                    scaffoldKey)
-                                    .then((value) {
-                                  setState(() {
-                                    isLoginBtnClicked = false;
-                                  });
-
-                                  if (value != null) {
-                                    if (value.status!) {
-                                      /*Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomePage(),
-                                            ),
-                                            ModalRoute.withName(""));*/
-
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                SyncDataCloudToMobileScreen(),
-                                          ),
-                                          ModalRoute.withName(""));
-                                    }
-                                  }
-                                }).catchError((e) {
-                                  setState(() {
-                                    isLoginBtnClicked = false;
-                                  });
-                                });
-                              } else {}
-                            } */
-                          } */
                         }),
                   ],
                 ),

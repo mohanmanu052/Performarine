@@ -173,7 +173,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         //key: emailFormFieldKey,
                           controller: reenterPasswordController,
                           focusNode: reenterPasswordFocusNode,
-                          labelText: 'Re-Enter New Password',
+                          labelText: 'Confirm New Password',
                           hintText: '',
                           suffixText: null,
                           textInputAction: TextInputAction.next,
@@ -189,7 +189,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               isConfirmPasswordValid = false;
-                              return 'Re-Enter New Password';
+                              return 'Enter Confirm New Password';
                             } else if (reenterPasswordController.text !=
                                 newPasswordController.text) {
                               isConfirmPasswordValid = false;
@@ -243,8 +243,21 @@ class _ChangePasswordState extends State<ChangePassword> {
                                       isBtnClick = false;
                                     });
                                     print("Status code of change password is: ${value.statusCode}");
-                                    if(value.statusCode == 200){
-                                      signOut();
+                                    if(value.statusCode == 200  && value.message == "Password updated successfully!" ){
+                                      sharedPreferences!.clear();
+                                      GoogleSignIn googleSignIn = GoogleSignIn(
+                                        scopes: <String>[
+                                          'email',
+                                          'https://www.googleapis.com/auth/userinfo.profile',
+                                        ],
+                                      );
+
+                                      googleSignIn.signOut();
+
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => const SignInScreen()),
+                                          ModalRoute.withName(""));
                                     }
                                   } else{
                                     setState(() {

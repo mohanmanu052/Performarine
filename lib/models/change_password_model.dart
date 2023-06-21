@@ -23,7 +23,7 @@ class ChangePasswordModel {
   });
 
   factory ChangePasswordModel.fromJson(Map<String, dynamic> json) => ChangePasswordModel(
-    data: ChangePasswordData.fromJson(json["data"]),
+    data: json["data"] != null ? ChangePasswordData.fromJson(json["data"]) : ChangePasswordData.fromJson({}),
     message: json["message"],
     status: json["status"],
     statusCode: json["statusCode"],
