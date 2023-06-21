@@ -1,3 +1,4 @@
+
 // To parse this JSON data, do
 //
 //     final changePasswordModel = changePasswordModelFromJson(jsonString);
@@ -9,7 +10,7 @@ ChangePasswordModel changePasswordModelFromJson(String str) => ChangePasswordMod
 String changePasswordModelToJson(ChangePasswordModel data) => json.encode(data.toJson());
 
 class ChangePasswordModel {
-  ChnagePasswordData? data;
+  ChangePasswordData? data;
   String? message;
   bool? status;
   int? statusCode;
@@ -22,7 +23,7 @@ class ChangePasswordModel {
   });
 
   factory ChangePasswordModel.fromJson(Map<String, dynamic> json) => ChangePasswordModel(
-    data: ChnagePasswordData.fromJson(json["data"]),
+    data: ChangePasswordData.fromJson(json["data"]),
     message: json["message"],
     status: json["status"],
     statusCode: json["statusCode"],
@@ -36,12 +37,15 @@ class ChangePasswordModel {
   };
 }
 
-class ChnagePasswordData {
-  ChnagePasswordData();
+class ChangePasswordData {
+  ChangePasswordData();
 
-  factory ChnagePasswordData.fromJson(Map<String, dynamic> json) => ChnagePasswordData(
+  factory ChangePasswordData.fromJson(Map<String, dynamic> json) => ChangePasswordData(
   );
 
   Map<String, dynamic> toJson() => {
   };
 }
+
+
+

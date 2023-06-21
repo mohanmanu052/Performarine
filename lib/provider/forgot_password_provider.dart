@@ -5,27 +5,25 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
-import '../models/change_password_model.dart';
 
-class ChangePasswordProvider with ChangeNotifier {
-  ChangePasswordModel? changePasswordModel;
+import '../models/forgot_password_model.dart';
 
-  Future<ChangePasswordModel> changePassword(
+
+class ForgotPasswordProvider with ChangeNotifier {
+  ForgotPasswordModel? forgotPasswordModel;
+
+  Future<ForgotPasswordModel> forgotPassword(
       BuildContext context,
-      String token,
-      String currentPassword,
-      String newPassword,
+      String email,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
-      "x-access-token": token
     };
 
-    Uri uri = Uri.https(Urls.baseUrl, Urls.changePassword);
+    Uri uri = Uri.https(Urls.baseUrl, Urls.forgotPassword);
 
     var queryParameters = {
-      "currentPassword": currentPassword,
-      "newPassword": newPassword
+      "email": email
     };
 
     Utils.customPrint('ResetPassword REQ $queryParameters');
@@ -43,12 +41,12 @@ class ChangePasswordProvider with ChangeNotifier {
 
         final pref = await Utils.initSharedPreferences();
 
-        changePasswordModel = ChangePasswordModel.fromJson(json.decode(response.body));
+        forgotPasswordModel = ForgotPasswordModel.fromJson(json.decode(response.body));
 
-        Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey, message: decodedData['message']);
+        Utils.showSnackBar(scaffoldKey.currentContext!,
+            scaffoldKey: scaffoldKey, message: forgotPasswordModel!.message);
 
-        return changePasswordModel!;
+        return forgotPasswordModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
@@ -58,7 +56,7 @@ class ChangePasswordProvider with ChangeNotifier {
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        changePasswordModel = null;
+        forgotPasswordModel = null;
       } else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -68,17 +66,17 @@ class ChangePasswordProvider with ChangeNotifier {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
       }
-      changePasswordModel = null;
+      forgotPasswordModel = null;
     } on SocketException catch (_) {
       await Utils().check(scaffoldKey);
 
       Utils.customPrint('Socket Exception');
 
-      changePasswordModel = null;
+      forgotPasswordModel = null;
     } catch (exception, s) {
-      Utils.customPrint('error caught change password:- $exception \n $s');
-      changePasswordModel = null;
+      Utils.customPrint('error caught reset password:- $exception \n $s');
+      forgotPasswordModel = null;
     }
-    return changePasswordModel ?? ChangePasswordModel();
+    return forgotPasswordModel ?? ForgotPasswordModel();
   }
 }

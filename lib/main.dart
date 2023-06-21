@@ -10,7 +10,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
-import 'package:performarine/pages/authentication/change_password.dart';
+import 'package:performarine/pages/authentication/reset_password.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/intro_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
@@ -174,7 +174,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           List<String> segments = finalUri.pathSegments;
           Navigator.push(context,
               MaterialPageRoute(builder: (context) {
-                return ChangePassword(token: segments.last);
+                return ResetPassword(token: segments.last);
               }));
         }
       }, onError: (err) {

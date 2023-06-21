@@ -14,24 +14,23 @@ import '../../common_widgets/widgets/zig_zag_line_widget.dart';
 import '../../main.dart';
 import '../../provider/common_provider.dart';
 
-class ChangePassword extends StatefulWidget {
-   ChangePassword({Key? key}) : super(key: key);
+class ResetPassword extends StatefulWidget {
+  final String? token;
+  ResetPassword({this.token,Key? key}) : super(key: key);
 
   @override
-  State<ChangePassword> createState() => _ChangePasswordState();
+  State<ResetPassword> createState() => _ResetPasswordState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
+class _ResetPasswordState extends State<ResetPassword> {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  TextEditingController currentPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController reenterPasswordController = TextEditingController();
 
-  FocusNode currentPasswordFocusNode = FocusNode();
   FocusNode newPasswordFocusNode = FocusNode();
   FocusNode reenterPasswordFocusNode = FocusNode();
   bool isConfirmPasswordValid = false;
@@ -43,7 +42,6 @@ class _ChangePasswordState extends State<ChangePassword> {
   void initState() {
     super.initState();
     commonProvider = context.read<CommonProvider>();
-    currentPasswordController = TextEditingController();
     newPasswordController = TextEditingController();
     reenterPasswordController = TextEditingController();
   }
@@ -97,39 +95,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
 
                       SizedBox(height: displayHeight(context) * 0.1),
-                      CommonTextField(
-                        //key: emailFormFieldKey,
-                          controller: currentPasswordController,
-                          focusNode: currentPasswordFocusNode,
-                          labelText: 'Current Password',
-                          hintText: '',
-                          suffixText: null,
-                          textInputAction: TextInputAction.next,
-                          textInputType: TextInputType.emailAddress,
-                          textCapitalization: TextCapitalization.words,
-                          maxLength: 52,
-                          prefixIcon: null,
-                          requestFocusNode: newPasswordFocusNode,
-                          obscureText: true,
-                          readOnly: false,
-                          onTap: () {},
-                          onChanged: (value) {},
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter Current Password';
-                            }
-                            return null;
-                          },
-                          onFieldSubmitted: (value) {
-                            //emailFormFieldKey.currentState!.validate();
-                            /* FocusScope.of(context)
-                              .requestFocus(passwordFocusNode);*/
-                          },
-                          onSaved: (String value) {
-                            Utils.customPrint(value);
-                          }),
-
-                      SizedBox(height: displayWidth(context) * 0.03),
 
                       CommonTextField(
                         //key: emailFormFieldKey,
@@ -237,7 +202,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   isBtnClick = true;
                                 });
 
-                                commonProvider.changePassword(context,commonProvider.loginModel!.token!, currentPasswordController.text, newPasswordController.text, scaffoldKey).then((value){
+                                commonProvider.resetPassword(context, widget.token! != null ? widget.token! : "", newPasswordController.text, scaffoldKey).then((value){
                                   if(value != null){
                                     setState(() {
                                       isBtnClick = false;

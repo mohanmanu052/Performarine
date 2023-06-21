@@ -420,7 +420,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         onPressed: (){
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                                return ResetPassword();
+                                return ForgotPassword();
                               }));
                     }, child: commonText(
                         context: context,

@@ -12,14 +12,14 @@ import '../../common_widgets/widgets/custom_dialog_new.dart';
 import '../../common_widgets/widgets/zig_zag_line_widget.dart';
 import '../../provider/common_provider.dart';
 
-class ResetPassword extends StatefulWidget {
-  const ResetPassword({Key? key}) : super(key: key);
+class ForgotPassword extends StatefulWidget {
+  const ForgotPassword({Key? key}) : super(key: key);
 
   @override
-  State<ResetPassword> createState() => _ResetPasswordState();
+  State<ForgotPassword> createState() => _ForgotPasswordState();
 }
 
-class _ResetPasswordState extends State<ResetPassword> {
+class _ForgotPasswordState extends State<ForgotPassword> {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
@@ -141,7 +141,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                               setState(() {
                                 isBtnClick = true;
                               });
-                              commonProvider.resetPassword(context, emailController.text.toLowerCase(), scaffoldKey).then((value){
+                              commonProvider.forgotPassword(context, emailController.text.toLowerCase(), scaffoldKey).then((value){
                                 if(value != null && value.status!){
                                   setState(() {
                                     isBtnClick = false;

@@ -8,7 +8,8 @@ class Urls {
   static const String registrationUrl = '/api/auth/signup';
   static const String loginUrl = '/api/auth/login';
   static const String forgotPassword = '/api/auth/forgot';
-  static const String changePassword = '/api/auth/reset';
+  static const String resetPassword = '/api/auth/reset';
+  static const String changePassword = '/api/auth/change';
 
   // Vessel
   static const String createVessel = '/api/createVessel';

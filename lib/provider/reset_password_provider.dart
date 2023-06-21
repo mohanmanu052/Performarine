@@ -5,25 +5,26 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
-
-import '../models/forgot_password_model.dart';
+import 'package:performarine/models/reset_password_model.dart';
 
 
 class ResetPasswordProvider with ChangeNotifier {
-  ForgotPasswordModel? forgotPasswordModel;
+  ResetPasswordModel? resetPasswordModel;
 
-  Future<ForgotPasswordModel> resetPassword(
+  Future<ResetPasswordModel> resetPassword(
       BuildContext context,
-      String email,
+      String token,
+      String password,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
 
-    Uri uri = Uri.https(Urls.baseUrl, Urls.forgotPassword);
+    Uri uri = Uri.https(Urls.baseUrl, Urls.resetPassword);
 
     var queryParameters = {
-      "email": email
+    "reset_token": token,
+      "password": password
     };
 
     Utils.customPrint('ResetPassword REQ $queryParameters');
@@ -41,12 +42,12 @@ class ResetPasswordProvider with ChangeNotifier {
 
         final pref = await Utils.initSharedPreferences();
 
-        forgotPasswordModel = ForgotPasswordModel.fromJson(json.decode(response.body));
+        resetPasswordModel = ResetPasswordModel.fromJson(json.decode(response.body));
 
           Utils.showSnackBar(scaffoldKey.currentContext!,
-              scaffoldKey: scaffoldKey, message: forgotPasswordModel!.message);
+              scaffoldKey: scaffoldKey, message: resetPasswordModel!.message);
 
-        return forgotPasswordModel!;
+        return resetPasswordModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
@@ -56,7 +57,7 @@ class ResetPasswordProvider with ChangeNotifier {
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        forgotPasswordModel = null;
+        resetPasswordModel = null;
       } else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -66,17 +67,17 @@ class ResetPasswordProvider with ChangeNotifier {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
       }
-      forgotPasswordModel = null;
+      resetPasswordModel = null;
     } on SocketException catch (_) {
       await Utils().check(scaffoldKey);
 
       Utils.customPrint('Socket Exception');
 
-      forgotPasswordModel = null;
+      resetPasswordModel = null;
     } catch (exception, s) {
       Utils.customPrint('error caught reset password:- $exception \n $s');
-      forgotPasswordModel = null;
+      resetPasswordModel = null;
     }
-    return forgotPasswordModel ?? ForgotPasswordModel();
+    return resetPasswordModel ?? ResetPasswordModel();
   }
 }

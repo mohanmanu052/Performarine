@@ -25,7 +25,9 @@ import 'package:performarine/services/database_service.dart';
 import '../models/change_password_model.dart';
 import '../models/forgot_password_model.dart';
 import '../models/reports_model.dart';
+import '../models/reset_password_model.dart';
 import '../models/trip_list_model.dart';
+import 'forgot_password_provider.dart';
 import 'list_vessels_provider.dart';
 
 class CommonProvider with ChangeNotifier {
@@ -46,6 +48,7 @@ class CommonProvider with ChangeNotifier {
   ReportModel? reportModel;
   TripList? tripListModel;
   ForgotPasswordModel? forgotPasswordModel;
+  ResetPasswordModel? resetPasswordModel;
   ChangePasswordModel? changePasswordModel;
 
   init() {
@@ -250,30 +253,45 @@ class CommonProvider with ChangeNotifier {
   }
 
   ///Reset password
-  Future<ForgotPasswordModel> resetPassword(
+  Future<ForgotPasswordModel> forgotPassword(
       BuildContext context,
       String email,
       GlobalKey<ScaffoldState> scaffoldKey,
       ) async {
     forgotPasswordModel = ForgotPasswordModel();
 
-    forgotPasswordModel = await ResetPasswordProvider().resetPassword(context, email,scaffoldKey);
+    forgotPasswordModel = await ForgotPasswordProvider().forgotPassword(context, email,scaffoldKey);
     notifyListeners();
 
     return forgotPasswordModel!;
   }
 
 
-  ///Change password
-  Future<ChangePasswordModel> changePassword(
+  ///Reset password
+  Future<ResetPasswordModel> resetPassword(
       BuildContext context,
       String token,
       String password,
       GlobalKey<ScaffoldState> scaffoldKey,
       ) async {
+    resetPasswordModel = ResetPasswordModel();
+
+    resetPasswordModel = await ResetPasswordProvider().resetPassword(context,token, password,scaffoldKey);
+    notifyListeners();
+
+    return resetPasswordModel!;
+  }
+
+  ///change password
+  Future<ChangePasswordModel> changePassword(
+      BuildContext context,
+      String token,
+      String currentPassword,
+      String newPassword,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
     changePasswordModel = ChangePasswordModel();
 
-    changePasswordModel = await ChangePasswordProvider().changePassword(context,token, password,scaffoldKey);
+    changePasswordModel = await ChangePasswordProvider().changePassword(context,token,currentPassword, newPassword,scaffoldKey);
     notifyListeners();
 
     return changePasswordModel!;
