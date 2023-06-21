@@ -157,32 +157,31 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool isLoading = false;
   StreamSubscription? _sub;
 
+  Future<void> initDeepLinkListener() async {
+    try {
+      _sub = uriLinkStream.listen((Uri? uri) {
+        print("URI: ${uri}");
+        if (uri != null) {
+          print('Deep link received: $uri');
+          if(uri.queryParameters['verify'] != null){
+            print("reset: ${uri.queryParameters['verify'].toString()}");
+            Get.to(ResetPassword(token: uri.queryParameters['verify'].toString(),));
+          }
+        }
+      }, onError: (err) {
+        print('Error handling deep link: $err');
+      });
+    } on PlatformException {
+      print("Exception while handling with uni links : ${PlatformException}");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     initDeepLinkListener();
     Utils.customPrint('APP IN BG INIT');
-  }
-
-  void initDeepLinkListener() async {
-    try {
-      _sub = uriLinkStream.listen((Uri? uri) {
-        if (uri != null) {
-          print('Deep link received: $uri');
-          var finalUri = Uri.parse(uri.toString());
-          List<String> segments = finalUri.pathSegments;
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) {
-                return ResetPassword(token: segments.last);
-              }));
-        }
-      }, onError: (err) {
-        print('Error handling deep link: $err');
-      });
-    } on PlatformException {
-
-    }
   }
 
   @override
