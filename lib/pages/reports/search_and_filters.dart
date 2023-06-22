@@ -1421,7 +1421,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       ) : Center(
         child: Container(
           child: commonText(
-              text: 'No Data Available!',
+              text: 'No trip reports available',
               textSize: displayWidth(context) * 0.04,
               textColor: primaryColor),
         ),
