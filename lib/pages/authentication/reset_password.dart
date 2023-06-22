@@ -66,7 +66,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         centerTitle: true,
         title: commonText(
             context: context,
-            text: 'Change Password',
+            text: 'Reset Password',
             fontWeight: FontWeight.w600,
             textColor: Colors.black,
             textSize: displayWidth(context) * 0.05,

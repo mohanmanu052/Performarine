@@ -612,7 +612,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   }
                                 } else{
                                   Utils.showSnackBar(context,
-                                      scaffoldKey: scaffoldKey, message: "Please accept terms and conditions.");
+                                      scaffoldKey: scaffoldKey, message: "Please accept Terms and Conditions and Privacy Policy.");
                                 }
 
                               }
