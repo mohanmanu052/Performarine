@@ -13,6 +13,7 @@ import '../../common_widgets/widgets/common_widgets.dart';
 import '../../common_widgets/widgets/zig_zag_line_widget.dart';
 import '../../main.dart';
 import '../../provider/common_provider.dart';
+import '../../services/database_service.dart';
 
 class ResetPassword extends StatefulWidget {
   final String? token;
@@ -37,6 +38,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   late CommonProvider commonProvider;
   bool? isBtnClick = false;
+  final DatabaseService _databaseService = DatabaseService();
 
   @override
   void initState() {
@@ -66,7 +68,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         centerTitle: true,
         title: commonText(
             context: context,
-            text: 'Change Password',
+            text: 'Reset Password',
             fontWeight: FontWeight.w600,
             textColor: Colors.black,
             textSize: displayWidth(context) * 0.05,
@@ -138,7 +140,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         //key: emailFormFieldKey,
                           controller: reenterPasswordController,
                           focusNode: reenterPasswordFocusNode,
-                          labelText: 'Re-Enter New Password',
+                          labelText: 'Confirm New Password',
                           hintText: '',
                           suffixText: null,
                           textInputAction: TextInputAction.next,
@@ -154,7 +156,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               isConfirmPasswordValid = false;
-                              return 'Re-Enter New Password';
+                              return 'Enter Confirm New Password';
                             } else if (reenterPasswordController.text !=
                                 newPasswordController.text) {
                               isConfirmPasswordValid = false;
@@ -208,8 +210,13 @@ class _ResetPasswordState extends State<ResetPassword> {
                                       isBtnClick = false;
                                     });
                                     print("Status code of change password is: ${value.statusCode}");
-                                    if(value.statusCode == 200){
+                                    if(value.statusCode == 200 && value.message == "Password reset was successfully completed!"){
                                       signOut();
+                                    } else if(value.message == "link Expired !!"){
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => const SignInScreen()),
+                                          ModalRoute.withName(""));
                                     }
                                   } else{
                                     setState(() {
@@ -239,6 +246,11 @@ class _ResetPasswordState extends State<ResetPassword> {
   }
 
   signOut() async {
+    var vesselDelete = await _databaseService.deleteDataFromVesselTable();
+    var tripsDelete = await _databaseService.deleteDataFromTripTable();
+
+    Utils.customPrint('DELETE $vesselDelete');
+    Utils.customPrint('DELETE $tripsDelete');
 
     sharedPreferences!.clear();
     GoogleSignIn googleSignIn = GoogleSignIn(

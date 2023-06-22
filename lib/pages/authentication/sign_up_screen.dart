@@ -286,7 +286,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: CommonDropDownFormField(
                         context: context,
                         value: selectedCountry,
-                        hintText: 'Country',
+                        hintText: 'Country\*',
                         labelText: '',
                         onChanged: (String value) {
                           setState(() {
@@ -306,7 +306,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         valueField: 'value',
                         validator: (value) {
                           if (value == null) {
-                            return 'Select country';
+                            return 'Select Country';
                           }
                           return null;
                         },
@@ -317,8 +317,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: zipCodeController,
                         focusNode: zipCodeFocusNode,
                         labelText: selectedCountry == 'USA'
-                            ? 'Zip Code'
-                            : 'Postal Code',
+                            ? 'Zip Code\*'
+                            : 'Postal Code\*',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -336,9 +336,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             if (selectedCountry == 'USA') {
-                              return 'Enter zip code';
+                              return 'Enter Zip Code';
                             } else {
-                              return 'Enter postal code';
+                              return 'Enter Postal Code';
                             }
                           }
                           return null;
@@ -351,7 +351,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         //key: registrationEmailFormFieldKey,
                         controller: emailController,
                         focusNode: emailFocusNode,
-                        labelText: 'Email',
+                        labelText: 'Email\*',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -391,7 +391,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     CommonTextField(
                         controller: phoneController,
                         focusNode: phoneFocusNode,
-                        labelText: 'Enter Phone Number',
+                        labelText: 'Enter Phone Number\*',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -421,7 +421,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     CommonTextField(
                         controller: createPasswordController,
                         focusNode: createPasswordFocusNode,
-                        labelText: 'Create Password',
+                        labelText: 'Create Password\*',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -452,7 +452,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     CommonTextField(
                         controller: confirmPasswordController,
                         focusNode: confirmPasswordFocusNode,
-                        labelText: 'Confirm Password',
+                        labelText: 'Confirm Password\*',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.done,
@@ -612,7 +612,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   }
                                 } else{
                                   Utils.showSnackBar(context,
-                                      scaffoldKey: scaffoldKey, message: "Please accept terms and conditions.");
+                                      scaffoldKey: scaffoldKey, message: "Please accept Terms and Conditions and Privacy Policy.");
                                 }
 
                               }

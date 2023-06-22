@@ -595,7 +595,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     ? Center(child: CircularProgressIndicator())
                                     : Center(
                                         child: CommonButtons.getAcceptButton(
-                                            'Sync and SignOut',
+                                            'Sync and Sign Out',
                                             context,
                                             buttonBGColor, () async {
                                           bool internet =

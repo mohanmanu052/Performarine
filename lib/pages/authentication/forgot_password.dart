@@ -93,7 +93,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       //key: emailFormFieldKey,
                         controller: emailController,
                         focusNode: emailFocusNode,
-                        labelText: 'Email',
+                        labelText: 'Email\*',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.done,

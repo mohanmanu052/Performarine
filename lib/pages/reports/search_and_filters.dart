@@ -136,6 +136,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   double? avgSpeed1 = 0.0;
   double? fuelUsage = 0.0;
   double? powerUsage = 0.0;
+  bool isVesselsFound = false;
 
   //Convertion of date time into year-month-day format
   String convertIntoYearMonthDay(DateTime date) {
@@ -257,6 +258,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               isVesselDataLoading = true;
             });
             print("value of get user config by id: ${value.vessels}");
+            if(value.vessels!.length == 0){
+              isVesselsFound = true;
+            }
             vesselData = List<DropdownItem>.from(value.vessels!.map(
                 (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
 
@@ -730,7 +734,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: !isVesselsFound ? SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1413,6 +1417,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               ),
             ),
           ],
+        ),
+      ) : Center(
+        child: Container(
+          child: commonText(
+              text: 'No trip reports available',
+              textSize: displayWidth(context) * 0.04,
+              textColor: primaryColor),
         ),
       ),
     );

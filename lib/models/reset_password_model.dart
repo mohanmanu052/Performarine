@@ -22,7 +22,7 @@ class ResetPasswordModel {
   });
 
   factory ResetPasswordModel.fromJson(Map<String, dynamic> json) => ResetPasswordModel(
-    data: ResetPasswordData.fromJson(json["data"]),
+    data: json["data"] != null ?  ResetPasswordData.fromJson(json["data"]) : ResetPasswordData.fromJson({}),
     message: json["message"],
     status: json["status"],
     statusCode: json["statusCode"],
