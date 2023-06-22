@@ -76,6 +76,8 @@ class _TripWidgetState extends State<TripWidget> {
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
 
+    debugPrint("###### DATA ###### ${widget.tripList!.id}");
+
     tripIsRunningOrNot();
   }
 
@@ -243,7 +245,7 @@ class _TripWidgetState extends State<TripWidget> {
                               ),
                               SizedBox(
                                   height: displayHeight(context) * 0.038,
-                                  width: displayWidth(context) * .4,
+                                  width: displayWidth(context) * .39,
                                   child: CommonButtons.getRichTextActionButton(
                                       buttonPrimaryColor: buttonBGColor,
                                       fontSize: displayWidth(context) * 0.026,
@@ -513,9 +515,11 @@ class _TripWidgetState extends State<TripWidget> {
     String? tripSpeed = tripData.speed ?? '1';
     String? tripAvgSpeed = tripData.avgSpeed ?? '1';
 
+
+
     var startPosition = tripData.startPosition!.split(",");
     var endPosition = tripData.endPosition!.split(",");
-    Utils.customPrint('START POSITION 0 ${startPosition}');
+    Utils.customPrint('START POSITION R ${tripData.distance}');
 
     Directory tripDir = await getApplicationDocumentsDirectory();
 
@@ -549,7 +553,6 @@ class _TripWidgetState extends State<TripWidget> {
           ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'
           : '${tripDir.path}/${tripData.id}.zip',
       "createdAt": tripData.createdAt,
-      "updatedAt": tripData.updatedAt,
       "duration": tripDuration,
       "distance": double.parse(tripDistance),
       "speed": double.parse(tripSpeed),
@@ -792,6 +795,7 @@ class _TripWidgetState extends State<TripWidget> {
   /// If data is not sync then using this function we can upload data
   /// First it will add vessel if its new and then trip
   uploadDataIfDataIsNotSync() async {
+    Utils.customPrint('VESSEL STATUS DATA ${widget.tripList!.toJson()}');
     commonProvider.updateTripUploadingStatus(true);
     await vesselIsSyncOrNot(widget.tripList!.vesselId.toString());
     Utils.customPrint('VESSEL STATUS isSync $vesselIsSync');
@@ -878,6 +882,9 @@ class _TripWidgetState extends State<TripWidget> {
           .then((value) async {
         if (value != null) {
           if (value.status!) {
+
+            debugPrint("Add Vessel R ${value.status}");
+
             _databaseService.updateIsSyncStatus(
                 1, widget.tripList!.vesselId.toString());
 

@@ -13,6 +13,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/services/database_service.dart';
@@ -252,10 +253,19 @@ class _TripListScreenState extends State<TripListScreen> {
                                         ((durationTime.inMilliseconds) / 1000)
                                             .toInt());
 
+                                String? tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
+                                String? tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
+                                String? tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
+
+                                debugPrint("ERROR ERROR $tripDistance\n$tripSpeed\ntripAvgSpeed");
+
                                 EndTrip().endTrip(
                                     context: context,
                                     scaffoldKey: scaffoldKey,
                                     duration: tripDuration,
+                                    /*IOSAvgSpeed: tripAvgSpeed,
+                                    IOSpeed: tripSpeed,
+                                    IOStripDistance: tripDistance,*/
                                     onEnded: () {
                                       setState(() {
                                         future = _databaseService
