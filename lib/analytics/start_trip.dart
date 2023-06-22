@@ -134,6 +134,10 @@ class StartTrip {
 
 //Todo: Notification spanning on port listen it will generate the notification continuously
 
+    String tripDistanceForStorage = '0.00';
+    String tripSpeedForStorage = '0.00';
+    String tripAvgSpeedForStorage = '0.00';
+
     /// Listening to the port to get location updates
     port.listen((dynamic data) async {
 
@@ -178,6 +182,7 @@ class StartTrip {
 
         currentLocList.add(currentPosStr);
         pref.setStringList("current_loc_list", currentLocList);
+        String tripDistanceForStorage = '';
 
         if (currentLocList.length > 1) {
 
@@ -212,137 +217,163 @@ class StartTrip {
           pref.setDouble('temp_trip_dist', finalTripDistance);
 
           /// Calculate distance with formula
-          String tripDistanceForStorage =
+          tripDistanceForStorage =
               Calculation().calculateDistance(finalTripDistance);
-
-          /// Calculating duration by using created time of ongoing trip
-          Duration diff = DateTime.now().toUtc().difference(createdAtTime);
 
           /// Storing trip distance into shared preferences
           pref.setString('tripDistance', tripDistanceForStorage);
+        }
 
-          int finalTripDuration = (diff.inMilliseconds);
+        /// Calculating duration by using created time of ongoing trip
+        Duration diff = DateTime.now().toUtc().difference(createdAtTime);
 
-          /// Here is the actual trip duration
-          print('FINAL TRIP DUR RRR : $finalTripDuration');
+        int finalTripDuration = (diff.inMilliseconds);
 
-          /// DURATION 00:00:00
-          String tripDurationForStorage =
-              Utils.calculateTripDuration((finalTripDuration ~/ 1000).toInt());
+        /// Here is the actual trip duration
+        print('FINAL TRIP DUR RRR : $finalTripDuration');
 
-          /// SPEED
-          String tripSpeedForStorage =
-              Calculation().calculateCurrentSpeed(speed);
-          print('FINAL TRIP SPEED: $tripSpeedForStorage}');
+        /// DURATION 00:00:00
+        String tripDurationForStorage =
+        Utils.calculateTripDuration((finalTripDuration ~/ 1000).toInt());
 
-          /// AVG. SPEED
-          String tripAvgSpeedForStorage = Calculation()
-              .calculateAvgSpeed(finalTripDistance, finalTripDuration);
+        /// SPEED
+        tripSpeedForStorage =
+        Calculation().calculateCurrentSpeed(speed);
+        print('FINAL TRIP SPEED: $tripSpeedForStorage}');
 
-          Utils.customPrint('TRIP DURATION: $tripDurationForStorage');
-          Utils.customPrint('TRIP SPEED 1212: $tripSpeedForStorage');
-          Utils.customPrint('AVG SPEED: $tripAvgSpeedForStorage');
+        /// AVG. SPEED
+        tripAvgSpeedForStorage = Calculation()
+            .calculateAvgSpeed(finalTripDistance, finalTripDuration);
 
-          var num = double.parse(tripSpeedForStorage) < 0
-              ? 0.0
-              : double.parse(tripSpeedForStorage);
+        Utils.customPrint('TRIP DURATION: $tripDurationForStorage');
+        Utils.customPrint('TRIP SPEED 1212: $tripSpeedForStorage');
+        Utils.customPrint('AVG SPEED: $tripAvgSpeedForStorage');
 
-          Utils.customPrint('SPEED SPEED SPEED 666: $num');
+        var num = double.parse(tripSpeedForStorage) < 0
+            ? 0.0
+            : double.parse(tripSpeedForStorage);
 
-          /// To cancel TripDurationTimer
-          if (tripDurationTimer != null) {
-            if (tripDurationTimer!.isActive) {
-              tripDurationTimer!.cancel();
-            }
-          }
+        Utils.customPrint('SPEED SPEED SPEED 666: $num');
 
-          // await flutterLocalNotificationsPlugin.cancel(889);
+        /// To cancel TripDurationTimer
+        // if (tripDurationTimer != null) {
+        //   if (tripDurationTimer!.isActive) {
+        //     tripDurationTimer!.cancel();
+        //   }
+        // }
 
-          tripDurationTimer =
-              Timer.periodic(Duration(seconds: 1), (timer) async {
-            var durationTime = DateTime.now().toUtc().difference(createdAtTime);
+        // await flutterLocalNotificationsPlugin.cancel(889);
 
-            /// To calculate trip duration periodically
-            String tripDuration = Utils.calculateTripDuration(
-                ((durationTime.inMilliseconds) ~/ 1000).toInt());
+        // tripDurationTimer =
+        //     Timer.periodic(Duration(seconds: 1), (timer) async {
+        //       var durationTime = DateTime.now().toUtc().difference(createdAtTime);
+        //
+        //       /// To calculate trip duration periodically
+        //       String tripDuration = Utils.calculateTripDuration(
+        //           ((durationTime.inMilliseconds) ~/ 1000).toInt());
+        //
+        //       /// To update notification content
+        //       await BackgroundLocator.updateNotificationText(
+        //           title: '',
+        //           msg: 'Trip is in progress',
+        //           bigMsg:
+        //           'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot');
+        //     });
 
-            /// To update notification content
-            await BackgroundLocator.updateNotificationText(
-                title: '',
-                msg: 'Trip is in progress',
-                bigMsg:
-                    'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot');
-          });
+        ///
+        pref.setString('tripDuration', tripDurationForStorage);
+        // To get values in Km/h
+        pref.setString('tripSpeed', num.toString());
+        pref.setString('tripAvgSpeed', tripAvgSpeedForStorage);
 
-          ///
-          pref.setString('tripDuration', tripDurationForStorage);
-          // To get values in Km/h
-          pref.setString('tripSpeed', num.toString());
-          pref.setString('tripAvgSpeed', tripAvgSpeedForStorage);
+        /// To get files path
+        String filePath = await GetFile().getFile(tripId, mobileFileName);
+        String lprFilePath = await GetFile().getFile(tripId, lprFileName);
+        File file = File(filePath);
+        File lprFile = File(lprFilePath);
+        int fileSize = await GetFile().checkFileSize(file);
+        int lprFileSize = await GetFile().checkFileSize(lprFile);
 
-          /// To get files path
-          String filePath = await GetFile().getFile(tripId, mobileFileName);
-          String lprFilePath = await GetFile().getFile(tripId, lprFileName);
-          File file = File(filePath);
-          File lprFile = File(lprFilePath);
-          int fileSize = await GetFile().checkFileSize(file);
-          int lprFileSize = await GetFile().checkFileSize(lprFile);
+        /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
+        /// Now File Size is 200000
+        if (fileSize >= 200000 && lprFileSize >= 200000) {
+          Utils.customPrint('STOPPED WRITING');
+          Utils.customPrint('CREATING NEW FILE');
+          fileIndex = fileIndex + 1;
+          mobileFileName = 'mobile_$fileIndex.csv';
+          lprFileName = 'lpr_$fileIndex.csv';
 
-          /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
-          /// Now File Size is 200000
-          if (fileSize >= 200000 && lprFileSize >= 200000) {
-            Utils.customPrint('STOPPED WRITING');
-            Utils.customPrint('CREATING NEW FILE');
-            fileIndex = fileIndex + 1;
-            mobileFileName = 'mobile_$fileIndex.csv';
-            lprFileName = 'lpr_$fileIndex.csv';
+          /// STOP WRITING & CREATE NEW FILE
+        } else {
+          Utils.customPrint('WRITING');
+          String gyro = '', acc = '', mag = '', uacc = '';
 
-            /// STOP WRITING & CREATE NEW FILE
-          } else {
-            Utils.customPrint('WRITING');
-            String gyro = '', acc = '', mag = '', uacc = '';
+          /// To convert sensor values into String
+          gyro = CreateTrip().convertDataToString('GYRO',
+              gyroscopeAvailable ? _gyroscopeValues ?? [0.0] : [0.0], tripId);
 
-            /// To convert sensor values into String
-            gyro = CreateTrip().convertDataToString('GYRO',
-                gyroscopeAvailable ? _gyroscopeValues ?? [0.0] : [0.0], tripId);
+          acc = CreateTrip().convertDataToString(
+              'AAC',
+              accelerometerAvailable ? _accelerometerValues ?? [0.0] : [0.0],
+              tripId);
 
-            acc = CreateTrip().convertDataToString(
-                'AAC',
-                accelerometerAvailable ? _accelerometerValues ?? [0.0] : [0.0],
-                tripId);
+          mag = CreateTrip().convertDataToString(
+              'MAG',
+              magnetometerAvailable ? _magnetometerValues ?? [0.0] : [0.0],
+              tripId);
 
-            mag = CreateTrip().convertDataToString(
-                'MAG',
-                magnetometerAvailable ? _magnetometerValues ?? [0.0] : [0.0],
-                tripId);
+          uacc = CreateTrip().convertDataToString(
+              'UACC',
+              userAccelerometerAvailable
+                  ? _userAccelerometerValues ?? [0.0]
+                  : [0.0],
+              tripId);
 
-            uacc = CreateTrip().convertDataToString(
-                'UACC',
-                userAccelerometerAvailable
-                    ? _userAccelerometerValues ?? [0.0]
-                    : [0.0],
-                tripId);
+          /// We are getting accuracy, altitude, heading, speedAccuracy from location updates coming from port.
+          String location =
+              '${latitude} ${longitude} ${accuracy.toStringAsFixed(3)} ${altitide.toStringAsFixed(3)} $heading $speed $speedAccuracy';
 
-            /// We are getting accuracy, altitude, heading, speedAccuracy from location updates coming from port.
-            String location =
-                '${latitude} ${longitude} ${accuracy.toStringAsFixed(3)} ${altitide.toStringAsFixed(3)} $heading $speed $speedAccuracy';
+          /// To converting location data into String
+          String gps =
+          CreateTrip().convertLocationToString('GPS', location, tripId);
 
-            /// To converting location data into String
-            String gps =
-                CreateTrip().convertLocationToString('GPS', location, tripId);
+          String finalString = '';
 
-            String finalString = '';
+          /// Creating csv file Strings by combining all the values
+          finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
 
-            /// Creating csv file Strings by combining all the values
-            finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
+          /// Writing into a csv file
+          file.writeAsString('$finalString\n', mode: FileMode.append);
 
-            /// Writing into a csv file
-            file.writeAsString('$finalString\n', mode: FileMode.append);
-
-            Utils.customPrint('GPS $gps');
-          }
+          Utils.customPrint('GPS $gps');
         }
       }
     });
+
+    if (tripDurationTimer != null) {
+      if (tripDurationTimer!.isActive) {
+        tripDurationTimer!.cancel();
+      }
+    }
+
+    tripDurationTimer =
+        Timer.periodic(Duration(seconds: 1), (timer) async {
+          var durationTime = DateTime.now().toUtc().difference(createdAtTime);
+
+          /// To calculate trip duration periodically
+          String tripDuration = Utils.calculateTripDuration(
+              ((durationTime.inMilliseconds) ~/ 1000).toInt());
+
+
+          /// To update notification content
+          await BackgroundLocator.updateNotificationText(
+              title: '',
+              msg: 'Trip is in progress',
+              bigMsg:
+              'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot'
+          ).catchError((onError){
+            print('UPDATE NOTI ERROR: $onError');
+          });
+        });
   }
 }
