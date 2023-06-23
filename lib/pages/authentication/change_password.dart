@@ -119,6 +119,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Enter Current Password';
+                            } else if (!RegExp(
+                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
+                                .hasMatch(value)) {
+                              return 'Password must contain at least 8 characters and \n include : \n * At least one lowercase letter (a-z) \n '
+                                  '* At least one uppercase letter (A-Z) \n * At least one number (0-9) \n * At least one special character (e.g: !.@#\$&*~)';
                             }
                             return null;
                           },
@@ -239,7 +244,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   isBtnClick = true;
                                 });
 
-                                commonProvider.changePassword(context,commonProvider.loginModel!.token!, currentPasswordController.text, newPasswordController.text, scaffoldKey).then((value){
+                                commonProvider.changePassword(context,commonProvider.loginModel!.token!, currentPasswordController.text.trim(), newPasswordController.text.trim(), scaffoldKey).then((value){
                                   if(value != null){
                                     setState(() {
                                       isBtnClick = false;

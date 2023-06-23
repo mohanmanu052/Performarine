@@ -566,12 +566,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     commonProvider
                                         .registerUser(
                                         context,
-                                        emailController.text,
-                                        createPasswordController.text,
+                                        emailController.text.toLowerCase().trim(),
+                                        createPasswordController.text.trim(),
                                         "+1",
-                                        phoneController.text,
+                                        phoneController.text.trim(),
                                         selectedCountry!,
-                                        zipCodeController.text,
+                                        zipCodeController.text.trim(),
                                         "",
                                         "",
                                         false,

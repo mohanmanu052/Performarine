@@ -1423,7 +1423,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           child: commonText(
               text: 'No trip reports available',
               textSize: displayWidth(context) * 0.04,
-              textColor: primaryColor),
+              textColor: Colors.black),
         ),
       ),
     );

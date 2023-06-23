@@ -204,7 +204,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                   isBtnClick = true;
                                 });
 
-                                commonProvider.resetPassword(context, widget.token! != null ? widget.token! : "", newPasswordController.text, scaffoldKey).then((value){
+                                commonProvider.resetPassword(context, widget.token! != null ? widget.token! : "", newPasswordController.text.trim(), scaffoldKey).then((value){
                                   if(value != null){
                                     setState(() {
                                       isBtnClick = false;
