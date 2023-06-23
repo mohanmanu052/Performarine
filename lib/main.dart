@@ -159,10 +159,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   Future<void> initDeepLinkListener() async {
 
-    bool? isUserLoggedIn = sharedPreferences!.getBool('isUserLoggedIn');
+
 
     try {
-      _sub = uriLinkStream.listen((Uri? uri) {
+      _sub = uriLinkStream.listen((Uri? uri) async{
 
        setState(() {
          isComingFromUnilink = true;
@@ -173,6 +173,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           print('Deep link received: $uri');
           if(uri.queryParameters['verify'] != null){
             print("reset: ${uri.queryParameters['verify'].toString()}");
+            bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
             if(isUserLoggedIn != null && isUserLoggedIn)
               {
                 Get.to(HomePage(isComingFromReset: true,));
