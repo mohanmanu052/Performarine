@@ -154,18 +154,34 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  bool isLoading = false;
+  bool isLoading = false, isComingFromUnilink = false;
   StreamSubscription? _sub;
 
   Future<void> initDeepLinkListener() async {
+
+    bool? isUserLoggedIn = sharedPreferences!.getBool('isUserLoggedIn');
+
     try {
       _sub = uriLinkStream.listen((Uri? uri) {
+
+       setState(() {
+         isComingFromUnilink = true;
+       });
+
         print("URI: ${uri}");
         if (uri != null) {
           print('Deep link received: $uri');
           if(uri.queryParameters['verify'] != null){
             print("reset: ${uri.queryParameters['verify'].toString()}");
-            Get.to(ResetPassword(token: uri.queryParameters['verify'].toString(),));
+            if(isUserLoggedIn != null && isUserLoggedIn)
+              {
+                Get.to(HomePage(isComingFromReset: true,));
+              }
+            else
+              {
+                Get.to(ResetPassword(token: uri.queryParameters['verify'].toString(),));
+              }
+
           }
         }
       }, onError: (err) {
@@ -182,6 +198,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     initDeepLinkListener();
     Utils.customPrint('APP IN BG INIT');
+  }
+
+  getTripData()async
+  {
+    bool? isTripStarted =
+    sharedPreferences!.getBool('trip_started');
+
+    print("TRIP IN PROGRESS MAIN $isTripStarted");
   }
 
   @override
@@ -229,9 +253,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
             if (isTripStarted != null) {
               if (isTripStarted) {
-                EasyLoading.show(
-                    status: 'Loading your current trip',
-                    maskType: EasyLoadingMaskType.black);
+
+                if(isComingFromUnilink)
+                  {
+
+                  }
+                else
+                  {
+                    EasyLoading.show(
+                        status: 'Loading your current trip',
+                        maskType: EasyLoadingMaskType.black);
+                  }
               }
             }
 

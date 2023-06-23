@@ -391,10 +391,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       if (isTripStarted != null) {
                         if (isTripStarted) {
                           Navigator.of(context).pop();
-                          Utils.showSnackBar(context,
-                              scaffoldKey: widget.scaffoldKey,
-                              message:
-                                  'Please end the trip which is already running');
+                          // Utils.showSnackBar(context,
+                          //     scaffoldKey: widget.scaffoldKey,
+                          //     message:
+                          //         'Please end the trip which is already running');
+
+                          showEndTripDialogBox(context);
                         } else {
                           if (vesselsSyncDetails || tripSyncDetails) {
                             showDialogBox(context, widget.scaffoldKey!);

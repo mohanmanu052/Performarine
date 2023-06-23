@@ -6,6 +6,7 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/vessel_builder.dart';
+import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
@@ -13,6 +14,7 @@ import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
+import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -23,7 +25,8 @@ import 'package:provider/provider.dart';
 class HomePage extends StatefulWidget {
   List<String> tripData;
   final int tabIndex;
-  HomePage({Key? key, this.tripData = const [], this.tabIndex = 0})
+  final bool isComingFromReset;
+  HomePage({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset = false})
       : super(key: key);
 
   @override
@@ -74,6 +77,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         currentTabIndex = tabController.index;
       });
     });
+
+    if(widget.isComingFromReset)
+      {
+        showEndTripDialogBox(context);
+      }
+
   }
 
   //TODO future reference code
@@ -310,5 +319,134 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  showEndTripDialogBox(BuildContext context) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.45,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(context) * 0.1,
+                                width: displayWidth(context),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                  'You are already logged in to reset password please got to web.',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.04,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.012,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 8.0,
+                          ),
+                          child: Center(
+                            child: CommonButtons.getAcceptButton(
+                                'Go to web', context, buttonBGColor,
+                                    () async {
+
+                                  debugPrint("Click on GO TO TRIP 1");
+
+                                  List<String>? tripData =
+                                  sharedPreferences!.getStringList('trip_data');
+                                  bool? runningTrip = sharedPreferences!.getBool("trip_started");
+
+                                  String tripId = '', vesselName = '';
+                                  if (tripData != null) {
+                                    tripId = tripData[0];
+                                    vesselName = tripData[1];
+                                  }
+
+                                  debugPrint("Click on GO TO TRIP 2");
+
+                                  Navigator.of(dialogContext).pop();
+
+                                  Navigator.push(
+                                    dialogContext,
+                                    MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
+                                        tripId: tripId,
+                                        vesselId: tripData![1],
+                                        tripIsRunningOrNot: runningTrip)),
+                                  );
+
+                                  /*Get.to(() => TripAnalyticsScreen(
+                                            tripId: tripId,
+                                            vesselId: tripData![1],
+                                            tripIsRunningOrNot: tripIsRunning));
+
+                                  Get.to(TripAnalyticsScreen(
+                                            tripId: tripId,
+                                            vesselId: tripData![1],
+                                            tripIsRunningOrNot: tripIsRunning));*/
+
+                                  debugPrint("Click on GO TO TRIP 3");
+
+                                  //Navigator.of(context).pop();
+                                },
+                                displayWidth(context) * 0.65,
+                                displayHeight(context) * 0.054,
+                                primaryColor,
+                                Colors.white,
+                                displayHeight(context) * 0.015,
+                                buttonBGColor,
+                                '',
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
   }
 }
