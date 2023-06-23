@@ -182,7 +182,7 @@ class StartTrip {
 
         currentLocList.add(currentPosStr);
         pref.setStringList("current_loc_list", currentLocList);
-        String tripDistanceForStorage = '';
+         tripDistanceForStorage = '';
 
         if (currentLocList.length > 1) {
 

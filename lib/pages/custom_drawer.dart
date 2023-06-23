@@ -1067,7 +1067,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               commonText(
                                   context: context,
                                   text:
-                                  'There is a trip in progress from another Vessel. Please end the trip and come back here',
+                                  'Please end the trip which is already running',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,
