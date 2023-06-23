@@ -370,7 +370,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 onChanged: (String value) {},
                                 validator: (value) {
                                   if (value!.trim().isEmpty) {
-                                    return 'Enter fuel capacity';
+                                    return 'Enter Fuel Capacity';
                                   }
 
                                   return null;
@@ -405,7 +405,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 onChanged: (String value) {},
                                 validator: (value) {
                                   if (value!.trim().isEmpty) {
-                                    return 'Enter battery capacity';
+                                    return 'Enter Battery Capacity';
                                   }
 
                                   return null;
