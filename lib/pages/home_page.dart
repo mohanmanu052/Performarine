@@ -12,6 +12,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/authentication/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/trip_analytics.dart';
@@ -26,7 +27,8 @@ class HomePage extends StatefulWidget {
   List<String> tripData;
   final int tabIndex;
   final bool isComingFromReset;
-  HomePage({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset = false})
+  String token;
+  HomePage({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset = false,this.token = ""})
       : super(key: key);
 
   @override
@@ -80,8 +82,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     if(widget.isComingFromReset)
       {
-        showEndTripDialogBox(context);
+        WidgetsBinding.instance.addPostFrameCallback((duration)
+        {
+          showEndTripDialogBox(context);
+        });
       }
+
+
 
   }
 
@@ -369,7 +376,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               commonText(
                                   context: context,
                                   text:
-                                  'You are already logged in to reset password please got to web.',
+                                  'You are already logged in, Click OK to reset password.',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,
@@ -386,46 +393,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                           child: Center(
                             child: CommonButtons.getAcceptButton(
-                                'Go to web', context, buttonBGColor,
+                                'OK', context, buttonBGColor,
                                     () async {
-
-                                  debugPrint("Click on GO TO TRIP 1");
-
-                                  List<String>? tripData =
-                                  sharedPreferences!.getStringList('trip_data');
-                                  bool? runningTrip = sharedPreferences!.getBool("trip_started");
-
-                                  String tripId = '', vesselName = '';
-                                  if (tripData != null) {
-                                    tripId = tripData[0];
-                                    vesselName = tripData[1];
-                                  }
-
-                                  debugPrint("Click on GO TO TRIP 2");
-
-                                  Navigator.of(dialogContext).pop();
-
-                                  Navigator.push(
-                                    dialogContext,
-                                    MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
-                                        tripId: tripId,
-                                        vesselId: tripData![1],
-                                        tripIsRunningOrNot: runningTrip)),
-                                  );
-
-                                  /*Get.to(() => TripAnalyticsScreen(
-                                            tripId: tripId,
-                                            vesselId: tripData![1],
-                                            tripIsRunningOrNot: tripIsRunning));
-
-                                  Get.to(TripAnalyticsScreen(
-                                            tripId: tripId,
-                                            vesselId: tripData![1],
-                                            tripIsRunningOrNot: tripIsRunning));*/
-
-                                  debugPrint("Click on GO TO TRIP 3");
-
-                                  //Navigator.of(context).pop();
+                                  Navigator.pop(dialogContext);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => ResetPassword(token: widget.token,isCalledFrom:  "HomePage",)),);
                                 },
                                 displayWidth(context) * 0.65,
                                 displayHeight(context) * 0.054,
