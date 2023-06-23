@@ -17,7 +17,8 @@ import '../../services/database_service.dart';
 
 class ResetPassword extends StatefulWidget {
   final String? token;
-  ResetPassword({this.token,Key? key}) : super(key: key);
+  String isCalledFrom;
+  ResetPassword({this.token,this.isCalledFrom = "",Key? key}) : super(key: key);
 
   @override
   State<ResetPassword> createState() => _ResetPasswordState();
@@ -102,7 +103,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         //key: emailFormFieldKey,
                           controller: newPasswordController,
                           focusNode: newPasswordFocusNode,
-                          labelText: 'Enter New Password',
+                          labelText: 'Enter New Password\*',
                           hintText: '',
                           suffixText: null,
                           textInputAction: TextInputAction.next,
@@ -140,7 +141,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         //key: emailFormFieldKey,
                           controller: reenterPasswordController,
                           focusNode: reenterPasswordFocusNode,
-                          labelText: 'Confirm New Password',
+                          labelText: 'Confirm New Password\*',
                           hintText: '',
                           suffixText: null,
                           textInputAction: TextInputAction.next,
@@ -211,12 +212,22 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     });
                                     print("Status code of change password is: ${value.statusCode}");
                                     if(value.statusCode == 200 && value.message == "Password reset was successfully completed!"){
-                                      signOut();
+                                      if(widget.isCalledFrom == "HomePage"){
+                                          Navigator.pop(context);
+                                      } else{
+                                        signOut();
+                                      }
+
                                     } else if(value.message == "link Expired !!"){
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => const SignInScreen()),
-                                          ModalRoute.withName(""));
+                                      if(widget.isCalledFrom == "HomePage"){
+                                        Navigator.pop(context);
+                                      } else{
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => const SignInScreen()),
+                                            ModalRoute.withName(""));
+                                      }
+
                                     }
                                   } else{
                                     setState(() {

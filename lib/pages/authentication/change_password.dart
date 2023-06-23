@@ -251,7 +251,9 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     });
                                     print("Status code of change password is: ${value.statusCode}");
                                     if(value.statusCode == 200  && value.message == "Password updated successfully!" ){
-                                      signOut();
+                                      //signOut();
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
                                     }
                                   } else{
                                     setState(() {

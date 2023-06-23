@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -12,6 +14,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/authentication/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/trip_analytics.dart';
@@ -25,8 +28,9 @@ import 'package:provider/provider.dart';
 class HomePage extends StatefulWidget {
   List<String> tripData;
   final int tabIndex;
-  final bool isComingFromReset;
-  HomePage({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset = false})
+  final bool? isComingFromReset;
+  String token;
+  HomePage({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset,this.token = ""})
       : super(key: key);
 
   @override
@@ -58,6 +62,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List<String> tripData = [];
 
   @override
+  void didUpdateWidget(covariant HomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
+    bool isComingFrom = arguments?['isComingFromReset'] ?? false;
+    String updatedToken = arguments?['token'] ?? "";
+
+    print("isComingFromReset: ${isComingFrom}");
+    if(mounted){
+      if(isComingFrom != null && isComingFrom )
+      {
+        WidgetsBinding.instance.addPostFrameCallback((duration)
+        {
+          showEndTripDialogBox(context,updatedToken);
+        });
+      }
+    }
+    print('HomeScreen did update');
+  }
+
+  @override
   void initState() {
     super.initState();
 
@@ -77,12 +101,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         currentTabIndex = tabController.index;
       });
     });
-
-    if(widget.isComingFromReset)
-      {
-        showEndTripDialogBox(context);
-      }
-
   }
 
   //TODO future reference code
@@ -321,7 +339,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  showEndTripDialogBox(BuildContext context) {
+  showEndTripDialogBox(BuildContext context,String token) {
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -369,7 +387,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               commonText(
                                   context: context,
                                   text:
-                                  'You are already logged in to reset password please got to web.',
+                                  'You are already logged in, Click OK to reset password.',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,
@@ -386,46 +404,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                           child: Center(
                             child: CommonButtons.getAcceptButton(
-                                'Go to web', context, buttonBGColor,
+                                'OK', context, buttonBGColor,
                                     () async {
-
-                                  debugPrint("Click on GO TO TRIP 1");
-
-                                  List<String>? tripData =
-                                  sharedPreferences!.getStringList('trip_data');
-                                  bool? runningTrip = sharedPreferences!.getBool("trip_started");
-
-                                  String tripId = '', vesselName = '';
-                                  if (tripData != null) {
-                                    tripId = tripData[0];
-                                    vesselName = tripData[1];
-                                  }
-
-                                  debugPrint("Click on GO TO TRIP 2");
-
-                                  Navigator.of(dialogContext).pop();
-
-                                  Navigator.push(
-                                    dialogContext,
-                                    MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
-                                        tripId: tripId,
-                                        vesselId: tripData![1],
-                                        tripIsRunningOrNot: runningTrip)),
-                                  );
-
-                                  /*Get.to(() => TripAnalyticsScreen(
-                                            tripId: tripId,
-                                            vesselId: tripData![1],
-                                            tripIsRunningOrNot: tripIsRunning));
-
-                                  Get.to(TripAnalyticsScreen(
-                                            tripId: tripId,
-                                            vesselId: tripData![1],
-                                            tripIsRunningOrNot: tripIsRunning));*/
-
-                                  debugPrint("Click on GO TO TRIP 3");
-
-                                  //Navigator.of(context).pop();
+                                  Navigator.pop(dialogContext);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => ResetPassword(token: token,isCalledFrom:  "HomePage",)),);
                                 },
                                 displayWidth(context) * 0.65,
                                 displayHeight(context) * 0.054,
