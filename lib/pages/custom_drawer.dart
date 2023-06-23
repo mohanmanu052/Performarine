@@ -1147,7 +1147,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Ok go back', context, buttonBGColor, () {
+                                      'Cancel', context, buttonBGColor, () {
                                     Navigator.of(dialogContext).pop();
                                   },
                                       displayWidth(context) * 0.65,
