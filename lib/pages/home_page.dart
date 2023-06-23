@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -26,9 +28,9 @@ import 'package:provider/provider.dart';
 class HomePage extends StatefulWidget {
   List<String> tripData;
   final int tabIndex;
-  final bool isComingFromReset;
+  final bool? isComingFromReset;
   String token;
-  HomePage({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset = false,this.token = ""})
+  HomePage({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset,this.token = ""})
       : super(key: key);
 
   @override
@@ -60,6 +62,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List<String> tripData = [];
 
   @override
+  void didUpdateWidget(covariant HomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
+    bool isComingFrom = arguments?['isComingFromReset'] ?? false;
+    String updatedToken = arguments?['token'] ?? "";
+
+    print("isComingFromReset: ${isComingFrom}");
+    if(mounted){
+      if(isComingFrom != null && isComingFrom )
+      {
+        WidgetsBinding.instance.addPostFrameCallback((duration)
+        {
+          showEndTripDialogBox(context,updatedToken);
+        });
+      }
+    }
+    print('HomeScreen did update');
+  }
+
+  @override
   void initState() {
     super.initState();
 
@@ -79,17 +101,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         currentTabIndex = tabController.index;
       });
     });
-
-    if(widget.isComingFromReset)
-      {
-        WidgetsBinding.instance.addPostFrameCallback((duration)
-        {
-          showEndTripDialogBox(context);
-        });
-      }
-
-
-
   }
 
   //TODO future reference code
@@ -328,7 +339,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  showEndTripDialogBox(BuildContext context) {
+  showEndTripDialogBox(BuildContext context,String token) {
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -398,7 +409,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   Navigator.pop(dialogContext);
                                       Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => ResetPassword(token: widget.token,isCalledFrom:  "HomePage",)),);
+                                          MaterialPageRoute(builder: (context) => ResetPassword(token: token,isCalledFrom:  "HomePage",)),);
                                 },
                                 displayWidth(context) * 0.65,
                                 displayHeight(context) * 0.054,

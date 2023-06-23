@@ -174,9 +174,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             print("reset: ${uri.queryParameters['verify'].toString()}");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
             print("isUserLoggedIn: $isUserLoggedIn");
+            Map<String, dynamic> arguments = {
+              "isComingFromReset": true,
+              "token": uri.queryParameters['verify'].toString()
+            };
             if(isUserLoggedIn != null && isUserLoggedIn)
               {
-                Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),));
+                Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
               }
             else
               {
