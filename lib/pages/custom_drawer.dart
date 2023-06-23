@@ -170,7 +170,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         },
                         child: commonText(
                             context: context,
-                            text: 'Retired vessels',
+                            text: 'Retired Vessels',
                             fontWeight: FontWeight.w500,
                             textColor: Colors.black54,
                             textSize: textSize,

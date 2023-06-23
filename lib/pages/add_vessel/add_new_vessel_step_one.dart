@@ -154,7 +154,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       onChanged: (String value) {},
                       validator: (value) {
                         if (value!.trim().isEmpty) {
-                          return 'Enter vessel name';
+                          return 'Enter Vessel Name';
                         }
                         return null;
                       },
@@ -179,7 +179,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       onChanged: (String value) {},
                       validator: (value) {
                         if (value!.trim().isEmpty) {
-                          return 'Enter vessel model';
+                          return 'Enter Vessel Model';
                         }
                         return null;
                       },
@@ -204,7 +204,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       onChanged: (String value) {},
                       validator: (value) {
                         if (value!.trim().isEmpty) {
-                          return 'Enter vessel builder name';
+                          return 'Enter Vessel Builder Name';
                         }
 
                         return null;
@@ -282,7 +282,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       onChanged: (String value) {},
                       validator: (value) {
                         if (value!.trim().isEmpty) {
-                          return 'Enter vessel weight';
+                          return 'Enter Vessel Weight';
                         }
 
                         return null;
@@ -338,7 +338,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       valueField: 'value',
                       validator: (value) {
                         if (value == null) {
-                          return 'Select vessel engine type';
+                          return 'Select Vessel Engine Type';
                         }
                         return null;
                       },

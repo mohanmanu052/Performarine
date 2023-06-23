@@ -13,6 +13,7 @@ import '../../common_widgets/widgets/common_widgets.dart';
 import '../../common_widgets/widgets/zig_zag_line_widget.dart';
 import '../../main.dart';
 import '../../provider/common_provider.dart';
+import '../../services/database_service.dart';
 
 class ChangePassword extends StatefulWidget {
    ChangePassword({Key? key}) : super(key: key);
@@ -38,6 +39,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   late CommonProvider commonProvider;
   bool? isBtnClick = false;
+  final DatabaseService _databaseService = DatabaseService();
 
   @override
   void initState() {
@@ -244,20 +246,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     });
                                     print("Status code of change password is: ${value.statusCode}");
                                     if(value.statusCode == 200  && value.message == "Password updated successfully!" ){
-                                      sharedPreferences!.clear();
-                                      GoogleSignIn googleSignIn = GoogleSignIn(
-                                        scopes: <String>[
-                                          'email',
-                                          'https://www.googleapis.com/auth/userinfo.profile',
-                                        ],
-                                      );
-
-                                      googleSignIn.signOut();
-
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => const SignInScreen()),
-                                          ModalRoute.withName(""));
+                                      signOut();
                                     }
                                   } else{
                                     setState(() {
@@ -287,6 +276,12 @@ class _ChangePasswordState extends State<ChangePassword> {
   }
 
   signOut() async {
+
+    var vesselDelete = await _databaseService.deleteDataFromVesselTable();
+    var tripsDelete = await _databaseService.deleteDataFromTripTable();
+
+    Utils.customPrint('DELETE $vesselDelete');
+    Utils.customPrint('DELETE $tripsDelete');
 
     sharedPreferences!.clear();
     GoogleSignIn googleSignIn = GoogleSignIn(
