@@ -178,9 +178,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               "isComingFromReset": true,
               "token": uri.queryParameters['verify'].toString()
             };
-            if(isUserLoggedIn != null && isUserLoggedIn)
+            if(isUserLoggedIn != null)
               {
-                Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
+                if(isUserLoggedIn)
+                  {
+                    Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
+
+                  }
               }
             else
               {

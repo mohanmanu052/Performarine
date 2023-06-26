@@ -37,7 +37,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin, WidgetsBindingObserver {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
 
@@ -64,26 +64,46 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void didUpdateWidget(covariant HomePage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
-    bool isComingFrom = arguments?['isComingFromReset'] ?? false;
-    String updatedToken = arguments?['token'] ?? "";
-
-    print("isComingFromReset: ${isComingFrom}");
-    if(mounted){
-      if(isComingFrom != null && isComingFrom )
+    dynamic arg = Get.arguments;
+    if(arg !=  null)
       {
-        WidgetsBinding.instance.addPostFrameCallback((duration)
-        {
-          showEndTripDialogBox(context,updatedToken);
-        });
+        Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
+        bool isComingFrom = arguments?['isComingFromReset'] ?? false;
+        String updatedToken = arguments?['token'] ?? "";
+
+        setState(() {});
+
+        print("isComingFromReset: ${isComingFrom}");
+        if(mounted){
+          if(isComingFrom != null && isComingFrom )
+          {
+
+            Future.delayed(Duration(microseconds: 500), (){
+              print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+
+              if(!_isThereCurrentDialogShowing(context))
+              {
+                WidgetsBinding.instance.addPostFrameCallback((duration)
+                {
+                  showEndTripDialogBox(context,updatedToken);
+
+                });
+              }
+
+            });
+
+
+          }
+        }
+        print('HomeScreen did update');
       }
-    }
-    print('HomeScreen did update');
   }
 
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
 
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
@@ -101,6 +121,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         currentTabIndex = tabController.index;
       });
     });
+
+    if(widget.isComingFromReset != null)
+      {
+        if(widget.isComingFromReset!)
+          {
+            Future.delayed(Duration(microseconds: 500), (){
+              showEndTripDialogBox(context, widget.token);
+            });
+          }
+      }
+
   }
 
   //TODO future reference code
@@ -144,6 +175,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     switch (state) {
       case AppLifecycleState.resumed:
         print("APP STATE - app in resumed");
+        dynamic arg = Get.arguments;
+        if(arg !=  null)
+        {
+          Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
+          bool isComingFrom = arguments?['isComingFromReset'] ?? false;
+          String updatedToken = arguments?['token'] ?? "";
+
+          setState(() {});
+          print("isComingFromReset: ${isComingFrom}");
+          if(mounted){
+            if(isComingFrom != null && isComingFrom )
+            {
+
+              Future.delayed(Duration(microseconds: 500), (){
+                print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+
+                if(!_isThereCurrentDialogShowing(context))
+                {
+                  WidgetsBinding.instance.addPostFrameCallback((duration)
+                  {
+                    showEndTripDialogBox(context,updatedToken);
+                  });
+                  setState(() {});
+                }
+
+              });
+
+
+            }
+          }
+          print('HomeScreen did update');
+        }
         break;
       case AppLifecycleState.inactive:
         print("APP STATE - app in inactive");
@@ -407,10 +470,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 'OK', context, buttonBGColor,
                                     () async {
                                   Navigator.pop(dialogContext);
-                                      Navigator.push(
+                                  //Navigator.pop(dialogContext);
+                                     var result = await Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) => ResetPassword(token: token,isCalledFrom:  "HomePage",)),);
-                                },
+                                 // Navigator.pop(scaffoldKey.currentContext!);
+                                     },
                                 displayWidth(context) * 0.65,
                                 displayHeight(context) * 0.054,
                                 primaryColor,
@@ -433,4 +498,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           );
         });
   }
+
+  _isThereCurrentDialogShowing(BuildContext context) => ModalRoute.of(context)?.isCurrent != true;
 }

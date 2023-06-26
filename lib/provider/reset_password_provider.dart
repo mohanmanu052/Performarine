@@ -45,7 +45,7 @@ class ResetPasswordProvider with ChangeNotifier {
         resetPasswordModel = ResetPasswordModel.fromJson(json.decode(response.body));
 
           Utils.showSnackBar(scaffoldKey.currentContext!,
-              scaffoldKey: scaffoldKey, message: resetPasswordModel!.message);
+              scaffoldKey: scaffoldKey, message: resetPasswordModel!.message, status: false);
 
         return resetPasswordModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
@@ -54,14 +54,14 @@ class ResetPasswordProvider with ChangeNotifier {
 
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
+              scaffoldKey: scaffoldKey, message: decodedData['message'], status: false);
         }
 
         resetPasswordModel = null;
       } else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
+              scaffoldKey: scaffoldKey, message: decodedData['message'], status: false);
         }
 
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');

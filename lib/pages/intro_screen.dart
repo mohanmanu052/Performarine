@@ -1,11 +1,15 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:performarine/analytics/file_manager.dart';
 import 'package:performarine/analytics/location_callback_handler.dart';
 import 'package:performarine/analytics/location_service_repository.dart';
@@ -14,10 +18,12 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
+import 'package:performarine/pages/authentication/reset_password.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
+import 'package:uni_links/uni_links.dart';
 
 import '../common_widgets/utils/constants.dart';
 
@@ -30,17 +36,20 @@ class IntroScreen extends StatefulWidget {
 
 class _IntroScreenState extends State<IntroScreen> {
   bool? isBtnVisible = false, isTripRunningCurrently = false;
+  StreamSubscription? _sub;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    checkIfTripIsRunning();
+    initUniLinks();
+
+    /*checkIfTripIsRunning();
 
     Future.delayed(Duration(seconds: 4), () {
       checkIfUserIsLoggedIn();
-    });
+    });*/
   }
 
   @override
@@ -260,18 +269,19 @@ class _IntroScreenState extends State<IntroScreen> {
             MaterialPageRoute(builder: (context) => const SignInScreen()),
             ModalRoute.withName(""));
       }
-    } else if (isTripStarted) {
+    }
+    else if (isTripStarted) {
       Utils.customPrint('INTRO TRIP IS RUNNING $isTripStarted');
 
-      /*flutterLocalNotificationsPlugin.cancel(1);
+      flutterLocalNotificationsPlugin.cancel(1);
 
       final _isRunning = await BackgroundLocator();
 
-      Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');*/
+      Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
 
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
-      /*reInitializeService();
+      reInitializeService();
 
       // final isRunning1 = await BackgroundLocator.isServiceRunning();
       //
@@ -280,13 +290,13 @@ class _IntroScreenState extends State<IntroScreen> {
       // final isRunning2 = await BackgroundLocator.isServiceRunning();
 
 
-      Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
+      //Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
 
-      StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
+      StartTrip().startBGLocatorTrip(tripData![0], DateTime.now());
 
       final isRunning2 = await BackgroundLocator.isServiceRunning();
 
-      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');*/
+      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
 
       if (mounted) {
         if (isCalledFromNoti == null) {
@@ -312,12 +322,13 @@ class _IntroScreenState extends State<IntroScreen> {
               ModalRoute.withName(""));
         }
       }
-    } else {
+    }
+    else {
       /*if (isServiceRunning) {
         service.invoke("stopService");
-        */ /*if (positionStream != null) {
+         if (positionStream != null) {
           positionStream!.cancel();
-        }*/ /*
+        }
       }*/
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(
@@ -337,6 +348,175 @@ class _IntroScreenState extends State<IntroScreen> {
       }
     }
   }
+
+/*  checkIfUserIsLoggedInn() async {
+    var pref = await Utils.initSharedPreferences();
+
+    initUniLinks().then((value) {
+      if (value == null || value.isEmpty) {
+        bool? isUserLoggedIn = pref.getBool('isUserLoggedIn');
+        bool? isFirstTimeUser = pref.getBool('isFirstTimeUser');
+
+        if (isFirstTimeUser == null) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => NewSignInScreen(
+                    calledFromNotification: true,
+                  ) *//*LoginScreen*//*),
+              ModalRoute.withName(""));
+        } else if (isFirstTimeUser) {
+          if (isUserLoggedIn == null) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        NewSignInScreen(calledFromNotification: true)),
+                ModalRoute.withName(""));
+          } else if (isUserLoggedIn != null && isUserLoggedIn) {
+            String? userType = pref.getString('userType');
+
+            if (commonProvider.globalLoginModel!.data == null) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => ErrorScreen()),
+                  ModalRoute.withName(""));
+            } else {
+              if (userType != null) {
+                if (userType == "hfl") {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DashboardScreen()),
+                      ModalRoute.withName(""));
+                } else {
+                  commonProvider.globalLoginModel!.data!.userHeight == null ||
+                      commonProvider.globalLoginModel!.data!.userHeight! ==
+                          '' ||
+                      commonProvider.globalLoginModel!.data!.userHeight! ==
+                          '0'
+                      ? Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BmiCalculatorScreen()),
+                      ModalRoute.withName(""))
+                      : Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserConfigScreen()),
+                      ModalRoute.withName(""));
+                }
+              } else {
+                debugPrint(
+                    'ORGID : ${commonProvider.globalLoginModel!.data!.orgId}');
+
+                // commonProvider.globalLoginModel!.data!.userHeight == null ||
+                //     commonProvider.globalLoginModel!.data!.userHeight! == '' ||
+                //     commonProvider.globalLoginModel!.data!.userHeight! == '0'
+                //     ? Navigator.pushAndRemoveUntil(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => BmiCalculatorScreen()),
+                //     ModalRoute.withName(""))
+                //     : Navigator.pushAndRemoveUntil(
+
+                //     context,
+                //     MaterialPageRoute(builder: (context) => UserConfigScreen()),
+                //     ModalRoute.withName(""));
+
+                if (commonProvider.globalLoginModel!.data?.userRole !=
+                    'Doctor') {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserConfigScreen()),
+                      ModalRoute.withName(""));
+                } else {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserConfigScreen()),
+                      ModalRoute.withName(""));
+                }
+              }
+            }
+          } else {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                ModalRoute.withName(""));
+          }
+        }
+      }
+      else {
+        bool isUserLoggedIn = pref.getBool('isUserLoggedIn')!;
+        bool isFirstTimeUser = pref.getBool('isFirstTimeUser')!;
+
+        LoginModel loginModel =
+        LoginModel.fromJson(jsonDecode(pref.getString('loginData')!));
+        String userType = loginModel.data!.userRole!;
+
+        if (isFirstTimeUser == null) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      NewSignInScreen(calledFromNotification: true)),
+              ModalRoute.withName(""));
+        } else if (isFirstTimeUser) {
+          if (isUserLoggedIn == null) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        NewSignInScreen(calledFromNotification: true)),
+                ModalRoute.withName(""));
+          } else if (isUserLoggedIn != null && isUserLoggedIn) {
+            if (value.contains('ShareMyProfile')) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => InAppWebViewScreen(
+                        webViewUrl: value,
+                      )),
+                  ModalRoute.withName(""));
+            } else {
+              if (userType == "hfl") {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashboardScreen()),
+                    ModalRoute.withName(""));
+              } else {
+                if (commonProvider.globalLoginModel!.data!.userHeight == null ||
+                    commonProvider.globalLoginModel!.data!.userHeight! == '' ||
+                    commonProvider.globalLoginModel!.data!.userHeight! == '0') {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BmiCalculatorScreen()),
+                      ModalRoute.withName(""));
+                } else {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserConfigScreen()),
+                      ModalRoute.withName(""));
+                }
+              }
+            }
+          }
+        } else {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      NewSignInScreen(calledFromNotification: true)),
+              ModalRoute.withName(""));
+        }
+      }
+    });
+  }*/
+
 
   /// Reinitialized service after user killed app while trip is running
   reInitializeService() async {
@@ -371,5 +551,104 @@ class _IntroScreenState extends State<IntroScreen> {
                 notificationIcon: '@drawable/noti_logo',
                 notificationTapCallback:
                     LocationCallbackHandler.notificationCallback)));
+  }
+
+  Future<void> initUniLinks() async {
+    Uri? initialLink;
+    try {
+      initialLink = await getInitialUri();
+      debugPrint('UNI LINK: $initialLink');
+
+      if(initialLink != null)
+        {
+          print('Deep link received: $initialLink');
+          if(initialLink.queryParameters['verify'] != null){
+            print("reset: ${initialLink.queryParameters['verify'].toString()}");
+            bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
+
+            print("isUserLoggedIn: $isUserLoggedIn");
+            Map<String, dynamic> arguments = {
+              "isComingFromReset": true,
+              "token": initialLink.queryParameters['verify'].toString()
+            };
+            if(isUserLoggedIn != null)
+            {
+              if(isUserLoggedIn)
+              {
+                Get.to(HomePage(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(),),arguments: arguments);
+
+              }
+            }
+            else
+            {
+              Get.to(ResetPassword(token: initialLink.queryParameters['verify'].toString(),));
+            }
+
+          }
+        }
+      else
+        {
+          checkIfTripIsRunning();
+
+          Future.delayed(Duration(seconds: 4), () {
+            checkIfUserIsLoggedIn();
+          });
+        }
+
+      // Parse the link and warn the user, if it is not correct,
+      // but keep in mind it could be `null`.
+    } on PlatformException {
+      // Handle exception by warning the user their action did not succeed
+      // return?
+    }
+
+    try {
+      _sub = uriLinkStream.listen((Uri? uri) async{
+
+        /*setState(() {
+          isComingFromUnilink = true;
+        });*/
+
+        print("URI: ${uri}");
+        if (uri != null) {
+          print('Deep link received: $uri');
+          if(uri.queryParameters['verify'] != null){
+            print("reset: ${uri.queryParameters['verify'].toString()}");
+            bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
+
+            print("isUserLoggedIn: $isUserLoggedIn");
+            Map<String, dynamic> arguments = {
+              "isComingFromReset": true,
+              "token": uri.queryParameters['verify'].toString()
+            };
+            if(isUserLoggedIn != null)
+            {
+              if(isUserLoggedIn)
+              {
+                Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
+
+              }
+            }
+            else
+            {
+              Get.to(ResetPassword(token: uri.queryParameters['verify'].toString(),));
+            }
+
+          }
+        }
+        else
+          {
+            checkIfTripIsRunning();
+
+            Future.delayed(Duration(seconds: 4), () {
+              checkIfUserIsLoggedIn();
+            });
+          }
+      }, onError: (err) {
+        print('Error handling deep link: $err');
+      });
+    } on PlatformException {
+      print("Exception while handling with uni links : ${PlatformException}");
+    }
   }
 }

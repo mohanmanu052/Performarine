@@ -58,6 +58,8 @@ class Utils {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
 
+    debugPrint("STATUS $status");
+
     final snackBar = SnackBar(
       backgroundColor: status ? Colors.blue : Colors.red,
       content: Row(
