@@ -182,6 +182,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               {
                 if(isUserLoggedIn)
                   {
+                    sharedPreferences!.setBool('reset_dialog_opened', false);
                     Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
 
                   }
