@@ -575,6 +575,7 @@ class _IntroScreenState extends State<IntroScreen> {
             {
               if(isUserLoggedIn)
               {
+                sharedPreferences!.setBool('reset_dialog_opened', false);
                 Get.to(HomePage(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(),),arguments: arguments);
 
               }
@@ -625,6 +626,7 @@ class _IntroScreenState extends State<IntroScreen> {
             {
               if(isUserLoggedIn)
               {
+                sharedPreferences!.setBool('reset_dialog_opened', false);
                 Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
 
               }

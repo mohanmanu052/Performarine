@@ -190,12 +190,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
               Future.delayed(Duration(microseconds: 500), (){
                 print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+                bool? result;
+                if(sharedPreferences != null){
+                  result = sharedPreferences!.getBool('reset_dialog_opened');
+                }
 
                 if(!_isThereCurrentDialogShowing(context))
                 {
                   WidgetsBinding.instance.addPostFrameCallback((duration)
                   {
-                    showEndTripDialogBox(context,updatedToken);
+                    if(result != null){
+                      if(!result){
+                        showEndTripDialogBox(context,updatedToken);
+                      }
+                    }
                   });
                   setState(() {});
                 }
@@ -403,6 +411,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   }
 
   showEndTripDialogBox(BuildContext context,String token) {
+    if(sharedPreferences != null){
+      sharedPreferences!.setBool('reset_dialog_opened', true);
+    }
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -496,7 +507,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
               },
             ),
           );
-        });
+        }).then((value) {
+
+    });
   }
 
   _isThereCurrentDialogShowing(BuildContext context) => ModalRoute.of(context)?.isCurrent != true;
