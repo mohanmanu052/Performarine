@@ -582,7 +582,9 @@ class _IntroScreenState extends State<IntroScreen> {
             }
             else
             {
-              Get.to(ResetPassword(token: initialLink.queryParameters['verify'].toString(),));
+              Future.delayed(Duration(seconds: 2), (){
+                Get.offAll(ResetPassword(token: initialLink!.queryParameters['verify'].toString(), isCalledFrom: "Main"));
+              });
             }
 
           }
@@ -633,7 +635,9 @@ class _IntroScreenState extends State<IntroScreen> {
             }
             else
             {
-              Get.to(ResetPassword(token: uri.queryParameters['verify'].toString(),));
+              Future.delayed(Duration(seconds: 2), (){
+                Get.offAll(ResetPassword(token: initialLink!.queryParameters['verify'].toString(), isCalledFrom: "Main"));
+              });
             }
 
           }

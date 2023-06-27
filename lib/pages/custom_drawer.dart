@@ -729,7 +729,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) => ChangePassword()),
+                                                  builder: (context) => ChangePassword(isChange: true,)),
                                             );
 
                                           }else
@@ -996,7 +996,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ChangePassword()),
+                  builder: (context) => ChangePassword(isChange: true,)),
             );
           }
         else

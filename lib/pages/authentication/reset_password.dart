@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:provider/provider.dart';
@@ -47,211 +49,238 @@ class _ResetPasswordState extends State<ResetPassword> {
     commonProvider = context.read<CommonProvider>();
     newPasswordController = TextEditingController();
     reenterPasswordController = TextEditingController();
+
+    //Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: "${widget.isCalledFrom}");
+
   }
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    return Scaffold(
-      key: scaffoldKey,
-      backgroundColor: commonBackgroundColor,
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: commonBackgroundColor,
-        leading: IconButton(
-          onPressed: () {
+    return WillPopScope(
+      onWillPop: () async {
+        if(widget.isCalledFrom == "Main")
+          {
+            Get.offAll(SignInScreen());
+            return false;
+          }
+        else
+          {
             Navigator.of(context).pop();
-          },
-          icon: const Icon(Icons.arrow_back),
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white
-              : Colors.black,
+            return false;
+          }
+    },
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: commonBackgroundColor,
+        appBar: AppBar(
+          elevation: 0.0,
+          backgroundColor: commonBackgroundColor,
+          leading: IconButton(
+            onPressed: () {
+
+              //Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: "${widget.isCalledFrom}");
+
+              if(widget.isCalledFrom == "Main")
+              {
+                Get.offAll(SignInScreen());
+              }
+              else
+              {
+                Navigator.of(context).pop();
+              }
+            },
+            icon: const Icon(Icons.arrow_back),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
+          ),
+          centerTitle: true,
+          title: commonText(
+              context: context,
+              text: 'Reset Password',
+              fontWeight: FontWeight.w600,
+              textColor: Colors.black,
+              textSize: displayWidth(context) * 0.05,
+              textAlign: TextAlign.start),
         ),
-        centerTitle: true,
-        title: commonText(
-            context: context,
-            text: 'Reset Password',
-            fontWeight: FontWeight.w600,
-            textColor: Colors.black,
-            textSize: displayWidth(context) * 0.05,
-            textAlign: TextAlign.start),
-      ),
-      body: Stack(
-        children: [
-          Positioned(
-              left: 0,
-              bottom: displayHeight(context) * 0.06,
-              child: ZigZagLineWidget()),
-          Form(
-              key: formKey,
-              child: Container(
-                height: displayHeight(context),
-                margin: const EdgeInsets.symmetric(horizontal: 25),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(height: displayHeight(context) * 0.08),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 25),
-                        child: Image.asset(
-                          'assets/images/sign_in_img.png',
+        body: Stack(
+          children: [
+            Positioned(
+                left: 0,
+                bottom: displayHeight(context) * 0.06,
+                child: ZigZagLineWidget()),
+            Form(
+                key: formKey,
+                child: Container(
+                  height: displayHeight(context),
+                  margin: const EdgeInsets.symmetric(horizontal: 25),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(height: displayHeight(context) * 0.08),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 25),
+                          child: Image.asset(
+                            'assets/images/sign_in_img.png',
+                          ),
                         ),
-                      ),
 
-                      SizedBox(height: displayHeight(context) * 0.1),
+                        SizedBox(height: displayHeight(context) * 0.1),
 
-                      CommonTextField(
-                        //key: emailFormFieldKey,
-                          controller: newPasswordController,
-                          focusNode: newPasswordFocusNode,
-                          labelText: 'Enter New Password\*',
-                          hintText: '',
-                          suffixText: null,
-                          textInputAction: TextInputAction.next,
-                          textInputType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
-                          maxLength: 52,
-                          prefixIcon: null,
-                          requestFocusNode: reenterPasswordFocusNode,
-                          obscureText: true,
-                          readOnly: false,
-                          onTap: () {},
-                          onChanged: (value) {},
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter New Password';
-                            } else if (!RegExp(
-                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
-                                .hasMatch(value)) {
-                              return 'Password must contain at least 8 characters and \n include : \n * At least one lowercase letter (a-z) \n '
-                                  '* At least one uppercase letter (A-Z) \n * At least one number (0-9) \n * At least one special character (e.g: !.@#\$&*~)';
-                            }
-                            return null;
-                          },
-                          onFieldSubmitted: (value) {
-                            //emailFormFieldKey.currentState!.validate();
-                            /* FocusScope.of(context)
-                              .requestFocus(passwordFocusNode);*/
-                          },
-                          onSaved: (String value) {
-                            Utils.customPrint(value);
-                          }),
-                      SizedBox(height: displayWidth(context) * 0.03),
+                        CommonTextField(
+                          //key: emailFormFieldKey,
+                            controller: newPasswordController,
+                            focusNode: newPasswordFocusNode,
+                            labelText: 'Enter New Password\*',
+                            hintText: '',
+                            suffixText: null,
+                            textInputAction: TextInputAction.next,
+                            textInputType: TextInputType.text,
+                            textCapitalization: TextCapitalization.words,
+                            maxLength: 52,
+                            prefixIcon: null,
+                            requestFocusNode: reenterPasswordFocusNode,
+                            obscureText: true,
+                            readOnly: false,
+                            onTap: () {},
+                            onChanged: (value) {},
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Enter New Password';
+                              } else if (!RegExp(
+                                  r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
+                                  .hasMatch(value)) {
+                                return 'Password must contain at least 8 characters and \n include : \n * At least one lowercase letter (a-z) \n '
+                                    '* At least one uppercase letter (A-Z) \n * At least one number (0-9) \n * At least one special character (e.g: !.@#\$&*~)';
+                              }
+                              return null;
+                            },
+                            onFieldSubmitted: (value) {
+                              //emailFormFieldKey.currentState!.validate();
+                              /* FocusScope.of(context)
+                                .requestFocus(passwordFocusNode);*/
+                            },
+                            onSaved: (String value) {
+                              Utils.customPrint(value);
+                            }),
+                        SizedBox(height: displayWidth(context) * 0.03),
 
-                      CommonTextField(
-                        //key: emailFormFieldKey,
-                          controller: reenterPasswordController,
-                          focusNode: reenterPasswordFocusNode,
-                          labelText: 'Confirm New Password\*',
-                          hintText: '',
-                          suffixText: null,
-                          textInputAction: TextInputAction.next,
-                          textInputType: TextInputType.emailAddress,
-                          textCapitalization: TextCapitalization.words,
-                          maxLength: 52,
-                          prefixIcon: null,
-                          requestFocusNode: null,
-                          obscureText: true,
-                          readOnly: false,
-                          onTap: () {},
-                          onChanged: (value) {},
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              isConfirmPasswordValid = false;
-                              return 'Enter Confirm New Password';
-                            } else if (reenterPasswordController.text !=
-                                newPasswordController.text) {
-                              isConfirmPasswordValid = false;
-                              return "Passwords don\'t match";
-                            }
+                        CommonTextField(
+                          //key: emailFormFieldKey,
+                            controller: reenterPasswordController,
+                            focusNode: reenterPasswordFocusNode,
+                            labelText: 'Confirm New Password\*',
+                            hintText: '',
+                            suffixText: null,
+                            textInputAction: TextInputAction.next,
+                            textInputType: TextInputType.emailAddress,
+                            textCapitalization: TextCapitalization.words,
+                            maxLength: 52,
+                            prefixIcon: null,
+                            requestFocusNode: null,
+                            obscureText: true,
+                            readOnly: false,
+                            onTap: () {},
+                            onChanged: (value) {},
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                isConfirmPasswordValid = false;
+                                return 'Enter Confirm New Password';
+                              } else if (reenterPasswordController.text !=
+                                  newPasswordController.text) {
+                                isConfirmPasswordValid = false;
+                                return "Passwords don\'t match";
+                              }
 
-                            isConfirmPasswordValid = true;
+                              isConfirmPasswordValid = true;
 
-                            return null;
-                          },
-                          onFieldSubmitted: (value) {
-                            //emailFormFieldKey.currentState!.validate();
-                            /* FocusScope.of(context)
-                              .requestFocus(passwordFocusNode);*/
-                          },
-                          onSaved: (String value) {
-                            Utils.customPrint(value);
-                          }),
+                              return null;
+                            },
+                            onFieldSubmitted: (value) {
+                              //emailFormFieldKey.currentState!.validate();
+                              /* FocusScope.of(context)
+                                .requestFocus(passwordFocusNode);*/
+                            },
+                            onSaved: (String value) {
+                              Utils.customPrint(value);
+                            }),
 
-                      SizedBox(height: displayHeight(context) * 0.2),
+                        SizedBox(height: displayHeight(context) * 0.2),
 
-                      isBtnClick! ? Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                circularProgressColor),
-                          ))
-                          :     CommonButtons.getActionButton(
-                          title: 'Update Password',
-                          context: context,
-                          fontSize: displayWidth(context) * 0.044,
-                          textColor: Colors.white,
-                          buttonPrimaryColor: buttonBGColor,
-                          borderColor: buttonBGColor,
-                          width: displayWidth(context),
-                          onTap: () async {
-                            if (formKey.currentState!.validate()) {
-                              bool check = await Utils().check(scaffoldKey);
+                        isBtnClick! ? Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  circularProgressColor),
+                            ))
+                            :     CommonButtons.getActionButton(
+                            title: 'Update Password',
+                            context: context,
+                            fontSize: displayWidth(context) * 0.044,
+                            textColor: Colors.white,
+                            buttonPrimaryColor: buttonBGColor,
+                            borderColor: buttonBGColor,
+                            width: displayWidth(context),
+                            onTap: () async {
+                              if (formKey.currentState!.validate()) {
+                                bool check = await Utils().check(scaffoldKey);
 
-                              Utils.customPrint("NETWORK $check");
+                                Utils.customPrint("NETWORK $check");
 
-                              FocusScope.of(context)
-                                  .requestFocus(FocusNode());
-                              if(check){
-                                setState(() {
-                                  isBtnClick = true;
-                                });
+                                FocusScope.of(context)
+                                    .requestFocus(FocusNode());
+                                if(check){
+                                  setState(() {
+                                    isBtnClick = true;
+                                  });
 
-                                commonProvider.resetPassword(context, widget.token! != null ? widget.token! : "", newPasswordController.text.trim(), scaffoldKey).then((value){
-                                  if(value != null){
-                                    setState(() {
-                                      isBtnClick = false;
-                                    });
-                                    print("Status code of change password is: ${value.statusCode}");
-                                    if(value.statusCode == 200 && value.message == "Password reset was successfully completed!"){
-                                      if(widget.isCalledFrom == "HomePage"){
+                                  commonProvider.resetPassword(context, widget.token! != null ? widget.token! : "", newPasswordController.text.trim(), scaffoldKey).then((value){
+                                    if(value != null){
+                                      setState(() {
+                                        isBtnClick = false;
+                                      });
+                                      print("Status code of change password is: ${value.statusCode}");
+                                      if(value.statusCode == 200 && value.message == "Password reset was successfully completed!"){
+                                        if(widget.isCalledFrom == "HomePage"){
+                                            Navigator.pop(context);
+                                        } else{
+                                          signOut();
+                                        }
+
+                                      } else if(value.message == "link Expired !!"){
+                                        if(widget.isCalledFrom == "HomePage"){
                                           Navigator.pop(context);
-                                      } else{
-                                        signOut();
-                                      }
+                                        } else{
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => const SignInScreen()),
+                                              ModalRoute.withName(""));
+                                        }
 
-                                    } else if(value.message == "link Expired !!"){
-                                      if(widget.isCalledFrom == "HomePage"){
-                                        Navigator.pop(context);
-                                      } else{
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => const SignInScreen()),
-                                            ModalRoute.withName(""));
                                       }
-
+                                    } else{
+                                      setState(() {
+                                        isBtnClick = false;
+                                      });
                                     }
-                                  } else{
+                                  }).catchError((e){
                                     setState(() {
                                       isBtnClick = false;
                                     });
-                                  }
-                                }).catchError((e){
+                                  });
+                                } else{
                                   setState(() {
                                     isBtnClick = false;
                                   });
-                                });
-                              } else{
-                                setState(() {
-                                  isBtnClick = false;
-                                });
+                                }
                               }
-                            }
-                          }),
-                    ],
+                            }),
+                      ],
+                    ),
                   ),
-                ),
-              )
-          )
-        ],
+                )
+            )
+          ],
+        ),
       ),
     );
   }

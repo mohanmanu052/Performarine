@@ -182,7 +182,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
           bool isComingFrom = arguments?['isComingFromReset'] ?? false;
           String updatedToken = arguments?['token'] ?? "";
 
-          setState(() {});
+          if(mounted){
+            setState(() {});
+          }
           print("isComingFromReset: ${isComingFrom}");
           if(mounted){
             if(isComingFrom != null && isComingFrom )
