@@ -79,7 +79,7 @@
 	</array>
 	<key>com.apple.developer.associated-domains</key>
       <array>
-        <string>applinks:https://goeapidev.azurewebsites.net</string>
+        <string>applinks:goeapidev.azurewebsites.net</string>
       </array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
