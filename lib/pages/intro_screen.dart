@@ -635,9 +635,9 @@ class _IntroScreenState extends State<IntroScreen> {
             }
             else
             {
-              Future.delayed(Duration(seconds: 2), (){
-                Get.offAll(ResetPassword(token: initialLink!.queryParameters['verify'].toString(), isCalledFrom: "Main"));
-              });
+              // Future.delayed(Duration(seconds: 2), (){
+              //   Get.offAll(ResetPassword(token: initialLink!.queryParameters['verify'].toString(), isCalledFrom: "Main"));
+              // });
             }
 
           }
