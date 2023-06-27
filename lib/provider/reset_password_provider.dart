@@ -45,7 +45,7 @@ class ResetPasswordProvider with ChangeNotifier {
         resetPasswordModel = ResetPasswordModel.fromJson(json.decode(response.body));
 
           Utils.showSnackBar(scaffoldKey.currentContext!,
-              scaffoldKey: scaffoldKey, message: resetPasswordModel!.message, status: false);
+              scaffoldKey: scaffoldKey, message: resetPasswordModel!.message, status: resetPasswordModel!.status!);
 
         return resetPasswordModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
