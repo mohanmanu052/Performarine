@@ -16,7 +16,8 @@ import '../../provider/common_provider.dart';
 import '../../services/database_service.dart';
 
 class ChangePassword extends StatefulWidget {
-   ChangePassword({Key? key}) : super(key: key);
+  bool? isChange;
+   ChangePassword({this.isChange = false,Key? key}) : super(key: key);
 
   @override
   State<ChangePassword> createState() => _ChangePasswordState();
@@ -252,8 +253,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     print("Status code of change password is: ${value.statusCode}");
                                     if(value.statusCode == 200  && value.message == "Password updated successfully!" ){
                                       //signOut();
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
+                                      if(widget.isChange!){
+                                        Navigator.pop(context);
+                                      }else{
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                      }
                                     }
                                   } else{
                                     setState(() {
