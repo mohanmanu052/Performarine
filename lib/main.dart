@@ -260,6 +260,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
           sharedPreferences!.reload().then((value) {
             bool? isTripStarted = sharedPreferences!.getBool('trip_started');
+            bool? result = sharedPreferences!.getBool('sp_key_called_from_noti');
 
             if (isTripStarted != null) {
               if (isTripStarted) {
@@ -270,9 +271,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   }
                 else
                   {
-                    EasyLoading.show(
-                        status: 'Loading your current trip',
-                        maskType: EasyLoadingMaskType.black);
+                    if(result != null)
+                      {
+                        if(result)
+                          {
+                            EasyLoading.show(
+                                status: 'Loading your current trip',
+                                maskType: EasyLoadingMaskType.black);
+                          }
+                      }
+
                   }
               }
             }

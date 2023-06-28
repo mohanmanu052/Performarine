@@ -2606,8 +2606,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 },
                               )),
 
-                      Padding(
-                        padding: EdgeInsets.only(left: 15, right: 15),
+                      Container(
+                        width: displayWidth(context),
+                        margin: EdgeInsets.only(left: 15, right: 15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

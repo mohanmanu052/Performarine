@@ -120,15 +120,20 @@ class SendSensorInfoApiProvider with ChangeNotifier {
           Utils.customPrint('EXE RESP: $response');
         }
         uploadTripModel = null;
-      }).onError((error, stackTrace) {
+      }).onError((error, stackTrace) async{
         Utils.customPrint('ERROR DIO: $error\n$stackTrace');
         if (scaffoldKey != null) {
           if (!calledFromSignOut) {
             Utils.showSnackBar(context,
                 scaffoldKey: scaffoldKey,
                 message:
-                    'Failed to upload trip. Please check internet connection and try again.');
-          }
+                    'Failed to upload trip. Please check internet connection and try again.');}
+          // }else{
+          //     Utils.showSnackBar(context,
+          //         scaffoldKey: scaffoldKey,
+          //         message:
+          //         'Failed to upload trip. Please check internet connection and try again.');
+          //   }
         }
         flutterLocalNotificationsPlugin.cancel(9989);
         uploadTripModel = null;
@@ -138,7 +143,13 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       Utils.customPrint('Socket Exception');
 
       uploadTripModel = null;
-    } catch (exception, s) {
+    }catch (exception, s) {
+
+      /*if(exception == d.DioErrorType.connectTimeout)
+        {
+          await Utils().check(scaffoldKey);
+        }*/
+
       Utils.customPrint('error caught exception:- $exception \n $s');
       uploadTripModel = null;
     }
