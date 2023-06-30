@@ -127,7 +127,7 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
         label,
         style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontFamily: inter,
+            fontFamily: poppins,
             fontSize: displayWidth(context) * 0.041,
             color: blutoothDialogTxtColor),
       ),

@@ -585,7 +585,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               } else {
                                 if (Platform.isIOS) {
                                   bool isBluetoothEnable =
-                                      await FlutterBluePlus.instance.isOn;
+                                      await blueIsOn();
 
                                   if (isBluetoothEnable) {
                                     vessel!.add(widget.vessel!);
@@ -602,7 +602,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                   if (isNDPermittedOne) {
                                     bool isBluetoothEnable =
-                                        await FlutterBluePlus.instance.isOn;
+                                        await blueIsOn();
 
                                     if (isBluetoothEnable) {
                                       vessel!.add(widget.vessel!);
@@ -619,7 +619,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         .bluetoothConnect.isGranted;
                                     if (isNDPermitted) {
                                       bool isBluetoothEnable =
-                                          await FlutterBluePlus.instance.isOn;
+                                          await blueIsOn();
 
                                       if (isBluetoothEnable) {
                                         vessel!.add(widget.vessel!);
@@ -696,7 +696,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                   if (isNDPermitted) {
                                     bool isBluetoothEnable =
-                                        await FlutterBluePlus.instance.isOn;
+                                        await blueIsOn();
 
                                     if (isBluetoothEnable) {
                                       vessel!.add(widget.vessel!);
@@ -713,7 +713,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         .bluetoothConnect.isGranted;
                                     if (isNDPermitted) {
                                       bool isBluetoothEnable =
-                                          await FlutterBluePlus.instance.isOn;
+                                          await blueIsOn();
 
                                       if (isBluetoothEnable) {
                                         vessel!.add(widget.vessel!);
@@ -791,6 +791,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
         ),
       ),
     );
+  }
+
+  Future<bool> blueIsOn() async
+  {
+    FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+    final isOn = await _flutterBlue.isOn;
+    if(isOn) return true;
+
+    sleep(const Duration(milliseconds: 200));
+    return await _flutterBlue.isOn;
   }
 
   /// Check location permission
@@ -2537,6 +2547,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Padding(
                         padding: EdgeInsets.only(top: 30),
@@ -2562,53 +2573,55 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       ),
 
                       // Implement listView for bluetooth devices
-                      isRefreshList == true
-                          ? Container(
-                              width: displayWidth(context),
-                              height: 230,
-                              child: LPRBluetoothList(
-                                dialogContext: dialogContext,
-                                setDialogSet: setDialogState,
-                                onSelected: (value) {
-                                  if (mounted) {
-                                    stateSetter(() {
-                                      bluetoothName = value;
-                                    });
-                                  }
-                                },
-                                onBluetoothConnection: (value) {
-                                  if (mounted) {
-                                    stateSetter(() {
-                                      isBluetoothConnected = value;
-                                    });
-                                  }
-                                },
-                              ))
-                          : Container(
-                              width: displayWidth(context),
-                              height: 230,
-                              child: LPRBluetoothList(
-                                dialogContext: dialogContext,
-                                setDialogSet: setDialogState,
-                                onSelected: (value) {
-                                  if (mounted) {
-                                    stateSetter(() {
-                                      bluetoothName = value;
-                                    });
-                                  }
-                                },
-                                onBluetoothConnection: (value) {
-                                  if (mounted) {
-                                    stateSetter(() {
-                                      isBluetoothConnected = value;
-                                    });
-                                  }
-                                },
-                              )),
+                      Expanded(
+                        child: isRefreshList == true
+                            ? Container(
+                                width: displayWidth(context),
+                                height: displayHeight(context) * 0.28,
+                                child: LPRBluetoothList(
+                                  dialogContext: dialogContext,
+                                  setDialogSet: setDialogState,
+                                  onSelected: (value) {
+                                    if (mounted) {
+                                      stateSetter(() {
+                                        bluetoothName = value;
+                                      });
+                                    }
+                                  },
+                                  onBluetoothConnection: (value) {
+                                    if (mounted) {
+                                      stateSetter(() {
+                                        isBluetoothConnected = value;
+                                      });
+                                    }
+                                  },
+                                ))
+                            : Container(
+                                width: displayWidth(context),
+                                height: displayHeight(context) * 0.28,
+                                child: LPRBluetoothList(
+                                  dialogContext: dialogContext,
+                                  setDialogSet: setDialogState,
+                                  onSelected: (value) {
+                                    if (mounted) {
+                                      stateSetter(() {
+                                        bluetoothName = value;
+                                      });
+                                    }
+                                  },
+                                  onBluetoothConnection: (value) {
+                                    if (mounted) {
+                                      stateSetter(() {
+                                        isBluetoothConnected = value;
+                                      });
+                                    }
+                                  },
+                                )),
+                      ),
 
                       Container(
                         width: displayWidth(context),
-                        margin: EdgeInsets.only(left: 15, right: 15),
+                        margin: EdgeInsets.only(left: 15, right: 15, bottom: 15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

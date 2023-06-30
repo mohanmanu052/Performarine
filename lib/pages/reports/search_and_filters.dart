@@ -367,6 +367,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         value.data?.avgInfo?.avgDuration ?? '0:0:0.0')
                     : durationWithSeconds(
                         value.data!.avgInfo!.avgDuration ?? '0:0:0');
+
+            print("NEW AVG DATA ${value.data?.avgInfo?.avgDuration}");
+
             avgDuration = myAvgDuration ?? 0;
 
             avgFuelConsumption = value.data?.avgInfo?.avgFuelConsumption;
@@ -1185,7 +1188,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                             color: Colors.black,
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
-                                            fontFamily: inter),
+                                            fontFamily: poppins),
                                       ),
                                       SizedBox(
                                         height: displayWidth(context) * 0.04,
@@ -1240,9 +1243,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                             child: Container(
                                               //  color: dateBackgroundColor,
                                               width:
-                                                  displayWidth(context) * 0.21,
+                                                  displayWidth(context) * 0.23,
                                               height:
-                                                  displayWidth(context) * 0.09,
+                                                  displayHeight(context) * 0.042,
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(20),
@@ -1283,7 +1286,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                               width:
                                                   displayWidth(context) * 0.19,
                                               height:
-                                                  displayWidth(context) * 0.09,
+                                              displayHeight(context) * 0.042,
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(20),
@@ -1323,7 +1326,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                               width:
                                                   displayWidth(context) * 0.20,
                                               height:
-                                                  displayWidth(context) * 0.09,
+                                              displayHeight(context) * 0.042,
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(20),
@@ -1363,7 +1366,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                               width:
                                                   displayWidth(context) * 0.22,
                                               height:
-                                                  displayWidth(context) * 0.09,
+                                              displayHeight(context) * 0.042,
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(20),
@@ -1449,7 +1452,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 ),
               ),
             ),
-            DataColumn(
+            /*DataColumn(
                 label: Expanded(
               child: Center(
                 child: Text(
@@ -1458,8 +1461,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   textAlign: TextAlign.center,
                 ),
               ),
-            )),
-            DataColumn(label: _verticalDivider),
+            )),*/
+            //DataColumn(label: _verticalDivider),
             DataColumn(
                 label: Expanded(
               child: Center(
@@ -1501,11 +1504,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         child: Text(dateWithZeros(person['date'])!,
                             textAlign: TextAlign.center)),
                   ),
-                  DataCell(Align(
+                  /*DataCell(Align(
                       alignment: Alignment.center,
                       child: Text(person['tripDetails']!,
-                          textAlign: TextAlign.center))),
-                  DataCell(_verticalDivider),
+                          textAlign: TextAlign.center))),*/
+                  //DataCell(_verticalDivider),
                   DataCell(Align(
                       alignment: Alignment.center,
                       child: Text(person['duration']!,
@@ -1532,13 +1535,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           fontWeight: FontWeight.w800),
                     ),
                   ),
-                  DataCell(Text(
+                  /*DataCell(Text(
                     e['tripDetails']!,
                     style: TextStyle(
                         color: circularProgressColor,
                         fontWeight: FontWeight.w800),
-                  )),
-                  DataCell(_verticalDivider),
+                  )),*/
+                  //DataCell(_verticalDivider),
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: Text(
@@ -1702,8 +1705,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 fontWeight: FontWeight.w500,
                 fontFamily: poppins,
               )),
-          primaryYAxis: NumericAxis(
-              // interval: 5,
+            primaryYAxis: NumericAxis(
 
               axisLine: AxisLine(
                 width: 0,
@@ -1732,6 +1734,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     end: avgDuration,
                     borderWidth: 2,
                     borderColor: Colors.grey.shade400,
+                    shouldRenderAboveSeries: true,
                     textStyle: TextStyle(
                       color: Colors.black,
                       fontSize: displayWidth(context) * 0.028,

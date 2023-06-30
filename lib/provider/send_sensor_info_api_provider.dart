@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart' as d;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,10 @@ class SendSensorInfoApiProvider with ChangeNotifier {
   //CreateTripModel? createTripModel;
   CommonModel? commonModel;
   UploadTripModel? uploadTripModel;
+
+  final NetworkConnectivity _networkConnectivity = NetworkConnectivity.instance;
+  Map _source = {ConnectivityResult.none: false};
+  String string = '';
 
   Future<UploadTripModel?> sendSensorDataInfoDio(
       BuildContext context,
@@ -39,6 +44,35 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       ),
     });
     Uri uri = Uri.https(Urls.baseUrl, Urls.SendSensorData);
+
+    _networkConnectivity.initialise();
+    _networkConnectivity.myStream.listen((source) {
+      _source = source;
+      print('source $_source');
+      // 1.
+      switch (_source.keys.toList()[0]) {
+        case ConnectivityResult.mobile:
+          string =
+          _source.values.toList()[0] ? 'Mobile: Online' : 'Mobile: Offline';
+          break;
+        case ConnectivityResult.wifi:
+          string =
+          _source.values.toList()[0] ? 'WiFi: Online' : 'WiFi: Offline';
+          break;
+        case ConnectivityResult.none:
+        default:
+          string = 'Offline';
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            string,
+            style: TextStyle(fontSize: 30),
+          ),
+        ),
+      );
+    });
 
     try {
       await dio.post(
@@ -80,6 +114,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
           }
         },
       ).then((response) {
+        _networkConnectivity.disposeStream();
         Utils.customPrint('RESPONSE: ${response.statusCode}');
         Utils.customPrint('RESPONSE: ${jsonEncode(response.data)}');
         var decodedData = json.decode(jsonEncode(response.data));
@@ -121,6 +156,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         }
         uploadTripModel = null;
       }).onError((error, stackTrace) async{
+        _networkConnectivity.disposeStream();
         Utils.customPrint('ERROR DIO: $error\n$stackTrace');
         if (scaffoldKey != null) {
           if (!calledFromSignOut) {
@@ -139,11 +175,13 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         uploadTripModel = null;
       });
     } on SocketException catch (_) {
+      _networkConnectivity.disposeStream();
       await Utils().check(scaffoldKey);
       Utils.customPrint('Socket Exception');
 
       uploadTripModel = null;
     }catch (exception, s) {
+      _networkConnectivity.disposeStream();
 
       /*if(exception == d.DioErrorType.connectTimeout)
         {
@@ -187,4 +225,32 @@ class MultipartRequest extends http.MultipartRequest {
     final stream = byteStream.transform(t);
     return http.ByteStream(stream);
   }
+}
+
+class NetworkConnectivity {
+  NetworkConnectivity._();
+  static final _instance = NetworkConnectivity._();
+  static NetworkConnectivity get instance => _instance;
+  final _networkConnectivity = Connectivity();
+  final _controller = StreamController.broadcast();
+  Stream get myStream => _controller.stream;
+  void initialise() async {
+    ConnectivityResult result = await _networkConnectivity.checkConnectivity();
+    _checkStatus(result);
+    _networkConnectivity.onConnectivityChanged.listen((result) {
+      print(result);
+      _checkStatus(result);
+    });
+  }
+  void _checkStatus(ConnectivityResult result) async {
+    bool isOnline = false;
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      isOnline = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      isOnline = false;
+    }
+    _controller.sink.add({result: isOnline});
+  }
+  void disposeStream() => _controller.close();
 }
