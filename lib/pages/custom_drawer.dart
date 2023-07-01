@@ -8,6 +8,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -338,7 +339,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => TermsAndConditionsWebView()),
+                            builder: (context) => CustomWebView(url:'https://${Urls.terms}')),
                       );
                     },
                     child: commonText(
@@ -355,11 +356,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   InkWell(
                     onTap: () {
                       Navigator.of(context).pop();
-
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PrivacyAndPolicyWebView()),
+                            builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',)),
                       );
                     },
                     child: commonText(

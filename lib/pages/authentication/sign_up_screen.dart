@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_dropdown.dart';
@@ -506,7 +507,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ..onTap = () async {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) {
-                                          return TermsAndConditionsWebView();
+                                          return CustomWebView(url:'https://${Urls.terms}');
                                         }));
                                   },
                                 style: TextStyle(
@@ -526,7 +527,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ..onTap = () async {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) {
-                                          return PrivacyAndPolicyWebView();
+                                          return CustomWebView(url: 'https://${Urls.privacy}',);
                                         }));
                                   },
                                 style: TextStyle(

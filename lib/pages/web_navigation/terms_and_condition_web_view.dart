@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:performarine/common_widgets/utils/urls.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -51,7 +53,7 @@ class _TermsAndConditionsWebViewState extends State<TermsAndConditionsWebView> {
       ),
       body: WebView(
         initialUrl:
-        'https://www.google.com', // Replace with your desired URL
+        'https://${Urls.terms}', // Replace with your desired URL
       ),
     );
   }

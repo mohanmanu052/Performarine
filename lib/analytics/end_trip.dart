@@ -39,8 +39,7 @@ class EndTrip {
     debugPrint("endtrip location:$latitude");
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
-    Utils.customPrint(
-        'TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')}');
+    Utils.customPrint('TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')}');
 
     String tripId = tripData![0];
     String vesselId = tripData[1];

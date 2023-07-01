@@ -4,3 +4,4 @@ const inter = "Inter";
 
 const nauticalMile = 'NM';
 const knot = 'KT';
+

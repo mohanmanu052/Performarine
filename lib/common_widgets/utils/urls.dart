@@ -24,4 +24,8 @@ class Urls {
 
   // Reports module
   static const String reportModule = '/api/reports';
+//  Privacy & terms
+  static const privacy="$baseUrl/privacy";
+  static const terms="$baseUrl/terms";
+
 }

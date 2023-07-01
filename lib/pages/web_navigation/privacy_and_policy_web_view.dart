@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class PrivacyAndPolicyWebView extends StatefulWidget {
+class CustomWebView extends StatefulWidget {
   String? url;
-  PrivacyAndPolicyWebView({this.url});
+  CustomWebView({this.url});
   @override
-  _PrivacyAndPolicyWebViewState createState() => _PrivacyAndPolicyWebViewState();
+  _CustomWebViewState createState() => _CustomWebViewState();
 }
 
-class _PrivacyAndPolicyWebViewState extends State<PrivacyAndPolicyWebView> {
+class _CustomWebViewState extends State<CustomWebView> {
   @override
   Widget build(BuildContext context) {
-    print('Url is: ${widget.url}');
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -51,7 +51,7 @@ class _PrivacyAndPolicyWebViewState extends State<PrivacyAndPolicyWebView> {
       ),
       body: WebView(
         initialUrl:
-        'https://www.google.com', // Replace with your desired URL
+        widget.url, // Replace with your desired URL
       ),
     );
   }
