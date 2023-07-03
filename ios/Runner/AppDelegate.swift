@@ -5,6 +5,7 @@ import flutter_local_notifications
 import FirebaseCore
 import path_provider_foundation
 import background_locator_2
+import Firebase
 
 func registerPlugins(registry: FlutterPluginRegistry) {
     GeneratedPluginRegistrant.register(with: registry)

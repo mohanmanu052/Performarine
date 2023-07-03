@@ -78,7 +78,7 @@ dependencies:
   #airplane_mode_checker: ^2.0.0
   #location_permissions: ^3.0.0+1
   uni_links: ^0.5.1
-
+  firebase_crashlytics: ^3.3.3
 
 
 dependency_overrides:

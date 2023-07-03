@@ -120,12 +120,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         onTap: () {
                           Navigator.of(context).pop();
 
-                          Navigator.pushAndRemoveUntil(
+                          throw Exception();
+
+                          /*Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => HomePage(),
                               ),
-                              ModalRoute.withName(""));
+                              ModalRoute.withName(""));*/
                         },
                         child: commonText(
                             context: context,
