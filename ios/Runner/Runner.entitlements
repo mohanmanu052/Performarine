@@ -5,6 +5,7 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:goeapidev.azurewebsites.net</string>
+		<string>applinks:goeapiuat.azurewebsites.net</string>
 	</array>
 </dict>
 </plist>

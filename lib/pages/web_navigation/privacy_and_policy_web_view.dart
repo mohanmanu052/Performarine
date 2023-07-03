@@ -18,10 +18,6 @@ class _CustomWebViewState extends State<CustomWebView> {
         elevation: 0.0,
         backgroundColor: Color(0xfff2fffb),
         centerTitle: true,
-        title: Text(
-          "Privacy Policy ",
-          style: TextStyle(color: Colors.black),
-        ),
         leading: IconButton(
           onPressed: () async {
             Navigator.of(context).pop(true);

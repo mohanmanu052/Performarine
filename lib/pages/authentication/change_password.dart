@@ -235,25 +235,24 @@ class _ChangePasswordState extends State<ChangePassword> {
                           onTap: () async {
                             if (formKey.currentState!.validate()) {
                               bool check = await Utils().check(scaffoldKey);
-
-                              Utils.customPrint("NETWORK $check");
-
+                              // Utils.customPrint("NETWORK $check");
                               FocusScope.of(context)
                                   .requestFocus(FocusNode());
                               if(check){
                                 setState(() {
                                   isBtnClick = true;
                                 });
-
                                 commonProvider.changePassword(context,commonProvider.loginModel!.token!, currentPasswordController.text.trim(), newPasswordController.text.trim(), scaffoldKey).then((value){
                                   if(value != null){
                                     setState(() {
                                       isBtnClick = false;
                                     });
+
                                     print("Status code of change password is: ${value.statusCode}");
                                     if(value.status!){
                                       //signOut();
                                       if(widget.isChange!){
+                                       // Navigator.pop(context);
                                         Navigator.pop(context);
                                       }else{
                                         Navigator.pop(context);
