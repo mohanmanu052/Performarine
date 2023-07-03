@@ -251,7 +251,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                       isBtnClick = false;
                                     });
                                     print("Status code of change password is: ${value.statusCode}");
-                                    if(value.statusCode == 200  && value.message == "Password updated successfully!" ){
+                                    if(value.status!){
                                       //signOut();
                                       if(widget.isChange!){
                                         Navigator.pop(context);
