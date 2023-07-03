@@ -32,8 +32,7 @@ func registerPlugins(registry: FlutterPluginRegistry) {
 
     FirebaseApp.configure()
     GeneratedPluginRegistrant.register(with: self)
-    return
-    super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
   func registerOtherPlugins() {
