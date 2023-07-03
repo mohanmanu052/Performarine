@@ -329,6 +329,10 @@ class _SignInScreenState extends State<SignInScreen> {
                             borderColor: buttonBGColor,
                             width: displayWidth(context),
                             onTap: () async {
+
+                              // throw Exception();
+                              // return;
+
                               if (formKey.currentState!.validate()) {
                                   bool check = await Utils().check(scaffoldKey);
 

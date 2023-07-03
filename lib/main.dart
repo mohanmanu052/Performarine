@@ -43,6 +43,7 @@ void main() async {
   tz.initializeTimeZones();
 
   await Firebase.initializeApp();
+
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };

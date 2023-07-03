@@ -665,6 +665,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 await Utils.getLocationPermission(
                                     context, scaffoldKey);
                               }
+                              // return;
 
                               bool isLocationPermitted =
                                   await Permission.locationAlways.isGranted;
@@ -748,7 +749,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     Utils.showSnackBar(context,
                                         scaffoldKey: scaffoldKey,
                                         message:
-                                            'Location permissions are denied without permissions we are unable to start the trip');
+                                            'Location 4 permissions are denied without permissions we are unable to start the trip');
 
                                     Future.delayed(Duration(seconds: 3),
                                         () async {
