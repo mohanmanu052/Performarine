@@ -22,6 +22,7 @@ import 'package:performarine/provider/report_module_provider.dart';
 import 'package:performarine/provider/reset_password_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../models/change_password_model.dart';
 import '../models/forgot_password_model.dart';
@@ -63,16 +64,71 @@ class CommonProvider with ChangeNotifier {
   }
 
   /// to check if bluetooth is enabled or not
-  Future<bool> checkIfBluetoothIsEnabled() async{
+  Future<dynamic> checkIfBluetoothIsEnabled(GlobalKey<ScaffoldState> scaffoldKey) async{
 
-    FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
-    final isOn = await _flutterBlue.isOn;
-    if(isOn) isBluetoothEnabled =  true;
+    bool isGranted = await Permission.bluetooth.isGranted;
+    print('isGranted: $isGranted');
+    if(!isGranted){
+      await Permission.bluetooth.request();
+      bool isPermGranted = await Permission.bluetooth.isGranted;
 
-    await Future.delayed(const Duration(seconds: 1));
-    isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
-    notifyListeners();
-    return isBluetoothEnabled;
+      if(isPermGranted){
+        FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+              final isOn = await _flutterBlue.isOn;
+              if(isOn) isBluetoothEnabled =  true;
+
+              await Future.delayed(const Duration(seconds: 1));
+              isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+              notifyListeners();
+        return isBluetoothEnabled;
+      }
+      else{
+        Utils.showSnackBar(scaffoldKey.currentContext!,
+                  scaffoldKey: scaffoldKey,
+                  message:
+                  'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
+
+              Future.delayed(Duration(seconds: 3),
+                      () async {
+                    await openAppSettings();
+                  });
+        return null;
+      }
+    }
+    else{
+      FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+      final isOn = await _flutterBlue.isOn;
+      if(isOn) isBluetoothEnabled =  true;
+
+      await Future.delayed(const Duration(seconds: 1));
+      isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+      notifyListeners();
+      return isBluetoothEnabled;
+    }
+    // if(isGra)
+
+    // Permission.bluetooth.request().then((value)async
+    // {
+    //   if(value == PermissionStatus.denied || value == PermissionStatus.permanentlyDenied)
+    //     {
+    //       Utils.showSnackBar(scaffoldKey.currentContext!,
+    //           scaffoldKey: scaffoldKey,
+    //           message:
+    //           'Bluetooth is needed. Please enable bluetooth of device.');
+    //     }
+    //   else if(value == PermissionStatus.granted)
+    //     {
+    //       FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+    //       final isOn = await _flutterBlue.isOn;
+    //       if(isOn) isBluetoothEnabled =  true;
+    //
+    //       await Future.delayed(const Duration(seconds: 1));
+    //       isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+    //       notifyListeners();
+    //     }
+    //
+    // });
+
   }
 
   /// Login

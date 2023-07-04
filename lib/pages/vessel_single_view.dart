@@ -584,25 +584,28 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 return;
                               } else {
                                 if (Platform.isIOS) {
-                                  bool isBluetoothEnable =
-                                      await commonProvider.checkIfBluetoothIsEnabled();
+                                  dynamic isBluetoothEnable =
+                                      await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
 
-                                  if (isBluetoothEnable) {
-                                    vessel!.add(widget.vessel!);
-                                    await locationPermissions(
-                                        widget.vessel!.vesselSize!,
-                                        widget.vessel!.name!,
-                                        widget.vessel!.id!);
-                                  } else {
-                                    showBluetoothDialog(context);
+                                  if(isBluetoothEnable != null){
+                                    if (isBluetoothEnable) {
+                                      vessel!.add(widget.vessel!);
+                                      await locationPermissions(
+                                          widget.vessel!.vesselSize!,
+                                          widget.vessel!.name!,
+                                          widget.vessel!.id!);
+                                    } else {
+                                      showBluetoothDialog(context);
+                                    }
                                   }
+
                                 } else {
                                   bool isNDPermittedOne = await Permission
                                       .bluetoothConnect.isGranted;
 
                                   if (isNDPermittedOne) {
                                     bool isBluetoothEnable =
-                                        await commonProvider.checkIfBluetoothIsEnabled();
+                                        await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
 
                                     if (isBluetoothEnable) {
                                       vessel!.add(widget.vessel!);
@@ -619,7 +622,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         .bluetoothConnect.isGranted;
                                     if (isNDPermitted) {
                                       bool isBluetoothEnable =
-                                          await commonProvider.checkIfBluetoothIsEnabled();
+                                          await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
 
                                       if (isBluetoothEnable) {
                                         vessel!.add(widget.vessel!);
@@ -715,7 +718,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                       if (isNDPermitted) {
                                         bool isBluetoothEnable =
-                                        await commonProvider.checkIfBluetoothIsEnabled();
+                                        await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
 
                                         if (isBluetoothEnable) {
                                           vessel!.add(widget.vessel!);
@@ -732,7 +735,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             .bluetoothConnect.isGranted;
                                         if (isNDPermitted) {
                                           bool isBluetoothEnable =
-                                          await commonProvider.checkIfBluetoothIsEnabled();
+                                          await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
 
                                           if (isBluetoothEnable) {
                                             vessel!.add(widget.vessel!);
@@ -2144,6 +2147,20 @@ class VesselSingleViewState extends State<VesselSingleView> {
       } else {
         bool isNearByDevicePermitted =
             await Permission.bluetoothConnect.isGranted;
+
+        // if(await Permission.bluetooth.isPermanentlyDenied){
+        //   Utils.showSnackBar(context,
+        //       scaffoldKey: scaffoldKey,
+        //       message:
+        //       'Bluetooth is needed. Please enable bluetooth of device.');
+        //
+        //   Future.delayed(Duration(seconds: 3),
+        //           () async {
+        //         await openAppSettings();
+        //       });
+        // }
+
+        // print('XXXX: ${await Permission.bluetooth.isPermanentlyDenied}');
 
         if (!isNearByDevicePermitted) {
           await Permission.bluetoothConnect.request();

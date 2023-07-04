@@ -44,7 +44,7 @@
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>This application requires bluetooth services to work</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>This application requires bluetooth services to work</string>
+	<string>This application requires bluetooth services to work.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>This application requires calender service to work</string>
 	<key>NSCameraUsageDescription</key>

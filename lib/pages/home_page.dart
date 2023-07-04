@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
     commonProvider.getTripsCount();
-    commonProvider.checkIfBluetoothIsEnabled();
+    commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
 
     getVesselFuture = _databaseService.vessels();
 
