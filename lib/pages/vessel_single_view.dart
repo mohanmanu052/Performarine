@@ -585,7 +585,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               } else {
                                 if (Platform.isIOS) {
                                   bool isBluetoothEnable =
-                                      await blueIsOn();
+                                      await commonProvider.checkIfBluetoothIsEnabled();
 
                                   if (isBluetoothEnable) {
                                     vessel!.add(widget.vessel!);
@@ -602,7 +602,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                   if (isNDPermittedOne) {
                                     bool isBluetoothEnable =
-                                        await blueIsOn();
+                                        await commonProvider.checkIfBluetoothIsEnabled();
 
                                     if (isBluetoothEnable) {
                                       vessel!.add(widget.vessel!);
@@ -619,7 +619,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         .bluetoothConnect.isGranted;
                                     if (isNDPermitted) {
                                       bool isBluetoothEnable =
-                                          await blueIsOn();
+                                          await commonProvider.checkIfBluetoothIsEnabled();
 
                                       if (isBluetoothEnable) {
                                         vessel!.add(widget.vessel!);
@@ -656,7 +656,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   }
                                 }
                               }
-                            } else {
+                            }
+                            else {
                               /// WIU
                               bool isWIULocationPermitted =
                                   await Permission.locationWhenInUse.isGranted;
@@ -697,7 +698,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                   if (isNDPermitted) {
                                     bool isBluetoothEnable =
-                                        await blueIsOn();
+                                        await commonProvider.checkIfBluetoothIsEnabled();
 
                                     if (isBluetoothEnable) {
                                       vessel!.add(widget.vessel!);
@@ -714,7 +715,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         .bluetoothConnect.isGranted;
                                     if (isNDPermitted) {
                                       bool isBluetoothEnable =
-                                          await blueIsOn();
+                                          await commonProvider.checkIfBluetoothIsEnabled();
 
                                       if (isBluetoothEnable) {
                                         vessel!.add(widget.vessel!);
@@ -728,11 +729,69 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     }
                                   }
                                 }
-                              } else {
+                              }
+                              else if(await Permission.locationAlways.isPermanentlyDenied)
+                                {
+                                  if(Platform.isIOS)
+                                    {
+                                      PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message: "Location permissions are denied without permissions we are unable to start the trip");
+
+                                        Future.delayed(Duration(seconds: 3),
+                                                () async {
+                                              await openAppSettings();
+                                            });
+                                        return PermissionStatus.denied;
+                                      });
+
+                                      if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
+                                      {
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message: "Location permissions are denied without permissions we are unable to start the trip");
+
+                                        Future.delayed(Duration(seconds: 3),
+                                                () async {
+                                              await openAppSettings();
+                                            });
+                                      }
+                                    }else
+                                      {
+                                        if (!isLocationDialogBoxOpen) {
+                                          Utils.customPrint("ELSE CONDITION");
+
+                                          showDialog(
+                                              context: scaffoldKey.currentContext!,
+                                              builder: (BuildContext context) {
+                                                isLocationDialogBoxOpen = true;
+                                                return LocationPermissionCustomDialog(
+                                                  isLocationDialogBox: true,
+                                                  text:
+                                                  'Always Allow Access to “Location”',
+                                                  subText:
+                                                  "To track your trip while you use other apps we need background access to your location",
+                                                  buttonText: 'Ok',
+                                                  buttonOnTap: () async {
+                                                    Get.back();
+
+                                                    await openAppSettings();
+                                                  },
+                                                );
+                                              }).then((value) {
+                                            isLocationDialogBoxOpen = false;
+                                          });
+                                        }
+                                      }
+                                }
+                              else {
                                 if (Platform.isIOS) {
+                                 // bool? isLocationAlwaysPermitted;
                                   await Permission.locationAlways.request();
+
                                   bool isLocationAlwaysPermitted =
-                                      await Permission.locationAlways.isGranted;
+                                  await Permission.locationAlways.isGranted;
 
                                   Utils.customPrint(
                                       'IOS PERMISSION GIVEN OUTSIDE');
@@ -749,7 +808,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     Utils.showSnackBar(context,
                                         scaffoldKey: scaffoldKey,
                                         message:
-                                            'Location 4 permissions are denied without permissions we are unable to start the trip');
+                                            'Location permissions are denied without permissions we are unable to start the trip');
 
                                     Future.delayed(Duration(seconds: 3),
                                         () async {
@@ -800,8 +859,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
     final isOn = await _flutterBlue.isOn;
     if(isOn) return true;
 
-    sleep(const Duration(milliseconds: 200));
-    return await _flutterBlue.isOn;
+    await Future.delayed(const Duration(seconds: 1));
+    return await FlutterBluePlus.instance.isOn;
   }
 
   /// Check location permission

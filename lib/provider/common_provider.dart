@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/add_vessel_model.dart';
@@ -50,6 +51,7 @@ class CommonProvider with ChangeNotifier {
   ForgotPasswordModel? forgotPasswordModel;
   ResetPasswordModel? resetPasswordModel;
   ChangePasswordModel? changePasswordModel;
+  bool isBluetoothEnabled = false;
 
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
@@ -58,6 +60,19 @@ class CommonProvider with ChangeNotifier {
       loginModel = LoginModel.fromJson(json.decode(loginData));
       // notifyListeners();
     }
+  }
+
+  /// to check if bluetooth is enabled or not
+  Future<bool> checkIfBluetoothIsEnabled() async{
+
+    FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+    final isOn = await _flutterBlue.isOn;
+    if(isOn) isBluetoothEnabled =  true;
+
+    await Future.delayed(const Duration(seconds: 1));
+    isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+    notifyListeners();
+    return isBluetoothEnabled;
   }
 
   /// Login

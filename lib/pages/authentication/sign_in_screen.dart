@@ -63,6 +63,7 @@ class _SignInScreenState extends State<SignInScreen> {
     super.initState();
 
     commonProvider = context.read<CommonProvider>();
+    commonProvider.checkIfBluetoothIsEnabled();
 
     emailController.addListener(() {
       if (emailController.text.isNotEmpty) {

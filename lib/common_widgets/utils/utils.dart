@@ -121,11 +121,12 @@ class Utils {
       if (status == PermissionStatus.denied) {
         await Permission.locationWhenInUse.request();
         bool isGranted = await Permission.locationWhenInUse.isGranted;
+        debugPrint("LOCATION PERMISSION $isGranted");
         if (!isGranted) {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey,
               message:
-                  'Location 2 permissions are denied without permissions we are unable to start the trip');
+                  'Location permissions are denied without permissions we are unable to start the trip');
           Future.delayed(Duration(seconds: 2), () async {
             await openAppSettings();
           });
@@ -134,7 +135,7 @@ class Utils {
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey,
             message:
-                'Location 3 permissions are denied without permissions we are unable to start the trip');
+                'Location permissions are denied without permissions we are unable to start the trip');
         Future.delayed(Duration(seconds: 2), () async {
           await openAppSettings();
         });
