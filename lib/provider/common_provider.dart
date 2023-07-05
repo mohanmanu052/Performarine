@@ -64,70 +64,91 @@ class CommonProvider with ChangeNotifier {
   }
 
   /// to check if bluetooth is enabled or not
-  Future<dynamic> checkIfBluetoothIsEnabled(GlobalKey<ScaffoldState> scaffoldKey) async{
+  Future<dynamic> checkIfBluetoothIsEnabled(GlobalKey<ScaffoldState> scaffoldKey, VoidCallback showBluetoothDialog) async{
 
-    bool isGranted = await Permission.bluetooth.isGranted;
-    print('isGranted: $isGranted');
-    if(!isGranted){
-      await Permission.bluetooth.request();
-      bool isPermGranted = await Permission.bluetooth.isGranted;
+    bool isBLEEnabled = await flutterBluePlus!.isOn;
+    print('isBLEEnabled: $isBLEEnabled');
 
-      if(isPermGranted){
-        FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
-              final isOn = await _flutterBlue.isOn;
-              if(isOn) isBluetoothEnabled =  true;
+    if(isBLEEnabled){
+      bool isGranted = await Permission.bluetooth.isGranted;
+      print('isGranted: $isGranted');
+      if(!isGranted){
+        await Permission.bluetooth.request();
+        bool isPermGranted = await Permission.bluetooth.isGranted;
 
-              await Future.delayed(const Duration(seconds: 1));
-              isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
-              notifyListeners();
-        return isBluetoothEnabled;
+        if(isPermGranted){
+
+          FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+          final isOn = await _flutterBlue.isOn;
+          if(isOn) isBluetoothEnabled =  true;
+
+          await Future.delayed(const Duration(seconds: 1));
+          isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+          notifyListeners();
+          return isBluetoothEnabled;
+        }
+        else{
+          Utils.showSnackBar(scaffoldKey.currentContext!,
+              scaffoldKey: scaffoldKey,
+              message:
+              'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
+
+          Future.delayed(Duration(seconds: 3),
+                  () async {
+                await openAppSettings();
+              });
+          return null;
+        }
       }
       else{
-        Utils.showSnackBar(scaffoldKey.currentContext!,
-                  scaffoldKey: scaffoldKey,
-                  message:
-                  'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
 
-              Future.delayed(Duration(seconds: 3),
-                      () async {
-                    await openAppSettings();
-                  });
-        return null;
+        FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+        final isOn = await _flutterBlue.isOn;
+        if(isOn) isBluetoothEnabled =  true;
+
+        await Future.delayed(const Duration(seconds: 1));
+        isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+        notifyListeners();
+        return isBluetoothEnabled;
       }
     }
     else{
-      FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
-      final isOn = await _flutterBlue.isOn;
-      if(isOn) isBluetoothEnabled =  true;
+      bool isGranted = await Permission.bluetooth.isGranted;
+      print('isGranted: $isGranted');
+      // print('isGranted: ${await Permission.bluetooth.isPermanentlyDenied}');
+      if(!isGranted){
+        if(await Permission.bluetooth.isPermanentlyDenied){
+          Utils.showSnackBar(scaffoldKey.currentContext!,
+              scaffoldKey: scaffoldKey,
+              message:
+              'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
 
-      await Future.delayed(const Duration(seconds: 1));
-      isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
-      notifyListeners();
-      return isBluetoothEnabled;
+          Future.delayed(Duration(seconds: 3),
+                  () async {
+                await openAppSettings();
+              });
+          return null;
+        }
+        else{
+          await Permission.bluetooth.request();
+        }
+      }
+      else{
+        bool isBCGranted = await flutterBluePlus!.isOn;
+        print('isBCGranted: $isBCGranted');
+        if(!isBCGranted){
+          showBluetoothDialog.call();
+          Navigator.pop(scaffoldKey.currentContext!);
+        }
+        else{
+          print('VOID CALL BACK 2');
+          showBluetoothDialog.call();
+          return true;
+        }
+      }
     }
-    // if(isGra)
 
-    // Permission.bluetooth.request().then((value)async
-    // {
-    //   if(value == PermissionStatus.denied || value == PermissionStatus.permanentlyDenied)
-    //     {
-    //       Utils.showSnackBar(scaffoldKey.currentContext!,
-    //           scaffoldKey: scaffoldKey,
-    //           message:
-    //           'Bluetooth is needed. Please enable bluetooth of device.');
-    //     }
-    //   else if(value == PermissionStatus.granted)
-    //     {
-    //       FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
-    //       final isOn = await _flutterBlue.isOn;
-    //       if(isOn) isBluetoothEnabled =  true;
-    //
-    //       await Future.delayed(const Duration(seconds: 1));
-    //       isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
-    //       notifyListeners();
-    //     }
-    //
-    // });
+
 
   }
 

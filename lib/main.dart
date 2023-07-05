@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -28,6 +29,8 @@ Timer? timer;
 Timer? tripDurationTimer;
 Directory? ourDirectory;
 
+FlutterBluePlus? flutterBluePlus;
+
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 final StreamController<String?> selectNotificationStream =
@@ -35,6 +38,8 @@ final StreamController<String?> selectNotificationStream =
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  flutterBluePlus = FlutterBluePlus.instance;
 
   configEasyLoading();
 

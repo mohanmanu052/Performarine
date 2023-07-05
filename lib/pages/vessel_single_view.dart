@@ -585,7 +585,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               } else {
                                 if (Platform.isIOS) {
                                   dynamic isBluetoothEnable =
-                                      await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
+
+                                  Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                        showBluetoothDialog(context);
+                                      });
 
                                   if(isBluetoothEnable != null){
                                     if (isBluetoothEnable) {
@@ -605,7 +608,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                   if (isNDPermittedOne) {
                                     bool isBluetoothEnable =
-                                        await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
+                                    Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                          showBluetoothDialog(context);
+                                        });
 
                                     if (isBluetoothEnable) {
                                       vessel!.add(widget.vessel!);
@@ -622,7 +627,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         .bluetoothConnect.isGranted;
                                     if (isNDPermitted) {
                                       bool isBluetoothEnable =
-                                          await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
+                                      Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                            showBluetoothDialog(context);
+                                          });
 
                                       if (isBluetoothEnable) {
                                         vessel!.add(widget.vessel!);
@@ -718,7 +725,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                       if (isNDPermitted) {
                                         bool isBluetoothEnable =
-                                        await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
+                                        Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                          showBluetoothDialog(context);
+                                        });
 
                                         if (isBluetoothEnable) {
                                           vessel!.add(widget.vessel!);
@@ -735,7 +744,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             .bluetoothConnect.isGranted;
                                         if (isNDPermitted) {
                                           bool isBluetoothEnable =
-                                          await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
+                                          Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                            showBluetoothDialog(context);
+                                          });
 
                                           if (isBluetoothEnable) {
                                             vessel!.add(widget.vessel!);
@@ -2165,6 +2176,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
         if (!isNearByDevicePermitted) {
           await Permission.bluetoothConnect.request();
         }
+        else{
+          await Permission.bluetooth.request();
+        }
       }
     }).catchError((e) {
       print("ENABLE BT$e");
@@ -2839,6 +2853,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
       }
     });
   }
+
+  /*Future<bool> blueIsOn() async
+  {
+    FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+    final isOn = await _flutterBlue.isOn;
+    if(isOn) return true;
+
+    sleep(const Duration(milliseconds: 200));
+    return await _flutterBlue.isOn;
+  }*/
 
   /// To get all the data of vessel (trip count, avg trip speed etc)
   void getVesselAnalytics(String vesselId) async {
