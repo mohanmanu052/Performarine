@@ -563,7 +563,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               bool isNDPermDenied = await Permission
                                   .bluetoothConnect.isPermanentlyDenied;
 
-                              print('BYEE: $isNDPermDenied');
+                              // print('BYEE: $isNDPermDenied');
                               if (isNDPermDenied) {
                                 showDialog(
                                     context: context,
@@ -577,7 +577,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         buttonOnTap: () async {
                                           Get.back();
 
-                                          await openAppSettings();
+                                          // await openAppSettings();
                                         },
                                       );
                                     });
@@ -687,10 +687,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         message:
                                         'Location permissions are denied without permissions we are unable to start the trip');
 
-                                    Future.delayed(Duration(seconds: 3),
-                                            () async {
-                                          await openAppSettings();
-                                        });
+                                    // Future.delayed(Duration(seconds: 3),
+                                    //         () async {
+                                    //       await openAppSettings();
+                                    //     });
                                   }
                               }
                               else
