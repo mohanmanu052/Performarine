@@ -138,7 +138,7 @@ class CommonProvider with ChangeNotifier {
         print('isBCGranted: $isBCGranted');
         if(!isBCGranted){
           showBluetoothDialog.call();
-          Navigator.pop(scaffoldKey.currentContext!);
+         // Navigator.pop(scaffoldKey.currentContext!);
         }
         else{
           print('VOID CALL BACK 2');
