@@ -233,7 +233,7 @@ PODS:
   - PromisesObjC (2.2.0)
   - PromisesSwift (2.2.0):
     - PromisesObjC (= 2.2.0)
-  - Protobuf (3.23.4)
+  - Protobuf (3.23.3)
   - ReachabilitySwift (5.0.0)
   - SDWebImage (5.16.0):
     - SDWebImage/Core (= 5.16.0)
@@ -420,7 +420,7 @@ SPEC CHECKSUMS:
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
   PromisesSwift: cf9eb58666a43bbe007302226e510b16c1e10959
-  Protobuf: c6bc59bbab3d38a71c67f62d7cb7ca8f8ea4eca1
+  Protobuf: d9c3d7e5a3574aa6a5d521f2d9f733c76d294be8
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: 2aea163b50bfcb569a2726b6a754c54a4506fcf6
   SDWebImageWebPCoder: f0f287cee4cd96a59937fbf3c77a8cfda9ba67b0

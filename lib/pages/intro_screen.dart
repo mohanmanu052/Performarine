@@ -260,7 +260,7 @@ class _IntroScreenState extends State<IntroScreen> {
         } else {
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(builder: (context) => HomePage(isAppKilled:  true)),
               ModalRoute.withName(""));
         }
       } else {
@@ -283,7 +283,7 @@ class _IntroScreenState extends State<IntroScreen> {
 
       reInitializeService();
 
-      // final isRunning1 = await BackgroundLocator.isServiceRunning();
+       //final isRunning1 = await BackgroundLocator.isServiceRunning();
       //
       // StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
       //
@@ -303,13 +303,13 @@ class _IntroScreenState extends State<IntroScreen> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (context) => HomePage(tripData: tripData ?? [])),
+                  builder: (context) => HomePage(tripData: tripData ?? [], isAppKilled:  true,)),
               ModalRoute.withName(""));
         } else if (!isCalledFromNoti) {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (context) => HomePage(tripData: tripData ?? [])),
+                  builder: (context) => HomePage(tripData: tripData ?? [], isAppKilled:  true)),
               ModalRoute.withName(""));
         } else {
           Navigator.pushAndRemoveUntil(
@@ -338,7 +338,7 @@ class _IntroScreenState extends State<IntroScreen> {
       } else if (isUserLoggedIn) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomePage()),
+            MaterialPageRoute(builder: (context) => HomePage(isAppKilled:  true)),
             ModalRoute.withName(""));
       } else {
         Navigator.pushAndRemoveUntil(
@@ -576,7 +576,7 @@ class _IntroScreenState extends State<IntroScreen> {
               if(isUserLoggedIn)
               {
                 sharedPreferences!.setBool('reset_dialog_opened', false);
-                Get.to(HomePage(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(),),arguments: arguments);
+                Get.to(HomePage(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
 
               }
             }
@@ -629,7 +629,7 @@ class _IntroScreenState extends State<IntroScreen> {
               if(isUserLoggedIn)
               {
                 sharedPreferences!.setBool('reset_dialog_opened', false);
-                Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
+                Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
 
               }
             }

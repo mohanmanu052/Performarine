@@ -22,6 +22,7 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../common_widgets/widgets/status_tag.dart';
 import '../models/reports_model.dart';
@@ -33,6 +34,7 @@ class TripAnalyticsScreen extends StatefulWidget {
   List<CreateVessel>? vesselDetails;
   final String? vesselId, calledFrom;
   final bool? tripIsRunningOrNot;
+  final bool isAppKilled;
   TripAnalyticsScreen(
       {Key? key,
       this.vesselName,
@@ -40,6 +42,7 @@ class TripAnalyticsScreen extends StatefulWidget {
       this.tripId,
       this.vesselId,
       this.tripIsRunningOrNot,
+      this.isAppKilled = false,
       this.calledFrom})
       : super(key: key);
 
@@ -66,7 +69,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   bool isTripUploaded = false,
       vesselIsSync = false,
       isDataUpdated = false,
-      getTripDetailsFromNoti = false;
+      getTripDetailsFromNoti = false,
+      isEndTripBtnClicked = false;
 
   int progress = 0;
   Timer? durationTimer;
@@ -85,6 +89,16 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     Utils.customPrint('CURRENT TIME TIME ${widget.tripId}');
     Utils.customPrint('CURRENT TIME TIME ${widget.vesselId}');
     Utils.customPrint('CURRENT TIME TIME ${widget.tripIsRunningOrNot}');
+    Utils.customPrint('CURRENT TIME TIME ${widget.isAppKilled}');
+
+    if(widget.isAppKilled){
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Future.delayed(Duration(seconds: 1), (){
+          showEndTripDialogBox(context);
+        });
+      });
+
+    }
 
     sharedPreferences!.remove('sp_key_called_from_noti');
 
@@ -95,7 +109,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
     if (tripIsRunning) {
       getRealTimeTripDetails();
+      Wakelock.enable();
     }
+
+
 
     commonProvider = context.read<CommonProvider>();
 
@@ -1521,6 +1538,177 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
               ),
       ),
     );
+  }
+
+  showEndTripDialogBox(BuildContext context) {
+    if(sharedPreferences != null){
+      sharedPreferences!.setBool('reset_dialog_opened', true);
+    }
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.45,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(context) * 0.1,
+                                width: displayWidth(context),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                  'Last time you used performarine. there is a trip in progress. do you want to end the trip or continue?',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.04,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.012,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 8.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Continue Trip', context, buttonBGColor,
+                                          () async {
+                                        Navigator.of(context).pop();
+                                      },
+                                      displayWidth(context) * 0.35,
+                                      displayHeight(context) * 0.054,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.015,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              SizedBox(width: 10,),
+                              Expanded(
+                                child: Center(
+                                  child: isEndTripBtnClicked
+                                      ? CircularProgressIndicator()
+                                      : CommonButtons.getAcceptButton(
+                                      'End Trip', context, buttonBGColor,
+                                          () async {
+
+                                        setDialogState(() {
+                                          isEndTripBtnClicked = true;
+                                        });
+                                        List<String>? tripData = sharedPreferences!
+                                            .getStringList('trip_data');
+
+                                        String tripId = '';
+                                        if (tripData != null) {
+                                          tripId = tripData[0];
+                                        }
+
+                                        final currentTrip =
+                                        await _databaseService.getTrip(tripId);
+
+                                        DateTime createdAtTime =
+                                        DateTime.parse(currentTrip.createdAt!);
+
+                                        var durationTime = DateTime.now()
+                                            .toUtc()
+                                            .difference(createdAtTime);
+                                        String tripDuration =
+                                        Utils.calculateTripDuration(
+                                            ((durationTime.inMilliseconds) / 1000)
+                                                .toInt());
+
+                                        Utils.customPrint(
+                                            'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+
+                                        EndTrip().endTrip(
+                                            context: context,
+                                            scaffoldKey: scaffoldKey,
+                                            duration: tripDuration,
+                                            onEnded: () async {
+
+                                              // Future.delayed(Duration(seconds: 1), (){
+                                              //   setDialogState(() {
+                                              //     isEndTripBtnClicked = false;
+                                              //   });
+                                              //
+                                              //   Navigator.of(context).pop();
+                                              // });
+                                              //
+                                              // Utils.customPrint('TRIPPPPPP ENDEDDD:');
+                                              // setState(() {
+                                              //   getVesselFuture = _databaseService.vessels();
+                                              // });
+                                            });
+                                      },
+                                      displayWidth(context) * 0.35,
+                                      displayHeight(context) * 0.054,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.015,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }).then((value) {
+
+    });
   }
 
   /// Check vessel is sync or not

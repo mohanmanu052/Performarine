@@ -9,6 +9,7 @@ import 'package:performarine/analytics/location_service_repository.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:wakelock/wakelock.dart';
 
 class EndTrip {
   endTrip({
@@ -95,6 +96,8 @@ class EndTrip {
 
     await DatabaseService().updateVesselDataWithDurationSpeedDistance(
         tripDuration, tripDistance, tripSpeed, tripAvgSpeed, vesselId);
+
+    Wakelock.disable();
 
     //await flutterLocalNotificationsPlugin.cancel(888);
     await flutterLocalNotificationsPlugin.cancel(889);

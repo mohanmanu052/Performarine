@@ -152,6 +152,7 @@ Future<void> initializeService() async {
       Get.to(TripAnalyticsScreen(
           tripId: tripData![0],
           vesselId: tripData[1],
+          isAppKilled: true,
           tripIsRunningOrNot: isTripStarted));
     }
     return;
@@ -322,6 +323,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   Get.to(TripAnalyticsScreen(
                       tripId: tripData![0],
                       vesselId: tripData[1],
+                      isAppKilled: true,
                       tripIsRunningOrNot: isTripStarted));
 
                   // Navigator.pushAndRemoveUntil(

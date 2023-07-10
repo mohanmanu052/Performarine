@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -28,9 +29,9 @@ import 'package:provider/provider.dart';
 class HomePage extends StatefulWidget {
   List<String> tripData;
   final int tabIndex;
-  final bool? isComingFromReset;
+  final bool? isComingFromReset, isAppKilled;
   String token;
-  HomePage({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset,this.token = ""})
+  HomePage({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset,this.token = "", this.isAppKilled = false})
       : super(key: key);
 
   @override
@@ -47,6 +48,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   List<Trip> trips = [];
   int tripsCount = 0;
   int currentTabIndex = 0;
+
+  bool isEndTripBtnClicked = false;
 
   late Future<List<CreateVessel>> getVesselFuture;
 
@@ -85,7 +88,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
               {
                 WidgetsBinding.instance.addPostFrameCallback((duration)
                 {
-                  showEndTripDialogBox(context,updatedToken);
+                  showResetPasswordDialogBox(context,updatedToken);
 
                 });
               }
@@ -123,12 +126,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
       });
     });
 
+    /*sharedPreferences!.reload();
+    bool? isAppKilledFromBg = sharedPreferences!.getBool('app_killed_from_bg');
+*/
+    debugPrint("IS APP KILLED FROM BG ${widget.isAppKilled}");
+
+    bool? isTripStarted = sharedPreferences!.getBool('trip_started');
+
+    debugPrint("IS APP KILLED FROM BG 1212 $isTripStarted");
+
+    if(widget.isAppKilled!)
+      {
+        if(isTripStarted != null)
+          {
+            if(isTripStarted)
+            {
+              Future.delayed(Duration(microseconds: 500), (){
+                showEndTripDialogBox(context);
+              });
+
+            }
+          }
+
+      }
+
     if(widget.isComingFromReset != null)
       {
         if(widget.isComingFromReset!)
           {
             Future.delayed(Duration(microseconds: 500), (){
-              showEndTripDialogBox(context, widget.token);
+              showResetPasswordDialogBox(context, widget.token);
             });
           }
       }
@@ -204,7 +231,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                   {
                     if(result != null){
                       if(!result){
-                        showEndTripDialogBox(context,updatedToken);
+                        showResetPasswordDialogBox(context,updatedToken);
                       }
                     }
                   });
@@ -212,8 +239,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                 }
 
               });
-
-
             }
           }
           print('HomeScreen did update');
@@ -413,7 +438,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     );
   }
 
-  showEndTripDialogBox(BuildContext context,String token) {
+  showResetPasswordDialogBox(BuildContext context,String token) {
     if(sharedPreferences != null){
       sharedPreferences!.setBool('reset_dialog_opened', true);
     }
@@ -516,4 +541,175 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   }
 
   _isThereCurrentDialogShowing(BuildContext context) => ModalRoute.of(context)?.isCurrent != true;
+
+  showEndTripDialogBox(BuildContext context) {
+    if(sharedPreferences != null){
+      sharedPreferences!.setBool('reset_dialog_opened', true);
+    }
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.45,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(context) * 0.1,
+                                width: displayWidth(context),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                  'Last time you used performarine. there is a trip in progress. do you want to end the trip or continue?',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.04,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.012,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 8.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Continue Trip', context, buttonBGColor,
+                                          () async {
+                                        Navigator.of(context).pop();
+                                      },
+                                      displayWidth(context) * 0.35,
+                                      displayHeight(context) * 0.054,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.015,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              SizedBox(width: 10,),
+                              Expanded(
+                                child: Center(
+                                  child: isEndTripBtnClicked
+                                    ? CircularProgressIndicator()
+                                  : CommonButtons.getAcceptButton(
+                                      'End Trip', context, buttonBGColor,
+                                          () async {
+
+                                        setDialogState(() {
+                                          isEndTripBtnClicked = true;
+                                        });
+                                            List<String>? tripData = sharedPreferences!
+                                                .getStringList('trip_data');
+
+                                            String tripId = '';
+                                            if (tripData != null) {
+                                              tripId = tripData[0];
+                                            }
+
+                                            final currentTrip =
+                                            await _databaseService.getTrip(tripId);
+
+                                            DateTime createdAtTime =
+                                            DateTime.parse(currentTrip.createdAt!);
+
+                                            var durationTime = DateTime.now()
+                                                .toUtc()
+                                                .difference(createdAtTime);
+                                            String tripDuration =
+                                            Utils.calculateTripDuration(
+                                                ((durationTime.inMilliseconds) / 1000)
+                                                    .toInt());
+
+                                            Utils.customPrint(
+                                                'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+
+                                            EndTrip().endTrip(
+                                                context: context,
+                                                scaffoldKey: scaffoldKey,
+                                                duration: tripDuration,
+                                                onEnded: () async {
+
+                                                  Future.delayed(Duration(seconds: 1), (){
+                                                    setDialogState(() {
+                                                      isEndTripBtnClicked = false;
+                                                    });
+
+                                                    Navigator.of(context).pop();
+                                                  });
+
+                                                  Utils.customPrint('TRIPPPPPP ENDEDDD:');
+                                                  setState(() {
+                                                    getVesselFuture = _databaseService.vessels();
+                                                  });
+                                                });
+                                      },
+                                      displayWidth(context) * 0.35,
+                                      displayHeight(context) * 0.054,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.015,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }).then((value) {
+
+    });
+  }
 }
