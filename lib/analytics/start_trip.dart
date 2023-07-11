@@ -374,6 +374,28 @@ class StartTrip {
           ).catchError((onError){
             print('UPDATE NOTI ERROR: $onError');
           });
+
+          // await flutterLocalNotificationsPlugin.cancel(1).catchError((onError){print('CANCEL NOTI 2: $onError');});
+          // await flutterLocalNotificationsPlugin.cancel(776).catchError((onError){print('CANCEL NOTI 3: $onError');});
+          //
+          // flutterLocalNotificationsPlugin
+          //     .show(
+          //   777,
+          //   '',
+          //   // 'Trip is in progress 3',
+          //     'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
+          //   NotificationDetails(
+          //     android: AndroidNotificationDetails(
+          //         'performarine_trip_$tripId-3', '$tripId-3',
+          //         channelDescription: 'Description',
+          //         importance: Importance.low,
+          //         playSound: false,
+          //         enableVibration: false,
+          //         priority: Priority.low),),
+          // )
+          //     .catchError((onError) {
+          //   print('IOS NOTI ERROR: $onError');
+          // });
         });
   }
 }

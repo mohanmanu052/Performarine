@@ -196,17 +196,18 @@ class _IntroScreenState extends State<IntroScreen> {
       } else {
         if (!notificationAppLaunchDetails.didNotificationLaunchApp) {
           Utils.customPrint('NotificationAppLaunchDetails IS FALSE');
+
           Future.delayed(Duration(seconds: 3), () {
             if (mounted) {
               setState(() {
                 isBtnVisible = true;
               });
             }
-          });
+           });
         } else {
           Utils.customPrint('NotificationAppLaunchDetails IS TRUE');
 
-          if (notificationAppLaunchDetails.notificationResponse!.id == 889) {
+          if (notificationAppLaunchDetails.notificationResponse!.id == 889 || notificationAppLaunchDetails.notificationResponse!.id == 777) {
             List<String>? tripData =
                 sharedPreferences!.getStringList('trip_data');
 
@@ -216,8 +217,10 @@ class _IntroScreenState extends State<IntroScreen> {
                     builder: (context) => TripAnalyticsScreen(
                         tripId: tripData![0],
                         vesselId: tripData[1],
+                        isAppKilled: true,
                         tripIsRunningOrNot: isTripStarted)),
                 ModalRoute.withName(""));
+
           } else {
             Future.delayed(Duration(seconds: 3), () {
               if (mounted) {
@@ -296,7 +299,7 @@ class _IntroScreenState extends State<IntroScreen> {
 
       final isRunning2 = await BackgroundLocator.isServiceRunning();
 
-      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
+      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isCalledFromNoti');
 
       if (mounted) {
         if (isCalledFromNoti == null) {
@@ -592,7 +595,6 @@ class _IntroScreenState extends State<IntroScreen> {
       else
         {
           checkIfTripIsRunning();
-
           Future.delayed(Duration(seconds: 4), () {
             checkIfUserIsLoggedIn();
           });
@@ -645,7 +647,6 @@ class _IntroScreenState extends State<IntroScreen> {
         else
           {
             checkIfTripIsRunning();
-
             Future.delayed(Duration(seconds: 4), () {
               checkIfUserIsLoggedIn();
             });

@@ -25,6 +25,7 @@ import 'package:uni_links/uni_links.dart';
 
 SharedPreferences? sharedPreferences;
 bool? isStart;
+bool isAppKilledFromBGMain = true;
 Timer? timer;
 Timer? tripDurationTimer;
 Directory? ourDirectory;
@@ -149,11 +150,24 @@ Future<void> initializeService() async {
       List<String>? tripData = pref.getStringList('trip_data');
       bool? isTripStarted = pref.getBool('trip_started');
 
-      Get.to(TripAnalyticsScreen(
-          tripId: tripData![0],
-          vesselId: tripData[1],
-          isAppKilled: true,
-          tripIsRunningOrNot: isTripStarted));
+      print("IS APP KILLED MAIN $isAppKilledFromBGMain");
+
+      if(isAppKilledFromBGMain)
+        {
+          Get.to(TripAnalyticsScreen(
+              tripId: tripData![0],
+              vesselId: tripData[1],
+              isAppKilled: false,
+              tripIsRunningOrNot: isTripStarted));
+        }
+      else
+        {
+          Get.to(TripAnalyticsScreen(
+              tripId: tripData![0],
+              vesselId: tripData[1],
+              isAppKilled: true,
+              tripIsRunningOrNot: isTripStarted));
+        }
     }
     return;
 
@@ -320,11 +334,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
                   EasyLoading.dismiss();
 
-                  Get.to(TripAnalyticsScreen(
-                      tripId: tripData![0],
-                      vesselId: tripData[1],
-                      isAppKilled: true,
-                      tripIsRunningOrNot: isTripStarted));
+                  print("LIFE CYCLE KILLED $isAppKilledFromBGMain");
+
+                  if(isAppKilledFromBGMain)
+                    {
+                      Get.to(TripAnalyticsScreen(
+                        tripId: tripData![0],
+                        vesselId: tripData[1],
+                        isAppKilled: false,
+                        tripIsRunningOrNot: isTripStarted));
+                    }
+                  else
+                    {
+                      Get.to(TripAnalyticsScreen(
+                          tripId: tripData![0],
+                          vesselId: tripData[1],
+                          isAppKilled: true,
+                          tripIsRunningOrNot: isTripStarted));
+                    }
+
 
                   // Navigator.pushAndRemoveUntil(
                   //     context,
@@ -358,6 +386,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         sharedPreferences!.reload();
         break;
       case AppLifecycleState.detached:
+        setState(() {
+          isAppKilledFromBGMain = false;
+        });
         print('\n\ndetached');
         break;
     }

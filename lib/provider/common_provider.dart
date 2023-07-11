@@ -134,7 +134,7 @@ class CommonProvider with ChangeNotifier {
         }
       }
       else{
-        bool isBCGranted = await flutterBluePlus!.isOn;
+        /*bool isBCGranted = await flutterBluePlus!.isOn;
         print('isBCGranted: $isBCGranted');
         if(!isBCGranted){
           showBluetoothDialog.call();
@@ -144,12 +144,18 @@ class CommonProvider with ChangeNotifier {
           print('VOID CALL BACK 2');
           showBluetoothDialog.call();
           return true;
-        }
+        }*/
+
+        FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+        final isOn = await _flutterBlue.isOn;
+        if(isOn) isBluetoothEnabled =  true;
+
+        await Future.delayed(const Duration(seconds: 1));
+        isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+        notifyListeners();
+        return isBluetoothEnabled;
       }
     }
-
-
-
   }
 
   /// Login

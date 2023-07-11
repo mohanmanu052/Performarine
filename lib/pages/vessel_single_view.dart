@@ -2257,7 +2257,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     flutterLocalNotificationsPlugin
         .show(
-      889,
+      776,
       '',
       'Trip is in progress',
       /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
@@ -2336,8 +2336,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
         if (activeNotifications != null && activeNotifications.isNotEmpty) {
           if (activeNotifications[0].channelId == 'app.yukams/locator_plugin') {
             debugPrint("CHANNEL ID MATCH");
+            debugPrint("CHANNEL ID MATCH: ${activeNotifications[0].id}");
 
-            await flutterLocalNotificationsPlugin.cancel(889);
+            await flutterLocalNotificationsPlugin.cancel(776);
+
+            // if(Platform.isAndroid){
+            //   await Future.delayed(Duration(seconds: 2));
+            //   await flutterLocalNotificationsPlugin.cancel(activeNotifications[0].id).catchError((onError){print('CANCEL NOTI 1: $onError');});
+            // }
 
             if (notiTimer != null) {
               notiTimer!.cancel();

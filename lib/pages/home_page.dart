@@ -1,10 +1,15 @@
 import 'dart:io';
 
+import 'package:background_locator_2/background_locator.dart';
+import 'package:background_locator_2/settings/android_settings.dart';
+import 'package:background_locator_2/settings/ios_settings.dart';
+import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:performarine/analytics/end_trip.dart';
+import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -25,6 +30,8 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+
+import '../analytics/location_callback_handler.dart';
 
 class HomePage extends StatefulWidget {
   List<String> tripData;
@@ -608,92 +615,110 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                           margin: EdgeInsets.only(
                             top: 8.0,
                           ),
-                          child: Row(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Expanded(
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Continue Trip', context, buttonBGColor,
-                                          () async {
-                                        Navigator.of(context).pop();
-                                      },
-                                      displayWidth(context) * 0.35,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.015,
-                                      buttonBGColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                              SizedBox(width: 10,),
-                              Expanded(
-                                child: Center(
-                                  child: isEndTripBtnClicked
-                                    ? CircularProgressIndicator()
-                                  : CommonButtons.getAcceptButton(
-                                      'End Trip', context, buttonBGColor,
-                                          () async {
+                              Center(
+                                child: isEndTripBtnClicked
+                                  ? CircularProgressIndicator()
+                                : CommonButtons.getAcceptButton(
+                                    'End Trip', context, buttonBGColor,
+                                        () async {
 
-                                        setDialogState(() {
-                                          isEndTripBtnClicked = true;
-                                        });
-                                            List<String>? tripData = sharedPreferences!
-                                                .getStringList('trip_data');
+                                      setDialogState(() {
+                                        isEndTripBtnClicked = true;
+                                      });
+                                          List<String>? tripData = sharedPreferences!
+                                              .getStringList('trip_data');
 
-                                            String tripId = '';
-                                            if (tripData != null) {
-                                              tripId = tripData[0];
-                                            }
+                                          String tripId = '';
+                                          if (tripData != null) {
+                                            tripId = tripData[0];
+                                          }
 
-                                            final currentTrip =
-                                            await _databaseService.getTrip(tripId);
+                                          final currentTrip =
+                                          await _databaseService.getTrip(tripId);
 
-                                            DateTime createdAtTime =
-                                            DateTime.parse(currentTrip.createdAt!);
+                                          DateTime createdAtTime =
+                                          DateTime.parse(currentTrip.createdAt!);
 
-                                            var durationTime = DateTime.now()
-                                                .toUtc()
-                                                .difference(createdAtTime);
-                                            String tripDuration =
-                                            Utils.calculateTripDuration(
-                                                ((durationTime.inMilliseconds) / 1000)
-                                                    .toInt());
+                                          var durationTime = DateTime.now()
+                                              .toUtc()
+                                              .difference(createdAtTime);
+                                          String tripDuration =
+                                          Utils.calculateTripDuration(
+                                              ((durationTime.inMilliseconds) / 1000)
+                                                  .toInt());
 
-                                            Utils.customPrint(
-                                                'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+                                          Utils.customPrint(
+                                              'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
 
-                                            EndTrip().endTrip(
-                                                context: context,
-                                                scaffoldKey: scaffoldKey,
-                                                duration: tripDuration,
-                                                onEnded: () async {
+                                          EndTrip().endTrip(
+                                              context: context,
+                                              scaffoldKey: scaffoldKey,
+                                              duration: tripDuration,
+                                              onEnded: () async {
 
-                                                  Future.delayed(Duration(seconds: 1), (){
-                                                    setDialogState(() {
-                                                      isEndTripBtnClicked = false;
-                                                    });
-
-                                                    Navigator.of(context).pop();
+                                                Future.delayed(Duration(seconds: 1), (){
+                                                  setDialogState(() {
+                                                    isEndTripBtnClicked = false;
                                                   });
 
-                                                  Utils.customPrint('TRIPPPPPP ENDEDDD:');
-                                                  setState(() {
-                                                    getVesselFuture = _databaseService.vessels();
-                                                  });
+                                                  Navigator.of(context).pop();
                                                 });
-                                      },
-                                      displayWidth(context) * 0.35,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.015,
-                                      buttonBGColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+
+                                                Utils.customPrint('TRIPPPPPP ENDEDDD:');
+                                                setState(() {
+                                                  getVesselFuture = _databaseService.vessels();
+                                                });
+                                              });
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Colors.white,
+                                    displayHeight(context) * 0.018,
+                                    buttonBGColor,
+                                    '',
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(height: 10,),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Continue Trip', context, Colors.transparent,
+                                        () async {
+                                      final _isRunning = await BackgroundLocator();
+
+                                          Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
+
+                                          List<String>? tripData = sharedPreferences!.getStringList('trip_data');
+
+                                          reInitializeService();
+
+                                          //final isRunning1 = await BackgroundLocator.isServiceRunning();
+                                          //
+                                          // StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
+                                          //
+                                          // final isRunning2 = await BackgroundLocator.isServiceRunning();
+
+
+                                          //Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
+
+                                          StartTrip().startBGLocatorTrip(tripData![0], DateTime.now());
+
+                                          final isRunning2 = await BackgroundLocator.isServiceRunning();
+
+                                          Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                      Navigator.of(context).pop();
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    Colors.transparent,
+                                    Color(0xff3B878E),
+                                    displayHeight(context) * 0.018,
+                                    Colors.transparent,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
                             ],
                           ),
@@ -711,5 +736,40 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
         }).then((value) {
 
     });
+  }
+
+  /// Reinitialized service after user killed app while trip is running
+  reInitializeService() async {
+    // print('RE-Initializing...');
+    await BackgroundLocator.initialize();
+    // String logStr = await FileManager.readLogFile();
+    // print('RE-Initialization done');
+    // final _isRunning = await BackgroundLocator.isServiceRunning();
+
+    Map<String, dynamic> data = {'countInit': 1};
+    return await BackgroundLocator.registerLocationUpdate(
+        LocationCallbackHandler.callback,
+        initCallback: LocationCallbackHandler.initCallback,
+        initDataCallback: data,
+        disposeCallback: LocationCallbackHandler.disposeCallback,
+        iosSettings: IOSSettings(
+            accuracy: LocationAccuracy.NAVIGATION,
+            distanceFilter: 0,
+            stopWithTerminate: true),
+        autoStop: false,
+        androidSettings: AndroidSettings(
+            accuracy: LocationAccuracy.NAVIGATION,
+            interval: 1,
+            distanceFilter: 0,
+            //client: bglas.LocationClient.android,
+            androidNotificationSettings: AndroidNotificationSettings(
+                notificationChannelName: 'Location tracking',
+                notificationTitle: 'Trip is in progress',
+                notificationMsg: '',
+                notificationBigMsg: '',
+                notificationIconColor: Colors.grey,
+                notificationIcon: '@drawable/noti_logo',
+                notificationTapCallback:
+                LocationCallbackHandler.notificationCallback)));
   }
 }

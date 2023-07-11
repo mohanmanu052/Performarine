@@ -82,7 +82,7 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
         super.onCreate()
         startLocatorService(this)
         val notification = getNotification()
-        notification.flags = Notification.FLAG_ONGOING_EVENT
+        // notification.flags = Notification.FLAG_ONGOING_EVENT
         startForeground(notificationId, notification)
     }
 
@@ -96,7 +96,7 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
 
         // Starting Service as foreground with a notification prevent service from closing
         val notification = getNotification()
-        notification.flags = Notification.FLAG_ONGOING_EVENT
+        // notification.flags = Notification.FLAG_ONGOING_EVENT
         startForeground(notificationId, notification)
 
         pluggables.forEach {
@@ -136,7 +136,7 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setOnlyAlertOnce(true) // so when data is updated don't make sound and alert in android 8.0+
-            .setOngoing(true)
+            .setOngoing(false)
             .build()
     }
 
@@ -250,7 +250,7 @@ class IsolateHolderService : MethodChannel.MethodCallHandler, LocationUpdateList
         }
 
         val notification = getNotification()
-        notification.flags = Notification.FLAG_ONGOING_EVENT
+        // notification.flags = Notification.FLAG_ONGOING_EVENT
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(notificationId, notification)

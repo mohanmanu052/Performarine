@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:background_locator_2/background_locator.dart';
+import 'package:background_locator_2/settings/android_settings.dart';
+import 'package:background_locator_2/settings/ios_settings.dart';
+import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +14,8 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/analytics/end_trip.dart';
+import 'package:performarine/analytics/location_callback_handler.dart';
+import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -91,15 +97,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     Utils.customPrint('CURRENT TIME TIME ${widget.tripIsRunningOrNot}');
     Utils.customPrint('CURRENT TIME TIME ${widget.isAppKilled}');
 
-    if(widget.isAppKilled){
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        Future.delayed(Duration(seconds: 1), (){
-          showEndTripDialogBox(context);
-        });
-      });
-
-    }
-
     sharedPreferences!.remove('sp_key_called_from_noti');
 
     setState(() {
@@ -110,9 +107,16 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     if (tripIsRunning) {
       getRealTimeTripDetails();
       Wakelock.enable();
+
+      if(widget.isAppKilled){
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          Future.delayed(Duration(seconds: 1), (){
+            showEndTripDialogBox(context);
+          });
+        });
+
+      }
     }
-
-
 
     commonProvider = context.read<CommonProvider>();
 
@@ -1540,177 +1544,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     );
   }
 
-  showEndTripDialogBox(BuildContext context) {
-    if(sharedPreferences != null){
-      sharedPreferences!.setBool('reset_dialog_opened', true);
-    }
-    return showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext dialogContext) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: StatefulBuilder(
-              builder: (ctx, setDialogState) {
-                return Container(
-                  height: displayHeight(context) * 0.45,
-                  width: MediaQuery.of(context).size.width,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 15, bottom: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              //color: Color(0xfff2fffb),
-                              child: Image.asset(
-                                'assets/images/boat.gif',
-                                height: displayHeight(context) * 0.1,
-                                width: displayWidth(context),
-                                fit: BoxFit.contain,
-                              ),
-                            )),
-
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: Column(
-                            children: [
-                              commonText(
-                                  context: context,
-                                  text:
-                                  'Last time you used performarine. there is a trip in progress. do you want to end the trip or continue?',
-                                  fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.04,
-                                  textAlign: TextAlign.center),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.012,
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                            top: 8.0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Continue Trip', context, buttonBGColor,
-                                          () async {
-                                        Navigator.of(context).pop();
-                                      },
-                                      displayWidth(context) * 0.35,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.015,
-                                      buttonBGColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                              SizedBox(width: 10,),
-                              Expanded(
-                                child: Center(
-                                  child: isEndTripBtnClicked
-                                      ? CircularProgressIndicator()
-                                      : CommonButtons.getAcceptButton(
-                                      'End Trip', context, buttonBGColor,
-                                          () async {
-
-                                        setDialogState(() {
-                                          isEndTripBtnClicked = true;
-                                        });
-                                        List<String>? tripData = sharedPreferences!
-                                            .getStringList('trip_data');
-
-                                        String tripId = '';
-                                        if (tripData != null) {
-                                          tripId = tripData[0];
-                                        }
-
-                                        final currentTrip =
-                                        await _databaseService.getTrip(tripId);
-
-                                        DateTime createdAtTime =
-                                        DateTime.parse(currentTrip.createdAt!);
-
-                                        var durationTime = DateTime.now()
-                                            .toUtc()
-                                            .difference(createdAtTime);
-                                        String tripDuration =
-                                        Utils.calculateTripDuration(
-                                            ((durationTime.inMilliseconds) / 1000)
-                                                .toInt());
-
-                                        Utils.customPrint(
-                                            'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
-
-                                        EndTrip().endTrip(
-                                            context: context,
-                                            scaffoldKey: scaffoldKey,
-                                            duration: tripDuration,
-                                            onEnded: () async {
-
-                                              // Future.delayed(Duration(seconds: 1), (){
-                                              //   setDialogState(() {
-                                              //     isEndTripBtnClicked = false;
-                                              //   });
-                                              //
-                                              //   Navigator.of(context).pop();
-                                              // });
-                                              //
-                                              // Utils.customPrint('TRIPPPPPP ENDEDDD:');
-                                              // setState(() {
-                                              //   getVesselFuture = _databaseService.vessels();
-                                              // });
-                                            });
-                                      },
-                                      displayWidth(context) * 0.35,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.015,
-                                      buttonBGColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
-        }).then((value) {
-
-    });
-  }
-
   /// Check vessel is sync or not
   Future<bool> vesselIsSyncOrNot(String vesselId) async {
     bool result = await _databaseService.getVesselIsSyncOrNot(vesselId);
@@ -2139,5 +1972,239 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     flutterLocalNotificationsPlugin.show(
         9989, 'Trip uploaded successfully', '', platformChannelSpecifics,
         payload: 'item x');
+  }
+
+  showEndTripDialogBox(BuildContext context) {
+    if(sharedPreferences != null){
+      sharedPreferences!.setBool('reset_dialog_opened', true);
+    }
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.45,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(context) * 0.1,
+                                width: displayWidth(context),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                  'Last time you used performarine. there is a trip in progress. do you want to end the trip or continue?',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.04,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.012,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 8.0,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: isEndTripBtnClicked
+                                    ? CircularProgressIndicator()
+                                    : CommonButtons.getAcceptButton(
+                                    'End Trip', context, buttonBGColor,
+                                        () async {
+
+                                      setDialogState(() {
+                                        isEndTripBtnClicked = true;
+                                      });
+
+                                      if (durationTimer !=
+                                          null) {
+                                        durationTimer!
+                                            .cancel();
+                                      }
+                                      setState(() {
+                                        isTripEnded = true;
+                                      });
+                                      Navigator.pop(context);
+
+                                      EndTrip().endTrip(
+                                          context: context,
+                                          scaffoldKey:
+                                          scaffoldKey,
+                                          duration:
+                                          tripDuration,
+                                          IOSAvgSpeed:
+                                          tripAvgSpeed,
+                                          IOSpeed: tripSpeed,
+                                          IOStripDistance:
+                                          tripDistance,
+                                          onEnded: () async {
+                                            setState(() {
+                                              tripIsRunning =
+                                              false;
+                                              isTripEnded =
+                                              false;
+                                            });
+                                            Trip tripDetails =
+                                            await _databaseService
+                                                .getTrip(
+                                                tripData!
+                                                    .id!);
+                                            debugPrint(
+                                                "abhi:${tripDetails.time}");
+                                            debugPrint(
+                                                "abhi:${tripDuration}");
+                                            debugPrint(
+                                                "abhi:${tripAvgSpeed}");
+                                            debugPrint(
+                                                "abhi:${tripSpeed}");
+                                            setState(() {
+                                              tripData =
+                                                  tripDetails;
+                                            });
+
+                                            Utils.customPrint(
+                                                'TRIP ENDED DETAILS: ${tripDetails.isSync}');
+                                            Utils.customPrint(
+                                                'TRIP ENDED DETAILS: ${tripData!.isSync}');
+
+                                            isDataUpdated = true;
+                                          });
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Colors.white,
+                                    displayHeight(context) * 0.018,
+                                    buttonBGColor,
+                                    '',
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(height: 10,),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Continue Trip', context, Colors.transparent,
+                                        () async {
+                                      final _isRunning = await BackgroundLocator();
+
+                                      Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
+
+                                      List<String>? tripData = sharedPreferences!.getStringList('trip_data');
+
+                                      reInitializeService();
+
+                                      //final isRunning1 = await BackgroundLocator.isServiceRunning();
+                                      //
+                                      // StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
+                                      //
+                                      // final isRunning2 = await BackgroundLocator.isServiceRunning();
+
+
+                                      //Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
+
+                                      StartTrip().startBGLocatorTrip(tripData![0], DateTime.now());
+
+                                      final isRunning2 = await BackgroundLocator.isServiceRunning();
+
+                                      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                      Navigator.of(context).pop();
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    Colors.transparent,
+                                    Color(0xff3B878E),
+                                    displayHeight(context) * 0.018,
+                                    Colors.transparent,
+                                    '',
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }).then((value) {
+
+    });
+  }
+
+  /// Reinitialized service after user killed app while trip is running
+  reInitializeService() async {
+    // print('RE-Initializing...');
+    await BackgroundLocator.initialize();
+    // String logStr = await FileManager.readLogFile();
+    // print('RE-Initialization done');
+    // final _isRunning = await BackgroundLocator.isServiceRunning();
+
+    Map<String, dynamic> data = {'countInit': 1};
+    return await BackgroundLocator.registerLocationUpdate(
+        LocationCallbackHandler.callback,
+        initCallback: LocationCallbackHandler.initCallback,
+        initDataCallback: data,
+        disposeCallback: LocationCallbackHandler.disposeCallback,
+        iosSettings: IOSSettings(
+            accuracy: LocationAccuracy.NAVIGATION,
+            distanceFilter: 0,
+            stopWithTerminate: true),
+        autoStop: false,
+        androidSettings: AndroidSettings(
+            accuracy: LocationAccuracy.NAVIGATION,
+            interval: 1,
+            distanceFilter: 0,
+            //client: bglas.LocationClient.android,
+            androidNotificationSettings: AndroidNotificationSettings(
+                notificationChannelName: 'Location tracking',
+                notificationTitle: 'Trip is in progress',
+                notificationMsg: '',
+                notificationBigMsg: '',
+                notificationIconColor: Colors.grey,
+                notificationIcon: '@drawable/noti_logo',
+                notificationTapCallback:
+                LocationCallbackHandler.notificationCallback)));
   }
 }
