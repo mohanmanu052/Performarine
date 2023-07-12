@@ -207,7 +207,7 @@ class _IntroScreenState extends State<IntroScreen> {
         } else {
           Utils.customPrint('NotificationAppLaunchDetails IS TRUE');
 
-          if (notificationAppLaunchDetails.notificationResponse!.id == 889 || notificationAppLaunchDetails.notificationResponse!.id == 777) {
+          if (notificationAppLaunchDetails.notificationResponse!.id == 889 || notificationAppLaunchDetails.notificationResponse!.id == 776 || notificationAppLaunchDetails.notificationResponse!.id == 1) {
             List<String>? tripData =
                 sharedPreferences!.getStringList('trip_data');
 

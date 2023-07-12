@@ -101,6 +101,8 @@ class EndTrip {
 
     //await flutterLocalNotificationsPlugin.cancel(888);
     await flutterLocalNotificationsPlugin.cancel(889);
+    await flutterLocalNotificationsPlugin.cancel(776);
+    await flutterLocalNotificationsPlugin.cancel(1);
 
     if (onEnded != null) onEnded.call();
   }

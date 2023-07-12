@@ -129,6 +129,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   }
 
   getData() async {
+
+    //await flutterLocalNotificationsPlugin.cancel(1);
+
     if (widget.calledFrom == 'Report') {
       final DatabaseService _databaseService = DatabaseService();
       final tripDetails = await _databaseService.getTrip(widget.tripId!);
