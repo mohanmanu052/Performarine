@@ -28,10 +28,13 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../common_widgets/widgets/status_tag.dart';
+import '../common_widgets/widgets/user_feed_back.dart';
 import '../models/reports_model.dart';
+import 'feedback_report.dart';
 
 class TripAnalyticsScreen extends StatefulWidget {
   String? vesselName;
@@ -86,6 +89,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   late CommonProvider commonProvider;
   late DeviceInfoPlugin deviceDetails;
+
+  final controller = ScreenshotController();
 
   @override
   void initState() {
@@ -225,31 +230,24 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         }
         return false;
       },
-      child: Scaffold(
-        backgroundColor: Color(0xfff2fffb),
-        key: scaffoldKey,
-        appBar: AppBar(
+      child: Screenshot(
+        controller: controller,
+        child: Scaffold(
           backgroundColor: Color(0xfff2fffb),
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () {
-              // Navigator.of(context).pop();
+          key: scaffoldKey,
+          appBar: AppBar(
+            backgroundColor: Color(0xfff2fffb),
+            elevation: 0,
+            leading: IconButton(
+              onPressed: () {
+                // Navigator.of(context).pop();
 
-              if (widget.calledFrom == null) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                    ModalRoute.withName(""));
-              } else if (widget.calledFrom! == 'HomePage') {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomePage(
-                              tabIndex: 1,
-                            )),
-                    ModalRoute.withName(""));
-              } else if (widget.calledFrom! == 'HomePage') {
-                if (isDataUpdated) {
+                if (widget.calledFrom == null) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                      ModalRoute.withName(""));
+                } else if (widget.calledFrom! == 'HomePage') {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -257,803 +255,670 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                 tabIndex: 1,
                               )),
                       ModalRoute.withName(""));
-                } else {
-                  Navigator.of(context).pop();
+                } else if (widget.calledFrom! == 'HomePage') {
+                  if (isDataUpdated) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  tabIndex: 1,
+                                )),
+                        ModalRoute.withName(""));
+                  } else {
+                    Navigator.of(context).pop();
+                  }
+                } else if (widget.calledFrom == 'VesselSingleView') {
+                  Navigator.of(context).pop(isDataUpdated);
+                } else if (widget.calledFrom == "Report") {
+                  Navigator.pop(context);
                 }
-              } else if (widget.calledFrom == 'VesselSingleView') {
-                Navigator.of(context).pop(isDataUpdated);
-              } else if (widget.calledFrom == "Report") {
-                Navigator.pop(context);
-              }
-            },
-            icon: const Icon(Icons.arrow_back),
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black,
-          ),
-          title: widget.calledFrom == "Report"
-              ? commonText(
-                  context: context,
-                  text: widget.vesselName,
-                  fontWeight: FontWeight.w600,
-                  textColor: Colors.black87,
-                  textSize: displayWidth(context) * 0.032,
-                )
-              : commonText(
-                  context: context,
-                  text: vesselData == null
-                      ? ''
-                      : vesselData!.name == null || vesselData!.name == ''
-                          ? ''
-                          : vesselData!.name,
-                  fontWeight: FontWeight.w600,
-                  textColor: Colors.black87,
-                  textSize: displayWidth(context) * 0.032,
-                ),
-          actions: [
-            tripIsRunning
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 14.0),
-                    child: CustomPaint(
-                      painter: StatusTag(color: Color(0XFF41C1C8)),
-                      child: Container(
-                        margin:
-                            EdgeInsets.only(left: displayWidth(context) * 0.05),
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: commonText(
-                              context: context,
-                              text: "Trip In Progress",
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.white,
-                              textSize: displayWidth(context) * 0.03,
+              },
+              icon: const Icon(Icons.arrow_back),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+            title: widget.calledFrom == "Report"
+                ? commonText(
+                    context: context,
+                    text: widget.vesselName,
+                    fontWeight: FontWeight.w600,
+                    textColor: Colors.black87,
+                    textSize: displayWidth(context) * 0.032,
+                  )
+                : commonText(
+                    context: context,
+                    text: vesselData == null
+                        ? ''
+                        : vesselData!.name == null || vesselData!.name == ''
+                            ? ''
+                            : vesselData!.name,
+                    fontWeight: FontWeight.w600,
+                    textColor: Colors.black87,
+                    textSize: displayWidth(context) * 0.032,
+                  ),
+            actions: [
+              tripIsRunning
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 14.0),
+                      child: CustomPaint(
+                        painter: StatusTag(color: Color(0XFF41C1C8)),
+                        child: Container(
+                          margin:
+                              EdgeInsets.only(left: displayWidth(context) * 0.05),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: commonText(
+                                context: context,
+                                text: "Trip In Progress",
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.white,
+                                textSize: displayWidth(context) * 0.03,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  )
-                : Container(
-                    margin: EdgeInsets.only(right: 8),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
-                            ModalRoute.withName(""));
-                      },
-                      icon: Image.asset('assets/images/home.png'),
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black,
-                    ),
-                  ),
-          ],
-        ),
-        body: tripData == null && vesselData == null
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Container(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: tripIsRunning
-                          ? displayHeight(context) * 0.43
-                          : displayHeight(context) * 0.3,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 17),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: displayHeight(context) * 0.01,
-                            ),
-                            ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  color: Color(0xfff2fffb),
-                                  child: Image.asset(
-                                    'assets/images/boat.gif',
-                                    height: displayHeight(context) * 0.22,
-                                    width: displayWidth(context),
-                                    fit: BoxFit.contain,
-                                  ),
-                                )),
-                          ],
-                        ),
+                    )
+                  : Container(
+                      margin: EdgeInsets.only(right: 8),
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomePage()),
+                              ModalRoute.withName(""));
+                        },
+                        icon: Image.asset('assets/images/home.png'),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
                       ),
                     ),
-                    widget.calledFrom == 'Report'
-                        ? Expanded(
-                            child: Card(
-                              color: Colors.white,
-                              elevation: 8.0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(50),
-                                      topRight: Radius.circular(50))),
-                              child: Container(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: SingleChildScrollView(
+            ],
+          ),
+          body: tripData == null && vesselData == null
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Container(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: tripIsRunning
+                            ? displayHeight(context) * 0.43
+                            : displayHeight(context) * 0.3,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 17),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: displayHeight(context) * 0.01,
+                              ),
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    color: Color(0xfff2fffb),
+                                    child: Image.asset(
+                                      'assets/images/boat.gif',
+                                      height: displayHeight(context) * 0.22,
+                                      width: displayWidth(context),
+                                      fit: BoxFit.contain,
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ),
+                      widget.calledFrom == 'Report'
+                          ? Expanded(
+                              child: Card(
+                                color: Colors.white,
+                                elevation: 8.0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(50),
+                                        topRight: Radius.circular(50))),
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 10),
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: SingleChildScrollView(
+                                          child: Container(
+                                            height: displayHeight(context) / 1.8,
+                                            margin: EdgeInsets.only(
+                                                top: 20, left: 17, right: 17),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 12),
+                                                      child: commonText(
+                                                        context: context,
+                                                        text: 'Analytics',
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        textColor: Colors.black87,
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.032,
+                                                      ),
+                                                    ),
+                                                    vesselAnalytics(
+                                                        context,
+                                                        tripIsRunning
+                                                            ? '$tripDuration'
+                                                            : '${tripData!.time} ',
+                                                        tripIsRunning
+                                                            ? '${(tripDistance)}'
+                                                            : '${tripData!.distance} ',
+                                                        tripIsRunning
+                                                            ? '$tripSpeed '
+                                                            : '${tripData!.speed} ',
+                                                        tripIsRunning
+                                                            ? '$tripAvgSpeed '
+                                                            : '${tripData!.avgSpeed} ',
+                                                        tripIsRunning),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: displayHeight(context) *
+                                                      0.01,
+                                                ),
+                                                Container(
+                                                  margin: EdgeInsets.symmetric(
+                                                      horizontal: 12),
+                                                  child: Column(
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          commonText(
+                                                            context: context,
+                                                            text: 'Trip Details',
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            textColor:
+                                                                Colors.black87,
+                                                            textSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.032,
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              commonText(
+                                                                context: context,
+                                                                text:
+                                                                    'Trip Status:',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                textColor: Colors
+                                                                    .black87,
+                                                                textSize:
+                                                                    displayWidth(
+                                                                            context) *
+                                                                        0.03,
+                                                              ),
+                                                              SizedBox(
+                                                                width: 6,
+                                                              ),
+                                                              commonText(
+                                                                context: context,
+                                                                text: tripIsRunning
+                                                                    ? 'Trip InProgress'
+                                                                    : 'Trip Ended',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                textColor:
+                                                                    tripIsRunning
+                                                                        ? Color(
+                                                                            0xFFAE6827)
+                                                                        : Colors
+                                                                            .green,
+                                                                textSize:
+                                                                    displayWidth(
+                                                                            context) *
+                                                                        0.03,
+                                                              ),
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        height: displayHeight(
+                                                                context) *
+                                                            0.02,
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          commonText(
+                                                            context: context,
+                                                            text: 'Start Date',
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            textColor:
+                                                                Colors.grey,
+                                                            textSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.03,
+                                                          ),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.04,
+                                                          ),
+                                                          commonText(
+                                                            context: context,
+                                                            text:
+                                                                ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            textColor:
+                                                                Colors.black,
+                                                            textSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.03,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        height: 4,
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          commonText(
+                                                            context: context,
+                                                            text: 'Start Time',
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            textColor:
+                                                                Colors.grey,
+                                                            textSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.03,
+                                                          ),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.04,
+                                                          ),
+                                                          commonText(
+                                                            context: context,
+                                                            text:
+                                                                ': ${DateFormat('hh:mm').format(DateTime.parse(tripData!.createdAt!))}',
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            textColor:
+                                                                Colors.black,
+                                                            textSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.03,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        height: 4,
+                                                      ),
+                                                      tripIsRunning
+                                                          ? Container()
+                                                          : Row(
+                                                              children: [
+                                                                commonText(
+                                                                  context:
+                                                                      context,
+                                                                  text:
+                                                                      'End Date',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  textColor:
+                                                                      Colors.grey,
+                                                                  textSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.03,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: displayWidth(
+                                                                          context) *
+                                                                      0.06,
+                                                                ),
+                                                                commonText(
+                                                                  context:
+                                                                      context,
+                                                                  text:
+                                                                      ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.updatedAt!))}',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  textColor:
+                                                                      Colors
+                                                                          .black,
+                                                                  textSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.03,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                      SizedBox(
+                                                        height: 4,
+                                                      ),
+                                                      tripIsRunning
+                                                          ? Container()
+                                                          : Row(
+                                                              children: [
+                                                                commonText(
+                                                                  context:
+                                                                      context,
+                                                                  text:
+                                                                      'End Time',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  textColor:
+                                                                      Colors.grey,
+                                                                  textSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.03,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: displayWidth(
+                                                                          context) *
+                                                                      0.06,
+                                                                ),
+                                                                commonText(
+                                                                  context:
+                                                                      context,
+                                                                  text:
+                                                                      ': ${DateFormat('hh:mm').format(DateTime.parse(tripData!.updatedAt!))}',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  textColor:
+                                                                      Colors
+                                                                          .black,
+                                                                  textSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.03,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
                                         child: Container(
-                                          height: displayHeight(context) / 1.8,
-                                          margin: EdgeInsets.only(
-                                              top: 20, left: 17, right: 17),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 17, vertical: 10),
+                                          child: tripData!.isCloud != 0
+                                              ? Column(
                                                 children: [
-                                                  Container(
-                                                    margin:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 12),
-                                                    child: commonText(
-                                                      context: context,
-                                                      text: 'Analytics',
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      textColor: Colors.black87,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.032,
+                                                  SizedBox(
+                                                      width: displayWidth(context),
+                                                      child: CommonButtons
+                                                          .getActionButton(
+                                                              title: 'Home',
+                                                              context: context,
+                                                              fontSize: displayWidth(
+                                                                      context) *
+                                                                  0.034,
+                                                              textColor: Colors.white,
+                                                              buttonPrimaryColor:
+                                                                  buttonBGColor,
+                                                              borderColor:
+                                                                  buttonBGColor,
+                                                              width: displayWidth(
+                                                                      context) /
+                                                                  2.3,
+                                                              onTap: () async {
+                                                                Navigator
+                                                                    .pushAndRemoveUntil(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder:
+                                                                              (context) =>
+                                                                                  HomePage(),
+                                                                        ),
+                                                                        ModalRoute
+                                                                            .withName(
+                                                                                ""));
+                                                              }),
+                                                    ),
+
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                      left: displayWidth(context) * 0.22,
+                                                     // top: displayWidth(context) * 0.03,
+                                                    ),
+                                                    child: GestureDetector(
+                                                        onTap: ()async{
+                                                          final image = await controller.capture();
+                                                          print("Image is: ${image.toString()}");
+                                                          Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                                            imagePath: image.toString(),
+                                                            uIntList: image,)));
+                                                        },
+                                                        child: UserFeedback().getUserFeedback(context)
                                                     ),
                                                   ),
-                                                  vesselAnalytics(
-                                                      context,
-                                                      tripIsRunning
-                                                          ? '$tripDuration'
-                                                          : '${tripData!.time} ',
-                                                      tripIsRunning
-                                                          ? '${(tripDistance)}'
-                                                          : '${tripData!.distance} ',
-                                                      tripIsRunning
-                                                          ? '$tripSpeed '
-                                                          : '${tripData!.speed} ',
-                                                      tripIsRunning
-                                                          ? '$tripAvgSpeed '
-                                                          : '${tripData!.avgSpeed} ',
-                                                      tripIsRunning),
                                                 ],
-                                              ),
-                                              SizedBox(
-                                                height: displayHeight(context) *
-                                                    0.01,
-                                              ),
-                                              Container(
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: 12),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
+                                              )
+                                              : Column(
+                                                children: [
+                                                  Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
                                                               .spaceBetween,
                                                       children: [
-                                                        commonText(
-                                                          context: context,
-                                                          text: 'Trip Details',
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                          textColor:
-                                                              Colors.black87,
-                                                          textSize:
-                                                              displayWidth(
-                                                                      context) *
-                                                                  0.032,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            commonText(
-                                                              context: context,
-                                                              text:
-                                                                  'Trip Status:',
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              textColor: Colors
-                                                                  .black87,
-                                                              textSize:
-                                                                  displayWidth(
-                                                                          context) *
-                                                                      0.03,
-                                                            ),
-                                                            SizedBox(
-                                                              width: 6,
-                                                            ),
-                                                            commonText(
-                                                              context: context,
-                                                              text: tripIsRunning
-                                                                  ? 'Trip InProgress'
-                                                                  : 'Trip Ended',
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              textColor:
-                                                                  tripIsRunning
-                                                                      ? Color(
-                                                                          0xFFAE6827)
-                                                                      : Colors
-                                                                          .green,
-                                                              textSize:
-                                                                  displayWidth(
-                                                                          context) *
-                                                                      0.03,
-                                                            ),
-                                                          ],
-                                                        )
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: displayHeight(
-                                                              context) *
-                                                          0.02,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        commonText(
-                                                          context: context,
-                                                          text: 'Start Date',
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          textColor:
-                                                              Colors.grey,
-                                                          textSize:
-                                                              displayWidth(
-                                                                      context) *
-                                                                  0.03,
-                                                        ),
-                                                        SizedBox(
-                                                          width: displayWidth(
-                                                                  context) *
-                                                              0.04,
-                                                        ),
-                                                        commonText(
-                                                          context: context,
-                                                          text:
-                                                              ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          textColor:
-                                                              Colors.black,
-                                                          textSize:
-                                                              displayWidth(
-                                                                      context) *
-                                                                  0.03,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 4,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        commonText(
-                                                          context: context,
-                                                          text: 'Start Time',
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          textColor:
-                                                              Colors.grey,
-                                                          textSize:
-                                                              displayWidth(
-                                                                      context) *
-                                                                  0.03,
-                                                        ),
-                                                        SizedBox(
-                                                          width: displayWidth(
-                                                                  context) *
-                                                              0.04,
-                                                        ),
-                                                        commonText(
-                                                          context: context,
-                                                          text:
-                                                              ': ${DateFormat('hh:mm').format(DateTime.parse(tripData!.createdAt!))}',
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          textColor:
-                                                              Colors.black,
-                                                          textSize:
-                                                              displayWidth(
-                                                                      context) *
-                                                                  0.03,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 4,
-                                                    ),
-                                                    tripIsRunning
-                                                        ? Container()
-                                                        : Row(
-                                                            children: [
-                                                              commonText(
-                                                                context:
-                                                                    context,
-                                                                text:
-                                                                    'End Date',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                textColor:
-                                                                    Colors.grey,
-                                                                textSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.03,
-                                                              ),
-                                                              SizedBox(
-                                                                width: displayWidth(
-                                                                        context) *
-                                                                    0.06,
-                                                              ),
-                                                              commonText(
-                                                                context:
-                                                                    context,
-                                                                text:
-                                                                    ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.updatedAt!))}',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                textColor:
-                                                                    Colors
-                                                                        .black,
-                                                                textSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.03,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                    SizedBox(
-                                                      height: 4,
-                                                    ),
-                                                    tripIsRunning
-                                                        ? Container()
-                                                        : Row(
-                                                            children: [
-                                                              commonText(
-                                                                context:
-                                                                    context,
-                                                                text:
-                                                                    'End Time',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                textColor:
-                                                                    Colors.grey,
-                                                                textSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.03,
-                                                              ),
-                                                              SizedBox(
-                                                                width: displayWidth(
-                                                                        context) *
-                                                                    0.06,
-                                                              ),
-                                                              commonText(
-                                                                context:
-                                                                    context,
-                                                                text:
-                                                                    ': ${DateFormat('hh:mm').format(DateTime.parse(tripData!.updatedAt!))}',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                textColor:
-                                                                    Colors
-                                                                        .black,
-                                                                textSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.03,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: 17, vertical: 10),
-                                        child: tripData!.isCloud != 0
-                                            ? SizedBox(
-                                                width: displayWidth(context),
-                                                child: CommonButtons
-                                                    .getActionButton(
-                                                        title: 'Home',
-                                                        context: context,
-                                                        fontSize: displayWidth(
-                                                                context) *
-                                                            0.034,
-                                                        textColor: Colors.white,
-                                                        buttonPrimaryColor:
-                                                            buttonBGColor,
-                                                        borderColor:
-                                                            buttonBGColor,
-                                                        width: displayWidth(
-                                                                context) /
-                                                            2.3,
-                                                        onTap: () async {
-                                                          Navigator
-                                                              .pushAndRemoveUntil(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            HomePage(),
-                                                                  ),
-                                                                  ModalRoute
-                                                                      .withName(
-                                                                          ""));
-                                                        }),
-                                              )
-                                            : Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  CommonButtons.getActionButton(
-                                                      title:
-                                                          'Download Trip Data',
-                                                      context: context,
-                                                      fontSize: displayWidth(
-                                                              context) *
-                                                          0.034,
-                                                      textColor: Colors.white,
-                                                      buttonPrimaryColor:
-                                                          Color(0xFF889BAB),
-                                                      borderColor:
-                                                          Color(0xFF889BAB),
-                                                      width: displayWidth(
-                                                              context) /
-                                                          2.3,
-                                                      onTap: () async {
-                                                        DownloadTrip()
-                                                            .downloadTrip(
-                                                                context,
-                                                                scaffoldKey,
-                                                                tripData!.id!);
-                                                      }),
-                                                  isTripUploaded
-                                                      ? Container(
-                                                          margin: EdgeInsets.only(
-                                                              right: displayWidth(
-                                                                      context) *
-                                                                  0.2),
-                                                          child: Center(
-                                                              child:
-                                                                  CircularProgressIndicator(
-                                                            valueColor:
-                                                                AlwaysStoppedAnimation<
-                                                                        Color>(
-                                                                    circularProgressColor),
-                                                          )),
-                                                        )
-                                                      : tripData?.isSync != 0
-                                                          ? CommonButtons
-                                                              .getActionButton(
-                                                                  title: 'Home',
-                                                                  context:
+                                                        CommonButtons.getActionButton(
+                                                            title:
+                                                                'Download Trip Data',
+                                                            context: context,
+                                                            fontSize: displayWidth(
+                                                                    context) *
+                                                                0.034,
+                                                            textColor: Colors.white,
+                                                            buttonPrimaryColor:
+                                                                Color(0xFF889BAB),
+                                                            borderColor:
+                                                                Color(0xFF889BAB),
+                                                            width: displayWidth(
+                                                                    context) /
+                                                                2.3,
+                                                            onTap: () async {
+                                                              DownloadTrip()
+                                                                  .downloadTrip(
                                                                       context,
-                                                                  fontSize: displayWidth(
-                                                                          context) *
-                                                                      0.034,
-                                                                  textColor:
-                                                                      Colors
-                                                                          .white,
-                                                                  buttonPrimaryColor:
-                                                                      buttonBGColor,
-                                                                  borderColor:
-                                                                      buttonBGColor,
-                                                                  width:
-                                                                      displayWidth(
-                                                                              context) /
-                                                                          2.3,
-                                                                  onTap:
-                                                                      () async {
-                                                                    Navigator.pushAndRemoveUntil(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                          builder: (context) =>
-                                                                              HomePage(),
-                                                                        ),
-                                                                        ModalRoute.withName(""));
-                                                                  })
-                                                          : CommonButtons
-                                                              .getActionButton(
-                                                                  title:
-                                                                      'Upload Trip Data',
-                                                                  context:
-                                                                      context,
-                                                                  fontSize:
-                                                                      displayWidth(
-                                                                              context) *
-                                                                          0.034,
-                                                                  textColor:
-                                                                      Colors
-                                                                          .white,
-                                                                  buttonPrimaryColor:
-                                                                      buttonBGColor,
-                                                                  borderColor:
-                                                                      buttonBGColor,
-                                                                  width: displayWidth(
-                                                                          context) /
-                                                                      2.3,
-                                                                  onTap:
-                                                                      () async {
-                                                                    await Utils()
-                                                                        .check(
-                                                                            scaffoldKey);
+                                                                      scaffoldKey,
+                                                                      tripData!.id!);
+                                                            }),
+                                                        isTripUploaded
+                                                            ? Container(
+                                                                margin: EdgeInsets.only(
+                                                                    right: displayWidth(
+                                                                            context) *
+                                                                        0.2),
+                                                                child: Center(
+                                                                    child:
+                                                                        CircularProgressIndicator(
+                                                                  valueColor:
+                                                                      AlwaysStoppedAnimation<
+                                                                              Color>(
+                                                                          circularProgressColor),
+                                                                )),
+                                                              )
+                                                            : tripData?.isSync != 0
+                                                                ? CommonButtons
+                                                                    .getActionButton(
+                                                                        title: 'Home',
+                                                                        context:
+                                                                            context,
+                                                                        fontSize: displayWidth(
+                                                                                context) *
+                                                                            0.034,
+                                                                        textColor:
+                                                                            Colors
+                                                                                .white,
+                                                                        buttonPrimaryColor:
+                                                                            buttonBGColor,
+                                                                        borderColor:
+                                                                            buttonBGColor,
+                                                                        width:
+                                                                            displayWidth(
+                                                                                    context) /
+                                                                                2.3,
+                                                                        onTap:
+                                                                            () async {
+                                                                          Navigator.pushAndRemoveUntil(
+                                                                              context,
+                                                                              MaterialPageRoute(
+                                                                                builder: (context) =>
+                                                                                    HomePage(),
+                                                                              ),
+                                                                              ModalRoute.withName(""));
+                                                                        })
+                                                                : CommonButtons
+                                                                    .getActionButton(
+                                                                        title:
+                                                                            'Upload Trip Data',
+                                                                        context:
+                                                                            context,
+                                                                        fontSize:
+                                                                            displayWidth(
+                                                                                    context) *
+                                                                                0.034,
+                                                                        textColor:
+                                                                            Colors
+                                                                                .white,
+                                                                        buttonPrimaryColor:
+                                                                            buttonBGColor,
+                                                                        borderColor:
+                                                                            buttonBGColor,
+                                                                        width: displayWidth(
+                                                                                context) /
+                                                                            2.3,
+                                                                        onTap:
+                                                                            () async {
+                                                                          await Utils()
+                                                                              .check(
+                                                                                  scaffoldKey);
 
-                                                                    if (tripData
-                                                                            ?.isSync !=
-                                                                        0) {
-                                                                      Utils.customPrint(
-                                                                          'UPLOADED ${tripData?.isSync != 0}');
-                                                                      Utils.customPrint(
-                                                                          'UPLOADED 1 ${isTripUploaded}');
+                                                                          if (tripData
+                                                                                  ?.isSync !=
+                                                                              0) {
+                                                                            Utils.customPrint(
+                                                                                'UPLOADED ${tripData?.isSync != 0}');
+                                                                            Utils.customPrint(
+                                                                                'UPLOADED 1 ${isTripUploaded}');
 
-                                                                      Utils
-                                                                          .showSnackBar(
-                                                                        context,
-                                                                        scaffoldKey:
-                                                                            scaffoldKey,
-                                                                        message:
-                                                                            'File already uploaded',
-                                                                      );
-                                                                      return;
-                                                                    }
+                                                                            Utils
+                                                                                .showSnackBar(
+                                                                              context,
+                                                                              scaffoldKey:
+                                                                                  scaffoldKey,
+                                                                              message:
+                                                                                  'File already uploaded',
+                                                                            );
+                                                                            return;
+                                                                          }
 
-                                                                    //downloadTrip(true);
+                                                                          //downloadTrip(true);
 
-                                                                    var connectivityResult =
-                                                                        await (Connectivity()
-                                                                            .checkConnectivity());
-                                                                    if (connectivityResult ==
-                                                                        ConnectivityResult
-                                                                            .mobile) {
-                                                                      Utils.customPrint(
-                                                                          'Mobile');
-                                                                      showDialogBoxToUploadTrip();
-                                                                    } else if (connectivityResult ==
-                                                                        ConnectivityResult
-                                                                            .wifi) {
-                                                                      setState(
-                                                                          () {
-                                                                        isTripUploaded =
-                                                                            true;
-                                                                      });
-                                                                      uploadDataIfDataIsNotSync();
+                                                                          var connectivityResult =
+                                                                              await (Connectivity()
+                                                                                  .checkConnectivity());
+                                                                          if (connectivityResult ==
+                                                                              ConnectivityResult
+                                                                                  .mobile) {
+                                                                            Utils.customPrint(
+                                                                                'Mobile');
+                                                                            showDialogBoxToUploadTrip();
+                                                                          } else if (connectivityResult ==
+                                                                              ConnectivityResult
+                                                                                  .wifi) {
+                                                                            setState(
+                                                                                () {
+                                                                              isTripUploaded =
+                                                                                  true;
+                                                                            });
+                                                                            uploadDataIfDataIsNotSync();
 
-                                                                      Utils.customPrint(
-                                                                          'WIFI');
-                                                                    }
-                                                                  })
+                                                                            Utils.customPrint(
+                                                                                'WIFI');
+                                                                          }
+                                                                        })
+                                                      ],
+                                                    ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                      left: displayWidth(context) * 0.22,
+                                                     // top: displayWidth(context) * 0.03,
+                                                    ),
+                                                    child: GestureDetector(
+                                                        onTap: ()async{
+                                                          final image = await controller.capture();
+                                                          print("Image is: ${image.toString()}");
+                                                          Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                                            imagePath: image.toString(),
+                                                            uIntList: image,)));
+                                                        },
+                                                        child: UserFeedback().getUserFeedback(context)
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
-                                      ),
-                                    )
-                                  ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
-                        : Expanded(
-                            child: tripIsRunning
-                                ? Container(
-                                    padding: EdgeInsets.only(top: 10),
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: SingleChildScrollView(
-                                            child: Container(
-                                              height:
-                                                  displayHeight(context) / 1.8,
-                                              margin: EdgeInsets.only(
-                                                  top: 20, left: 17, right: 17),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        margin: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal: 12),
-                                                        child: commonText(
-                                                          context: context,
-                                                          text: 'Analytics',
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                          textColor:
-                                                              Colors.black87,
-                                                          textSize:
-                                                              displayWidth(
-                                                                      context) *
-                                                                  0.032,
-                                                        ),
-                                                      ),
-                                                      getTripDetailsFromNoti
-                                                          ? Container(
-                                                              height: displayHeight(
-                                                                      context) *
-                                                                  0.2,
-                                                              child: Center(
-                                                                  child:
-                                                                      CircularProgressIndicator()),
-                                                            )
-                                                          : vesselAnalytics(
-                                                              context,
-                                                              tripIsRunning
-                                                                  ? '$tripDuration'
-                                                                  : '${tripData!.time} ',
-                                                              tripIsRunning
-                                                                  ? '${(tripDistance)}'
-                                                                  : '${tripData!.distance} ',
-                                                              tripIsRunning
-                                                                  ? '${tripSpeed} '
-                                                                  : '${tripData!.speed} ',
-                                                              tripIsRunning
-                                                                  ? '${tripAvgSpeed} '
-                                                                  : '${tripData!.avgSpeed} ',
-                                                              tripIsRunning),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height:
-                                                        displayHeight(context) *
-                                                            0.01,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.bottomCenter,
-                                          child: Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 17, vertical: 10),
-                                            child: isTripEnded
-                                                ? Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation<
-                                                                Color>(
-                                                            circularProgressColor),
-                                                  ))
-                                                : CommonButtons.getActionButton(
-                                                    title: 'End Trip',
-                                                    context: context,
-                                                    fontSize:
-                                                        displayWidth(context) *
-                                                            0.042,
-                                                    textColor: Colors.white,
-                                                    buttonPrimaryColor:
-                                                        buttonBGColor,
-                                                    borderColor: buttonBGColor,
-                                                    width:
-                                                        displayWidth(context),
-                                                    onTap: () async {
-                                                      //BgGeoTrip().endTrip();
-
-                                                      Utils.customPrint(
-                                                          "END TRIP CURRENT TIME ${DateTime.now()}");
-
-                                                      Utils().showEndTripDialog(
-                                                          context, () async {
-                                                        if (durationTimer !=
-                                                            null) {
-                                                          durationTimer!
-                                                              .cancel();
-                                                        }
-                                                        setState(() {
-                                                          isTripEnded = true;
-                                                        });
-                                                        Navigator.pop(context);
-
-                                                        EndTrip().endTrip(
-                                                            context: context,
-                                                            scaffoldKey:
-                                                                scaffoldKey,
-                                                            duration:
-                                                                tripDuration,
-                                                            IOSAvgSpeed:
-                                                                tripAvgSpeed,
-                                                            IOSpeed: tripSpeed,
-                                                            IOStripDistance:
-                                                                tripDistance,
-                                                            onEnded: () async {
-                                                              setState(() {
-                                                                tripIsRunning =
-                                                                    false;
-                                                                isTripEnded =
-                                                                    false;
-                                                              });
-                                                              Trip tripDetails =
-                                                                  await _databaseService
-                                                                      .getTrip(
-                                                                          tripData!
-                                                                              .id!);
-                                                              debugPrint(
-                                                                  "abhi:${tripDetails.time}");
-                                                              debugPrint(
-                                                                  "abhi:${tripDuration}");
-                                                              debugPrint(
-                                                                  "abhi:${tripAvgSpeed}");
-                                                              debugPrint(
-                                                                  "abhi:${tripSpeed}");
-                                                              setState(() {
-                                                                tripData =
-                                                                    tripDetails;
-                                                              });
-
-                                                              Utils.customPrint(
-                                                                  'TRIP ENDED DETAILS: ${tripDetails.isSync}');
-                                                              Utils.customPrint(
-                                                                  'TRIP ENDED DETAILS: ${tripData!.isSync}');
-
-                                                              isDataUpdated =
-                                                                  true;
-                                                            });
-                                                      }, () {
-                                                        Navigator.pop(context);
-                                                      });
-                                                    }),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                : Card(
-                                    color: Colors.white,
-                                    elevation: 8.0,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(50),
-                                            topRight: Radius.circular(50))),
-                                    child: Container(
+                            )
+                          : Expanded(
+                              child: tripIsRunning
+                                  ? Container(
                                       padding: EdgeInsets.only(top: 10),
                                       child: Column(
                                         children: [
                                           Expanded(
                                             child: SingleChildScrollView(
                                               child: Container(
-                                                height: displayHeight(context) /
-                                                    1.8,
+                                                height:
+                                                    displayHeight(context) / 1.8,
                                                 margin: EdgeInsets.only(
-                                                    top: 20,
-                                                    left: 17,
-                                                    right: 17),
+                                                    top: 20, left: 17, right: 17),
                                                 child: Column(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
@@ -1065,14 +930,12 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                           CrossAxisAlignment
                                                               .start,
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
+                                                          MainAxisAlignment.start,
                                                       children: [
                                                         Container(
                                                           margin: EdgeInsets
                                                               .symmetric(
-                                                                  horizontal:
-                                                                      12),
+                                                                  horizontal: 12),
                                                           child: commonText(
                                                             context: context,
                                                             text: 'Analytics',
@@ -1086,274 +949,36 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                     0.032,
                                                           ),
                                                         ),
-                                                        vesselAnalytics(
-                                                            context,
-                                                            tripIsRunning
-                                                                ? '$tripDuration'
-                                                                : '${tripData!.time} ',
-                                                            tripIsRunning
-                                                                ? '${(tripDistance)}'
-                                                                : '${tripData!.distance} ',
-                                                            tripIsRunning
-                                                                ? '$tripSpeed '
-                                                                : '${tripData!.speed} ',
-                                                            tripIsRunning
-                                                                ? '$tripAvgSpeed '
-                                                                : '${tripData!.avgSpeed} ',
-                                                            tripIsRunning),
+                                                        getTripDetailsFromNoti
+                                                            ? Container(
+                                                                height: displayHeight(
+                                                                        context) *
+                                                                    0.2,
+                                                                child: Center(
+                                                                    child:
+                                                                        CircularProgressIndicator()),
+                                                              )
+                                                            : vesselAnalytics(
+                                                                context,
+                                                                tripIsRunning
+                                                                    ? '$tripDuration'
+                                                                    : '${tripData!.time} ',
+                                                                tripIsRunning
+                                                                    ? '${(tripDistance)}'
+                                                                    : '${tripData!.distance} ',
+                                                                tripIsRunning
+                                                                    ? '${tripSpeed} '
+                                                                    : '${tripData!.speed} ',
+                                                                tripIsRunning
+                                                                    ? '${tripAvgSpeed} '
+                                                                    : '${tripData!.avgSpeed} ',
+                                                                tripIsRunning),
                                                       ],
                                                     ),
                                                     SizedBox(
-                                                      height: displayHeight(
-                                                              context) *
-                                                          0.01,
-                                                    ),
-                                                    Container(
-                                                      margin:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 12),
-                                                      child: Column(
-                                                        children: [
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              commonText(
-                                                                context:
-                                                                    context,
-                                                                text:
-                                                                    'Trip Details',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700,
-                                                                textColor: Colors
-                                                                    .black87,
-                                                                textSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.032,
-                                                              ),
-                                                              Row(
-                                                                children: [
-                                                                  commonText(
-                                                                    context:
-                                                                        context,
-                                                                    text:
-                                                                        'Trip Status:',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    textColor:
-                                                                        Colors
-                                                                            .black87,
-                                                                    textSize:
-                                                                        displayWidth(context) *
-                                                                            0.03,
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 6,
-                                                                  ),
-                                                                  commonText(
-                                                                    context:
-                                                                        context,
-                                                                    text: tripIsRunning
-                                                                        ? 'Trip InProgress'
-                                                                        : 'Trip Ended',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    textColor: tripIsRunning
-                                                                        ? Color(
-                                                                            0xFFAE6827)
-                                                                        : Colors
-                                                                            .green,
-                                                                    textSize:
-                                                                        displayWidth(context) *
-                                                                            0.03,
-                                                                  ),
-                                                                ],
-                                                              )
-                                                            ],
-                                                          ),
-                                                          SizedBox(
-                                                            height: displayHeight(
-                                                                    context) *
-                                                                0.02,
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              commonText(
-                                                                context:
-                                                                    context,
-                                                                text:
-                                                                    'Start Date',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                textColor:
-                                                                    Colors.grey,
-                                                                textSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.03,
-                                                              ),
-                                                              SizedBox(
-                                                                width: displayWidth(
-                                                                        context) *
-                                                                    0.04,
-                                                              ),
-                                                              commonText(
-                                                                context:
-                                                                    context,
-                                                                text:
-                                                                    ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                textColor:
-                                                                    Colors
-                                                                        .black,
-                                                                textSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.03,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          SizedBox(
-                                                            height: 4,
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              commonText(
-                                                                context:
-                                                                    context,
-                                                                text:
-                                                                    'Start Time',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                textColor:
-                                                                    Colors.grey,
-                                                                textSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.03,
-                                                              ),
-                                                              SizedBox(
-                                                                width: displayWidth(
-                                                                        context) *
-                                                                    0.04,
-                                                              ),
-                                                              commonText(
-                                                                context:
-                                                                    context,
-                                                                text:
-                                                                    ': ${DateFormat('hh:mm').format(DateTime.parse(tripData!.createdAt!))}',
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                textColor:
-                                                                    Colors
-                                                                        .black,
-                                                                textSize:
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.03,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          SizedBox(
-                                                            height: 4,
-                                                          ),
-                                                          tripIsRunning
-                                                              ? Container()
-                                                              : Row(
-                                                                  children: [
-                                                                    commonText(
-                                                                      context:
-                                                                          context,
-                                                                      text:
-                                                                          'End Date',
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      textColor:
-                                                                          Colors
-                                                                              .grey,
-                                                                      textSize:
-                                                                          displayWidth(context) *
-                                                                              0.03,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: displayWidth(
-                                                                              context) *
-                                                                          0.06,
-                                                                    ),
-                                                                    commonText(
-                                                                      context:
-                                                                          context,
-                                                                      text:
-                                                                          ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.updatedAt!))}',
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      textColor:
-                                                                          Colors
-                                                                              .black,
-                                                                      textSize:
-                                                                          displayWidth(context) *
-                                                                              0.03,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                          SizedBox(
-                                                            height: 4,
-                                                          ),
-                                                          tripIsRunning
-                                                              ? Container()
-                                                              : Row(
-                                                                  children: [
-                                                                    commonText(
-                                                                      context:
-                                                                          context,
-                                                                      text:
-                                                                          'End Time',
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      textColor:
-                                                                          Colors
-                                                                              .grey,
-                                                                      textSize:
-                                                                          displayWidth(context) *
-                                                                              0.03,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: displayWidth(
-                                                                              context) *
-                                                                          0.06,
-                                                                    ),
-                                                                    commonText(
-                                                                      context:
-                                                                          context,
-                                                                      text:
-                                                                          ': ${DateFormat('hh:mm').format(DateTime.parse(tripData!.updatedAt!))}',
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      textColor:
-                                                                          Colors
-                                                                              .black,
-                                                                      textSize:
-                                                                          displayWidth(context) *
-                                                                              0.03,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                        ],
-                                                      ),
+                                                      height:
+                                                          displayHeight(context) *
+                                                              0.01,
                                                     ),
                                                   ],
                                                 ),
@@ -1365,181 +990,667 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                             child: Container(
                                               margin: EdgeInsets.symmetric(
                                                   horizontal: 17, vertical: 10),
-                                              child: tripData!.isCloud != 0
-                                                  ? SizedBox(
-                                                      width:
-                                                          displayWidth(context),
-                                                      child: CommonButtons
-                                                          .getActionButton(
-                                                              title: 'Home',
-                                                              context: context,
-                                                              fontSize:
-                                                                  displayWidth(
-                                                                          context) *
-                                                                      0.034,
-                                                              textColor: Colors
-                                                                  .white,
-                                                              buttonPrimaryColor:
-                                                                  buttonBGColor,
-                                                              borderColor:
-                                                                  buttonBGColor,
-                                                              width: displayWidth(
-                                                                      context) /
-                                                                  2.3,
-                                                              onTap: () async {
-                                                                Navigator
-                                                                    .pushAndRemoveUntil(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                          builder: (context) =>
-                                                                              HomePage(),
-                                                                        ),
-                                                                        ModalRoute.withName(
-                                                                            ""));
-                                                              }),
-                                                    )
-                                                  : Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        CommonButtons
-                                                            .getActionButton(
-                                                                title:
-                                                                    'Download Trip Data',
-                                                                context:
-                                                                    context,
-                                                                fontSize:
-                                                                    displayWidth(context) *
-                                                                        0.034,
-                                                                textColor:
-                                                                    Colors
-                                                                        .white,
-                                                                buttonPrimaryColor:
-                                                                    Color(
-                                                                        0xFF889BAB),
-                                                                borderColor: Color(
-                                                                    0xFF889BAB),
-                                                                width: displayWidth(
-                                                                        context) /
-                                                                    2.3,
-                                                                onTap:
-                                                                    () async {
-                                                                  DownloadTrip().downloadTrip(
-                                                                      context,
+                                              child: isTripEnded
+                                                  ? Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              circularProgressColor),
+                                                    ))
+                                                  : Column(
+                                                    children: [
+                                                      CommonButtons.getActionButton(
+                                                          title: 'End Trip',
+                                                          context: context,
+                                                          fontSize:
+                                                              displayWidth(context) *
+                                                                  0.042,
+                                                          textColor: Colors.white,
+                                                          buttonPrimaryColor:
+                                                              buttonBGColor,
+                                                          borderColor: buttonBGColor,
+                                                          width:
+                                                              displayWidth(context),
+                                                          onTap: () async {
+                                                            //BgGeoTrip().endTrip();
+
+                                                            Utils.customPrint(
+                                                                "END TRIP CURRENT TIME ${DateTime.now()}");
+
+                                                            Utils().showEndTripDialog(
+                                                                context, () async {
+                                                              if (durationTimer !=
+                                                                  null) {
+                                                                durationTimer!
+                                                                    .cancel();
+                                                              }
+                                                              setState(() {
+                                                                isTripEnded = true;
+                                                              });
+                                                              Navigator.pop(context);
+
+                                                              EndTrip().endTrip(
+                                                                  context: context,
+                                                                  scaffoldKey:
                                                                       scaffoldKey,
-                                                                      tripData!
-                                                                          .id!);
-                                                                }),
-                                                        isTripUploaded
-                                                            ? Container(
-                                                                margin: EdgeInsets.only(
-                                                                    right: displayWidth(
-                                                                            context) *
-                                                                        0.2),
-                                                                child: Center(
-                                                                    child:
-                                                                        CircularProgressIndicator(
-                                                                  valueColor: AlwaysStoppedAnimation<
-                                                                          Color>(
-                                                                      circularProgressColor),
-                                                                )),
-                                                              )
-                                                            : tripData?.isSync !=
-                                                                    0
-                                                                ? CommonButtons
-                                                                    .getActionButton(
-                                                                        title:
-                                                                            'Home',
-                                                                        context:
-                                                                            context,
-                                                                        fontSize:
-                                                                            displayWidth(context) *
-                                                                                0.034,
-                                                                        textColor:
-                                                                            Colors
-                                                                                .white,
-                                                                        buttonPrimaryColor:
-                                                                            buttonBGColor,
-                                                                        borderColor:
-                                                                            buttonBGColor,
-                                                                        width: displayWidth(context) /
-                                                                            2.3,
-                                                                        onTap:
-                                                                            () async {
-                                                                          Navigator.pushAndRemoveUntil(
-                                                                              context,
-                                                                              MaterialPageRoute(
-                                                                                builder: (context) => HomePage(),
-                                                                              ),
-                                                                              ModalRoute.withName(""));
-                                                                        })
-                                                                : CommonButtons
-                                                                    .getActionButton(
-                                                                        title:
-                                                                            'Upload Trip Data',
-                                                                        context:
-                                                                            context,
-                                                                        fontSize:
-                                                                            displayWidth(context) *
-                                                                                0.034,
-                                                                        textColor:
-                                                                            Colors
-                                                                                .white,
-                                                                        buttonPrimaryColor:
-                                                                            buttonBGColor,
-                                                                        borderColor:
-                                                                            buttonBGColor,
-                                                                        width: displayWidth(context) /
-                                                                            2.3,
-                                                                        onTap:
-                                                                            () async {
-                                                                          await Utils()
-                                                                              .check(scaffoldKey);
+                                                                  duration:
+                                                                      tripDuration,
+                                                                  IOSAvgSpeed:
+                                                                      tripAvgSpeed,
+                                                                  IOSpeed: tripSpeed,
+                                                                  IOStripDistance:
+                                                                      tripDistance,
+                                                                  onEnded: () async {
+                                                                    setState(() {
+                                                                      tripIsRunning =
+                                                                          false;
+                                                                      isTripEnded =
+                                                                          false;
+                                                                    });
+                                                                    Trip tripDetails =
+                                                                        await _databaseService
+                                                                            .getTrip(
+                                                                                tripData!
+                                                                                    .id!);
+                                                                    debugPrint(
+                                                                        "abhi:${tripDetails.time}");
+                                                                    debugPrint(
+                                                                        "abhi:${tripDuration}");
+                                                                    debugPrint(
+                                                                        "abhi:${tripAvgSpeed}");
+                                                                    debugPrint(
+                                                                        "abhi:${tripSpeed}");
+                                                                    setState(() {
+                                                                      tripData =
+                                                                          tripDetails;
+                                                                    });
 
-                                                                          if (tripData?.isSync !=
-                                                                              0) {
-                                                                            Utils.customPrint('UPLOADED ${tripData?.isSync != 0}');
-                                                                            Utils.customPrint('UPLOADED 1 ${isTripUploaded}');
+                                                                    Utils.customPrint(
+                                                                        'TRIP ENDED DETAILS: ${tripDetails.isSync}');
+                                                                    Utils.customPrint(
+                                                                        'TRIP ENDED DETAILS: ${tripData!.isSync}');
 
-                                                                            Utils.showSnackBar(
-                                                                              context,
-                                                                              scaffoldKey: scaffoldKey,
-                                                                              message: 'File already uploaded',
-                                                                            );
-                                                                            return;
-                                                                          }
+                                                                    isDataUpdated =
+                                                                        true;
+                                                                  });
+                                                            }, () {
+                                                              Navigator.pop(context);
+                                                            });
+                                                          }),
 
-                                                                          //downloadTrip(true);
-
-                                                                          var connectivityResult =
-                                                                              await (Connectivity().checkConnectivity());
-                                                                          if (connectivityResult ==
-                                                                              ConnectivityResult.mobile) {
-                                                                            Utils.customPrint('Mobile');
-                                                                            showDialogBoxToUploadTrip();
-                                                                          } else if (connectivityResult ==
-                                                                              ConnectivityResult.wifi) {
-                                                                            setState(() {
-                                                                              isTripUploaded = true;
-                                                                            });
-                                                                            uploadDataIfDataIsNotSync();
-
-                                                                            Utils.customPrint('WIFI');
-                                                                          }
-                                                                        })
-                                                      ],
-                                                    ),
+                                                      Padding(
+                                                        padding: EdgeInsets.only(
+                                                          left: displayWidth(context) * 0.22,
+                                                         // top: displayWidth(context) * 0.03,
+                                                        ),
+                                                        child: GestureDetector(
+                                                            onTap: ()async{
+                                                              final image = await controller.capture();
+                                                              print("Image is: ${image.toString()}");
+                                                              Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                                                imagePath: image.toString(),
+                                                                uIntList: image,)));
+                                                            },
+                                                            child: UserFeedback().getUserFeedback(context)
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                             ),
                                           )
                                         ],
                                       ),
+                                    )
+                                  : Card(
+                                      color: Colors.white,
+                                      elevation: 8.0,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(50),
+                                              topRight: Radius.circular(50))),
+                                      child: Container(
+                                        padding: EdgeInsets.only(top: 10),
+                                        child: Column(
+                                          children: [
+                                            Expanded(
+                                              child: SingleChildScrollView(
+                                                child: Container(
+                                                  height: displayHeight(context) /
+                                                      1.8,
+                                                  margin: EdgeInsets.only(
+                                                      top: 20,
+                                                      left: 17,
+                                                      right: 17),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Container(
+                                                            margin: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        12),
+                                                            child: commonText(
+                                                              context: context,
+                                                              text: 'Analytics',
+                                                              fontWeight:
+                                                                  FontWeight.w700,
+                                                              textColor:
+                                                                  Colors.black87,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.032,
+                                                            ),
+                                                          ),
+                                                          vesselAnalytics(
+                                                              context,
+                                                              tripIsRunning
+                                                                  ? '$tripDuration'
+                                                                  : '${tripData!.time} ',
+                                                              tripIsRunning
+                                                                  ? '${(tripDistance)}'
+                                                                  : '${tripData!.distance} ',
+                                                              tripIsRunning
+                                                                  ? '$tripSpeed '
+                                                                  : '${tripData!.speed} ',
+                                                              tripIsRunning
+                                                                  ? '$tripAvgSpeed '
+                                                                  : '${tripData!.avgSpeed} ',
+                                                              tripIsRunning),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        height: displayHeight(
+                                                                context) *
+                                                            0.01,
+                                                      ),
+                                                      Container(
+                                                        margin:
+                                                            EdgeInsets.symmetric(
+                                                                horizontal: 12),
+                                                        child: Column(
+                                                          children: [
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                commonText(
+                                                                  context:
+                                                                      context,
+                                                                  text:
+                                                                      'Trip Details',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700,
+                                                                  textColor: Colors
+                                                                      .black87,
+                                                                  textSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.032,
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    commonText(
+                                                                      context:
+                                                                          context,
+                                                                      text:
+                                                                          'Trip Status:',
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      textColor:
+                                                                          Colors
+                                                                              .black87,
+                                                                      textSize:
+                                                                          displayWidth(context) *
+                                                                              0.03,
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 6,
+                                                                    ),
+                                                                    commonText(
+                                                                      context:
+                                                                          context,
+                                                                      text: tripIsRunning
+                                                                          ? 'Trip InProgress'
+                                                                          : 'Trip Ended',
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      textColor: tripIsRunning
+                                                                          ? Color(
+                                                                              0xFFAE6827)
+                                                                          : Colors
+                                                                              .green,
+                                                                      textSize:
+                                                                          displayWidth(context) *
+                                                                              0.03,
+                                                                    ),
+                                                                  ],
+                                                                )
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                              height: displayHeight(
+                                                                      context) *
+                                                                  0.02,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                commonText(
+                                                                  context:
+                                                                      context,
+                                                                  text:
+                                                                      'Start Date',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  textColor:
+                                                                      Colors.grey,
+                                                                  textSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.03,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: displayWidth(
+                                                                          context) *
+                                                                      0.04,
+                                                                ),
+                                                                commonText(
+                                                                  context:
+                                                                      context,
+                                                                  text:
+                                                                      ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  textColor:
+                                                                      Colors
+                                                                          .black,
+                                                                  textSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.03,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                              height: 4,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                commonText(
+                                                                  context:
+                                                                      context,
+                                                                  text:
+                                                                      'Start Time',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  textColor:
+                                                                      Colors.grey,
+                                                                  textSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.03,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: displayWidth(
+                                                                          context) *
+                                                                      0.04,
+                                                                ),
+                                                                commonText(
+                                                                  context:
+                                                                      context,
+                                                                  text:
+                                                                      ': ${DateFormat('hh:mm').format(DateTime.parse(tripData!.createdAt!))}',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  textColor:
+                                                                      Colors
+                                                                          .black,
+                                                                  textSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.03,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                              height: 4,
+                                                            ),
+                                                            tripIsRunning
+                                                                ? Container()
+                                                                : Row(
+                                                                    children: [
+                                                                      commonText(
+                                                                        context:
+                                                                            context,
+                                                                        text:
+                                                                            'End Date',
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w500,
+                                                                        textColor:
+                                                                            Colors
+                                                                                .grey,
+                                                                        textSize:
+                                                                            displayWidth(context) *
+                                                                                0.03,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width: displayWidth(
+                                                                                context) *
+                                                                            0.06,
+                                                                      ),
+                                                                      commonText(
+                                                                        context:
+                                                                            context,
+                                                                        text:
+                                                                            ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.updatedAt!))}',
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w500,
+                                                                        textColor:
+                                                                            Colors
+                                                                                .black,
+                                                                        textSize:
+                                                                            displayWidth(context) *
+                                                                                0.03,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                            SizedBox(
+                                                              height: 4,
+                                                            ),
+                                                            tripIsRunning
+                                                                ? Container()
+                                                                : Row(
+                                                                    children: [
+                                                                      commonText(
+                                                                        context:
+                                                                            context,
+                                                                        text:
+                                                                            'End Time',
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w500,
+                                                                        textColor:
+                                                                            Colors
+                                                                                .grey,
+                                                                        textSize:
+                                                                            displayWidth(context) *
+                                                                                0.03,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width: displayWidth(
+                                                                                context) *
+                                                                            0.06,
+                                                                      ),
+                                                                      commonText(
+                                                                        context:
+                                                                            context,
+                                                                        text:
+                                                                            ': ${DateFormat('hh:mm').format(DateTime.parse(tripData!.updatedAt!))}',
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w500,
+                                                                        textColor:
+                                                                            Colors
+                                                                                .black,
+                                                                        textSize:
+                                                                            displayWidth(context) *
+                                                                                0.03,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.bottomCenter,
+                                              child: Container(
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 17, vertical: 10),
+                                                child: tripData!.isCloud != 0
+                                                    ? Column(
+                                                      children: [
+                                                        SizedBox(
+                                                            width:
+                                                                displayWidth(context),
+                                                            child: CommonButtons
+                                                                .getActionButton(
+                                                                    title: 'Home',
+                                                                    context: context,
+                                                                    fontSize:
+                                                                        displayWidth(
+                                                                                context) *
+                                                                            0.034,
+                                                                    textColor: Colors
+                                                                        .white,
+                                                                    buttonPrimaryColor:
+                                                                        buttonBGColor,
+                                                                    borderColor:
+                                                                        buttonBGColor,
+                                                                    width: displayWidth(
+                                                                            context) /
+                                                                        2.3,
+                                                                    onTap: () async {
+                                                                      Navigator
+                                                                          .pushAndRemoveUntil(
+                                                                              context,
+                                                                              MaterialPageRoute(
+                                                                                builder: (context) =>
+                                                                                    HomePage(),
+                                                                              ),
+                                                                              ModalRoute.withName(
+                                                                                  ""));
+                                                                    }),
+                                                          ),
+
+                                                        Padding(
+                                                          padding: EdgeInsets.only(
+                                                            left: displayWidth(context) * 0.22,
+                                                           // top: displayWidth(context) * 0.03,
+                                                          ),
+                                                          child: GestureDetector(
+                                                              onTap: ()async{
+                                                                final image = await controller.capture();
+                                                                print("Image is: ${image.toString()}");
+                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                                                  imagePath: image.toString(),
+                                                                  uIntList: image,)));
+                                                              },
+                                                              child: UserFeedback().getUserFeedback(context)
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                    : Column(
+                                                      children: [
+                                                        Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              CommonButtons
+                                                                  .getActionButton(
+                                                                      title:
+                                                                          'Download Trip Data',
+                                                                      context:
+                                                                          context,
+                                                                      fontSize:
+                                                                          displayWidth(context) *
+                                                                              0.034,
+                                                                      textColor:
+                                                                          Colors
+                                                                              .white,
+                                                                      buttonPrimaryColor:
+                                                                          Color(
+                                                                              0xFF889BAB),
+                                                                      borderColor: Color(
+                                                                          0xFF889BAB),
+                                                                      width: displayWidth(
+                                                                              context) /
+                                                                          2.3,
+                                                                      onTap:
+                                                                          () async {
+                                                                        DownloadTrip().downloadTrip(
+                                                                            context,
+                                                                            scaffoldKey,
+                                                                            tripData!
+                                                                                .id!);
+                                                                      }),
+                                                              isTripUploaded
+                                                                  ? Container(
+                                                                      margin: EdgeInsets.only(
+                                                                          right: displayWidth(
+                                                                                  context) *
+                                                                              0.2),
+                                                                      child: Center(
+                                                                          child:
+                                                                              CircularProgressIndicator(
+                                                                        valueColor: AlwaysStoppedAnimation<
+                                                                                Color>(
+                                                                            circularProgressColor),
+                                                                      )),
+                                                                    )
+                                                                  : tripData?.isSync !=
+                                                                          0
+                                                                      ? CommonButtons
+                                                                          .getActionButton(
+                                                                              title:
+                                                                                  'Home',
+                                                                              context:
+                                                                                  context,
+                                                                              fontSize:
+                                                                                  displayWidth(context) *
+                                                                                      0.034,
+                                                                              textColor:
+                                                                                  Colors
+                                                                                      .white,
+                                                                              buttonPrimaryColor:
+                                                                                  buttonBGColor,
+                                                                              borderColor:
+                                                                                  buttonBGColor,
+                                                                              width: displayWidth(context) /
+                                                                                  2.3,
+                                                                              onTap:
+                                                                                  () async {
+                                                                                Navigator.pushAndRemoveUntil(
+                                                                                    context,
+                                                                                    MaterialPageRoute(
+                                                                                      builder: (context) => HomePage(),
+                                                                                    ),
+                                                                                    ModalRoute.withName(""));
+                                                                              })
+                                                                      : CommonButtons
+                                                                          .getActionButton(
+                                                                              title:
+                                                                                  'Upload Trip Data',
+                                                                              context:
+                                                                                  context,
+                                                                              fontSize:
+                                                                                  displayWidth(context) *
+                                                                                      0.034,
+                                                                              textColor:
+                                                                                  Colors
+                                                                                      .white,
+                                                                              buttonPrimaryColor:
+                                                                                  buttonBGColor,
+                                                                              borderColor:
+                                                                                  buttonBGColor,
+                                                                              width: displayWidth(context) /
+                                                                                  2.3,
+                                                                              onTap:
+                                                                                  () async {
+                                                                                await Utils()
+                                                                                    .check(scaffoldKey);
+
+                                                                                if (tripData?.isSync !=
+                                                                                    0) {
+                                                                                  Utils.customPrint('UPLOADED ${tripData?.isSync != 0}');
+                                                                                  Utils.customPrint('UPLOADED 1 ${isTripUploaded}');
+
+                                                                                  Utils.showSnackBar(
+                                                                                    context,
+                                                                                    scaffoldKey: scaffoldKey,
+                                                                                    message: 'File already uploaded',
+                                                                                  );
+                                                                                  return;
+                                                                                }
+
+                                                                                //downloadTrip(true);
+
+                                                                                var connectivityResult =
+                                                                                    await (Connectivity().checkConnectivity());
+                                                                                if (connectivityResult ==
+                                                                                    ConnectivityResult.mobile) {
+                                                                                  Utils.customPrint('Mobile');
+                                                                                  showDialogBoxToUploadTrip();
+                                                                                } else if (connectivityResult ==
+                                                                                    ConnectivityResult.wifi) {
+                                                                                  setState(() {
+                                                                                    isTripUploaded = true;
+                                                                                  });
+                                                                                  uploadDataIfDataIsNotSync();
+
+                                                                                  Utils.customPrint('WIFI');
+                                                                                }
+                                                                              })
+                                                            ],
+                                                          ),
+                                                        Padding(
+                                                          padding: EdgeInsets.only(
+                                                            left: displayWidth(context) * 0.22,
+                                                            //top: displayWidth(context) * 0.01,
+                                                          ),
+                                                          child: GestureDetector(
+                                                              onTap: ()async{
+                                                                final image = await controller.capture();
+                                                                print("Image is: ${image.toString()}");
+                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                                                  imagePath: image.toString(),
+                                                                  uIntList: image,)));
+                                                              },
+                                                              child: UserFeedback().getUserFeedback(context)
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                          )
-                  ],
+                            )
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }

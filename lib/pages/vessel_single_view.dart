@@ -39,8 +39,12 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+
+import '../common_widgets/widgets/user_feed_back.dart';
+import 'feedback_report.dart';
 
 class VesselSingleView extends StatefulWidget {
   CreateVessel? vessel;
@@ -111,6 +115,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
   bool isRefreshList = false, isScanningBluetooth = false;
 
   DeviceInfo? deviceDetails;
+
+  final controller = ScreenshotController();
 
   /// To get device details
   fetchDeviceInfo() async {
@@ -264,368 +270,369 @@ class VesselSingleViewState extends State<VesselSingleView> {
           return false;
         }
       },
-      child: Scaffold(
-        key: scaffoldKey,
-        backgroundColor: Color(0xfff2fffb),
-        appBar: AppBar(
-          elevation: 0.0,
+      child: Screenshot(
+        controller: controller,
+        child: Scaffold(
+          key: scaffoldKey,
           backgroundColor: Color(0xfff2fffb),
-          centerTitle: true,
-          title: Text(
-            "${widget.vessel!.name}",
-            style: TextStyle(color: Colors.black),
-          ),
-          leading: IconButton(
-            onPressed: () async {
-              await tripIsRunningOrNot();
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: Color(0xfff2fffb),
+            centerTitle: true,
+            title: Text(
+              "${widget.vessel!.name}",
+              style: TextStyle(color: Colors.black),
+            ),
+            leading: IconButton(
+              onPressed: () async {
+                await tripIsRunningOrNot();
 
-              if (widget.isCalledFromSuccessScreen! || tripIsEnded) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(),
-                    ),
-                    ModalRoute.withName(""));
-              } else {
-                Navigator.of(context).pop(true);
-              }
-            },
-            icon: const Icon(Icons.arrow_back),
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black,
-          ),
-          actions: [
-            Container(
-              margin: EdgeInsets.only(right: 8),
-              child: IconButton(
-                onPressed: () {
+                if (widget.isCalledFromSuccessScreen! || tripIsEnded) {
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      ModalRoute.withName(""));
-                },
-                icon: Image.asset('assets/images/home.png'),
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
-              ),
-            ),
-          ],
-        ),
-        body: Container(
-          color: Colors.white,
-          child: Stack(
-            children: [
-              SizedBox(
-                height: displayHeight(context),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      ExpansionCard(
-                          scaffoldKey,
-                          widget.vessel,
-                          (value) async {
-                            var result = await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => AddNewVesselScreen(
-                                  isEdit: true,
-                                  createVessel: widget.vessel,
-                                ),
-                                fullscreenDialog: true,
-                              ),
-                            );
-
-                            if (result != null) {
-                              Utils.customPrint('RESULT 1 ${result[0]}');
-                              Utils.customPrint(
-                                  'RESULT 1 ${result[1] as CreateVessel}');
-                              setState(() {
-                                widget.vessel = result[1] as CreateVessel?;
-                                isDataUpdated = result[0];
-                              });
-                            }
-                          },
-                          (value) {},
-                          (value) {
-                            _onDeleteTripsByVesselID(value.id!);
-                            _onVesselDelete(value);
-                          },
-                          false),
-                      SizedBox(
-                        height: 10,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
                       ),
-                      Theme(
-                        data: Theme.of(context).copyWith(
-                            colorScheme: ColorScheme.light(
-                              primary: Colors.black,
+                      ModalRoute.withName(""));
+                } else {
+                  Navigator.of(context).pop(true);
+                }
+              },
+              icon: const Icon(Icons.arrow_back),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+            actions: [
+              Container(
+                margin: EdgeInsets.only(right: 8),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                        ModalRoute.withName(""));
+                  },
+                  icon: Image.asset('assets/images/home.png'),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              ),
+            ],
+          ),
+          body: Container(
+            color: Colors.white,
+            child: Stack(
+              children: [
+                SizedBox(
+                  height: displayHeight(context),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        ExpansionCard(
+                            scaffoldKey,
+                            widget.vessel,
+                            (value) async {
+                              var result = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => AddNewVesselScreen(
+                                    isEdit: true,
+                                    createVessel: widget.vessel,
+                                  ),
+                                  fullscreenDialog: true,
+                                ),
+                              );
+
+                              if (result != null) {
+                                Utils.customPrint('RESULT 1 ${result[0]}');
+                                Utils.customPrint(
+                                    'RESULT 1 ${result[1] as CreateVessel}');
+                                setState(() {
+                                  widget.vessel = result[1] as CreateVessel?;
+                                  isDataUpdated = result[0];
+                                });
+                              }
+                            },
+                            (value) {},
+                            (value) {
+                              _onDeleteTripsByVesselID(value.id!);
+                              _onVesselDelete(value);
+                            },
+                            false),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                              colorScheme: ColorScheme.light(
+                                primary: Colors.black,
+                              ),
+                              dividerColor: Colors.transparent),
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 15),
+                            child: ExpansionTile(
+                              initiallyExpanded: true,
+                              onExpansionChanged: ((newState) {
+                                setState(() {
+                                  isVesselParticularExpanded = newState;
+                                });
+
+                                Utils.customPrint(
+                                    'EXPANSION CHANGE $isVesselParticularExpanded');
+                              }),
+                              tilePadding: EdgeInsets.zero,
+                              childrenPadding: EdgeInsets.zero,
+                              title: commonText(
+                                  context: context,
+                                  text: 'VESSEL ANALYTICS',
+                                  fontWeight: FontWeight.w600,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.038,
+                                  textAlign: TextAlign.start),
+                              children: [
+                                vesselAnalytics
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : vesselSingleViewVesselAnalytics(
+                                        context,
+                                        totalDuration,
+                                        totalDistance,
+                                        tripsCount,
+                                        avgSpeed),
+                              ],
                             ),
-                            dividerColor: Colors.transparent),
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 15),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                              colorScheme: ColorScheme.light(
+                                primary: Colors.black,
+                              ),
+                              dividerColor: Colors.transparent),
                           child: ExpansionTile(
                             initiallyExpanded: true,
                             onExpansionChanged: ((newState) {
-                              setState(() {
-                                isVesselParticularExpanded = newState;
-                              });
-
-                              Utils.customPrint(
-                                  'EXPANSION CHANGE $isVesselParticularExpanded');
+                              Utils.customPrint('CURRENT STAT $newState');
                             }),
-                            tilePadding: EdgeInsets.zero,
-                            childrenPadding: EdgeInsets.zero,
+                            textColor: Colors.black,
+                            iconColor: Colors.black,
                             title: commonText(
                                 context: context,
-                                text: 'VESSEL ANALYTICS',
+                                text: 'Trip History',
                                 fontWeight: FontWeight.w600,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.038,
                                 textAlign: TextAlign.start),
                             children: [
-                              vesselAnalytics
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : vesselSingleViewVesselAnalytics(
-                                      context,
-                                      totalDuration,
-                                      totalDistance,
-                                      tripsCount,
-                                      avgSpeed),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 0.0),
+                                child: TripViewListing(
+                                  scaffoldKey: scaffoldKey,
+                                  vesselId: widget.vessel!.id,
+                                  calledFrom: 'VesselSingleView',
+                                  onTripEnded: () async {
+                                    Utils.customPrint('SINGLE VIEW TRIP END');
+                                    await tripIsRunningOrNot();
+                                    setState(() {
+                                      tripIsEnded = true;
+                                    });
+                                    commonProvider.getTripsByVesselId(widget.vessel!.id!);
+                                    getVesselAnalytics(widget.vessel!.id!);
+                                  },
+                                ),
+                              ),
+                              // SizedBox(
+                              //   height: 20,
+                              // ),
                             ],
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Theme(
-                        data: Theme.of(context).copyWith(
-                            colorScheme: ColorScheme.light(
-                              primary: Colors.black,
-                            ),
-                            dividerColor: Colors.transparent),
-                        child: ExpansionTile(
-                          initiallyExpanded: true,
-                          onExpansionChanged: ((newState) {
-                            Utils.customPrint('CURRENT STAT $newState');
-                          }),
-                          textColor: Colors.black,
-                          iconColor: Colors.black,
-                          title: commonText(
-                              context: context,
-                              text: 'Trip History',
-                              fontWeight: FontWeight.w600,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.038,
-                              textAlign: TextAlign.start),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 0.0),
-                              child: TripViewListing(
-                                scaffoldKey: scaffoldKey,
-                                vesselId: widget.vessel!.id,
-                                calledFrom: 'VesselSingleView',
-                                onTripEnded: () async {
-                                  Utils.customPrint('SINGLE VIEW TRIP END');
-                                  await tripIsRunningOrNot();
-                                  setState(() {
-                                    tripIsEnded = true;
-                                  });
-                                  commonProvider.getTripsByVesselId(widget.vessel!.id!);
-                                  getVesselAnalytics(widget.vessel!.id!);
-                                },
-                              ),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                          ],
+
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: displayWidth(context) * 0.22,
+                              top: displayWidth(context) * 0.03,
+                          ),
+                          child: GestureDetector(
+                              onTap: ()async{
+                                final image = await controller.capture();
+                                print("Image is: ${image.toString()}");
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                  imagePath: image.toString(),
+                                  uIntList: image,)));
+                              },
+                              child: UserFeedback().getUserFeedback(context)
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 50,
-                      ),
-                    ],
+
+                        SizedBox(
+                          height: displayHeight(context) * 0.08,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                left: 0,
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
-                  child: tripIsRunning
-                      ? isTripEndedOrNot
-                          ? Center(
-                              child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  circularProgressColor),
-                            ))
-                          : CommonButtons.getActionButton(
-                              title: 'End Trip',
-                              context: context,
-                              fontSize: displayWidth(context) * 0.042,
-                              textColor: Colors.white,
-                              buttonPrimaryColor: buttonBGColor,
-                              borderColor: buttonBGColor,
-                              width: displayWidth(context),
-                              onTap: () async {
-                                Utils.customPrint('time stamp:' +
-                                    DateTime.now().toUtc().toString());
-                                Utils().showEndTripDialog(context, () async {
-                                  setState(() {
-                                    isTripEndedOrNot = true;
-                                  });
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
+                    child: tripIsRunning
+                        ? isTripEndedOrNot
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    circularProgressColor),
+                              ))
+                            : CommonButtons.getActionButton(
+                                title: 'End Trip',
+                                context: context,
+                                fontSize: displayWidth(context) * 0.042,
+                                textColor: Colors.white,
+                                buttonPrimaryColor: buttonBGColor,
+                                borderColor: buttonBGColor,
+                                width: displayWidth(context),
+                                onTap: () async {
+                                  Utils.customPrint('time stamp:' +
+                                      DateTime.now().toUtc().toString());
+                                  Utils().showEndTripDialog(context, () async {
+                                    setState(() {
+                                      isTripEndedOrNot = true;
+                                    });
 
+                                    List<String>? tripData = sharedPreferences!
+                                        .getStringList('trip_data');
+
+                                    String tripId = '';
+                                    if (tripData != null) {
+                                      tripId = tripData[0];
+                                    }
+
+                                    final currentTrip =
+                                        await _databaseService.getTrip(tripId);
+
+                                    DateTime createdAtTime =
+                                        DateTime.parse(currentTrip.createdAt!);
+
+                                    var durationTime = DateTime.now()
+                                        .toUtc()
+                                        .difference(createdAtTime);
+                                    String tripDuration =
+                                        Utils.calculateTripDuration(
+                                            ((durationTime.inMilliseconds) / 1000)
+                                                .toInt());
+
+                                    Navigator.of(context).pop();
+
+                                    Utils.customPrint(
+                                        'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+
+                                    EndTrip().endTrip(
+                                        context: context,
+                                        scaffoldKey: scaffoldKey,
+                                        duration: tripDuration,
+                                        onEnded: () async {
+                                          Utils.customPrint('TRIPPPPPP ENDEDDD:');
+                                          setState(() {
+                                            isEndTripButton = false;
+                                            tripIsEnded = true;
+                                            commonProvider.getTripsByVesselId(
+                                                widget.vessel!.id);
+                                            // isZipFileCreate = true;
+                                          });
+                                          await tripIsRunningOrNot();
+                                          getVesselAnalytics(widget.vessel!.id!);
+                                        });
+                                  }, () {
+                                    Navigator.of(context).pop();
+                                  });
+                                })
+                        : CommonButtons.getActionButton(
+                            title: 'Start Trip',
+                            context: context,
+                            fontSize: displayWidth(context) * 0.042,
+                            textColor: Colors.white,
+                            buttonPrimaryColor: buttonBGColor,
+                            borderColor: buttonBGColor,
+                            width: displayWidth(context),
+                            onTap: () async {
+                              bool? isTripStarted =
+                                  sharedPreferences!.getBool('trip_started');
+
+                              if (isTripStarted != null) {
+                                if (isTripStarted) {
                                   List<String>? tripData = sharedPreferences!
                                       .getStringList('trip_data');
+                                  Trip tripDetails = await _databaseService
+                                      .getTrip(tripData![0]);
 
-                                  String tripId = '';
-                                  if (tripData != null) {
-                                    tripId = tripData[0];
+                                  if (tripDetails.vesselId != widget.vessel!.id) {
+                                    showDialogBox(context);
+                                    return;
                                   }
-
-                                  final currentTrip =
-                                      await _databaseService.getTrip(tripId);
-
-                                  DateTime createdAtTime =
-                                      DateTime.parse(currentTrip.createdAt!);
-
-                                  var durationTime = DateTime.now()
-                                      .toUtc()
-                                      .difference(createdAtTime);
-                                  String tripDuration =
-                                      Utils.calculateTripDuration(
-                                          ((durationTime.inMilliseconds) / 1000)
-                                              .toInt());
-
-                                  Navigator.of(context).pop();
-
-                                  Utils.customPrint(
-                                      'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
-
-                                  EndTrip().endTrip(
-                                      context: context,
-                                      scaffoldKey: scaffoldKey,
-                                      duration: tripDuration,
-                                      onEnded: () async {
-                                        Utils.customPrint('TRIPPPPPP ENDEDDD:');
-                                        setState(() {
-                                          isEndTripButton = false;
-                                          tripIsEnded = true;
-                                          commonProvider.getTripsByVesselId(
-                                              widget.vessel!.id);
-                                          // isZipFileCreate = true;
-                                        });
-                                        await tripIsRunningOrNot();
-                                        getVesselAnalytics(widget.vessel!.id!);
-                                      });
-                                }, () {
-                                  Navigator.of(context).pop();
-                                });
-                              })
-                      : CommonButtons.getActionButton(
-                          title: 'Start Trip',
-                          context: context,
-                          fontSize: displayWidth(context) * 0.042,
-                          textColor: Colors.white,
-                          buttonPrimaryColor: buttonBGColor,
-                          borderColor: buttonBGColor,
-                          width: displayWidth(context),
-                          onTap: () async {
-                            bool? isTripStarted =
-                                sharedPreferences!.getBool('trip_started');
-
-                            if (isTripStarted != null) {
-                              if (isTripStarted) {
-                                List<String>? tripData = sharedPreferences!
-                                    .getStringList('trip_data');
-                                Trip tripDetails = await _databaseService
-                                    .getTrip(tripData![0]);
-
-                                if (tripDetails.vesselId != widget.vessel!.id) {
-                                  showDialogBox(context);
-                                  return;
                                 }
                               }
-                            }
 
-                            bool isLocationPermitted =
-                                await Permission.locationAlways.isGranted;
+                              bool isLocationPermitted =
+                                  await Permission.locationAlways.isGranted;
 
-                            if (isLocationPermitted) {
-                              bool isNDPermDenied = await Permission
-                                  .bluetoothConnect.isPermanentlyDenied;
+                              if (isLocationPermitted) {
+                                bool isNDPermDenied = await Permission
+                                    .bluetoothConnect.isPermanentlyDenied;
 
-                              // print('BYEE: $isNDPermDenied');
-                              if (isNDPermDenied) {
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return LocationPermissionCustomDialog(
-                                        isLocationDialogBox: false,
-                                        text: 'Allow nearby devices',
-                                        subText:
-                                            'Allow nearby devices to connect to the app',
-                                        buttonText: 'OK',
-                                        buttonOnTap: () async {
-                                          Get.back();
+                                // print('BYEE: $isNDPermDenied');
+                                if (isNDPermDenied) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return LocationPermissionCustomDialog(
+                                          isLocationDialogBox: false,
+                                          text: 'Allow nearby devices',
+                                          subText:
+                                              'Allow nearby devices to connect to the app',
+                                          buttonText: 'OK',
+                                          buttonOnTap: () async {
+                                            Get.back();
 
-                                          // await openAppSettings();
-                                        },
-                                      );
-                                    });
-                                return;
-                              } else {
-                                if (Platform.isIOS) {
-                                  dynamic isBluetoothEnable =
-
-                                  Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                                        showBluetoothDialog(context);
+                                            // await openAppSettings();
+                                          },
+                                        );
                                       });
-
-                                  if(isBluetoothEnable != null){
-                                    if (isBluetoothEnable) {
-                                      vessel!.add(widget.vessel!);
-                                      await locationPermissions(
-                                          widget.vessel!.vesselSize!,
-                                          widget.vessel!.name!,
-                                          widget.vessel!.id!);
-                                    } else {
-                                      showBluetoothDialog(context);
-                                    }
-                                  }
-
+                                  return;
                                 } else {
-                                  bool isNDPermittedOne = await Permission
-                                      .bluetoothConnect.isGranted;
+                                  if (Platform.isIOS) {
+                                    dynamic isBluetoothEnable =
 
-                                  if (isNDPermittedOne) {
-                                    bool isBluetoothEnable =
                                     Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
                                           showBluetoothDialog(context);
                                         });
 
-                                    if (isBluetoothEnable) {
-                                      vessel!.add(widget.vessel!);
-                                      await locationPermissions(
-                                          widget.vessel!.vesselSize!,
-                                          widget.vessel!.name!,
-                                          widget.vessel!.id!);
-                                    } else {
-                                      showBluetoothDialog(context);
+                                    if(isBluetoothEnable != null){
+                                      if (isBluetoothEnable) {
+                                        vessel!.add(widget.vessel!);
+                                        await locationPermissions(
+                                            widget.vessel!.vesselSize!,
+                                            widget.vessel!.name!,
+                                            widget.vessel!.id!);
+                                      } else {
+                                        showBluetoothDialog(context);
+                                      }
                                     }
+
                                   } else {
-                                    await Permission.bluetoothConnect.request();
-                                    bool isNDPermitted = await Permission
+                                    bool isNDPermittedOne = await Permission
                                         .bluetoothConnect.isGranted;
-                                    if (isNDPermitted) {
+
+                                    if (isNDPermittedOne) {
                                       bool isBluetoothEnable =
                                       Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
                                             showBluetoothDialog(context);
@@ -641,93 +648,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         showBluetoothDialog(context);
                                       }
                                     } else {
-                                      if (await Permission
-                                              .bluetoothConnect.isDenied ||
-                                          await Permission.bluetoothConnect
-                                              .isPermanentlyDenied) {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return LocationPermissionCustomDialog(
-                                                isLocationDialogBox: false,
-                                                text: 'Allow nearby devices',
-                                                subText:
-                                                    'Allow nearby devices to connect to the app',
-                                                buttonText: 'OK',
-                                                buttonOnTap: () async {
-                                                  Get.back();
-
-                                                  await openAppSettings();
-                                                },
-                                              );
-                                            });
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                            else {
-                              /// WIU
-                              bool isWIULocationPermitted =
-                                  await Permission.locationWhenInUse.isGranted;
-
-                              if (!isWIULocationPermitted) {
-                                await Utils.getLocationPermission(
-                                    context, scaffoldKey);
-
-                                await Permission.locationAlways.request();
-
-                                bool isGranted = await Permission.locationAlways.isGranted;
-
-                                if(!isGranted)
-                                  {
-                                    Utils.showSnackBar(context,
-                                        scaffoldKey: scaffoldKey,
-                                        message:
-                                        'Location permissions are denied without permissions we are unable to start the trip');
-
-                                    // Future.delayed(Duration(seconds: 3),
-                                    //         () async {
-                                    //       await openAppSettings();
-                                    //     });
-                                  }
-                              }
-                              else
-                                {
-                                  bool isLocationPermitted =
-                                  await Permission.locationAlways.isGranted;
-                                  if (isLocationPermitted) {
-                                    bool isNDPermDenied = await Permission
-                                        .bluetoothConnect.isPermanentlyDenied;
-
-                                    if (isNDPermDenied) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return LocationPermissionCustomDialog(
-                                              isLocationDialogBox: false,
-                                              text: 'Allow nearby devices',
-                                              subText:
-                                              'Allow nearby devices to connect to the app',
-                                              buttonText: 'OK',
-                                              buttonOnTap: () async {
-                                                Get.back();
-
-                                                await openAppSettings();
-                                              },
-                                            );
-                                          });
-                                      return;
-                                    } else {
+                                      await Permission.bluetoothConnect.request();
                                       bool isNDPermitted = await Permission
                                           .bluetoothConnect.isGranted;
-
                                       if (isNDPermitted) {
                                         bool isBluetoothEnable =
                                         Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                                          showBluetoothDialog(context);
-                                        });
+                                              showBluetoothDialog(context);
+                                            });
 
                                         if (isBluetoothEnable) {
                                           vessel!.add(widget.vessel!);
@@ -739,9 +667,88 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           showBluetoothDialog(context);
                                         }
                                       } else {
-                                        await Permission.bluetoothConnect.request();
+                                        if (await Permission
+                                                .bluetoothConnect.isDenied ||
+                                            await Permission.bluetoothConnect
+                                                .isPermanentlyDenied) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return LocationPermissionCustomDialog(
+                                                  isLocationDialogBox: false,
+                                                  text: 'Allow nearby devices',
+                                                  subText:
+                                                      'Allow nearby devices to connect to the app',
+                                                  buttonText: 'OK',
+                                                  buttonOnTap: () async {
+                                                    Get.back();
+
+                                                    await openAppSettings();
+                                                  },
+                                                );
+                                              });
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                              else {
+                                /// WIU
+                                bool isWIULocationPermitted =
+                                    await Permission.locationWhenInUse.isGranted;
+
+                                if (!isWIULocationPermitted) {
+                                  await Utils.getLocationPermission(
+                                      context, scaffoldKey);
+
+                                  await Permission.locationAlways.request();
+
+                                  bool isGranted = await Permission.locationAlways.isGranted;
+
+                                  if(!isGranted)
+                                    {
+                                      Utils.showSnackBar(context,
+                                          scaffoldKey: scaffoldKey,
+                                          message:
+                                          'Location permissions are denied without permissions we are unable to start the trip');
+
+                                      // Future.delayed(Duration(seconds: 3),
+                                      //         () async {
+                                      //       await openAppSettings();
+                                      //     });
+                                    }
+                                }
+                                else
+                                  {
+                                    bool isLocationPermitted =
+                                    await Permission.locationAlways.isGranted;
+                                    if (isLocationPermitted) {
+                                      bool isNDPermDenied = await Permission
+                                          .bluetoothConnect.isPermanentlyDenied;
+
+                                      if (isNDPermDenied) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return LocationPermissionCustomDialog(
+                                                isLocationDialogBox: false,
+                                                text: 'Allow nearby devices',
+                                                subText:
+                                                'Allow nearby devices to connect to the app',
+                                                buttonText: 'OK',
+                                                buttonOnTap: () async {
+                                                  Get.back();
+
+                                                  await openAppSettings();
+                                                },
+                                              );
+                                            });
+                                        return;
+                                      } else {
                                         bool isNDPermitted = await Permission
                                             .bluetoothConnect.isGranted;
+
                                         if (isNDPermitted) {
                                           bool isBluetoothEnable =
                                           Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
@@ -757,133 +764,153 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           } else {
                                             showBluetoothDialog(context);
                                           }
+                                        } else {
+                                          await Permission.bluetoothConnect.request();
+                                          bool isNDPermitted = await Permission
+                                              .bluetoothConnect.isGranted;
+                                          if (isNDPermitted) {
+                                            bool isBluetoothEnable =
+                                            Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                              showBluetoothDialog(context);
+                                            });
+
+                                            if (isBluetoothEnable) {
+                                              vessel!.add(widget.vessel!);
+                                              await locationPermissions(
+                                                  widget.vessel!.vesselSize!,
+                                                  widget.vessel!.name!,
+                                                  widget.vessel!.id!);
+                                            } else {
+                                              showBluetoothDialog(context);
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                    else if(await Permission.locationAlways.isPermanentlyDenied)
+                                    {
+                                      if(Platform.isIOS)
+                                      {
+                                        Permission.locationAlways.request();
+
+                                        PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message: "Location permissions are denied without permissions we are unable to start the trip");
+
+                                          Future.delayed(Duration(seconds: 3),
+                                                  () async {
+                                                await openAppSettings();
+                                              });
+                                          return PermissionStatus.denied;
+                                        });
+
+                                        if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
+                                        {
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message: "Location permissions are denied without permissions we are unable to start the trip");
+
+                                          Future.delayed(Duration(seconds: 3),
+                                                  () async {
+                                                await openAppSettings();
+                                              });
+                                        }
+                                      }else
+                                      {
+                                        if (!isLocationDialogBoxOpen) {
+                                          Utils.customPrint("ELSE CONDITION");
+
+                                          showDialog(
+                                              context: scaffoldKey.currentContext!,
+                                              builder: (BuildContext context) {
+                                                isLocationDialogBoxOpen = true;
+                                                return LocationPermissionCustomDialog(
+                                                  isLocationDialogBox: true,
+                                                  text:
+                                                  'Always Allow Access to “Location”',
+                                                  subText:
+                                                  "To track your trip while you use other apps we need background access to your location",
+                                                  buttonText: 'Ok',
+                                                  buttonOnTap: () async {
+                                                    Get.back();
+
+                                                    await openAppSettings();
+                                                  },
+                                                );
+                                              }).then((value) {
+                                            isLocationDialogBoxOpen = false;
+                                          });
+                                        }
+                                      }
+                                    }
+                                    else {
+                                      if (Platform.isIOS) {
+                                        // bool? isLocationAlwaysPermitted;
+                                        await Permission.locationAlways.request();
+
+                                        bool isLocationAlwaysPermitted =
+                                        await Permission.locationAlways.isGranted;
+
+                                        Utils.customPrint(
+                                            'IOS PERMISSION GIVEN OUTSIDE');
+
+                                        if (isLocationAlwaysPermitted) {
+                                          Utils.customPrint('IOS PERMISSION GIVEN 1');
+
+                                          vessel!.add(widget.vessel!);
+                                          await locationPermissions(
+                                              widget.vessel!.vesselSize!,
+                                              widget.vessel!.name!,
+                                              widget.vessel!.id!);
+                                        } else {
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                              'Location permissions are denied without permissions we are unable to start the trip');
+
+                                          Future.delayed(Duration(seconds: 3),
+                                                  () async {
+                                                await openAppSettings();
+                                              });
+                                        }
+                                      } else {
+                                        if (!isLocationDialogBoxOpen) {
+                                          Utils.customPrint("ELSE CONDITION");
+
+                                          showDialog(
+                                              context: scaffoldKey.currentContext!,
+                                              builder: (BuildContext context) {
+                                                isLocationDialogBoxOpen = true;
+                                                return LocationPermissionCustomDialog(
+                                                  isLocationDialogBox: true,
+                                                  text:
+                                                  'Always Allow Access to “Location”',
+                                                  subText:
+                                                  "To track your trip while you use other apps we need background access to your location",
+                                                  buttonText: 'Ok',
+                                                  buttonOnTap: () async {
+                                                    Get.back();
+
+                                                    await openAppSettings();
+                                                  },
+                                                );
+                                              }).then((value) {
+                                            isLocationDialogBoxOpen = false;
+                                          });
                                         }
                                       }
                                     }
                                   }
-                                  else if(await Permission.locationAlways.isPermanentlyDenied)
-                                  {
-                                    if(Platform.isIOS)
-                                    {
-                                      Permission.locationAlways.request();
-
-                                      PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
-                                        Utils.showSnackBar(context,
-                                            scaffoldKey: scaffoldKey,
-                                            message: "Location permissions are denied without permissions we are unable to start the trip");
-
-                                        Future.delayed(Duration(seconds: 3),
-                                                () async {
-                                              await openAppSettings();
-                                            });
-                                        return PermissionStatus.denied;
-                                      });
-
-                                      if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
-                                      {
-                                        Utils.showSnackBar(context,
-                                            scaffoldKey: scaffoldKey,
-                                            message: "Location permissions are denied without permissions we are unable to start the trip");
-
-                                        Future.delayed(Duration(seconds: 3),
-                                                () async {
-                                              await openAppSettings();
-                                            });
-                                      }
-                                    }else
-                                    {
-                                      if (!isLocationDialogBoxOpen) {
-                                        Utils.customPrint("ELSE CONDITION");
-
-                                        showDialog(
-                                            context: scaffoldKey.currentContext!,
-                                            builder: (BuildContext context) {
-                                              isLocationDialogBoxOpen = true;
-                                              return LocationPermissionCustomDialog(
-                                                isLocationDialogBox: true,
-                                                text:
-                                                'Always Allow Access to “Location”',
-                                                subText:
-                                                "To track your trip while you use other apps we need background access to your location",
-                                                buttonText: 'Ok',
-                                                buttonOnTap: () async {
-                                                  Get.back();
-
-                                                  await openAppSettings();
-                                                },
-                                              );
-                                            }).then((value) {
-                                          isLocationDialogBoxOpen = false;
-                                        });
-                                      }
-                                    }
-                                  }
-                                  else {
-                                    if (Platform.isIOS) {
-                                      // bool? isLocationAlwaysPermitted;
-                                      await Permission.locationAlways.request();
-
-                                      bool isLocationAlwaysPermitted =
-                                      await Permission.locationAlways.isGranted;
-
-                                      Utils.customPrint(
-                                          'IOS PERMISSION GIVEN OUTSIDE');
-
-                                      if (isLocationAlwaysPermitted) {
-                                        Utils.customPrint('IOS PERMISSION GIVEN 1');
-
-                                        vessel!.add(widget.vessel!);
-                                        await locationPermissions(
-                                            widget.vessel!.vesselSize!,
-                                            widget.vessel!.name!,
-                                            widget.vessel!.id!);
-                                      } else {
-                                        Utils.showSnackBar(context,
-                                            scaffoldKey: scaffoldKey,
-                                            message:
-                                            'Location permissions are denied without permissions we are unable to start the trip');
-
-                                        Future.delayed(Duration(seconds: 3),
-                                                () async {
-                                              await openAppSettings();
-                                            });
-                                      }
-                                    } else {
-                                      if (!isLocationDialogBoxOpen) {
-                                        Utils.customPrint("ELSE CONDITION");
-
-                                        showDialog(
-                                            context: scaffoldKey.currentContext!,
-                                            builder: (BuildContext context) {
-                                              isLocationDialogBoxOpen = true;
-                                              return LocationPermissionCustomDialog(
-                                                isLocationDialogBox: true,
-                                                text:
-                                                'Always Allow Access to “Location”',
-                                                subText:
-                                                "To track your trip while you use other apps we need background access to your location",
-                                                buttonText: 'Ok',
-                                                buttonOnTap: () async {
-                                                  Get.back();
-
-                                                  await openAppSettings();
-                                                },
-                                              );
-                                            }).then((value) {
-                                          isLocationDialogBoxOpen = false;
-                                        });
-                                      }
-                                    }
-                                  }
-                                }
-                              // return;
+                                // return;
 
 
-                            }
-                          }),
-                ),
-              )
-            ],
+                              }
+                            }),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -1120,265 +1147,188 @@ class VesselSingleViewState extends State<VesselSingleView> {
               return false;
             }
           },
-          child: Scaffold(
-            backgroundColor: Colors.transparent.withOpacity(0.0),
-            extendBody: false,
-            key: _modelScaffoldKey,
-            resizeToAvoidBottomInset: true,
-            body: Align(
-              alignment: Alignment.bottomCenter,
-              child: StatefulBuilder(builder:
-                  (BuildContext bottomSheetContext, StateSetter stateSetter) {
-                return Container(
-                  height: MediaQuery.of(context).size.height * 0.75,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        new BoxShadow(
-                          color: Colors.black,
-                          blurRadius: 20.0,
-                        ),
-                      ],
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          topRight: Radius.circular(40))),
-                  child: Stack(
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                TweenAnimationBuilder(
-                                  duration: const Duration(seconds: 3),
-                                  tween: Tween(
-                                      begin: progressBegin, end: progress),
-                                  builder: (context, double value, _) {
-                                    return SizedBox(
-                                      height: 80,
-                                      width: 80,
-                                      child: Stack(
-                                        fit: StackFit.expand,
-                                        children: [
-                                          CircularProgressIndicator(
-                                            value: value,
-                                            backgroundColor:
-                                                Colors.grey.shade200,
-                                            strokeWidth: 3,
-                                            color: Colors.green,
-                                          ),
-                                          Center(
-                                            child: buildProgress(value, 60),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  onEnd: () {
-                                    Utils.customPrint('END');
-                                    stateSetter(() {
-                                      isStartButton = true;
-                                    });
-                                  },
-                                ),
-                                const SizedBox(
-                                  height: 40,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: displayWidth(context) * 0.08),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      commonText(
-                                          context: context,
-                                          text: 'Fetching your device details',
-                                          fontWeight: FontWeight.w500,
-                                          textColor: Colors.black,
-                                          textSize:
-                                              displayWidth(context) * 0.032,
-                                          textAlign: TextAlign.start),
-                                      const SizedBox(
-                                        width: 20,
-                                      ),
-                                      TweenAnimationBuilder(
-                                          duration: const Duration(seconds: 3),
-                                          tween: Tween(
-                                              begin: deviceProgressBegin,
-                                              end: deviceProgress),
-                                          builder: (context, double value, _) {
-                                            return SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: Stack(
-                                                fit: StackFit.expand,
-                                                children: [
-                                                  CircularProgressIndicator(
-                                                    color:
-                                                        circularProgressColor,
-                                                    value: value,
-                                                    backgroundColor:
-                                                        Colors.grey.shade200,
-                                                    strokeWidth: 2,
-                                                    valueColor:
-                                                        const AlwaysStoppedAnimation(
-                                                            Colors.green),
-                                                  ),
-                                                  Center(
-                                                    child: subTitleProgress(
-                                                        value,
-                                                        displayWidth(context) *
-                                                            0.035),
-                                                  )
-                                                ],
-                                              ),
-                                            );
-                                          }),
-                                    ],
+          child: Screenshot(
+            controller: controller,
+            child: Scaffold(
+              backgroundColor: Colors.transparent.withOpacity(0.0),
+              extendBody: false,
+              key: _modelScaffoldKey,
+              resizeToAvoidBottomInset: true,
+              body: Align(
+                alignment: Alignment.bottomCenter,
+                child: StatefulBuilder(builder:
+                    (BuildContext bottomSheetContext, StateSetter stateSetter) {
+                  return Container(
+                    height: MediaQuery.of(context).size.height * 0.75,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          new BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 20.0,
+                          ),
+                        ],
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(40),
+                            topRight: Radius.circular(40))),
+                    child: Stack(
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TweenAnimationBuilder(
+                                    duration: const Duration(seconds: 3),
+                                    tween: Tween(
+                                        begin: progressBegin, end: progress),
+                                    builder: (context, double value, _) {
+                                      return SizedBox(
+                                        height: 80,
+                                        width: 80,
+                                        child: Stack(
+                                          fit: StackFit.expand,
+                                          children: [
+                                            CircularProgressIndicator(
+                                              value: value,
+                                              backgroundColor:
+                                                  Colors.grey.shade200,
+                                              strokeWidth: 3,
+                                              color: Colors.green,
+                                            ),
+                                            Center(
+                                              child: buildProgress(value, 60),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                    onEnd: () {
+                                      Utils.customPrint('END');
+                                      stateSetter(() {
+                                        isStartButton = true;
+                                      });
+                                    },
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: displayWidth(context) * 0.08),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          commonText(
-                                              context: context,
-                                              text: isLocationPermission
-                                                  ? 'Location permission granted'
-                                                  : 'Location permission is required',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.032,
-                                              textAlign: TextAlign.start),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          !isLocationPermission
-                                              ? SizedBox(
-                                                  height: 20,
-                                                  width: 20,
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors.red,
-                                                            width: 2),
-                                                        shape: BoxShape.circle),
-                                                    child: Center(
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        color: Colors.red,
-                                                        size: 14,
+                                  const SizedBox(
+                                    height: 40,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: displayWidth(context) * 0.08),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        commonText(
+                                            context: context,
+                                            text: 'Fetching your device details',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize:
+                                                displayWidth(context) * 0.032,
+                                            textAlign: TextAlign.start),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        TweenAnimationBuilder(
+                                            duration: const Duration(seconds: 3),
+                                            tween: Tween(
+                                                begin: deviceProgressBegin,
+                                                end: deviceProgress),
+                                            builder: (context, double value, _) {
+                                              return SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child: Stack(
+                                                  fit: StackFit.expand,
+                                                  children: [
+                                                    CircularProgressIndicator(
+                                                      color:
+                                                          circularProgressColor,
+                                                      value: value,
+                                                      backgroundColor:
+                                                          Colors.grey.shade200,
+                                                      strokeWidth: 2,
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation(
+                                                              Colors.green),
+                                                    ),
+                                                    Center(
+                                                      child: subTitleProgress(
+                                                          value,
+                                                          displayWidth(context) *
+                                                              0.035),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            }),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: displayWidth(context) * 0.08),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            commonText(
+                                                context: context,
+                                                text: isLocationPermission
+                                                    ? 'Location permission granted'
+                                                    : 'Location permission is required',
+                                                fontWeight: FontWeight.w500,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) * 0.032,
+                                                textAlign: TextAlign.start),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            !isLocationPermission
+                                                ? SizedBox(
+                                                    height: 20,
+                                                    width: 20,
+                                                    child: Container(
+                                                      alignment: Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color: Colors.red,
+                                                              width: 2),
+                                                          shape: BoxShape.circle),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.close,
+                                                          color: Colors.red,
+                                                          size: 14,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                )
-                                              : TweenAnimationBuilder(
-                                                  duration: const Duration(
-                                                      seconds: 3),
-                                                  tween: Tween(
-                                                      begin:
-                                                          sensorProgressBegin,
-                                                      end: sensorProgress),
-                                                  builder: (context,
-                                                      double value, _) {
-                                                    return SizedBox(
-                                                      height: 20,
-                                                      width: 20,
-                                                      child: Stack(
-                                                        fit: StackFit.expand,
-                                                        children: [
-                                                          CircularProgressIndicator(
-                                                            color:
-                                                                circularProgressColor,
-                                                            value: value,
-                                                            backgroundColor:
-                                                                Colors.grey
-                                                                    .shade200,
-                                                            strokeWidth: 2,
-                                                            valueColor:
-                                                                const AlwaysStoppedAnimation(
-                                                                    Colors
-                                                                        .green),
-                                                          ),
-                                                          Center(
-                                                            child: subTitleProgress(
-                                                                value,
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.035),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    );
-                                                  }),
-                                        ],
-                                      ),
-                                      isLocationPermission
-                                          ? SizedBox()
-                                          : commonText(
-                                              context: context,
-                                              text: 'Permission Denied!',
-                                              fontWeight: FontWeight.w400,
-                                              textColor: Colors.red,
-                                              textSize:
-                                                  displayWidth(context) * 0.028,
-                                              textAlign: TextAlign.start),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: displayWidth(context) * 0.08),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          commonText(
-                                              context: context,
-                                              text: 'Connecting with LPR',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.black,
-                                              textSize:
-                                                  displayWidth(context) * 0.032,
-                                              textAlign: TextAlign.start),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          TweenAnimationBuilder(
-                                              duration:
-                                                  const Duration(seconds: 3),
-                                              tween: Tween(
-                                                  begin: lprSensorProgressBegin,
-                                                  end: lprSensorProgress),
-                                              builder:
-                                                  (context, double value, _) {
-                                                return isBluetoothConnected
-                                                    ? SizedBox(
+                                                  )
+                                                : TweenAnimationBuilder(
+                                                    duration: const Duration(
+                                                        seconds: 3),
+                                                    tween: Tween(
+                                                        begin:
+                                                            sensorProgressBegin,
+                                                        end: sensorProgress),
+                                                    builder: (context,
+                                                        double value, _) {
+                                                      return SizedBox(
                                                         height: 20,
                                                         width: 20,
                                                         child: Stack(
@@ -1406,512 +1356,451 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                             )
                                                           ],
                                                         ),
-                                                      )
-                                                    : SizedBox(
-                                                        height: 20,
-                                                        width: 20,
-                                                        child: Container(
-                                                          alignment:
-                                                              Alignment.center,
-                                                          decoration: BoxDecoration(
-                                                              border: Border.all(
-                                                                  color: Colors
-                                                                      .red,
-                                                                  width: 2),
-                                                              shape: BoxShape
-                                                                  .circle),
-                                                          child: Center(
-                                                            child: Icon(
-                                                              Icons.close,
-                                                              color: Colors.red,
-                                                              size: 14,
-                                                            ),
-                                                          ),
-                                                        ),
                                                       );
-                                              }),
-                                        ],
-                                      ),
-                                      isBluetoothConnected
-                                          ? Row(
-                                              children: [
-                                                commonText(
-                                                    context: context,
-                                                    text: 'Connected with ',
-                                                    fontWeight: FontWeight.w400,
-                                                    textColor: Colors.green,
-                                                    textSize:
-                                                        displayWidth(context) *
-                                                            0.028,
-                                                    textAlign: TextAlign.start),
-                                                SizedBox(
-                                                  width: 2,
-                                                ),
-                                                commonText(
-                                                    context: context,
-                                                    text: bluetoothName,
-                                                    fontWeight: FontWeight.w500,
-                                                    textColor: Colors.green,
-                                                    textSize:
-                                                        displayWidth(context) *
-                                                            0.028,
-                                                    textAlign: TextAlign.start),
-                                              ],
-                                            )
-                                          : InkWell(
-                                              onTap: () async {
-                                                showBluetoothListDialog(
-                                                    context, stateSetter);
-                                              },
-                                              child: commonText(
-                                                  context: context,
-                                                  text:
-                                                      'Tap to connect LPR manually',
-                                                  fontWeight: FontWeight.w400,
-                                                  textColor: Colors.red,
-                                                  textSize:
-                                                      displayWidth(context) *
-                                                          0.028,
-                                                  textAlign: TextAlign.start),
-                                            ),
-                                    ],
+                                                    }),
+                                          ],
+                                        ),
+                                        isLocationPermission
+                                            ? SizedBox()
+                                            : commonText(
+                                                context: context,
+                                                text: 'Permission Denied!',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.red,
+                                                textSize:
+                                                    displayWidth(context) * 0.028,
+                                                textAlign: TextAlign.start),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: displayWidth(context) * 0.08),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      commonText(
-                                          context: context,
-                                          text: 'Connecting with sensors',
-                                          fontWeight: FontWeight.w500,
-                                          textColor: Colors.black,
-                                          textSize:
-                                              displayWidth(context) * 0.032,
-                                          textAlign: TextAlign.start),
-                                      const SizedBox(
-                                        width: 20,
-                                      ),
-                                      TweenAnimationBuilder(
-                                          duration: const Duration(seconds: 3),
-                                          tween: Tween(
-                                              begin: accSensorProgressBegin,
-                                              end: accSensorProgress),
-                                          builder: (context, double value, _) {
-                                            return SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: Stack(
-                                                fit: StackFit.expand,
-                                                children: [
-                                                  CircularProgressIndicator(
-                                                    color:
-                                                        circularProgressColor,
-                                                    value: value,
-                                                    backgroundColor:
-                                                        Colors.grey.shade200,
-                                                    strokeWidth: 2,
-                                                    valueColor:
-                                                        const AlwaysStoppedAnimation(
-                                                            Colors.green),
-                                                  ),
-                                                  Center(
-                                                    child: subTitleProgress(
-                                                        value,
-                                                        displayWidth(context) *
-                                                            0.035),
-                                                  )
-                                                ],
-                                              ),
-                                            );
-                                          }),
-                                    ],
+                                  const SizedBox(
+                                    height: 15,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 15,
-                                ),
-                                isZipFileCreate
-                                    ? InkWell(
-                                        onTap: () async {
-                                          File copiedFile =
-                                              File('${ourDirectory!.path}.zip');
-
-                                          Directory directory;
-
-                                          if (Platform.isAndroid) {
-                                            directory = Directory(
-                                                "storage/emulated/0/Download/${widget.vessel!.id}.zip");
-                                          } else {
-                                            directory =
-                                                await getApplicationDocumentsDirectory();
-                                          }
-
-                                          copiedFile.copy(directory.path);
-
-                                          Utils.customPrint(
-                                              'DOES FILE EXIST: ${copiedFile.existsSync()}');
-                                          if (copiedFile.existsSync()) {
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                    'File downloaded successfully');
-                                          }
-
-                                          // Utils.download(context, scaffoldKey,ourDirectory!.path);
-                                        },
-                                        child: Row(
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: displayWidth(context) * 0.08),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             commonText(
                                                 context: context,
-                                                text: 'Download File',
+                                                text: 'Connecting with LPR',
                                                 fontWeight: FontWeight.w500,
                                                 textColor: Colors.black,
                                                 textSize:
-                                                    displayWidth(context) *
-                                                        0.038,
+                                                    displayWidth(context) * 0.032,
                                                 textAlign: TextAlign.start),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Icon(
-                                                  Icons.file_download_outlined),
-                                            )
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            TweenAnimationBuilder(
+                                                duration:
+                                                    const Duration(seconds: 3),
+                                                tween: Tween(
+                                                    begin: lprSensorProgressBegin,
+                                                    end: lprSensorProgress),
+                                                builder:
+                                                    (context, double value, _) {
+                                                  return isBluetoothConnected
+                                                      ? SizedBox(
+                                                          height: 20,
+                                                          width: 20,
+                                                          child: Stack(
+                                                            fit: StackFit.expand,
+                                                            children: [
+                                                              CircularProgressIndicator(
+                                                                color:
+                                                                    circularProgressColor,
+                                                                value: value,
+                                                                backgroundColor:
+                                                                    Colors.grey
+                                                                        .shade200,
+                                                                strokeWidth: 2,
+                                                                valueColor:
+                                                                    const AlwaysStoppedAnimation(
+                                                                        Colors
+                                                                            .green),
+                                                              ),
+                                                              Center(
+                                                                child: subTitleProgress(
+                                                                    value,
+                                                                    displayWidth(
+                                                                            context) *
+                                                                        0.035),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        )
+                                                      : SizedBox(
+                                                          height: 20,
+                                                          width: 20,
+                                                          child: Container(
+                                                            alignment:
+                                                                Alignment.center,
+                                                            decoration: BoxDecoration(
+                                                                border: Border.all(
+                                                                    color: Colors
+                                                                        .red,
+                                                                    width: 2),
+                                                                shape: BoxShape
+                                                                    .circle),
+                                                            child: Center(
+                                                              child: Icon(
+                                                                Icons.close,
+                                                                color: Colors.red,
+                                                                size: 14,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                }),
                                           ],
                                         ),
-                                      )
-                                    : SizedBox(),
-                                const SizedBox(
-                                  height: 40,
-                                ),
-                                StatefulBuilder(
-                                  builder: (context, StateSetter stateSetter) {
-                                    return Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20),
-                                          child: Container(
-                                            height: displayHeight(context) >=
-                                                    680
-                                                ? displayHeight(context) * 0.056
-                                                : displayHeight(context) * 0.07,
-                                            alignment: Alignment.centerLeft,
-                                            color: Color(0xFFECF3F9),
-                                            child: InputDecorator(
-                                              decoration: const InputDecoration(
-                                                enabledBorder: InputBorder.none,
-                                                border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                0.0))),
-                                                contentPadding: EdgeInsets.only(
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 5,
-                                                    bottom: 5),
+                                        isBluetoothConnected
+                                            ? Row(
+                                                children: [
+                                                  commonText(
+                                                      context: context,
+                                                      text: 'Connected with ',
+                                                      fontWeight: FontWeight.w400,
+                                                      textColor: Colors.green,
+                                                      textSize:
+                                                          displayWidth(context) *
+                                                              0.028,
+                                                      textAlign: TextAlign.start),
+                                                  SizedBox(
+                                                    width: 2,
+                                                  ),
+                                                  commonText(
+                                                      context: context,
+                                                      text: bluetoothName,
+                                                      fontWeight: FontWeight.w500,
+                                                      textColor: Colors.green,
+                                                      textSize:
+                                                          displayWidth(context) *
+                                                              0.028,
+                                                      textAlign: TextAlign.start),
+                                                ],
+                                              )
+                                            : InkWell(
+                                                onTap: () async {
+                                                  showBluetoothListDialog(
+                                                      context, stateSetter);
+                                                },
+                                                child: commonText(
+                                                    context: context,
+                                                    text:
+                                                        'Tap to connect LPR manually',
+                                                    fontWeight: FontWeight.w400,
+                                                    textColor: Colors.red,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.028,
+                                                    textAlign: TextAlign.start),
                                               ),
-                                              child: commonText(
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: displayWidth(context) * 0.08),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        commonText(
+                                            context: context,
+                                            text: 'Connecting with sensors',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize:
+                                                displayWidth(context) * 0.032,
+                                            textAlign: TextAlign.start),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        TweenAnimationBuilder(
+                                            duration: const Duration(seconds: 3),
+                                            tween: Tween(
+                                                begin: accSensorProgressBegin,
+                                                end: accSensorProgress),
+                                            builder: (context, double value, _) {
+                                              return SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child: Stack(
+                                                  fit: StackFit.expand,
+                                                  children: [
+                                                    CircularProgressIndicator(
+                                                      color:
+                                                          circularProgressColor,
+                                                      value: value,
+                                                      backgroundColor:
+                                                          Colors.grey.shade200,
+                                                      strokeWidth: 2,
+                                                      valueColor:
+                                                          const AlwaysStoppedAnimation(
+                                                              Colors.green),
+                                                    ),
+                                                    Center(
+                                                      child: subTitleProgress(
+                                                          value,
+                                                          displayWidth(context) *
+                                                              0.035),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            }),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  isZipFileCreate
+                                      ? InkWell(
+                                          onTap: () async {
+                                            File copiedFile =
+                                                File('${ourDirectory!.path}.zip');
+
+                                            Directory directory;
+
+                                            if (Platform.isAndroid) {
+                                              directory = Directory(
+                                                  "storage/emulated/0/Download/${widget.vessel!.id}.zip");
+                                            } else {
+                                              directory =
+                                                  await getApplicationDocumentsDirectory();
+                                            }
+
+                                            copiedFile.copy(directory.path);
+
+                                            Utils.customPrint(
+                                                'DOES FILE EXIST: ${copiedFile.existsSync()}');
+                                            if (copiedFile.existsSync()) {
+                                              Utils.showSnackBar(context,
+                                                  scaffoldKey: scaffoldKey,
+                                                  message:
+                                                      'File downloaded successfully');
+                                            }
+
+                                            // Utils.download(context, scaffoldKey,ourDirectory!.path);
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              commonText(
                                                   context: context,
-                                                  text: vesselName,
+                                                  text: 'Download File',
                                                   fontWeight: FontWeight.w500,
-                                                  textColor: Colors.black54,
+                                                  textColor: Colors.black,
                                                   textSize:
                                                       displayWidth(context) *
-                                                          0.032,
+                                                          0.038,
                                                   textAlign: TextAlign.start),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Icon(
+                                                    Icons.file_download_outlined),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      : SizedBox(),
+                                  const SizedBox(
+                                    height: 40,
+                                  ),
+                                  StatefulBuilder(
+                                    builder: (context, StateSetter stateSetter) {
+                                      return Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20, right: 20),
+                                            child: Container(
+                                              height: displayHeight(context) >=
+                                                      680
+                                                  ? displayHeight(context) * 0.056
+                                                  : displayHeight(context) * 0.07,
+                                              alignment: Alignment.centerLeft,
+                                              color: Color(0xFFECF3F9),
+                                              child: InputDecorator(
+                                                decoration: const InputDecoration(
+                                                  enabledBorder: InputBorder.none,
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  0.0))),
+                                                  contentPadding: EdgeInsets.only(
+                                                      left: 20,
+                                                      right: 20,
+                                                      top: 5,
+                                                      bottom: 5),
+                                                ),
+                                                child: commonText(
+                                                    context: context,
+                                                    text: vesselName,
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.black54,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.032,
+                                                    textAlign: TextAlign.start),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, right: 20, top: 10),
-                                          child: Container(
-                                            alignment: Alignment.centerLeft,
-                                            height: displayHeight(context) >=
-                                                    680
-                                                ? displayHeight(context) * 0.056
-                                                : displayHeight(context) * 0.07,
-                                            color: Color(0xFFECF3F9),
-                                            child: InputDecorator(
-                                              decoration: const InputDecoration(
-                                                enabledBorder: InputBorder.none,
-                                                border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                0.0))),
-                                                contentPadding: EdgeInsets.only(
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 10,
-                                                    bottom: 10),
-                                              ),
-                                              child:
-                                                  DropdownButtonHideUnderline(
-                                                child: DropdownButton<dynamic>(
-                                                  value: null,
-                                                  isDense: true,
-                                                  hint: commonText(
-                                                      context: context,
-                                                      text:
-                                                          selectedVesselWeight,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      textColor: Colors.black54,
-                                                      textSize: displayWidth(
-                                                              context) *
-                                                          0.032,
-                                                      textAlign:
-                                                          TextAlign.start),
-                                                  //  Text(
-                                                  //     '${selectedVesselWeight}'),
-                                                  isExpanded: true,
-                                                  items: [
-                                                    DropdownMenuItem(
-                                                        value: '1',
-                                                        child: Text('Empty')),
-                                                    DropdownMenuItem(
-                                                        value: '2',
-                                                        child: Text('Half')),
-                                                    DropdownMenuItem(
-                                                        value: '3',
-                                                        child: Text('Full')),
-                                                    DropdownMenuItem(
-                                                        value: '4',
-                                                        child:
-                                                            Text('Variable')),
-                                                  ],
-                                                  onChanged: (weightValue) {
-                                                    stateSetter(() {
-                                                      if (int.parse(
-                                                              weightValue) ==
-                                                          1) {
-                                                        selectedVesselWeight =
-                                                            'Empty';
-                                                      } else if (int.parse(
-                                                              weightValue) ==
-                                                          2) {
-                                                        selectedVesselWeight =
-                                                            'Half';
-                                                      } else if (int.parse(
-                                                              weightValue) ==
-                                                          3) {
-                                                        selectedVesselWeight =
-                                                            'Full';
-                                                      } else {
-                                                        selectedVesselWeight =
-                                                            'Variable';
-                                                      }
-                                                    });
-                                                  },
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20, right: 20, top: 10),
+                                            child: Container(
+                                              alignment: Alignment.centerLeft,
+                                              height: displayHeight(context) >=
+                                                      680
+                                                  ? displayHeight(context) * 0.056
+                                                  : displayHeight(context) * 0.07,
+                                              color: Color(0xFFECF3F9),
+                                              child: InputDecorator(
+                                                decoration: const InputDecoration(
+                                                  enabledBorder: InputBorder.none,
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  0.0))),
+                                                  contentPadding: EdgeInsets.only(
+                                                      left: 20,
+                                                      right: 20,
+                                                      top: 10,
+                                                      bottom: 10),
+                                                ),
+                                                child:
+                                                    DropdownButtonHideUnderline(
+                                                  child: DropdownButton<dynamic>(
+                                                    value: null,
+                                                    isDense: true,
+                                                    hint: commonText(
+                                                        context: context,
+                                                        text:
+                                                            selectedVesselWeight,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        textColor: Colors.black54,
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.032,
+                                                        textAlign:
+                                                            TextAlign.start),
+                                                    //  Text(
+                                                    //     '${selectedVesselWeight}'),
+                                                    isExpanded: true,
+                                                    items: [
+                                                      DropdownMenuItem(
+                                                          value: '1',
+                                                          child: Text('Empty')),
+                                                      DropdownMenuItem(
+                                                          value: '2',
+                                                          child: Text('Half')),
+                                                      DropdownMenuItem(
+                                                          value: '3',
+                                                          child: Text('Full')),
+                                                      DropdownMenuItem(
+                                                          value: '4',
+                                                          child:
+                                                              Text('Variable')),
+                                                    ],
+                                                    onChanged: (weightValue) {
+                                                      stateSetter(() {
+                                                        if (int.parse(
+                                                                weightValue) ==
+                                                            1) {
+                                                          selectedVesselWeight =
+                                                              'Empty';
+                                                        } else if (int.parse(
+                                                                weightValue) ==
+                                                            2) {
+                                                          selectedVesselWeight =
+                                                              'Half';
+                                                        } else if (int.parse(
+                                                                weightValue) ==
+                                                            3) {
+                                                          selectedVesselWeight =
+                                                              'Full';
+                                                        } else {
+                                                          selectedVesselWeight =
+                                                              'Variable';
+                                                        }
+                                                      });
+                                                    },
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                )
-                              ],
+                                        ],
+                                      );
+                                    },
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            //height: 50,
-                            width: displayWidth(context),
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  left: 17,
-                                  right: 17,
-                                  bottom:
-                                      isStartButton || isEndTripButton ? 8 : 2),
-                              child: isStartButton
-                                  ? addingDataToDB
-                                      ? Center(
-                                          child: CircularProgressIndicator(
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                      circularProgressColor)))
-                                      : CommonButtons.getActionButton(
-                                          title: 'Start',
-                                          context: context,
-                                          fontSize:
-                                              displayWidth(context) * 0.042,
-                                          textColor: Colors.white,
-                                          buttonPrimaryColor: buttonBGColor,
-                                          borderColor: buttonBGColor,
-                                          width: displayWidth(context),
-                                          onTap: () async {
-                                            Utils.customPrint(
-                                                'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                            if (selectedVesselWeight ==
-                                                'Select Current Load') {
+                            SizedBox(
+                              //height: 50,
+                              width: displayWidth(context),
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    left: 17,
+                                    right: 17,
+                                    bottom:
+                                        isStartButton || isEndTripButton ? 8 : 2),
+                                child: isStartButton
+                                    ? addingDataToDB
+                                        ? Center(
+                                            child: CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<Color>(
+                                                        circularProgressColor)))
+                                        : CommonButtons.getActionButton(
+                                            title: 'Start',
+                                            context: context,
+                                            fontSize:
+                                                displayWidth(context) * 0.042,
+                                            textColor: Colors.white,
+                                            buttonPrimaryColor: buttonBGColor,
+                                            borderColor: buttonBGColor,
+                                            width: displayWidth(context),
+                                            onTap: () async {
                                               Utils.customPrint(
-                                                  'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(SnackBar(
-                                                behavior:
-                                                    SnackBarBehavior.floating,
-                                                content: Text(
-                                                    "Please select current load"),
-                                                duration: Duration(seconds: 1),
-                                                backgroundColor: Colors.blue,
-                                              ));
-                                              return;
-                                            }
-
-                                            bool isLocationPermitted =
-                                                await Permission
-                                                    .location.isGranted;
-
-                                            if (isLocationPermitted) {
-                                              stateSetter(() {
-                                                isLocationPermission = true;
-                                              });
-
-                                              if (Platform.isAndroid) {
-                                                final androidInfo =
-                                                    await DeviceInfoPlugin()
-                                                        .androidInfo;
-
-                                                if (androidInfo.version.sdkInt <
-                                                    29) {
-                                                  var isStoragePermitted =
-                                                      await Permission
-                                                          .storage.status;
-                                                  if (isStoragePermitted
-                                                      .isGranted) {
-                                                    bool
-                                                        isNotificationPermitted =
-                                                        await Permission
-                                                            .notification
-                                                            .isGranted;
-
-                                                    if (isNotificationPermitted) {
-                                                      startWritingDataToDB(
-                                                          bottomSheetContext,
-                                                          stateSetter);
-                                                    } else {
-                                                      await Utils
-                                                          .getNotificationPermission(
-                                                              context);
-                                                      bool
-                                                          isNotificationPermitted =
-                                                          await Permission
-                                                              .notification
-                                                              .isGranted;
-                                                      if (isNotificationPermitted) {
-                                                        startWritingDataToDB(
-                                                            bottomSheetContext,
-                                                            stateSetter);
-                                                      }
-                                                    }
-                                                  } else {
-                                                    await Utils
-                                                        .getStoragePermission(
-                                                            context);
-                                                    final androidInfo =
-                                                        await DeviceInfoPlugin()
-                                                            .androidInfo;
-
-                                                    var isStoragePermitted =
-                                                        await Permission
-                                                            .storage.status;
-
-                                                    if (isStoragePermitted
-                                                        .isGranted) {
-                                                      bool
-                                                          isNotificationPermitted =
-                                                          await Permission
-                                                              .notification
-                                                              .isGranted;
-
-                                                      if (isNotificationPermitted) {
-                                                        startWritingDataToDB(
-                                                            bottomSheetContext,
-                                                            stateSetter);
-                                                      } else {
-                                                        await Utils
-                                                            .getNotificationPermission(
-                                                                context);
-                                                        bool
-                                                            isNotificationPermitted =
-                                                            await Permission
-                                                                .notification
-                                                                .isGranted;
-                                                        if (isNotificationPermitted) {
-                                                          startWritingDataToDB(
-                                                              bottomSheetContext,
-                                                              stateSetter);
-                                                        }
-                                                      }
-                                                    }
-                                                  }
-                                                } else {
-                                                  bool isNotificationPermitted =
-                                                      await Permission
-                                                          .notification
-                                                          .isGranted;
-
-                                                  if (isNotificationPermitted) {
-                                                    startWritingDataToDB(
-                                                        bottomSheetContext,
-                                                        stateSetter);
-                                                  } else {
-                                                    await Utils
-                                                        .getNotificationPermission(
-                                                            context);
-                                                    bool
-                                                        isNotificationPermitted =
-                                                        await Permission
-                                                            .notification
-                                                            .isGranted;
-                                                    if (isNotificationPermitted) {
-                                                      startWritingDataToDB(
-                                                          bottomSheetContext,
-                                                          stateSetter);
-                                                    }
-                                                  }
-                                                }
-                                              } else {
-                                                bool isNotificationPermitted =
-                                                    await Permission
-                                                        .notification.isGranted;
-
-                                                if (isNotificationPermitted) {
-                                                  startWritingDataToDB(
-                                                      bottomSheetContext,
-                                                      stateSetter);
-                                                } else {
-                                                  await Utils
-                                                      .getNotificationPermission(
-                                                          context);
-                                                  bool isNotificationPermitted =
-                                                      await Permission
-                                                          .notification
-                                                          .isGranted;
-                                                  if (isNotificationPermitted) {
-                                                    startWritingDataToDB(
-                                                        bottomSheetContext,
-                                                        stateSetter);
-                                                  }
-                                                }
+                                                  'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+                                              if (selectedVesselWeight ==
+                                                  'Select Current Load') {
+                                                Utils.customPrint(
+                                                    'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  content: Text(
+                                                      "Please select current load"),
+                                                  duration: Duration(seconds: 1),
+                                                  backgroundColor: Colors.blue,
+                                                ));
+                                                return;
                                               }
-                                            } else {
-                                              await Utils.getLocationPermission(
-                                                  context, scaffoldKey);
+
                                               bool isLocationPermitted =
                                                   await Permission
                                                       .location.isGranted;
@@ -1920,15 +1809,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 stateSetter(() {
                                                   isLocationPermission = true;
                                                 });
-                                                // service.startService();
 
                                                 if (Platform.isAndroid) {
                                                   final androidInfo =
                                                       await DeviceInfoPlugin()
                                                           .androidInfo;
 
-                                                  if (androidInfo
-                                                          .version.sdkInt <
+                                                  if (androidInfo.version.sdkInt <
                                                       29) {
                                                     var isStoragePermitted =
                                                         await Permission
@@ -2002,8 +1889,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       }
                                                     }
                                                   } else {
-                                                    bool
-                                                        isNotificationPermitted =
+                                                    bool isNotificationPermitted =
                                                         await Permission
                                                             .notification
                                                             .isGranted;
@@ -2031,8 +1917,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 } else {
                                                   bool isNotificationPermitted =
                                                       await Permission
-                                                          .notification
-                                                          .isGranted;
+                                                          .notification.isGranted;
 
                                                   if (isNotificationPermitted) {
                                                     startWritingDataToDB(
@@ -2042,8 +1927,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     await Utils
                                                         .getNotificationPermission(
                                                             context);
-                                                    bool
-                                                        isNotificationPermitted =
+                                                    bool isNotificationPermitted =
                                                         await Permission
                                                             .notification
                                                             .isGranted;
@@ -2054,61 +1938,222 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     }
                                                   }
                                                 }
+                                              } else {
+                                                await Utils.getLocationPermission(
+                                                    context, scaffoldKey);
+                                                bool isLocationPermitted =
+                                                    await Permission
+                                                        .location.isGranted;
+
+                                                if (isLocationPermitted) {
+                                                  stateSetter(() {
+                                                    isLocationPermission = true;
+                                                  });
+                                                  // service.startService();
+
+                                                  if (Platform.isAndroid) {
+                                                    final androidInfo =
+                                                        await DeviceInfoPlugin()
+                                                            .androidInfo;
+
+                                                    if (androidInfo
+                                                            .version.sdkInt <
+                                                        29) {
+                                                      var isStoragePermitted =
+                                                          await Permission
+                                                              .storage.status;
+                                                      if (isStoragePermitted
+                                                          .isGranted) {
+                                                        bool
+                                                            isNotificationPermitted =
+                                                            await Permission
+                                                                .notification
+                                                                .isGranted;
+
+                                                        if (isNotificationPermitted) {
+                                                          startWritingDataToDB(
+                                                              bottomSheetContext,
+                                                              stateSetter);
+                                                        } else {
+                                                          await Utils
+                                                              .getNotificationPermission(
+                                                                  context);
+                                                          bool
+                                                              isNotificationPermitted =
+                                                              await Permission
+                                                                  .notification
+                                                                  .isGranted;
+                                                          if (isNotificationPermitted) {
+                                                            startWritingDataToDB(
+                                                                bottomSheetContext,
+                                                                stateSetter);
+                                                          }
+                                                        }
+                                                      } else {
+                                                        await Utils
+                                                            .getStoragePermission(
+                                                                context);
+                                                        final androidInfo =
+                                                            await DeviceInfoPlugin()
+                                                                .androidInfo;
+
+                                                        var isStoragePermitted =
+                                                            await Permission
+                                                                .storage.status;
+
+                                                        if (isStoragePermitted
+                                                            .isGranted) {
+                                                          bool
+                                                              isNotificationPermitted =
+                                                              await Permission
+                                                                  .notification
+                                                                  .isGranted;
+
+                                                          if (isNotificationPermitted) {
+                                                            startWritingDataToDB(
+                                                                bottomSheetContext,
+                                                                stateSetter);
+                                                          } else {
+                                                            await Utils
+                                                                .getNotificationPermission(
+                                                                    context);
+                                                            bool
+                                                                isNotificationPermitted =
+                                                                await Permission
+                                                                    .notification
+                                                                    .isGranted;
+                                                            if (isNotificationPermitted) {
+                                                              startWritingDataToDB(
+                                                                  bottomSheetContext,
+                                                                  stateSetter);
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    } else {
+                                                      bool
+                                                          isNotificationPermitted =
+                                                          await Permission
+                                                              .notification
+                                                              .isGranted;
+
+                                                      if (isNotificationPermitted) {
+                                                        startWritingDataToDB(
+                                                            bottomSheetContext,
+                                                            stateSetter);
+                                                      } else {
+                                                        await Utils
+                                                            .getNotificationPermission(
+                                                                context);
+                                                        bool
+                                                            isNotificationPermitted =
+                                                            await Permission
+                                                                .notification
+                                                                .isGranted;
+                                                        if (isNotificationPermitted) {
+                                                          startWritingDataToDB(
+                                                              bottomSheetContext,
+                                                              stateSetter);
+                                                        }
+                                                      }
+                                                    }
+                                                  } else {
+                                                    bool isNotificationPermitted =
+                                                        await Permission
+                                                            .notification
+                                                            .isGranted;
+
+                                                    if (isNotificationPermitted) {
+                                                      startWritingDataToDB(
+                                                          bottomSheetContext,
+                                                          stateSetter);
+                                                    } else {
+                                                      await Utils
+                                                          .getNotificationPermission(
+                                                              context);
+                                                      bool
+                                                          isNotificationPermitted =
+                                                          await Permission
+                                                              .notification
+                                                              .isGranted;
+                                                      if (isNotificationPermitted) {
+                                                        startWritingDataToDB(
+                                                            bottomSheetContext,
+                                                            stateSetter);
+                                                      }
+                                                    }
+                                                  }
+                                                }
                                               }
-                                            }
-                                          })
-                                  : Container(
-                                      margin: EdgeInsets.only(bottom: 8),
-                                      child: CommonButtons.getActionButton(
-                                          title: 'Cancel',
-                                          context: context,
-                                          fontSize:
-                                              displayWidth(context) * 0.042,
-                                          textColor: Colors.white,
-                                          buttonPrimaryColor: buttonBGColor,
-                                          borderColor: buttonBGColor,
-                                          width: displayWidth(context),
-                                          onTap: () {
-                                            Get.back();
-                                          }),
-                                    ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Positioned(
-                        right: 10,
-                        top: 10,
-                        child: addingDataToDB
-                            ? SizedBox()
-                            : Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: backgroundColor),
-                                child: IconButton(
-                                    onPressed: () async {
-                                      isBottomSheetOpened = false;
-                                      await tripIsRunningOrNot();
-                                      setState(() {
-                                        widget.vessel!.id = widget.vessel!.id;
-                                      });
-
-                                      stateSetter(() {
-                                        addingDataToDB = false;
-                                      });
-
-                                      Navigator.of(bottomSheetContext).pop();
-                                    },
-                                    icon: Icon(Icons.close_rounded,
-                                        color: buttonBGColor)),
+                                            })
+                                    : Container(
+                                        margin: EdgeInsets.only(bottom: 8),
+                                        child: CommonButtons.getActionButton(
+                                            title: 'Cancel',
+                                            context: context,
+                                            fontSize:
+                                                displayWidth(context) * 0.042,
+                                            textColor: Colors.white,
+                                            buttonPrimaryColor: buttonBGColor,
+                                            borderColor: buttonBGColor,
+                                            width: displayWidth(context),
+                                            onTap: () {
+                                              Get.back();
+                                            }),
+                                      ),
                               ),
-                      )
-                    ],
-                  ),
-                );
-              }),
+                            ),
+
+                            Padding(
+                              padding: EdgeInsets.only(left: displayWidth(context) * 0.22),
+                              child: GestureDetector(
+                                  onTap: ()async{
+                                    final image = await controller.capture();
+                                    print("Image is: ${image.toString()}");
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                      imagePath: image.toString(),
+                                      uIntList: image,)));
+                                  },
+                                  child: UserFeedback().getUserFeedback(context)
+                              ),
+                            )
+
+                           ],
+                        ),
+                        Positioned(
+                          right: 10,
+                          top: 10,
+                          child: addingDataToDB
+                              ? SizedBox()
+                              : Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: backgroundColor),
+                                  child: IconButton(
+                                      onPressed: () async {
+                                        isBottomSheetOpened = false;
+                                        await tripIsRunningOrNot();
+                                        setState(() {
+                                          widget.vessel!.id = widget.vessel!.id;
+                                        });
+
+                                        stateSetter(() {
+                                          addingDataToDB = false;
+                                        });
+
+                                        Navigator.of(bottomSheetContext).pop();
+                                      },
+                                      icon: Icon(Icons.close_rounded,
+                                          color: buttonBGColor)),
+                                ),
+                        )
+                      ],
+                    ),
+                  );
+                }),
+              ),
             ),
           ),
         );

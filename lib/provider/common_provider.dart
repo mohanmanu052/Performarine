@@ -21,6 +21,7 @@ import 'package:performarine/provider/registration_api_provider.dart';
 import 'package:performarine/provider/report_module_provider.dart';
 import 'package:performarine/provider/reset_password_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
+import 'package:performarine/provider/user_feedback_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -29,6 +30,7 @@ import '../models/forgot_password_model.dart';
 import '../models/reports_model.dart';
 import '../models/reset_password_model.dart';
 import '../models/trip_list_model.dart';
+import '../models/user_feedback_model.dart';
 import 'forgot_password_provider.dart';
 import 'list_vessels_provider.dart';
 
@@ -53,6 +55,7 @@ class CommonProvider with ChangeNotifier {
   ResetPasswordModel? resetPasswordModel;
   ChangePasswordModel? changePasswordModel;
   bool isBluetoothEnabled = false;
+  UserFeedbackModel? userFeedbackModel;
 
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
@@ -393,5 +396,20 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
 
     return changePasswordModel!;
+  }
+
+  Future<UserFeedbackModel> sendUserFeedbackDio(
+      BuildContext context,
+      String token,
+      String subject,
+      String description,
+      Map<String, dynamic> deviceInfo,
+      List<File?> fileList,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    userFeedbackModel = UserFeedbackModel();
+    userFeedbackModel = await UserFeedbackProvider().sendUserFeedbackDio(context,token, subject, description, deviceInfo, fileList, scaffoldKey);
+    notifyListeners();
+
+    return userFeedbackModel!;
   }
 }
