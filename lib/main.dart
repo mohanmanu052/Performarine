@@ -143,7 +143,7 @@ Future<void> initializeService() async {
       onDidReceiveNotificationResponse: (value) async {
     Utils.customPrint('APP RESTART 1');
 
-    if (value.id == 889) {
+    if (value.id == 776 || value.id == 1 || value.id == 889) {
       Utils.customPrint('NOTIFICATION ID: ${value.id}');
       var pref = await SharedPreferences.getInstance();
       pref.setBool('sp_key_called_from_noti', true);
