@@ -224,8 +224,8 @@ class _TripViewListingState extends State<TripViewListing> {
 
           Padding(
             padding: EdgeInsets.only(
-              left: displayWidth(context) * 0.22,
-              //top: displayWidth(context) * 0.01,
+              left: displayWidth(context) * 0.26,
+              bottom: displayWidth(context) * 0.03,
             ),
             child: GestureDetector(
                 onTap: ()async{

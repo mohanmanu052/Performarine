@@ -1447,8 +1447,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                       //top: displayWidth(context) * 0.01,
                                     ),
                                     child: GestureDetector(
-                                        onTap: (){
-
+                                        onTap: ()async{
+                                          final image = await controller.capture();
+                                          print("Image is: ${image.toString()}");
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                            imagePath: image.toString(),
+                                            uIntList: image,)));
                                         },
                                         child: UserFeedback().getUserFeedback(context)
                                     ),

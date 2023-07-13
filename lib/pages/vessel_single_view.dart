@@ -117,6 +117,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   DeviceInfo? deviceDetails;
 
   final controller = ScreenshotController();
+  final controller1 = ScreenshotController();
 
   /// To get device details
   fetchDeviceInfo() async {
@@ -453,23 +454,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               //   height: 20,
                               // ),
                             ],
-                          ),
-                        ),
-
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: displayWidth(context) * 0.22,
-                              top: displayWidth(context) * 0.03,
-                          ),
-                          child: GestureDetector(
-                              onTap: ()async{
-                                final image = await controller.capture();
-                                print("Image is: ${image.toString()}");
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                  imagePath: image.toString(),
-                                  uIntList: image,)));
-                              },
-                              child: UserFeedback().getUserFeedback(context)
                           ),
                         ),
 
@@ -1148,7 +1132,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             }
           },
           child: Screenshot(
-            controller: controller,
+            controller: controller1,
             child: Scaffold(
               backgroundColor: Colors.transparent.withOpacity(0.0),
               extendBody: false,
@@ -1181,6 +1165,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  SizedBox(
+                                    height: displayWidth(context) * 0.01,
+                                  ),
                                   TweenAnimationBuilder(
                                     duration: const Duration(seconds: 3),
                                     tween: Tween(
@@ -1620,8 +1607,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           ),
                                         )
                                       : SizedBox(),
-                                  const SizedBox(
-                                    height: 40,
+                                   SizedBox(
+                                    height: displayWidth(context) * 0.03,
                                   ),
                                   StatefulBuilder(
                                     builder: (context, StateSetter stateSetter) {
@@ -1765,7 +1752,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     left: 17,
                                     right: 17,
                                     bottom:
-                                        isStartButton || isEndTripButton ? 8 : 2),
+                                        isStartButton || isEndTripButton ? 0 : 2),
                                 child: isStartButton
                                     ? addingDataToDB
                                         ? Center(
@@ -2105,17 +2092,23 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             ),
 
                             Padding(
-                              padding: EdgeInsets.only(left: displayWidth(context) * 0.22),
+                              padding: EdgeInsets.only(
+                                  left: displayWidth(context) * 0.22,
+                                  top : displayWidth(context) * 0.01,
+                              ),
                               child: GestureDetector(
                                   onTap: ()async{
-                                    final image = await controller.capture();
-                                    print("Image is: ${image.toString()}");
+                                    final image = await controller1.capture();
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                       imagePath: image.toString(),
                                       uIntList: image,)));
                                   },
                                   child: UserFeedback().getUserFeedback(context)
                               ),
+                            ),
+
+                            SizedBox(
+                              height: displayWidth(context) * 0.02,
                             )
 
                            ],

@@ -45,6 +45,11 @@ class _FeedbackReportState extends State<FeedbackReport> {
   CommonProvider? commonProvider;
   bool isBtnClick = false;
 
+  String? _result;
+  bool _isRecursive = false;
+
+  var totalSize = 1;
+
   @override
   void initState() {
     super.initState();
@@ -81,244 +86,351 @@ class _FeedbackReportState extends State<FeedbackReport> {
             textAlign: TextAlign.start),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                left: displayWidth(context) * 0.07,
-                right: displayWidth(context) * 0.07,
-                top: displayWidth(context) * 0.04,
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  left: displayWidth(context) * 0.07,
+                  right: displayWidth(context) * 0.07,
+                  top: displayWidth(context) * 0.04,
+                ),
+                child: commonText(
+                    context: context,
+                    text: 'We "re sorry for the experience. Please let us know what happened so we can fix it. Your feedback is important to us. Thank you for your support!',
+                    fontWeight: FontWeight.w400,
+                    textColor: Colors.black,
+                    textSize: displayWidth(context) * 0.035,
+                    textAlign: TextAlign.start
+                ),
               ),
-              child: commonText(
-                  context: context,
-                  text: 'We "re sorry for the experience. Please let us know what happened so we can fix it. Your feedback is important to us. Thank you for your support!',
-                  fontWeight: FontWeight.w400,
-                  textColor: Colors.black,
-                  textSize: displayWidth(context) * 0.035,
-                  textAlign: TextAlign.start
+
+              Padding(
+                padding: EdgeInsets.only(
+                  left: displayWidth(context) * 0.07,
+                  right: displayWidth(context) * 0.07,
+                  top: displayWidth(context) * 0.06,
+                ),
+                child: commonText(
+                    context: context,
+                    text: 'If you experienced a crash or error message, please provide any details or steps that may have led to the issue. The more information you can provide, the better equipped we"ll be to diagnose and address the problem.',
+                    fontWeight: FontWeight.w400,
+                    textColor: Colors.black,
+                    textSize: displayWidth(context) * 0.035,
+                    textAlign: TextAlign.start),
               ),
-            ),
 
-            Padding(
-              padding: EdgeInsets.only(
-                left: displayWidth(context) * 0.07,
-                right: displayWidth(context) * 0.07,
-                top: displayWidth(context) * 0.06,
-              ),
-              child: commonText(
-                  context: context,
-                  text: 'If you experienced a crash or error message, please provide any details or steps that may have led to the issue. The more information you can provide, the better equipped we"ll be to diagnose and address the problem.',
-                  fontWeight: FontWeight.w400,
-                  textColor: Colors.black,
-                  textSize: displayWidth(context) * 0.035,
-                  textAlign: TextAlign.start),
-            ),
-
-            Padding(
-              padding: EdgeInsets.only(
-                top: displayWidth(context) * 0.05,
-                left: displayWidth(context) * 0.06,
-                right: displayWidth(context) * 0.06,
-              ),
-              child: CommonTextField(
-                  controller: nameController,
-                  focusNode: nameFocusNode,
-                  labelText: 'Name',
-                  hintText: '',
-                  suffixText: null,
-                  textInputAction: TextInputAction.next,
-                  textInputType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  maxLength: 32,
-                  prefixIcon: null,
-                  requestFocusNode: descriptionFocusNode,
-                  obscureText: false,
-                  onTap: () {},
-                  onChanged: (String value) {},
-                  validator: (value) {
-                    if (value!.trim().isEmpty) {
-                      return 'Enter Vessel Name';
-                    }
-                    return null;
-                  },
-                  onSaved: (String value) {
-                    Utils.customPrint(value);
-                  }),
-            ),
-
-            Padding(
-              padding: EdgeInsets.only(
-                top: displayWidth(context) * 0.05,
-                left: displayWidth(context) * 0.06,
-                right: displayWidth(context) * 0.06,
-              ),
-              child: CommonTextField(
-                  controller: descriptionController,
-                  focusNode: descriptionFocusNode,
-                  labelText: 'Description',
-                  hintText: '',
-                  suffixText: null,
-                  textInputAction: TextInputAction.next,
-                  textInputType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  maxLength: 32,
-                  prefixIcon: null,
-                  requestFocusNode: null,
-                  obscureText: false,
-                  onTap: () {},
-                  onChanged: (String value) {},
-                  validator: (value) {
-                    if (value!.trim().isEmpty) {
-                      return 'Enter Vessel Name';
-                    }
-                    return null;
-                  },
-                  onSaved: (String value) {
-                    Utils.customPrint(value);
-                  }),
-            ),
-
-            Container(
-              margin: EdgeInsets.only(top: 20.0),
-              child: CommonButtons.getDottedButton(
-                  'Upload Images', context, () {
-                uploadImageFunction();
-                Utils.customPrint(
-                    'FIIALLL: ${finalSelectedFiles.length}');
-              }, Colors.grey),
-            ),
-
-            Container(
-              margin: const EdgeInsets.only(top: 15.0),
-              child: SingleChildScrollView(
-                child: GridView.builder(
-                    gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      childAspectRatio: 1,
-                      mainAxisSpacing: 1,
-                    ),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: finalSelectedFiles.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return SizedBox(
-                        height: displayHeight(context) * 0.045,
-                        width: displayHeight(context) * 0.045,
-                        child: Stack(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.all(6),
-                              alignment: Alignment.topRight,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius:
-                                  BorderRadius.circular(8),
-                                  border: Border.all(
-                                      color: Colors.grey.shade300),
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: FileImage(
-                                        File(finalSelectedFiles[
-                                        index]!
-                                            .path),
-                                      ))),
-                              /*child: Icon(
-                                            Icons.close,
-                                            size: displayWidth(context) * 0.05,
-                                          ),*/
-                            ),
-                            Positioned(
-                              right: 0,
-                              top: 0,
-                              child: InkWell(
-                                onTap: () {
-                                  Utils.customPrint(
-                                      'FIIALLL: ${finalSelectedFiles.length}');
-                                  setState(() {
-                                    finalSelectedFiles
-                                        .removeAt(index);
-                                  });
-                                  Utils.customPrint(
-                                      'FIIALLL: ${finalSelectedFiles.length}');
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  size:
-                                  displayWidth(context) * 0.05,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
+              Padding(
+                padding: EdgeInsets.only(
+                  top: displayWidth(context) * 0.05,
+                  left: displayWidth(context) * 0.06,
+                  right: displayWidth(context) * 0.06,
+                ),
+                child: CommonTextField(
+                    controller: nameController,
+                    focusNode: nameFocusNode,
+                    labelText: 'Subject*',
+                    hintText: '',
+                    suffixText: null,
+                    textInputAction: TextInputAction.next,
+                    textInputType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                   // maxLength: 32,
+                    prefixIcon: null,
+                    requestFocusNode: descriptionFocusNode,
+                    obscureText: false,
+                    onTap: () {},
+                    onChanged: (String value) {},
+                    validator: (value) {
+                      if (value!.trim().isEmpty) {
+                        return 'Enter Subject';
+                      }
+                      return null;
+                    },
+                    onSaved: (String value) {
+                      Utils.customPrint(value);
                     }),
               ),
-            ),
 
-            Padding(
-              padding: EdgeInsets.only(
-                left: displayWidth(context) * 0.06,
-                right: displayWidth(context) * 0.06,
-                top: displayHeight(context) * 0.23,
+              Padding(
+                padding: EdgeInsets.only(
+                  top: displayWidth(context) * 0.05,
+                  left: displayWidth(context) * 0.06,
+                  right: displayWidth(context) * 0.06,
+                ),
+                child: CommonTextField(
+                    controller: descriptionController,
+                    focusNode: descriptionFocusNode,
+                    labelText: 'Description',
+                    hintText: '',
+                    suffixText: null,
+                    textInputAction: TextInputAction.next,
+                    textInputType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                   // maxLength: 32,
+                    prefixIcon: null,
+                    requestFocusNode: null,
+                    obscureText: false,
+                    onTap: () {},
+                    onChanged: (String value) {},
+                    validator: (value) {
+                      // if (value!.trim().isEmpty) {
+                      //   return 'Enter Description';
+                      // }
+                      // return true;
+                    },
+                    onSaved: (String value) {
+                      Utils.customPrint(value);
+                    }),
               ),
-              child: isBtnClick ?  Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        circularProgressColor),
-                  ))
-                  : CommonButtons.getActionButton(
-                  title: 'Submit',
-                  context: context,
-                  fontSize: displayWidth(context) * 0.044,
-                  textColor: Colors.white,
-                  buttonPrimaryColor: buttonBGColor,
-                  borderColor: buttonBGColor,
-                  width: displayWidth(context),
-                  onTap: () async {
-                    final Directory appDir = await getApplicationDocumentsDirectory();
-                    final String fileName = DateTime.now().toIso8601String() + '.png';
-                    imageFile = File('${appDir.path}/$fileName');
-                    sendFiles.addAll(finalSelectedFiles);
-                   await imageFile?.writeAsBytes(widget.uIntList!);
-                    sendFiles.add(imageFile);
-                    setState(() {
-                      isBtnClick = true;
-                    });
-                    commonProvider?.sendUserFeedbackDio(
-                        context,
-                        commonProvider!.loginModel!.token!,
-                        nameController.text,
-                        descriptionController.text,
-                        {},
-                        sendFiles,
-                        scaffoldKey).then((value) async{
-                       if(value != null){
-                         setState(() {
-                           isBtnClick = false;
-                         });
-                         print("status of send user feedback is: ${value.status}");
-                         if(value.status!){
-                           deleteImageFile(imageFile!.path);
-                           Navigator.pop(context);
-                         }
-                       } else{
-                         setState(() {
-                           isBtnClick = false;
-                         });
-                       }
-                    }).catchError((e){
-                      setState(() {
-                        isBtnClick = false;
-                      });
-                    });;
-                  }),
-            ),
 
-          ],
+              Container(
+                margin: EdgeInsets.only(top: 20.0),
+                child: CommonButtons.getDottedButton(
+                    'Upload Images', context, () {
+                  uploadImageFunction();
+                  Utils.customPrint(
+                      'FIIALLL: ${finalSelectedFiles.length}');
+                }, Colors.grey),
+              ),
+
+              Container(
+                margin: const EdgeInsets.only(top: 15.0),
+                child: SingleChildScrollView(
+                  child: GridView.builder(
+                      gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        childAspectRatio: 1,
+                        mainAxisSpacing: 1,
+                      ),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: finalSelectedFiles.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return SizedBox(
+                          height: displayHeight(context) * 0.045,
+                          width: displayHeight(context) * 0.045,
+                          child: Stack(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.all(6),
+                                alignment: Alignment.topRight,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    borderRadius:
+                                    BorderRadius.circular(8),
+                                    border: Border.all(
+                                        color: Colors.grey.shade300),
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: FileImage(
+                                          File(finalSelectedFiles[
+                                          index]!
+                                              .path),
+                                        ))),
+                                /*child: Icon(
+                                              Icons.close,
+                                              size: displayWidth(context) * 0.05,
+                                            ),*/
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: InkWell(
+                                  onTap: () {
+                                    Utils.customPrint(
+                                        'FIIALLL: ${finalSelectedFiles.length}');
+                                    setState(() {
+                                      finalSelectedFiles
+                                          .removeAt(index);
+                                    });
+                                    Utils.customPrint(
+                                        'FIIALLL: ${finalSelectedFiles.length}');
+                                  },
+                                  child: Icon(
+                                    Icons.close,
+                                    size:
+                                    displayWidth(context) * 0.05,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                ),
+              ),
+
+              Padding(
+                padding: EdgeInsets.only(
+                  left: displayWidth(context) * 0.06,
+                  right: displayWidth(context) * 0.06,
+                  top: displayHeight(context) * 0.13,
+                ),
+                child: isBtnClick ?  Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          circularProgressColor),
+                    ))
+                    : CommonButtons.getActionButton(
+                    title: 'Submit',
+                    context: context,
+                    fontSize: displayWidth(context) * 0.044,
+                    textColor: Colors.white,
+                    buttonPrimaryColor: buttonBGColor,
+                    borderColor: buttonBGColor,
+                    width: displayWidth(context),
+                    onTap: () async {
+                      if(formKey.currentState!.validate()){
+                        bool check = await Utils().check(scaffoldKey);
+                        if(check){
+                          final Directory appDir = await getApplicationDocumentsDirectory();
+                          final String fileName = DateTime.now().toIso8601String() + '.png';
+                          Directory directory = Directory('${appDir.path}/Feedback');
+                          if ((await directory.exists())) {
+                           var size = await _displayDirectorySize(directory.path,true);
+                            if(size > 1.0){
+                              directory.listSync().forEach((entity) {
+                                if (entity is File) {
+                                  entity.deleteSync();
+                                }
+                              });
+                            }
+
+                           imageFile = File('${directory.path}/$fileName');
+                           await imageFile?.writeAsBytes(widget.uIntList!);
+
+                            sendFiles.addAll(finalSelectedFiles);
+                            sendFiles.add(imageFile);
+                            setState(() {
+                              isBtnClick = true;
+                            });
+                            commonProvider?.sendUserFeedbackDio(
+                                context,
+                                commonProvider!.loginModel!.token!,
+                                nameController.text,
+                                descriptionController.text,
+                                {},
+                                sendFiles,
+                                scaffoldKey).then((value) async{
+                              if(value != null){
+                                setState(() {
+                                  isBtnClick = false;
+                                });
+                                print("status of send user feedback is: ${value.status}");
+                                if(value.status!){
+                                  deleteImageFile(imageFile!.path);
+                                  sendFiles.clear();
+                                  finalSelectedFiles.clear();
+                                  Navigator.pop(context);
+                                }
+                              } else{
+                                setState(() {
+                                  isBtnClick = false;
+                                });
+                              }
+                            }).catchError((e){
+                              setState(() {
+                                isBtnClick = false;
+                              });
+                            });
+                          } else {
+                            directory.create();
+                            imageFile = File('${directory.path}/$fileName');
+                            sendFiles.addAll(finalSelectedFiles);
+                            await imageFile?.writeAsBytes(widget.uIntList!);
+
+
+                            sendFiles.add(imageFile);
+                            setState(() {
+                              isBtnClick = true;
+                            });
+                            commonProvider?.sendUserFeedbackDio(
+                                context,
+                                commonProvider!.loginModel!.token!,
+                                nameController.text,
+                                descriptionController.text,
+                                {},
+                                sendFiles,
+                                scaffoldKey).then((value) async{
+                              if(value != null){
+                                setState(() {
+                                  isBtnClick = false;
+                                });
+                                print("status of send user feedback is: ${value.status}");
+                                if(value.status!){
+                                  deleteImageFile(imageFile!.path);
+                                  Navigator.pop(context);
+                                }
+                              } else{
+                                setState(() {
+                                  isBtnClick = false;
+                                });
+                              }
+                            }).catchError((e){
+                              setState(() {
+                                isBtnClick = false;
+                              });
+                            });
+                          }
+                        }else{
+                          setState(() {
+                            isBtnClick = false;
+                          });
+                        }
+                      }
+                    }
+                    ),
+              ),
+
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Future<int> _getDirectorySize(String path, bool isRecursive) async {
+    final entityList = await Directory(path).list(recursive: isRecursive).toList();
+
+    await Future.forEach(entityList, (entity) async {
+      if (entity is File) {
+        final fileBytes = await File(entity.path).readAsBytes();
+        totalSize += fileBytes.lengthInBytes;
+      }
+    });
+    print('totalSize: $totalSize');
+    return totalSize;
+  }
+
+  Future<double> _displayDirectorySize(String path, bool isRecursive) async {
+    final fileSizeInBytes = await _getDirectorySize(path, isRecursive);
+   double fileSize = _displaySize(fileSizeInBytes);
+   return fileSize;
+  }
+
+  double _displaySize(int fileSizeInBytes) {
+    final fileSizeInKB = fileSizeInBytes / 1000;
+    final fileSizeInMB = fileSizeInKB / 1000;
+    final fileSizeInGB = fileSizeInMB / 1000;
+    final fileSizeInTB = fileSizeInGB / 1000;
+
+    final fileSize = '''
+  $fileSizeInBytes bytes
+  $fileSizeInKB KB
+  $fileSizeInMB MB
+  $fileSizeInGB GB
+  $fileSizeInTB TB
+      ''';
+
+    print("file size: $fileSize");
+
+    setState(() {
+      _result = fileSize;
+    });
+    return fileSizeInMB;
   }
 
   //Upload images from adding new vessel page

@@ -11,17 +11,19 @@ class UserFeedback{
   
   Widget getUserFeedback(BuildContext context){
     return Container(
+      height: displayWidth(context) * 0.05,
+      width: displayWidth(context),
       child: Row(
         children: [
-          IconButton(
-              onPressed: (){
+          Icon(
+            Icons.warning,
+            color: userFeedbackBtnColor,
+            size: displayWidth(context) * 0.04,
+          ),
 
-              },
-              icon: Icon(
-                  Icons.warning,
-                color: userFeedbackBtnColor,
-                size: displayWidth(context) * 0.04,
-              )),
+          SizedBox(
+            width: displayWidth(context) * 0.02,
+          ),
 
           commonText(
               context: context,
