@@ -287,6 +287,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         print('\n\n**********resumed');
         // var pref = await SharedPreferences.getInstance();
 
+        String? result = sharedPreferences!.getString('tripAvgSpeed');
+
+        print("RESUME MAIN $result");
+
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
           await Future.delayed(Duration(seconds: 1), () async {
             sharedPreferences = await SharedPreferences.getInstance();
@@ -389,6 +393,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         setState(() {
           isAppKilledFromBGMain = false;
         });
+
+        String? result = sharedPreferences!.getString('tripAvgSpeed');
+
+        print("DETACH MAIN $result");
+
         print('\n\ndetached');
         break;
     }

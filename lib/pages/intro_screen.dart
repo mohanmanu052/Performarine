@@ -284,7 +284,7 @@ class _IntroScreenState extends State<IntroScreen> {
 
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
-      reInitializeService();
+      //reInitializeService();
 
        //final isRunning1 = await BackgroundLocator.isServiceRunning();
       //
@@ -295,11 +295,11 @@ class _IntroScreenState extends State<IntroScreen> {
 
       //Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
 
-      StartTrip().startBGLocatorTrip(tripData![0], DateTime.now());
+      // StartTrip().startBGLocatorTrip(tripData![0], DateTime.now());
 
-      final isRunning2 = await BackgroundLocator.isServiceRunning();
+      // final isRunning2 = await BackgroundLocator.isServiceRunning();
 
-      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isCalledFromNoti');
+      // Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isCalledFromNoti');
 
       if (mounted) {
         if (isCalledFromNoti == null) {

@@ -2236,6 +2236,17 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                 child: CommonButtons.getAcceptButton(
                                     'Continue Trip', context, Colors.transparent,
                                         () async {
+
+                                          /*setDialogState(() {
+                                            tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
+                                            tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
+                                            tripSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
+
+                                          });
+                                          print("ANALYTICS MAIN $tripDistance");
+                                          print("ANALYTICS MAIN $tripSpeed");
+                                          print("ANALYTICS MAIN $tripSpeed");*/
+
                                       final _isRunning = await BackgroundLocator();
 
                                       Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
@@ -2253,7 +2264,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                       //Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
 
-                                      StartTrip().startBGLocatorTrip(tripData![0], DateTime.now());
+                                      StartTrip().startBGLocatorTrip(tripData![0], DateTime.now(), true);
 
                                       final isRunning2 = await BackgroundLocator.isServiceRunning();
 

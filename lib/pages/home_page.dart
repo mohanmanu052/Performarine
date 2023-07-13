@@ -704,7 +704,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
                                           //Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
 
-                                          StartTrip().startBGLocatorTrip(tripData![0], DateTime.now());
+                                          StartTrip().startBGLocatorTrip(tripData![0], DateTime.now(), true);
 
                                           final isRunning2 = await BackgroundLocator.isServiceRunning();
 
