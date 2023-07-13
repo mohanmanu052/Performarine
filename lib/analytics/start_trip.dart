@@ -38,7 +38,7 @@ class StartTrip {
 
   /// In this function we start to listen to the data coming from background locator port
   /// From sensor we are getting values of x,y & z in double format
-  Future<void> startBGLocatorTrip(String tripId, DateTime dateTime) async {
+  Future<void> startBGLocatorTrip(String tripId, DateTime dateTime, [bool isReinitialize = false]) async {
     ReceivePort port = ReceivePort();
 
     /// Connect to the port and listen to location updates coming from background_locator_2 plugin.
@@ -212,6 +212,14 @@ class StartTrip {
           debugPrint("CURR LAT ${_currentPosition.latitude}");
           debugPrint("CURR LONG ${_currentPosition.longitude}");
 
+          if(isReinitialize)
+            {
+              String? tempDistInNM = sharedPreferences!.getString('tripDistance');
+              print('@@@@: $tempDistInNM');
+              double tempDistInMeter = (double.parse(tempDistInNM ?? '0.00')* 1852);
+              finalTripDistance += tempDistInMeter;
+            }
+
           finalTripDistance += _distanceBetweenLastTwoLocations;
           debugPrint('Total Distance: $finalTripDistance');
           pref.setDouble('temp_trip_dist', finalTripDistance);
@@ -237,6 +245,14 @@ class StartTrip {
         Utils.calculateTripDuration((finalTripDuration ~/ 1000).toInt());
 
         /// SPEED
+        ///
+        if(isReinitialize)
+          {
+            String? tempSpeed = sharedPreferences!.getString('tripSpeed');
+            speed = double.parse(tempSpeed ?? '0.00');
+            isReinitialize = false;
+          }
+
         tripSpeedForStorage =
         Calculation().calculateCurrentSpeed(speed);
         print('FINAL TRIP SPEED: $tripSpeedForStorage}');
