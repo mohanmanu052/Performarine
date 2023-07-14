@@ -16,11 +16,13 @@ import '../common_widgets/widgets/common_text_feild.dart';
 import '../common_widgets/widgets/common_widgets.dart';
 import 'dart:io';
 
+import '../models/device_model.dart';
+
 class FeedbackReport extends StatefulWidget {
   final String? imagePath;
   File? file;
   List<int>? uIntList;
-   FeedbackReport({this.imagePath = "",this.file,this.uIntList,Key? key}) : super(key: key);
+  FeedbackReport({this.imagePath = "",this.file,this.uIntList,Key? key}) : super(key: key);
 
   @override
   State<FeedbackReport> createState() => _FeedbackReportState();
@@ -50,6 +52,10 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
   var totalSize = 1;
 
+  IosDeviceInfo? iosDeviceInfo;
+  AndroidDeviceInfo? androidDeviceInfo;
+  Map<String,dynamic>? deviceDetails;
+
   @override
   void initState() {
     super.initState();
@@ -63,10 +69,10 @@ class _FeedbackReportState extends State<FeedbackReport> {
     commonProvider = context.watch<CommonProvider>();
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: commonBackgroundColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: commonBackgroundColor,
+        backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -90,6 +96,13 @@ class _FeedbackReportState extends State<FeedbackReport> {
           key: formKey,
           child: Column(
             children: [
+
+              Image.asset(
+                "assets/images/mail_new.png",
+                //width: displayWidth(context) * 0.4,
+                height: displayHeight(context) * 0.26,
+              ),
+
               Padding(
                 padding: EdgeInsets.only(
                   left: displayWidth(context) * 0.07,
@@ -98,7 +111,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                 ),
                 child: commonText(
                     context: context,
-                    text: 'We "re sorry for the experience. Please let us know what happened so we can fix it. Your feedback is important to us. Thank you for your support!',
+                    text: 'Please let us know what happened so we can fix it. Your feedback is important to us. Thank you for your support!',
                     fontWeight: FontWeight.w400,
                     textColor: Colors.black,
                     textSize: displayWidth(context) * 0.035,
@@ -136,7 +149,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     textInputAction: TextInputAction.next,
                     textInputType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
-                   // maxLength: 32,
+                    // maxLength: 32,
                     prefixIcon: null,
                     requestFocusNode: descriptionFocusNode,
                     obscureText: false,
@@ -168,7 +181,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     textInputAction: TextInputAction.next,
                     textInputType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
-                   // maxLength: 32,
+                    // maxLength: 32,
                     prefixIcon: null,
                     requestFocusNode: null,
                     obscureText: false,
@@ -267,7 +280,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                 padding: EdgeInsets.only(
                   left: displayWidth(context) * 0.06,
                   right: displayWidth(context) * 0.06,
-                  top: displayHeight(context) * 0.13,
+                  // top: displayWidth(context) * 0.02,
                 ),
                 child: isBtnClick ?  Center(
                     child: CircularProgressIndicator(
@@ -285,12 +298,36 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     onTap: () async {
                       if(formKey.currentState!.validate()){
                         bool check = await Utils().check(scaffoldKey);
+
+                        final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+                        if (Platform.isAndroid) {
+                          androidDeviceInfo = await deviceInfoPlugin.androidInfo;
+                          deviceDetails = {
+                            'deviceId': androidDeviceInfo?.id,
+                            'model': androidDeviceInfo?.model,
+                            'version': androidDeviceInfo?.version.release,
+                            'make': androidDeviceInfo?.manufacturer,
+                            'board': androidDeviceInfo?.board,
+                            'deviceType': androidDeviceInfo?.type,
+                          };
+                        } else if (Platform.isIOS) {
+                          iosDeviceInfo = await deviceInfoPlugin.iosInfo;
+                          deviceDetails = {
+                            'deviceId': '',
+                            'model': iosDeviceInfo?.model,
+                            'version': iosDeviceInfo?.utsname.release,
+                            'make': iosDeviceInfo?.utsname.machine,
+                            'board': iosDeviceInfo?.utsname.machine,
+                            'deviceType': iosDeviceInfo?.utsname.machine,
+                          };
+                        }
+                        Utils.customPrint("deviceDetails:${deviceDetails!.toString()}");
                         if(check){
                           final Directory appDir = await getApplicationDocumentsDirectory();
                           final String fileName = DateTime.now().toIso8601String() + '.png';
                           Directory directory = Directory('${appDir.path}/Feedback');
                           if ((await directory.exists())) {
-                           var size = await _displayDirectorySize(directory.path,true);
+                            var size = await _displayDirectorySize(directory.path,true);
                             if(size > 1.0){
                               directory.listSync().forEach((entity) {
                                 if (entity is File) {
@@ -299,8 +336,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
                               });
                             }
 
-                           imageFile = File('${directory.path}/$fileName');
-                           await imageFile?.writeAsBytes(widget.uIntList!);
+                            imageFile = File('${directory.path}/$fileName');
+                            await imageFile?.writeAsBytes(widget.uIntList!);
 
                             sendFiles.addAll(finalSelectedFiles);
                             sendFiles.add(imageFile);
@@ -312,7 +349,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                                 commonProvider!.loginModel!.token!,
                                 nameController.text,
                                 descriptionController.text,
-                                {},
+                                deviceDetails!,
                                 sendFiles,
                                 scaffoldKey).then((value) async{
                               if(value != null){
@@ -382,7 +419,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                         }
                       }
                     }
-                    ),
+                ),
               ),
 
             ],
@@ -407,8 +444,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
   Future<double> _displayDirectorySize(String path, bool isRecursive) async {
     final fileSizeInBytes = await _getDirectorySize(path, isRecursive);
-   double fileSize = _displaySize(fileSizeInBytes);
-   return fileSize;
+    double fileSize = _displaySize(fileSizeInBytes);
+    return fileSize;
   }
 
   double _displaySize(int fileSizeInBytes) {
@@ -480,7 +517,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                   (List<File?> selectedImageFileList) {
                 if (selectedImageFileList.isNotEmpty) {
                   setState(() {
-                  //  finalSelectedFiles.clear();
+                    //  finalSelectedFiles.clear();
                     finalSelectedFiles.addAll(selectedImageFileList);
                     Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
                     Utils.customPrint('finalSelectedFiles length:  ${finalSelectedFiles.length}');
@@ -499,7 +536,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
               (List<File?> selectedImageFileList) {
             if (selectedImageFileList.isNotEmpty) {
               setState(() {
-               // finalSelectedFiles.clear();
+                // finalSelectedFiles.clear();
                 finalSelectedFiles.addAll(selectedImageFileList);
                 Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
                 Utils.customPrint(
@@ -517,7 +554,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
 
   Future<String> captureAndSaveScreenshot() async {
-   // final Uint8List? imageBytes = await controller.capture();
+    // final Uint8List? imageBytes = await controller.capture();
 
     final Directory appDir = await getApplicationDocumentsDirectory();
 
@@ -527,7 +564,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
     await imageFile!.writeAsBytes(widget.uIntList!);
 
-   // deleteImageAfterDelay(imageFile!.path);
+    // deleteImageAfterDelay(imageFile!.path);
 
     return imageFile!.path;
   }

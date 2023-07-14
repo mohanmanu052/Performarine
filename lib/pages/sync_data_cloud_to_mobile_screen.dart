@@ -228,7 +228,8 @@ class _SyncDataCloudToMobileScreenState
                             ],
                           ),
 
-                    Padding(
+                    commonProvider.exceptionOccurred
+                    ? Padding(
                       padding: EdgeInsets.only(
                         left: displayWidth(context) * 0.22,
                         //top: displayWidth(context) * 0.01,
@@ -242,7 +243,8 @@ class _SyncDataCloudToMobileScreenState
                           },
                           child: UserFeedback().getUserFeedback(context)
                       ),
-                    ),
+                    )
+                    : Container(),
 
                     SizedBox(
                       height: displayWidth(context) * 0.04,

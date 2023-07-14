@@ -600,7 +600,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                               commonText(
                                   context: context,
                                   text:
-                                  'Last time you used performarine. there is a trip in progress. do you want to end the trip or continue?',
+                                  'Last time you used performarine. there was a trip in progress. do you want to end the trip or continue?',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,

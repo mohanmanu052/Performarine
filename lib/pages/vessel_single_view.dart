@@ -137,19 +137,19 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     deviceDetails = Platform.isAndroid
         ? DeviceInfo(
-            board: androidDeviceInfo?.board,
-            deviceId: androidDeviceInfo?.id,
-            deviceType: androidDeviceInfo?.type,
-            make: androidDeviceInfo?.manufacturer,
-            model: androidDeviceInfo?.model,
-            version: androidDeviceInfo?.version.release)
+        board: androidDeviceInfo?.board,
+        deviceId: androidDeviceInfo?.id,
+        deviceType: androidDeviceInfo?.type,
+        make: androidDeviceInfo?.manufacturer,
+        model: androidDeviceInfo?.model,
+        version: androidDeviceInfo?.version.release)
         : DeviceInfo(
-            board: iosDeviceInfo?.utsname.machine,
-            deviceId: '',
-            deviceType: iosDeviceInfo?.utsname.machine,
-            make: iosDeviceInfo?.utsname.machine,
-            model: iosDeviceInfo?.model,
-            version: iosDeviceInfo?.utsname.release);
+        board: iosDeviceInfo?.utsname.machine,
+        deviceId: '',
+        deviceType: iosDeviceInfo?.utsname.machine,
+        make: iosDeviceInfo?.utsname.machine,
+        model: iosDeviceInfo?.model,
+        version: iosDeviceInfo?.utsname.release);
     Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
   }
 
@@ -221,11 +221,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
   /// Check sensor is available or not
   checkSensorAvailabelOrNot() async {
     gyroscopeAvailable =
-        await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
+    await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
     accelerometerAvailable =
-        await s.SensorManager().isSensorAvailable(s.Sensors.ACCELEROMETER);
+    await s.SensorManager().isSensorAvailable(s.Sensors.ACCELEROMETER);
     magnetometerAvailable =
-        await s.SensorManager().isSensorAvailable(s.Sensors.MAGNETIC_FIELD);
+    await s.SensorManager().isSensorAvailable(s.Sensors.MAGNETIC_FIELD);
     userAccelerometerAvailable = await s.SensorManager()
         .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
   }
@@ -336,7 +336,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         ExpansionCard(
                             scaffoldKey,
                             widget.vessel,
-                            (value) async {
+                                (value) async {
                               var result = await Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (_) => AddNewVesselScreen(
@@ -357,8 +357,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 });
                               }
                             },
-                            (value) {},
-                            (value) {
+                                (value) {},
+                                (value) {
                               _onDeleteTripsByVesselID(value.id!);
                               _onVesselDelete(value);
                             },
@@ -396,15 +396,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               children: [
                                 vesselAnalytics
                                     ? Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: CircularProgressIndicator(),
-                                      )
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CircularProgressIndicator(),
+                                )
                                     : vesselSingleViewVesselAnalytics(
-                                        context,
-                                        totalDuration,
-                                        totalDistance,
-                                        tripsCount,
-                                        avgSpeed),
+                                    context,
+                                    totalDuration,
+                                    totalDistance,
+                                    tripsCount,
+                                    avgSpeed),
                               ],
                             ),
                           ),
@@ -472,108 +472,245 @@ class VesselSingleViewState extends State<VesselSingleView> {
                     margin: EdgeInsets.symmetric(horizontal: 17, vertical: 8),
                     child: tripIsRunning
                         ? isTripEndedOrNot
-                            ? Center(
-                                child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    circularProgressColor),
-                              ))
-                            : CommonButtons.getActionButton(
-                                title: 'End Trip',
+                        ? Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              circularProgressColor),
+                        ))
+                        : CommonButtons.getActionButton(
+                        title: 'End Trip',
+                        context: context,
+                        fontSize: displayWidth(context) * 0.042,
+                        textColor: Colors.white,
+                        buttonPrimaryColor: buttonBGColor,
+                        borderColor: buttonBGColor,
+                        width: displayWidth(context),
+                        onTap: () async {
+                          Utils.customPrint('time stamp:' +
+                              DateTime.now().toUtc().toString());
+                          Utils().showEndTripDialog(context, () async {
+                            setState(() {
+                              isTripEndedOrNot = true;
+                            });
+
+                            List<String>? tripData = sharedPreferences!
+                                .getStringList('trip_data');
+
+                            String tripId = '';
+                            if (tripData != null) {
+                              tripId = tripData[0];
+                            }
+
+                            final currentTrip =
+                            await _databaseService.getTrip(tripId);
+
+                            DateTime createdAtTime =
+                            DateTime.parse(currentTrip.createdAt!);
+
+                            var durationTime = DateTime.now()
+                                .toUtc()
+                                .difference(createdAtTime);
+                            String tripDuration =
+                            Utils.calculateTripDuration(
+                                ((durationTime.inMilliseconds) / 1000)
+                                    .toInt());
+
+                            Navigator.of(context).pop();
+
+                            Utils.customPrint(
+                                'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+
+                            EndTrip().endTrip(
                                 context: context,
-                                fontSize: displayWidth(context) * 0.042,
-                                textColor: Colors.white,
-                                buttonPrimaryColor: buttonBGColor,
-                                borderColor: buttonBGColor,
-                                width: displayWidth(context),
-                                onTap: () async {
-                                  Utils.customPrint('time stamp:' +
-                                      DateTime.now().toUtc().toString());
-                                  Utils().showEndTripDialog(context, () async {
-                                    setState(() {
-                                      isTripEndedOrNot = true;
+                                scaffoldKey: scaffoldKey,
+                                duration: tripDuration,
+                                onEnded: () async {
+                                  Utils.customPrint('TRIPPPPPP ENDEDDD:');
+                                  setState(() {
+                                    isEndTripButton = false;
+                                    tripIsEnded = true;
+                                    commonProvider.getTripsByVesselId(
+                                        widget.vessel!.id);
+                                    // isZipFileCreate = true;
+                                  });
+                                  await tripIsRunningOrNot();
+                                  getVesselAnalytics(widget.vessel!.id!);
+                                });
+                          }, () {
+                            Navigator.of(context).pop();
+                          });
+                        })
+                        : CommonButtons.getActionButton(
+                        title: 'Start Trip',
+                        context: context,
+                        fontSize: displayWidth(context) * 0.042,
+                        textColor: Colors.white,
+                        buttonPrimaryColor: buttonBGColor,
+                        borderColor: buttonBGColor,
+                        width: displayWidth(context),
+                        onTap: () async {
+                          bool? isTripStarted =
+                          sharedPreferences!.getBool('trip_started');
+
+                          if (isTripStarted != null) {
+                            if (isTripStarted) {
+                              List<String>? tripData = sharedPreferences!
+                                  .getStringList('trip_data');
+                              Trip tripDetails = await _databaseService
+                                  .getTrip(tripData![0]);
+
+                              if (tripDetails.vesselId != widget.vessel!.id) {
+                                showDialogBox(context);
+                                return;
+                              }
+                            }
+                          }
+
+                          bool isLocationPermitted =
+                          await Permission.locationAlways.isGranted;
+
+                          if (isLocationPermitted) {
+                            bool isNDPermDenied = await Permission
+                                .bluetoothConnect.isPermanentlyDenied;
+
+                            // print('BYEE: $isNDPermDenied');
+                            if (isNDPermDenied) {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return LocationPermissionCustomDialog(
+                                      isLocationDialogBox: false,
+                                      text: 'Allow nearby devices',
+                                      subText:
+                                      'Allow nearby devices to connect to the app',
+                                      buttonText: 'OK',
+                                      buttonOnTap: () async {
+                                        Get.back();
+
+                                        // await openAppSettings();
+                                      },
+                                    );
+                                  });
+                              return;
+                            } else {
+                              if (Platform.isIOS) {
+                                dynamic isBluetoothEnable =
+
+                                Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                  showBluetoothDialog(context);
+                                });
+
+                                if(isBluetoothEnable != null){
+                                  if (isBluetoothEnable) {
+                                    vessel!.add(widget.vessel!);
+                                    await locationPermissions(
+                                        widget.vessel!.vesselSize!,
+                                        widget.vessel!.name!,
+                                        widget.vessel!.id!);
+                                  } else {
+                                    showBluetoothDialog(context);
+                                  }
+                                }
+
+                              } else {
+                                bool isNDPermittedOne = await Permission
+                                    .bluetoothConnect.isGranted;
+
+                                if (isNDPermittedOne) {
+                                  bool isBluetoothEnable =
+                                  Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                    showBluetoothDialog(context);
+                                  });
+
+                                  if (isBluetoothEnable) {
+                                    vessel!.add(widget.vessel!);
+                                    await locationPermissions(
+                                        widget.vessel!.vesselSize!,
+                                        widget.vessel!.name!,
+                                        widget.vessel!.id!);
+                                  } else {
+                                    showBluetoothDialog(context);
+                                  }
+                                } else {
+                                  await Permission.bluetoothConnect.request();
+                                  bool isNDPermitted = await Permission
+                                      .bluetoothConnect.isGranted;
+                                  if (isNDPermitted) {
+                                    bool isBluetoothEnable =
+                                    Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                      showBluetoothDialog(context);
                                     });
 
-                                    List<String>? tripData = sharedPreferences!
-                                        .getStringList('trip_data');
-
-                                    String tripId = '';
-                                    if (tripData != null) {
-                                      tripId = tripData[0];
+                                    if (isBluetoothEnable) {
+                                      vessel!.add(widget.vessel!);
+                                      await locationPermissions(
+                                          widget.vessel!.vesselSize!,
+                                          widget.vessel!.name!,
+                                          widget.vessel!.id!);
+                                    } else {
+                                      showBluetoothDialog(context);
                                     }
+                                  } else {
+                                    if (await Permission
+                                        .bluetoothConnect.isDenied ||
+                                        await Permission.bluetoothConnect
+                                            .isPermanentlyDenied) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return LocationPermissionCustomDialog(
+                                              isLocationDialogBox: false,
+                                              text: 'Allow nearby devices',
+                                              subText:
+                                              'Allow nearby devices to connect to the app',
+                                              buttonText: 'OK',
+                                              buttonOnTap: () async {
+                                                Get.back();
 
-                                    final currentTrip =
-                                        await _databaseService.getTrip(tripId);
-
-                                    DateTime createdAtTime =
-                                        DateTime.parse(currentTrip.createdAt!);
-
-                                    var durationTime = DateTime.now()
-                                        .toUtc()
-                                        .difference(createdAtTime);
-                                    String tripDuration =
-                                        Utils.calculateTripDuration(
-                                            ((durationTime.inMilliseconds) / 1000)
-                                                .toInt());
-
-                                    Navigator.of(context).pop();
-
-                                    Utils.customPrint(
-                                        'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
-
-                                    EndTrip().endTrip(
-                                        context: context,
-                                        scaffoldKey: scaffoldKey,
-                                        duration: tripDuration,
-                                        onEnded: () async {
-                                          Utils.customPrint('TRIPPPPPP ENDEDDD:');
-                                          setState(() {
-                                            isEndTripButton = false;
-                                            tripIsEnded = true;
-                                            commonProvider.getTripsByVesselId(
-                                                widget.vessel!.id);
-                                            // isZipFileCreate = true;
+                                                await openAppSettings();
+                                              },
+                                            );
                                           });
-                                          await tripIsRunningOrNot();
-                                          getVesselAnalytics(widget.vessel!.id!);
-                                        });
-                                  }, () {
-                                    Navigator.of(context).pop();
-                                  });
-                                })
-                        : CommonButtons.getActionButton(
-                            title: 'Start Trip',
-                            context: context,
-                            fontSize: displayWidth(context) * 0.042,
-                            textColor: Colors.white,
-                            buttonPrimaryColor: buttonBGColor,
-                            borderColor: buttonBGColor,
-                            width: displayWidth(context),
-                            onTap: () async {
-                              bool? isTripStarted =
-                                  sharedPreferences!.getBool('trip_started');
-
-                              if (isTripStarted != null) {
-                                if (isTripStarted) {
-                                  List<String>? tripData = sharedPreferences!
-                                      .getStringList('trip_data');
-                                  Trip tripDetails = await _databaseService
-                                      .getTrip(tripData![0]);
-
-                                  if (tripDetails.vesselId != widget.vessel!.id) {
-                                    showDialogBox(context);
-                                    return;
+                                    }
                                   }
                                 }
                               }
+                            }
+                          }
+                          else {
+                            /// WIU
+                            bool isWIULocationPermitted =
+                            await Permission.locationWhenInUse.isGranted;
 
+                            if (!isWIULocationPermitted) {
+                              await Utils.getLocationPermission(
+                                  context, scaffoldKey);
+
+                              await Permission.locationAlways.request();
+
+                              bool isGranted = await Permission.locationAlways.isGranted;
+
+                              if(!isGranted)
+                              {
+                                Utils.showSnackBar(context,
+                                    scaffoldKey: scaffoldKey,
+                                    message:
+                                    'Location permissions are denied without permissions we are unable to start the trip');
+
+                                // Future.delayed(Duration(seconds: 3),
+                                //         () async {
+                                //       await openAppSettings();
+                                //     });
+                              }
+                            }
+                            else
+                            {
                               bool isLocationPermitted =
-                                  await Permission.locationAlways.isGranted;
-
+                              await Permission.locationAlways.isGranted;
                               if (isLocationPermitted) {
                                 bool isNDPermDenied = await Permission
                                     .bluetoothConnect.isPermanentlyDenied;
 
-                                // print('BYEE: $isNDPermDenied');
                                 if (isNDPermDenied) {
                                   showDialog(
                                       context: context,
@@ -582,45 +719,44 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           isLocationDialogBox: false,
                                           text: 'Allow nearby devices',
                                           subText:
-                                              'Allow nearby devices to connect to the app',
+                                          'Allow nearby devices to connect to the app',
                                           buttonText: 'OK',
                                           buttonOnTap: () async {
                                             Get.back();
 
-                                            // await openAppSettings();
+                                            await openAppSettings();
                                           },
                                         );
                                       });
                                   return;
                                 } else {
-                                  if (Platform.isIOS) {
-                                    dynamic isBluetoothEnable =
+                                  bool isNDPermitted = await Permission
+                                      .bluetoothConnect.isGranted;
 
+                                  if (isNDPermitted) {
+                                    bool isBluetoothEnable =
                                     Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                                          showBluetoothDialog(context);
-                                        });
+                                      showBluetoothDialog(context);
+                                    });
 
-                                    if(isBluetoothEnable != null){
-                                      if (isBluetoothEnable) {
-                                        vessel!.add(widget.vessel!);
-                                        await locationPermissions(
-                                            widget.vessel!.vesselSize!,
-                                            widget.vessel!.name!,
-                                            widget.vessel!.id!);
-                                      } else {
-                                        showBluetoothDialog(context);
-                                      }
+                                    if (isBluetoothEnable) {
+                                      vessel!.add(widget.vessel!);
+                                      await locationPermissions(
+                                          widget.vessel!.vesselSize!,
+                                          widget.vessel!.name!,
+                                          widget.vessel!.id!);
+                                    } else {
+                                      showBluetoothDialog(context);
                                     }
-
                                   } else {
-                                    bool isNDPermittedOne = await Permission
+                                    await Permission.bluetoothConnect.request();
+                                    bool isNDPermitted = await Permission
                                         .bluetoothConnect.isGranted;
-
-                                    if (isNDPermittedOne) {
+                                    if (isNDPermitted) {
                                       bool isBluetoothEnable =
                                       Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                                            showBluetoothDialog(context);
-                                          });
+                                        showBluetoothDialog(context);
+                                      });
 
                                       if (isBluetoothEnable) {
                                         vessel!.add(widget.vessel!);
@@ -631,266 +767,130 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       } else {
                                         showBluetoothDialog(context);
                                       }
-                                    } else {
-                                      await Permission.bluetoothConnect.request();
-                                      bool isNDPermitted = await Permission
-                                          .bluetoothConnect.isGranted;
-                                      if (isNDPermitted) {
-                                        bool isBluetoothEnable =
-                                        Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                                              showBluetoothDialog(context);
-                                            });
-
-                                        if (isBluetoothEnable) {
-                                          vessel!.add(widget.vessel!);
-                                          await locationPermissions(
-                                              widget.vessel!.vesselSize!,
-                                              widget.vessel!.name!,
-                                              widget.vessel!.id!);
-                                        } else {
-                                          showBluetoothDialog(context);
-                                        }
-                                      } else {
-                                        if (await Permission
-                                                .bluetoothConnect.isDenied ||
-                                            await Permission.bluetoothConnect
-                                                .isPermanentlyDenied) {
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return LocationPermissionCustomDialog(
-                                                  isLocationDialogBox: false,
-                                                  text: 'Allow nearby devices',
-                                                  subText:
-                                                      'Allow nearby devices to connect to the app',
-                                                  buttonText: 'OK',
-                                                  buttonOnTap: () async {
-                                                    Get.back();
-
-                                                    await openAppSettings();
-                                                  },
-                                                );
-                                              });
-                                        }
-                                      }
                                     }
+                                  }
+                                }
+                              }
+                              else if(await Permission.locationAlways.isPermanentlyDenied)
+                              {
+                                if(Platform.isIOS)
+                                {
+                                  Permission.locationAlways.request();
+
+                                  PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message: "Location permissions are denied without permissions we are unable to start the trip");
+
+                                    Future.delayed(Duration(seconds: 3),
+                                            () async {
+                                          await openAppSettings();
+                                        });
+                                    return PermissionStatus.denied;
+                                  });
+
+                                  if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
+                                  {
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message: "Location permissions are denied without permissions we are unable to start the trip");
+
+                                    Future.delayed(Duration(seconds: 3),
+                                            () async {
+                                          await openAppSettings();
+                                        });
+                                  }
+                                }else
+                                {
+                                  if (!isLocationDialogBoxOpen) {
+                                    Utils.customPrint("ELSE CONDITION");
+
+                                    showDialog(
+                                        context: scaffoldKey.currentContext!,
+                                        builder: (BuildContext context) {
+                                          isLocationDialogBoxOpen = true;
+                                          return LocationPermissionCustomDialog(
+                                            isLocationDialogBox: true,
+                                            text:
+                                            'Always Allow Access to “Location”',
+                                            subText:
+                                            "To track your trip while you use other apps we need background access to your location",
+                                            buttonText: 'Ok',
+                                            buttonOnTap: () async {
+                                              Get.back();
+
+                                              await openAppSettings();
+                                            },
+                                          );
+                                        }).then((value) {
+                                      isLocationDialogBoxOpen = false;
+                                    });
                                   }
                                 }
                               }
                               else {
-                                /// WIU
-                                bool isWIULocationPermitted =
-                                    await Permission.locationWhenInUse.isGranted;
-
-                                if (!isWIULocationPermitted) {
-                                  await Utils.getLocationPermission(
-                                      context, scaffoldKey);
-
+                                if (Platform.isIOS) {
+                                  // bool? isLocationAlwaysPermitted;
                                   await Permission.locationAlways.request();
 
-                                  bool isGranted = await Permission.locationAlways.isGranted;
+                                  bool isLocationAlwaysPermitted =
+                                  await Permission.locationAlways.isGranted;
 
-                                  if(!isGranted)
-                                    {
-                                      Utils.showSnackBar(context,
-                                          scaffoldKey: scaffoldKey,
-                                          message:
-                                          'Location permissions are denied without permissions we are unable to start the trip');
+                                  Utils.customPrint(
+                                      'IOS PERMISSION GIVEN OUTSIDE');
 
-                                      // Future.delayed(Duration(seconds: 3),
-                                      //         () async {
-                                      //       await openAppSettings();
-                                      //     });
-                                    }
-                                }
-                                else
-                                  {
-                                    bool isLocationPermitted =
-                                    await Permission.locationAlways.isGranted;
-                                    if (isLocationPermitted) {
-                                      bool isNDPermDenied = await Permission
-                                          .bluetoothConnect.isPermanentlyDenied;
+                                  if (isLocationAlwaysPermitted) {
+                                    Utils.customPrint('IOS PERMISSION GIVEN 1');
 
-                                      if (isNDPermDenied) {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return LocationPermissionCustomDialog(
-                                                isLocationDialogBox: false,
-                                                text: 'Allow nearby devices',
-                                                subText:
-                                                'Allow nearby devices to connect to the app',
-                                                buttonText: 'OK',
-                                                buttonOnTap: () async {
-                                                  Get.back();
+                                    vessel!.add(widget.vessel!);
+                                    await locationPermissions(
+                                        widget.vessel!.vesselSize!,
+                                        widget.vessel!.name!,
+                                        widget.vessel!.id!);
+                                  } else {
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message:
+                                        'Location permissions are denied without permissions we are unable to start the trip');
 
-                                                  await openAppSettings();
-                                                },
-                                              );
-                                            });
-                                        return;
-                                      } else {
-                                        bool isNDPermitted = await Permission
-                                            .bluetoothConnect.isGranted;
-
-                                        if (isNDPermitted) {
-                                          bool isBluetoothEnable =
-                                          Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                                            showBluetoothDialog(context);
-                                          });
-
-                                          if (isBluetoothEnable) {
-                                            vessel!.add(widget.vessel!);
-                                            await locationPermissions(
-                                                widget.vessel!.vesselSize!,
-                                                widget.vessel!.name!,
-                                                widget.vessel!.id!);
-                                          } else {
-                                            showBluetoothDialog(context);
-                                          }
-                                        } else {
-                                          await Permission.bluetoothConnect.request();
-                                          bool isNDPermitted = await Permission
-                                              .bluetoothConnect.isGranted;
-                                          if (isNDPermitted) {
-                                            bool isBluetoothEnable =
-                                            Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                                              showBluetoothDialog(context);
-                                            });
-
-                                            if (isBluetoothEnable) {
-                                              vessel!.add(widget.vessel!);
-                                              await locationPermissions(
-                                                  widget.vessel!.vesselSize!,
-                                                  widget.vessel!.name!,
-                                                  widget.vessel!.id!);
-                                            } else {
-                                              showBluetoothDialog(context);
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                    else if(await Permission.locationAlways.isPermanentlyDenied)
-                                    {
-                                      if(Platform.isIOS)
-                                      {
-                                        Permission.locationAlways.request();
-
-                                        PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message: "Location permissions are denied without permissions we are unable to start the trip");
-
-                                          Future.delayed(Duration(seconds: 3),
-                                                  () async {
-                                                await openAppSettings();
-                                              });
-                                          return PermissionStatus.denied;
+                                    Future.delayed(Duration(seconds: 3),
+                                            () async {
+                                          await openAppSettings();
                                         });
-
-                                        if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
-                                        {
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message: "Location permissions are denied without permissions we are unable to start the trip");
-
-                                          Future.delayed(Duration(seconds: 3),
-                                                  () async {
-                                                await openAppSettings();
-                                              });
-                                        }
-                                      }else
-                                      {
-                                        if (!isLocationDialogBoxOpen) {
-                                          Utils.customPrint("ELSE CONDITION");
-
-                                          showDialog(
-                                              context: scaffoldKey.currentContext!,
-                                              builder: (BuildContext context) {
-                                                isLocationDialogBoxOpen = true;
-                                                return LocationPermissionCustomDialog(
-                                                  isLocationDialogBox: true,
-                                                  text:
-                                                  'Always Allow Access to “Location”',
-                                                  subText:
-                                                  "To track your trip while you use other apps we need background access to your location",
-                                                  buttonText: 'Ok',
-                                                  buttonOnTap: () async {
-                                                    Get.back();
-
-                                                    await openAppSettings();
-                                                  },
-                                                );
-                                              }).then((value) {
-                                            isLocationDialogBoxOpen = false;
-                                          });
-                                        }
-                                      }
-                                    }
-                                    else {
-                                      if (Platform.isIOS) {
-                                        // bool? isLocationAlwaysPermitted;
-                                        await Permission.locationAlways.request();
-
-                                        bool isLocationAlwaysPermitted =
-                                        await Permission.locationAlways.isGranted;
-
-                                        Utils.customPrint(
-                                            'IOS PERMISSION GIVEN OUTSIDE');
-
-                                        if (isLocationAlwaysPermitted) {
-                                          Utils.customPrint('IOS PERMISSION GIVEN 1');
-
-                                          vessel!.add(widget.vessel!);
-                                          await locationPermissions(
-                                              widget.vessel!.vesselSize!,
-                                              widget.vessel!.name!,
-                                              widget.vessel!.id!);
-                                        } else {
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                              'Location permissions are denied without permissions we are unable to start the trip');
-
-                                          Future.delayed(Duration(seconds: 3),
-                                                  () async {
-                                                await openAppSettings();
-                                              });
-                                        }
-                                      } else {
-                                        if (!isLocationDialogBoxOpen) {
-                                          Utils.customPrint("ELSE CONDITION");
-
-                                          showDialog(
-                                              context: scaffoldKey.currentContext!,
-                                              builder: (BuildContext context) {
-                                                isLocationDialogBoxOpen = true;
-                                                return LocationPermissionCustomDialog(
-                                                  isLocationDialogBox: true,
-                                                  text:
-                                                  'Always Allow Access to “Location”',
-                                                  subText:
-                                                  "To track your trip while you use other apps we need background access to your location",
-                                                  buttonText: 'Ok',
-                                                  buttonOnTap: () async {
-                                                    Get.back();
-
-                                                    await openAppSettings();
-                                                  },
-                                                );
-                                              }).then((value) {
-                                            isLocationDialogBoxOpen = false;
-                                          });
-                                        }
-                                      }
-                                    }
                                   }
-                                // return;
+                                } else {
+                                  if (!isLocationDialogBoxOpen) {
+                                    Utils.customPrint("ELSE CONDITION");
 
+                                    showDialog(
+                                        context: scaffoldKey.currentContext!,
+                                        builder: (BuildContext context) {
+                                          isLocationDialogBoxOpen = true;
+                                          return LocationPermissionCustomDialog(
+                                            isLocationDialogBox: true,
+                                            text:
+                                            'Always Allow Access to “Location”',
+                                            subText:
+                                            "To track your trip while you use other apps we need background access to your location",
+                                            buttonText: 'Ok',
+                                            buttonOnTap: () async {
+                                              Get.back();
 
+                                              await openAppSettings();
+                                            },
+                                          );
+                                        }).then((value) {
+                                      isLocationDialogBoxOpen = false;
+                                    });
+                                  }
+                                }
                               }
-                            }),
+                            }
+                            // return;
+
+
+                          }
+                        }),
                   ),
                 )
               ],
@@ -1182,7 +1182,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             CircularProgressIndicator(
                                               value: value,
                                               backgroundColor:
-                                                  Colors.grey.shade200,
+                                              Colors.grey.shade200,
                                               strokeWidth: 3,
                                               color: Colors.green,
                                             ),
@@ -1208,9 +1208,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         horizontal: displayWidth(context) * 0.08),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         commonText(
                                             context: context,
@@ -1218,7 +1218,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             fontWeight: FontWeight.w500,
                                             textColor: Colors.black,
                                             textSize:
-                                                displayWidth(context) * 0.032,
+                                            displayWidth(context) * 0.032,
                                             textAlign: TextAlign.start),
                                         const SizedBox(
                                           width: 20,
@@ -1237,14 +1237,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   children: [
                                                     CircularProgressIndicator(
                                                       color:
-                                                          circularProgressColor,
+                                                      circularProgressColor,
                                                       value: value,
                                                       backgroundColor:
-                                                          Colors.grey.shade200,
+                                                      Colors.grey.shade200,
                                                       strokeWidth: 2,
                                                       valueColor:
-                                                          const AlwaysStoppedAnimation(
-                                                              Colors.green),
+                                                      const AlwaysStoppedAnimation(
+                                                          Colors.green),
                                                     ),
                                                     Center(
                                                       child: subTitleProgress(
@@ -1267,11 +1267,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         horizontal: displayWidth(context) * 0.08),
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           children: [
                                             commonText(
                                                 context: context,
@@ -1281,82 +1281,82 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 fontWeight: FontWeight.w500,
                                                 textColor: Colors.black,
                                                 textSize:
-                                                    displayWidth(context) * 0.032,
+                                                displayWidth(context) * 0.032,
                                                 textAlign: TextAlign.start),
                                             const SizedBox(
                                               width: 20,
                                             ),
                                             !isLocationPermission
                                                 ? SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Colors.red,
+                                                        width: 2),
+                                                    shape: BoxShape.circle),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    color: Colors.red,
+                                                    size: 14,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                                : TweenAnimationBuilder(
+                                                duration: const Duration(
+                                                    seconds: 3),
+                                                tween: Tween(
+                                                    begin:
+                                                    sensorProgressBegin,
+                                                    end: sensorProgress),
+                                                builder: (context,
+                                                    double value, _) {
+                                                  return SizedBox(
                                                     height: 20,
                                                     width: 20,
-                                                    child: Container(
-                                                      alignment: Alignment.center,
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              color: Colors.red,
-                                                              width: 2),
-                                                          shape: BoxShape.circle),
-                                                      child: Center(
-                                                        child: Icon(
-                                                          Icons.close,
-                                                          color: Colors.red,
-                                                          size: 14,
+                                                    child: Stack(
+                                                      fit: StackFit.expand,
+                                                      children: [
+                                                        CircularProgressIndicator(
+                                                          color:
+                                                          circularProgressColor,
+                                                          value: value,
+                                                          backgroundColor:
+                                                          Colors.grey
+                                                              .shade200,
+                                                          strokeWidth: 2,
+                                                          valueColor:
+                                                          const AlwaysStoppedAnimation(
+                                                              Colors
+                                                                  .green),
                                                         ),
-                                                      ),
+                                                        Center(
+                                                          child: subTitleProgress(
+                                                              value,
+                                                              displayWidth(
+                                                                  context) *
+                                                                  0.035),
+                                                        )
+                                                      ],
                                                     ),
-                                                  )
-                                                : TweenAnimationBuilder(
-                                                    duration: const Duration(
-                                                        seconds: 3),
-                                                    tween: Tween(
-                                                        begin:
-                                                            sensorProgressBegin,
-                                                        end: sensorProgress),
-                                                    builder: (context,
-                                                        double value, _) {
-                                                      return SizedBox(
-                                                        height: 20,
-                                                        width: 20,
-                                                        child: Stack(
-                                                          fit: StackFit.expand,
-                                                          children: [
-                                                            CircularProgressIndicator(
-                                                              color:
-                                                                  circularProgressColor,
-                                                              value: value,
-                                                              backgroundColor:
-                                                                  Colors.grey
-                                                                      .shade200,
-                                                              strokeWidth: 2,
-                                                              valueColor:
-                                                                  const AlwaysStoppedAnimation(
-                                                                      Colors
-                                                                          .green),
-                                                            ),
-                                                            Center(
-                                                              child: subTitleProgress(
-                                                                  value,
-                                                                  displayWidth(
-                                                                          context) *
-                                                                      0.035),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      );
-                                                    }),
+                                                  );
+                                                }),
                                           ],
                                         ),
                                         isLocationPermission
                                             ? SizedBox()
                                             : commonText(
-                                                context: context,
-                                                text: 'Permission Denied!',
-                                                fontWeight: FontWeight.w400,
-                                                textColor: Colors.red,
-                                                textSize:
-                                                    displayWidth(context) * 0.028,
-                                                textAlign: TextAlign.start),
+                                            context: context,
+                                            text: 'Permission Denied!',
+                                            fontWeight: FontWeight.w400,
+                                            textColor: Colors.red,
+                                            textSize:
+                                            displayWidth(context) * 0.028,
+                                            textAlign: TextAlign.start),
                                       ],
                                     ),
                                   ),
@@ -1368,11 +1368,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         horizontal: displayWidth(context) * 0.08),
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           children: [
                                             commonText(
                                                 context: context,
@@ -1380,14 +1380,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 fontWeight: FontWeight.w500,
                                                 textColor: Colors.black,
                                                 textSize:
-                                                    displayWidth(context) * 0.032,
+                                                displayWidth(context) * 0.032,
                                                 textAlign: TextAlign.start),
                                             const SizedBox(
                                               width: 20,
                                             ),
                                             TweenAnimationBuilder(
                                                 duration:
-                                                    const Duration(seconds: 3),
+                                                const Duration(seconds: 3),
                                                 tween: Tween(
                                                     begin: lprSensorProgressBegin,
                                                     end: lprSensorProgress),
@@ -1395,101 +1395,101 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     (context, double value, _) {
                                                   return isBluetoothConnected
                                                       ? SizedBox(
-                                                          height: 20,
-                                                          width: 20,
-                                                          child: Stack(
-                                                            fit: StackFit.expand,
-                                                            children: [
-                                                              CircularProgressIndicator(
-                                                                color:
-                                                                    circularProgressColor,
-                                                                value: value,
-                                                                backgroundColor:
-                                                                    Colors.grey
-                                                                        .shade200,
-                                                                strokeWidth: 2,
-                                                                valueColor:
-                                                                    const AlwaysStoppedAnimation(
-                                                                        Colors
-                                                                            .green),
-                                                              ),
-                                                              Center(
-                                                                child: subTitleProgress(
-                                                                    value,
-                                                                    displayWidth(
-                                                                            context) *
-                                                                        0.035),
-                                                              )
-                                                            ],
-                                                          ),
+                                                    height: 20,
+                                                    width: 20,
+                                                    child: Stack(
+                                                      fit: StackFit.expand,
+                                                      children: [
+                                                        CircularProgressIndicator(
+                                                          color:
+                                                          circularProgressColor,
+                                                          value: value,
+                                                          backgroundColor:
+                                                          Colors.grey
+                                                              .shade200,
+                                                          strokeWidth: 2,
+                                                          valueColor:
+                                                          const AlwaysStoppedAnimation(
+                                                              Colors
+                                                                  .green),
+                                                        ),
+                                                        Center(
+                                                          child: subTitleProgress(
+                                                              value,
+                                                              displayWidth(
+                                                                  context) *
+                                                                  0.035),
                                                         )
+                                                      ],
+                                                    ),
+                                                  )
                                                       : SizedBox(
-                                                          height: 20,
-                                                          width: 20,
-                                                          child: Container(
-                                                            alignment:
-                                                                Alignment.center,
-                                                            decoration: BoxDecoration(
-                                                                border: Border.all(
-                                                                    color: Colors
-                                                                        .red,
-                                                                    width: 2),
-                                                                shape: BoxShape
-                                                                    .circle),
-                                                            child: Center(
-                                                              child: Icon(
-                                                                Icons.close,
-                                                                color: Colors.red,
-                                                                size: 14,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        );
+                                                    height: 20,
+                                                    width: 20,
+                                                    child: Container(
+                                                      alignment:
+                                                      Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color: Colors
+                                                                  .red,
+                                                              width: 2),
+                                                          shape: BoxShape
+                                                              .circle),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.close,
+                                                          color: Colors.red,
+                                                          size: 14,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
                                                 }),
                                           ],
                                         ),
                                         isBluetoothConnected
                                             ? Row(
-                                                children: [
-                                                  commonText(
-                                                      context: context,
-                                                      text: 'Connected with ',
-                                                      fontWeight: FontWeight.w400,
-                                                      textColor: Colors.green,
-                                                      textSize:
-                                                          displayWidth(context) *
-                                                              0.028,
-                                                      textAlign: TextAlign.start),
-                                                  SizedBox(
-                                                    width: 2,
-                                                  ),
-                                                  commonText(
-                                                      context: context,
-                                                      text: bluetoothName,
-                                                      fontWeight: FontWeight.w500,
-                                                      textColor: Colors.green,
-                                                      textSize:
-                                                          displayWidth(context) *
-                                                              0.028,
-                                                      textAlign: TextAlign.start),
-                                                ],
-                                              )
+                                          children: [
+                                            commonText(
+                                                context: context,
+                                                text: 'Connected with ',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.green,
+                                                textSize:
+                                                displayWidth(context) *
+                                                    0.028,
+                                                textAlign: TextAlign.start),
+                                            SizedBox(
+                                              width: 2,
+                                            ),
+                                            commonText(
+                                                context: context,
+                                                text: bluetoothName,
+                                                fontWeight: FontWeight.w500,
+                                                textColor: Colors.green,
+                                                textSize:
+                                                displayWidth(context) *
+                                                    0.028,
+                                                textAlign: TextAlign.start),
+                                          ],
+                                        )
                                             : InkWell(
-                                                onTap: () async {
-                                                  showBluetoothListDialog(
-                                                      context, stateSetter);
-                                                },
-                                                child: commonText(
-                                                    context: context,
-                                                    text:
-                                                        'Tap to connect LPR manually',
-                                                    fontWeight: FontWeight.w400,
-                                                    textColor: Colors.red,
-                                                    textSize:
-                                                        displayWidth(context) *
-                                                            0.028,
-                                                    textAlign: TextAlign.start),
-                                              ),
+                                          onTap: () async {
+                                            showBluetoothListDialog(
+                                                context, stateSetter);
+                                          },
+                                          child: commonText(
+                                              context: context,
+                                              text:
+                                              'Tap to connect LPR manually',
+                                              fontWeight: FontWeight.w400,
+                                              textColor: Colors.red,
+                                              textSize:
+                                              displayWidth(context) *
+                                                  0.028,
+                                              textAlign: TextAlign.start),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -1501,7 +1501,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         horizontal: displayWidth(context) * 0.08),
                                     child: Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                       children: [
                                         commonText(
                                             context: context,
@@ -1509,7 +1509,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             fontWeight: FontWeight.w500,
                                             textColor: Colors.black,
                                             textSize:
-                                                displayWidth(context) * 0.032,
+                                            displayWidth(context) * 0.032,
                                             textAlign: TextAlign.start),
                                         const SizedBox(
                                           width: 20,
@@ -1528,14 +1528,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   children: [
                                                     CircularProgressIndicator(
                                                       color:
-                                                          circularProgressColor,
+                                                      circularProgressColor,
                                                       value: value,
                                                       backgroundColor:
-                                                          Colors.grey.shade200,
+                                                      Colors.grey.shade200,
                                                       strokeWidth: 2,
                                                       valueColor:
-                                                          const AlwaysStoppedAnimation(
-                                                              Colors.green),
+                                                      const AlwaysStoppedAnimation(
+                                                          Colors.green),
                                                     ),
                                                     Center(
                                                       child: subTitleProgress(
@@ -1555,59 +1555,59 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   ),
                                   isZipFileCreate
                                       ? InkWell(
-                                          onTap: () async {
-                                            File copiedFile =
-                                                File('${ourDirectory!.path}.zip');
+                                    onTap: () async {
+                                      File copiedFile =
+                                      File('${ourDirectory!.path}.zip');
 
-                                            Directory directory;
+                                      Directory directory;
 
-                                            if (Platform.isAndroid) {
-                                              directory = Directory(
-                                                  "storage/emulated/0/Download/${widget.vessel!.id}.zip");
-                                            } else {
-                                              directory =
-                                                  await getApplicationDocumentsDirectory();
-                                            }
+                                      if (Platform.isAndroid) {
+                                        directory = Directory(
+                                            "storage/emulated/0/Download/${widget.vessel!.id}.zip");
+                                      } else {
+                                        directory =
+                                        await getApplicationDocumentsDirectory();
+                                      }
 
-                                            copiedFile.copy(directory.path);
+                                      copiedFile.copy(directory.path);
 
-                                            Utils.customPrint(
-                                                'DOES FILE EXIST: ${copiedFile.existsSync()}');
-                                            if (copiedFile.existsSync()) {
-                                              Utils.showSnackBar(context,
-                                                  scaffoldKey: scaffoldKey,
-                                                  message:
-                                                      'File downloaded successfully');
-                                            }
+                                      Utils.customPrint(
+                                          'DOES FILE EXIST: ${copiedFile.existsSync()}');
+                                      if (copiedFile.existsSync()) {
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message:
+                                            'File downloaded successfully');
+                                      }
 
-                                            // Utils.download(context, scaffoldKey,ourDirectory!.path);
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              commonText(
-                                                  context: context,
-                                                  text: 'Download File',
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.black,
-                                                  textSize:
-                                                      displayWidth(context) *
-                                                          0.038,
-                                                  textAlign: TextAlign.start),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Icon(
-                                                    Icons.file_download_outlined),
-                                              )
-                                            ],
-                                          ),
+                                      // Utils.download(context, scaffoldKey,ourDirectory!.path);
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                      children: [
+                                        commonText(
+                                            context: context,
+                                            text: 'Download File',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize:
+                                            displayWidth(context) *
+                                                0.038,
+                                            textAlign: TextAlign.start),
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets.all(8.0),
+                                          child: Icon(
+                                              Icons.file_download_outlined),
                                         )
+                                      ],
+                                    ),
+                                  )
                                       : SizedBox(),
-                                   SizedBox(
+                                  SizedBox(
                                     height: displayWidth(context) * 0.03,
                                   ),
                                   StatefulBuilder(
@@ -1619,7 +1619,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 left: 20, right: 20),
                                             child: Container(
                                               height: displayHeight(context) >=
-                                                      680
+                                                  680
                                                   ? displayHeight(context) * 0.056
                                                   : displayHeight(context) * 0.07,
                                               alignment: Alignment.centerLeft,
@@ -1629,9 +1629,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   enabledBorder: InputBorder.none,
                                                   border: OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  0.0))),
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              0.0))),
                                                   contentPadding: EdgeInsets.only(
                                                       left: 20,
                                                       right: 20,
@@ -1644,8 +1644,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     fontWeight: FontWeight.w500,
                                                     textColor: Colors.black54,
                                                     textSize:
-                                                        displayWidth(context) *
-                                                            0.032,
+                                                    displayWidth(context) *
+                                                        0.032,
                                                     textAlign: TextAlign.start),
                                               ),
                                             ),
@@ -1656,7 +1656,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             child: Container(
                                               alignment: Alignment.centerLeft,
                                               height: displayHeight(context) >=
-                                                      680
+                                                  680
                                                   ? displayHeight(context) * 0.056
                                                   : displayHeight(context) * 0.07,
                                               color: Color(0xFFECF3F9),
@@ -1665,9 +1665,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   enabledBorder: InputBorder.none,
                                                   border: OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  0.0))),
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              0.0))),
                                                   contentPadding: EdgeInsets.only(
                                                       left: 20,
                                                       right: 20,
@@ -1675,22 +1675,22 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       bottom: 10),
                                                 ),
                                                 child:
-                                                    DropdownButtonHideUnderline(
+                                                DropdownButtonHideUnderline(
                                                   child: DropdownButton<dynamic>(
                                                     value: null,
                                                     isDense: true,
                                                     hint: commonText(
                                                         context: context,
                                                         text:
-                                                            selectedVesselWeight,
+                                                        selectedVesselWeight,
                                                         fontWeight:
-                                                            FontWeight.w500,
+                                                        FontWeight.w500,
                                                         textColor: Colors.black54,
                                                         textSize: displayWidth(
-                                                                context) *
+                                                            context) *
                                                             0.032,
                                                         textAlign:
-                                                            TextAlign.start),
+                                                        TextAlign.start),
                                                     //  Text(
                                                     //     '${selectedVesselWeight}'),
                                                     isExpanded: true,
@@ -1707,28 +1707,28 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       DropdownMenuItem(
                                                           value: '4',
                                                           child:
-                                                              Text('Variable')),
+                                                          Text('Variable')),
                                                     ],
                                                     onChanged: (weightValue) {
                                                       stateSetter(() {
                                                         if (int.parse(
-                                                                weightValue) ==
+                                                            weightValue) ==
                                                             1) {
                                                           selectedVesselWeight =
-                                                              'Empty';
+                                                          'Empty';
                                                         } else if (int.parse(
-                                                                weightValue) ==
+                                                            weightValue) ==
                                                             2) {
                                                           selectedVesselWeight =
-                                                              'Half';
+                                                          'Half';
                                                         } else if (int.parse(
-                                                                weightValue) ==
+                                                            weightValue) ==
                                                             3) {
                                                           selectedVesselWeight =
-                                                              'Full';
+                                                          'Full';
                                                         } else {
                                                           selectedVesselWeight =
-                                                              'Variable';
+                                                          'Variable';
                                                         }
                                                       });
                                                     },
@@ -1752,159 +1752,249 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     left: 17,
                                     right: 17,
                                     bottom:
-                                        isStartButton || isEndTripButton ? 0 : 2),
+                                    isStartButton || isEndTripButton ? 0 : 2),
                                 child: isStartButton
                                     ? addingDataToDB
-                                        ? Center(
-                                            child: CircularProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<Color>(
-                                                        circularProgressColor)))
-                                        : CommonButtons.getActionButton(
-                                            title: 'Start',
-                                            context: context,
-                                            fontSize:
-                                                displayWidth(context) * 0.042,
-                                            textColor: Colors.white,
-                                            buttonPrimaryColor: buttonBGColor,
-                                            borderColor: buttonBGColor,
-                                            width: displayWidth(context),
-                                            onTap: () async {
-                                              Utils.customPrint(
-                                                  'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                              if (selectedVesselWeight ==
-                                                  'Select Current Load') {
-                                                Utils.customPrint(
-                                                    'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(
-                                                  behavior:
-                                                      SnackBarBehavior.floating,
-                                                  content: Text(
-                                                      "Please select current load"),
-                                                  duration: Duration(seconds: 1),
-                                                  backgroundColor: Colors.blue,
-                                                ));
-                                                return;
+                                    ? Center(
+                                    child: CircularProgressIndicator(
+                                        valueColor:
+                                        AlwaysStoppedAnimation<Color>(
+                                            circularProgressColor)))
+                                    : CommonButtons.getActionButton(
+                                    title: 'Start',
+                                    context: context,
+                                    fontSize:
+                                    displayWidth(context) * 0.042,
+                                    textColor: Colors.white,
+                                    buttonPrimaryColor: buttonBGColor,
+                                    borderColor: buttonBGColor,
+                                    width: displayWidth(context),
+                                    onTap: () async {
+                                      Utils.customPrint(
+                                          'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+                                      if (selectedVesselWeight ==
+                                          'Select Current Load') {
+                                        Utils.customPrint(
+                                            'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          behavior:
+                                          SnackBarBehavior.floating,
+                                          content: Text(
+                                              "Please select current load"),
+                                          duration: Duration(seconds: 1),
+                                          backgroundColor: Colors.blue,
+                                        ));
+                                        return;
+                                      }
+
+                                      bool isLocationPermitted =
+                                      await Permission
+                                          .location.isGranted;
+
+                                      if (isLocationPermitted) {
+                                        stateSetter(() {
+                                          isLocationPermission = true;
+                                        });
+
+                                        if (Platform.isAndroid) {
+                                          final androidInfo =
+                                          await DeviceInfoPlugin()
+                                              .androidInfo;
+
+                                          if (androidInfo.version.sdkInt <
+                                              29) {
+                                            var isStoragePermitted =
+                                            await Permission
+                                                .storage.status;
+                                            if (isStoragePermitted
+                                                .isGranted) {
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    bottomSheetContext,
+                                                    stateSetter);
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                    context);
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
+                                                }
                                               }
+                                            } else {
+                                              await Utils
+                                                  .getStoragePermission(
+                                                  context);
+                                              final androidInfo =
+                                              await DeviceInfoPlugin()
+                                                  .androidInfo;
 
-                                              bool isLocationPermitted =
-                                                  await Permission
-                                                      .location.isGranted;
+                                              var isStoragePermitted =
+                                              await Permission
+                                                  .storage.status;
 
-                                              if (isLocationPermitted) {
-                                                stateSetter(() {
-                                                  isLocationPermission = true;
-                                                });
+                                              if (isStoragePermitted
+                                                  .isGranted) {
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
 
-                                                if (Platform.isAndroid) {
-                                                  final androidInfo =
-                                                      await DeviceInfoPlugin()
-                                                          .androidInfo;
-
-                                                  if (androidInfo.version.sdkInt <
-                                                      29) {
-                                                    var isStoragePermitted =
-                                                        await Permission
-                                                            .storage.status;
-                                                    if (isStoragePermitted
-                                                        .isGranted) {
-                                                      bool
-                                                          isNotificationPermitted =
-                                                          await Permission
-                                                              .notification
-                                                              .isGranted;
-
-                                                      if (isNotificationPermitted) {
-                                                        startWritingDataToDB(
-                                                            bottomSheetContext,
-                                                            stateSetter);
-                                                      } else {
-                                                        await Utils
-                                                            .getNotificationPermission(
-                                                                context);
-                                                        bool
-                                                            isNotificationPermitted =
-                                                            await Permission
-                                                                .notification
-                                                                .isGranted;
-                                                        if (isNotificationPermitted) {
-                                                          startWritingDataToDB(
-                                                              bottomSheetContext,
-                                                              stateSetter);
-                                                        }
-                                                      }
-                                                    } else {
-                                                      await Utils
-                                                          .getStoragePermission(
-                                                              context);
-                                                      final androidInfo =
-                                                          await DeviceInfoPlugin()
-                                                              .androidInfo;
-
-                                                      var isStoragePermitted =
-                                                          await Permission
-                                                              .storage.status;
-
-                                                      if (isStoragePermitted
-                                                          .isGranted) {
-                                                        bool
-                                                            isNotificationPermitted =
-                                                            await Permission
-                                                                .notification
-                                                                .isGranted;
-
-                                                        if (isNotificationPermitted) {
-                                                          startWritingDataToDB(
-                                                              bottomSheetContext,
-                                                              stateSetter);
-                                                        } else {
-                                                          await Utils
-                                                              .getNotificationPermission(
-                                                                  context);
-                                                          bool
-                                                              isNotificationPermitted =
-                                                              await Permission
-                                                                  .notification
-                                                                  .isGranted;
-                                                          if (isNotificationPermitted) {
-                                                            startWritingDataToDB(
-                                                                bottomSheetContext,
-                                                                stateSetter);
-                                                          }
-                                                        }
-                                                      }
-                                                    }
-                                                  } else {
-                                                    bool isNotificationPermitted =
-                                                        await Permission
-                                                            .notification
-                                                            .isGranted;
-
-                                                    if (isNotificationPermitted) {
-                                                      startWritingDataToDB(
-                                                          bottomSheetContext,
-                                                          stateSetter);
-                                                    } else {
-                                                      await Utils
-                                                          .getNotificationPermission(
-                                                              context);
-                                                      bool
-                                                          isNotificationPermitted =
-                                                          await Permission
-                                                              .notification
-                                                              .isGranted;
-                                                      if (isNotificationPermitted) {
-                                                        startWritingDataToDB(
-                                                            bottomSheetContext,
-                                                            stateSetter);
-                                                      }
-                                                    }
-                                                  }
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
                                                 } else {
-                                                  bool isNotificationPermitted =
-                                                      await Permission
-                                                          .notification.isGranted;
+                                                  await Utils
+                                                      .getNotificationPermission(
+                                                      context);
+                                                  bool
+                                                  isNotificationPermitted =
+                                                  await Permission
+                                                      .notification
+                                                      .isGranted;
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        bottomSheetContext,
+                                                        stateSetter);
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            bool isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  bottomSheetContext,
+                                                  stateSetter);
+                                            } else {
+                                              await Utils
+                                                  .getNotificationPermission(
+                                                  context);
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    bottomSheetContext,
+                                                    stateSetter);
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          bool isNotificationPermitted =
+                                          await Permission
+                                              .notification.isGranted;
+
+                                          if (isNotificationPermitted) {
+                                            startWritingDataToDB(
+                                                bottomSheetContext,
+                                                stateSetter);
+                                          } else {
+                                            await Utils
+                                                .getNotificationPermission(
+                                                context);
+                                            bool isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  bottomSheetContext,
+                                                  stateSetter);
+                                            }
+                                          }
+                                        }
+                                      } else {
+                                        await Utils.getLocationPermission(
+                                            context, scaffoldKey);
+                                        bool isLocationPermitted =
+                                        await Permission
+                                            .location.isGranted;
+
+                                        if (isLocationPermitted) {
+                                          stateSetter(() {
+                                            isLocationPermission = true;
+                                          });
+                                          // service.startService();
+
+                                          if (Platform.isAndroid) {
+                                            final androidInfo =
+                                            await DeviceInfoPlugin()
+                                                .androidInfo;
+
+                                            if (androidInfo
+                                                .version.sdkInt <
+                                                29) {
+                                              var isStoragePermitted =
+                                              await Permission
+                                                  .storage.status;
+                                              if (isStoragePermitted
+                                                  .isGranted) {
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
+                                                } else {
+                                                  await Utils
+                                                      .getNotificationPermission(
+                                                      context);
+                                                  bool
+                                                  isNotificationPermitted =
+                                                  await Permission
+                                                      .notification
+                                                      .isGranted;
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        bottomSheetContext,
+                                                        stateSetter);
+                                                  }
+                                                }
+                                              } else {
+                                                await Utils
+                                                    .getStoragePermission(
+                                                    context);
+                                                final androidInfo =
+                                                await DeviceInfoPlugin()
+                                                    .androidInfo;
+
+                                                var isStoragePermitted =
+                                                await Permission
+                                                    .storage.status;
+
+                                                if (isStoragePermitted
+                                                    .isGranted) {
+                                                  bool
+                                                  isNotificationPermitted =
+                                                  await Permission
+                                                      .notification
+                                                      .isGranted;
 
                                                   if (isNotificationPermitted) {
                                                     startWritingDataToDB(
@@ -1913,188 +2003,98 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   } else {
                                                     await Utils
                                                         .getNotificationPermission(
-                                                            context);
-                                                    bool isNotificationPermitted =
-                                                        await Permission
-                                                            .notification
-                                                            .isGranted;
-                                                    if (isNotificationPermitted) {
-                                                      startWritingDataToDB(
-                                                          bottomSheetContext,
-                                                          stateSetter);
-                                                    }
-                                                  }
-                                                }
-                                              } else {
-                                                await Utils.getLocationPermission(
-                                                    context, scaffoldKey);
-                                                bool isLocationPermitted =
+                                                        context);
+                                                    bool
+                                                    isNotificationPermitted =
                                                     await Permission
-                                                        .location.isGranted;
-
-                                                if (isLocationPermitted) {
-                                                  stateSetter(() {
-                                                    isLocationPermission = true;
-                                                  });
-                                                  // service.startService();
-
-                                                  if (Platform.isAndroid) {
-                                                    final androidInfo =
-                                                        await DeviceInfoPlugin()
-                                                            .androidInfo;
-
-                                                    if (androidInfo
-                                                            .version.sdkInt <
-                                                        29) {
-                                                      var isStoragePermitted =
-                                                          await Permission
-                                                              .storage.status;
-                                                      if (isStoragePermitted
-                                                          .isGranted) {
-                                                        bool
-                                                            isNotificationPermitted =
-                                                            await Permission
-                                                                .notification
-                                                                .isGranted;
-
-                                                        if (isNotificationPermitted) {
-                                                          startWritingDataToDB(
-                                                              bottomSheetContext,
-                                                              stateSetter);
-                                                        } else {
-                                                          await Utils
-                                                              .getNotificationPermission(
-                                                                  context);
-                                                          bool
-                                                              isNotificationPermitted =
-                                                              await Permission
-                                                                  .notification
-                                                                  .isGranted;
-                                                          if (isNotificationPermitted) {
-                                                            startWritingDataToDB(
-                                                                bottomSheetContext,
-                                                                stateSetter);
-                                                          }
-                                                        }
-                                                      } else {
-                                                        await Utils
-                                                            .getStoragePermission(
-                                                                context);
-                                                        final androidInfo =
-                                                            await DeviceInfoPlugin()
-                                                                .androidInfo;
-
-                                                        var isStoragePermitted =
-                                                            await Permission
-                                                                .storage.status;
-
-                                                        if (isStoragePermitted
-                                                            .isGranted) {
-                                                          bool
-                                                              isNotificationPermitted =
-                                                              await Permission
-                                                                  .notification
-                                                                  .isGranted;
-
-                                                          if (isNotificationPermitted) {
-                                                            startWritingDataToDB(
-                                                                bottomSheetContext,
-                                                                stateSetter);
-                                                          } else {
-                                                            await Utils
-                                                                .getNotificationPermission(
-                                                                    context);
-                                                            bool
-                                                                isNotificationPermitted =
-                                                                await Permission
-                                                                    .notification
-                                                                    .isGranted;
-                                                            if (isNotificationPermitted) {
-                                                              startWritingDataToDB(
-                                                                  bottomSheetContext,
-                                                                  stateSetter);
-                                                            }
-                                                          }
-                                                        }
-                                                      }
-                                                    } else {
-                                                      bool
-                                                          isNotificationPermitted =
-                                                          await Permission
-                                                              .notification
-                                                              .isGranted;
-
-                                                      if (isNotificationPermitted) {
-                                                        startWritingDataToDB(
-                                                            bottomSheetContext,
-                                                            stateSetter);
-                                                      } else {
-                                                        await Utils
-                                                            .getNotificationPermission(
-                                                                context);
-                                                        bool
-                                                            isNotificationPermitted =
-                                                            await Permission
-                                                                .notification
-                                                                .isGranted;
-                                                        if (isNotificationPermitted) {
-                                                          startWritingDataToDB(
-                                                              bottomSheetContext,
-                                                              stateSetter);
-                                                        }
-                                                      }
-                                                    }
-                                                  } else {
-                                                    bool isNotificationPermitted =
-                                                        await Permission
-                                                            .notification
-                                                            .isGranted;
-
+                                                        .notification
+                                                        .isGranted;
                                                     if (isNotificationPermitted) {
                                                       startWritingDataToDB(
                                                           bottomSheetContext,
                                                           stateSetter);
-                                                    } else {
-                                                      await Utils
-                                                          .getNotificationPermission(
-                                                              context);
-                                                      bool
-                                                          isNotificationPermitted =
-                                                          await Permission
-                                                              .notification
-                                                              .isGranted;
-                                                      if (isNotificationPermitted) {
-                                                        startWritingDataToDB(
-                                                            bottomSheetContext,
-                                                            stateSetter);
-                                                      }
                                                     }
                                                   }
                                                 }
                                               }
-                                            })
+                                            } else {
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    bottomSheetContext,
+                                                    stateSetter);
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                    context);
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            bool isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  bottomSheetContext,
+                                                  stateSetter);
+                                            } else {
+                                              await Utils
+                                                  .getNotificationPermission(
+                                                  context);
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    bottomSheetContext,
+                                                    stateSetter);
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    })
                                     : Container(
-                                        margin: EdgeInsets.only(bottom: 8),
-                                        child: CommonButtons.getActionButton(
-                                            title: 'Cancel',
-                                            context: context,
-                                            fontSize:
-                                                displayWidth(context) * 0.042,
-                                            textColor: Colors.white,
-                                            buttonPrimaryColor: buttonBGColor,
-                                            borderColor: buttonBGColor,
-                                            width: displayWidth(context),
-                                            onTap: () {
-                                              Get.back();
-                                            }),
-                                      ),
+                                  margin: EdgeInsets.only(bottom: 8),
+                                  child: CommonButtons.getActionButton(
+                                      title: 'Cancel',
+                                      context: context,
+                                      fontSize:
+                                      displayWidth(context) * 0.042,
+                                      textColor: Colors.white,
+                                      buttonPrimaryColor: buttonBGColor,
+                                      borderColor: buttonBGColor,
+                                      width: displayWidth(context),
+                                      onTap: () {
+                                        Get.back();
+                                      }),
+                                ),
                               ),
                             ),
 
                             Padding(
                               padding: EdgeInsets.only(
-                                  left: displayWidth(context) * 0.22,
-                                  top : displayWidth(context) * 0.01,
+                                left: displayWidth(context) * 0.28,
+                                top : displayWidth(context) * 0.01,
                               ),
                               child: GestureDetector(
                                   onTap: ()async{
@@ -2111,7 +2111,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               height: displayWidth(context) * 0.02,
                             )
 
-                           ],
+                          ],
                         ),
                         Positioned(
                           right: 10,
@@ -2119,28 +2119,28 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           child: addingDataToDB
                               ? SizedBox()
                               : Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: backgroundColor),
-                                  child: IconButton(
-                                      onPressed: () async {
-                                        isBottomSheetOpened = false;
-                                        await tripIsRunningOrNot();
-                                        setState(() {
-                                          widget.vessel!.id = widget.vessel!.id;
-                                        });
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: backgroundColor),
+                            child: IconButton(
+                                onPressed: () async {
+                                  isBottomSheetOpened = false;
+                                  await tripIsRunningOrNot();
+                                  setState(() {
+                                    widget.vessel!.id = widget.vessel!.id;
+                                  });
 
-                                        stateSetter(() {
-                                          addingDataToDB = false;
-                                        });
+                                  stateSetter(() {
+                                    addingDataToDB = false;
+                                  });
 
-                                        Navigator.of(bottomSheetContext).pop();
-                                      },
-                                      icon: Icon(Icons.close_rounded,
-                                          color: buttonBGColor)),
-                                ),
+                                  Navigator.of(bottomSheetContext).pop();
+                                },
+                                icon: Icon(Icons.close_rounded,
+                                    color: buttonBGColor)),
+                          ),
                         )
                       ],
                     ),
@@ -2170,10 +2170,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
           scaffoldKey.currentContext!,
           MaterialPageRoute(
               builder: (context) => TripAnalyticsScreen(
-                    tripId: tripDetails.id,
-                    vesselId: widget.vessel!.id,
-                    tripIsRunningOrNot: tripIsRunning,
-                  )),
+                tripId: tripDetails.id,
+                vesselId: widget.vessel!.id,
+                tripIsRunningOrNot: tripIsRunning,
+              )),
         );
 
         if (result != null) {
@@ -2195,7 +2195,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         print(" bluetooth state$value");
       } else {
         bool isNearByDevicePermitted =
-            await Permission.bluetoothConnect.isGranted;
+        await Permission.bluetoothConnect.isGranted;
 
         // if(await Permission.bluetooth.isPermanentlyDenied){
         //   Utils.showSnackBar(context,
@@ -2253,7 +2253,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     String? latitude, longitude;
     port.listen((dynamic data) async {
       LocationDto? locationDto =
-          data != null ? LocationDto.fromJson(data) : null;
+      data != null ? LocationDto.fromJson(data) : null;
       if (locationDto != null) {
         latitude = locationDto.latitude.toString();
         longitude = locationDto.longitude.toString();
@@ -2342,33 +2342,33 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     Map<String, dynamic> data = {'countInit': 1};
     return await BackgroundLocator.registerLocationUpdate(
-            LocationCallbackHandler.callback,
-            initCallback: LocationCallbackHandler.initCallback,
-            initDataCallback: data,
-            disposeCallback: LocationCallbackHandler.disposeCallback,
-            iosSettings: IOSSettings(
-                accuracy: LocationAccuracy.NAVIGATION,
-                distanceFilter: 0,
-                stopWithTerminate: true),
-            autoStop: false,
-            androidSettings: AndroidSettings(
-                accuracy: LocationAccuracy.NAVIGATION,
-                interval: 1,
-                distanceFilter: 0,
-                androidNotificationSettings: AndroidNotificationSettings(
-                    notificationChannelName: 'Location tracking',
-                    notificationTitle: '',
-                    notificationMsg: 'Trip is in progress',
-                    notificationBigMsg: '',
-                    notificationIconColor: Colors.grey,
-                    notificationIcon: '@drawable/noti_logo',
-                    notificationTapCallback:
-                        LocationCallbackHandler.notificationCallback)))
+        LocationCallbackHandler.callback,
+        initCallback: LocationCallbackHandler.initCallback,
+        initDataCallback: data,
+        disposeCallback: LocationCallbackHandler.disposeCallback,
+        iosSettings: IOSSettings(
+            accuracy: LocationAccuracy.NAVIGATION,
+            distanceFilter: 0,
+            stopWithTerminate: true),
+        autoStop: false,
+        androidSettings: AndroidSettings(
+            accuracy: LocationAccuracy.NAVIGATION,
+            interval: 1,
+            distanceFilter: 0,
+            androidNotificationSettings: AndroidNotificationSettings(
+                notificationChannelName: 'Location tracking',
+                notificationTitle: '',
+                notificationMsg: 'Trip is in progress',
+                notificationBigMsg: '',
+                notificationIconColor: Colors.grey,
+                notificationIcon: '@drawable/noti_logo',
+                notificationTapCallback:
+                LocationCallbackHandler.notificationCallback)))
         .then((value) async {
       notiTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
         var activeNotifications = await flutterLocalNotificationsPlugin
             .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin>()
             ?.getActiveNotifications();
 
         if (activeNotifications != null && activeNotifications.isNotEmpty) {
@@ -2446,7 +2446,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               commonText(
                                   context: context,
                                   text:
-                                      'There is a trip in progress from another Vessel. Please end the trip and come back here',
+                                  'There is a trip in progress from another Vessel. Please end the trip and come back here',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,
@@ -2533,7 +2533,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       displayHeight(context) * 0.054,
                                       primaryColor,
                                       Theme.of(context).brightness ==
-                                              Brightness.dark
+                                          Brightness.dark
                                           ? Colors.white
                                           : Colors.grey,
                                       displayHeight(context) * 0.015,
@@ -2620,7 +2620,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               decoration: BoxDecoration(
                                 color: bluetoothCancelBtnBackColor,
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                                BorderRadius.all(Radius.circular(10)),
                               ),
                               height: displayWidth(context) * 0.12,
                               width: displayWidth(context) * 0.34,
@@ -2646,7 +2646,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               decoration: BoxDecoration(
                                 color: bluetoothConnectBtnBackColor,
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                                BorderRadius.all(Radius.circular(10)),
                               ),
                               height: displayWidth(context) * 0.12,
                               width: displayWidth(context) * 0.34,
@@ -2729,47 +2729,47 @@ class VesselSingleViewState extends State<VesselSingleView> {
                       Expanded(
                         child: isRefreshList == true
                             ? Container(
-                                width: displayWidth(context),
-                                height: displayHeight(context) * 0.28,
-                                child: LPRBluetoothList(
-                                  dialogContext: dialogContext,
-                                  setDialogSet: setDialogState,
-                                  onSelected: (value) {
-                                    if (mounted) {
-                                      stateSetter(() {
-                                        bluetoothName = value;
-                                      });
-                                    }
-                                  },
-                                  onBluetoothConnection: (value) {
-                                    if (mounted) {
-                                      stateSetter(() {
-                                        isBluetoothConnected = value;
-                                      });
-                                    }
-                                  },
-                                ))
+                            width: displayWidth(context),
+                            height: displayHeight(context) * 0.28,
+                            child: LPRBluetoothList(
+                              dialogContext: dialogContext,
+                              setDialogSet: setDialogState,
+                              onSelected: (value) {
+                                if (mounted) {
+                                  stateSetter(() {
+                                    bluetoothName = value;
+                                  });
+                                }
+                              },
+                              onBluetoothConnection: (value) {
+                                if (mounted) {
+                                  stateSetter(() {
+                                    isBluetoothConnected = value;
+                                  });
+                                }
+                              },
+                            ))
                             : Container(
-                                width: displayWidth(context),
-                                height: displayHeight(context) * 0.28,
-                                child: LPRBluetoothList(
-                                  dialogContext: dialogContext,
-                                  setDialogSet: setDialogState,
-                                  onSelected: (value) {
-                                    if (mounted) {
-                                      stateSetter(() {
-                                        bluetoothName = value;
-                                      });
-                                    }
-                                  },
-                                  onBluetoothConnection: (value) {
-                                    if (mounted) {
-                                      stateSetter(() {
-                                        isBluetoothConnected = value;
-                                      });
-                                    }
-                                  },
-                                )),
+                            width: displayWidth(context),
+                            height: displayHeight(context) * 0.28,
+                            child: LPRBluetoothList(
+                              dialogContext: dialogContext,
+                              setDialogSet: setDialogState,
+                              onSelected: (value) {
+                                if (mounted) {
+                                  stateSetter(() {
+                                    bluetoothName = value;
+                                  });
+                                }
+                              },
+                              onBluetoothConnection: (value) {
+                                if (mounted) {
+                                  stateSetter(() {
+                                    isBluetoothConnected = value;
+                                  });
+                                }
+                              },
+                            )),
                       ),
 
                       Container(
@@ -2794,7 +2794,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 decoration: BoxDecoration(
                                   color: bluetoothCancelBtnBackColor,
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
+                                  BorderRadius.all(Radius.circular(10)),
                                 ),
                                 height: displayWidth(context) * 0.12,
                                 width: displayWidth(context) * 0.34,
@@ -2843,30 +2843,30 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               },
                               child: isScanningBluetooth
                                   ? Center(
-                                      child: Container(
-                                          width: displayWidth(context) * 0.34,
-                                          child: Center(
-                                              child:
-                                                  CircularProgressIndicator())),
-                                    )
+                                child: Container(
+                                    width: displayWidth(context) * 0.34,
+                                    child: Center(
+                                        child:
+                                        CircularProgressIndicator())),
+                              )
                                   : Container(
-                                      decoration: BoxDecoration(
-                                        color: bluetoothConnectBtnBackColor,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                      ),
-                                      height: displayWidth(context) * 0.12,
-                                      width: displayWidth(context) * 0.34,
-                                      // color: HexColor(AppColors.introButtonColor),
-                                      child: Center(
-                                        child: Text(
-                                          "Scan",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: bluetoothConnectBtncolor),
-                                        ),
-                                      ),
-                                    ),
+                                decoration: BoxDecoration(
+                                  color: bluetoothConnectBtnBackColor,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(10)),
+                                ),
+                                height: displayWidth(context) * 0.12,
+                                width: displayWidth(context) * 0.34,
+                                // color: HexColor(AppColors.introButtonColor),
+                                child: Center(
+                                  child: Text(
+                                    "Scan",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: bluetoothConnectBtncolor),
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -2911,7 +2911,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       });
     }
     List<String> analyticsData =
-        await _databaseService.getVesselAnalytics(vesselId);
+    await _databaseService.getVesselAnalytics(vesselId);
 
     setState(() {
       totalDistance = analyticsData[0];
