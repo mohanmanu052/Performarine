@@ -1167,7 +1167,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         '',
                                         fontWeight: FontWeight.w500),
 
-                                    Padding(
+                                    !isSHowGraph! ?   Padding(
                                       padding: EdgeInsets.only(
                                         left: displayWidth(context) * 0.22,
                                         top: displayWidth(context) * 0.01,
@@ -1182,7 +1182,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                           },
                                           child: UserFeedback().getUserFeedback(context)
                                       ),
-                                    ),
+                                    ) : Container(),
                                   ],
                                 ),
                             SizedBox(
