@@ -450,6 +450,22 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   },
                                 ),
                               ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  left: displayWidth(context) * 0.28,
+                                  top : displayWidth(context) * 0.01,
+                                  bottom : displayWidth(context) * 0.01,
+                                ),
+                                child: GestureDetector(
+                                    onTap: ()async{
+                                      final image = await controller.capture();
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                        imagePath: image.toString(),
+                                        uIntList: image,)));
+                                    },
+                                    child: UserFeedback().getUserFeedback(context)
+                                ),
+                              ),
                               // SizedBox(
                               //   height: 20,
                               // ),
@@ -2819,7 +2835,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   });
                                 }
 
-                                FlutterBluePlus.instance.stopScan();
+                             //   FlutterBluePlus.instance.stopScan();
                                 FlutterBluePlus.instance.startScan(
                                     timeout: const Duration(seconds: 2));
 

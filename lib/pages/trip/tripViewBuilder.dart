@@ -222,22 +222,6 @@ class _TripViewListingState extends State<TripViewListing> {
             },
           ),
 
-          Padding(
-            padding: EdgeInsets.only(
-              left: displayWidth(context) * 0.26,
-              bottom: displayWidth(context) * 0.03,
-            ),
-            child: GestureDetector(
-                onTap: ()async{
-                  final image = await controller.capture();
-                  print("Image is: ${image.toString()}");
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                    imagePath: image.toString(),
-                    uIntList: image,)));
-                },
-                child: UserFeedback().getUserFeedback(context)
-            ),
-          ),
         ],
       ),
     );

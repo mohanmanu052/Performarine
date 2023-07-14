@@ -100,7 +100,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
               Image.asset(
                 "assets/images/mail_new.png",
                 //width: displayWidth(context) * 0.4,
-                height: displayHeight(context) * 0.26,
+                height: displayHeight(context) * 0.2,
               ),
 
               Padding(
@@ -178,7 +178,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     labelText: 'Description',
                     hintText: '',
                     suffixText: null,
-                    textInputAction: TextInputAction.next,
+                    textInputAction: TextInputAction.done,
                     textInputType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
                     // maxLength: 32,
@@ -199,7 +199,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
               ),
 
               Container(
-                margin: EdgeInsets.only(top: 20.0),
+                margin: EdgeInsets.only(top: 10.0),
                 child: CommonButtons.getDottedButton(
                     'Upload Images', context, () {
                   uploadImageFunction();
@@ -209,7 +209,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
               ),
 
               Container(
-                margin: const EdgeInsets.only(top: 15.0),
+               // margin: const EdgeInsets.only(top: 15.0),
                 child: SingleChildScrollView(
                   child: GridView.builder(
                       gridDelegate:
@@ -223,7 +223,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                       itemCount: finalSelectedFiles.length,
                       itemBuilder: (BuildContext context, int index) {
                         return SizedBox(
-                          height: displayHeight(context) * 0.045,
+                          height: displayHeight(context) * 0.035,
                           width: displayHeight(context) * 0.045,
                           child: Stack(
                             children: [

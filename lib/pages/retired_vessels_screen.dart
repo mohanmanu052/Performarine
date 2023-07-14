@@ -41,6 +41,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
     return Screenshot(
       controller: controller,
       child: Scaffold(
+        backgroundColor: commonBackgroundColor,
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
@@ -81,6 +82,8 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
         ),
         body: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 color: commonBackgroundColor,
@@ -100,14 +103,17 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                     Utils.customPrint('HAS DATA: ${snapshot.hasError}');
                     if (snapshot.hasData) {
                       if (snapshot.data!.isEmpty) {
-                        return Center(
-                          child: commonText(
-                              context: context,
-                              text: 'No vessels available'.toString(),
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.04,
-                              textAlign: TextAlign.start),
+                        return Padding(
+                          padding: EdgeInsets.only(top: displayHeight(context) * 0.43),
+                          child: Center(
+                            child: commonText(
+                                context: context,
+                                text: 'No vessels available'.toString(),
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.04,
+                                textAlign: TextAlign.start),
+                          ),
                         );
                       } else {
                         return Column(
@@ -133,7 +139,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                             ),
                             Padding(
                               padding: EdgeInsets.only(
-                                left: displayWidth(context) * 0.22,
+                                left: displayWidth(context) * 0.28,
                                 //top: displayWidth(context) * 0.01,
                               ),
                               child: GestureDetector(
