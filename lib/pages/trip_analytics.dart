@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/analytics/end_trip.dart';
@@ -31,6 +32,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/status_tag.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
 import '../models/reports_model.dart';
@@ -91,16 +93,85 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   late DeviceInfoPlugin deviceDetails;
 
   final controller = ScreenshotController();
+  String page = "Trip_analytics";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForErrorLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileE!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggE = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
     Utils.customPrint('CURRENT TIME TIME ${widget.tripId}');
+    loggD.d('CURRENT TIME TIME ${widget.tripId} -> $page ${DateTime.now()}');
+    loggV.v('CURRENT TIME TIME ${widget.tripId} -> $page ${DateTime.now()}');
     Utils.customPrint('CURRENT TIME TIME ${widget.vesselId}');
+    loggD.d('CURRENT TIME TIME ${widget.vesselId} -> $page ${DateTime.now()}');
+    loggV.v('CURRENT TIME TIME ${widget.vesselId} -> $page ${DateTime.now()}');
     Utils.customPrint('CURRENT TIME TIME ${widget.tripIsRunningOrNot}');
+    loggD.d('CURRENT TIME TIME ${widget.tripIsRunningOrNot} -> $page ${DateTime.now()}');
+    loggV.v('CURRENT TIME TIME ${widget.tripIsRunningOrNot} -> $page ${DateTime.now()}');
     Utils.customPrint('CURRENT TIME TIME ${widget.isAppKilled}');
+    loggD.d('CURRENT TIME TIME ${widget.isAppKilled} -> $page ${DateTime.now()}');
+    loggV.v('CURRENT TIME TIME ${widget.isAppKilled} -> $page ${DateTime.now()}');
 
     sharedPreferences!.remove('sp_key_called_from_noti');
 
@@ -174,12 +245,20 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
     durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       print('##TDATA updated time delay from 1 sec to 400 MS by abhi');
+      loggD.d('##TDATA -> $page ${DateTime.now()}');
+      loggV.v('##TDATA -> $page ${DateTime.now()}');
       tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
       tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
       tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
 
       debugPrint("TRIP ANALYTICS SPEED $tripSpeed");
       debugPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
+
+      loggD.d("TRIP ANALYTICS SPEED $tripSpeed -> $page ${DateTime.now()}");
+      loggD.d("TRIP ANALYTICS AVG SPEED $tripAvgSpeed -> $page ${DateTime.now()}");
+
+      loggV.v("TRIP ANALYTICS SPEED $tripSpeed -> $page ${DateTime.now()}");
+      loggV.v("TRIP ANALYTICS AVG SPEED $tripAvgSpeed -> $page ${DateTime.now()}");
 
       var durationTime = DateTime.now().toUtc().difference(createdAtTime);
       tripDuration = Utils.calculateTripDuration(
@@ -846,6 +925,12 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                             Utils.customPrint(
                                                                                 'UPLOADED 1 ${isTripUploaded}');
 
+                                                                            loggD.d('UPLOADED ${tripData?.isSync != 0} -> $page ${DateTime.now()}');
+                                                                            loggD.d('UPLOADED 1 ${isTripUploaded} -> $page ${DateTime.now()}');
+
+                                                                            loggV.v('UPLOADED ${tripData?.isSync != 0} -> $page ${DateTime.now()}');
+                                                                            loggV.v('UPLOADED 1 ${isTripUploaded} -> $page ${DateTime.now()}');
+
                                                                             Utils
                                                                                 .showSnackBar(
                                                                               context,
@@ -867,6 +952,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                                   .mobile) {
                                                                             Utils.customPrint(
                                                                                 'Mobile');
+                                                                            loggD.d('Mobile -> $page ${DateTime.now()}');
+                                                                            loggV.v('Mobile -> $page ${DateTime.now()}');
                                                                             showDialogBoxToUploadTrip();
                                                                           } else if (connectivityResult ==
                                                                               ConnectivityResult
@@ -880,6 +967,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                                                             Utils.customPrint(
                                                                                 'WIFI');
+                                                                            loggD.d('WIFI -> $page ${DateTime.now()}');
+                                                                            loggV.v('WIFI -> $page ${DateTime.now()}');
                                                                           }
                                                                         })
                                                       ],
@@ -1021,6 +1110,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                                             Utils.customPrint(
                                                                 "END TRIP CURRENT TIME ${DateTime.now()}");
+                                                            loggD.d("END TRIP CURRENT TIME ${DateTime.now()} -> $page ${DateTime.now()}");
+                                                            loggV.v("END TRIP CURRENT TIME ${DateTime.now()} -> $page ${DateTime.now()}");
 
                                                             Utils().showEndTripDialog(
                                                                 context, () async {
@@ -1065,6 +1156,16 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                         "abhi:${tripAvgSpeed}");
                                                                     debugPrint(
                                                                         "abhi:${tripSpeed}");
+
+                                                                    loggD.d("abhi:${tripDetails.time} -> $page ${DateTime.now()}");
+                                                                    loggD.d("abhi:${tripDuration} -> $page ${DateTime.now()}");
+                                                                    loggD.d("abhi:${tripAvgSpeed} -> $page ${DateTime.now()}");
+                                                                    loggD.d("abhi:${tripSpeed} -> $page ${DateTime.now()}");
+
+                                                                    loggV.v("abhi:${tripDetails.time} -> $page ${DateTime.now()}");
+                                                                    loggV.v("abhi:${tripDuration} -> $page ${DateTime.now()}");
+                                                                    loggV.v("abhi:${tripAvgSpeed} -> $page ${DateTime.now()}");
+                                                                    loggV.v("abhi:${tripSpeed} -> $page ${DateTime.now()}");
                                                                     setState(() {
                                                                       tripData =
                                                                           tripDetails;
@@ -1074,6 +1175,12 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                         'TRIP ENDED DETAILS: ${tripDetails.isSync}');
                                                                     Utils.customPrint(
                                                                         'TRIP ENDED DETAILS: ${tripData!.isSync}');
+
+                                                                    loggD.d('TRIP ENDED DETAILS: ${tripDetails.isSync} -> $page ${DateTime.now()}');
+                                                                    loggD.d('TRIP ENDED DETAILS: ${tripData!.isSync} -> $page ${DateTime.now()}');
+
+                                                                    loggV.v('TRIP ENDED DETAILS: ${tripDetails.isSync} -> $page ${DateTime.now()}');
+                                                                    loggV.v('TRIP ENDED DETAILS: ${tripData!.isSync} -> $page ${DateTime.now()}');
 
                                                                     isDataUpdated =
                                                                         true;
@@ -1597,6 +1704,12 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                                   Utils.customPrint('UPLOADED ${tripData?.isSync != 0}');
                                                                                   Utils.customPrint('UPLOADED 1 ${isTripUploaded}');
 
+                                                                                  loggD.d('UPLOADED ${tripData?.isSync != 0} -> $page ${DateTime.now()}');
+                                                                                  loggD.d('UPLOADED 1 ${isTripUploaded} -> $page ${DateTime.now()}');
+
+                                                                                  loggV.v('UPLOADED ${tripData?.isSync != 0} -> $page ${DateTime.now()}');
+                                                                                  loggV.v('UPLOADED 1 ${isTripUploaded} -> $page ${DateTime.now()}');
+
                                                                                   Utils.showSnackBar(
                                                                                     context,
                                                                                     scaffoldKey: scaffoldKey,
@@ -1612,6 +1725,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                                 if (connectivityResult ==
                                                                                     ConnectivityResult.mobile) {
                                                                                   Utils.customPrint('Mobile');
+                                                                                  loggD.d('Mobile -> $page ${DateTime.now()}');
+                                                                                  loggV.v('Mobile -> $page ${DateTime.now()}');
                                                                                   showDialogBoxToUploadTrip();
                                                                                 } else if (connectivityResult ==
                                                                                     ConnectivityResult.wifi) {
@@ -1621,6 +1736,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                                   uploadDataIfDataIsNotSync();
 
                                                                                   Utils.customPrint('WIFI');
+                                                                                  loggD.d('WIFI -> $page ${DateTime.now()}');
+                                                                                  loggV.v('WIFI -> $page ${DateTime.now()}');
                                                                                 }
                                                                               })
                                                             ],
@@ -1665,6 +1782,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     setState(() {
       vesselIsSync = result;
       Utils.customPrint('Vessel isSync $vesselIsSync');
+      loggD.d('Vessel isSync $vesselIsSync -> $page ${DateTime.now()}');
+      loggV.v('Vessel isSync $vesselIsSync -> $page ${DateTime.now()}');
     });
 
     return result;
@@ -1820,6 +1939,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     var startPosition = tripData.startPosition!.split(",");
     var endPosition = tripData.endPosition!.split(",");
     Utils.customPrint('START POSITION 0 ${startPosition}');
+    loggD.d('START POSITION 0 ${startPosition} -> $page ${DateTime.now()}');
+    loggV.v('START POSITION 0 ${startPosition} -> $page ${DateTime.now()}');
 
     Directory tripDir = await getApplicationDocumentsDirectory();
 
@@ -1861,7 +1982,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     };
 
     Utils.customPrint('Send Sensor Data: $queryParameters');
-
+    loggD.d('Send Sensor Data: $queryParameters -> $page ${DateTime.now()}');
+    loggV.v('Send Sensor Data: $queryParameters -> $page ${DateTime.now()}');
     commonProvider
         .sendSensorInfo(
             Get.context!,
@@ -1884,13 +2006,19 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             });
           }
           Utils.customPrint("tripData!.id: ${tripData.id}");
+          loggD.d("tripData!.id: ${tripData.id} -> $page ${DateTime.now()}");
+          loggV.v("tripData!.id: ${tripData.id} -> $page ${DateTime.now()}");
           _databaseService.updateTripIsSyncStatus(1, tripData.id.toString());
           Trip tripDetails = await _databaseService.getTrip(tripData.id!);
           Utils.customPrint('TRIP DETAILS: ${tripDetails.toJson()}');
+          loggD.d('TRIP DETAILS: ${tripDetails.toJson()} -> $page ${DateTime.now()}');
+          loggV.v('TRIP DETAILS: ${tripDetails.toJson()} -> $page ${DateTime.now()}');
           if (mounted) {
             setState(() {
               this.tripData = tripDetails;
               Utils.customPrint('TRIP STATUS ${tripData.isSync}');
+              loggD.d('TRIP STATUS ${tripData.isSync} -> $page ${DateTime.now()}');
+              loggV.v('TRIP STATUS ${tripData.isSync} -> $page ${DateTime.now()}');
             });
           }
 
@@ -1921,6 +2049,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         });
       }
       Utils.customPrint('ON ERROR $onError \n $s');
+      loggE.e('ON ERROR $onError \n $s  -> $page ${DateTime.now()}');
+      loggV.v('ON ERROR $onError \n $s  -> $page ${DateTime.now()}');
     });
   }
 
@@ -1936,6 +2066,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     commonProvider.updateTripUploadingStatus(true);
     await vesselIsSyncOrNot(tripData!.vesselId.toString());
     Utils.customPrint('VESSEL STATUS isSync $vesselIsSync');
+    loggD.d('VESSEL STATUS isSync $vesselIsSync -> $page ${DateTime.now()}');
+    loggV.v('VESSEL STATUS isSync $vesselIsSync -> $page ${DateTime.now()}');
 
     commonProvider.updateTripUploadingStatus(true);
     progress = 0;
@@ -1967,6 +2099,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           .getVesselFromVesselID((tripData!.vesselId.toString()));
 
       Utils.customPrint('VESSEL DATA ${vesselData!.id}');
+      loggD.d('VESSEL DATA ${vesselData!.id} -> $page ${DateTime.now()}');
+      loggV.v('VESSEL DATA ${vesselData!.id} -> $page ${DateTime.now()}');
 
       commonProvider.addVesselRequestModel = CreateVessel();
       commonProvider.addVesselRequestModel!.id = vesselData.id;
@@ -2000,6 +2134,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             finalSelectedFiles;
 
         Utils.customPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
+        loggD.d('VESSEL Data ${File(vesselData.imageURLs!)} -> $page ${DateTime.now()}');
+        loggV.v('VESSEL Data ${File(vesselData.imageURLs!)} -> $page ${DateTime.now()}');
       } else {
         commonProvider.addVesselRequestModel!.selectedImages = [];
       }
@@ -2021,6 +2157,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           } else {
             commonProvider.updateTripUploadingStatus(false);
             Utils.customPrint('UPLOADEDDDD: ${value.message}');
+            loggD.d('UPLOADEDDDD: ${value.message} -> $page ${DateTime.now()}');
+            loggV.v('UPLOADEDDDD: ${value.message} -> $page ${DateTime.now()}');
             await cancelOnGoingProgressNotification(tripData!.id!);
             showFailedNoti(tripData!.id!);
             if (mounted) {

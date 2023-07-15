@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/get_or_create_folder.dart';
@@ -16,6 +17,8 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
+
+import '../../common_widgets/widgets/log_level.dart';
 
 // Add new vessel step two
 class AddNewVesselStepTwo extends StatefulWidget {
@@ -60,10 +63,51 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
   late CommonProvider commonProvider;
 
   bool? isBtnClicked = false;
+  String page = "Add_new_vessel_step_two";
 
   @override
   void initState() {
     super.initState();
+
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
 
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
@@ -380,11 +424,15 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                   .selectedImages!.isNotEmpty) {
                                 print(
                                     'XXXXX:${commonProvider.addVesselRequestModel!.selectedImages!}');
+                                loggD.d('XXXXX:${commonProvider.addVesselRequestModel!.selectedImages!} -> $page ${DateTime.now()}');
+                                loggV.v('XXXXX:${commonProvider.addVesselRequestModel!.selectedImages!} -> $page ${DateTime.now()}');
                                 String vesselImagesDirPath =
                                     await GetOrCreateFolder()
                                         .getOrCreateFolderForAddVessel();
                                 Utils.customPrint(
                                     'FOLDER PATH: $vesselImagesDirPath');
+                                loggD.d('FOLDER PATH: $vesselImagesDirPath -> $page ${DateTime.now()}');
+                                loggV.v('FOLDER PATH: $vesselImagesDirPath -> $page ${DateTime.now()}');
 
                                 File copiedFile = File(commonProvider
                                     .addVesselRequestModel!
@@ -416,6 +464,17 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                     'COPIED FILE PATH: ${directory.path}');
                                 Utils.customPrint(
                                     'COPIED FILE PATH EXISTS: ${File(directory.path).existsSync()}');
+                                loggD.d('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+
+                                loggD.d('COPIED FILE PATH: ${copiedFile.path} -> $page ${DateTime.now()}');
+                                loggD.d('COPIED FILE PATH: ${directory.path} -> $page ${DateTime.now()}');
+                                loggD.d('COPIED FILE PATH EXISTS: ${File(directory.path).existsSync()} -> $page ${DateTime.now()}');
+
+                                loggV.v('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+
+                                loggV.v('COPIED FILE PATH: ${copiedFile.path} -> $page ${DateTime.now()}');
+                                loggV.v('COPIED FILE PATH: ${directory.path} -> $page ${DateTime.now()}');
+                                loggV.v('COPIED FILE PATH EXISTS: ${File(directory.path).existsSync()} -> $page ${DateTime.now()}');
 
                                 commonProvider.addVesselRequestModel!
                                     .imageURLs = directory.path;
@@ -436,6 +495,12 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                     'VESSEL NAME: ${widget.addVesselData!.name}');
                                 Utils.customPrint(
                                     'VESSEL NAME: ${commonProvider.addVesselRequestModel!.toMap()}');
+
+                                loggD.d('VESSEL NAME: ${widget.addVesselData!.name} -> $page ${DateTime.now()}');
+                                loggD.d('VESSEL NAME: ${commonProvider.addVesselRequestModel!.toMap()} -> $page ${DateTime.now()}');
+
+                                loggV.v('VESSEL NAME: ${widget.addVesselData!.name} -> $page ${DateTime.now()}');
+                                loggV.v('VESSEL NAME: ${commonProvider.addVesselRequestModel!.toMap()} -> $page ${DateTime.now()}');
 
                                 await _databaseService
                                     .updateVessel(

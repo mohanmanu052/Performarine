@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
@@ -17,7 +18,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../widgets/log_level.dart';
+
 class Utils {
+  String page = "Utils";
   static DateTime? currentBackPressedTime;
 
   //Select images from local photos
@@ -175,6 +179,46 @@ class Utils {
   //To get storage permission of user
   static Future<bool> getStoragePermission(BuildContext context,
       [Permission permission = Permission.storage]) async {
+
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
     bool isPermissionGranted = false;
 
     if (Platform.isAndroid) {
@@ -198,6 +242,8 @@ class Utils {
           isPermissionGranted = false;
         }
         Utils.customPrint('PD');
+        loggD.d('PD -> Utils ${DateTime.now()}');
+        loggV.v('PD -> Utils ${DateTime.now()}');
 
         isPermissionGranted = await openAppSettings();
       } else if (await Permission.locationAlways.request().isDenied) {
@@ -213,6 +259,47 @@ class Utils {
   // Check user is connected to internet or not
   Future<bool> check(GlobalKey<ScaffoldState> scaffoldKey,
       {bool userConfig = false, VoidCallback? onRetryTap}) async {
+
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -220,6 +307,8 @@ class Utils {
       }
     } on SocketException catch (_) {
       Utils.customPrint('No Internet');
+      loggD.d('No Internet -> $page ${DateTime.now()}');
+      loggV.v('No Internet -> $page ${DateTime.now()}');
       showDialog(
           context: scaffoldKey.currentContext!,
           builder: (BuildContext context) {
@@ -244,6 +333,46 @@ class Utils {
   //To get user notification permission
   static Future<bool> getNotificationPermission(BuildContext context,
       [Permission permission = Permission.notification]) async {
+
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
     bool isPermissionGranted = false;
 
     /*final androidInfo = await DeviceInfoPlugin().androidInfo;
@@ -260,10 +389,14 @@ class Utils {
       } else if (await permission.request().isPermanentlyDenied) {
         isPermissionGranted = false;
         Utils.customPrint('PD');
+        Utils.customPrint('PD -> Utils ${DateTime.now()}');
+        Utils.customPrint('PD -> Utils ${DateTime.now()}');
 
         isPermissionGranted = await openAppSettings();
       } else if (await Permission.notification.request().isDenied) {
         Utils.customPrint('D');
+        loggD.d('D -> Utils ${DateTime.now()}');
+        loggV.v('D -> Utils ${DateTime.now()}');
         isPermissionGranted = false;
         //getStoragePermission(context, scaffoldKey);
       }

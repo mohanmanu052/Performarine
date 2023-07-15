@@ -33,6 +33,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
   late PageController pageController;
 
   int pageIndex = 0;
+  String page = "Add_new_vessel_screen";
 
   @override
   void initState() {
@@ -136,6 +137,8 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                       pageIndex = value;
                     });
                     Utils.customPrint('PAGEVIEW INDEX $pageIndex');
+                    loggD.d('PAGEVIEW INDEX $pageIndex -> $page ${DateTime.now()}');
+                    loggV.v('PAGEVIEW INDEX $pageIndex -> $page ${DateTime.now()}');
                   },
                   children: [
                     AddVesselStepOne(

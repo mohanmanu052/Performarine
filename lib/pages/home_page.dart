@@ -8,6 +8,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -33,6 +34,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../analytics/location_callback_handler.dart';
+import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
 import 'feedback_report.dart';
 
@@ -75,6 +77,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   List<String> tripData = [];
 
   final controller = ScreenshotController();
+  String page = "Home_page";
 
   @override
   void didUpdateWidget(covariant HomePage oldWidget) {
@@ -118,6 +121,46 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   void initState() {
     super.initState();
 
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
     WidgetsBinding.instance.addObserver(this);
 
     commonProvider = context.read<CommonProvider>();
@@ -142,10 +185,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     bool? isAppKilledFromBg = sharedPreferences!.getBool('app_killed_from_bg');
 */
     debugPrint("IS APP KILLED FROM BG ${widget.isAppKilled}");
+    loggD.d("IS APP KILLED FROM BG ${widget.isAppKilled} -> $page ${DateTime.now()}");
+    loggV.v("IS APP KILLED FROM BG ${widget.isAppKilled} -> $page ${DateTime.now()}");
 
     bool? isTripStarted = sharedPreferences!.getBool('trip_started');
 
     debugPrint("IS APP KILLED FROM BG 1212 $isTripStarted");
+    loggD.d("IS APP KILLED FROM BG 1212 $isTripStarted -> $page ${DateTime.now()}");
+    loggV.v("IS APP KILLED FROM BG 1212 $isTripStarted -> $page ${DateTime.now()}");
 
     if(widget.isAppKilled!)
       {
@@ -215,6 +262,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     switch (state) {
       case AppLifecycleState.resumed:
         print("APP STATE - app in resumed");
+        loggD.d("APP STATE - app in resumed -> $page ${DateTime.now()}");
+        loggV.v("APP STATE - app in resumed -> $page ${DateTime.now()}");
         dynamic arg = Get.arguments;
         if(arg !=  null)
         {
@@ -226,12 +275,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
             setState(() {});
           }
           print("isComingFromReset: ${isComingFrom}");
+          loggD.d("isComingFromReset: ${isComingFrom} -> $page ${DateTime.now()}");
+          loggV.v("isComingFromReset: ${isComingFrom} -> $page ${DateTime.now()}");
           if(mounted){
             if(isComingFrom != null && isComingFrom )
             {
 
               Future.delayed(Duration(microseconds: 500), (){
                 print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+                loggD.d("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}  -> $page ${DateTime.now()}");
+                loggV.v("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}  -> $page ${DateTime.now()}");
                 bool? result;
                 if(sharedPreferences != null){
                   result = sharedPreferences!.getBool('reset_dialog_opened');
@@ -254,16 +307,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
             }
           }
           print('HomeScreen did update');
+          loggD.d('HomeScreen did update -> $page ${DateTime.now()}');
+          loggV.v('HomeScreen did update -> $page ${DateTime.now()}');
         }
         break;
       case AppLifecycleState.inactive:
         print("APP STATE - app in inactive");
+        loggD.d("APP STATE - app in inactive -> $page ${DateTime.now()}");
+        loggV.v("APP STATE - app in inactive -> $page ${DateTime.now()}");
         break;
       case AppLifecycleState.paused:
         print("APP STATE - app in paused");
+        loggD.d("APP STATE - app in paused -> $page ${DateTime.now()}");
+        loggV.v("APP STATE - app in paused -> $page ${DateTime.now()}");
         break;
       case AppLifecycleState.detached:
         print("APP STATE - app in detached");
+        loggD.d("APP STATE - app in detached -> $page ${DateTime.now()}");
+        loggV.v("APP STATE - app in detached -> $page ${DateTime.now()}");
         break;
     }
   }
@@ -423,6 +484,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                       commonProvider.getTripsCount();
                       if (result != null) {
                         Utils.customPrint('RESULT HOME PAGE $result');
+                        loggD.d('RESULT HOME PAGE $result -> $page ${DateTime.now()}');
+                        loggV.v('RESULT HOME PAGE $result -> $page ${DateTime.now()}');
                         if (result) {
                           setState(() {
                             getVesselFuture = _databaseService.vessels();
@@ -680,6 +743,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
                                           Utils.customPrint(
                                               'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+                                          loggD.d('FINAL PATH: ${sharedPreferences!.getStringList('trip_data')} -> $page ${DateTime.now()}');
+                                          loggV.v('FINAL PATH: ${sharedPreferences!.getStringList('trip_data')} -> $page ${DateTime.now()}');
 
                                           EndTrip().endTrip(
                                               context: context,
@@ -696,6 +761,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                                 });
 
                                                 Utils.customPrint('TRIPPPPPP ENDEDDD:');
+                                                loggD.d('TRIPPPPPP ENDEDDD:  -> $page ${DateTime.now()}');
+                                                loggV.v('TRIPPPPPP ENDEDDD: -> $page ${DateTime.now()}');
                                                 setState(() {
                                                   getVesselFuture = _databaseService.vessels();
                                                 });
@@ -718,6 +785,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                       final _isRunning = await BackgroundLocator();
 
                                           Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
+                                          loggD.d('INTRO TRIP IS RUNNING 1212 $_isRunning -> $page ${DateTime.now()}');
+                                          loggV.v('INTRO TRIP IS RUNNING 1212 $_isRunning -> $page ${DateTime.now()}');
 
                                           List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
@@ -737,6 +806,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                           final isRunning2 = await BackgroundLocator.isServiceRunning();
 
                                           Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                          loggD.d('INTRO TRIP IS RUNNING 22222 $isRunning2 -> $page ${DateTime.now()}');
+                                          loggV.v('INTRO TRIP IS RUNNING 22222 $isRunning2 -> $page ${DateTime.now()}');
                                       Navigator.of(context).pop();
                                     },
                                     displayWidth(context) * 0.65,

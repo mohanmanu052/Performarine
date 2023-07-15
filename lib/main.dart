@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
@@ -11,6 +12,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/pages/authentication/reset_password.dart';
@@ -22,6 +24,11 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:uni_links/uni_links.dart';
+import 'package:wakelock/wakelock.dart';
+import 'package:workmanager/workmanager.dart';
+
+import 'analytics/get_or_create_folder.dart';
+import 'common_widgets/widgets/log_level.dart';
 
 SharedPreferences? sharedPreferences;
 bool? isStart;
@@ -37,6 +44,9 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 final StreamController<String?> selectNotificationStream =
     StreamController<String?>.broadcast();
 
+const logFileUpload = "logFileUpload";
+String page = "main";
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -49,6 +59,7 @@ void main() async {
   tz.initializeTimeZones();
 
   await Firebase.initializeApp();
+  Wakelock.disable();
 
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
@@ -59,11 +70,185 @@ void main() async {
     return true;
   };
 
+  getDirectoryForDebugLogRecord().whenComplete(
+        () {
+      FileOutput fileOutPut = FileOutput(file: fileD!);
+      // ConsoleOutput consoleOutput = ConsoleOutput();
+      LogOutput multiOutput = fileOutPut;
+      loggD = Logger(
+          filter: DevelopmentFilter(),
+          printer: PrettyPrinter(
+            methodCount: 0,
+            errorMethodCount: 3,
+            lineLength: 70,
+            colors: true,
+            printEmojis: false,
+            //printTime: true
+          ),
+          output: multiOutput // Use the default LogOutput (-> send everything to console)
+      );
+    },
+  );
+  getDirectoryForVerboseLogRecord().whenComplete(
+        () {
+      FileOutput fileOutPut = FileOutput(file: fileV!);
+      // ConsoleOutput consoleOutput = ConsoleOutput();
+      LogOutput multiOutput = fileOutPut;
+      loggV = Logger(
+          filter: DevelopmentFilter(),
+          printer: PrettyPrinter(
+            methodCount: 0,
+            errorMethodCount: 3,
+            lineLength: 70,
+            colors: true,
+            printEmojis: false,
+            //printTime: true
+          ),
+          output: multiOutput // Use the default LogOutput (-> send everything to console)
+      );
+    },
+  );
+
+
+  getDirectoryForErrorLogRecord().whenComplete(
+        () {
+      FileOutput fileOutPut = FileOutput(file: fileE!);
+      // ConsoleOutput consoleOutput = ConsoleOutput();
+      LogOutput multiOutput = fileOutPut;
+      loggE = Logger(
+          filter: DevelopmentFilter(),
+          printer: PrettyPrinter(
+            methodCount: 0,
+            errorMethodCount: 3,
+            lineLength: 70,
+            colors: true,
+            printEmojis: false,
+            //printTime: true
+          ),
+          output: multiOutput // Use the default LogOutput (-> send everything to console)
+      );
+    },
+  );
 
   SharedPreferences.getInstance().then((value) {
     sharedPreferences = value;
     runApp(Phoenix(child: MyApp()));
   });
+}
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    switch (task) {
+      case logFileUpload:
+        final now = DateTime.now();
+        if(now.hour == 0 && now.minute == 0){
+          print("Log file upload at 12 AM ${DateTime.now()}");
+        }
+        print("statement for log file upload ${DateTime.now()}");
+        break;
+    }
+    return Future.value(true);
+  });
+}
+
+registerBackgroundTask() async{
+  await Workmanager().initialize(callbackDispatcher);
+  await Workmanager().registerPeriodicTask(
+    "1",
+    logFileUpload,
+    frequency: Duration(hours: 1),
+    constraints: Constraints(
+      networkType: NetworkType.connected,
+    ),
+  );
+}
+
+createFolder() async{
+  File? file;
+  final Directory documentDirectory = await getApplicationDocumentsDirectory();
+  file = File('${documentDirectory.path}/LogFiles');
+  final directory = Directory(file.path);
+
+  final debugLogFile = fileD;
+  String debugLogFilePath = debugLogFile!.path;
+  String debugFileName = debugLogFilePath.split('/').last;
+  String debugPath = await getFile(debugFileName);
+
+  print("Debug file path is: ${debugPath}");
+  bool fileExists = await isFileExistsInFolder(file.path, debugFileName);
+  print("fileExists status: $fileExists");
+  if (!directory.existsSync()) {
+    directory.createSync(recursive: true);
+    print('Folder created successfully');
+  }
+  /* else if(logFile.existsSync()){
+    //final destinationFilePath = '$file/file.txt';
+   // filePath.copy(file!.path);
+   //  final lastIndexPath = filePath.path.split('/').last;
+   // await file!.copy(lastIndexPath);
+    print('File moved to the destination folder successfully');
+  } */
+  else{
+    print('Content not appended to file');
+  }
+
+  // if(fileExists){
+  //   print("File already exists in directory");
+  // } else {
+  File fileee;
+  //final path = await getFilePath;
+  try{
+    fileee = File(debugLogFilePath);
+
+    if(fileee != null && fileee.existsSync()){
+      String data = await fileee.readAsString(encoding: Latin1Codec());
+
+      /*  List<int> fileBytes = fileee.readAsBytesSync();
+        String fileContent = utf8.decode(fileBytes);
+        print('File content: $fileContent'); */
+
+      print("main data is: ${data.toString()}");
+      File files = File(debugPath);
+      files.writeAsString(data,mode: FileMode.append);
+    }
+
+
+    //  String decodedString = await  File(debugLogFilePath).readAsString();
+    // String decoded = utf8.decode(encryptedBase64EncodedString);
+
+
+  }catch(e){
+    print("error $e");
+  }
+
+  List<FileSystemEntity> filesList = directory.listSync();
+  filesList.sort((a, b) => a.statSync().changed.compareTo(b.statSync().changed));
+
+  print("filesList is: ${filesList}");
+  if (filesList.length > 7) {
+    File fileToDelete = filesList.first as File;
+    fileToDelete.deleteSync();
+    print('File deleted: ${fileToDelete.path}');
+  } else {
+    print('Invalid file index');
+  }
+}
+
+Future<bool> isFileExistsInFolder(String folderPath, String fileName) async {
+  final folder = Directory(folderPath);
+  if (await folder.exists()) {
+    final file = File('${folder.path}/$fileName');
+    return await file.exists();
+  }
+  return false;
+}
+
+Future<String> getFile(String fileName) async {
+  String folderPath = await GetOrCreateFolder().getOrCreateFolder('LogFiles');
+
+  File logFileData = File('$folderPath/$fileName');
+  return logFileData.path;
 }
 
 configEasyLoading() {
@@ -88,7 +273,8 @@ onDidReceiveBackgroundNotificationResponse(
   var pref = await SharedPreferences.getInstance();
   pref.setBool('sp_key_called_from_noti', true);
   Utils.customPrint('APP RESTART 24');
-
+  loggD.d('APP RESTART 2 -> $page ${DateTime.now()}');
+  loggV.v('APP RESTART 2 -> $page ${DateTime.now()}');
   /// APP RESTART
 }
 
@@ -105,7 +291,8 @@ void bgLocationCallBack() async {
 onDidReceiveLocalNotification(
     int id, String? title, String? body, String? payload) {
   Utils.customPrint('APP RESTART 3');
-
+  loggD.e('APP RESTART 3 -> $page ${DateTime.now()}');
+  loggV.e('APP RESTART 3 -> $page ${DateTime.now()}');
   /// APP RESTART
 }
 
@@ -142,15 +329,21 @@ Future<void> initializeService() async {
   flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onDidReceiveNotificationResponse: (value) async {
     Utils.customPrint('APP RESTART 1');
+    loggD.d('APP RESTART 1 -> $page ${DateTime.now()}');
+    loggV.v('APP RESTART 1 -> $page ${DateTime.now()}');
 
     if (value.id == 776 || value.id == 1 || value.id == 889) {
       Utils.customPrint('NOTIFICATION ID: ${value.id}');
+      loggD.d('NOTIFICATION ID: ${value.id} -> $page ${DateTime.now()}');
+      loggV.v('NOTIFICATION ID: ${value.id} -> $page ${DateTime.now()}');
       var pref = await SharedPreferences.getInstance();
       pref.setBool('sp_key_called_from_noti', true);
       List<String>? tripData = pref.getStringList('trip_data');
       bool? isTripStarted = pref.getBool('trip_started');
 
       print("IS APP KILLED MAIN $isAppKilledFromBGMain");
+      loggD.d('IS APP KILLED MAIN -> $page ${DateTime.now()}');
+      loggV.v('IS APP KILLED MAIN -> $page ${DateTime.now()}');
 
       if(isAppKilledFromBGMain)
         {
@@ -200,14 +393,20 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
          isComingFromUnilink = true;
        });
 
-        print("URI: ${uri}");
+       Utils.customPrint("URI: ${uri}");
         if (uri != null) {
-          print('Deep link received: $uri');
+          Utils.customPrint('Deep link received: $uri');
+          loggD.d('Deep link received -> $page ${DateTime.now()}');
+          loggV.v('Deep link received -> $page ${DateTime.now()}');
           if(uri.queryParameters['verify'] != null){
-            print("reset: ${uri.queryParameters['verify'].toString()}");
+            Utils.customPrint("reset: ${uri.queryParameters['verify'].toString()}");
+            loggD.d('reset: ${uri.queryParameters['verify'].toString()} -> $page ${DateTime.now()}');
+            loggV.v('reset: ${uri.queryParameters['verify'].toString()} -> $page ${DateTime.now()}');
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
 
-            print("isUserLoggedIn: $isUserLoggedIn");
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            loggD.d('isUserLoggedIn: $isUserLoggedIn -> $page ${DateTime.now()}');
+            loggV.v('isUserLoggedIn: $isUserLoggedIn -> $page ${DateTime.now()}');
             Map<String, dynamic> arguments = {
               "isComingFromReset": true,
               "token": uri.queryParameters['verify'].toString()
@@ -229,10 +428,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           }
         }
       }, onError: (err) {
-        print('Error handling deep link: $err');
+        Utils.customPrint('Error handling deep link: $err');
+        loggE.d('Error handling deep link: $err -> $page ${DateTime.now()}');
+        loggV.v('Error handling deep link: $err -> $page ${DateTime.now()}');
       });
     } on PlatformException {
-      print("Exception while handling with uni links : ${PlatformException}");
+      Utils.customPrint("Exception while handling with uni links : ${PlatformException}");
+      loggE.d('Exception while handling with uni links : ${PlatformException} -> $page ${DateTime.now()}');
+      loggV.v('Exception while handling with uni links : ${PlatformException} -> $page ${DateTime.now()}');
     }
   }
 
@@ -242,6 +445,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     initDeepLinkListener();
     Utils.customPrint('APP IN BG INIT');
+    loggD.d('APP IN BG INIT -> $page ${DateTime.now()}');
+    loggV.v('APP IN BG INIT -> $page ${DateTime.now()}');
   }
 
   getTripData()async
@@ -250,6 +455,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     sharedPreferences!.getBool('trip_started');
 
     print("TRIP IN PROGRESS MAIN $isTripStarted");
+    loggD.d('TRIP IN PROGRESS MAIN $isTripStarted -> $page ${DateTime.now()}');
+    loggV.v('TRIP IN PROGRESS MAIN $isTripStarted -> $page ${DateTime.now()}');
   }
 
   @override
@@ -259,6 +466,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     _sub?.cancel();
     super.dispose();
     Utils.customPrint('APP IN BG DISPOSE');
+    loggD.d('APP IN BG DISPOSE -> $page ${DateTime.now()}');
+    loggV.v('APP IN BG DISPOSE -> $page ${DateTime.now()}');
   }
 
   @override

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -25,6 +26,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../common_widgets/utils/urls.dart';
+import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/status_tage.dart';
 
 class TripWidget extends StatefulWidget {
@@ -68,10 +70,71 @@ class _TripWidgetState extends State<TripWidget> {
 
   List<CreateVessel> getVesselById = [];
 
+  String page = "Trip_widget";
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForErrorLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileE!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggE = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
 
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
@@ -257,6 +320,8 @@ class _TripWidgetState extends State<TripWidget> {
 
                                         Utils.customPrint(
                                             'VESSEL DATA ${getVesselById[0].imageURLs}');
+                                        loggD.d('VESSEL DATA ${getVesselById[0].imageURLs} -> $page ${DateTime.now()}');
+                                        loggV.v('VESSEL DATA ${getVesselById[0].imageURLs} -> $page ${DateTime.now()}');
 
                                         if (!isTripUploaded) {
                                           Navigator.push(
@@ -309,6 +374,8 @@ class _TripWidgetState extends State<TripWidget> {
 
                                               Utils.customPrint(
                                                   'VESSEL DATA ${getVesselById[0].imageURLs}');
+                                              loggD.d('VESSEL DATA ${getVesselById[0].imageURLs} -> $page ${DateTime.now()}');
+                                              loggV.v('VESSEL DATA ${getVesselById[0].imageURLs} -> $page ${DateTime.now()}');
 
                                               if (!isTripUploaded) {
                                                 Navigator.push(
@@ -413,6 +480,8 @@ class _TripWidgetState extends State<TripWidget> {
                                                               .mobile) {
                                                         Utils.customPrint(
                                                             'Mobile');
+                                                        loggD.d('Mobile -> $page ${DateTime.now()}');
+                                                        loggV.v('Mobile -> $page ${DateTime.now()}');
                                                         showDialogBox();
                                                       } else if (connectivityResult ==
                                                           ConnectivityResult
@@ -427,6 +496,8 @@ class _TripWidgetState extends State<TripWidget> {
 
                                                         Utils.customPrint(
                                                             'WIFI');
+                                                        loggD.d('WIFI -> $page ${DateTime.now()}');
+                                                        loggV.v('WIFI -> $page ${DateTime.now()}');
                                                       }
                                                     },
                                                     icon: Padding(
@@ -465,6 +536,8 @@ class _TripWidgetState extends State<TripWidget> {
 
                                   Utils.customPrint(
                                       'TRIP STATUS ${commonProvider.tripStatus}');
+                                  loggD.d('TRIP STATUS ${commonProvider.tripStatus} -> $page ${DateTime.now()}');
+                                  loggV.v('TRIP STATUS ${commonProvider.tripStatus} -> $page ${DateTime.now()}');
                                 },
                                 context: context,
                                 width: displayWidth(context) * 0.8,
@@ -484,6 +557,8 @@ class _TripWidgetState extends State<TripWidget> {
     setState(() {
       vesselIsSync = result;
       Utils.customPrint('Vessel isSync $vesselIsSync');
+      loggD.d('Vessel isSync $vesselIsSync -> $page ${DateTime.now()}');
+      loggV.v('Vessel isSync $vesselIsSync -> $page ${DateTime.now()}');
     });
 
     return result;
@@ -520,6 +595,8 @@ class _TripWidgetState extends State<TripWidget> {
     var startPosition = tripData.startPosition!.split(",");
     var endPosition = tripData.endPosition!.split(",");
     Utils.customPrint('START POSITION R ${tripData.distance}');
+    loggD.d('START POSITION R ${tripData.distance} -> $page ${DateTime.now()}');
+    loggV.v('START POSITION R ${tripData.distance} -> $page ${DateTime.now()}');
 
     Directory tripDir = await getApplicationDocumentsDirectory();
 
@@ -562,6 +639,8 @@ class _TripWidgetState extends State<TripWidget> {
     Utils.customPrint('CREATE TRIP: $queryParameters');
     Utils.customPrint(
         'CREATE TRIP FILE PATH: ${'/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'}');
+    loggD.d('CREATE TRIP FILE PATH: ${'/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'} -> $page ${DateTime.now()}');
+    loggV.v('CREATE TRIP FILE PATH: ${'/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'} -> $page ${DateTime.now()}');
 
     commonProvider
         .sendSensorInfo(
@@ -586,6 +665,12 @@ class _TripWidgetState extends State<TripWidget> {
           }
           Utils.customPrint("widget.tripList!.id: ${widget.tripList!.id}");
           Utils.customPrint("UPLOAD TRIP STATUS CODE : ${value.statusCode}");
+
+          loggD.d("widget.tripList!.id: ${widget.tripList!.id} -> $page ${DateTime.now()}");
+          loggD.d("UPLOAD TRIP STATUS CODE : ${value.statusCode} -> $page ${DateTime.now()}");
+
+          loggV.v("widget.tripList!.id: ${widget.tripList!.id} -> $page ${DateTime.now()}");
+          loggV.v("UPLOAD TRIP STATUS CODE : ${value.statusCode} -> $page ${DateTime.now()}");
           _databaseService.updateTripIsSyncStatus(1, tripData.id.toString());
 
           showSuccessNoti();
@@ -619,6 +704,8 @@ class _TripWidgetState extends State<TripWidget> {
         });
       }
       Utils.customPrint('ON ERROR $onError \n $s');
+      loggE.e('ON ERROR $onError \n $s  -> $page ${DateTime.now()}');
+      loggV.v('ON ERROR $onError \n $s  -> $page ${DateTime.now()}');
     });
   }
 
@@ -796,9 +883,13 @@ class _TripWidgetState extends State<TripWidget> {
   /// First it will add vessel if its new and then trip
   uploadDataIfDataIsNotSync() async {
     Utils.customPrint('VESSEL STATUS DATA ${widget.tripList!.toJson()}');
+    loggD.d('VESSEL STATUS DATA ${widget.tripList!.toJson()} -> $page ${DateTime.now()}');
+    loggV.v('VESSEL STATUS DATA ${widget.tripList!.toJson()} -> $page ${DateTime.now()}');
     commonProvider.updateTripUploadingStatus(true);
     await vesselIsSyncOrNot(widget.tripList!.vesselId.toString());
     Utils.customPrint('VESSEL STATUS isSync $vesselIsSync');
+    loggD.d('VESSEL STATUS isSync $vesselIsSync -> $page ${DateTime.now()}');
+    loggV.v('VESSEL STATUS isSync $vesselIsSync -> $page ${DateTime.now()}');
 
     progress = 0;
 
@@ -827,6 +918,8 @@ class _TripWidgetState extends State<TripWidget> {
           .getVesselFromVesselID((widget.tripList!.vesselId.toString()));
 
       Utils.customPrint('VESSEL DATA ${vesselData!.id}');
+      loggD.d('VESSEL DATA ${vesselData.id} -> $page ${DateTime.now()}');
+      loggV.v('VESSEL DATA ${vesselData.id} -> $page ${DateTime.now()}');
 
       commonProvider.addVesselRequestModel = CreateVessel();
       commonProvider.addVesselRequestModel!.id = vesselData.id;
@@ -865,12 +958,16 @@ class _TripWidgetState extends State<TripWidget> {
         }
 
         Utils.customPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
+        loggD.d('VESSEL Data ${File(vesselData.imageURLs!)} -> $page ${DateTime.now()}');
+        loggV.v('VESSEL Data ${File(vesselData.imageURLs!)} -> $page ${DateTime.now()}');
       } else {
         commonProvider.addVesselRequestModel!.selectedImages = [];
       }
 
       Utils.customPrint(
           'VESSEL IMAGE URL ${File(commonProvider.addVesselRequestModel!.selectedImages!.toString())}');
+      loggD.d('VESSEL IMAGE URL ${File(commonProvider.addVesselRequestModel!.selectedImages!.toString())} -> $page ${DateTime.now()}');
+      loggV.v('VESSEL IMAGE URL ${File(commonProvider.addVesselRequestModel!.selectedImages!.toString())} -> $page ${DateTime.now()}');
 
       commonProvider
           .addVessel(
@@ -884,6 +981,8 @@ class _TripWidgetState extends State<TripWidget> {
           if (value.status!) {
 
             debugPrint("Add Vessel R ${value.status}");
+            loggD.d("Add Vessel R ${value.status} -> $page ${DateTime.now()}");
+            loggV.v("Add Vessel R ${value.status} -> $page ${DateTime.now()}");
 
             _databaseService.updateIsSyncStatus(
                 1, widget.tripList!.vesselId.toString());
@@ -922,6 +1021,8 @@ class _TripWidgetState extends State<TripWidget> {
       setState(() {
         tripIsRunning = result;
         Utils.customPrint('Trip is Running $tripIsRunning');
+        loggD.d('Trip is Running $tripIsRunning -> $page ${DateTime.now()}');
+        loggV.v('Trip is Running $tripIsRunning -> $page ${DateTime.now()}');
         setState(() {
           isTripEndedOrNot = false;
         });

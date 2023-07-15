@@ -5,6 +5,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/end_trip.dart';
@@ -20,6 +21,7 @@ import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
+import '../../common_widgets/widgets/log_level.dart';
 import '../../models/trip.dart';
 
 class TripListScreen extends StatefulWidget {
@@ -67,6 +69,8 @@ class _TripListScreenState extends State<TripListScreen> {
 
   String selectedVesselWeight = 'Select Current Load';
 
+  String page = "Trip_list_screen";
+
   final DatabaseService _databaseService = DatabaseService();
 
   late Future<List<Trip>> future;
@@ -102,12 +106,54 @@ class _TripListScreenState extends State<TripListScreen> {
             model: iosDeviceInfo?.model,
             version: iosDeviceInfo?.utsname.release);
     Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
+    loggD.d("deviceDetails:${deviceDetails!.toJson().toString()} -> $page ${DateTime.now()}");
+    loggV.v("deviceDetails:${deviceDetails!.toJson().toString()} -> $page ${DateTime.now()}");
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
 
     future = _databaseService.getAllTripsByVesselId(widget.vesselId.toString());
   }
@@ -258,6 +304,8 @@ class _TripListScreenState extends State<TripListScreen> {
                                 String? tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
 
                                 debugPrint("ERROR ERROR $tripDistance\n$tripSpeed\ntripAvgSpeed");
+                                loggE.e("ERROR ERROR $tripDistance\n$tripSpeed\ntripAvgSpeed -> $page ${DateTime.now()}");
+                                loggV.v("ERROR ERROR $tripDistance\n$tripSpeed\ntripAvgSpeed  -> $page ${DateTime.now()}");
 
                                 EndTrip().endTrip(
                                     context: context,
@@ -380,6 +428,8 @@ class _TripListScreenState extends State<TripListScreen> {
                             },
                             onEnd: () {
                               Utils.customPrint('END');
+                              loggD.d('END -> $page ${DateTime.now()}');
+                              loggV.v('END -> $page ${DateTime.now()}');
                               stateSetter(() {
                                 isStartButton = true;
                               });
@@ -593,6 +643,8 @@ class _TripListScreenState extends State<TripListScreen> {
 
                                     Utils.customPrint(
                                         'DOES FILE EXIST: ${copiedFile.existsSync()}');
+                                    loggD.d('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+                                    loggV.v('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
 
                                     if (copiedFile.existsSync()) {
                                       Utils.showSnackBar(context,
@@ -816,6 +868,8 @@ class _TripListScreenState extends State<TripListScreen> {
                                       if (timer != null) timer!.cancel();
                                       Utils.customPrint(
                                           'TIMER STOPPED ${ourDirectory!.path}');
+                                      loggD.d('TIMER STOPPED ${ourDirectory!.path} -> $page ${DateTime.now()}');
+                                      loggV.v('TIMER STOPPED ${ourDirectory!.path} -> $page ${DateTime.now()}');
                                       final dataDir =
                                           Directory(ourDirectory!.path);
 
@@ -829,8 +883,12 @@ class _TripListScreenState extends State<TripListScreen> {
                                             recurseSubDirs: true);
                                         Utils.customPrint(
                                             'our path is $dataDir');
+                                        loggD.d('our path is $dataDir -> $page ${DateTime.now()}');
+                                        loggV.v('our path is $dataDir -> $page ${DateTime.now()}');
                                       } catch (e) {
                                         Utils.customPrint('$e');
+                                        loggE.e('$e -> $page ${DateTime.now()}');
+                                        loggV.v('$e -> $page ${DateTime.now()}');
                                       }
 
                                       File file = File(zipFile!.path);
@@ -842,6 +900,8 @@ class _TripListScreenState extends State<TripListScreen> {
                                       });
                                       Utils.customPrint(
                                           'FINAL PATH: ${file.path}');
+                                      loggD.d('FINAL PATH: ${file.path} -> $page ${DateTime.now()}');
+                                      loggV.v('FINAL PATH: ${file.path} -> $page ${DateTime.now()}');
                                       onSave(file);
                                     })
                                 : CommonButtons.getActionButton(
@@ -915,6 +975,12 @@ class _TripListScreenState extends State<TripListScreen> {
     Utils.customPrint('LAT ${latitude}');
     Utils.customPrint('LONG ${longitude}');
 
+    loggD.d('LAT ${latitude} -> $page ${DateTime.now()}');
+    loggD.d('LONG ${longitude} -> $page ${DateTime.now()}');
+
+    loggV.v('LAT ${latitude} -> $page ${DateTime.now()}');
+    loggV.v('LONG ${longitude} -> $page ${DateTime.now()}');
+
     return;
   }
 
@@ -922,7 +988,11 @@ class _TripListScreenState extends State<TripListScreen> {
     fileName = '$fileIndex.csv';
 
     Utils.customPrint('CREATE TRIP $fileName');
+    loggD.d('CREATE TRIP $fileName -> $page ${DateTime.now()}');
+    loggV.v('CREATE TRIP $fileName -> $page ${DateTime.now()}');
     Utils.customPrint(widget.vesselId.toString());
+    loggD.d(widget.vesselId.toString() + ' -> $page ${DateTime.now()}');
+    loggV.v(widget.vesselId.toString() + ' -> $page ${DateTime.now()}');
     writeSensorDataToFile(widget.vesselId!);
     stateSetter(() {
       isStartButton = false;
@@ -940,6 +1010,12 @@ class _TripListScreenState extends State<TripListScreen> {
     if (fileSize >= 10) {
       Utils.customPrint('STOPPED WRITING');
       Utils.customPrint('CREATING NEW FILE');
+
+      loggD.d('STOPPED WRITING  -> $page ${DateTime.now()}');
+      loggD.d('CREATING NEW FILE -> $page ${DateTime.now()}');
+
+      loggV.v('STOPPED WRITING  -> $page ${DateTime.now()}');
+      loggV.v('CREATING NEW FILE -> $page ${DateTime.now()}');
       // if (timer != null) timer!.cancel();
       // Utils.customPrint('TIMER STOPPED');
 
@@ -949,18 +1025,30 @@ class _TripListScreenState extends State<TripListScreen> {
         fileName = '$fileIndex.csv';
 
         Utils.customPrint('FILE NAME: $fileName');
+        loggD.d('FILE NAME: $fileName -> $page ${DateTime.now()}');
+        loggV.v('FILE NAME: $fileName -> $page ${DateTime.now()}');
       });
       Utils.customPrint('NEW FILE CREATED');
+      loggD.d('NEW FILE CREATED -> $page ${DateTime.now()}');
+      loggV.v('NEW FILE CREATED -> $page ${DateTime.now()}');
 
       /// STOP WRITING & CREATE NEW FILE
     } else {
       Utils.customPrint('WRITING');
+      loggD.d('WRITING -> $page ${DateTime.now()}');
+      loggV.v('WRITING -> $page ${DateTime.now()}');
 
       latitude = '0.0';
       longitude = '0.0';
 
       Utils.customPrint('LAT ${latitude}');
       Utils.customPrint('LONG ${longitude}');
+
+      loggD.d('LAT ${latitude} -> $page ${DateTime.now()}');
+      loggD.d('LONG ${longitude} -> $page ${DateTime.now()}');
+
+      loggV.v('LAT ${latitude} -> $page ${DateTime.now()}');
+      loggV.v('LONG ${longitude} -> $page ${DateTime.now()}');
 
       String acc = convertDataToString('AAC', _accelerometerValues ?? []);
       String uacc = convertDataToString('UACC', _userAccelerometerValues ?? []);
@@ -992,6 +1080,14 @@ class _TripListScreenState extends State<TripListScreen> {
       Utils.customPrint('FILE SIZE: $sizeInMB');
       Utils.customPrint('FILE SIZE KB: $sizeInKB');
       Utils.customPrint('FINAL FILE SIZE: $finalSizeInMB');
+
+      loggD.d('FILE SIZE: $sizeInMB -> $page ${DateTime.now()}');
+      loggD.d('FILE SIZE KB: $sizeInKB -> $page ${DateTime.now()}');
+      loggD.d('FINAL FILE SIZE: $finalSizeInMB -> $page ${DateTime.now()}');
+
+      loggV.v('FILE SIZE: $sizeInMB -> $page ${DateTime.now()}');
+      loggV.v('FILE SIZE KB: $sizeInKB -> $page ${DateTime.now()}');
+      loggV.v('FINAL FILE SIZE: $finalSizeInMB -> $page ${DateTime.now()}');
       return sizeInKB.toInt();
     } else {
       return -1;
@@ -1019,6 +1115,8 @@ class _TripListScreenState extends State<TripListScreen> {
     ourDirectory = Directory('${appDirectory.path}/$tripId');
 
     Utils.customPrint('FOLDER PATHH $ourDirectory');
+    loggD.d('FOLDER PATHH $ourDirectory -> $page ${DateTime.now()}');
+    loggV.v('FOLDER PATHH $ourDirectory -> $page ${DateTime.now()}');
     var status = await Permission.storage.status;
     if (!status.isGranted) {
       await Permission.storage.request();
@@ -1040,6 +1138,8 @@ class _TripListScreenState extends State<TripListScreen> {
     String longitude = '0.0';
 
     Utils.customPrint("current lod:$currentLoad");
+    loggD.d('current lod:$currentLoad -> $page ${DateTime.now()}');
+    loggV.v('current lod:$currentLoad -> $page ${DateTime.now()}');
     final String getTripId = ObjectId().toString();
     await _databaseService.insertTrip(Trip(
         id: getTripId,

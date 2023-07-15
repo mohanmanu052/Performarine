@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -17,6 +18,7 @@ import 'package:performarine/pages/coming_soon_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../common_widgets/widgets/log_level.dart';
 import '../web_navigation/privacy_and_policy_web_view.dart';
 import '../web_navigation/terms_and_condition_web_view.dart';
 
@@ -58,6 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isChecked = false;
 
   late CommonProvider commonProvider;
+  String page = "Sign_up_screen";
 
   GoogleSignIn googleSignIn = GoogleSignIn(
     scopes: <String>[
@@ -69,6 +72,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   void initState() {
     super.initState();
+
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
 
     commonProvider = context.read<CommonProvider>();
 
@@ -200,6 +243,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         Utils.customPrint(
                                             'NAME: ${googleSignInAccount.toString()}');
 
+                                        loggD.d('NAME: ${googleSignInAccount.id} -> $page ${DateTime.now()}');
+                                        loggD.d('NAME: ${googleSignInAccount.email} -> $page ${DateTime.now()}');
+                                        loggD.d('NAME: ${googleSignInAccount.displayName} -> $page ${DateTime.now()}');
+                                        loggD.d('NAME: ${googleSignInAccount.photoUrl} -> $page ${DateTime.now()}');
+                                        loggD.d('NAME: ${googleSignInAccount.serverAuthCode} -> $page ${DateTime.now()}');
+                                        loggD.d('NAME: ${googleSignInAccount.authHeaders} -> $page ${DateTime.now()}');
+                                        loggD.d('NAME: ${googleSignInAccount.toString()} -> $page ${DateTime.now()}');
+
+                                        loggV.v('NAME: ${googleSignInAccount.id} -> $page ${DateTime.now()}');
+                                        loggV.v('NAME: ${googleSignInAccount.email} -> $page ${DateTime.now()}');
+                                        loggV.v('NAME: ${googleSignInAccount.displayName} -> $page ${DateTime.now()}');
+                                        loggV.v('NAME: ${googleSignInAccount.photoUrl} -> $page ${DateTime.now()}');
+                                        loggV.v('NAME: ${googleSignInAccount.serverAuthCode} -> $page ${DateTime.now()}');
+                                        loggV.v('NAME: ${googleSignInAccount.authHeaders} -> $page ${DateTime.now()}');
+                                        loggV.v('NAME: ${googleSignInAccount.toString()} -> $page ${DateTime.now()}');
+
+
                                         setState(() {
                                           isGoogleSignInBtnClicked = true;
                                         });
@@ -266,6 +326,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         });
                                       } catch (e) {
                                         Utils.customPrint('EXE: $e');
+                                        loggD.d('EXE: $e -> $page ${DateTime.now()}');
+                                        loggV.v('EXE: $e -> $page ${DateTime.now()}');
+                                        loggE.e('EXE: $e -> $page ${DateTime.now()}');
                                         // TODO handle
                                       }
                                     }
@@ -294,6 +357,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             selectedCountry = value;
 
                             Utils.customPrint('country $selectedCountry');
+                            loggD.d('country $selectedCountry -> $page ${DateTime.now()}');
+                            loggV.v('country $selectedCountry -> $page ${DateTime.now()}');
                           });
                         },
                         dataSource: [
@@ -346,6 +411,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
+                          loggD.d(value + ' -> $page ${DateTime.now()}');
+                          loggV.v(value + ' -> $page ${DateTime.now()}');
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
@@ -448,6 +515,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
+                          loggD.d(value + ' -> $page ${DateTime.now()}');
+                          loggV.v(value + ' -> $page ${DateTime.now()}');
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
@@ -482,6 +551,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
+                          loggD.d(value + ' -> $page ${DateTime.now()}');
+                          loggV.v(value + ' -> $page ${DateTime.now()}');
                         }),
                     SizedBox(height: displayHeight(context) * 0.03),
                     CircularRadioTile(

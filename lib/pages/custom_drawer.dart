@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -28,6 +29,7 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 
+import '../common_widgets/widgets/log_level.dart';
 import 'authentication/change_password.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -48,12 +50,72 @@ class _CustomDrawerState extends State<CustomDrawer> {
   late List<Trip> getTrip;
   late DeviceInfoPlugin deviceDetails;
   bool isSync = false, isUploadStarted = false;
+  String page = "Custom_drawer";
 
   @override
   void initState() {
     commonProvider = context.read<CommonProvider>();
 
     super.initState();
+
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForErrorLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileE!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggE = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
 
     deviceDetails = DeviceInfoPlugin();
     getVersion();
@@ -218,6 +280,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                           Utils.customPrint(
                               "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                          loggD.d("TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page ${DateTime.now()}");
+                          loggV.v("TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page ${DateTime.now()}");
 
                           if (isTripStarted != null) {
                             if (isTripStarted) {
@@ -291,6 +355,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                       Utils.customPrint(
                           "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                      loggD.d("TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page ${DateTime.now()}");
+                      loggV.v("TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page ${DateTime.now()}");
 
                       if (isTripStarted != null) {
                         if (isTripStarted) {
@@ -388,6 +454,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                       Utils.customPrint(
                           "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                      loggD.d("TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page ${DateTime.now()}");
+                      loggV.v("TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page ${DateTime.now()}");
 
                       if (isTripStarted != null) {
                         if (isTripStarted) {
@@ -479,6 +547,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     Utils.customPrint('DELETE $vesselDelete');
     Utils.customPrint('DELETE $tripsDelete');
+    loggD.d('DELETE $vesselDelete -> $page ${DateTime.now()}');
+    loggD.d('DELETE $tripsDelete -> $page ${DateTime.now()}');
+    loggV.v('DELETE $vesselDelete -> $page ${DateTime.now()}');
+    loggV.v('DELETE $tripsDelete -> $page ${DateTime.now()}');
 
     sharedPreferences!.clear();
     GoogleSignIn googleSignIn = GoogleSignIn(
@@ -837,12 +909,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
     Utils.customPrint("VESSEL SYNC TRIP ${getTrip.length}");
     Utils.customPrint("VESSEL SYNC TRIP $vesselsSyncDetails");
     Utils.customPrint("VESSEL SYNC TRIP $tripSyncDetails");
+    loggD.d("VESSEL SYNC TRIP ${getTrip.length} -> $page ${DateTime.now()}");
+    loggD.d("VESSEL SYNC TRIP $vesselsSyncDetails -> $page ${DateTime.now()}");
+    loggD.d("VESSEL SYNC TRIP $tripSyncDetails -> $page ${DateTime.now()}");
+
+    loggV.v("VESSEL SYNC TRIP ${getTrip.length} -> $page ${DateTime.now()}");
+    loggV.v("VESSEL SYNC TRIP $vesselsSyncDetails -> $page ${DateTime.now()}");
+    loggV.v("VESSEL SYNC TRIP $tripSyncDetails -> $page ${DateTime.now()}");
 
     if (vesselsSyncDetails) {
       for (int i = 0; i < getVesselFuture.length; i++) {
         var vesselSyncOrNot = getVesselFuture[i].isSync;
         Utils.customPrint(
             "VESSEL SUCCESS MESSAGE ${getVesselFuture[i].imageURLs}");
+        loggD.d("VESSEL SUCCESS MESSAGE ${getVesselFuture[i].imageURLs} -> $page ${DateTime.now()}");
+        loggV.v("VESSEL SUCCESS MESSAGE ${getVesselFuture[i].imageURLs} -> $page ${DateTime.now()}");
 
         if (vesselSyncOrNot == 0) {
           if (getVesselFuture[i].imageURLs != null &&
@@ -857,6 +938,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
             Utils.customPrint(
                 'VESSEL Data ${File(getVesselFuture[i].imageURLs!)}');
+            loggD.d('VESSEL Data ${File(getVesselFuture[i].imageURLs!)} -> $page ${DateTime.now()}');
+            loggV.v('VESSEL Data ${File(getVesselFuture[i].imageURLs!)} -> $page ${DateTime.now()}');
           } else {
             getVesselFuture[i].selectedImages = [];
           }
@@ -880,16 +963,22 @@ class _CustomDrawerState extends State<CustomDrawer> {
             }
           }).catchError((error) {
             Utils.customPrint("ADD VESSEL ERROR $error");
+            loggD.e("ADD VESSEL ERROR $error  -> $page");
+            loggV.v("ADD VESSEL ERROR $error  -> $page");
             setState(() {
               vesselErrorOccurred = true;
             });
           });
         } else {
           Utils.customPrint("VESSEL DATA NOT Uploaded");
+          loggD.e("VESSEL DATA NOT Uploaded -> $page");
+          loggV.v("VESSEL DATA NOT Uploaded -> $page");
         }
       }
 
       Utils.customPrint("VESSEL DATA Uploaded");
+      loggD.d("VESSEL DATA Uploaded -> $page ${DateTime.now()}");
+      loggV.v("VESSEL DATA Uploaded -> $page ${DateTime.now()}");
     }
     if (tripSyncDetails) {
       for (int i = 0; i < getTrip.length; i++) {
@@ -946,6 +1035,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
           };
 
           print('QQQQQQ: $queryParameters');
+          loggD.d('QQQQQQ: $queryParameters -> $page ${DateTime.now()}');
+          loggV.v('QQQQQQ: $queryParameters -> $page ${DateTime.now()}');
 
           await commonProvider
               .sendSensorInfo(
@@ -961,11 +1052,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
               .then((value) async {
             if (value!.status!) {
               Utils.customPrint("TRIP SUCCESS MESSAGE ${value.message}");
+              loggD.d("TRIP SUCCESS MESSAGE ${value.message} -> $page ${DateTime.now()}");
+              loggV.v("TRIP SUCCESS MESSAGE ${value.message} -> $page ${DateTime.now()}");
 
               await _databaseService.updateTripIsSyncStatus(
                   1, getTrip[i].id.toString());
             } else {
               Utils.customPrint("TRIP MESSAGE ${value.message}");
+              loggD.d("TRIP MESSAGE ${value.message} -> $page ${DateTime.now()}");
+              loggV.v("TRIP MESSAGE ${value.message} -> $page ${DateTime.now()}");
               setState(() {
                 tripErrorOccurred = true;
               });
@@ -1013,12 +1108,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
         signOut();
       }
       Utils.customPrint("ERROR WHILE SYNC AND SIGN OUT IF SIGN OUTT");
+      loggE.e("ERROR WHILE SYNC AND SIGN OUT IF SIGN OUTT  -> $page ${DateTime.now()}");
+      loggV.v("ERROR WHILE SYNC AND SIGN OUT IF SIGN OUTT  -> $page ${DateTime.now()}");
     } else {
       Utils.showSnackBar(context,
           scaffoldKey: widget.scaffoldKey,
           message: 'Failed to sync data to cloud. Please try again.');
 
       Utils.customPrint("ERROR WHILE SYNC AND SIGN OUT ELSE");
+      loggE.e("ERROR WHILE SYNC AND SIGN OUT ELSE -> $page ${DateTime.now()}");
+      loggV.v("ERROR WHILE SYNC AND SIGN OUT ELSE -> $page ${DateTime.now()}");
     }
   }
 

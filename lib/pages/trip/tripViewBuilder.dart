@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -12,6 +13,7 @@ import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import 'dart:io';
 
@@ -47,10 +49,52 @@ class _TripViewListingState extends State<TripViewListing> {
     return getTripsByIdFuture;
   }
 
+  String page = "Trip_View_builder";
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
 
     commonProvider = context.read<CommonProvider>();
     commonProvider.getTripsByVesselId(widget.vesselId);
@@ -101,6 +145,10 @@ class _TripViewListingState extends State<TripViewListing> {
                           Utils.customPrint("TRIP DETAILS ${snapshot.data!.length}");
                           Utils.customPrint(
                               "TRIP DETAILS 1 ${snapshot.data![0].distance}");
+                          loggD.d("TRIP DETAILS ${snapshot.data!.length} -> $page ${DateTime.now()}");
+                          loggD.d("TRIP DETAILS 1 ${snapshot.data![0].distance} -> $page ${DateTime.now()}");
+                          loggV.v("TRIP DETAILS ${snapshot.data!.length} -> $page ${DateTime.now()}");
+                          loggV.v("TRIP DETAILS 1 ${snapshot.data![0].distance} -> $page ${DateTime.now()}");
                           return Padding(
                             padding: const EdgeInsets.only(
                                 left: 8.0, right: 8.0, top: 8.0),
@@ -155,6 +203,8 @@ class _TripViewListingState extends State<TripViewListing> {
                                                         .toInt());
 
                                             print('***DIST: ${currentTrip.toJson()}');
+                                            loggD.d('***DIST: ${currentTrip.toJson()}  -> $page ${DateTime.now()}');
+                                            loggV.v('***DIST: ${currentTrip.toJson()} -> $page ${DateTime.now()}');
 
                                             EndTrip().endTrip(
                                                 context: context,
@@ -234,6 +284,8 @@ class _TripViewListingState extends State<TripViewListing> {
     setState(() {
       tripIsRunning = result;
       Utils.customPrint('Trip is Running $tripIsRunning');
+      loggD.d('Trip is Running $tripIsRunning -> $page ${DateTime.now()}');
+      loggV.v('Trip is Running $tripIsRunning -> $page ${DateTime.now()}');
       setState(() {
         trip.isEndTripClicked = false;
       });

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -16,6 +17,7 @@ import '../common_widgets/widgets/common_text_feild.dart';
 import '../common_widgets/widgets/common_widgets.dart';
 import 'dart:io';
 
+import '../common_widgets/widgets/log_level.dart';
 import '../models/device_model.dart';
 
 class FeedbackReport extends StatefulWidget {
@@ -56,9 +58,51 @@ class _FeedbackReportState extends State<FeedbackReport> {
   AndroidDeviceInfo? androidDeviceInfo;
   Map<String,dynamic>? deviceDetails;
 
+  String page = "feedback_report";
+
   @override
   void initState() {
     super.initState();
+
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
     commonProvider = context.read<CommonProvider>();
     nameController  = TextEditingController();
     descriptionController = TextEditingController();
@@ -205,6 +249,10 @@ class _FeedbackReportState extends State<FeedbackReport> {
                   uploadImageFunction();
                   Utils.customPrint(
                       'FIIALLL: ${finalSelectedFiles.length}');
+                  loggD.d(
+                      'FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
+                  loggV.v(
+                      'FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
                 }, Colors.grey),
               ),
 
@@ -255,12 +303,20 @@ class _FeedbackReportState extends State<FeedbackReport> {
                                   onTap: () {
                                     Utils.customPrint(
                                         'FIIALLL: ${finalSelectedFiles.length}');
+                                    loggD.d(
+                                        'FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
+                                    loggV.v(
+                                        'FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
                                     setState(() {
                                       finalSelectedFiles
                                           .removeAt(index);
                                     });
                                     Utils.customPrint(
                                         'FIIALLL: ${finalSelectedFiles.length}');
+                                    loggD.d(
+                                        'FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
+                                    loggV.v(
+                                        'FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
                                   },
                                   child: Icon(
                                     Icons.close,
@@ -322,6 +378,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
                           };
                         }
                         Utils.customPrint("deviceDetails:${deviceDetails!.toString()}");
+                        loggD.d('deviceDetails:${deviceDetails!.toString()} -> $page ${DateTime.now()}');
+                        loggV.v('deviceDetails:${deviceDetails!.toString()} -> $page ${DateTime.now()}');
                         if(check){
                           final Directory appDir = await getApplicationDocumentsDirectory();
                           final String fileName = DateTime.now().toIso8601String() + '.png';
@@ -357,6 +415,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
                                   isBtnClick = false;
                                 });
                                 print("status of send user feedback is: ${value.status}");
+                                loggD.d("status of send user feedback is: ${value.status} -> $page ${DateTime.now()}");
+                                loggV.v("status of send user feedback is: ${value.status} -> $page ${DateTime.now()}");
                                 if(value.status!){
                                   deleteImageFile(imageFile!.path);
                                   sendFiles.clear();
@@ -397,6 +457,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
                                   isBtnClick = false;
                                 });
                                 print("status of send user feedback is: ${value.status}");
+                                loggD.d("status of send user feedback is: ${value.status} -> $page ${DateTime.now()}");
+                                loggV.v("status of send user feedback is: ${value.status} -> $page ${DateTime.now()}");
                                 if(value.status!){
                                   deleteImageFile(imageFile!.path);
                                   Navigator.pop(context);
@@ -439,6 +501,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
       }
     });
     print('totalSize: $totalSize');
+    loggD.d('totalSize: $totalSize  -> $page ${DateTime.now()}');
+    loggV.v('totalSize: $totalSize  -> $page ${DateTime.now()}');
     return totalSize;
   }
 
@@ -463,6 +527,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
       ''';
 
     print("file size: $fileSize");
+    loggD.d("file size: $fileSize  -> $page ${DateTime.now()}");
+    loggV.v("file size: $fileSize -> $page ${DateTime.now()}");
 
     setState(() {
       _result = fileSize;
@@ -495,6 +561,14 @@ class _FeedbackReportState extends State<FeedbackReport> {
                   Utils.customPrint(
                       'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
 
+                  loggD.d('CAMERA FILE 2 ${finalSelectedFiles[0]!.path} -> $page ${DateTime.now()}');
+                  loggD.d(
+                      'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page ${DateTime.now()}');
+
+                  loggV.v('CAMERA FILE 2 ${finalSelectedFiles[0]!.path} -> $page ${DateTime.now()}');
+                  loggV.v(
+                      'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page ${DateTime.now()}');
+
                   /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
             });*/
@@ -522,6 +596,12 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
                     Utils.customPrint('finalSelectedFiles length:  ${finalSelectedFiles.length}');
 
+                    loggD.d('CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page ${DateTime.now()}');
+                    loggD.d('finalSelectedFiles length:  ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
+
+                    loggV.v('CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page ${DateTime.now()}');
+                    loggV.v('finalSelectedFiles length:  ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
+
                     /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
             });*/
@@ -532,6 +612,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
       }
     } else {
       Utils.customPrint('OTHER ELSE');
+      loggD.d('OTHER ELSE -> $page ${DateTime.now()}');
+      loggV.v('OTHER ELSE -> $page ${DateTime.now()}');
       await selectImage(context, Colors.red,
               (List<File?> selectedImageFileList) {
             if (selectedImageFileList.isNotEmpty) {
@@ -542,6 +624,16 @@ class _FeedbackReportState extends State<FeedbackReport> {
                 Utils.customPrint(
                     'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
                 Utils.customPrint('finalSelectedFiles length1:  ${finalSelectedFiles.length}');
+
+                loggD.d('CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page ${DateTime.now()}');
+                loggD.d(
+                    'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page ${DateTime.now()}');
+                loggD.d('finalSelectedFiles length1:  ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
+
+                loggV.v('CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page ${DateTime.now()}');
+                loggV.v(
+                    'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page ${DateTime.now()}');
+                loggV.v('finalSelectedFiles length1:  ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
 
                 /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
@@ -560,7 +652,9 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
     final String fileName = DateTime.now().toIso8601String() + '.png';
     imageFile = File('${appDir.path}/$fileName');
-    print("file path is: ${imageFile!.path}");
+    print("file path is: ${imageFile!.path}-> $page ${DateTime.now()}");
+    loggD.d("file path is: ${imageFile!.path}-> $page ${DateTime.now()}");
+    loggV.v("file path is: ${imageFile!.path}-> $page ${DateTime.now()}");
 
     await imageFile!.writeAsBytes(widget.uIntList!);
 
@@ -584,6 +678,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
       final file = File(filePath);
       await file.delete();
       print('Image deleted successfully');
+      loggD.d('Image deleted successfully -> $page ${DateTime.now()}');
+      loggV.v('Image deleted successfully -> $page ${DateTime.now()}');
     } catch (e) {
       print('Failed to delete image: $e');
     }

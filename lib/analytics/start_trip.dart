@@ -8,6 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/analytics/calculation.dart';
 import 'package:performarine/analytics/get_file.dart';
 import 'package:performarine/analytics/location_service_repository.dart';
@@ -19,7 +20,10 @@ import 'package:performarine/services/database_service.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../common_widgets/widgets/log_level.dart';
+
 class StartTrip {
+  String page = "Start_trip";
   final DatabaseService _databaseService = DatabaseService();
 
   List<double>? _accelerometerValues;
@@ -39,6 +43,84 @@ class StartTrip {
   /// In this function we start to listen to the data coming from background locator port
   /// From sensor we are getting values of x,y & z in double format
   Future<void> startBGLocatorTrip(String tripId, DateTime dateTime, [bool isReinitialize = false]) async {
+
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+    getDirectoryForInfoLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileI!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggI = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+    getDirectoryForErrorLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileE!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggE = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+
     ReceivePort port = ReceivePort();
 
     /// Connect to the port and listen to location updates coming from background_locator_2 plugin.
@@ -107,6 +189,8 @@ class StartTrip {
     }
 
     print("AFTER SESNOR DATA");
+    loggD.d("AFTER SESNOR DATA -> $page ${DateTime.now()}");
+    loggV.v("AFTER SESNOR DATA -> $page ${DateTime.now()}");
 
     double latitude = 0.0;
     double longitude = 0.0;
@@ -118,6 +202,8 @@ class StartTrip {
     String lprFileName = 'lpr_$fileIndex.csv';
 
     print("BEFORE PORT LISTEN");
+    loggD.d("BEFORE PORT LISTEN -> $page ${DateTime.now()}");
+    loggV.v("BEFORE PORT LISTEN -> $page ${DateTime.now()}");
     // Future<bool> hasActiveNotifications() async {
     //   var activeNotifications = await flutterLocalNotificationsPlugin
     //       .resolvePlatformSpecificImplementation<
@@ -159,6 +245,10 @@ class StartTrip {
 
         Utils.customPrint('SPEED SPEED 1111 ${speed}');
         Utils.customPrint('SPEED SPEED 2222 ${locationDto.speed}');
+        loggD.d('SPEED SPEED 1111 ${speed} -> $page ${DateTime.now()}');
+        loggD.d('SPEED SPEED 2222 ${locationDto.speed} -> $page ${DateTime.now()}');
+        loggV.v('SPEED SPEED 1111 ${speed} -> $page ${DateTime.now()}');
+        loggV.v('SPEED SPEED 2222 ${locationDto.speed} -> $page ${DateTime.now()}');
 
         /// To get each and every location of ongoing trip from shared preferences
         /// this is use to calculate distance by current position and prev position store in the list
@@ -212,16 +302,31 @@ class StartTrip {
           debugPrint("CURR LAT ${_currentPosition.latitude}");
           debugPrint("CURR LONG ${_currentPosition.longitude}");
 
+          loggD.d("CURR LAT ${_currentPosition.latitude} -> $page ${DateTime.now()}");
+          loggD.d("CURR LONG ${_currentPosition.longitude} -> $page ${DateTime.now()}");
+
+          loggV.v("CURR LAT ${_currentPosition.latitude} -> $page ${DateTime.now()}");
+          loggV.v("CURR LONG ${_currentPosition.longitude} -> $page ${DateTime.now()}");
+
+          loggI.i("CURR LAT ${_currentPosition.latitude} -> $page ${DateTime.now()}");
+          loggI.i("CURR LONG ${_currentPosition.longitude} -> $page ${DateTime.now()}");
+
           if(isReinitialize)
             {
               String? tempDistInNM = sharedPreferences!.getString('tripDistance');
               print('@@@@: $tempDistInNM');
+              loggD.d('@@@@: $tempDistInNM -> $page ${DateTime.now()}');
+              loggV.v('@@@@: $tempDistInNM -> $page ${DateTime.now()}');
+              loggI.i('@@@@: $tempDistInNM -> $page ${DateTime.now()}');
               double tempDistInMeter = (double.parse(tempDistInNM ?? '0.00')* 1852);
               finalTripDistance += tempDistInMeter;
             }
 
           finalTripDistance += _distanceBetweenLastTwoLocations;
           debugPrint('Total Distance: $finalTripDistance');
+          loggD.d('Total Distance: $finalTripDistance -> $page ${DateTime.now()}');
+          loggV.v('Total Distance: $finalTripDistance -> $page ${DateTime.now()}');
+          loggI.i('Total Distance: $finalTripDistance -> $page ${DateTime.now()}');
           pref.setDouble('temp_trip_dist', finalTripDistance);
 
           /// Calculate distance with formula
@@ -239,6 +344,9 @@ class StartTrip {
 
         /// Here is the actual trip duration
         print('FINAL TRIP DUR RRR : $finalTripDuration');
+        loggD.d('FINAL TRIP DUR RRR : $finalTripDuration -> $page ${DateTime.now()}');
+        loggV.v('FINAL TRIP DUR RRR : $finalTripDuration -> $page ${DateTime.now()}');
+        loggI.i('FINAL TRIP DUR RRR : $finalTripDuration -> $page ${DateTime.now()}');
 
         /// DURATION 00:00:00
         String tripDurationForStorage =
@@ -256,6 +364,9 @@ class StartTrip {
         tripSpeedForStorage =
         Calculation().calculateCurrentSpeed(speed);
         print('FINAL TRIP SPEED: $tripSpeedForStorage}');
+        loggD.d('FINAL TRIP SPEED: $tripSpeedForStorage -> $page ${DateTime.now()}');
+        loggV.v('FINAL TRIP SPEED: $tripSpeedForStorage -> $page ${DateTime.now()}');
+        loggI.i('FINAL TRIP SPEED: $tripSpeedForStorage -> $page ${DateTime.now()}');
 
         /// AVG. SPEED
         tripAvgSpeedForStorage = Calculation()
@@ -265,11 +376,26 @@ class StartTrip {
         Utils.customPrint('TRIP SPEED 1212: $tripSpeedForStorage');
         Utils.customPrint('AVG SPEED: $tripAvgSpeedForStorage');
 
+        loggD.d('TRIP DURATION: $tripDurationForStorage -> $page ${DateTime.now()}');
+        loggD.d('TRIP SPEED 1212: $tripSpeedForStorage -> $page ${DateTime.now()}');
+        loggD.d('AVG SPEED: $tripAvgSpeedForStorage -> $page ${DateTime.now()}');
+
+        loggV.v('TRIP DURATION: $tripDurationForStorage -> $page ${DateTime.now()}');
+        loggV.v('TRIP SPEED 1212: $tripSpeedForStorage -> $page ${DateTime.now()}');
+        loggV.v('AVG SPEED: $tripAvgSpeedForStorage -> $page ${DateTime.now()}');
+
+        loggI.i('TRIP DURATION: $tripDurationForStorage -> $page ${DateTime.now()}');
+        loggI.i('TRIP SPEED 1212: $tripSpeedForStorage -> $page ${DateTime.now()}');
+        loggI.i('AVG SPEED: $tripAvgSpeedForStorage -> $page ${DateTime.now()}');
+
         var num = double.parse(tripSpeedForStorage) < 0
             ? 0.0
             : double.parse(tripSpeedForStorage);
 
         Utils.customPrint('SPEED SPEED SPEED 666: $num');
+        loggD.d('SPEED SPEED SPEED 666: $num -> $page ${DateTime.now()}');
+        loggV.v('SPEED SPEED SPEED 666: $num -> $page ${DateTime.now()}');
+        loggI.i('SPEED SPEED SPEED 666: $num -> $page ${DateTime.now()}');
 
         /// To cancel TripDurationTimer
         // if (tripDurationTimer != null) {
@@ -315,6 +441,15 @@ class StartTrip {
         if (fileSize >= 200000 && lprFileSize >= 200000) {
           Utils.customPrint('STOPPED WRITING');
           Utils.customPrint('CREATING NEW FILE');
+
+          loggD.d('STOPPED WRITING -> $page ${DateTime.now()}');
+          loggD.d('CREATING NEW FILE -> $page ${DateTime.now()}');
+
+          loggV.v('STOPPED WRITING -> $page ${DateTime.now()}');
+          loggV.v('CREATING NEW FILE -> $page ${DateTime.now()}');
+
+          loggI.i('STOPPED WRITING -> $page ${DateTime.now()}');
+          loggI.i('CREATING NEW FILE -> $page ${DateTime.now()}');
           fileIndex = fileIndex + 1;
           mobileFileName = 'mobile_$fileIndex.csv';
           lprFileName = 'lpr_$fileIndex.csv';
@@ -392,6 +527,8 @@ class StartTrip {
                   'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot'
               ).catchError((onError){
                 print('UPDATE NOTI ERROR: $onError');
+                loggV.v('UPDATE NOTI ERROR: $onError -> $page ${DateTime.now()}');
+                loggE.e('UPDATE NOTI ERROR: $onError -> $page ${DateTime.now()}');
               });
             }
 
@@ -414,6 +551,8 @@ class StartTrip {
             )
                 .catchError((onError) {
               print('IOS NOTI ERROR: $onError');
+              loggV.v('IOS NOTI ERROR: $onError -> $page ${DateTime.now()}');
+              loggE.e('IOS NOTI ERROR: $onError -> $page ${DateTime.now()}');
             });
           }
 

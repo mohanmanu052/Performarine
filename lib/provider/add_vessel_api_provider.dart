@@ -194,19 +194,37 @@ class AddVesselApiProvider with ChangeNotifier {
       http.Response responseValue = await http.Response.fromStream(response);
 
       Utils.customPrint('Add VESSEL RESP : ' + responseValue.body);
+      loggD.d('Add VESSEL RESP : ' + jsonEncode(responseValue.body) + '-> $page ${DateTime.now()}');
+      loggV.v('Add VESSEL RESP : ' + jsonEncode(responseValue.body) + '-> $page ${DateTime.now()}');
 
       var decodedData = json.decode(responseValue.body);
 
       if (responseValue.statusCode == HttpStatus.ok) {
         Utils.customPrint('Register Response : ' + responseValue.body);
+        loggD.d('Register Response : ' + responseValue.body + '-> $page ${DateTime.now()}');
+        loggV.v('Register Response : ' + responseValue.body + '-> $page ${DateTime.now()}');
+        loggI.i("API success of ${Urls.baseUrl}${Urls.createVessel} -> $page ${DateTime.now()} ");
+        loggV.v("API success of ${Urls.baseUrl}${Urls.createVessel} -> $page ${DateTime.now()} ");
 
         addVesselModel =
             AddVesselModel.fromJson(json.decode(responseValue.body));
+
+        if(addVesselModel == null){
+          loggE.e("Getting null while json parsing -> $page ${DateTime.now()}");
+          loggV.v("Getting null while json parsing -> $page ${DateTime.now()}");
+        }
 
         return addVesselModel!;
       } else if (responseValue.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
         Utils.customPrint('EXE RESP: $responseValue');
+        loggD.d("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
+        loggD.d('EXE RESP: $responseValue -> $page ${DateTime.now()}');
+        loggE.e("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
+        loggE.e('EXE RESP: $responseValue -> $page ${DateTime.now()}');
+
+        loggV.v("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
+        loggV.v('EXE RESP: $responseValue -> $page ${DateTime.now()}');
 
         if (scaffoldKey != null) {
           if (!calledFromSignOut) {
@@ -226,16 +244,29 @@ class AddVesselApiProvider with ChangeNotifier {
 
         Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
         Utils.customPrint('EXE RESP: $responseValue');
+        loggD.d("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
+        loggD.d("EXE RESP: $responseValue -> $page ${DateTime.now()}");
+        loggE.e("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
+        loggE.e("EXE RESP: $responseValue -> $page ${DateTime.now()}");
+
+        loggV.v("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
+        loggV.v("EXE RESP: $responseValue -> $page ${DateTime.now()}");
         addVesselModel = null;
       }
       addVesselModel = null;
     } on SocketException catch (_) {
       await Utils().check(scaffoldKey);
       Utils.customPrint('Socket Exception');
+      loggD.d("Socket Exception -> $page ${DateTime.now()}");
+      loggE.e("Socket Exception -> $page ${DateTime.now()}");
+      loggV.v("Socket Exception -> $page ${DateTime.now()}");
 
       addVesselModel = null;
     } catch (exception, s) {
       Utils.customPrint('error caught Add Vessel:- $exception \n $s');
+      loggD.d("error caught Add Vessel:- $exception \n $s -> $page ${DateTime.now()}");
+      loggE.e("error caught Add Vessel:- $exception \n $s -> $page ${DateTime.now()}");
+      loggV.v("error caught Add Vessel:- $exception \n $s -> $page ${DateTime.now()}");
       addVesselModel = null;
     }
 
