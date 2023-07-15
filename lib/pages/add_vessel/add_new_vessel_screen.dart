@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -10,6 +11,7 @@ import 'package:performarine/pages/add_vessel/add_new_vessel_step_two.dart';
 import 'package:performarine/pages/home_page.dart';
 
 import '../../common_widgets/utils/colors.dart';
+import '../../common_widgets/widgets/log_level.dart';
 
 //Add new vessel page
 class AddNewVesselScreen extends StatefulWidget {
@@ -35,7 +37,25 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
   @override
   void initState() {
     super.initState();
-
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
     pageController = PageController();
   }
 

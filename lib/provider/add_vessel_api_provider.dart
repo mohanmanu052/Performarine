@@ -3,13 +3,17 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/models/add_vessel_model.dart';
 import 'package:performarine/models/vessel.dart';
 
+import '../common_widgets/widgets/log_level.dart';
+
 class AddVesselApiProvider with ChangeNotifier {
   AddVesselModel? addVesselModel;
+  String page = "Add_Vessel_Api_Provider";
 
   Future<AddVesselModel?> addVesselData(
       BuildContext context,
@@ -18,6 +22,102 @@ class AddVesselApiProvider with ChangeNotifier {
       String accessToken,
       GlobalKey<ScaffoldState> scaffoldKey,
       {bool calledFromSignOut = false}) async {
+
+    getDirectoryForDebugLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileD!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggD = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+    getDirectoryForInfoLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileI!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggI = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+    getDirectoryForErrorLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileE!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggE = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+    getDirectoryForVerboseLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileV!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggV = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
+    getDirectoryForWarningLogRecord().whenComplete(
+          () {
+        FileOutput fileOutPut = FileOutput(file: fileW!);
+        // ConsoleOutput consoleOutput = ConsoleOutput();
+        LogOutput multiOutput = fileOutPut;
+        loggW = Logger(
+            filter: DevelopmentFilter(),
+            printer: PrettyPrinter(
+              methodCount: 0,
+              errorMethodCount: 3,
+              lineLength: 70,
+              colors: true,
+              printEmojis: false,
+              //printTime: true
+            ),
+            output: multiOutput // Use the default LogOutput (-> send everything to console)
+        );
+      },
+    );
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
       "x_access_token": '$accessToken',

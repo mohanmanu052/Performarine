@@ -81,7 +81,7 @@ dependencies:
   firebase_crashlytics: ^3.3.3
   wakelock: ^0.6.2
   screenshot: ^1.2.0
-
+  logger: ^1.4.0
 
 dependency_overrides:
   ffi: ^2.0.1
