@@ -284,6 +284,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     commonProvider = context.watch<CommonProvider>();
     return WillPopScope(
       onWillPop: () async {
+        Wakelock.disable();
         if (widget.calledFrom == null) {
           Navigator.pushAndRemoveUntil(
               context,
@@ -323,7 +324,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             leading: IconButton(
               onPressed: () {
                 // Navigator.of(context).pop();
-
+                 Wakelock.disable();
                 if (widget.calledFrom == null) {
                   Navigator.pushAndRemoveUntil(
                       context,

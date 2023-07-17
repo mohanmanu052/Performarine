@@ -59,7 +59,15 @@ void main() async {
   tz.initializeTimeZones();
 
   await Firebase.initializeApp();
-  Wakelock.disable();
+
+  bool wakelockEnabled = await Wakelock.enabled;
+
+  if(wakelockEnabled){
+    print("wake lock enabled: $wakelockEnabled");
+    Wakelock.disable();
+  } else{
+    Wakelock.disable();
+  }
 
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
