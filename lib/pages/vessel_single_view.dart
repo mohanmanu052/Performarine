@@ -505,9 +505,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           Utils.customPrint('time stamp:' +
                               DateTime.now().toUtc().toString());
                           Utils().showEndTripDialog(context, () async {
-                            setState(() {
-                              isTripEndedOrNot = true;
-                            });
 
                             List<String>? tripData = sharedPreferences!
                                 .getStringList('trip_data');
@@ -531,27 +528,36 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 ((durationTime.inMilliseconds) / 1000)
                                     .toInt());
 
-                            Navigator.of(context).pop();
+                            debugPrint("DURATION !!!!!! $tripDuration");
 
-                            Utils.customPrint(
-                                'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+                            bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
-                            EndTrip().endTrip(
-                                context: context,
-                                scaffoldKey: scaffoldKey,
-                                duration: tripDuration,
-                                onEnded: () async {
-                                  Utils.customPrint('TRIPPPPPP ENDEDDD:');
-                                  setState(() {
-                                    isEndTripButton = false;
-                                    tripIsEnded = true;
-                                    commonProvider.getTripsByVesselId(
-                                        widget.vessel!.id);
-                                    // isZipFileCreate = true;
-                                  });
-                                  await tripIsRunningOrNot();
-                                  getVesselAnalytics(widget.vessel!.id!);
+                            if(!isSmallTrip)
+                            {
+                              Navigator.pop(context);
+
+                              Utils().showDeleteTripDialog(context, (){
+                                endTripMethod();
+                                debugPrint("SMALL TRIPP IDDD ${tripId}");
+
+                                debugPrint("SMALL TRIPP IDDD ${tripId}");
+
+                                Future.delayed(Duration(seconds: 1), (){
+                                  if(!isSmallTrip)
+                                  {
+                                    debugPrint("SMALL TRIPP IDDD 11 ${tripId}");
+                                    DatabaseService().deleteTripFromDB(tripId);
+                                  }
                                 });
+                              }, (){
+                                endTripMethod();
+                              }
+                              );
+                            }
+                            else
+                            {
+                              endTripMethod();
+                            }
                           }, () {
                             Navigator.of(context).pop();
                           });
@@ -2331,7 +2337,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       print('IOS NOTI ERROR: $onError');
     });
 
-    await initPlatformStateBGL();
+
     await onSave('', bottomSheetContext, true);
 
     await sharedPreferences!.setBool('trip_started', true);
@@ -2342,7 +2348,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
       selectedVesselWeight
     ]);
 
-    StartTrip().startBGLocatorTrip(getTripId, DateTime.now());
+    await initPlatformStateBGL();
+
 
     await tripIsRunningOrNot();
 
@@ -2381,6 +2388,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                 notificationTapCallback:
                 LocationCallbackHandler.notificationCallback)))
         .then((value) async {
+      StartTrip().startBGLocatorTrip(getTripId, DateTime.now());
+
       notiTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
         var activeNotifications = await flutterLocalNotificationsPlugin
             .resolvePlatformSpecificImplementation<
@@ -2936,5 +2945,57 @@ class VesselSingleViewState extends State<VesselSingleView> {
       totalDuration = analyticsData[3];
       vesselAnalytics = false;
     });
+  }
+
+  endTripMethod() async{
+
+
+    setState(() {
+      isTripEndedOrNot = true;
+    });
+
+    List<String>? tripData = sharedPreferences!
+        .getStringList('trip_data');
+
+    String tripId = '';
+    if (tripData != null) {
+      tripId = tripData[0];
+    }
+
+    final currentTrip =
+    await _databaseService.getTrip(tripId);
+
+    DateTime createdAtTime =
+    DateTime.parse(currentTrip.createdAt!);
+
+    var durationTime = DateTime.now()
+        .toUtc()
+        .difference(createdAtTime);
+    String tripDuration =
+    Utils.calculateTripDuration(
+        ((durationTime.inMilliseconds) / 1000)
+            .toInt());
+
+    Navigator.of(context).pop();
+
+    Utils.customPrint(
+        'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+
+    EndTrip().endTrip(
+        context: context,
+        scaffoldKey: scaffoldKey,
+        duration: tripDuration,
+        onEnded: () async {
+          Utils.customPrint('TRIPPPPPP ENDEDDD:');
+          setState(() {
+            isEndTripButton = false;
+            tripIsEnded = true;
+            commonProvider.getTripsByVesselId(
+                widget.vessel!.id);
+            // isZipFileCreate = true;
+          });
+          await tripIsRunningOrNot();
+          getVesselAnalytics(widget.vessel!.id!);
+        });
   }
 }

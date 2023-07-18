@@ -474,4 +474,18 @@ class DatabaseService {
     //return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
     return finalTripList;
   }
+
+  Future<void> deleteTripFromDB(String tripId) async {
+    // Get a reference to the database.
+    final db = await _databaseService.database;
+
+    // Remove the Trip from the database.
+    await db.delete(
+      'trips',
+      // Use a `where` clause to delete a specific trip.
+      where: 'id = ?',
+      // Pass the Trip's id as a whereArg to prevent SQL injection.
+      whereArgs: [tripId],
+    );
+  }
 }

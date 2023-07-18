@@ -4,6 +4,7 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
@@ -129,53 +130,51 @@ class _TripViewListingState extends State<TripViewListing> {
                                         onTap: () async {
                                           Utils().showEndTripDialog(context,
                                               () async {
-                                            Navigator.of(context).pop();
 
-                                            await commonProvider
-                                                .updateTripStatus(true);
+                                                final currentTrip = await _databaseService
+                                                    .getTrip(snapshot.data![index].id!);
 
-                                            setState(() {
-                                              snapshot.data![index].isEndTripClicked =
-                                                  true;
-                                            });
+                                                DateTime createdAtTime = DateTime.parse(
+                                                    currentTrip.createdAt!);
 
-                                            final currentTrip = await _databaseService
-                                                .getTrip(snapshot.data![index].id!);
-
-                                            DateTime createdAtTime = DateTime.parse(
-                                                currentTrip.createdAt!);
-
-                                            var durationTime = DateTime.now()
-                                                .toUtc()
-                                                .difference(createdAtTime);
-                                            String tripDuration =
+                                                var durationTime = DateTime.now()
+                                                    .toUtc()
+                                                    .difference(createdAtTime);
+                                                String tripDuration =
                                                 Utils.calculateTripDuration(
                                                     ((durationTime.inMilliseconds) /
-                                                            1000)
+                                                        1000)
                                                         .toInt());
+                                            debugPrint("DURATION !!!!!! $tripDuration");
 
-                                            print('***DIST: ${currentTrip.toJson()}');
+                                            bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
-                                            EndTrip().endTrip(
-                                                context: context,
-                                                scaffoldKey: widget.scaffoldKey,
-                                                duration: tripDuration,
-                                                onEnded: () async {
-                                                  setState(() {
-                                                    snapshot.data![index].tripStatus =
-                                                        1;
-                                                  });
+                                            if(!isSmallTrip)
+                                            {
+                                              Navigator.pop(context);
 
-                                                  await commonProvider
-                                                      .updateTripStatus(false);
+                                              Utils().showDeleteTripDialog(context, (){
+                                                endTripMethod(tripDuration, snapshot.data![index]);
+                                                debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
 
-                                                  if (widget.onTripEnded != null) {
-                                                    widget.onTripEnded!.call();
+                                                debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
+
+                                                Future.delayed(Duration(seconds: 1), (){
+                                                  if(!isSmallTrip)
+                                                  {
+                                                    debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
+                                                    DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
                                                   }
-
-                                                  await tripIsRunningOrNot(
-                                                      snapshot.data![index]);
                                                 });
+                                              }, (){
+                                                   endTripMethod(tripDuration, snapshot.data![index]);
+                                                  }
+                                              );
+                                            }
+                                            else
+                                            {
+                                              endTripMethod(tripDuration, snapshot.data![index]);
+                                            }
 
                                             return;
                                           }, () {
@@ -240,5 +239,57 @@ class _TripViewListingState extends State<TripViewListing> {
     });
 
     return result;
+  }
+
+  endTripMethod(String tripDuration, Trip trip,)async
+  {
+
+    Navigator.of(context).pop();
+
+    await commonProvider
+        .updateTripStatus(true);
+
+    setState(() {
+      trip.isEndTripClicked =
+      true;
+    });
+
+    final currentTrip = await _databaseService
+        .getTrip(trip.id!);
+
+    DateTime createdAtTime = DateTime.parse(
+        currentTrip.createdAt!);
+
+    var durationTime = DateTime.now()
+        .toUtc()
+        .difference(createdAtTime);
+    String tripDuration =
+    Utils.calculateTripDuration(
+        ((durationTime.inMilliseconds) /
+            1000)
+            .toInt());
+
+    print('***DIST: ${currentTrip.toJson()}');
+
+    EndTrip().endTrip(
+        context: context,
+        scaffoldKey: widget.scaffoldKey,
+        duration: tripDuration,
+        onEnded: () async {
+          setState(() {
+            trip.tripStatus =
+            1;
+          });
+
+          await commonProvider
+              .updateTripStatus(false);
+
+          if (widget.onTripEnded != null) {
+            widget.onTripEnded!.call();
+          }
+
+          await tripIsRunningOrNot(
+              trip);
+        });
   }
 }

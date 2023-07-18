@@ -653,9 +653,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                     'End Trip', context, buttonBGColor,
                                         () async {
 
-                                      setDialogState(() {
-                                        isEndTripBtnClicked = true;
-                                      });
                                           List<String>? tripData = sharedPreferences!
                                               .getStringList('trip_data');
 
@@ -678,28 +675,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                               ((durationTime.inMilliseconds) / 1000)
                                                   .toInt());
 
-                                          Utils.customPrint(
-                                              'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+                                          debugPrint("DURATION !!!!!! $tripDuration");
 
-                                          EndTrip().endTrip(
-                                              context: context,
-                                              scaffoldKey: scaffoldKey,
-                                              duration: tripDuration,
-                                              onEnded: () async {
+                                          bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
-                                                Future.delayed(Duration(seconds: 1), (){
-                                                  setDialogState(() {
-                                                    isEndTripBtnClicked = false;
-                                                  });
+                                          if(!isSmallTrip)
+                                          {
+                                            Navigator.pop(context);
 
-                                                  Navigator.of(context).pop();
-                                                });
+                                            Utils().showDeleteTripDialog(context, (){
+                                              endTripMethod(setDialogState);
+                                              debugPrint("SMALL TRIPP IDDD ${tripId}");
 
-                                                Utils.customPrint('TRIPPPPPP ENDEDDD:');
-                                                setState(() {
-                                                  getVesselFuture = _databaseService.vessels();
-                                                });
+                                              debugPrint("SMALL TRIPP IDDD ${tripId}");
+
+                                              Future.delayed(Duration(seconds: 1), (){
+                                                if(!isSmallTrip)
+                                                {
+                                                  debugPrint("SMALL TRIPP IDDD 11 ${tripId}");
+                                                  DatabaseService().deleteTripFromDB(tripId);
+                                                }
                                               });
+                                            }, (){
+                                              endTripMethod(setDialogState);
+                                            }
+                                            );
+                                          }
+                                          else
+                                          {
+                                            endTripMethod(setDialogState);
+                                          }
+
                                     },
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,
@@ -799,5 +805,56 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                 notificationIcon: '@drawable/noti_logo',
                 notificationTapCallback:
                 LocationCallbackHandler.notificationCallback)));
+  }
+
+  endTripMethod(StateSetter setDialogState)async
+  {
+    setDialogState(() {
+      isEndTripBtnClicked = true;
+    });
+    List<String>? tripData = sharedPreferences!
+        .getStringList('trip_data');
+
+    String tripId = '';
+    if (tripData != null) {
+      tripId = tripData[0];
+    }
+
+    final currentTrip =
+        await _databaseService.getTrip(tripId);
+
+    DateTime createdAtTime =
+    DateTime.parse(currentTrip.createdAt!);
+
+    var durationTime = DateTime.now()
+        .toUtc()
+        .difference(createdAtTime);
+    String tripDuration =
+    Utils.calculateTripDuration(
+        ((durationTime.inMilliseconds) / 1000)
+            .toInt());
+
+    Utils.customPrint(
+        'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+
+    EndTrip().endTrip(
+        context: context,
+        scaffoldKey: scaffoldKey,
+        duration: tripDuration,
+        onEnded: () async {
+
+          Future.delayed(Duration(seconds: 1), (){
+            setDialogState(() {
+              isEndTripBtnClicked = false;
+            });
+
+            Navigator.of(context).pop();
+          });
+
+          Utils.customPrint('TRIPPPPPP ENDEDDD:');
+          setState(() {
+            getVesselFuture = _databaseService.vessels();
+          });
+        });
   }
 }
