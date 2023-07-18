@@ -284,33 +284,34 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     commonProvider = context.watch<CommonProvider>();
     return WillPopScope(
       onWillPop: () async {
-        Wakelock.disable();
-        if (widget.calledFrom == null) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-              ModalRoute.withName(""));
-          return false;
-        } else if (widget.calledFrom! == 'HomePage') {
-          if (isDataUpdated) {
+        Wakelock.disable().then((value) {
+          if (widget.calledFrom == null) {
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => HomePage(
-                          tabIndex: 1,
-                        )),
+                MaterialPageRoute(builder: (context) => HomePage()),
                 ModalRoute.withName(""));
             return false;
-          } else {
-            Navigator.of(context).pop();
+          } else if (widget.calledFrom! == 'HomePage') {
+            if (isDataUpdated) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomePage(
+                        tabIndex: 1,
+                      )),
+                  ModalRoute.withName(""));
+              return false;
+            } else {
+              Navigator.of(context).pop();
+            }
+          } else if (widget.calledFrom == 'VesselSingleView') {
+            Navigator.of(context).pop(isDataUpdated);
+            return false;
+          } else if (widget.calledFrom == 'Report') {
+            Navigator.pop(context);
+            return false;
           }
-        } else if (widget.calledFrom == 'VesselSingleView') {
-          Navigator.of(context).pop(isDataUpdated);
-          return false;
-        } else if (widget.calledFrom == 'Report') {
-          Navigator.pop(context);
-          return false;
-        }
+        });
         return false;
       },
       child: Screenshot(
@@ -324,37 +325,39 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             leading: IconButton(
               onPressed: () {
                 // Navigator.of(context).pop();
-                 Wakelock.disable();
-                if (widget.calledFrom == null) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      ModalRoute.withName(""));
-                } else if (widget.calledFrom! == 'HomePage') {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(
-                                tabIndex: 1,
-                              )),
-                      ModalRoute.withName(""));
-                } else if (widget.calledFrom! == 'HomePage') {
-                  if (isDataUpdated) {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HomePage(
-                                  tabIndex: 1,
-                                )),
-                        ModalRoute.withName(""));
-                  } else {
-                    Navigator.of(context).pop();
-                  }
-                } else if (widget.calledFrom == 'VesselSingleView') {
-                  Navigator.of(context).pop(isDataUpdated);
-                } else if (widget.calledFrom == "Report") {
-                  Navigator.pop(context);
-                }
+                 Wakelock.disable().then((value) {
+                   if (widget.calledFrom == null) {
+                     Navigator.pushAndRemoveUntil(
+                         context,
+                         MaterialPageRoute(builder: (context) => HomePage()),
+                         ModalRoute.withName(""));
+                   } else if (widget.calledFrom! == 'HomePage') {
+                     Navigator.pushAndRemoveUntil(
+                         context,
+                         MaterialPageRoute(
+                             builder: (context) => HomePage(
+                               tabIndex: 1,
+                             )),
+                         ModalRoute.withName(""));
+                   } else if (widget.calledFrom! == 'HomePage') {
+                     if (isDataUpdated) {
+                       Navigator.pushAndRemoveUntil(
+                           context,
+                           MaterialPageRoute(
+                               builder: (context) => HomePage(
+                                 tabIndex: 1,
+                               )),
+                           ModalRoute.withName(""));
+                     } else {
+                       Navigator.of(context).pop();
+                     }
+                   } else if (widget.calledFrom == 'VesselSingleView') {
+                     Navigator.of(context).pop(isDataUpdated);
+                   } else if (widget.calledFrom == "Report") {
+                     Navigator.pop(context);
+                   }
+                 });
+
               },
               icon: const Icon(Icons.arrow_back),
               color: Theme.of(context).brightness == Brightness.dark
