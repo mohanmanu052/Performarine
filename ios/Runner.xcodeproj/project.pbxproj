@@ -190,7 +190,27 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+<<<<<<< HEAD
 		186D815ABB2B1E23BF4781A6 /* [CP] Check Pods Manifest.lock */ = {
+=======
+		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}",
+			);
+			name = "Thin Binary";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n\n\"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed\n";
+		};
+		74158F65F61ABBF423691BF7 /* [CP] Check Pods Manifest.lock */ = {
+>>>>>>> 7751fc3f9714aa6529fc26ffb4cf043d2764d30f
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (

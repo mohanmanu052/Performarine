@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
@@ -10,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/analytics/start_trip.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -30,6 +33,7 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 
 import '../analytics/location_callback_handler.dart';
 
@@ -70,6 +74,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   DeviceInfo? deviceDetails;
 
   List<String> tripData = [];
+  final controller = ScreenshotController();
+  File? imageFile;
 
   @override
   void didUpdateWidget(covariant HomePage oldWidget) {
@@ -272,173 +278,187 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
       },
       child: DefaultTabController(
         length: 2,
-        child: Scaffold(
-          backgroundColor: commonBackgroundColor,
-          key: scaffoldKey,
-          appBar: AppBar(
-            elevation: 0,
-            centerTitle: true,
-            leading: InkWell(
-              onTap: () {
-                scaffoldKey.currentState!.openDrawer();
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(19),
-                child: Image.asset(
-                  'assets/images/menu.png',
-                ),
-              ),
-            ),
-            title: Container(
-              width: MediaQuery.of(context).size.width / 2,
-              // color: Colors.yellow,
-              child: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  children: [
-                    WidgetSpan(
-                        child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/images/lognotitle.png",
-                          height: 50,
-                          width: 50,
-                        ),
-                        commonText(
-                          context: context,
-                          text: 'PerforMarine',
-                          fontWeight: FontWeight.w600,
-                          textColor: Colors.black87,
-                          textSize: displayWidth(context) * 0.045,
-                        ),
-                      ],
-                    )),
-                  ],
-                ),
-              ),
-            ),
-            bottom: TabBar(
-              controller: tabController,
-              padding: EdgeInsets.all(0),
-              labelPadding: EdgeInsets.zero,
-              isScrollable: true,
-              indicatorColor: Colors.white,
-              onTap: (int value) {
-                setState(() {
-                  currentTabIndex = value;
-                });
-              },
-              tabs: [
-                Container(
-                  margin: EdgeInsets.only(right: 2),
-                  width: displayWidth(context) * 0.45,
-                  decoration: BoxDecoration(
-                      color: currentTabIndex == 0
-                          ? buttonBGColor
-                          : commonBackgroundColor,
-                      border: Border.all(color: buttonBGColor),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          bottomLeft: Radius.circular(20))),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 9.0),
-                    child: commonText(
-                      context: context,
-                      text: 'Vessels',
-                      fontWeight: FontWeight.w500,
-                      textColor:
-                          currentTabIndex == 0 ? Colors.white : Colors.black,
-                      textSize: displayWidth(context) * 0.036,
-                    ),
-                    // Text('Vessels'),
+        child: Screenshot(
+          controller: controller,
+          child: Scaffold(
+            backgroundColor: commonBackgroundColor,
+            key: scaffoldKey,
+            appBar: AppBar(
+              elevation: 0,
+              centerTitle: true,
+              leading: InkWell(
+                onTap: () {
+                  scaffoldKey.currentState!.openDrawer();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(19),
+                  child: Image.asset(
+                    'assets/images/menu.png',
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(left: 2),
-                  width: displayWidth(context) * 0.45,
-                  decoration: BoxDecoration(
-                      color: currentTabIndex == 1
-                          ? buttonBGColor
-                          : commonBackgroundColor,
-                      border: Border.all(color: buttonBGColor),
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          bottomRight: Radius.circular(20))),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 9.0),
-                    child: commonText(
-                      context: context,
-                      text:
-                          'Activity (${commonProvider.tripsCount.toString()})',
-                      fontWeight: FontWeight.w500,
-                      textColor:
-                          currentTabIndex == 1 ? Colors.white : Colors.black,
-                      textSize: displayWidth(context) * 0.036,
+              ),
+              title: Container(
+                width: MediaQuery.of(context).size.width / 2,
+                // color: Colors.yellow,
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      WidgetSpan(
+                          child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/images/lognotitle.png",
+                            height: 50,
+                            width: 50,
+                          ),
+                          commonText(
+                            context: context,
+                            text: 'PerforMarine',
+                            fontWeight: FontWeight.w600,
+                            textColor: Colors.black87,
+                            textSize: displayWidth(context) * 0.045,
+                          ),
+                        ],
+                      )),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                IconButton(onPressed: (){
+                  final image = controller.capture();
+                  print("Image is: ${image.toString()}");
+                  captureAndSaveScreenshot();
+                }, icon: Icon(
+                    Icons.help,
+                  size: 25,
+                  color: Colors.grey,
+                ))
+              ],
+              bottom: TabBar(
+                controller: tabController,
+                padding: EdgeInsets.all(0),
+                labelPadding: EdgeInsets.zero,
+                isScrollable: true,
+                indicatorColor: Colors.white,
+                onTap: (int value) {
+                  setState(() {
+                    currentTabIndex = value;
+                  });
+                },
+                tabs: [
+                  Container(
+                    margin: EdgeInsets.only(right: 2),
+                    width: displayWidth(context) * 0.45,
+                    decoration: BoxDecoration(
+                        color: currentTabIndex == 0
+                            ? buttonBGColor
+                            : commonBackgroundColor,
+                        border: Border.all(color: buttonBGColor),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            bottomLeft: Radius.circular(20))),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 9.0),
+                      child: commonText(
+                        context: context,
+                        text: 'Vessels',
+                        fontWeight: FontWeight.w500,
+                        textColor:
+                            currentTabIndex == 0 ? Colors.white : Colors.black,
+                        textSize: displayWidth(context) * 0.036,
+                      ),
+                      // Text('Vessels'),
                     ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 2),
+                    width: displayWidth(context) * 0.45,
+                    decoration: BoxDecoration(
+                        color: currentTabIndex == 1
+                            ? buttonBGColor
+                            : commonBackgroundColor,
+                        border: Border.all(color: buttonBGColor),
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(20),
+                            bottomRight: Radius.circular(20))),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 9.0),
+                      child: commonText(
+                        context: context,
+                        text:
+                            'Activity (${commonProvider.tripsCount.toString()})',
+                        fontWeight: FontWeight.w500,
+                        textColor:
+                            currentTabIndex == 1 ? Colors.white : Colors.black,
+                        textSize: displayWidth(context) * 0.036,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: commonBackgroundColor,
+            ),
+            drawer: CustomDrawer(
+              scaffoldKey: scaffoldKey,
+            ),
+            body: TabBarView(
+              controller: tabController,
+              children: [
+                VesselBuilder(
+                  future: getVesselFuture,
+                  onEdit: (value) async {
+                    {
+                      Navigator.of(context)
+                          .push(
+                            MaterialPageRoute(
+                              builder: (_) => VesselFormPage(vessel: value),
+                              fullscreenDialog: true,
+                            ),
+                          )
+                          .then((_) => setState(() {}));
+                    }
+                  },
+                  onTap: (value) async {
+                    {
+                      var result = await Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => VesselSingleView(
+                            vessel: value,
+                          ),
+                          fullscreenDialog: true,
+                        ),
+                      );
+                      commonProvider.getTripsCount();
+                      if (result != null) {
+                        Utils.customPrint('RESULT HOME PAGE $result');
+                        if (result) {
+                          setState(() {
+                            getVesselFuture = _databaseService.vessels();
+                            // _getTripsCount();
+                            // setState(() {});
+                          });
+                        }
+                      }
+                    }
+                  },
+                  onDelete: _onVesselDelete,
+                  scaffoldKey: scaffoldKey,
+                ),
+                SingleChildScrollView(
+                  child: TripViewListing(
+                    scaffoldKey: scaffoldKey,
+                    calledFrom: 'HomePage',
+                    onTripEnded: (){
+                      commonProvider.getTripsByVesselId('');
+                    },
                   ),
                 ),
               ],
             ),
-            backgroundColor: commonBackgroundColor,
-          ),
-          drawer: CustomDrawer(
-            scaffoldKey: scaffoldKey,
-          ),
-          body: TabBarView(
-            controller: tabController,
-            children: [
-              VesselBuilder(
-                future: getVesselFuture,
-                onEdit: (value) async {
-                  {
-                    Navigator.of(context)
-                        .push(
-                          MaterialPageRoute(
-                            builder: (_) => VesselFormPage(vessel: value),
-                            fullscreenDialog: true,
-                          ),
-                        )
-                        .then((_) => setState(() {}));
-                  }
-                },
-                onTap: (value) async {
-                  {
-                    var result = await Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => VesselSingleView(
-                          vessel: value,
-                        ),
-                        fullscreenDialog: true,
-                      ),
-                    );
-                    commonProvider.getTripsCount();
-                    if (result != null) {
-                      Utils.customPrint('RESULT HOME PAGE $result');
-                      if (result) {
-                        setState(() {
-                          getVesselFuture = _databaseService.vessels();
-                          // _getTripsCount();
-                          // setState(() {});
-                        });
-                      }
-                    }
-                  }
-                },
-                onDelete: _onVesselDelete,
-                scaffoldKey: scaffoldKey,
-              ),
-              SingleChildScrollView(
-                child: TripViewListing(
-                  scaffoldKey: scaffoldKey,
-                  calledFrom: 'HomePage',
-                  onTripEnded: (){
-                    commonProvider.getTripsByVesselId('');
-                  },
-                ),
-              ),
-            ],
           ),
         ),
       ),
@@ -772,4 +792,40 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                 notificationTapCallback:
                 LocationCallbackHandler.notificationCallback)));
   }
+
+  Future<String> captureAndSaveScreenshot() async {
+    final Uint8List? imageBytes = await controller.capture();
+
+    final Directory appDir = await getApplicationDocumentsDirectory();
+
+    final String fileName = DateTime.now().toIso8601String() + '.png';
+    imageFile = File('${appDir.path}/$fileName');
+    print("file path is: ${imageFile!.path}");
+
+    await imageFile!.writeAsBytes(imageBytes!);
+
+    deleteImageAfterDelay(imageFile!.path);
+
+    return imageFile!.path;
+  }
+
+  void deleteImageAfterDelay(String imagePath) {
+    const delayDuration = Duration(seconds: 2);
+
+    Timer(delayDuration, () {
+      print("delete confirmation");
+      deleteImageFile(imagePath);
+    });
+  }
+
+  Future<void> deleteImageFile(String filePath) async {
+    try {
+      final file = File(filePath);
+      await file.delete();
+      print('Image deleted successfully');
+    } catch (e) {
+      print('Failed to delete image: $e');
+    }
+  }
+
 }
