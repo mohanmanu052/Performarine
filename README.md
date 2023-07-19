@@ -23,3 +23,9 @@
 
 ## Preview
 <img src="screenshots/ss.png" />
+
+
+## Sprint10 Notes
+  - User kills the application and reopens - need to show a popup containing "Last time you used performarine. there is a trip in progress. do you want to end the trip or continue? ("End trip", "continue trip")
+  - Firebase crash analytics Implemented
+  - User feedback is added in all screens. Uploading image files.

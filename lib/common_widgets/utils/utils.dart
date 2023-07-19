@@ -415,4 +415,141 @@ class Utils {
     // kReleaseMode ? null : debugPrint('$text');
     debugPrint('$text');
   }
+
+  //End trip dialog for user confirmation to end trip
+  showDeleteTripDialog(BuildContext context, Function() endTripBtnClick,
+      Function() onCancelClick) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.24,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: commonText(
+                              context: context,
+                              text: 'Your trip is less than 10s going to be archive. Do you want to End the trip ?',
+                              fontWeight: FontWeight.w600,
+                              textColor: Colors.black,
+                              textSize: displayWidth(context) * 0.042,
+                              textAlign: TextAlign.center),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey)),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Continue',
+                                      context,
+                                      Colors.transparent,
+                                      onCancelClick,
+                                      displayWidth(context) * 0.5,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark
+                                          ? Colors.white
+                                          : Colors.grey,
+                                      displayHeight(context) * 0.015,
+                                      Colors.transparent,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15.0,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'End Trip',
+                                      context,
+                                      buttonBGColor,
+                                      endTripBtnClick,
+                                      displayWidth(context) * 0.5,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.015,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
+  }
+
+  checkIfTripDurationIsGraterThan10Seconds(List<String> splittedDuration)
+  {
+    int hour = int.parse(splittedDuration[0]);
+    int min = int.parse(splittedDuration[1]);
+    int sec = int.parse(splittedDuration[2]);
+
+    if(hour > 0)
+      {
+        return true;
+      }
+    else
+      {
+        if(min > 0)
+          {
+            return true;
+          }
+        else
+          {
+            if(sec > 10)
+              {
+                return true;
+              }
+            else
+              {
+                return false;
+              }
+          }
+      }
+  }
 }
