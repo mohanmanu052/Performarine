@@ -6,6 +6,7 @@ import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:performarine/analytics/end_trip.dart';
@@ -683,7 +684,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                           {
                                             Navigator.pop(context);
 
-                                            Utils().showDeleteTripDialog(context, (){
+                                            Utils().showDeleteTripDialog(context, endTripBtnClick: (){
+                                              EasyLoading.show(
+                                                  status: 'Please wait...',
+                                                  maskType: EasyLoadingMaskType.black);
                                               endTripMethod(setDialogState);
                                               debugPrint("SMALL TRIPP IDDD ${tripId}");
 
@@ -696,7 +700,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                                   DatabaseService().deleteTripFromDB(tripId);
                                                 }
                                               });
-                                            }, (){
+                                            }, onCancelClick: (){
                                               endTripMethod(setDialogState);
                                             }
                                             );
@@ -809,9 +813,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
   endTripMethod(StateSetter setDialogState)async
   {
-    setDialogState(() {
-      isEndTripBtnClicked = true;
-    });
+
+    debugPrint("Set Dialog set ${setDialogState == null}");
+
+    /*if(mounted)
+      {
+        setDialogState(() {
+          isEndTripBtnClicked = true;
+        });
+      }*/
     List<String>? tripData = sharedPreferences!
         .getStringList('trip_data');
 
@@ -844,9 +854,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
         onEnded: () async {
 
           Future.delayed(Duration(seconds: 1), (){
-            setDialogState(() {
+           /* setDialogState(() {
               isEndTripBtnClicked = false;
-            });
+            });*/
+            EasyLoading.dismiss();
 
             Navigator.of(context).pop();
           });

@@ -12,7 +12,9 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
@@ -417,8 +419,7 @@ class Utils {
   }
 
   //End trip dialog for user confirmation to end trip
-  showDeleteTripDialog(BuildContext context, Function() endTripBtnClick,
-      Function() onCancelClick) {
+  showDeleteTripDialog(BuildContext context, {VoidCallback? endTripBtnClick, VoidCallback? onCancelClick}) {
     return showDialog(
         barrierDismissible: false,
         context: context,

@@ -8,6 +8,7 @@ import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -1022,54 +1023,56 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                             Utils.customPrint(
                                                                 "END TRIP CURRENT TIME ${DateTime.now()}");
 
-                                                            Utils().showEndTripDialog(
-                                                                context, () async {
+                                                            bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
-                                                              bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+                                                            debugPrint("SMALL TRIPP IDDD bool$isSmallTrip");
 
-                                                              debugPrint("SMALL TRIPP IDDD bool$isSmallTrip");
+                                                            if(!isSmallTrip)
+                                                              {
+                                                                Utils().showDeleteTripDialog(context,
+                                                                    endTripBtnClick: (){
 
-                                                              if(!isSmallTrip)
-                                                                {
-                                                                  Navigator.pop(context);
+                                                                      endTrip();
 
-                                                                  Utils().showDeleteTripDialog(context, (){
-                                                                    endTrip();
-                                                                    debugPrint("SMALL TRIPP IDDD ${tripData!
-                                                                        .id!}");
+                                                                     // Navigator.pop(context);
 
+                                                                      debugPrint("SMALL TRIPP IDDD ${tripData!
+                                                                          .id!}");
 
+                                                                      Future.delayed(Duration(seconds: 1), (){
+                                                                        if(!isSmallTrip)
+                                                                        {
 
-                                                                    Future.delayed(Duration(seconds: 1), (){
-                                                                      if(!isSmallTrip)
-                                                                      {
-                                                                        debugPrint("SMALL TRIPP IDDD ${tripData!
-                                                                            .id!}");
-                                                                        DatabaseService().deleteTripFromDB(tripData!
-                                                                            .id!);
+                                                                          debugPrint("SMALL TRIPP IDDD ${tripData!
+                                                                              .id!}");
+                                                                          DatabaseService().deleteTripFromDB(tripData!
+                                                                              .id!);
 
-                                                                        Navigator.pushAndRemoveUntil(
-                                                                            context,
-                                                                            MaterialPageRoute(builder: (context) => HomePage()),
-                                                                            ModalRoute.withName(""));
-                                                                      }
-                                                                    });
+                                                                          Navigator.pushAndRemoveUntil(
+                                                                              context,
+                                                                              MaterialPageRoute(builder: (context) => HomePage()),
+                                                                              ModalRoute.withName(""));
+                                                                        }
+                                                                      });
+                                                                    },
+                                                                    onCancelClick: (){
+                                                                      Navigator.pop(context);
+                                                                    }
+                                                                );
+                                                              }
+                                                            else
+                                                              {
+                                                                Utils().showEndTripDialog(
+                                                                    context, () async {
 
-
-                                                                  },
-                                                                          (){
-                                                                        endTrip();
-                                                                      }
-                                                                  );
-                                                                }
-                                                              else
-                                                                {
                                                                   endTrip();
-                                                                }
 
-                                                            }, () {
-                                                              Navigator.pop(context);
-                                                            });
+                                                                }, () {
+                                                                  Navigator.pop(context);
+                                                                });
+                                                              }
+
+
                                                           }),
 
                                                       Padding(
@@ -2159,90 +2162,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                       {
                                         Navigator.pop(context);
 
-                                        Utils().showDeleteTripDialog(context, (){
-
-                                          setDialogState(() {
-                                            isEndTripBtnClicked = true;
-                                          });
-
-                                          if (durationTimer !=
-                                              null) {
-                                            durationTimer!
-                                                .cancel();
-                                          }
-                                          setState(() {
-                                            isTripEnded = true;
-                                          });
-                                          Navigator.pop(context);
-
-                                          EndTrip().endTrip(
-                                              context: context,
-                                              scaffoldKey:
-                                              scaffoldKey,
-                                              duration:
-                                              tripDuration,
-                                              IOSAvgSpeed:
-                                              tripAvgSpeed,
-                                              IOSpeed: tripSpeed,
-                                              IOStripDistance:
-                                              tripDistance,
-                                              onEnded: () async {
-                                                setState(() {
-                                                  tripIsRunning =
-                                                  false;
-                                                  isTripEnded =
-                                                  false;
-                                                });
-                                                Trip tripDetails =
-                                                await _databaseService
-                                                    .getTrip(
-                                                    tripData!
-                                                        .id!);
-                                                debugPrint(
-                                                    "abhi:${tripDetails.time}");
-                                                debugPrint(
-                                                    "abhi:${tripDuration}");
-                                                debugPrint(
-                                                    "abhi:${tripAvgSpeed}");
-                                                debugPrint(
-                                                    "abhi:${tripSpeed}");
-                                                setState(() {
-                                                  tripData =
-                                                      tripDetails;
-                                                });
-
-                                                Utils.customPrint(
-                                                    'TRIP ENDED DETAILS: ${tripDetails.isSync}');
-                                                Utils.customPrint(
-                                                    'TRIP ENDED DETAILS: ${tripData!.isSync}');
-
-                                                isDataUpdated = true;
-                                              });
-
-                                          debugPrint("SMALL TRIPP IDDD ${tripData!
-                                              .id!}");
-
-
-
-                                          Future.delayed(Duration(seconds: 1), (){
-                                            if(!isSmallTrip)
-                                            {
-                                              debugPrint("SMALL TRIPP IDDD ${tripData!
-                                                  .id!}");
-                                              DatabaseService().deleteTripFromDB(tripData!
-                                                  .id!);
-
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(builder: (context) => HomePage()),
-                                                  ModalRoute.withName(""));
-                                            }
-                                          });
-                                        },
-                                                (){
-                                                  setDialogState(() {
-                                                    isEndTripBtnClicked = true;
-                                                  });
+                                        Utils().showDeleteTripDialog(context,
+                                             endTripBtnClick: (){
 
                                                   if (durationTimer !=
                                                       null) {
@@ -2296,7 +2217,29 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                             'TRIP ENDED DETAILS: ${tripData!.isSync}');
 
                                                         isDataUpdated = true;
+
+                                                        Future.delayed(Duration(seconds: 1), (){
+                                                          if(!isSmallTrip)
+                                                          {
+                                                            debugPrint("SMALL TRIPP IDDD ${tripData!
+                                                                .id!}");
+                                                            DatabaseService().deleteTripFromDB(tripData!
+                                                                .id!);
+
+                                                            Navigator.pushAndRemoveUntil(
+                                                                context,
+                                                                MaterialPageRoute(builder: (context) => HomePage()),
+                                                                ModalRoute.withName(""));
+                                                          }
+                                                        });
                                                       });
+
+                                                  debugPrint("SMALL TRIPP IDDD ${tripData!
+                                                      .id!}");
+
+                                                },
+                                             onCancelClick: (){
+                                               Navigator.pop(context);
                                             }
                                         );
                                       }
@@ -2474,14 +2417,17 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   endTrip()
   {
+
     if (durationTimer !=
         null) {
       durationTimer!
           .cancel();
     }
+
     setState(() {
       isTripEnded = true;
     });
+
     Navigator.pop(context);
 
     Utils.customPrint(

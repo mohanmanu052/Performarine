@@ -502,65 +502,66 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         borderColor: buttonBGColor,
                         width: displayWidth(context),
                         onTap: () async {
-                          Utils.customPrint('time stamp:' +
-                              DateTime.now().toUtc().toString());
-                          Utils().showEndTripDialog(context, () async {
 
-                            List<String>? tripData = sharedPreferences!
-                                .getStringList('trip_data');
+                          List<String>? tripData = sharedPreferences!
+                              .getStringList('trip_data');
 
-                            String tripId = '';
-                            if (tripData != null) {
-                              tripId = tripData[0];
-                            }
+                          String tripId = '';
+                          if (tripData != null) {
+                            tripId = tripData[0];
+                          }
 
-                            final currentTrip =
-                            await _databaseService.getTrip(tripId);
+                          final currentTrip =
+                          await _databaseService.getTrip(tripId);
 
-                            DateTime createdAtTime =
-                            DateTime.parse(currentTrip.createdAt!);
+                          DateTime createdAtTime =
+                          DateTime.parse(currentTrip.createdAt!);
 
-                            var durationTime = DateTime.now()
-                                .toUtc()
-                                .difference(createdAtTime);
-                            String tripDuration =
-                            Utils.calculateTripDuration(
-                                ((durationTime.inMilliseconds) / 1000)
-                                    .toInt());
+                          var durationTime = DateTime.now()
+                              .toUtc()
+                              .difference(createdAtTime);
+                          String tripDuration =
+                          Utils.calculateTripDuration(
+                              ((durationTime.inMilliseconds) / 1000)
+                                  .toInt());
 
-                            debugPrint("DURATION !!!!!! $tripDuration");
+                          debugPrint("DURATION !!!!!! $tripDuration");
 
-                            bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+                          bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
-                            if(!isSmallTrip)
+                          if(!isSmallTrip)
                             {
-                              Navigator.pop(context);
+                              Utils().showDeleteTripDialog(context,
+                                  endTripBtnClick: (){
+                                    endTripMethod();
+                                    debugPrint("SMALL TRIPP IDDD ${tripId}");
 
-                              Utils().showDeleteTripDialog(context, (){
-                                endTripMethod();
-                                debugPrint("SMALL TRIPP IDDD ${tripId}");
+                                    debugPrint("SMALL TRIPP IDDD ${tripId}");
 
-                                debugPrint("SMALL TRIPP IDDD ${tripId}");
-
-                                Future.delayed(Duration(seconds: 1), (){
-                                  if(!isSmallTrip)
-                                  {
-                                    debugPrint("SMALL TRIPP IDDD 11 ${tripId}");
-                                    DatabaseService().deleteTripFromDB(tripId);
+                                    Future.delayed(Duration(seconds: 1), (){
+                                      if(!isSmallTrip)
+                                      {
+                                        debugPrint("SMALL TRIPP IDDD 11 ${tripId}");
+                                        DatabaseService().deleteTripFromDB(tripId);
+                                      }
+                                    });
+                                  },
+                                  onCancelClick: (){
+                                    Navigator.of(context).pop();
                                   }
-                                });
-                              }, (){
-                                endTripMethod();
-                              }
                               );
                             }
-                            else
+                          else
                             {
-                              endTripMethod();
+                              Utils().showEndTripDialog(context, () async
+                              {
+                                endTripMethod();
+                              }, () {
+                                Navigator.of(context).pop();
+                              });
                             }
-                          }, () {
-                            Navigator.of(context).pop();
-                          });
+
+
                         })
                         : CommonButtons.getActionButton(
                         title: 'Start Trip',

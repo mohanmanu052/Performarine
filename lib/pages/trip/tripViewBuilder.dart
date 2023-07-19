@@ -128,58 +128,72 @@ class _TripViewListingState extends State<TripViewListing> {
                                           commonProvider.getTripsCount();
                                         },
                                         onTap: () async {
-                                          Utils().showEndTripDialog(context,
-                                              () async {
 
-                                                final currentTrip = await _databaseService
-                                                    .getTrip(snapshot.data![index].id!);
+                                          final currentTrip = await _databaseService
+                                              .getTrip(snapshot.data![index].id!);
 
-                                                DateTime createdAtTime = DateTime.parse(
-                                                    currentTrip.createdAt!);
+                                          DateTime createdAtTime = DateTime.parse(
+                                              currentTrip.createdAt!);
 
-                                                var durationTime = DateTime.now()
-                                                    .toUtc()
-                                                    .difference(createdAtTime);
-                                                String tripDuration =
-                                                Utils.calculateTripDuration(
-                                                    ((durationTime.inMilliseconds) /
-                                                        1000)
-                                                        .toInt());
-                                            debugPrint("DURATION !!!!!! $tripDuration");
+                                          var durationTime = DateTime.now()
+                                              .toUtc()
+                                              .difference(createdAtTime);
+                                          String tripDuration =
+                                          Utils.calculateTripDuration(
+                                              ((durationTime.inMilliseconds) /
+                                                  1000)
+                                                  .toInt());
+                                          debugPrint("DURATION !!!!!! $tripDuration");
 
-                                            bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+                                          bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
-                                            if(!isSmallTrip)
+                                          if(!isSmallTrip)
                                             {
-                                              Navigator.pop(context);
+                                              Utils().showDeleteTripDialog(context,
+                                                  endTripBtnClick: (){
+                                                    endTripMethod(tripDuration, snapshot.data![index]);
+                                                    debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
 
-                                              Utils().showDeleteTripDialog(context, (){
-                                                endTripMethod(tripDuration, snapshot.data![index]);
-                                                debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
-
-                                                debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
-
-                                                Future.delayed(Duration(seconds: 1), (){
-                                                  if(!isSmallTrip)
-                                                  {
-                                                    debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
-                                                    DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
-                                                  }
-                                                });
-                                              }, (){
-                                                   endTripMethod(tripDuration, snapshot.data![index]);
+                                                    Future.delayed(Duration(seconds: 1), (){
+                                                      if(!isSmallTrip)
+                                                      {
+                                                        debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
+                                                        DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
+                                                      }
+                                                    });
+                                                  }, onCancelClick: (){
+                                                    Navigator.of(context).pop();
                                                   }
                                               );
                                             }
-                                            else
+                                          else
                                             {
-                                              endTripMethod(tripDuration, snapshot.data![index]);
-                                            }
+                                              Utils().showEndTripDialog(context,
+                                                      () async {
 
-                                            return;
-                                          }, () {
-                                            Navigator.of(context).pop();
-                                          });
+                                                    final currentTrip = await _databaseService
+                                                        .getTrip(snapshot.data![index].id!);
+
+                                                    DateTime createdAtTime = DateTime.parse(
+                                                        currentTrip.createdAt!);
+
+                                                    var durationTime = DateTime.now()
+                                                        .toUtc()
+                                                        .difference(createdAtTime);
+                                                    String tripDuration =
+                                                    Utils.calculateTripDuration(
+                                                        ((durationTime.inMilliseconds) /
+                                                            1000)
+                                                            .toInt());
+                                                    debugPrint("DURATION !!!!!! $tripDuration");
+
+                                                    endTripMethod(tripDuration, snapshot.data![index]);
+
+                                                    return;
+                                                  }, () {
+                                                    Navigator.of(context).pop();
+                                                  });
+                                            }
                                         })
                                     : Container(
                                         height: displayHeight(context) / 1.5,
