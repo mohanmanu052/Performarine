@@ -40,46 +40,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   void initState() {
     super.initState();
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     commonProvider = context.read<CommonProvider>();
     emailController = TextEditingController();
   }
@@ -166,8 +126,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
-                          loggD.d("$value  -> $page ${DateTime.now()}");
-                          loggV.v("$value  -> $page ${DateTime.now()}");
+                          CustomLogger().logWithFile(Level.info, "Email $value -> $page");
                         }),
 
                     SizedBox(height: displayHeight(context) * 0.27),
@@ -198,9 +157,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     isBtnClick = false;
                                   });
                                   print("status code of forgot password: ${value.statusCode}");
-                                  loggD.d("status code of forgot password: ${value.statusCode} -> $page ${DateTime.now()}");
-                                  loggV.v("status code of forgot password: ${value.statusCode} -> $page ${DateTime.now()}");
+                                  CustomLogger().logWithFile(Level.info, "status code of forgot password: ${value.statusCode} -> $page");
                                   if(value.statusCode == 200){
+                                    CustomLogger().logWithFile(Level.info, "User navigating to Sign in Screen -> $page");
                                     Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(

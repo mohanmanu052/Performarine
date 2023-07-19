@@ -28,83 +28,6 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
     commonProvider!.updateExceptionOccurredValue(false);
 
-
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        //ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-            ),
-            output: multiOutput
-        );
-      },
-    );
-
-    getDirectoryForErrorLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileE!);
-        //ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggE = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-            ),
-            output: multiOutput
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        //ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-            ),
-            output: multiOutput
-        );
-      },
-    );
-
-    getDirectoryForInfoLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileI!);
-        //ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggI = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-            ),
-            output: multiOutput
-        );
-      },
-    );
-
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
       "x_access_token": '$accessToken',
@@ -119,27 +42,27 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
     try {
       Utils.customPrint('REGISTER REQ ${jsonEncode(queryParameters)}');
+      CustomLogger().logWithFile(Level.info, "ResetPassword REQ $queryParameters -> $page");
 
       final response = await http.post(uri,
           body: jsonEncode(queryParameters), headers: headers);
 
       Utils.customPrint('REGISTER REQ : ' + response.body);
+      CustomLogger().logWithFile(Level.info, "REGISTER REs : ' + ' ${response.body}-> $page");
 
       var decodedData = json.decode(response.body);
 
       if (response.statusCode == HttpStatus.ok) {
         Utils.customPrint('Register Response : ' + response.body);
-        loggD.d('Register Response : ' + response.body + '-> $page ${DateTime.now()}');
-        loggV.v('Register Response : ' + response.body + '-> $page ${DateTime.now()}');
-        loggI.i("Api response ${response.statusCode} in ${Urls.baseUrl}${Urls.getUserConfig} -> $page ${DateTime.now()}");
-        loggV.v("Api response ${response.statusCode} in ${Urls.baseUrl}${Urls.getUserConfig} -> $page ${DateTime.now()}");
+
+        CustomLogger().logWithFile(Level.info, "Register Response : ' + ${response.body}-> $page");
+        CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.getUserConfig}  is: ${response.statusCode}-> $page");
 
         if (decodedData['status']) {
           getUserConfigModel =
               GetUserConfigModel.fromJson(json.decode(response.body));
           if(getUserConfigModel == null){
-            loggE.e("Error while parsing json data on -> $page ${DateTime.now()}");
-            loggV.v("Error while parsing json data on -> $page ${DateTime.now()}");
+            CustomLogger().logWithFile(Level.error, "Error while parsing json data on getUserConfigModel -> $page");
           }
         } else {
           commonProvider!.updateExceptionOccurredValue(true);
@@ -167,13 +90,9 @@ class GetUserConfigApiProvider with ChangeNotifier {
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
-        loggD.d('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-        loggD.d('EXE RESP: $response -> $page ${DateTime.now()}');
-        loggE.e('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-        loggE.e('EXE RESP: $response -> $page ${DateTime.now()}');
 
-        loggV.v('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-        loggV.v('EXE RESP: $response -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
 
         commonProvider!.updateExceptionOccurredValue(true);
 
@@ -229,28 +148,23 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
-        loggD.d('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-        loggD.d('EXE RESP: $response -> $page ${DateTime.now()}');
-        loggE.e('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-        loggE.e('EXE RESP: $response -> $page ${DateTime.now()}');
-
-        loggV.v('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-        loggV.v('EXE RESP: $response -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.info, "EXE RESP: $response -> $page");
       }
       getUserConfigModel = null;
     } on SocketException catch (_) {
       await Utils().check(scaffoldKey, userConfig: true);
 
       Utils.customPrint('Socket Exception');
-      loggD.d('Socket Exception -> $page ${DateTime.now()}');
-      loggE.e('Socket Exception -> $page ${DateTime.now()}');
-      loggV.v('Socket Exception -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.error, "Socket Exception -> $page");
 
       commonProvider!.updateExceptionOccurredValue(true);
 
       getUserConfigModel = null;
     } catch (exception, s) {
       commonProvider!.updateExceptionOccurredValue(true);
+
+      CustomLogger().logWithFile(Level.warning, "Failed to sync -> $page");
 
       showDialog(
           context: scaffoldKey.currentContext!,
@@ -272,10 +186,8 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
       commonProvider!.updateConnectionCloseStatus(false);
 
-      Utils.customPrint('error caught login:- $exception \n $s');
-      loggD.d('error caught login:- $exception \n $s -> $page ${DateTime.now()}');
-      loggE.e('error caught login:- $exception \n $s -> $page ${DateTime.now()}');
-      loggV.v('error caught login:- $exception \n $s -> $page ${DateTime.now()}');
+      Utils.customPrint('error caught getUserConfig:- $exception \n $s');
+      CustomLogger().logWithFile(Level.error, "error caught getUserConfig:- $exception \n $s -> $page");
 
       getUserConfigModel = null;
     }

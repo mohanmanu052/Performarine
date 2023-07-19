@@ -149,8 +149,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   String convertIntoYearMonthDay(DateTime date) {
     String dateString = DateFormat('yyyy-MM-dd').format(date);
     print(dateString);
-    loggD.d('convertIntoYearMonthDay: $dateString -> $page ${DateTime.now()}');
-    loggV.v('convertIntoYearMonthDay: $dateString -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "convertIntoYearMonthDay: $dateString -> $page");
     return dateString;
   }
 
@@ -158,8 +157,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   String convertIntoMonthDayYear(DateTime date) {
     String dateString = DateFormat('MM/dd/yyyy').format(date);
     print(dateString);
-    loggD.d('convertIntoMonthDayYear: $dateString -> $page ${DateTime.now()}');
-    loggV.v('convertIntoMonthDayYear: $dateString -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "convertIntoMonthDayYear: $dateString -> $page");
     return dateString;
   }
 
@@ -167,8 +165,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   String convertIntoYearMonthDayToShow(DateTime date) {
     String dateString = DateFormat('MM-dd-yyyy').format(date);
     print(dateString);
-    loggD.d('convertIntoYearMonthDayToShow: $dateString -> $page ${DateTime.now()}');
-    loggV.v('convertIntoYearMonthDayToShow: $dateString -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "convertIntoYearMonthDayToShow: $dateString -> $page");
     return dateString;
   }
 
@@ -218,8 +215,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             isTripIdListLoading = true;
           });
           print("value of trip list: ${value.data}");
-          loggD.d("value of trip list: ${value.data} -> $page ${DateTime.now()}");
-          loggV.v("value of trip list: ${value.data} -> $page ${DateTime.now()}");
+          CustomLogger().logWithFile(Level.info, "value of trip list: ${value.data} -> $page");
           //debugger();
           tripIdList!.clear();
           dateTimeList!.clear();
@@ -237,13 +233,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           print("children: ${children}");
           print("dateTimeList: $dateTimeList");
 
-          loggD.d("trip id list: $tripIdList -> $page ${DateTime.now()}");
-          loggD.d("children: ${children} -> $page ${DateTime.now()}");
-          loggD.d("dateTimeList: $dateTimeList -> $page ${DateTime.now()}");
-
-          loggV.v("trip id list: $tripIdList -> $page ${DateTime.now()}");
-          loggV.v("children: ${children} -> $page ${DateTime.now()}");
-          loggV.v("dateTimeList: $dateTimeList -> $page ${DateTime.now()}");
+          CustomLogger().logWithFile(Level.info, "trip id list: $tripIdList -> $page");
+          CustomLogger().logWithFile(Level.info, "children: ${children} -> $page");
+          CustomLogger().logWithFile(Level.info, "dateTimeList: $dateTimeList -> $page");
         } else {
           setState(() {
             isTripIdListLoading = false;
@@ -259,8 +251,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         isTripIdListLoading = false;
       });
       print("issue while getting trip list data: $e");
-      loggE.e("Error while getting trip list data: $e -> $page ${DateTime.now()}");
-      loggV.v("Error while getting trip list data: $e -> $page ${DateTime.now()}");
+      CustomLogger().logWithFile(Level.error, "issue while getting trip list data: $e -> $page");
     }
   }
 
@@ -277,16 +268,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 commonProvider.loginModel!.token!, scaffoldKey)
             .then((value) {
           print("value is: ${value!.status}");
-          loggD.d("value is: ${value.status}  -> $page ${DateTime.now()}");
-          loggV.v("value is: ${value.status}  -> $page ${DateTime.now()}");
+          CustomLogger().logWithFile(Level.info, "value is: ${value.status} -> $page");
           if (value != null) {
             print("value 1 is: ${value.status}");
             setState(() {
               isVesselDataLoading = true;
             });
             print("value of get user config by id: ${value.vessels}");
-            loggD.d("value of get user config by id: ${value.vessels} -> $page ${DateTime.now()}");
-            loggV.v("value of get user config by id: ${value.vessels} -> $page ${DateTime.now()}");
+            CustomLogger().logWithFile(Level.info, "value of get user config by id: ${value.vessels} -> $page");
             if(value.vessels!.length == 0){
               isVesselsFound = true;
             }
@@ -294,8 +283,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
 
             print("vesselData: ${vesselData.length}");
-            loggD.d("vesselData: ${vesselData.length} -> $page ${DateTime.now()}");
-            loggV.v("vesselData: ${vesselData.length} -> $page ${DateTime.now()}");
+            CustomLogger().logWithFile(Level.info, "vesselData: ${vesselData.length} -> $page");
           } else {
             setState(() {
               isVesselDataLoading = true;
@@ -316,8 +304,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         isVesselDataLoading = true;
       });
       print("Error while fetching data from getUserConfigById: $e");
-      loggE.e("Error while fetching data from getUserConfigById: $e -> $page ${DateTime.now()}");
-      loggV.v("Error while fetching data from getUserConfigById: $e -> $page ${DateTime.now()}");
+      CustomLogger().logWithFile(Level.error, "Error while fetching data from getUserConfigById: $e -> $page");
     }
   }
 
@@ -402,8 +389,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         value.data!.avgInfo!.avgDuration ?? '0:0:0');
 
             print("NEW AVG DATA ${value.data?.avgInfo?.avgDuration}");
-            loggD.d("NEW AVG DATA ${value.data?.avgInfo?.avgDuration} -> $page ${DateTime.now()}");
-            loggV.v("NEW AVG DATA ${value.data?.avgInfo?.avgDuration} -> $page ${DateTime.now()}");
+            CustomLogger().logWithFile(Level.info, "NEW AVG DATA ${value.data?.avgInfo?.avgDuration} -> $page");
 
             avgDuration = myAvgDuration ?? 0;
 
@@ -411,8 +397,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             avgPower = value.data?.avgInfo?.avgPower ?? 0.0;
             print(
                 "duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed");
-            loggD.d("duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed -> $page ${DateTime.now()}");
-            loggV.v("duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed -> $page ${DateTime.now()}");
+            CustomLogger().logWithFile(Level.info, "duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed -> $page");
             triSpeedList = List<TripModel>.from(value.data!.trips!.map(
                 (tripData) => TripModel(
                     date: tripData.date, tripsByDate: tripData.tripsByDate)));
@@ -432,8 +417,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               chartWidth = displayHeight(context) * 7;
             }
             Utils.customPrint('list total data : ${durationGraphData}');
-            loggD.d('list total data : ${durationGraphData} -> $page ${DateTime.now()}');
-            loggV.v('list total data : ${durationGraphData} -> $page ${DateTime.now()}');
+            CustomLogger().logWithFile(Level.info, "list total data : ${durationGraphData} -> $page");
 
             for (int i = 0; i < durationGraphData.length; i++) {
               for (int j = 0;
@@ -441,8 +425,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   j++) {
                 print(
                     "trip duration data is: ${durationGraphData[i].tripsByDate![j].id}");
-                loggD.d("trip duration data is: ${durationGraphData[i].tripsByDate![j].id} -> $page ${DateTime.now()}");
-                loggV.v("trip duration data is: ${durationGraphData[i].tripsByDate![j].id} -> $page ${DateTime.now()}");
+                CustomLogger().logWithFile(Level.info, "trip duration data is: ${durationGraphData[i].tripsByDate![j].id} -> $page");
                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
                   durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
                     color: circularProgressColor,
@@ -469,8 +452,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         // setState(() async {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
                         print("selected index: $selectedIndex");
-                        loggD.d("selected index: $selectedIndex -> $page ${DateTime.now()}");
-                        loggV.v("selected index: $selectedIndex -> $page ${DateTime.now()}");
+                        CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
                         // });
                       }
                     },
@@ -499,8 +481,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         // setState(() async {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
                         print("selected index: $selectedIndex");
-                        loggD.d("selected index: $selectedIndex -> $page ${DateTime.now()}");
-                        loggV.v("selected index: $selectedIndex -> $page ${DateTime.now()}");
+                        CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
                         // });
                       }
                     },
@@ -529,8 +510,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           selectedIndex =
                               await triSpeedList[i].tripsByDate![j].id!;
                           print("selected index: $selectedIndex");
-                          loggD.d("selected index: $selectedIndex -> $page ${DateTime.now()}");
-                          loggV.v("selected index: $selectedIndex -> $page ${DateTime.now()}");
+                          CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
                         });
                       }
                     },
@@ -560,8 +540,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           selectedIndex =
                               await triSpeedList[i].tripsByDate![j].id!;
                           print("selected index: $selectedIndex");
-                          loggD.d("selected index: $selectedIndex -> $page ${DateTime.now()}");
-                          loggV.v("selected index: $selectedIndex -> $page ${DateTime.now()}");
+                          CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
                         });
                       }
                     },
@@ -589,8 +568,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               }
             }
             print("length: ${tripList.length}, tripList: $tripList");
-            loggD.d("length: ${tripList.length}, tripList: $tripList -> $page ${DateTime.now()}");
-            loggV.v("length: ${tripList.length}, tripList: $tripList -> $page ${DateTime.now()}");
+            CustomLogger().logWithFile(Level.info, "length: ${tripList.length}, tripList: $tripList -> $page");
             duration1 = durationWithMilli(
                 value.data?.avgInfo?.avgDuration ?? '0:0:0.0');
             avgSpeed1 = value.data?.avgInfo?.avgSpeed ?? 0.0;
@@ -598,8 +576,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             powerUsage = value.data?.avgInfo?.avgPower ?? 0.0;
             print(
                 "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
-            loggD.d("duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  -> $page ${DateTime.now()} ");
-            loggV.v("duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  -> $page ${DateTime.now()} ");
+            CustomLogger().logWithFile(Level.info, "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage -> $page");
 
             finalData = [
               {
@@ -630,8 +607,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         isBtnClick = false;
       });
       print("Error while getting data from report api : $e \n $s");
-      loggE.e("Error while getting data from report api : $e \n $s -> $page ${DateTime.now()}");
-      loggV.v("Error while getting data from report api : $e \n $s -> $page ${DateTime.now()}");
+      CustomLogger().logWithFile(Level.error, "Error while getting data from report api : $e \n $s -> $page");
     }
   }
 
@@ -650,8 +626,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         ));
     int totalMinutes = dateTime.hour * 60 + dateTime.minute;
     print('TOTAL MIN: $totalMinutes');
-    loggD.d('TOTAL MIN: $totalMinutes -> $page ${DateTime.now()}');
-    loggV.v('TOTAL MIN: $totalMinutes -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "TOTAL MIN: $totalMinutes -> $page");
     return double.parse('$totalMinutes.${parts[2]}');
   }
 
@@ -670,16 +645,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         ));
     int totalMinutes = dateTime.hour * 60 + dateTime.minute;
     print('TOTAL MIN: $totalMinutes');
-    loggD.d('TOTAL MIN: $totalMinutes -> $page ${DateTime.now()}');
-    loggV.v('TOTAL MIN: $totalMinutes -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "TOTAL MIN: $totalMinutes -> $page");
     return double.parse('$totalMinutes.${parts[2]}');
   }
 
   //Returns trip duration on tap of column bar in Avg Duration tab
   dynamic tripDuration(String tripDuration) {
     print("DDDDD: $tripDuration");
-    loggD.d("DDDDD: $tripDuration -> $page ${DateTime.now()}");
-    loggV.v("DDDDD: $tripDuration -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "DDDDD: $tripDuration -> $page");
     String inputDuration = tripDuration;
     String formattedDuration = "";
     List<String> parts = inputDuration.split(".");
@@ -693,14 +666,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     Duration duration =
         Duration(hours: hours, minutes: minutes, seconds: seconds);
     print("duration: $duration");
-    loggD.d("duration: $duration -> $page ${DateTime.now()}");
-    loggV.v("duration: $duration -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "duration: $duration -> $page");
     formattedDuration = formatDurations(duration);
 // formattedDuration = duration.toString().split(".")[0];
 
     print(formattedDuration);
-    loggD.d('formattedDuration: $formattedDuration -> $page ${DateTime.now()}');
-    loggV.v('formattedDuration: $formattedDuration -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "formattedDuration: $formattedDuration -> $page");
     return formattedDuration;
   }
 
@@ -740,8 +711,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   dynamic durationWithMilli(String timesString) {
     String time = timesString;
     print('TIME STRING: $timesString');
-    loggD.d('TIME STRING: $timesString -> $page ${DateTime.now()}');
-    loggV.v('TIME STRING: $timesString -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "TIME STRING: $timesString -> $page");
     String timeString = time;
     String integerTimeString = timeString.split('.')[0];
     return integerTimeString;
@@ -751,61 +721,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   void initState() {
     super.initState();
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-            ),
-            output: multiOutput
-        );
-      },
-    );
-
-    getDirectoryForErrorLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileE!);
-        ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggE = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-            ),
-            output: multiOutput
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-            ),
-            output: multiOutput
-        );
-      },
-    );
     commonProvider = context.read<CommonProvider>();
     parentValue = false;
     isTripIdListLoading = true;
@@ -885,8 +800,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           onExpansionChanged: (isExpanded) {
                             setState(() {
                               print("isExpansionCollapse : $isExpanded");
-                              loggD.d("isExpansionCollapse : $isExpanded -> $page ${DateTime.now()}");
-                              loggV.v("isExpansionCollapse : $isExpanded -> $page ${DateTime.now()}");
+                              CustomLogger().logWithFile(Level.info, "isExpansionCollapse : $isExpanded -> $page");
                               isExpansionCollapse = !isExpansionCollapse!;
                               isExpandedTile = !isExpandedTile;
                               // isExpansionCollapse = isExpanded;
@@ -1038,8 +952,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                               }).toList(),
                                               onChanged: (item) {
                                                 print("id is: ${item?.id} ");
-                                                loggD.d("id is: ${item?.id}  -> $page ${DateTime.now()}");
-                                                loggV.v("id is: ${item?.id}  -> $page ${DateTime.now()}");
+                                                CustomLogger().logWithFile(Level.info, "id is: ${item?.id}-> $page");
                                                 parentValue = false;
                                                 selectedVessel = item!.id;
                                                 selectedVesselName = item.name;
@@ -1110,8 +1023,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         selectedCaseType = 1;
                                         print(
                                             "selectedCaseType: $selectedCaseType ");
-                                        loggD.d("selectedCaseType: $selectedCaseType  -> $page ${DateTime.now()}");
-                                        loggV.v("selectedCaseType: $selectedCaseType  -> $page ${DateTime.now()}");
+                                        CustomLogger().logWithFile(Level.info, "selectedCaseType: $selectedCaseType-> $page");
                                         _selectedOption = value!;
                                         selectedTripsAndDateString = "Date Range";
                                       });
@@ -1131,8 +1043,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         isSHowGraph = false;
                                         print(
                                             "selectedCaseType: $selectedCaseType ");
-                                        loggD.d("selectedCaseType: $selectedCaseType  -> $page ${DateTime.now()}");
-                                        loggV.v("selectedCaseType: $selectedCaseType  -> $page ${DateTime.now()}");
+                                        CustomLogger().logWithFile(Level.info, "selectedCaseType: $selectedCaseType-> $page");
                                         _selectedOption = value!;
                                         selectedTripsAndDateString =
                                             "Selected Trips";
@@ -1303,6 +1214,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                           onTap: ()async{
                                             final image = await controller.capture();
                                             print("Image is: ${image.toString()}");
+                                            CustomLogger().logWithFile(Level.info, "User navigating to user feedback screen -> $page");
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                               imagePath: image.toString(),
                                               uIntList: image,)));
@@ -1760,8 +1672,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   //Custom selection graph
   buildGraph(BuildContext context) {
     debugPrint('SELECTED BUTTON Text $selectedButton');
-    loggD.d('SELECTED BUTTON Text $selectedButton -> $page ${DateTime.now()}');
-    loggV.v('SELECTED BUTTON Text $selectedButton -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "SELECTED BUTTON Text $selectedButton -> $page");
 
     switch (selectedButton.toLowerCase()) {
       case 'trip duration':
@@ -1830,6 +1741,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   TextButton(
                     onPressed: () {
                       print("tapped on go to report button");
+                      CustomLogger().logWithFile(Level.info, "Navigating user into Trip Analytics Screen -> $page");
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -1977,6 +1889,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               TextButton(
                 onPressed: () {
                   print("tapped on go to report button");
+                  CustomLogger().logWithFile(Level.info, "Navigating user into Trip Analytics Screen -> $page");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -2073,8 +1986,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         CartesianChartPoint currentPoint = point;
         final double? yValue = currentPoint.y;
         print("fuel y data is: ${yValue}");
-        loggD.d("fuel y data is: ${yValue}  -> $page ${DateTime.now()}");
-        loggV.v("fuel y data is: ${yValue}  -> $page ${DateTime.now()}");
+        CustomLogger().logWithFile(Level.info, "fuel y data is: ${yValue} -> $page");
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
@@ -2114,6 +2026,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               TextButton(
                 onPressed: () {
                   print("tapped on go to report button");
+                  CustomLogger().logWithFile(Level.info, "Navigating user into Trip Analytics Screen -> $page");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -2210,8 +2123,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         CartesianChartPoint currentPoint = point;
         final double? yValue = currentPoint.y;
         print("power y data is: ${yValue}");
-        loggD.d("power y data is: ${yValue} -> $page ${DateTime.now()}");
-        loggV.v("power y data is: ${yValue} -> $page ${DateTime.now()}");
+        CustomLogger().logWithFile(Level.info, "power y data is: ${yValue} -> $page");
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
@@ -2251,6 +2163,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               TextButton(
                 onPressed: () {
                   print("tapped on go to report button");
+                  CustomLogger().logWithFile(Level.info, "Navigating user into Trip Analytics Screen -> $page");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -2516,12 +2429,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           pickStartDate = convertIntoMonthDayYear(selectDay);
                           selectedStartDateFromCal = selectDay;
                           print("pick start date: $pickStartDate");
-                          loggD.d("pick start date: $pickStartDate -> $page ${DateTime.now()}");
-                          loggV.v("pick start date: $pickStartDate -> $page ${DateTime.now()}");
+                          CustomLogger().logWithFile(Level.info, "pick start date: $pickStartDate -> $page");
                         });
                         print("focusedDay: $focusDay");
-                        loggD.d("focusedDay: $focusDay -> $page ${DateTime.now()}");
-                        loggV.v("focusedDay: $focusDay -> $page ${DateTime.now()}");
+                        CustomLogger().logWithFile(Level.info, "focused Day: $focusedDay -> $page");
                       },
                       headerStyle: HeaderStyle(
                         formatButtonVisible: false,
@@ -2629,12 +2540,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               pickEndDate = convertIntoMonthDayYear(selectDay);
                               selectedEndDateFromCal = selectDay;
                               print("pick end date: $pickEndDate");
-                              loggD.d("pick end date: $pickEndDate -> $page ${DateTime.now()}");
-                              loggV.v("pick end date: $pickEndDate -> $page ${DateTime.now()}");
+                              CustomLogger().logWithFile(Level.info, "pick end date: $pickEndDate -> $page");
                             });
                             print("lastDayFocused: $lastDayFocused");
-                            loggD.d("lastDayFocused: $lastDayFocused -> $page ${DateTime.now()}");
-                            loggV.v("lastDayFocused: $lastDayFocused -> $page ${DateTime.now()}");
+                            CustomLogger().logWithFile(Level.info, "lastDayFocused: $lastDayFocused -> $page");
                           },
                           headerStyle: HeaderStyle(
                             formatButtonVisible: false,
@@ -2688,8 +2597,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 selectedTripLabelList!.addAll(children!);
                                 Utils.customPrint(
                                     "selected trip label list: ${selectedTripLabelList}");
-                                loggD.d("selected trip label list: ${selectedTripLabelList} -> $page ${DateTime.now()}");
-                                loggV.v("selected trip label list: ${selectedTripLabelList} -> $page ${DateTime.now()}");
+                                CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
                                 _checkAll(value);
                               } else if (!value) {
                                 // Tristate
@@ -2720,8 +2628,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 dateTime: dateTimeList![index],
                                 onChanged: (value) {
                                   print("trip list id: ${tripIdList![index]}");
-                                  loggD.d("trip list id: ${tripIdList![index]} -> $page ${DateTime.now()}");
-                                  loggV.v("trip list id: ${tripIdList![index]} -> $page ${DateTime.now()}");
+                                  CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
                                   if (!selectedTripIdList!
                                       .contains(tripIdList![index])) {
                                     selectedTripIdList!.add(tripIdList![index]);
@@ -2729,8 +2636,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         .add(children![index]);
                                     Utils.customPrint(
                                         "selected trip label list: ${selectedTripLabelList}");
-                                    loggD.d("selected trip label list: ${selectedTripLabelList} -> $page ${DateTime.now()}");
-                                    loggV.v("selected trip label list: ${selectedTripLabelList} -> $page ${DateTime.now()}");
+                                    CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
                                   } else {
                                     selectedTripIdList!
                                         .remove(tripIdList![index]);
@@ -2739,8 +2645,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         .remove(children![index]);
                                     Utils.customPrint(
                                         "selected trip label list: ${selectedTripLabelList}");
-                                    loggD.d("selected trip label list: ${selectedTripLabelList} -> $page ${DateTime.now()}");
-                                    loggV.v("selected trip label list: ${selectedTripLabelList} -> $page ${DateTime.now()}");
+                                    CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
                                   }
                                   manageTristate(index, value);
                                 },

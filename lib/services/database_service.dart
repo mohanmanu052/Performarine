@@ -106,49 +106,10 @@ class DatabaseService {
 
   /// To add vessel into database
   Future<void> insertVessel(CreateVessel vessel) async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
 
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     final db = await _databaseService.database;
     Utils.customPrint("vessel.toMap():${vessel.toMap()}");
-    loggD.d("vessel.toMap():${vessel.toMap()} -> $page ${DateTime.now()}");
-    loggV.v("vessel.toMap():${vessel.toMap()} -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "vessel.toMap():${vessel.toMap()} -> $page");
     await db.insert(
       'vessels',
       vessel.toMap(),
@@ -184,45 +145,6 @@ class DatabaseService {
 
   /// Update vessel details
   Future<int> updateVessel(CreateVessel vessel) async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     final db = await _databaseService.database;
     Utils.customPrint("vessel.toMap():${vessel.toMap()}");
     loggD.d("vessel.toMap():${vessel.toMap()} -> $page ${DateTime.now()}");
@@ -230,8 +152,7 @@ class DatabaseService {
     int result = await db.update('vessels', vessel.toMap(),
         where: 'id = ?', whereArgs: [vessel.id]);
     Utils.customPrint('UPDATE: $result');
-    loggD.d('UPDATE: $result -> $page ${DateTime.now()}');
-    loggV.v('UPDATE: $result -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "UPDATE: $result -> $page");
 
     return result;
   }
@@ -248,45 +169,6 @@ class DatabaseService {
       String avgSpeed,
       String tripId) async {
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
         'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ?,endPosition = ?, duration = ?, distance = ?, speed = ?, avgSpeed = ? WHERE id = ?',
@@ -302,8 +184,7 @@ class DatabaseService {
           tripId
         ]);
     Utils.customPrint('updated: $count');
-    loggD.d('updated: $count -> $page ${DateTime.now()}');
-    loggV.v('updated: $count -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "UPDATEd: $count -> $page");
   }
 
   /// It will change vessel to retired vessel
@@ -338,106 +219,26 @@ class DatabaseService {
 
   /// To check trip is runnign or not
   Future<bool> tripIsRunning() async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     final db = await _databaseService.database;
     var result = await db.rawQuery(
       'SELECT EXISTS(SELECT 1 FROM trips WHERE tripStatus="0")',
     );
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST $exists');
-    loggD.d('EXIST $exists -> $page ${DateTime.now()}');
-    loggV.v('EXIST $exists -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
     return exists == 1;
   }
 
   /// To check trip is running for which vessel
   Future<bool> checkIfTripIsRunningForSpecificVessel(String vesselId) async {
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     final db = await _databaseService.database;
     var result = await db.rawQuery(
       'SELECT EXISTS(SELECT 1 FROM trips WHERE vesselId="$vesselId" AND tripStatus="0")',
     );
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST $exists');
-    loggD.d('EXIST $exists -> $page ${DateTime.now()}');
-    loggV.v('EXIST $exists -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
     return exists == 1;
   }
 
@@ -452,44 +253,6 @@ class DatabaseService {
 
   /// To get vessel is sync or not
   Future<bool> getVesselIsSyncOrNot(String vesselId) async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     final db = await _databaseService.database;
     /*var list = await db.query('vessels',
         where: 'id = ?, isSync = ?', whereArgs: [vesselId, isSync]); */
@@ -498,8 +261,7 @@ class DatabaseService {
         [vesselId, 0]);
     int? exists = Sqflite.firstIntValue(list);
     Utils.customPrint('IS SYNC EXIST $exists');
-    loggD.d('IS SYNC EXIST $exists -> $page ${DateTime.now()}');
-    loggV.v('IS SYNC EXIST $exists -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "IS SYNCEXIST $exists -> $page");
     return exists == 1;
   }
 
@@ -518,50 +280,11 @@ class DatabaseService {
 
   /// Update sync status
   Future<int> updateIsSyncStatus(int isSyncValue, String id) async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     final db = await _databaseService.database;
     int update = await db.rawUpdate(
         '''UPDATE vessels SET isSync = ? WHERE id = ?''', [isSyncValue, id]);
     Utils.customPrint('UPDATEDDDDD: $update');
-    loggD.d('UPDATEDDDDD: $update -> $page ${DateTime.now()}');
-    loggV.v('UPDATEDDDDD: $update -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "UPDATEDDDDD $update -> $page");
     return update;
   }
 
@@ -583,294 +306,64 @@ class DatabaseService {
   /// Update vessel details with analytics
   Future<void> updateVesselDataWithDurationSpeedDistance(String time,
       String distance, String speed, String avgSpeed, String vesselId) async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
+
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
         'UPDATE vessels SET duration = ?, distance = ?, speed = ?, avgSpeed = ? WHERE id = ?',
         [time, distance, speed, avgSpeed, vesselId]);
     Utils.customPrint('updated: $count');
-    loggD.d('updated: $count -> $page ${DateTime.now()}');
-    loggV.v('updated: $count -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "updated $count -> $page");
   }
 
   /// To get trip sync details
   Future<bool> tripSyncDetails() async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
+
     final db = await _databaseService.database;
     var result = await db.rawQuery(
       'SELECT EXISTS(SELECT 1 FROM trips WHERE isSync="0")',
     );
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST $exists');
-    loggD.d('EXIST $exists -> $page ${DateTime.now()}');
-    loggV.v('EXIST $exists -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
     return exists == 1;
   }
 
   /// To get vessel sync details
   Future<bool> vesselsSyncDetails() async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
+
     final db = await _databaseService.database;
     var result = await db.rawQuery(
       'SELECT EXISTS(SELECT 1 FROM vessels WHERE isSync="0")',
     );
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST $exists');
-    loggD.d('EXIST $exists -> $page ${DateTime.now()}');
-    loggV.v('EXIST $exists -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
     return exists == 1;
   }
 
   /// To delete vessel
   Future<bool> deleteDataFromVesselTable() async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
 
     final db = await _databaseService.database;
     var result = await db.rawQuery('DELETE FROM vessels');
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST Vessels  $exists');
-    loggD.d('EXIST Vessels  $exists -> $page ${DateTime.now()}');
-    loggV.v('EXIST Vessels  $exists -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "EXIST Vessels $exists -> $page");
     return exists == 1;
   }
 
   /// To delete trip
   Future<bool> deleteDataFromTripTable() async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     final db = await _databaseService.database;
     var result = await db.rawQuery('DELETE FROM trips');
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST TRIPS  $exists');
-    loggD.d('EXIST TRIPS  $exists -> $page ${DateTime.now()}');
-    loggV.v('EXIST TRIPS  $exists -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "EXIST TRIPS $exists -> $page");
     return exists == 1;
   }
 
   /// To check vessel is exist in cloud
   Future<bool> vesselsExistInCloud(String vesselId) async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
 
     final db = await _databaseService.database;
     var result = await db.rawQuery(
@@ -878,51 +371,13 @@ class DatabaseService {
     );
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST $exists');
-    loggD.d('EXIST $exists -> $page ${DateTime.now()}');
-    loggV.v('EXIST $exists -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
     return exists == 1;
   }
 
   /// To get vessel analytics data
   Future<List<String>> getVesselAnalytics(String vesselId) async {
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
+
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps =
         await db.query('trips', where: 'vesselId = ?', whereArgs: [vesselId]);
@@ -950,12 +405,8 @@ class DatabaseService {
       print('UTC START TIME: $startTime');
       print('UTC END TIME: $endTime');
 
-      loggD.d('UTC START TIME: $startTime -> $page ${DateTime.now()}');
-      loggD.d('UTC END TIME: $endTime -> $page ${DateTime.now()}');
-
-      loggV.v('UTC START TIME: $startTime -> $page ${DateTime.now()}');
-      loggV.v('UTC END TIME: $endTime -> $page ${DateTime.now()}');
-
+      CustomLogger().logWithFile(Level.info, "UTC START TIME: $startTime -> $page");
+      CustomLogger().logWithFile(Level.info, "UTC END TIME: $endTime -> $page");
 
       DateTime startDateTime = DateTime.parse(startTime);
       DateTime endDateTime = DateTime.parse(endTime);
@@ -963,18 +414,14 @@ class DatabaseService {
       print('DATE TIME START: $startDateTime');
       print('DATE TIME END: $endDateTime');
 
-      loggD.d('DATE TIME START: $startDateTime -> $page ${DateTime.now()}');
-      loggD.d('DATE TIME END: $endDateTime -> $page ${DateTime.now()}');
-
-      loggV.v('DATE TIME START: $startDateTime -> $page ${DateTime.now()}');
-      loggV.v('DATE TIME END: $endDateTime -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "DATE TIME START: $startDateTime -> $page");
+      CustomLogger().logWithFile(Level.info, "DATE TIME END: $endDateTime -> $page");
 
       Duration diffDuration = endDateTime.difference(startDateTime);
       totalTripsDuration = totalTripsDuration + diffDuration.inSeconds;
 
       print('DIFFERENCE DURATION IN SECONDS: $totalTripsDuration');
-      loggD.d('DIFFERENCE DURATION IN SECONDS: $totalTripsDuration -> $page ${DateTime.now()}');
-      loggV.v('DIFFERENCE DURATION IN SECONDS: $totalTripsDuration -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "DIFFERENCE DURATION IN SECONDS: $totalTripsDuration -> $page");
 
       totalAverageSpeed = totalAverageSpeed + singleTripAvgSpeed;
       totalDistanceSum = totalDistanceSum + singleTripDistance;

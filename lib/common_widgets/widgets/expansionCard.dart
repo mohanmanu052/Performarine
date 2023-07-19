@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -11,6 +12,8 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/services/database_service.dart';
+
+import 'log_level.dart';
 
 //Expansion card on vessel Single viw
 class ExpansionCard extends StatefulWidget {
@@ -39,6 +42,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
       avgSpeed = '0',
       tripsCount = '0',
       totalDuration = "00:00:00";
+  String page = "Expansion card";
 
   @override
   void initState() {
@@ -53,6 +57,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
     return ExpandableNotifier(
         child: GestureDetector(
       onTap: () {
+        CustomLogger().logWithFile(Level.info, "User navigating to VesselSingleView -> $page");
         if (widget.isSingleView) {
           Navigator.of(context)
               .push(
@@ -634,6 +639,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
 
                           Utils.customPrint(
                               'EXPANSION CHANGE $isVesselParticularExpanded');
+                          CustomLogger().logWithFile(Level.info, "EXPANSION CHANGE $isVesselParticularExpanded -> $page");
                         }),
                         tilePadding: EdgeInsets.zero,
                         childrenPadding: EdgeInsets.zero,
@@ -1028,5 +1034,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
      Utils.customPrint('totalDistance $totalDistance');
      Utils.customPrint('avgSpeed $avgSpeed');
      Utils.customPrint('COUNT $tripsCount');
+    CustomLogger().logWithFile(Level.info, "totalDistance $totalDistance -> $page");
+    CustomLogger().logWithFile(Level.info, "avgSpeed $avgSpeed -> $page");
+    CustomLogger().logWithFile(Level.info, "COUNT $tripsCount -> $page");
   }
 }

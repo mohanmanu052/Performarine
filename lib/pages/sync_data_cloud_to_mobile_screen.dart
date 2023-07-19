@@ -61,47 +61,6 @@ class _SyncDataCloudToMobileScreenState
     // TODO: implement initState
     super.initState();
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-
     commonProvider = context.read<CommonProvider>();
 
     commonProvider.init();
@@ -115,8 +74,7 @@ class _SyncDataCloudToMobileScreenState
         .check(scaffoldKey, userConfig: true, onRetryTap: () => getUserData());
 
     Utils.customPrint("INTERNET $bool");
-    loggD.d("INTERNET $bool -> $page ${DateTime.now()}");
-    loggV.v("INTERNET $bool -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "Internet: $bool-> $page");
 
     if (bool) {
       getUserConfigData();
@@ -371,8 +329,7 @@ class _SyncDataCloudToMobileScreenState
   /// Getting user details from the api
   getUserConfigData() {
     Utils.customPrint("CLOUDE USER ID ${commonProvider.loginModel!.userId}");
-    loggD.d("CLOUDE USER ID ${commonProvider.loginModel!.userId} -> $page ${DateTime.now()}");
-    loggV.v("CLOUDE USER ID ${commonProvider.loginModel!.userId} -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "CLOUDE USER ID ${commonProvider.loginModel!.userId} -> $page");
 
     setState(() {
       curIndex = 0;
@@ -391,19 +348,16 @@ class _SyncDataCloudToMobileScreenState
           });
 
           print('LENGTH: ${value.vessels!.length}');
-          loggD.d('LENGTH: ${value.vessels!.length} -> $page ${DateTime.now()}');
-          loggV.v('LENGTH: ${value.vessels!.length} -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "LENGTH: ${value.vessels!.length} -> $page");
           for (int i = 0; i < value.vessels!.length; i++) {
             if (value.vessels![i].name == 'rrrrr 12') {
               print('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()}');
-              loggD.d('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()} -> $page ${DateTime.now()}');
-              loggV.v('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()} -> $page ${DateTime.now()}');
+              CustomLogger().logWithFile(Level.info, "RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()} -> $page");
             }
 
             Utils.customPrint(
                 'USER CONFIG DATA CLOUD IMAGE 1212 ${value.vessels![i].imageURLs!}');
-            loggD.d('USER CONFIG DATA CLOUD IMAGE 1212 ${value.vessels![i].imageURLs!} -> $page ${DateTime.now()}');
-            loggV.v('USER CONFIG DATA CLOUD IMAGE 1212 ${value.vessels![i].imageURLs!} -> $page ${DateTime.now()}');
+            CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD IMAGE 1212 ${value.vessels![i].imageURLs!} -> $page");
             String cloudImage;
             if (value.vessels![i].imageURLs!.length > 1) {
               cloudImage = value.vessels![i].imageURLs![0];
@@ -417,8 +371,7 @@ class _SyncDataCloudToMobileScreenState
 
               Utils.customPrint(
                   'USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage');
-              loggD.d('USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage -> $page ${DateTime.now()}');
-              loggV.v('USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage -> $page ${DateTime.now()}');
+              CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage -> $page");
             }
 
             var downloadImageFromCloud;
@@ -429,8 +382,7 @@ class _SyncDataCloudToMobileScreenState
 
               Utils.customPrint(
                   'USER CONFIG DATA CLOUD IMAGE $downloadImageFromCloud');
-              loggD.d('USER CONFIG DATA CLOUD IMAGE $downloadImageFromCloud -> $page ${DateTime.now()}');
-              loggV.v('USER CONFIG DATA CLOUD IMAGE $downloadImageFromCloud -> $page ${DateTime.now()}');
+              CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD IMAGE $downloadImageFromCloud -> $page");
             } else {
               downloadImageFromCloud = '';
             }
@@ -441,11 +393,8 @@ class _SyncDataCloudToMobileScreenState
             Utils.customPrint(
                 'DOWNLOADED FILE EXIST SYNC ${downloadedFile.existsSync()}');
 
-            loggD.d('DOWNLOADED FILE PATH ${downloadedFile.path} -> $page ${DateTime.now()}');
-            loggD.d('DOWNLOADED FILE EXIST SYNC ${downloadedFile.existsSync()} -> $page ${DateTime.now()}');
-
-            loggV.v('DOWNLOADED FILE PATH ${downloadedFile.path} -> $page ${DateTime.now()}');
-            loggV.v('DOWNLOADED FILE EXIST SYNC ${downloadedFile.existsSync()} -> $page ${DateTime.now()}');
+            CustomLogger().logWithFile(Level.info, "DOWNLOADED FILE PATH ${downloadedFile.path} -> $page");
+            CustomLogger().logWithFile(Level.info, "DOWNLOADED FILE EXIST SYNC ${downloadedFile.existsSync()} -> $page");
 
             bool doesExist = await downloadedFile.exists();
 
@@ -478,17 +427,10 @@ class _SyncDataCloudToMobileScreenState
                 Utils.customPrint(
                     "RESULT N PATH ${downloadedCompressImageFile}");
 
-                loggD.d(downloadedFile.lengthSync().toString() + ' -> $page ${DateTime.now()}');
-                loggD.d(result.lengthSync().toString() + ' -> $page ${DateTime.now()}');
-
-                loggD.d("RESULT N PATH ${result.path} -> $page ${DateTime.now()}");
-                loggD.d("RESULT N PATH ${downloadedCompressImageFile} -> $page ${DateTime.now()}");
-
-                loggV.v(downloadedFile.lengthSync().toString() + ' -> $page ${DateTime.now()}');
-                loggV.v(result.lengthSync().toString() + ' -> $page ${DateTime.now()}');
-
-                loggV.v("RESULT N PATH ${result.path} -> $page ${DateTime.now()}");
-                loggV.v("RESULT N PATH ${downloadedCompressImageFile} -> $page ${DateTime.now()}");
+                CustomLogger().logWithFile(Level.info, "${downloadedFile.lengthSync().toString()} -> $page");
+                CustomLogger().logWithFile(Level.info, "${result.lengthSync().toString()} -> $page");
+                CustomLogger().logWithFile(Level.info, "RESULT N PATH ${result.path} -> $page");
+                CustomLogger().logWithFile(Level.info, "RESULT N PATH ${downloadedCompressImageFile} -> $page");
 
                 downloadedFile.deleteSync();
               } else {
@@ -497,8 +439,7 @@ class _SyncDataCloudToMobileScreenState
             } else {
               bool doesExist = await downloadedFile.exists();
               Utils.customPrint('DOWNLOADED FILE EXIST SYNC @@@ $doesExist');
-              loggD.d('DOWNLOADED FILE EXIST SYNC @@@ $doesExist -> $page ${DateTime.now()}');
-              loggV.v('DOWNLOADED FILE EXIST SYNC @@@ $doesExist -> $page ${DateTime.now()}');
+              CustomLogger().logWithFile(Level.info, "DOWNLOADED FILE EXIST SYNC @@@ $doesExist -> $page");
               if (doesExist) {
                 if (downloadedFile.lengthSync() >= 2000000) {
                   String targetPath = '${ourDirectory!.path}/vesselImages';
@@ -526,17 +467,11 @@ class _SyncDataCloudToMobileScreenState
                   Utils.customPrint("RESULT N PATH ${result.path}");
                   Utils.customPrint(
                       "RESULT N PATH ${downloadedCompressImageFile}");
-                  loggD.d(downloadedFile.lengthSync().toString() + ' -> $page ${DateTime.now()}');
-                  loggD.d(result.lengthSync().toString() + ' -> $page ${DateTime.now()}');
 
-                  loggD.d("RESULT N PATH ${result.path} -> $page ${DateTime.now()}");
-                  loggD.d("RESULT N PATH ${downloadedCompressImageFile} -> $page ${DateTime.now()}");
-
-                  loggV.v(downloadedFile.lengthSync().toString() + ' -> $page ${DateTime.now()}');
-                  loggV.v(result.lengthSync().toString() + ' -> $page ${DateTime.now()}');
-
-                  loggV.v("RESULT N PATH ${result.path} -> $page ${DateTime.now()}");
-                  loggV.v("RESULT N PATH ${downloadedCompressImageFile} -> $page ${DateTime.now()}");
+                  CustomLogger().logWithFile(Level.info, "${downloadedFile.lengthSync().toString()} -> $page");
+                  CustomLogger().logWithFile(Level.info, "${result.lengthSync().toString()} -> $page");
+                  CustomLogger().logWithFile(Level.info, "RESULT N PATH ${result.path} -> $page");
+                  CustomLogger().logWithFile(Level.info, "RESULT N PATH ${downloadedCompressImageFile} -> $page");
 
                   downloadedFile.deleteSync();
                 } else {
@@ -546,8 +481,7 @@ class _SyncDataCloudToMobileScreenState
             }
 
             Utils.customPrint('FINAL IMAGEEEE: $downloadedCompressImageFile');
-            loggD.d('FINAL IMAGEEEE: $downloadedCompressImageFile -> $page ${DateTime.now()}');
-            loggV.v('FINAL IMAGEEEE: $downloadedCompressImageFile -> $page ${DateTime.now()}');
+            CustomLogger().logWithFile(Level.info, "FINAL IMAGEEEE: $downloadedCompressImageFile -> $page");
 
             CreateVessel vesselData = CreateVessel(
                 id: value.vessels![i].id,
@@ -582,8 +516,7 @@ class _SyncDataCloudToMobileScreenState
                 .vesselsExistInCloud(value.vessels![i].id!);
 
             Utils.customPrint('USER CONFIG DATA CLOUD $vesselExist');
-            loggD.d('USER CONFIG DATA CLOUD $vesselExist -> $page ${DateTime.now()}');
-            loggV.v('USER CONFIG DATA CLOUD $vesselExist -> $page ${DateTime.now()}');
+            CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD $vesselExist -> $page");
 
             if (vesselExist) {
               await _databaseService.updateVessel(vesselData);
@@ -596,11 +529,8 @@ class _SyncDataCloudToMobileScreenState
             Utils.customPrint("TRIPS DATA ${value.trips!.length}");
             Utils.customPrint("TRIPS VESSEL ID ${value.trips![i].vesselId}");
 
-            loggD.d("TRIPS DATA ${value.trips!.length} -> $page ${DateTime.now()}");
-            loggD.d("TRIPS VESSEL ID ${value.trips![i].vesselId} -> $page ${DateTime.now()}");
-
-            loggV.v("TRIPS DATA ${value.trips!.length} -> $page ${DateTime.now()}");
-            loggV.v("TRIPS VESSEL ID ${value.trips![i].vesselId} -> $page ${DateTime.now()}");
+            CustomLogger().logWithFile(Level.info, "TRIPS DATA ${value.trips!.length} -> $page");
+            CustomLogger().logWithFile(Level.info, "TRIPS VESSEL ID ${value.trips![i].vesselId} -> $page");
 
             CreateVessel? vesselData = await _databaseService
                 .getVesselFromVesselID(value.trips![i].vesselId.toString());
@@ -629,8 +559,7 @@ class _SyncDataCloudToMobileScreenState
                   isCloud: 1);
 
               Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
-              Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
-              Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
+              CustomLogger().logWithFile(Level.info, "USER CONFIG DATA JSON ${tripData.toJson()} -> $page");
 
               await _databaseService.insertTrip(tripData);
             }

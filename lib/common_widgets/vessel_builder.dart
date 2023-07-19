@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/single_vessel_card.dart';
@@ -29,6 +31,7 @@ class VesselBuilder extends StatefulWidget {
 }
 
 class _VesselBuilderState extends State<VesselBuilder> {
+  String page = "vessel_builder";
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -47,6 +50,9 @@ class _VesselBuilderState extends State<VesselBuilder> {
             Utils.customPrint('HAS DATA: ${snapshot.hasData}');
             Utils.customPrint('HAS DATA: ${snapshot.error}');
             Utils.customPrint('HAS DATA: ${snapshot.hasError}');
+            CustomLogger().logWithFile(Level.info, "HAS DATA: ${snapshot.hasData} -> $page");
+            CustomLogger().logWithFile(Level.error, "HAS DATA: ${snapshot.error} -> $page");
+            CustomLogger().logWithFile(Level.error, "HAS DATA: ${snapshot.hasError} -> $page");
             if (snapshot.hasData) {
               if (snapshot.data!.isEmpty) {
                 return Center(
@@ -106,6 +112,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                 borderColor: buttonBGColor,
                 width: displayWidth(context),
                 onTap: () async {
+                  CustomLogger().logWithFile(Level.info, "User navigating to AddNewVesselScreen-> $page");
                   Navigator.push(
                     context,
                     MaterialPageRoute(

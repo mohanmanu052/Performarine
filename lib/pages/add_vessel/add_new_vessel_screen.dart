@@ -38,25 +38,6 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
   @override
   void initState() {
     super.initState();
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     pageController = PageController();
   }
 
@@ -93,6 +74,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
           leading: IconButton(
             onPressed: () {
               if (widget.calledFrom == 'SuccessFullScreen') {
+                CustomLogger().logWithFile(Level.info, "User navigating to Home page -> $page");
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
@@ -137,8 +119,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                       pageIndex = value;
                     });
                     Utils.customPrint('PAGEVIEW INDEX $pageIndex');
-                    loggD.d('PAGEVIEW INDEX $pageIndex -> $page ${DateTime.now()}');
-                    loggV.v('PAGEVIEW INDEX $pageIndex -> $page ${DateTime.now()}');
+                    CustomLogger().logWithFile(Level.info, "PAGEVIEW INDEX $pageIndex -> $page");
                   },
                   children: [
                     AddVesselStepOne(

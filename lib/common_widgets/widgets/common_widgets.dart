@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -11,6 +12,8 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'log_level.dart';
 
 //custom text widget
 Widget commonText(
@@ -103,6 +106,7 @@ Widget? selectImage(
 
                       Utils.customPrint(
                           ' CAM PERMISSION $isCameraPermissionGranted');
+                      CustomLogger().logWithFile(Level.warning, "CAM PERMISSION $isCameraPermissionGranted  while selecting image");
 
                       if (!isCameraPermissionGranted) {
                         await Utils.getStoragePermission(
@@ -189,6 +193,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
     Function(CreateVessel) onTap, GlobalKey<ScaffoldState> scaffoldKey,
     {bool isTripIsRunning = false}) {
   Utils.customPrint("IMAGE FROM HOME SINGLE WIDGET ${vesselData.imageURLs}");
+  CustomLogger().logWithFile(Level.info, "IMAGE FROM HOME SINGLE WIDGET ${vesselData.imageURLs}");
 
   return GestureDetector(
     onTap: () {

@@ -16,70 +16,9 @@ class DownloadTrip {
   Future<String> downloadTrip(BuildContext context,
       GlobalKey<ScaffoldState> scaffoldKey, String tripId) async {
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForErrorLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileE!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggE = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     String downloadedZipPath = '';
     Utils.customPrint('DOWLOAD Started!!!');
-    loggD.d('DOWLOAD Started!!! -> $page ${DateTime.now()}');
-    loggV.v('DOWLOAD Started!!! -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "DOWLOAD Started!!! -> $page");
 
     if (Platform.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
@@ -92,8 +31,8 @@ class DownloadTrip {
           File copiedFile = File('${ourDirectory!.path}/${tripId}.zip');
 
           Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
-          loggD.d('DIR PATH R ${ourDirectory!.path} -> $page ${DateTime.now()}');
-          loggV.v('DIR PATH R ${ourDirectory!.path} -> $page ${DateTime.now()}');
+
+          CustomLogger().logWithFile(Level.info, "DIR PATH R ${ourDirectory!.path} -> $page");
 
           Directory directory;
 
@@ -107,13 +46,11 @@ class DownloadTrip {
           downloadedZipPath = "storage/emulated/0/Download/${tripId}.zip";
 
           Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-          loggD.d('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
-          loggV.v('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "DOES FILE EXIST: ${copiedFile.existsSync()} -> $page");
 
           if (copiedFile.existsSync()) {
             Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-            loggD.d('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
-            loggV.v('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+            CustomLogger().logWithFile(Level.info, "DOES FILE EXIST: ${copiedFile.existsSync()} -> $page");
             Utils.showSnackBar(
               context,
               scaffoldKey: scaffoldKey,
@@ -140,13 +77,11 @@ class DownloadTrip {
             downloadedZipPath = "storage/emulated/0/Download/${tripId}.zip";
 
             Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-            loggD.d('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
-            loggV.v('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+            CustomLogger().logWithFile(Level.info, "DOES FILE EXIST: ${copiedFile.existsSync()} -> $page");
 
             if (copiedFile.existsSync()) {
               Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-              loggD.d('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
-              loggV.v('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+              CustomLogger().logWithFile(Level.info, "DOES FILE EXIST: ${copiedFile.existsSync()} -> $page");
               Utils.showSnackBar(
                 context,
                 scaffoldKey: scaffoldKey,
@@ -161,10 +96,8 @@ class DownloadTrip {
 
         Utils.customPrint('DIR PATH RT ${copiedFile.path}');
         Utils.customPrint('DIR PATH RT ${copiedFile.existsSync()}');
-        loggD.d('DIR PATH RT ${copiedFile.path} -> $page ${DateTime.now()}');
-        loggD.d('DIR PATH RT ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
-        loggV.v('DIR PATH RT ${copiedFile.path} -> $page ${DateTime.now()}');
-        loggV.v('DIR PATH RT ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.info, "DIR PATH RT ${copiedFile.path} -> $page");
+        CustomLogger().logWithFile(Level.info, "DIR PATH RT ${copiedFile.existsSync()} -> $page");
 
         Directory directory;
 
@@ -178,13 +111,12 @@ class DownloadTrip {
         downloadedZipPath = "storage/emulated/0/Download/${tripId}.zip";
 
         Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-        loggD.d('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
-        loggV.v('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.info, "DOES FILE EXIST: ${copiedFile.existsSync()} -> $page");
+
 
         if (copiedFile.existsSync()) {
           Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-          loggD.d('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
-          loggV.v('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "DOES FILE EXIST: ${copiedFile.existsSync()} -> $page");
           Utils.showSnackBar(
             context,
             scaffoldKey: scaffoldKey,
@@ -197,10 +129,8 @@ class DownloadTrip {
 
       Utils.customPrint('DIR PATH RT ${copiedFile.path}');
       Utils.customPrint('DIR PATH RT ${copiedFile.existsSync()}');
-      loggD.d('DIR PATH RT ${copiedFile.path} -> $page ${DateTime.now()}');
-      loggD.d('DIR PATH RT ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
-      loggV.v('DIR PATH RT ${copiedFile.path} -> $page ${DateTime.now()}');
-      loggV.v('DIR PATH RT ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "DIR PATH RT ${copiedFile.path} -> $page");
+      CustomLogger().logWithFile(Level.info, "DIR PATH RT ${copiedFile.existsSync()} -> $page");
 
       Directory directory;
 
@@ -216,13 +146,11 @@ class DownloadTrip {
       downloadedZipPath = '${copiedFile.path}/trips/${tripId}.zip';
 
       Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-      loggD.d('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
-      loggV.v('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "DOES FILE EXIST: ${copiedFile.existsSync()} -> $page");
 
       if (copiedFile.existsSync()) {
         Utils.customPrint('DOES FILE EXIST: ${copiedFile.existsSync()}');
-        loggD.d('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
-        loggV.v('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.info, "DOES FILE EXIST: ${copiedFile.existsSync()} -> $page");
         Utils.showSnackBar(
           context,
           scaffoldKey: scaffoldKey,
@@ -238,51 +166,10 @@ class DownloadTrip {
   Future<String> downloadImageFromCloud(BuildContext context,
       GlobalKey<ScaffoldState> scaffoldKey, String imageUrl) async {
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForErrorLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileE!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggE = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     String cloudImagePath = '';
     d.Dio dio = d.Dio();
     Utils.customPrint('CLOUD IMAGE DOWNLOAD Started!!!');
-    loggD.d('CLOUD IMAGE DOWNLOAD Started!!! -> $page ${DateTime.now()}');
-    loggV.v('CLOUD IMAGE DOWNLOAD Started!!! -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "CLOUD IMAGE DOWNLOAD Started!!! -> $page");
 
     final appDirectory = await getApplicationDocumentsDirectory();
     ourDirectory = Directory('${appDirectory.path}');
@@ -299,8 +186,7 @@ class DownloadTrip {
 
         if (isStoragePermitted.isGranted) {
           Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
-          loggD.d('DIR PATH R ${ourDirectory!.path} -> $page ${DateTime.now()}');
-          loggV.v('DIR PATH R ${ourDirectory!.path} -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "DIR PATH R ${ourDirectory!.path} -> $page");
           cloudImagePath = '${ourDirectory!.path}/$fileName';
 
           if (File(cloudImagePath).existsSync()) {
@@ -312,10 +198,7 @@ class DownloadTrip {
                 onReceiveProgress: (progress, total) {});
           } on d.DioError catch (e) {
             print('DOWNLOAD EXE: ${e.error}');
-            loggD.d('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-            loggV.v('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-            loggE.e('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-            loggV.v('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
+            CustomLogger().logWithFile(Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
 
             Navigator.pop(context);
           }
@@ -335,10 +218,7 @@ class DownloadTrip {
                   onReceiveProgress: (progress, total) {});
             } on d.DioError catch (e) {
               print('DOWNLOAD EXE: ${e.error}');
-              loggD.d('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-              loggV.v('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-              loggE.e('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-              loggV.v('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
+              CustomLogger().logWithFile(Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
 
               Navigator.pop(context);
             }
@@ -356,11 +236,7 @@ class DownloadTrip {
               onReceiveProgress: (progress, total) {});
         } on d.DioError catch (e) {
           print('DOWNLOAD EXE: ${e.error}');
-          print('DOWNLOAD EXE: ${e.error}');
-          loggD.d('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-          loggV.v('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-          loggE.e('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-          loggV.v('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
 
           // Navigator.pop(context);
         }
@@ -372,10 +248,7 @@ class DownloadTrip {
       cloudImagePath = "${ourDirectory!.path}/$fileName";
 
       Utils.customPrint("IOS IMAGE PATH ${cloudImagePath}");
-      loggD.d("IOS IMAGE PATH ${cloudImagePath} -> $page ${DateTime.now()}");
-      loggV.v("IOS IMAGE PATH ${cloudImagePath} -> $page ${DateTime.now()}");
-      loggE.e("IOS IMAGE PATH ${cloudImagePath} -> $page ${DateTime.now()}");
-      loggV.v("IOS IMAGE PATH ${cloudImagePath} -> $page ${DateTime.now()}");
+      CustomLogger().logWithFile(Level.info, "IOS IMAGE PATH ${cloudImagePath}-> $page");
 
       if (File(cloudImagePath).existsSync()) {
         File(cloudImagePath).deleteSync();
@@ -386,24 +259,15 @@ class DownloadTrip {
             onReceiveProgress: (progress, total) {});
       } on d.DioError catch (e) {
         print('DOWNLOAD EXE: ${e.error}');
-        loggD.d('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-        loggV.v('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-        loggE.e('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
-        loggV.v('DOWNLOAD EXE: ${e.error} -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
 
         //Navigator.pop(context);
       } on SocketException catch (s) {
         print('DOWNLOAD EXE SOCKET EXCEPTION: $s');
-        loggD.d('DOWNLOAD EXE SOCKET EXCEPTION: $s -> $page ${DateTime.now()}');
-        loggV.v('DOWNLOAD EXE SOCKET EXCEPTION: $s -> $page ${DateTime.now()}');
-        loggE.e('DOWNLOAD EXE SOCKET EXCEPTION: $s -> $page ${DateTime.now()}');
-        loggV.v('DOWNLOAD EXE SOCKET EXCEPTION: $s -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.error, "DOWNLOAD EXE SOCKET EXCEPTION: $s -> $page");
       } catch (er) {
         print('DOWNLOAD EXE SOCKET EXCEPTION: $er');
-        loggD.d('DOWNLOAD EXE SOCKET EXCEPTION: $er -> $page ${DateTime.now()}');
-        loggV.v('DOWNLOAD EXE SOCKET EXCEPTION: $er -> $page ${DateTime.now()}');
-        loggE.e('DOWNLOAD EXE SOCKET EXCEPTION: $er -> $page ${DateTime.now()}');
-        loggV.v('DOWNLOAD EXE SOCKET EXCEPTION: $er -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.error, "DOWNLOAD EXE SOCKET EXCEPTION: $er -> $page");
       }
     }
 

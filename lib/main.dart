@@ -78,65 +78,6 @@ void main() async {
     return true;
   };
 
-  getDirectoryForDebugLogRecord().whenComplete(
-        () {
-      FileOutput fileOutPut = FileOutput(file: fileD!);
-      // ConsoleOutput consoleOutput = ConsoleOutput();
-      LogOutput multiOutput = fileOutPut;
-      loggD = Logger(
-          filter: DevelopmentFilter(),
-          printer: PrettyPrinter(
-            methodCount: 0,
-            errorMethodCount: 3,
-            lineLength: 70,
-            colors: true,
-            printEmojis: false,
-            //printTime: true
-          ),
-          output: multiOutput // Use the default LogOutput (-> send everything to console)
-      );
-    },
-  );
-  getDirectoryForVerboseLogRecord().whenComplete(
-        () {
-      FileOutput fileOutPut = FileOutput(file: fileV!);
-      // ConsoleOutput consoleOutput = ConsoleOutput();
-      LogOutput multiOutput = fileOutPut;
-      loggV = Logger(
-          filter: DevelopmentFilter(),
-          printer: PrettyPrinter(
-            methodCount: 0,
-            errorMethodCount: 3,
-            lineLength: 70,
-            colors: true,
-            printEmojis: false,
-            //printTime: true
-          ),
-          output: multiOutput // Use the default LogOutput (-> send everything to console)
-      );
-    },
-  );
-
-
-  getDirectoryForErrorLogRecord().whenComplete(
-        () {
-      FileOutput fileOutPut = FileOutput(file: fileE!);
-      // ConsoleOutput consoleOutput = ConsoleOutput();
-      LogOutput multiOutput = fileOutPut;
-      loggE = Logger(
-          filter: DevelopmentFilter(),
-          printer: PrettyPrinter(
-            methodCount: 0,
-            errorMethodCount: 3,
-            lineLength: 70,
-            colors: true,
-            printEmojis: false,
-            //printTime: true
-          ),
-          output: multiOutput // Use the default LogOutput (-> send everything to console)
-      );
-    },
-  );
 
   SharedPreferences.getInstance().then((value) {
     sharedPreferences = value;
@@ -172,6 +113,7 @@ registerBackgroundTask() async{
   );
 }
 
+/*
 createFolder() async{
   File? file;
   final Directory documentDirectory = await getApplicationDocumentsDirectory();
@@ -241,7 +183,7 @@ createFolder() async{
   } else {
     print('Invalid file index');
   }
-}
+} */
 
 Future<bool> isFileExistsInFolder(String folderPath, String fileName) async {
   final folder = Directory(folderPath);
@@ -283,6 +225,7 @@ onDidReceiveBackgroundNotificationResponse(
   Utils.customPrint('APP RESTART 24');
   loggD.d('APP RESTART 2 -> $page ${DateTime.now()}');
   loggV.v('APP RESTART 2 -> $page ${DateTime.now()}');
+  CustomLogger().logWithFile(Level.info, "APP RESTART 2 -> $page");
   /// APP RESTART
 }
 
@@ -292,7 +235,7 @@ void bgLocationCallBack() async {
   var pref = await SharedPreferences.getInstance();
   pref.setBool('sp_key_called_from_noti', true);
   Utils.customPrint('APP RESTART 23');
-
+  CustomLogger().logWithFile(Level.info, "bgLocationCallBack APP RESTART 23-> $page");
   /// APP RESTART
 }
 
@@ -301,6 +244,7 @@ onDidReceiveLocalNotification(
   Utils.customPrint('APP RESTART 3');
   loggD.e('APP RESTART 3 -> $page ${DateTime.now()}');
   loggV.e('APP RESTART 3 -> $page ${DateTime.now()}');
+  CustomLogger().logWithFile(Level.info, "APP RESTART 3");
   /// APP RESTART
 }
 
@@ -339,11 +283,14 @@ Future<void> initializeService() async {
     Utils.customPrint('APP RESTART 1');
     loggD.d('APP RESTART 1 -> $page ${DateTime.now()}');
     loggV.v('APP RESTART 1 -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.verbose, "APP RESTART 1 -> $page");
+    CustomLogger().logWithFile(Level.info, "APP RESTART 1 -> $page");
 
     if (value.id == 776 || value.id == 1 || value.id == 889) {
       Utils.customPrint('NOTIFICATION ID: ${value.id}');
       loggD.d('NOTIFICATION ID: ${value.id} -> $page ${DateTime.now()}');
       loggV.v('NOTIFICATION ID: ${value.id} -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "NOTIFICATION ID: ${value.id} -> $page ");
       var pref = await SharedPreferences.getInstance();
       pref.setBool('sp_key_called_from_noti', true);
       List<String>? tripData = pref.getStringList('trip_data');
@@ -352,7 +299,7 @@ Future<void> initializeService() async {
       print("IS APP KILLED MAIN $isAppKilledFromBGMain");
       loggD.d('IS APP KILLED MAIN -> $page ${DateTime.now()}');
       loggV.v('IS APP KILLED MAIN -> $page ${DateTime.now()}');
-
+      CustomLogger().logWithFile(Level.info, "IS APP KILLED MAIN $isAppKilledFromBGMain -> $page ");
       if(isAppKilledFromBGMain)
         {
           Get.to(TripAnalyticsScreen(
@@ -402,19 +349,24 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
        });
 
        Utils.customPrint("URI: ${uri}");
+       CustomLogger().logWithFile(Level.info, "URI: ${uri} -> $page");
         if (uri != null) {
           Utils.customPrint('Deep link received: $uri');
           loggD.d('Deep link received -> $page ${DateTime.now()}');
           loggV.v('Deep link received -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "Deep link received -> $page ");
+
           if(uri.queryParameters['verify'] != null){
             Utils.customPrint("reset: ${uri.queryParameters['verify'].toString()}");
             loggD.d('reset: ${uri.queryParameters['verify'].toString()} -> $page ${DateTime.now()}');
             loggV.v('reset: ${uri.queryParameters['verify'].toString()} -> $page ${DateTime.now()}');
+            CustomLogger().logWithFile(Level.info, "reset: ${uri.queryParameters['verify'].toString()} -> $page ");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
 
             Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
             loggD.d('isUserLoggedIn: $isUserLoggedIn -> $page ${DateTime.now()}');
             loggV.v('isUserLoggedIn: $isUserLoggedIn -> $page ${DateTime.now()}');
+            CustomLogger().logWithFile(Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page ");
             Map<String, dynamic> arguments = {
               "isComingFromReset": true,
               "token": uri.queryParameters['verify'].toString()
@@ -425,12 +377,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   {
                     sharedPreferences!.setBool('reset_dialog_opened', false);
                     Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
-
+                    CustomLogger().logWithFile(Level.info, "User navigating to home page -> $page ");
                   }
               }
             else
               {
                 Get.to(ResetPassword(token: uri.queryParameters['verify'].toString(),));
+                CustomLogger().logWithFile(Level.info, "User navigating to reset password screen -> $page ");
               }
 
           }
@@ -439,11 +392,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         Utils.customPrint('Error handling deep link: $err');
         loggE.d('Error handling deep link: $err -> $page ${DateTime.now()}');
         loggV.v('Error handling deep link: $err -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.error, "Error handling deep link: $err -> $page ");
       });
     } on PlatformException {
       Utils.customPrint("Exception while handling with uni links : ${PlatformException}");
       loggE.d('Exception while handling with uni links : ${PlatformException} -> $page ${DateTime.now()}');
       loggV.v('Exception while handling with uni links : ${PlatformException} -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.error, "Exception while handling with uni links : ${PlatformException} -> $page ");
     }
   }
 
@@ -455,6 +410,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     Utils.customPrint('APP IN BG INIT');
     loggD.d('APP IN BG INIT -> $page ${DateTime.now()}');
     loggV.v('APP IN BG INIT -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "APP IN BG INIT -> -> $page ");
   }
 
   getTripData()async
@@ -465,6 +421,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     print("TRIP IN PROGRESS MAIN $isTripStarted");
     loggD.d('TRIP IN PROGRESS MAIN $isTripStarted -> $page ${DateTime.now()}');
     loggV.v('TRIP IN PROGRESS MAIN $isTripStarted -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "TRIP IN PROGRESS MAIN $isTripStarted -> $page");
   }
 
   @override
@@ -476,6 +433,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     Utils.customPrint('APP IN BG DISPOSE');
     loggD.d('APP IN BG DISPOSE -> $page ${DateTime.now()}');
     loggV.v('APP IN BG DISPOSE -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "APP IN BG DISPOSE -> $page");
   }
 
   @override
@@ -507,6 +465,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         String? result = sharedPreferences!.getString('tripAvgSpeed');
 
         print("RESUME MAIN $result");
+        CustomLogger().logWithFile(Level.info, "RESUME MAIN $result -> $page");
 
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
           await Future.delayed(Duration(seconds: 1), () async {
@@ -556,6 +515,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   EasyLoading.dismiss();
 
                   print("LIFE CYCLE KILLED $isAppKilledFromBGMain");
+                  CustomLogger().logWithFile(Level.info, "LIFE CYCLE KILLED $isAppKilledFromBGMain -> $page");
 
                   if(isAppKilledFromBGMain)
                     {
@@ -564,6 +524,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                         vesselId: tripData[1],
                         isAppKilled: false,
                         tripIsRunningOrNot: isTripStarted));
+                      CustomLogger().logWithFile(Level.info, "User navigating to trip analytics screen :: isAppKilledFromBGMain $isAppKilledFromBGMain -> $page");
                     }
                   else
                     {
@@ -572,6 +533,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                           vesselId: tripData[1],
                           isAppKilled: true,
                           tripIsRunningOrNot: isTripStarted));
+                      CustomLogger().logWithFile(Level.info, "User navigating to trip analytics screen :: isAppKilledFromBGMain $isAppKilledFromBGMain -> $page");
                     }
 
 
@@ -600,9 +562,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.inactive:
         print('\n\ninactive');
+        CustomLogger().logWithFile(Level.info, "App is inActive -> $page");
         break;
       case AppLifecycleState.paused:
         print('\n\npaused');
+        CustomLogger().logWithFile(Level.info, "App is paused -> $page");
         sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences!.reload();
         break;
@@ -614,6 +578,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         String? result = sharedPreferences!.getString('tripAvgSpeed');
 
         print("DETACH MAIN $result");
+        CustomLogger().logWithFile(Level.info, "DETACH MAIN $result -> $page");
 
         print('\n\ndetached');
         break;

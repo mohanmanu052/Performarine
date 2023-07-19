@@ -23,101 +23,6 @@ class AddVesselApiProvider with ChangeNotifier {
       GlobalKey<ScaffoldState> scaffoldKey,
       {bool calledFromSignOut = false}) async {
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForInfoLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileI!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggI = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForErrorLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileE!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggE = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForWarningLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileW!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggW = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
       "x_access_token": '$accessToken',
@@ -194,37 +99,27 @@ class AddVesselApiProvider with ChangeNotifier {
       http.Response responseValue = await http.Response.fromStream(response);
 
       Utils.customPrint('Add VESSEL RESP : ' + responseValue.body);
-      loggD.d('Add VESSEL RESP : ' + jsonEncode(responseValue.body) + '-> $page ${DateTime.now()}');
-      loggV.v('Add VESSEL RESP : ' + jsonEncode(responseValue.body) + '-> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "Add VESSEL RESP : ' + ${jsonEncode(responseValue.body)}-> $page");
 
       var decodedData = json.decode(responseValue.body);
 
       if (responseValue.statusCode == HttpStatus.ok) {
         Utils.customPrint('Register Response : ' + responseValue.body);
-        loggD.d('Register Response : ' + responseValue.body + '-> $page ${DateTime.now()}');
-        loggV.v('Register Response : ' + responseValue.body + '-> $page ${DateTime.now()}');
-        loggI.i("API success of ${Urls.baseUrl}${Urls.createVessel} -> $page ${DateTime.now()} ");
-        loggV.v("API success of ${Urls.baseUrl}${Urls.createVessel} -> $page ${DateTime.now()} ");
+        CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.createVessel} is: ${responseValue.statusCode}-> $page");
 
         addVesselModel =
             AddVesselModel.fromJson(json.decode(responseValue.body));
 
         if(addVesselModel == null){
-          loggE.e("Getting null while json parsing -> $page ${DateTime.now()}");
-          loggV.v("Getting null while json parsing -> $page ${DateTime.now()}");
+          CustomLogger().logWithFile(Level.error, "==========Error======= Getting null while json parsing in addVesselModel -> $page");
         }
 
         return addVesselModel!;
       } else if (responseValue.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
         Utils.customPrint('EXE RESP: $responseValue');
-        loggD.d("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
-        loggD.d('EXE RESP: $responseValue -> $page ${DateTime.now()}');
-        loggE.e("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
-        loggE.e('EXE RESP: $responseValue -> $page ${DateTime.now()}');
-
-        loggV.v("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
-        loggV.v('EXE RESP: $responseValue -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.error, "EXE RESP: $responseValue -> $page");
 
         if (scaffoldKey != null) {
           if (!calledFromSignOut) {
@@ -244,29 +139,21 @@ class AddVesselApiProvider with ChangeNotifier {
 
         Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
         Utils.customPrint('EXE RESP: $responseValue');
-        loggD.d("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
-        loggD.d("EXE RESP: $responseValue -> $page ${DateTime.now()}");
-        loggE.e("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
-        loggE.e("EXE RESP: $responseValue -> $page ${DateTime.now()}");
 
-        loggV.v("EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page ${DateTime.now()}");
-        loggV.v("EXE RESP: $responseValue -> $page ${DateTime.now()}");
+        CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.info, "EXE RESP: $responseValue -> $page");
         addVesselModel = null;
       }
       addVesselModel = null;
     } on SocketException catch (_) {
       await Utils().check(scaffoldKey);
       Utils.customPrint('Socket Exception');
-      loggD.d("Socket Exception -> $page ${DateTime.now()}");
-      loggE.e("Socket Exception -> $page ${DateTime.now()}");
-      loggV.v("Socket Exception -> $page ${DateTime.now()}");
+      CustomLogger().logWithFile(Level.error, "Socket Exception -> $page");
 
       addVesselModel = null;
     } catch (exception, s) {
       Utils.customPrint('error caught Add Vessel:- $exception \n $s');
-      loggD.d("error caught Add Vessel:- $exception \n $s -> $page ${DateTime.now()}");
-      loggE.e("error caught Add Vessel:- $exception \n $s -> $page ${DateTime.now()}");
-      loggV.v("error caught Add Vessel:- $exception \n $s -> $page ${DateTime.now()}");
+      CustomLogger().logWithFile(Level.error, "error caught Add Vessel:- $exception \n $s-> $page");
       addVesselModel = null;
     }
 

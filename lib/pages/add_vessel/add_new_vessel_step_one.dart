@@ -96,46 +96,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
     // TODO: implement initState
     super.initState();
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
     });
@@ -143,8 +103,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
     if (widget.isEdit!) {
       if (widget.addVesselData != null) {
         Utils.customPrint('ENGINE TYPE ${widget.addVesselData!.engineType!}');
-        loggD.d('ENGINE TYPE ${widget.addVesselData!.engineType!} -> $page ${DateTime.now()}');
-        loggV.v('ENGINE TYPE ${widget.addVesselData!.engineType!} -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.info, "ENGINE TYPE ${widget.addVesselData!.engineType!} -> $page");
         //Utils.customPrint('Image ${widget.addVesselData!.imageURLs!}');
 
         nameController.text = widget.addVesselData!.name!;
@@ -206,6 +165,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                         return null;
                       },
                       onSaved: (String value) {
+                        CustomLogger().logWithFile(Level.info, "vessel name $value -> $page");
                         Utils.customPrint(value);
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
@@ -232,6 +192,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       },
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "vessel model $value -> $page");
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -258,6 +219,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       },
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "Vessel Builder Name $value -> $page");
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -284,6 +246,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       },*/
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "Registration Number $value -> $page");
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -310,6 +273,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       },*/
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "MMSI $value -> $page");
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -336,6 +300,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       },
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "Vessel Weight $value -> $page");
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   Container(
@@ -351,8 +316,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                         setState(() {
                           selectedEngineType = value;
                           Utils.customPrint('engine $selectedEngineType');
-                          loggD.d('engine $selectedEngineType -> $page ${DateTime.now()}');
-                          loggV.v('engine $selectedEngineType -> $page ${DateTime.now()}');
+                          CustomLogger().logWithFile(Level.info, "engine $selectedEngineType -> $page");
                         });
 
                         if (selectedEngineType!.toLowerCase() == 'hybrid') {
@@ -426,6 +390,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 },
                                 onSaved: (String value) {
                                   Utils.customPrint(value);
+                                  CustomLogger().logWithFile(Level.info, "Fuel Capacity $value-> $page");
                                 }),
                           ],
                         )
@@ -461,6 +426,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 },
                                 onSaved: (String value) {
                                   Utils.customPrint(value);
+                                  CustomLogger().logWithFile(Level.info, "Battery Capacity $value-> $page");
                                 }),
                           ],
                         )
@@ -472,8 +438,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       uploadImageFunction();
                       Utils.customPrint(
                           'FIIALLL: ${finalSelectedFiles.length}');
-                      loggD.d('FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
-                      loggV.v('FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
+                      CustomLogger().logWithFile(Level.info, "FIIALLL: ${finalSelectedFiles.length} -> $page");
                     }, Colors.grey),
                   ),
                   SizedBox(height: displayHeight(context) * 0.01),
@@ -630,16 +595,14 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                             onTap: () {
                                               Utils.customPrint(
                                                   'FIIALLL: ${finalSelectedFiles.length}');
-                                              loggD.d('FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
-                                              loggV.v('FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
+                                              CustomLogger().logWithFile(Level.info, "FIIALLL: ${finalSelectedFiles.length} -> $page");
                                               setState(() {
                                                 finalSelectedFiles
                                                     .removeAt(index);
                                               });
                                               Utils.customPrint(
                                                   'FIIALLL: ${finalSelectedFiles.length}');
-                                              loggD.d('FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
-                                              loggV.v('FIIALLL: ${finalSelectedFiles.length} -> $page ${DateTime.now()}');
+                                              CustomLogger().logWithFile(Level.info, "FIIALLL: ${finalSelectedFiles.length} -> $page");
                                             },
                                             child: Icon(
                                               Icons.close,
@@ -674,14 +637,12 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       if (formKey.currentState!.validate()) {
                         Utils.customPrint(
                             'FINAL SELECTED FILES ${finalSelectedFiles.isEmpty}');
-                        loggD.d('FINAL SELECTED FILES ${finalSelectedFiles.isEmpty} -> $page ${DateTime.now()}');
-                        loggV.v('FINAL SELECTED FILES ${finalSelectedFiles.isEmpty} -> $page ${DateTime.now()}');
+                        CustomLogger().logWithFile(Level.info, "FINAL SELECTED FILES ${finalSelectedFiles.isEmpty} -> $page");
                         // return;
 
                         Utils.customPrint(
                             'WEIGHT 1 ${int.parse(weightController.text)}');
-                        loggD.d('WEIGHT 1 ${int.parse(weightController.text)}-> $page ${DateTime.now()}');
-                        loggV.v('WEIGHT 1 ${int.parse(weightController.text)}-> $page ${DateTime.now()}');
+                        CustomLogger().logWithFile(Level.info, "WEIGHT 1 ${int.parse(weightController.text)} -> $page");
 
                         commonProvider.addVesselRequestModel = CreateVessel();
 
@@ -726,8 +687,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
 
                         Utils.customPrint(
                             'Step ONE VESSEL NAME: ${nameController.text}');
-                        loggD.d('Step ONE VESSEL NAME: ${nameController.text}-> $page ${DateTime.now()}');
-                        loggV.v('Step ONE VESSEL NAME: ${nameController.text}-> $page ${DateTime.now()}');
+                        CustomLogger().logWithFile(Level.info, "Step ONE VESSEL NAME: ${nameController.text} -> $page");
                         //Utils.customPrint('Step ONE VESSEL NAME: ${nameController.text}');
 
                         FocusScope.of(context).requestFocus(new FocusNode());
@@ -769,11 +729,9 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
               finalSelectedFiles.clear();
               finalSelectedFiles.addAll(selectedImageFileList);
               Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
-              loggD.d('CAMERA FILE 2 ${finalSelectedFiles[0]!.path}-> $page ${DateTime.now()}');
-              loggV.v('CAMERA FILE 2 ${finalSelectedFiles[0]!.path}-> $page ${DateTime.now()}');
+              CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
               Utils.customPrint('CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
-              loggD.d('CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page ${DateTime.now()}');
-              loggV.v('CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page ${DateTime.now()}');
+              CustomLogger().logWithFile(Level.info, "CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page");
 
               /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
@@ -800,8 +758,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                 finalSelectedFiles.clear();
                 finalSelectedFiles.addAll(selectedImageFileList);
                 Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
-                loggD.d('CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page ${DateTime.now()}');
-                loggV.v('CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page ${DateTime.now()}');
+                CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
 
                 /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
@@ -813,8 +770,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
       }
     } else {
       Utils.customPrint('OTHER ELSE');
-      loggD.d('OTHER ELSE -> $page ${DateTime.now()}');
-      loggV.v('OTHER ELSE -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "OTHER ELSE -> -> $page");
       await selectImage(context, Colors.red,
           (List<File?> selectedImageFileList) {
         if (selectedImageFileList.isNotEmpty) {
@@ -822,12 +778,9 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
             finalSelectedFiles.clear();
             finalSelectedFiles.addAll(selectedImageFileList);
             Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
-            loggD.d('CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page ${DateTime.now()}');
-            loggV.v('CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page ${DateTime.now()}');
+            CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
             Utils.customPrint('CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
-            loggD.d('CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page ${DateTime.now()}');
-            loggV.v('CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page ${DateTime.now()}');
-
+            CustomLogger().logWithFile(Level.info, "CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page");
 
             /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);

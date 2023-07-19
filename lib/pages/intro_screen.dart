@@ -46,46 +46,6 @@ class _IntroScreenState extends State<IntroScreen> {
     // TODO: implement initState
     super.initState();
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     initUniLinks();
 
     /*checkIfTripIsRunning();
@@ -201,8 +161,8 @@ class _IntroScreenState extends State<IntroScreen> {
     bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
 
     Utils.customPrint('INTRO START $isTripStarted');
-    loggD.d('INTRO START $isTripStarted  -> $page ${DateTime.now()}');
-    loggV.v('INTRO START $isTripStarted -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "INTRO START $isTripStarted -> $page");
+    CustomLogger().logWithFile(Level.info, "INTRO START $isTripStarted -> $page");
 
     setState(() {
       isTripRunningCurrently = isTripStarted;
@@ -231,8 +191,7 @@ class _IntroScreenState extends State<IntroScreen> {
 
       if (notificationAppLaunchDetails == null) {
         Utils.customPrint('NotificationAppLaunchDetails IS NULL');
-        loggD.d('NotificationAppLaunchDetails IS NULL -> $page ${DateTime.now()}');
-        loggV.v('NotificationAppLaunchDetails IS NULL -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.info, "NotificationAppLaunchDetails IS NULL -> $page");
         Future.delayed(Duration(seconds: 3), () {
           if (mounted) {
             setState(() {
@@ -243,8 +202,7 @@ class _IntroScreenState extends State<IntroScreen> {
       } else {
         if (!notificationAppLaunchDetails.didNotificationLaunchApp) {
           Utils.customPrint('NotificationAppLaunchDetails IS FALSE');
-          loggD.d('NotificationAppLaunchDetails IS FALSE -> $page ${DateTime.now()}');
-          loggV.v('NotificationAppLaunchDetails IS FALSE -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "NotificationAppLaunchDetails IS FALSE -> $page");
 
           Future.delayed(Duration(seconds: 3), () {
             if (mounted) {
@@ -255,8 +213,7 @@ class _IntroScreenState extends State<IntroScreen> {
            });
         } else {
           Utils.customPrint('NotificationAppLaunchDetails IS TRUE');
-          loggD.d('NotificationAppLaunchDetails IS TRUE -> $page ${DateTime.now()}');
-          loggV.v('NotificationAppLaunchDetails IS TRUE -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "NotificationAppLaunchDetails IS TRUE -> $page");
 
           if (notificationAppLaunchDetails.notificationResponse!.id == 889 || notificationAppLaunchDetails.notificationResponse!.id == 776 || notificationAppLaunchDetails.notificationResponse!.id == 1) {
             List<String>? tripData =
@@ -298,11 +255,8 @@ class _IntroScreenState extends State<IntroScreen> {
     Utils.customPrint('ISUSERLOGEDIN $isUserLoggedIn');
     Utils.customPrint('ISUSERLOGEDIN 1212 $isTripStarted');
 
-    loggD.d('ISUSERLOGEDIN $isUserLoggedIn -> $page ${DateTime.now()}');
-    loggD.d('ISUSERLOGEDIN 1212 $isTripStarted -> $page ${DateTime.now()}');
-
-    loggV.v('ISUSERLOGEDIN $isUserLoggedIn -> $page ${DateTime.now()}');
-    loggV.v('ISUSERLOGEDIN 1212 $isTripStarted -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "ISUSERLOGEDIN  $isUserLoggedIn -> $page");
+    CustomLogger().logWithFile(Level.info, "ISUSERLOGEDIN 1212 $isTripStarted -> $page");
 
     if (isTripStarted == null) {
       if (isUserLoggedIn == null) {
@@ -332,16 +286,14 @@ class _IntroScreenState extends State<IntroScreen> {
     }
     else if (isTripStarted) {
       Utils.customPrint('INTRO TRIP IS RUNNING $isTripStarted');
-      loggD.d('INTRO TRIP IS RUNNING $isTripStarted -> $page ${DateTime.now()}');
-      loggV.v('INTRO TRIP IS RUNNING $isTripStarted -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING $isTripStarted -> $page");
 
       flutterLocalNotificationsPlugin.cancel(1);
 
       final _isRunning = await BackgroundLocator();
 
       Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
-      loggD.d('INTRO TRIP IS RUNNING 1212 $_isRunning -> $page ${DateTime.now()}');
-      loggV.v('INTRO TRIP IS RUNNING 1212 $_isRunning -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING $_isRunning -> $page");
 
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
@@ -622,23 +574,19 @@ class _IntroScreenState extends State<IntroScreen> {
     try {
       initialLink = await getInitialUri();
       debugPrint('UNI LINK: $initialLink');
-      loggD.d('UNI LINK: $initialLink -> $page ${DateTime.now()}');
-      loggV.v('UNI LINK: $initialLink -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "UNI LINK: $initialLink -> $page");
 
       if(initialLink != null)
         {
           print('Deep link received: $initialLink');
-          loggD.d('Deep link received: $initialLink -> $page ${DateTime.now()}');
-          loggV.v('Deep link received: $initialLink -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "Deep link received: $initialLink -> $page");
           if(initialLink.queryParameters['verify'] != null){
             print("reset: ${initialLink.queryParameters['verify'].toString()}");
-            loggD.d("reset: ${initialLink.queryParameters['verify'].toString()} -> $page ${DateTime.now()}");
-            loggV.v("reset: ${initialLink.queryParameters['verify'].toString()} -> $page ${DateTime.now()}");
+            CustomLogger().logWithFile(Level.info, "reset: ${initialLink.queryParameters['verify'].toString()} -> $page");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
 
             print("isUserLoggedIn: $isUserLoggedIn");
-            loggD.d("isUserLoggedIn: $isUserLoggedIn -> $page ${DateTime.now()}");
-            loggV.v("isUserLoggedIn: $isUserLoggedIn -> $page ${DateTime.now()}");
+            CustomLogger().logWithFile(Level.info, "isUserLoggedIn: $isUserLoggedIn-> $page");
             Map<String, dynamic> arguments = {
               "isComingFromReset": true,
               "token": initialLink.queryParameters['verify'].toString()
@@ -684,21 +632,17 @@ class _IntroScreenState extends State<IntroScreen> {
         });*/
 
         print("URI: ${uri}");
-        loggD.d("URI: ${uri} -> $page ${DateTime.now()}");
-        loggV.v("URI: ${uri} -> $page ${DateTime.now()}");
+        CustomLogger().logWithFile(Level.info, "URI: $uri-> $page");
         if (uri != null) {
           print('Deep link received: $uri');
-          loggD.d('Deep link received: $initialLink -> $page ${DateTime.now()}');
-          loggV.v('Deep link received: $initialLink -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "Deep link received-> $page");
           if(uri.queryParameters['verify'] != null){
             print("reset: ${uri.queryParameters['verify'].toString()}");
-            loggD.d("reset: ${uri.queryParameters['verify'].toString()}-> $page ${DateTime.now()}");
-            loggV.v("reset: ${uri.queryParameters['verify'].toString()}-> $page ${DateTime.now()}");
+            CustomLogger().logWithFile(Level.info, "reset: ${uri.queryParameters['verify'].toString()} -> $page");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
 
             print("isUserLoggedIn: $isUserLoggedIn");
-            loggD.d("isUserLoggedIn: $isUserLoggedIn-> $page ${DateTime.now()}");
-            loggV.v("isUserLoggedIn: $isUserLoggedIn-> $page ${DateTime.now()}");
+            CustomLogger().logWithFile(Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page");
             Map<String, dynamic> arguments = {
               "isComingFromReset": true,
               "token": uri.queryParameters['verify'].toString()
@@ -730,13 +674,11 @@ class _IntroScreenState extends State<IntroScreen> {
           }
       }, onError: (err) {
         print('Error handling deep link: $err');
-        loggE.e('Error handling deep link: $err -> $page ${DateTime.now()}');
-        loggV.v('Error handling deep link: $err -> $page ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.error, "Error handling deep link -> $page");
       });
     } on PlatformException {
       print("Exception while handling with uni links : ${PlatformException}");
-      loggE.e("Exception while handling with uni links : ${PlatformException} -> $page ${DateTime.now()}");
-      loggV.v("Exception while handling with uni links : ${PlatformException}-> $page ${DateTime.now()}");
+      CustomLogger().logWithFile(Level.error, "Exception while handling with uni links : ${PlatformException} -> $page");
     }
   }
 }

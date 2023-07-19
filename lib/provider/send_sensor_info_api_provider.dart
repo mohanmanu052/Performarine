@@ -36,102 +36,6 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       GlobalKey<ScaffoldState> scaffoldKey,
       {bool calledFromSignOut = false}) async {
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForInfoLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileI!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggI = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForErrorLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileE!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggE = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-    getDirectoryForWarningLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileW!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggW = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     d.Dio dio = d.Dio();
     print('ZIPPPP: ${zipFile!.path}');
     print('ZIPPPP: ${zipFile.existsSync()}');
@@ -188,24 +92,23 @@ class SendSensorInfoApiProvider with ChangeNotifier {
        // _networkConnectivity.disposeStream();
         Utils.customPrint('RESPONSE: ${response.statusCode}');
         Utils.customPrint('RESPONSE: ${jsonEncode(response.data)}');
+        CustomLogger().logWithFile(Level.info, "RESPONSE: ${response.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.info, "RESPONSE: ${jsonEncode(response.data)} -> $page");
         var decodedData = json.decode(jsonEncode(response.data));
         if (response.statusCode == HttpStatus.ok) {
-          Utils.customPrint('Register Response : ' + response.data.toString());
-          loggD.d('Register Response : ' + response.data.toString() + '-> $page ${DateTime.now()}');
-          loggV.v('Register Response : ' + response.data.toString() + '-> $page ${DateTime.now()}');
-          loggI.i("API response status is ${response.statusCode} on -> $page ${DateTime.now()}");
-          loggV.v("API response status is ${response.statusCode} on -> $page ${DateTime.now()}");
+          Utils.customPrint('Send sensor info api Response : ' + response.data.toString());
+
+          CustomLogger().logWithFile(Level.info, "Send sensor info api Response : ' + ${response.data.toString()} -> $page");
+          CustomLogger().logWithFile(Level.info, "API response status is: ${response.statusCode} on -> $page");
 
           if (decodedData['status']) {
             if(uploadTripModel == null){
-              loggE.e("Error while parsing json data on -> $page ${DateTime.now()}");
-              loggV.v("Error while parsing json data on -> $page ${DateTime.now()}");
+              CustomLogger().logWithFile(Level.error, "Error while parsing json data on uploadTripModel -> $page");
             }
             uploadTripModel = UploadTripModel.fromJson(decodedData);
           } else {
             if(uploadTripModel == null){
-              loggE.e("Error while parsing json data on -> $page ${DateTime.now()}");
-              loggV.v("Error while parsing json data on -> $page ${DateTime.now()}");
+              CustomLogger().logWithFile(Level.error, "Error while parsing json data on uploadTripModellll -> $page");
             }
             if (scaffoldKey != null) {
               Utils.showSnackBar(context,
@@ -217,13 +120,9 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         } else if (response.statusCode == HttpStatus.gatewayTimeout) {
           Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
           Utils.customPrint('EXE RESP: $response');
-          loggD.d('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-          loggD.d('EXE RESP: $response -> $page ${DateTime.now()}');
-          loggE.e('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-          loggE.e('EXE RESP: $response -> $page ${DateTime.now()}');
 
-          loggV.v('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-          loggV.v('EXE RESP: $response -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+          CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
 
           if (scaffoldKey != null) {
             if (!calledFromSignOut) {
@@ -243,21 +142,16 @@ class SendSensorInfoApiProvider with ChangeNotifier {
 
           Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
           Utils.customPrint('EXE RESP: $response');
-          loggD.d('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-          loggD.d('EXE RESP: $response -> $page ${DateTime.now()}');
-          loggE.e('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-          loggE.e('EXE RESP: $response -> $page ${DateTime.now()}');
-
-          loggV.v('EXE RESP STATUS CODE: ${response.statusCode} -> $page ${DateTime.now()}');
-          loggV.v('EXE RESP: $response -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+          CustomLogger().logWithFile(Level.info, "EXE RESP: $response -> $page");
         }
         uploadTripModel = null;
       }).onError((error, stackTrace) async{
        // _networkConnectivity.disposeStream();
         Utils.customPrint('ERROR DIO: $error\n$stackTrace');
-        loggD.d('ERROR DIO: $error\n$stackTrace -> $page ${DateTime.now()}');
-        loggE.e('ERROR DIO: $error\n$stackTrace -> $page ${DateTime.now()}');
-        loggV.v('ERROR DIO: $error\n$stackTrace -> $page ${DateTime.now()}');
+
+        CustomLogger().logWithFile(Level.error, "ERROR DIO: $error\n$stackTrace -> $page");
+        CustomLogger().logWithFile(Level.warning, "Failed to upload trip. Please check internet connection and try again.-> $page");
         if (scaffoldKey != null) {
           if (!calledFromSignOut) {
             Utils.showSnackBar(context,
@@ -278,9 +172,8 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       //_networkConnectivity.disposeStream();
       await Utils().check(scaffoldKey);
       Utils.customPrint('Socket Exception');
-      loggD.d('Socket Exception -> $page ${DateTime.now()}');
-      loggE.e('Socket Exception -> $page ${DateTime.now()}');
-      loggV.v('Socket Exception -> $page ${DateTime.now()}');
+
+      CustomLogger().logWithFile(Level.error, "Socket Exception -> $page");
 
       uploadTripModel = null;
     }catch (exception, s) {
@@ -289,9 +182,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       await Utils().check(scaffoldKey);
 
       Utils.customPrint('error caught exception:- $exception \n $s');
-      loggD.d('error caught exception:- $exception \n $s -> $page ${DateTime.now()}');
-      loggE.e('error caught exception:- $exception \n $s -> $page ${DateTime.now()}');
-      loggV.v('error caught exception:- $exception \n $s -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.error, "error caught uploadTripModel:- $exception \n $s -> $page");
       uploadTripModel = null;
     }
 

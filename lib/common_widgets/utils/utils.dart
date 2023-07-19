@@ -180,45 +180,6 @@ class Utils {
   static Future<bool> getStoragePermission(BuildContext context,
       [Permission permission = Permission.storage]) async {
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     bool isPermissionGranted = false;
 
     if (Platform.isAndroid) {
@@ -242,12 +203,12 @@ class Utils {
           isPermissionGranted = false;
         }
         Utils.customPrint('PD');
-        loggD.d('PD -> Utils ${DateTime.now()}');
-        loggV.v('PD -> Utils ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.info, "PD -> Utils");
 
         isPermissionGranted = await openAppSettings();
       } else if (await Permission.locationAlways.request().isDenied) {
         Utils.customPrint('D');
+        CustomLogger().logWithFile(Level.warning, "D -> Utils");
         isPermissionGranted = false;
       }
     } catch (e) {
@@ -260,46 +221,6 @@ class Utils {
   Future<bool> check(GlobalKey<ScaffoldState> scaffoldKey,
       {bool userConfig = false, VoidCallback? onRetryTap}) async {
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -309,6 +230,8 @@ class Utils {
       Utils.customPrint('No Internet');
       loggD.d('No Internet -> $page ${DateTime.now()}');
       loggV.v('No Internet -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.error, "No Internet -> $page");
+      CustomLogger().logWithFile(Level.warning, "No Internet -> $page");
       showDialog(
           context: scaffoldKey.currentContext!,
           builder: (BuildContext context) {
@@ -334,45 +257,6 @@ class Utils {
   static Future<bool> getNotificationPermission(BuildContext context,
       [Permission permission = Permission.notification]) async {
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     bool isPermissionGranted = false;
 
     /*final androidInfo = await DeviceInfoPlugin().androidInfo;
@@ -389,14 +273,12 @@ class Utils {
       } else if (await permission.request().isPermanentlyDenied) {
         isPermissionGranted = false;
         Utils.customPrint('PD');
-        Utils.customPrint('PD -> Utils ${DateTime.now()}');
-        Utils.customPrint('PD -> Utils ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.warning, "PD -> Utils");
 
         isPermissionGranted = await openAppSettings();
       } else if (await Permission.notification.request().isDenied) {
         Utils.customPrint('D');
-        loggD.d('D -> Utils ${DateTime.now()}');
-        loggV.v('D -> Utils ${DateTime.now()}');
+        CustomLogger().logWithFile(Level.warning, "D -> Utils");
         isPermissionGranted = false;
         //getStoragePermission(context, scaffoldKey);
       }
@@ -520,9 +402,11 @@ class Utils {
     var now = tz.TZDateTime.now(canada).toUtc();
     var localNow = DateTime.now();
     Utils.customPrint(DateFormat('dd-MM-yyyy hh:mm a').format(now));
+    CustomLogger().logWithFile(Level.info, "${DateFormat('dd-MM-yyyy hh:mm a').format(now)} -> Utils");
 
     /// TZ
     Utils.customPrint(DateFormat('dd-MM-yyyy hh:mm a').format(localNow));
+    CustomLogger().logWithFile(Level.info, "${DateFormat('dd-MM-yyyy hh:mm a').format(localNow)} -> Utils");
 
     /// LOCAL
     return now.toString();

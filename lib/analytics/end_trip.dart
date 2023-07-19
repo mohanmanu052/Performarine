@@ -26,95 +26,12 @@ class EndTrip {
     IOSAvgSpeed = "",
   }) async {
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForErrorLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileE!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggE = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForInfoLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileI!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggI = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     Utils.customPrint("END TRIP FUNCTIONALITY");
-    loggD.d("END TRIP FUNCTIONALITY -> $page ${DateTime.now()}");
-    loggV.v("END TRIP FUNCTIONALITY -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "END TRIP FUNCTIONALITY -> -> $page");
     WidgetsFlutterBinding.ensureInitialized();
     await sharedPreferences!.reload();
-    debugPrint("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance");
-    loggD.d("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance -> $page ${DateTime.now()}");
-    loggV.v("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance -> $page ${DateTime.now()}");
-    loggI.i("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance -> $page ${DateTime.now()}");
+
+    CustomLogger().logWithFile(Level.info, "abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance -> $page");
     ReceivePort port = ReceivePort();
     String? latitude, longitude;
     port.listen((dynamic data) async {
@@ -128,13 +45,11 @@ class EndTrip {
     });
 
     debugPrint("endtrip location:$latitude");
-    loggD.d("endtrip location:$latitude -> $page ${DateTime.now()}");
-    loggV.v("endtrip location:$latitude -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "endtrip location:$latitude -> $page");
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
     Utils.customPrint('TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')}');
-    loggD.d('TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')} -> $page ${DateTime.now()}');
-    loggV.v('TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')} -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')} -> $page");
 
     String tripId = tripData![0];
     String vesselId = tripData[1];
@@ -178,12 +93,9 @@ class EndTrip {
     debugPrint("END TRIP 2 $longitude");
     debugPrint("END TRIP 3 $tripDistance");
 
-    loggD.d("END TRIP 1 $latitude -> $page ${DateTime.now()}");
-    loggD.d("END TRIP 2 $longitude -> $page ${DateTime.now()}");
-    loggD.d("END TRIP 3 $tripDistance -> $page ${DateTime.now()}");
-    loggV.v("END TRIP 1 $latitude -> $page ${DateTime.now()}");
-    loggV.v("END TRIP 2 $longitude -> $page ${DateTime.now()}");
-    loggV.v("END TRIP 3 $tripDistance -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "END TRIP 1 $latitude -> $page");
+    CustomLogger().logWithFile(Level.info, "END TRIP 2 $longitude -> $page");
+    CustomLogger().logWithFile(Level.info, "END TRIP 3 $tripDistance -> $page");
     await DatabaseService().updateTripStatus(
         1,
         file.path,

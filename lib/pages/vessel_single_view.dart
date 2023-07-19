@@ -154,6 +154,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         model: iosDeviceInfo?.model,
         version: iosDeviceInfo?.utsname.release);
     Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
+    CustomLogger().logWithFile(Level.info, "deviceDetails:${deviceDetails!.toJson().toString()}g -> $page");
   }
 
   /// To delete vessel and add into retired vessel list
@@ -194,73 +195,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
     // TODO: implement initState
     super.initState();
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForErrorLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileE!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggE = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     tripIsRunningOrNot();
 
     commonProvider = context.read<CommonProvider>();
 
     Utils.customPrint('VESSEL Image ${isTripEndedOrNot}');
-    loggD.d('VESSEL Image ${isTripEndedOrNot} -> $page ${DateTime.now()}');
-    loggV.v('VESSEL Image ${isTripEndedOrNot} -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "VESSEL Image ${isTripEndedOrNot} -> $page");
 
     checkSensorAvailabelOrNot();
 
@@ -273,8 +213,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     Trip tripDetails = await _databaseService.getTrip(tripData![0]);
     if (tripIsRunning)
       Utils.customPrint('VESSEL SINGLE VIEW TRIP ID ${tripDetails.id}');
-    loggD.d('VESSEL SINGLE VIEW TRIP ID ${tripDetails.id} -> $page ${DateTime.now()}');
-    loggV.v('VESSEL SINGLE VIEW TRIP ID ${tripDetails.id} -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "VESSEL SINGLE VIEW TRIP ID ${tripDetails.id} -> $page");
 
     if (tripIsRunning) {
       if (tripDetails.vesselId != widget.vessel!.id) {
@@ -304,8 +243,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     setState(() {
       tripIsRunning = result;
       Utils.customPrint('Trip is Running $tripIsRunning');
-      loggD.d('Trip is Running $tripIsRunning -> $page ${DateTime.now()}');
-      loggV.v('Trip is Running $tripIsRunning -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "Trip is Running $tripIsRunning -> $page");
 
       if (tripIsRunning) {
         getRunningTripDetails();
@@ -421,11 +359,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 Utils.customPrint(
                                     'RESULT 1 ${result[1] as CreateVessel}');
 
-                                loggD.d('RESULT 1 ${result[0]} -> $page ${DateTime.now()}');
-                                loggD.d('RESULT 1 ${result[1] as CreateVessel} -> $page ${DateTime.now()}');
+                                CustomLogger().logWithFile(Level.info, "RESULT 1 ${result[0]} -> $page");
+                                CustomLogger().logWithFile(Level.info, "RESULT 1 ${result[1] as CreateVessel} -> $page");
 
-                                loggV.v('RESULT 1 ${result[0]} -> $page ${DateTime.now()}');
-                                loggV.v('RESULT 1 ${result[1] as CreateVessel} -> $page ${DateTime.now()}');
                                 setState(() {
                                   widget.vessel = result[1] as CreateVessel?;
                                   isDataUpdated = result[0];
@@ -458,8 +394,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                 Utils.customPrint(
                                     'EXPANSION CHANGE $isVesselParticularExpanded');
-                                loggD.d('EXPANSION CHANGE $isVesselParticularExpanded -> $page ${DateTime.now()}');
-                                loggV.v('EXPANSION CHANGE $isVesselParticularExpanded -> $page ${DateTime.now()}');
+                                CustomLogger().logWithFile(Level.info, "EXPANSION CHANGE $isVesselParticularExpanded -> $page");
                               }),
                               tilePadding: EdgeInsets.zero,
                               childrenPadding: EdgeInsets.zero,
@@ -499,8 +434,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             initiallyExpanded: true,
                             onExpansionChanged: ((newState) {
                               Utils.customPrint('CURRENT STAT $newState');
-                              loggD.d('CURRENT STAT $newState -> $page ${DateTime.now()}');
-                              loggV.v('CURRENT STAT $newState -> $page ${DateTime.now()}');
+                              CustomLogger().logWithFile(Level.info, "CURRENT STAT $newState -> $page");
                             }),
                             textColor: Colors.black,
                             iconColor: Colors.black,
@@ -520,8 +454,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   calledFrom: 'VesselSingleView',
                                   onTripEnded: () async {
                                     Utils.customPrint('SINGLE VIEW TRIP END');
-                                    loggD.d('SINGLE VIEW TRIP END -> $page ${DateTime.now()}');
-                                    loggV.v('SINGLE VIEW TRIP END -> $page ${DateTime.now()}');
+                                    CustomLogger().logWithFile(Level.info, "SINGLE VIEW TRIP END -> $page");
                                     await tripIsRunningOrNot();
                                     setState(() {
                                       tripIsEnded = true;
@@ -585,8 +518,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         onTap: () async {
                           Utils.customPrint('time stamp:' +
                               DateTime.now().toUtc().toString());
-                          loggD.d('time stamp:' + DateTime.now().toUtc().toString() + ' -> $page ${DateTime.now()}');
-                          loggV.v('time stamp:' + DateTime.now().toUtc().toString() + ' -> $page ${DateTime.now()}');
+                          CustomLogger().logWithFile(Level.info, "time stamp:' + ${DateTime.now().toUtc().toString()} -> $page");
                           Utils().showEndTripDialog(context, () async {
                             setState(() {
                               isTripEndedOrNot = true;
@@ -618,8 +550,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                             Utils.customPrint(
                                 'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
-                            loggD.d('FINAL PATH: ${sharedPreferences!.getStringList('trip_data')} -> $page ${DateTime.now()}');
-                            loggV.v('FINAL PATH: ${sharedPreferences!.getStringList('trip_data')} -> $page ${DateTime.now()}');
+                            CustomLogger().logWithFile(Level.info, "FINAL PATH: ${sharedPreferences!.getStringList('trip_data')} -> $page");
 
                             EndTrip().endTrip(
                                 context: context,
@@ -627,8 +558,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 duration: tripDuration,
                                 onEnded: () async {
                                   Utils.customPrint('TRIPPPPPP ENDEDDD:');
-                                  loggD.d('TRIPPPPPP ENDEDDD: -> $page ${DateTime.now()}');
-                                  loggV.v('TRIPPPPPP ENDEDDD: -> $page ${DateTime.now()}');
+                                  CustomLogger().logWithFile(Level.info, "TRIPPPPPP ENDEDDD: -> $page");
                                   setState(() {
                                     isEndTripButton = false;
                                     tripIsEnded = true;
@@ -907,8 +837,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 {
                                   if (!isLocationDialogBoxOpen) {
                                     Utils.customPrint("ELSE CONDITION");
-                                    loggD.d("ELSE CONDITION -> $page ${DateTime.now()}");
-                                    loggV.v("ELSE CONDITION -> $page ${DateTime.now()}");
+                                    CustomLogger().logWithFile(Level.info, "ELSE CONDITION -> $page");
 
                                     showDialog(
                                         context: scaffoldKey.currentContext!,
@@ -943,13 +872,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                   Utils.customPrint(
                                       'IOS PERMISSION GIVEN OUTSIDE');
-                                  loggD.d('IOS PERMISSION GIVEN OUTSIDE -> $page ${DateTime.now()}');
-                                  loggV.v('IOS PERMISSION GIVEN OUTSIDE -> $page ${DateTime.now()}');
+                                  CustomLogger().logWithFile(Level.info, "IOS PERMISSION GIVEN OUTSIDE -> $page");
 
                                   if (isLocationAlwaysPermitted) {
                                     Utils.customPrint('IOS PERMISSION GIVEN 1');
-                                    loggD.d('IOS PERMISSION GIVEN 1 -> $page ${DateTime.now()}');
-                                    loggV.v('IOS PERMISSION GIVEN 1 -> $page ${DateTime.now()}');
+                                    CustomLogger().logWithFile(Level.info, "IOS PERMISSION GIVEN 1 -> $page");
 
                                     vessel!.add(widget.vessel!);
                                     await locationPermissions(
@@ -970,8 +897,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 } else {
                                   if (!isLocationDialogBoxOpen) {
                                     Utils.customPrint("ELSE CONDITION");
-                                    loggD.d("ELSE CONDITION -> $page ${DateTime.now()}");
-                                    loggV.v("ELSE CONDITION -> $page ${DateTime.now()}");
+                                    CustomLogger().logWithFile(Level.info, "ELSE CONDITION -> $page");
 
                                     showDialog(
                                         context: scaffoldKey.currentContext!,
@@ -1032,8 +958,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
           for (ScanResult r in results) {
             if (r.device.name.toLowerCase().contains("lpr")) {
               print('FOUND DEVICE AGAIN');
-              loggD.d('FOUND DEVICE AGAIN -> $page ${DateTime.now()}');
-              loggV.v('FOUND DEVICE AGAIN -> $page ${DateTime.now()}');
+              CustomLogger().logWithFile(Level.info, "FOUND DEVICE AGAIN -> $page");
 
               r.device.connect().catchError((e) {
                 r.device.state.listen((event) {
@@ -1127,8 +1052,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
           for (ScanResult r in results) {
             if (r.device.name.toLowerCase().contains("lpr")) {
               print('FOUND DEVICE AGAIN');
-              loggD.d('FOUND DEVICE AGAIN -> $page ${DateTime.now()}');
-              loggV.v('FOUND DEVICE AGAIN -> $page ${DateTime.now()}');
+              CustomLogger().logWithFile(Level.info, "FOUND DEVICE AGAIN -> $page");
 
               r.device.connect().catchError((e) {
                 r.device.state.listen((event) {
@@ -1310,6 +1234,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     },
                                     onEnd: () {
                                       Utils.customPrint('END');
+                                      CustomLogger().logWithFile(Level.info, "END -> $page");
                                       stateSetter(() {
                                         isStartButton = true;
                                       });
@@ -1688,8 +1613,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                       Utils.customPrint(
                                           'DOES FILE EXIST: ${copiedFile.existsSync()}');
-                                      loggD.d('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
-                                      loggV.v('DOES FILE EXIST: ${copiedFile.existsSync()} -> $page ${DateTime.now()}');
+                                      CustomLogger().logWithFile(Level.info, "DOES FILE EXIST: ${copiedFile.existsSync()} -> $page");
                                       if (copiedFile.existsSync()) {
                                         Utils.showSnackBar(context,
                                             scaffoldKey: scaffoldKey,
@@ -1889,14 +1813,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     onTap: () async {
                                       Utils.customPrint(
                                           'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                      loggD.d('SELECTED VESSEL WEIGHT $selectedVesselWeight -> $page ${DateTime.now()}');
-                                      loggV.v('SELECTED VESSEL WEIGHT $selectedVesselWeight -> $page ${DateTime.now()}');
+                                      CustomLogger().logWithFile(Level.info, "SELECTED VESSEL WEIGHT -> $page");
                                       if (selectedVesselWeight ==
                                           'Select Current Load') {
                                         Utils.customPrint(
                                             'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                        loggD.d('SELECTED VESSEL WEIGHT 12 $selectedVesselWeight -> $page ${DateTime.now()}');
-                                        loggV.v('SELECTED VESSEL WEIGHT 12 $selectedVesselWeight -> $page ${DateTime.now()}');
+                                        CustomLogger().logWithFile(Level.info, "SELECTED VESSEL WEIGHT 12 -> $page");
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(
                                           behavior:
@@ -2277,8 +2199,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     ).then((value) async {
       await tripIsRunningOrNot();
       Utils.customPrint('BACK PRESSED');
-      loggD.d('BACK PRESSED -> $page ${DateTime.now()}');
-      loggV.v('BACK PRESSED -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "BACK PRESSED -> $page");
       isBottomSheetOpened = false;
 
       addingDataToDB = false;
@@ -2301,8 +2222,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
         if (result != null) {
           debugPrint('VESSEL SINGLE VIEW RESULT $result');
-          loggD.d('VESSEL SINGLE VIEW RESULT $result -> $page ${DateTime.now()}');
-          loggV.v('VESSEL SINGLE VIEW RESULT $result -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "VESSEL SINGLE VIEW RESULT -> $page");
         }
       }
     });
@@ -2312,16 +2232,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
   Future<void> enableBT() async {
     BluetoothEnable.enableBluetooth.then((value) async {
       Utils.customPrint("BLUETOOTH ENABLE $value");
-      loggD.d("BLUETOOTH ENABLE $value -> $page ${DateTime.now()}");
-      loggV.v("BLUETOOTH ENABLE $value -> $page ${DateTime.now()}");
+      CustomLogger().logWithFile(Level.info, "BLUETOOTH ENABLE -> $page");
 
       if (value == 'true') {
         vessel!.add(widget.vessel!);
         await locationPermissions(widget.vessel!.vesselSize!,
             widget.vessel!.name!, widget.vessel!.id!);
         print(" bluetooth state$value");
-        loggD.d(" bluetooth state$value -> $page ${DateTime.now()}");
-        loggV.v(" bluetooth state$value -> $page ${DateTime.now()}");
+        CustomLogger().logWithFile(Level.info, "bluetooth state$value -> $page");
       } else {
         bool isNearByDevicePermitted =
         await Permission.bluetoothConnect.isGranted;
@@ -2349,8 +2267,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       }
     }).catchError((e) {
       print("ENABLE BT$e");
-      loggE.e("ENABLE BT$e -> $page ${DateTime.now()}");
-      loggV.v("ENABLE BT$e -> $page ${DateTime.now()}");
+      CustomLogger().logWithFile(Level.error, "ENABLE BT$e -> $page");
     });
   }
 
@@ -2409,8 +2326,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
           deviceInfo: deviceDetails!.toJson().toString()));
     } on Exception catch (e) {
       Utils.customPrint('ON SAVE EXE: $e');
-      loggE.e('ON SAVE EXE: $e -> $page ${DateTime.now()}');
-      loggV.v('ON SAVE EXE: $e -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.error, "ON SAVE EXE: $e -> $page");
     }
     return;
   }
@@ -2419,8 +2335,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   startWritingDataToDB(
       BuildContext bottomSheetContext, StateSetter stateSetter) async {
     Utils.customPrint('ISSSSS XXXXXXX: $isServiceRunning');
-    loggD.d('ISSSSS XXXXXXX: $isServiceRunning -> $page ${DateTime.now()}');
-    loggV.v('ISSSSS XXXXXXX: $isServiceRunning -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "ISSSSS XXXXXXX: $isServiceRunning-> $page");
 
     stateSetter(() {
       addingDataToDB = true;
@@ -2448,8 +2363,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
     )
         .catchError((onError) {
       print('IOS NOTI ERROR: $onError');
-      loggE.e('IOS NOTI ERROR: $onError -> $page ${DateTime.now()}');
-      loggV.v('IOS NOTI ERROR: $onError -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.error, "IOS NOTI ERROR: $onError -> $page");
     });
 
     await initPlatformStateBGL();
@@ -2474,12 +2388,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
   /// It will initialize background_locator_2
   Future<void> initPlatformStateBGL() async {
     print('Initializing...');
-    loggD.d('Initializing... -> $page ${DateTime.now()}');
-    loggV.v('Initializing... -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "Initializing...-> $page");
     await BackgroundLocator.initialize();
     print('Initialization done');
-    loggD.d('Initialization done -> $page ${DateTime.now()}');
-    loggV.v('Initialization done -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "Initialization done -> $page");
 
     Map<String, dynamic> data = {'countInit': 1};
     return await BackgroundLocator.registerLocationUpdate(
@@ -2516,10 +2428,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
           if (activeNotifications[0].channelId == 'app.yukams/locator_plugin' || activeNotifications[0].channelId == 'performarine_trip_$getTripId-3') {
             debugPrint("CHANNEL ID MATCH");
             debugPrint("CHANNEL ID MATCH: ${activeNotifications[0].id}");
-            loggD.d("CHANNEL ID MATCH -> $page ${DateTime.now()}");
-            loggD.d("CHANNEL ID MATCH: ${activeNotifications[0].id} -> $page ${DateTime.now()}");
-            loggV.v("CHANNEL ID MATCH -> $page ${DateTime.now()}");
-            loggV.v("CHANNEL ID MATCH: ${activeNotifications[0].id} -> $page ${DateTime.now()}");
+
+            CustomLogger().logWithFile(Level.info, "CHANNEL ID MATCH -> $page");
+            CustomLogger().logWithFile(Level.info, "CHANNEL ID MATCH: ${activeNotifications[0].id} -> $page");
 
             await flutterLocalNotificationsPlugin.cancel(776);
 
@@ -2615,8 +2526,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           () async {
 
                                         debugPrint("Click on GO TO TRIP 1");
-                                        loggD.d("Click on GO TO TRIP 1 -> $page ${DateTime.now()}");
-                                        loggV.v("Click on GO TO TRIP 1 -> $page ${DateTime.now()}");
+                                        CustomLogger().logWithFile(Level.info, "Click on GO TO TRIP 1 -> $page");
 
                                         List<String>? tripData =
                                         sharedPreferences!.getStringList('trip_data');
@@ -2629,8 +2539,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         }
 
                                         debugPrint("Click on GO TO TRIP 2");
-                                        loggD.d("Click on GO TO TRIP 2 -> $page ${DateTime.now()}");
-                                        loggV.v("Click on GO TO TRIP 2 -> $page ${DateTime.now()}");
+                                        CustomLogger().logWithFile(Level.info, "Click on GO TO TRIP 2 -> $page");
 
                                         Navigator.of(dialogContext).pop();
 
@@ -2653,8 +2562,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   tripIsRunningOrNot: tripIsRunning));*/
 
                                         debugPrint("Click on GO TO TRIP 3");
-                                        loggD.d("Click on GO TO TRIP 3  -> $page ${DateTime.now()}");
-                                        loggV.v("Click on GO TO TRIP 3 -> $page ${DateTime.now()}");
+                                        CustomLogger().logWithFile(Level.info, "Click on GO TO TRIP 3 -> $page");
 
                                         //Navigator.of(context).pop();
                                       },
@@ -2963,7 +2871,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             GestureDetector(
                               onTap: () {
                                 print("Tapped on scan button");
-
+                                CustomLogger().logWithFile(Level.info, "USer clicked on scan button -> $page");
                                 if (mounted) {
                                   setDialogState(() {
                                     isScanningBluetooth = true;
@@ -3028,6 +2936,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               }));
         }).then((value) {
       print('DIALOG VALUE $value');
+      CustomLogger().logWithFile(Level.info, "Dialog value $value -> $page");
 
       if (bluetoothName != '') {
         stateSetter(() {

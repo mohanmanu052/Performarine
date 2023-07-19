@@ -50,45 +50,6 @@ class _ChangePasswordState extends State<ChangePassword> {
   void initState() {
     super.initState();
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
     commonProvider = context.read<CommonProvider>();
     currentPasswordController = TextEditingController();
     newPasswordController = TextEditingController();
@@ -179,8 +140,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
-                            loggD.d("$value  -> $page ${DateTime.now()}");
-                            loggV.v("$value  -> $page ${DateTime.now()}");
+                            CustomLogger().logWithFile(Level.info, "Current Password: $value -> $page");
                           }),
 
                       SizedBox(height: displayWidth(context) * 0.03),
@@ -220,8 +180,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
-                            loggD.d("$value  -> $page ${DateTime.now()}");
-                            loggV.v("$value  -> $page ${DateTime.now()}");
+                            CustomLogger().logWithFile(Level.info, "New Password: $value -> $page");
                           }),
                       SizedBox(height: displayWidth(context) * 0.03),
 
@@ -263,8 +222,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
-                            loggD.d("$value  -> $page ${DateTime.now()}");
-                            loggV.v("$value  -> $page ${DateTime.now()}");
+                            CustomLogger().logWithFile(Level.info, "Confirm New Password: $value -> $page");
                           }),
 
                       SizedBox(height: displayHeight(context) * 0.2),
@@ -299,6 +257,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     });
 
                                     print("Status code of change password is: ${value.statusCode}");
+                                    CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode} -> $page");
                                     if(value.status!){
                                       //signOut();
                                       if(widget.isChange!){
@@ -343,10 +302,8 @@ class _ChangePasswordState extends State<ChangePassword> {
 
     Utils.customPrint('DELETE $vesselDelete');
     Utils.customPrint('DELETE $tripsDelete');
-    loggD.d("DELETE $vesselDelete -> $page ${DateTime.now()}");
-    loggD.d("DELETE $tripsDelete -> $page ${DateTime.now()}");
-    loggV.v("DELETE $vesselDelete -> $page ${DateTime.now()}");
-    loggV.v("DELETE $tripsDelete -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "DELETE $tripsDelete -> $page");
+    CustomLogger().logWithFile(Level.info, "DELETE $tripsDelete -> $page");
 
     sharedPreferences!.clear();
     GoogleSignIn googleSignIn = GoogleSignIn(

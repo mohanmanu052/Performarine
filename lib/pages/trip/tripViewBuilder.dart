@@ -56,46 +56,6 @@ class _TripViewListingState extends State<TripViewListing> {
     // TODO: implement initState
     super.initState();
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     commonProvider = context.read<CommonProvider>();
     commonProvider.getTripsByVesselId(widget.vesselId);
   }
@@ -145,10 +105,8 @@ class _TripViewListingState extends State<TripViewListing> {
                           Utils.customPrint("TRIP DETAILS ${snapshot.data!.length}");
                           Utils.customPrint(
                               "TRIP DETAILS 1 ${snapshot.data![0].distance}");
-                          loggD.d("TRIP DETAILS ${snapshot.data!.length} -> $page ${DateTime.now()}");
-                          loggD.d("TRIP DETAILS 1 ${snapshot.data![0].distance} -> $page ${DateTime.now()}");
-                          loggV.v("TRIP DETAILS ${snapshot.data!.length} -> $page ${DateTime.now()}");
-                          loggV.v("TRIP DETAILS 1 ${snapshot.data![0].distance} -> $page ${DateTime.now()}");
+                          CustomLogger().logWithFile(Level.info, "TRIP DETAILS ${snapshot.data!.length} -> $page");
+                          CustomLogger().logWithFile(Level.info, "TRIP DETAILS 1 ${snapshot.data![0].distance}-> $page");
                           return Padding(
                             padding: const EdgeInsets.only(
                                 left: 8.0, right: 8.0, top: 8.0),
@@ -203,8 +161,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                                         .toInt());
 
                                             print('***DIST: ${currentTrip.toJson()}');
-                                            loggD.d('***DIST: ${currentTrip.toJson()}  -> $page ${DateTime.now()}');
-                                            loggV.v('***DIST: ${currentTrip.toJson()} -> $page ${DateTime.now()}');
+                                            CustomLogger().logWithFile(Level.info, "***DIST: ${currentTrip.toJson()} -> $page");
 
                                             EndTrip().endTrip(
                                                 context: context,
@@ -284,8 +241,7 @@ class _TripViewListingState extends State<TripViewListing> {
     setState(() {
       tripIsRunning = result;
       Utils.customPrint('Trip is Running $tripIsRunning');
-      loggD.d('Trip is Running $tripIsRunning -> $page ${DateTime.now()}');
-      loggV.v('Trip is Running $tripIsRunning -> $page ${DateTime.now()}');
+      CustomLogger().logWithFile(Level.info, "Trip is Running $tripIsRunning -> $page");
       setState(() {
         trip.isEndTripClicked = false;
       });

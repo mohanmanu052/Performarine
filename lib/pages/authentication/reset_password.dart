@@ -51,46 +51,6 @@ class _ResetPasswordState extends State<ResetPassword> {
   void initState() {
     super.initState();
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     commonProvider = context.read<CommonProvider>();
     newPasswordController = TextEditingController();
     reenterPasswordController = TextEditingController();
@@ -209,6 +169,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                               Utils.customPrint(value);
                               loggD.d("$value  -> $page ${DateTime.now()}");
                               loggV.v("$value  -> $page ${DateTime.now()}");
+                              CustomLogger().logWithFile(Level.info, "New password $value -> $page");
                             }),
                         SizedBox(height: displayWidth(context) * 0.03),
 
@@ -250,8 +211,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             },
                             onSaved: (String value) {
                               Utils.customPrint(value);
-                              loggD.d("$value  -> $page ${DateTime.now()}");
-                              loggV.v("$value  -> $page ${DateTime.now()}");
+                              CustomLogger().logWithFile(Level.info, "Confirm New password $value -> $page");
                             }),
 
                         SizedBox(height: displayHeight(context) * 0.2),
@@ -276,6 +236,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                 Utils.customPrint("NETWORK $check");
                                 loggD.d("NETWORK $check  -> $page ${DateTime.now()}");
                                 loggV.v("NETWORK$check  -> $page ${DateTime.now()}");
+                                CustomLogger().logWithFile(Level.info, "NETWORK$check  -> $page");
 
                                 FocusScope.of(context)
                                     .requestFocus(FocusNode());
@@ -290,8 +251,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                         isBtnClick = false;
                                       });
                                       print("Status code of change password is: ${value.statusCode}");
-                                      loggD.d("Status code of change password is: ${value.statusCode} -> $page ${DateTime.now()}");
-                                      loggV.v("Status code of change password is: ${value.statusCode} -> $page ${DateTime.now()}");
+                                      CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode}  -> $page");
                                       if(value.statusCode == 200 && value.message == "Password reset was successfully completed!"){
                                         if(widget.isCalledFrom == "HomePage"){
                                             Navigator.pop(context);
@@ -303,6 +263,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                         if(widget.isCalledFrom == "HomePage"){
                                           Navigator.pop(context);
                                         } else{
+                                          CustomLogger().logWithFile(Level.info, "User navigating into sign in scren -> $page");
                                           Navigator.pushAndRemoveUntil(
                                               context,
                                               MaterialPageRoute(builder: (context) => const SignInScreen()),
@@ -344,12 +305,8 @@ class _ResetPasswordState extends State<ResetPassword> {
 
     Utils.customPrint('DELETE $vesselDelete');
     Utils.customPrint('DELETE $tripsDelete');
-
-    loggD.d('DELETE $vesselDelete -> $page ${DateTime.now()}');
-    loggD.d('DELETE $tripsDelete -> $page ${DateTime.now()}');
-
-    loggV.v('DELETE $vesselDelete -> $page ${DateTime.now()}');
-    loggV.v('DELETE $tripsDelete -> $page ${DateTime.now()}');
+    CustomLogger().logWithFile(Level.info, "DELETE $tripsDelete -> $page");
+    CustomLogger().logWithFile(Level.info, "DELETE $tripsDelete -> $page");
 
     sharedPreferences!.clear();
     GoogleSignIn googleSignIn = GoogleSignIn(

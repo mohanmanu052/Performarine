@@ -92,12 +92,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
         setState(() {});
 
         print("isComingFromReset: ${isComingFrom}");
+        CustomLogger().logWithFile(Level.info, "isComingFromReset: ${isComingFrom} -> $page");
         if(mounted){
           if(isComingFrom != null && isComingFrom )
           {
 
             Future.delayed(Duration(microseconds: 500), (){
               print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+              CustomLogger().logWithFile(Level.info, "XXXXXXXXX ${_isThereCurrentDialogShowing(context)} -> $page");
 
               if(!_isThereCurrentDialogShowing(context))
               {
@@ -114,52 +116,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
           }
         }
         print('HomeScreen did update');
+        CustomLogger().logWithFile(Level.info, "HomeScreen did update -> $page");
       }
   }
 
   @override
   void initState() {
     super.initState();
-
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
 
     WidgetsBinding.instance.addObserver(this);
 
@@ -185,14 +148,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     bool? isAppKilledFromBg = sharedPreferences!.getBool('app_killed_from_bg');
 */
     debugPrint("IS APP KILLED FROM BG ${widget.isAppKilled}");
-    loggD.d("IS APP KILLED FROM BG ${widget.isAppKilled} -> $page ${DateTime.now()}");
-    loggV.v("IS APP KILLED FROM BG ${widget.isAppKilled} -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "IS APP KILLED FROM BG ${widget.isAppKilled} -> $page");
 
     bool? isTripStarted = sharedPreferences!.getBool('trip_started');
 
     debugPrint("IS APP KILLED FROM BG 1212 $isTripStarted");
-    loggD.d("IS APP KILLED FROM BG 1212 $isTripStarted -> $page ${DateTime.now()}");
-    loggV.v("IS APP KILLED FROM BG 1212 $isTripStarted -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "IS APP KILLED FROM BG 1212 $isTripStarted -> $page");
 
     if(widget.isAppKilled!)
       {
@@ -262,8 +223,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     switch (state) {
       case AppLifecycleState.resumed:
         print("APP STATE - app in resumed");
-        loggD.d("APP STATE - app in resumed -> $page ${DateTime.now()}");
-        loggV.v("APP STATE - app in resumed -> $page ${DateTime.now()}");
+        CustomLogger().logWithFile(Level.info, "APP STATE - app in resumed -> $page");
         dynamic arg = Get.arguments;
         if(arg !=  null)
         {
@@ -275,16 +235,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
             setState(() {});
           }
           print("isComingFromReset: ${isComingFrom}");
-          loggD.d("isComingFromReset: ${isComingFrom} -> $page ${DateTime.now()}");
-          loggV.v("isComingFromReset: ${isComingFrom} -> $page ${DateTime.now()}");
+          CustomLogger().logWithFile(Level.info, "isComingFromReset: ${isComingFrom} -> $page");
           if(mounted){
             if(isComingFrom != null && isComingFrom )
             {
 
               Future.delayed(Duration(microseconds: 500), (){
                 print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
-                loggD.d("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}  -> $page ${DateTime.now()}");
-                loggV.v("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}  -> $page ${DateTime.now()}");
+                CustomLogger().logWithFile(Level.info, "XXXXXXXXX ${_isThereCurrentDialogShowing(context)} -> $page");
                 bool? result;
                 if(sharedPreferences != null){
                   result = sharedPreferences!.getBool('reset_dialog_opened');
@@ -307,24 +265,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
             }
           }
           print('HomeScreen did update');
-          loggD.d('HomeScreen did update -> $page ${DateTime.now()}');
-          loggV.v('HomeScreen did update -> $page ${DateTime.now()}');
+          CustomLogger().logWithFile(Level.info, "HomeScreen did update -> $page");
         }
         break;
       case AppLifecycleState.inactive:
         print("APP STATE - app in inactive");
-        loggD.d("APP STATE - app in inactive -> $page ${DateTime.now()}");
-        loggV.v("APP STATE - app in inactive -> $page ${DateTime.now()}");
+        CustomLogger().logWithFile(Level.info, "APP STATE - app in inactive-> $page");
         break;
       case AppLifecycleState.paused:
         print("APP STATE - app in paused");
-        loggD.d("APP STATE - app in paused -> $page ${DateTime.now()}");
-        loggV.v("APP STATE - app in paused -> $page ${DateTime.now()}");
+        CustomLogger().logWithFile(Level.info, "APP STATE - app in paused-> $page");
         break;
       case AppLifecycleState.detached:
         print("APP STATE - app in detached");
-        loggD.d("APP STATE - app in detached -> $page ${DateTime.now()}");
-        loggV.v("APP STATE - app in detached -> $page ${DateTime.now()}");
+        CustomLogger().logWithFile(Level.info, "APP STATE - app in detached-> $page");
         break;
     }
   }
@@ -484,8 +438,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                       commonProvider.getTripsCount();
                       if (result != null) {
                         Utils.customPrint('RESULT HOME PAGE $result');
-                        loggD.d('RESULT HOME PAGE $result -> $page ${DateTime.now()}');
-                        loggV.v('RESULT HOME PAGE $result -> $page ${DateTime.now()}');
+                        CustomLogger().logWithFile(Level.info, "RESULT HOME PAGE $result-> $page");
                         if (result) {
                           setState(() {
                             getVesselFuture = _databaseService.vessels();
@@ -743,8 +696,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
                                           Utils.customPrint(
                                               'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
-                                          loggD.d('FINAL PATH: ${sharedPreferences!.getStringList('trip_data')} -> $page ${DateTime.now()}');
-                                          loggV.v('FINAL PATH: ${sharedPreferences!.getStringList('trip_data')} -> $page ${DateTime.now()}');
+                                      CustomLogger().logWithFile(Level.info, "FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}-> $page");
 
                                           EndTrip().endTrip(
                                               context: context,
@@ -761,8 +713,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                                 });
 
                                                 Utils.customPrint('TRIPPPPPP ENDEDDD:');
-                                                loggD.d('TRIPPPPPP ENDEDDD:  -> $page ${DateTime.now()}');
-                                                loggV.v('TRIPPPPPP ENDEDDD: -> $page ${DateTime.now()}');
+                                                CustomLogger().logWithFile(Level.info, "TRIPPPPPP ENDEDDD: -> $page");
                                                 setState(() {
                                                   getVesselFuture = _databaseService.vessels();
                                                 });
@@ -785,8 +736,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                       final _isRunning = await BackgroundLocator();
 
                                           Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
-                                          loggD.d('INTRO TRIP IS RUNNING 1212 $_isRunning -> $page ${DateTime.now()}');
-                                          loggV.v('INTRO TRIP IS RUNNING 1212 $_isRunning -> $page ${DateTime.now()}');
+                                      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING 1212 $_isRunning -> $page");
 
                                           List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
@@ -806,8 +756,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                           final isRunning2 = await BackgroundLocator.isServiceRunning();
 
                                           Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
-                                          loggD.d('INTRO TRIP IS RUNNING 22222 $isRunning2 -> $page ${DateTime.now()}');
-                                          loggV.v('INTRO TRIP IS RUNNING 22222 $isRunning2 -> $page ${DateTime.now()}');
+                                      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING 2222 $_isRunning -> $page");
                                       Navigator.of(context).pop();
                                     },
                                     displayWidth(context) * 0.65,

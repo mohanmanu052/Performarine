@@ -65,66 +65,6 @@ class _SignInScreenState extends State<SignInScreen> {
   void initState() {
     super.initState();
 
-    getDirectoryForDebugLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileD!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggD = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForVerboseLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileV!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggV = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
-    getDirectoryForErrorLogRecord().whenComplete(
-          () {
-        FileOutput fileOutPut = FileOutput(file: fileE!);
-        // ConsoleOutput consoleOutput = ConsoleOutput();
-        LogOutput multiOutput = fileOutPut;
-        loggE = Logger(
-            filter: DevelopmentFilter(),
-            printer: PrettyPrinter(
-              methodCount: 0,
-              errorMethodCount: 3,
-              lineLength: 70,
-              colors: true,
-              printEmojis: false,
-              //printTime: true
-            ),
-            output: multiOutput // Use the default LogOutput (-> send everything to console)
-        );
-      },
-    );
-
     commonProvider = context.read<CommonProvider>();
     // commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
 
@@ -226,8 +166,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
-                          loggD.d("$value  -> $page ${DateTime.now()}");
-                          loggV.v("$value  -> $page ${DateTime.now()}");
+                          CustomLogger().logWithFile(Level.info, "Email:$value -> $page");
                         }),
                     SizedBox(height: displayHeight(context) * 0.03),
                     CommonTextField(
@@ -259,8 +198,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
-                          loggD.d("$value  -> $page ${DateTime.now()}");
-                          loggV.v("$value  -> $page ${DateTime.now()}");
+                          CustomLogger().logWithFile(Level.info, "Password:$value -> $page");
                         }),
                     SizedBox(height: displayHeight(context) * 0.03),
                     Row(
@@ -409,6 +347,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   Utils.customPrint("NETWORK $check");
                                   loggD.d("NETWORK $check  -> $page ${DateTime.now()}");
                                   loggV.v("NETWORK $check  -> $page ${DateTime.now()}");
+                                  CustomLogger().logWithFile(Level.info, "Network: $check -> $page");
 
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
