@@ -36,6 +36,8 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../analytics/location_callback_handler.dart';
+import '../common_widgets/widgets/user_feed_back.dart';
+import 'feedback_report.dart';
 
 class HomePage extends StatefulWidget {
   List<String> tripData;
@@ -76,6 +78,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   List<String> tripData = [];
   final controller = ScreenshotController();
   File? imageFile;
+
 
   @override
   void didUpdateWidget(covariant HomePage oldWidget) {
@@ -338,6 +341,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                   color: Colors.grey,
                 ))
               ],
+
               bottom: TabBar(
                 controller: tabController,
                 padding: EdgeInsets.all(0),
@@ -449,12 +453,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                   scaffoldKey: scaffoldKey,
                 ),
                 SingleChildScrollView(
-                  child: TripViewListing(
-                    scaffoldKey: scaffoldKey,
-                    calledFrom: 'HomePage',
-                    onTripEnded: (){
-                      commonProvider.getTripsByVesselId('');
-                    },
+                  child: Column(
+                    children: [
+                      TripViewListing(
+                        scaffoldKey: scaffoldKey,
+                        calledFrom: 'HomePage',
+                        onTripEnded: (){
+                          commonProvider.getTripsByVesselId('');
+                        },
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: displayWidth(context) * 0.28,
+                          bottom : displayWidth(context) * 0.02,
+                        ),
+                        child: GestureDetector(
+                            onTap: ()async{
+                              final image = await controller.capture();
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                imagePath: image.toString(),
+                                uIntList: image,)));
+                            },
+                            child: UserFeedback().getUserFeedback(context)
+                        ),
+                      ),
+                    ],
+
                   ),
                 ),
               ],
@@ -620,7 +645,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                               commonText(
                                   context: context,
                                   text:
-                                  'Last time you used performarine. there is a trip in progress. do you want to end the trip or continue?',
+                                  'Last time you used performarine. there was a trip in progress. do you want to end the trip or continue?',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,
@@ -644,10 +669,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                 : CommonButtons.getAcceptButton(
                                     'End Trip', context, buttonBGColor,
                                         () async {
-
-                                      setDialogState(() {
-                                        isEndTripBtnClicked = true;
-                                      });
+                                          setDialogState(() {
+                                            isEndTripBtnClicked = true;
+                                          });
                                           List<String>? tripData = sharedPreferences!
                                               .getStringList('trip_data');
 
@@ -724,7 +748,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
                                           //Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
 
-                                          StartTrip().startBGLocatorTrip(tripData![0], DateTime.now());
+                                          StartTrip().startBGLocatorTrip(tripData![0], DateTime.now(), true);
 
                                           final isRunning2 = await BackgroundLocator.isServiceRunning();
 
@@ -793,6 +817,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                 LocationCallbackHandler.notificationCallback)));
   }
 
+
   Future<String> captureAndSaveScreenshot() async {
     final Uint8List? imageBytes = await controller.capture();
 
@@ -826,6 +851,58 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     } catch (e) {
       print('Failed to delete image: $e');
     }
+  }
+
+
+  endTripMethod(StateSetter setDialogState)async
+  {
+    setDialogState(() {
+      isEndTripBtnClicked = true;
+    });
+    List<String>? tripData = sharedPreferences!
+        .getStringList('trip_data');
+
+    String tripId = '';
+    if (tripData != null) {
+      tripId = tripData[0];
+    }
+
+    final currentTrip =
+        await _databaseService.getTrip(tripId);
+
+    DateTime createdAtTime =
+    DateTime.parse(currentTrip.createdAt!);
+
+    var durationTime = DateTime.now()
+        .toUtc()
+        .difference(createdAtTime);
+    String tripDuration =
+    Utils.calculateTripDuration(
+        ((durationTime.inMilliseconds) / 1000)
+            .toInt());
+
+    Utils.customPrint(
+        'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+
+    EndTrip().endTrip(
+        context: context,
+        scaffoldKey: scaffoldKey,
+        duration: tripDuration,
+        onEnded: () async {
+
+          Future.delayed(Duration(seconds: 1), (){
+            setDialogState(() {
+              isEndTripBtnClicked = false;
+            });
+
+            Navigator.of(context).pop();
+          });
+
+          Utils.customPrint('TRIPPPPPP ENDEDDD:');
+          setState(() {
+            getVesselFuture = _databaseService.vessels();
+          });
+        });
   }
 
 }

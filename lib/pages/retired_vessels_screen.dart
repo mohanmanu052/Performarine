@@ -6,6 +6,10 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:screenshot/screenshot.dart';
+
+import '../common_widgets/widgets/user_feed_back.dart';
+import 'feedback_report.dart';
 
 class RetiredVesselsScreen extends StatefulWidget {
   const RetiredVesselsScreen({Key? key}) : super(key: key);
@@ -22,6 +26,8 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
 
   bool isUnretire = false;
 
+  final controller = ScreenshotController();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -32,92 +38,138 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: const Icon(Icons.arrow_back),
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white
-              : Colors.black,
-        ),
-        title: commonText(
-          context: context,
-          text: 'Retired Vessels',
-          fontWeight: FontWeight.w600,
-          textColor: Colors.black87,
-          textSize: displayWidth(context) * 0.045,
-        ),
-        actions: [
-          Container(
-            margin: EdgeInsets.only(right: 8),
-            child: IconButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                    ModalRoute.withName(""));
-              },
-              icon: Image.asset('assets/images/home.png'),
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-            ),
-          ),
-        ],
+    return Screenshot(
+      controller: controller,
+      child: Scaffold(
         backgroundColor: commonBackgroundColor,
-      ),
-      body: Container(
-        color: commonBackgroundColor,
-        child: FutureBuilder<List<CreateVessel>>(
-          future: getVesselFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(circularProgressColor),
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.arrow_back),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
+          ),
+          title: commonText(
+            context: context,
+            text: 'Retired Vessels',
+            fontWeight: FontWeight.w600,
+            textColor: Colors.black87,
+            textSize: displayWidth(context) * 0.045,
+          ),
+          actions: [
+            Container(
+              margin: EdgeInsets.only(right: 8),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                      ModalRoute.withName(""));
+                },
+                icon: Image.asset('assets/images/home.png'),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+            ),
+          ],
+          backgroundColor: commonBackgroundColor,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                color: commonBackgroundColor,
+                child: FutureBuilder<List<CreateVessel>>(
+                  future: getVesselFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(circularProgressColor),
+                        ),
+                      );
+                    }
+                    Utils.customPrint('HAS DATA: ${snapshot.hasData}');
+                    Utils.customPrint('HAS DATA: ${snapshot.error}');
+                    Utils.customPrint('HAS DATA: ${snapshot.hasError}');
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.isEmpty) {
+                        return Padding(
+                          padding: EdgeInsets.only(top: displayHeight(context) * 0.43),
+                          child: Center(
+                            child: commonText(
+                                context: context,
+                                text: 'No vessels available'.toString(),
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.04,
+                                textAlign: TextAlign.start),
+                          ),
+                        );
+                      } else {
+                        return Column(
+                          children: [
+                            Container(
+                              // height: displayHeight(context),
+                              color: commonBackgroundColor,
+                              padding: const EdgeInsets.only(
+                                  left: 8.0, right: 8.0, top: 8, bottom: 10),
+                              child: ListView.builder(
+                                itemCount: snapshot.data!.length,
+                                primary: false,
+                                shrinkWrap: true,
+                                //physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  final vessel = snapshot.data![index];
+                                  return snapshot.data![index].vesselStatus == 0
+                                      ? vesselSingleViewCard(context, vessel,
+                                          (CreateVessel value) {}, scaffoldKey)
+                                      : SizedBox();
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: displayWidth(context) * 0.28,
+                                //top: displayWidth(context) * 0.01,
+                              ),
+                              child: GestureDetector(
+                                  onTap: ()async{
+                                    final image = await controller.capture();
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                      imagePath: image.toString(),
+                                      uIntList: image,)));
+                                  },
+                                  child: UserFeedback().getUserFeedback(context)
+                              ),
+                            ),
+
+                            SizedBox(
+                              height: displayWidth(context) * 0.03,
+                            )
+                          ],
+                        );
+                      }
+                    }
+                    return Container();
+                  },
                 ),
-              );
-            }
-            Utils.customPrint('HAS DATA: ${snapshot.hasData}');
-            Utils.customPrint('HAS DATA: ${snapshot.error}');
-            Utils.customPrint('HAS DATA: ${snapshot.hasError}');
-            if (snapshot.hasData) {
-              if (snapshot.data!.isEmpty) {
-                return Center(
-                  child: commonText(
-                      context: context,
-                      text: 'No vessels available'.toString(),
-                      fontWeight: FontWeight.w500,
-                      textColor: Colors.black,
-                      textSize: displayWidth(context) * 0.04,
-                      textAlign: TextAlign.start),
-                );
-              } else {
-                return Container(
-                  color: commonBackgroundColor,
-                  padding: const EdgeInsets.only(
-                      left: 8.0, right: 8.0, top: 8, bottom: 70),
-                  child: ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      final vessel = snapshot.data![index];
-                      return snapshot.data![index].vesselStatus == 0
-                          ? vesselSingleViewCard(context, vessel,
-                              (CreateVessel value) {}, scaffoldKey)
-                          : SizedBox();
-                    },
-                  ),
-                );
-              }
-            }
-            return Container();
-          },
+              ),
+
+              SizedBox(
+                height: displayWidth(context) * 0.04,
+              )
+            ],
+          ),
         ),
       ),
     );

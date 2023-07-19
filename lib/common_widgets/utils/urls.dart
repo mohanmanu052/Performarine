@@ -28,4 +28,7 @@ class Urls {
   static const privacy="$baseUrl/privacy";
   static const terms="$baseUrl/terms";
 
+  //User feedback
+  static const userFeedback = '/api/userFeedback';
+
 }
