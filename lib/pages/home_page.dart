@@ -652,7 +652,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                 : CommonButtons.getAcceptButton(
                                     'End Trip', context, buttonBGColor,
                                         () async {
-
+                                          setDialogState(() {
+                                            isEndTripBtnClicked = true;
+                                          });
                                           List<String>? tripData = sharedPreferences!
                                               .getStringList('trip_data');
 
@@ -675,37 +677,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                               ((durationTime.inMilliseconds) / 1000)
                                                   .toInt());
 
-                                          debugPrint("DURATION !!!!!! $tripDuration");
+                                          Utils.customPrint(
+                                              'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
 
-                                          bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+                                          EndTrip().endTrip(
+                                              context: context,
+                                              scaffoldKey: scaffoldKey,
+                                              duration: tripDuration,
+                                              onEnded: () async {
 
-                                          if(!isSmallTrip)
-                                          {
-                                            Navigator.pop(context);
+                                                Future.delayed(Duration(seconds: 1), (){
+                                                  setDialogState(() {
+                                                    isEndTripBtnClicked = false;
+                                                  });
 
-                                            Utils().showDeleteTripDialog(context, (){
-                                              endTripMethod(setDialogState);
-                                              debugPrint("SMALL TRIPP IDDD ${tripId}");
+                                                  Navigator.of(context).pop();
+                                                });
 
-                                              debugPrint("SMALL TRIPP IDDD ${tripId}");
-
-                                              Future.delayed(Duration(seconds: 1), (){
-                                                if(!isSmallTrip)
-                                                {
-                                                  debugPrint("SMALL TRIPP IDDD 11 ${tripId}");
-                                                  DatabaseService().deleteTripFromDB(tripId);
-                                                }
+                                                Utils.customPrint('TRIPPPPPP ENDEDDD:');
+                                                setState(() {
+                                                  getVesselFuture = _databaseService.vessels();
+                                                });
                                               });
-                                            }, (){
-                                              endTripMethod(setDialogState);
-                                            }
-                                            );
-                                          }
-                                          else
-                                          {
-                                            endTripMethod(setDialogState);
-                                          }
-
                                     },
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,
