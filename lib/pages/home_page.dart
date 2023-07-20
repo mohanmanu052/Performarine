@@ -330,7 +330,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                   ),
                 ),
               ),
-              actions: [
+              /*actions: [
                 IconButton(onPressed: (){
                   final image = controller.capture();
                   print("Image is: ${image.toString()}");
@@ -340,7 +340,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                   size: 25,
                   color: Colors.grey,
                 ))
-              ],
+              ],*/
 
               bottom: TabBar(
                 controller: tabController,
