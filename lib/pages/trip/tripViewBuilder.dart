@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -14,7 +13,6 @@ import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
-import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import 'dart:io';
 
@@ -50,8 +48,6 @@ class _TripViewListingState extends State<TripViewListing> {
     return getTripsByIdFuture;
   }
 
-  String page = "Trip_View_builder";
-
   @override
   void initState() {
     // TODO: implement initState
@@ -78,7 +74,7 @@ class _TripViewListingState extends State<TripViewListing> {
                   child: Center(
                     child: CircularProgressIndicator(
                       valueColor:
-                          AlwaysStoppedAnimation<Color>(circularProgressColor),
+                      AlwaysStoppedAnimation<Color>(circularProgressColor),
                     ),
                   ),
                 );
@@ -102,142 +98,136 @@ class _TripViewListingState extends State<TripViewListing> {
                 } else {
                   return snapshot.data != null
                       ? StatefulBuilder(
-                          builder: (BuildContext context, StateSetter setter) {
-                          Utils.customPrint("TRIP DETAILS ${snapshot.data!.length}");
-                          Utils.customPrint(
-                              "TRIP DETAILS 1 ${snapshot.data![0].distance}");
-                          CustomLogger().logWithFile(Level.info, "TRIP DETAILS ${snapshot.data!.length} -> $page");
-                          CustomLogger().logWithFile(Level.info, "TRIP DETAILS 1 ${snapshot.data![0].distance}-> $page");
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                                left: 8.0, right: 8.0, top: 8.0),
-                            child: ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) {
-                                return snapshot.data!.isNotEmpty
-                                    ? TripWidget(
-                                        scaffoldKey: widget.scaffoldKey,
-                                        tripList: snapshot.data![index],
-                                        calledFrom: widget.calledFrom,
-                                        onTripEnded: widget.onTripEnded,
-                                        tripUploadedSuccessfully: () {
-                                          if (mounted) {
-                                            setState(() {
-                                              commonProvider.getTripsByVesselId(
-                                                  widget.vesselId);
-                                              future = _databaseService.trips();
-                                              //snapshot.data![index].tripStatus = 1;
+                      builder: (BuildContext context, StateSetter setter) {
+                        Utils.customPrint("TRIP DETAILS ${snapshot.data!.length}");
+                        Utils.customPrint(
+                            "TRIP DETAILS 1 ${snapshot.data![0].distance}");
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                              left: 8.0, right: 8.0, top: 8.0),
+                          child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              return snapshot.data!.isNotEmpty
+                                  ? TripWidget(
+                                  scaffoldKey: widget.scaffoldKey,
+                                  tripList: snapshot.data![index],
+                                  calledFrom: widget.calledFrom,
+                                  onTripEnded: widget.onTripEnded,
+                                  tripUploadedSuccessfully: () {
+                                    if (mounted) {
+                                      setState(() {
+                                        commonProvider.getTripsByVesselId(
+                                            widget.vesselId);
+                                        future = _databaseService.trips();
+                                        //snapshot.data![index].tripStatus = 1;
+                                      });
+                                    }
+                                    commonProvider.getTripsCount();
+                                  },
+                                  onTap: () async {
+
+                                    final currentTrip = await _databaseService
+                                        .getTrip(snapshot.data![index].id!);
+
+                                    DateTime createdAtTime = DateTime.parse(
+                                        currentTrip.createdAt!);
+
+                                    var durationTime = DateTime.now()
+                                        .toUtc()
+                                        .difference(createdAtTime);
+                                    String tripDuration =
+                                    Utils.calculateTripDuration(
+                                        ((durationTime.inMilliseconds) /
+                                            1000)
+                                            .toInt());
+                                    debugPrint("DURATION !!!!!! $tripDuration");
+
+                                    bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+
+                                    if(!isSmallTrip)
+                                    {
+                                      Utils().showDeleteTripDialog(context,
+                                          endTripBtnClick: (){
+                                            endTripMethod(tripDuration, snapshot.data![index]);
+                                            debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
+
+                                            Future.delayed(Duration(seconds: 1), (){
+                                              if(!isSmallTrip)
+                                              {
+                                                debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
+                                                DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
+                                              }
                                             });
+                                          }, onCancelClick: (){
+                                            Navigator.of(context).pop();
                                           }
-                                          commonProvider.getTripsCount();
-                                        },
-                                        onTap: () async {
-
-                                          final currentTrip = await _databaseService
-                                              .getTrip(snapshot.data![index].id!);
-
-                                          DateTime createdAtTime = DateTime.parse(
-                                              currentTrip.createdAt!);
-
-                                          var durationTime = DateTime.now()
-                                              .toUtc()
-                                              .difference(createdAtTime);
-                                          String tripDuration =
-                                          Utils.calculateTripDuration(
-                                              ((durationTime.inMilliseconds) /
-                                                  1000)
-                                                  .toInt());
-                                          debugPrint("DURATION !!!!!! $tripDuration");
-                                          CustomLogger().logWithFile(Level.info, "DURATION !!!!!! $tripDuration -> $page");
-
-                                          bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
-
-                                          if(!isSmallTrip)
-                                            {
-                                              Utils().showDeleteTripDialog(context,
-                                                  endTripBtnClick: (){
-                                                    endTripMethod(tripDuration, snapshot.data![index]);
-                                                    debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
-                                                    CustomLogger().logWithFile(Level.info, "SMALL TRIPP IDDD ${snapshot.data![index].id!} -> $page");
-
-                                                    Future.delayed(Duration(seconds: 1), (){
-                                                      if(!isSmallTrip)
-                                                      {
-                                                        debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
-                                                        CustomLogger().logWithFile(Level.info, "SMALL TRIPP IDDD 11 ${snapshot.data![index].id!} -> $page");
-                                                        DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
-                                                      }
-                                                    });
-                                                  }, onCancelClick: (){
-                                                    Navigator.of(context).pop();
-                                                  }
-                                              );
-                                            }
-                                          else
-                                            {
-                                              Utils().showEndTripDialog(context,
-                                                      () async {
-
-                                                    final currentTrip = await _databaseService
-                                                        .getTrip(snapshot.data![index].id!);
-
-                                                    DateTime createdAtTime = DateTime.parse(
-                                                        currentTrip.createdAt!);
-
-                                                    var durationTime = DateTime.now()
-                                                        .toUtc()
-                                                        .difference(createdAtTime);
-                                                    String tripDuration =
-                                                    Utils.calculateTripDuration(
-                                                        ((durationTime.inMilliseconds) /
-                                                            1000)
-                                                            .toInt());
-                                                    debugPrint("DURATION !!!!!! $tripDuration");
-                                                    CustomLogger().logWithFile(Level.info, "DURATION !!!!!! $tripDuration -> $page");
-
-                                                    endTripMethod(tripDuration, snapshot.data![index]);
-
-                                                    return;
-                                                  }, () {
-                                                    Navigator.of(context).pop();
-                                                  });
-                                            }
-                                        })
-                                    : Container(
-                                        height: displayHeight(context) / 1.5,
-                                        child: Center(
-                                          child: commonText(
-                                              text: 'oops! No Trips are added yet',
-                                              context: context,
-                                              textSize: displayWidth(context) * 0.04,
-                                              textColor:
-                                                  Theme.of(context).brightness ==
-                                                          Brightness.dark
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                              fontWeight: FontWeight.w500),
-                                        ),
                                       );
-                              },
-                            ),
-                          );
-                        })
-                      : Container(
-                          height: displayHeight(context) / 1.5,
-                          child: Center(
-                            child: commonText(
-                                text: 'oops! No Trips are added yet',
-                                context: context,
-                                textSize: displayWidth(context) * 0.04,
-                                textColor:
-                                    Theme.of(context).brightness == Brightness.dark
-                                        ? Colors.white
-                                        : Colors.black,
-                                fontWeight: FontWeight.w500),
+                                    }
+                                    else
+                                    {
+                                      Utils().showEndTripDialog(context,
+                                              () async {
+
+                                            final currentTrip = await _databaseService
+                                                .getTrip(snapshot.data![index].id!);
+
+                                            DateTime createdAtTime = DateTime.parse(
+                                                currentTrip.createdAt!);
+
+                                            var durationTime = DateTime.now()
+                                                .toUtc()
+                                                .difference(createdAtTime);
+                                            String tripDuration =
+                                            Utils.calculateTripDuration(
+                                                ((durationTime.inMilliseconds) /
+                                                    1000)
+                                                    .toInt());
+                                            debugPrint("DURATION !!!!!! $tripDuration");
+
+                                            endTripMethod(tripDuration, snapshot.data![index]);
+
+                                            return;
+                                          }, () {
+                                            Navigator.of(context).pop();
+                                          });
+                                    }
+                                  })
+                                  : Container(
+                                height: displayHeight(context) / 1.5,
+                                child: Center(
+                                  child: commonText(
+                                      text: 'oops! No Trips are added yet',
+                                      context: context,
+                                      textSize: displayWidth(context) * 0.04,
+                                      textColor:
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark
+                                          ? Colors.white
+                                          : Colors.black,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              );
+                            },
                           ),
                         );
+                      })
+                      : Container(
+                    height: displayHeight(context) / 1.5,
+                    child: Center(
+                      child: commonText(
+                          text: 'oops! No Trips are added yet',
+                          context: context,
+                          textSize: displayWidth(context) * 0.04,
+                          textColor:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  );
                 }
               }
 
@@ -257,7 +247,6 @@ class _TripViewListingState extends State<TripViewListing> {
     setState(() {
       tripIsRunning = result;
       Utils.customPrint('Trip is Running $tripIsRunning');
-      CustomLogger().logWithFile(Level.info, "Trip is Running $tripIsRunning -> $page");
       setState(() {
         trip.isEndTripClicked = false;
       });
@@ -295,7 +284,6 @@ class _TripViewListingState extends State<TripViewListing> {
             .toInt());
 
     print('***DIST: ${currentTrip.toJson()}');
-    CustomLogger().logWithFile(Level.info, "***DIST: ${currentTrip.toJson()} -> $page");
 
     EndTrip().endTrip(
         context: context,

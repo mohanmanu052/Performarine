@@ -300,7 +300,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                       shadowColor: Colors.black,
                       child: Center(
                         child: CommonButtons.getAcceptButton(
-                            'Unretire', context, primaryColor, () async {
+                            'Unretire', context, buttonBGColor, () async {
                           showDialogBox(context, vesselData, scaffoldKey);
                         },
                             displayWidth(context) * 0.18,
@@ -711,7 +711,7 @@ showDialogBox(BuildContext context, CreateVessel vesselData,
                                           : Colors.grey)),
                               child: Center(
                                 child: CommonButtons.getAcceptButton(
-                                    'Cancel', context, primaryColor, () {
+                                    'Cancel', context, Colors.grey.shade400, () {
                                   Navigator.of(context).pop();
                                 },
                                     displayWidth(context) * 0.4,
@@ -738,7 +738,7 @@ showDialogBox(BuildContext context, CreateVessel vesselData,
                               ),
                               child: Center(
                                 child: CommonButtons.getAcceptButton(
-                                    'OK', context, primaryColor, () async {
+                                    'OK', context, buttonBGColor, () async {
                                   DatabaseService()
                                       .updateIsSyncStatus(0, vesselData.id!);
                                   await DatabaseService()

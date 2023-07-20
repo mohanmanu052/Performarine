@@ -933,7 +933,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                             : Colors.grey)),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Cancel', context, primaryColor, () {
+                                      'Cancel', context, Colors.grey.shade400, () {
                                     Navigator.of(context).pop();
                                   },
                                       displayWidth(context) * 0.4,
@@ -960,7 +960,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                 ),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'OK', context, primaryColor, () {
+                                      'OK', context, buttonBGColor, () {
                                     _databaseService.updateVesselStatus(
                                         0, widget.vessel!.id!);
 

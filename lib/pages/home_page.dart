@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:logger/logger.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -25,7 +24,7 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/authentication/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
-//import 'package:performarine/pages/trip_analytics.dart';
+import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -35,7 +34,6 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../analytics/location_callback_handler.dart';
-import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
 import 'feedback_report.dart';
 
@@ -78,47 +76,43 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   List<String> tripData = [];
 
   final controller = ScreenshotController();
-  String page = "Home_page";
 
   @override
   void didUpdateWidget(covariant HomePage oldWidget) {
     super.didUpdateWidget(oldWidget);
     dynamic arg = Get.arguments;
     if(arg !=  null)
-      {
-        Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
-        bool isComingFrom = arguments?['isComingFromReset'] ?? false;
-        String updatedToken = arguments?['token'] ?? "";
+    {
+      Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
+      bool isComingFrom = arguments?['isComingFromReset'] ?? false;
+      String updatedToken = arguments?['token'] ?? "";
 
-        setState(() {});
+      setState(() {});
 
-        print("isComingFromReset: ${isComingFrom}");
-        CustomLogger().logWithFile(Level.info, "isComingFromReset: ${isComingFrom} -> $page");
-        if(mounted){
-          if(isComingFrom != null && isComingFrom )
-          {
+      print("isComingFromReset: ${isComingFrom}");
+      if(mounted){
+        if(isComingFrom != null && isComingFrom )
+        {
 
-            Future.delayed(Duration(microseconds: 500), (){
-              print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
-              CustomLogger().logWithFile(Level.info, "XXXXXXXXX ${_isThereCurrentDialogShowing(context)} -> $page");
+          Future.delayed(Duration(microseconds: 500), (){
+            print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
 
-              if(!_isThereCurrentDialogShowing(context))
+            if(!_isThereCurrentDialogShowing(context))
+            {
+              WidgetsBinding.instance.addPostFrameCallback((duration)
               {
-                WidgetsBinding.instance.addPostFrameCallback((duration)
-                {
-                  showResetPasswordDialogBox(context,updatedToken);
+                showResetPasswordDialogBox(context,updatedToken);
 
-                });
-              }
+              });
+            }
 
-            });
+          });
 
 
-          }
         }
-        print('HomeScreen did update');
-        CustomLogger().logWithFile(Level.info, "HomeScreen did update -> $page");
       }
+      print('HomeScreen did update');
+    }
   }
 
   @override
@@ -130,7 +124,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
     commonProvider.getTripsCount();
-   // commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
+    // commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
 
     getVesselFuture = _databaseService.vessels();
 
@@ -149,37 +143,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     bool? isAppKilledFromBg = sharedPreferences!.getBool('app_killed_from_bg');
 */
     debugPrint("IS APP KILLED FROM BG ${widget.isAppKilled}");
-    CustomLogger().logWithFile(Level.info, "IS APP KILLED FROM BG ${widget.isAppKilled} -> $page");
 
     bool? isTripStarted = sharedPreferences!.getBool('trip_started');
 
     debugPrint("IS APP KILLED FROM BG 1212 $isTripStarted");
-    CustomLogger().logWithFile(Level.info, "IS APP KILLED FROM BG 1212 $isTripStarted -> $page");
 
     if(widget.isAppKilled!)
+    {
+      if(isTripStarted != null)
       {
-        if(isTripStarted != null)
-          {
-            if(isTripStarted)
-            {
-              Future.delayed(Duration(microseconds: 500), (){
-                showEndTripDialogBox(context);
-              });
+        if(isTripStarted)
+        {
+          Future.delayed(Duration(microseconds: 500), (){
+            showEndTripDialogBox(context);
+          });
 
-            }
-          }
-
+        }
       }
+
+    }
 
     if(widget.isComingFromReset != null)
+    {
+      if(widget.isComingFromReset!)
       {
-        if(widget.isComingFromReset!)
-          {
-            Future.delayed(Duration(microseconds: 500), (){
-              showResetPasswordDialogBox(context, widget.token);
-            });
-          }
+        Future.delayed(Duration(microseconds: 500), (){
+          showResetPasswordDialogBox(context, widget.token);
+        });
       }
+    }
 
   }
 
@@ -224,7 +216,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     switch (state) {
       case AppLifecycleState.resumed:
         print("APP STATE - app in resumed");
-        CustomLogger().logWithFile(Level.info, "APP STATE - app in resumed -> $page");
         dynamic arg = Get.arguments;
         if(arg !=  null)
         {
@@ -236,14 +227,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
             setState(() {});
           }
           print("isComingFromReset: ${isComingFrom}");
-          CustomLogger().logWithFile(Level.info, "isComingFromReset: ${isComingFrom} -> $page");
           if(mounted){
             if(isComingFrom != null && isComingFrom )
             {
 
               Future.delayed(Duration(microseconds: 500), (){
                 print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
-                CustomLogger().logWithFile(Level.info, "XXXXXXXXX ${_isThereCurrentDialogShowing(context)} -> $page");
                 bool? result;
                 if(sharedPreferences != null){
                   result = sharedPreferences!.getBool('reset_dialog_opened');
@@ -266,20 +255,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
             }
           }
           print('HomeScreen did update');
-          CustomLogger().logWithFile(Level.info, "HomeScreen did update -> $page");
         }
         break;
       case AppLifecycleState.inactive:
         print("APP STATE - app in inactive");
-        CustomLogger().logWithFile(Level.info, "APP STATE - app in inactive-> $page");
         break;
       case AppLifecycleState.paused:
         print("APP STATE - app in paused");
-        CustomLogger().logWithFile(Level.info, "APP STATE - app in paused-> $page");
         break;
       case AppLifecycleState.detached:
         print("APP STATE - app in detached");
-        CustomLogger().logWithFile(Level.info, "APP STATE - app in detached-> $page");
         break;
     }
   }
@@ -321,23 +306,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                     children: [
                       WidgetSpan(
                           child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            "assets/images/lognotitle.png",
-                            height: 50,
-                            width: 50,
-                          ),
-                          commonText(
-                            context: context,
-                            text: 'PerforMarine',
-                            fontWeight: FontWeight.w600,
-                            textColor: Colors.black87,
-                            textSize: displayWidth(context) * 0.045,
-                          ),
-                        ],
-                      )),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/images/lognotitle.png",
+                                height: 50,
+                                width: 50,
+                              ),
+                              commonText(
+                                context: context,
+                                text: 'PerforMarine',
+                                fontWeight: FontWeight.w600,
+                                textColor: Colors.black87,
+                                textSize: displayWidth(context) * 0.045,
+                              ),
+                            ],
+                          )),
                     ],
                   ),
                 ),
@@ -372,7 +357,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                         text: 'Vessels',
                         fontWeight: FontWeight.w500,
                         textColor:
-                            currentTabIndex == 0 ? Colors.white : Colors.black,
+                        currentTabIndex == 0 ? Colors.white : Colors.black,
                         textSize: displayWidth(context) * 0.036,
                       ),
                       // Text('Vessels'),
@@ -394,10 +379,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                       child: commonText(
                         context: context,
                         text:
-                            'Activity (${commonProvider.tripsCount.toString()})',
+                        'Activity (${commonProvider.tripsCount.toString()})',
                         fontWeight: FontWeight.w500,
                         textColor:
-                            currentTabIndex == 1 ? Colors.white : Colors.black,
+                        currentTabIndex == 1 ? Colors.white : Colors.black,
                         textSize: displayWidth(context) * 0.036,
                       ),
                     ),
@@ -418,11 +403,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                     {
                       Navigator.of(context)
                           .push(
-                            MaterialPageRoute(
-                              builder: (_) => VesselFormPage(vessel: value),
-                              fullscreenDialog: true,
-                            ),
-                          )
+                        MaterialPageRoute(
+                          builder: (_) => VesselFormPage(vessel: value),
+                          fullscreenDialog: true,
+                        ),
+                      )
                           .then((_) => setState(() {}));
                     }
                   },
@@ -439,7 +424,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                       commonProvider.getTripsCount();
                       if (result != null) {
                         Utils.customPrint('RESULT HOME PAGE $result');
-                        CustomLogger().logWithFile(Level.info, "RESULT HOME PAGE $result-> $page");
                         if (result) {
                           setState(() {
                             getVesselFuture = _databaseService.vessels();
@@ -472,7 +456,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                         child: GestureDetector(
                             onTap: ()async{
                               final image = await controller.capture();
-                              CustomLogger().logWithFile(Level.info, "User navigating to User feedback screen-> $page");
                               Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                 imagePath: image.toString(),
                                 uIntList: image,)));
@@ -563,11 +546,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                     () async {
                                   Navigator.pop(dialogContext);
                                   //Navigator.pop(dialogContext);
-                                     var result = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => ResetPassword(token: token,isCalledFrom:  "HomePage",)),);
-                                 // Navigator.pop(scaffoldKey.currentContext!);
-                                     },
+                                  var result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ResetPassword(token: token,isCalledFrom:  "HomePage",)),);
+                                  // Navigator.pop(scaffoldKey.currentContext!);
+                                },
                                 displayWidth(context) * 0.65,
                                 displayHeight(context) * 0.054,
                                 primaryColor,
@@ -666,68 +649,66 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                             children: [
                               Center(
                                 child: isEndTripBtnClicked
-                                  ? CircularProgressIndicator()
-                                : CommonButtons.getAcceptButton(
+                                    ? CircularProgressIndicator()
+                                    : CommonButtons.getAcceptButton(
                                     'End Trip', context, buttonBGColor,
                                         () async {
 
-                                          List<String>? tripData = sharedPreferences!
-                                              .getStringList('trip_data');
+                                      List<String>? tripData = sharedPreferences!
+                                          .getStringList('trip_data');
 
-                                          String tripId = '';
-                                          if (tripData != null) {
-                                            tripId = tripData[0];
-                                          }
+                                      String tripId = '';
+                                      if (tripData != null) {
+                                        tripId = tripData[0];
+                                      }
 
-                                          final currentTrip =
-                                          await _databaseService.getTrip(tripId);
+                                      final currentTrip =
+                                      await _databaseService.getTrip(tripId);
 
-                                          DateTime createdAtTime =
-                                          DateTime.parse(currentTrip.createdAt!);
+                                      DateTime createdAtTime =
+                                      DateTime.parse(currentTrip.createdAt!);
 
-                                          var durationTime = DateTime.now()
-                                              .toUtc()
-                                              .difference(createdAtTime);
-                                          String tripDuration =
-                                          Utils.calculateTripDuration(
-                                              ((durationTime.inMilliseconds) / 1000)
-                                                  .toInt());
+                                      var durationTime = DateTime.now()
+                                          .toUtc()
+                                          .difference(createdAtTime);
+                                      String tripDuration =
+                                      Utils.calculateTripDuration(
+                                          ((durationTime.inMilliseconds) / 1000)
+                                              .toInt());
 
-                                          debugPrint("DURATION !!!!!! $tripDuration");
-                                          CustomLogger().logWithFile(Level.info, "DURATION !!!!!! $tripDuration -> $page");
+                                      debugPrint("DURATION !!!!!! $tripDuration");
 
-                                          bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+                                      bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
-                                          if(!isSmallTrip)
-                                          {
-                                            Navigator.pop(context);
+                                      if(!isSmallTrip)
+                                      {
+                                        Navigator.pop(context);
 
-                                            Utils().showDeleteTripDialog(context, endTripBtnClick: (){
-                                              EasyLoading.show(
-                                                  status: 'Please wait...',
-                                                  maskType: EasyLoadingMaskType.black);
-                                              endTripMethod(setDialogState);
-                                              debugPrint("SMALL TRIPP IDDD ${tripId}");
+                                        Utils().showDeleteTripDialog(context, endTripBtnClick: (){
+                                          EasyLoading.show(
+                                              status: 'Please wait...',
+                                              maskType: EasyLoadingMaskType.black);
+                                          endTripMethod(setDialogState);
+                                          debugPrint("SMALL TRIPP IDDD ${tripId}");
 
-                                              CustomLogger().logWithFile(Level.info, "SMALL TRIPP IDDD ${tripId} -> $page");
+                                          debugPrint("SMALL TRIPP IDDD ${tripId}");
 
-                                              Future.delayed(Duration(seconds: 1), (){
-                                                if(!isSmallTrip)
-                                                {
-                                                  debugPrint("SMALL TRIPP IDDD 11 ${tripId}");
-                                                  CustomLogger().logWithFile(Level.info, "SMALL TRIPP IDDD 11 ${tripId} -> $page");
-                                                  DatabaseService().deleteTripFromDB(tripId);
-                                                }
-                                              });
-                                            }, onCancelClick: (){
-                                              endTripMethod(setDialogState);
+                                          Future.delayed(Duration(seconds: 1), (){
+                                            if(!isSmallTrip)
+                                            {
+                                              debugPrint("SMALL TRIPP IDDD 11 ${tripId}");
+                                              DatabaseService().deleteTripFromDB(tripId);
                                             }
-                                            );
-                                          }
-                                          else
-                                          {
-                                            endTripMethod(setDialogState);
-                                          }
+                                          });
+                                        }, onCancelClick: (){
+                                          endTripMethod(setDialogState);
+                                        }
+                                        );
+                                      }
+                                      else
+                                      {
+                                        endTripMethod(setDialogState);
+                                      }
 
                                     },
                                     displayWidth(context) * 0.65,
@@ -746,28 +727,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                         () async {
                                       final _isRunning = await BackgroundLocator();
 
-                                          Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
-                                      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING 1212 $_isRunning -> $page");
+                                      Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
 
-                                          List<String>? tripData = sharedPreferences!.getStringList('trip_data');
+                                      List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
-                                          reInitializeService();
+                                      reInitializeService();
 
-                                          //final isRunning1 = await BackgroundLocator.isServiceRunning();
-                                          //
-                                          // StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
-                                          //
-                                          // final isRunning2 = await BackgroundLocator.isServiceRunning();
+                                      //final isRunning1 = await BackgroundLocator.isServiceRunning();
+                                      //
+                                      // StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
+                                      //
+                                      // final isRunning2 = await BackgroundLocator.isServiceRunning();
 
 
-                                          //Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
+                                      //Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
 
-                                          StartTrip().startBGLocatorTrip(tripData![0], DateTime.now(), true);
+                                      StartTrip().startBGLocatorTrip(tripData![0], DateTime.now(), true);
 
-                                          final isRunning2 = await BackgroundLocator.isServiceRunning();
+                                      final isRunning2 = await BackgroundLocator.isServiceRunning();
 
-                                          Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
-                                      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING 2222 $_isRunning -> $page");
+                                      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
                                       Navigator.of(context).pop();
                                     },
                                     displayWidth(context) * 0.65,
@@ -852,7 +831,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     }
 
     final currentTrip =
-        await _databaseService.getTrip(tripId);
+    await _databaseService.getTrip(tripId);
 
     DateTime createdAtTime =
     DateTime.parse(currentTrip.createdAt!);
@@ -867,7 +846,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
     Utils.customPrint(
         'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
-    CustomLogger().logWithFile(Level.info, "FINAL PATH: ${sharedPreferences!.getStringList('trip_data')} -> $page");
 
     EndTrip().endTrip(
         context: context,
@@ -876,7 +854,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
         onEnded: () async {
 
           Future.delayed(Duration(seconds: 1), (){
-           /* setDialogState(() {
+            /* setDialogState(() {
               isEndTripBtnClicked = false;
             });*/
             EasyLoading.dismiss();
@@ -885,7 +863,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
           });
 
           Utils.customPrint('TRIPPPPPP ENDEDDD:');
-          CustomLogger().logWithFile(Level.info, "TRIPPPPPP ENDEDDD -> $page");
           setState(() {
             getVesselFuture = _databaseService.vessels();
           });
