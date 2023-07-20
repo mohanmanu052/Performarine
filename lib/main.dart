@@ -78,6 +78,10 @@ void main() async {
     return true;
   };
 
+  performarineLogFile();
+
+  createFolder();
+
 
   SharedPreferences.getInstance().then((value) {
     sharedPreferences = value;
@@ -113,14 +117,20 @@ registerBackgroundTask() async{
   );
 }
 
-/*
+Future<void> performarineLogFile() async {
+  final Directory directory = await getApplicationDocumentsDirectory();
+  mainFile = File('${directory.path}/performarinelogs_$formattedDate.log');
+  print("file path: $mainFile");
+}
+
 createFolder() async{
+
   File? file;
   final Directory documentDirectory = await getApplicationDocumentsDirectory();
   file = File('${documentDirectory.path}/LogFiles');
   final directory = Directory(file.path);
 
-  final debugLogFile = fileD;
+  final debugLogFile = mainFile;
   String debugLogFilePath = debugLogFile!.path;
   String debugFileName = debugLogFilePath.split('/').last;
   String debugPath = await getFile(debugFileName);
@@ -132,42 +142,20 @@ createFolder() async{
     directory.createSync(recursive: true);
     print('Folder created successfully');
   }
-  /* else if(logFile.existsSync()){
-    //final destinationFilePath = '$file/file.txt';
-   // filePath.copy(file!.path);
-   //  final lastIndexPath = filePath.path.split('/').last;
-   // await file!.copy(lastIndexPath);
-    print('File moved to the destination folder successfully');
-  } */
   else{
     print('Content not appended to file');
   }
-
-  // if(fileExists){
-  //   print("File already exists in directory");
-  // } else {
   File fileee;
-  //final path = await getFilePath;
   try{
     fileee = File(debugLogFilePath);
 
     if(fileee != null && fileee.existsSync()){
       String data = await fileee.readAsString(encoding: Latin1Codec());
 
-      /*  List<int> fileBytes = fileee.readAsBytesSync();
-        String fileContent = utf8.decode(fileBytes);
-        print('File content: $fileContent'); */
-
       print("main data is: ${data.toString()}");
       File files = File(debugPath);
       files.writeAsString(data,mode: FileMode.append);
     }
-
-
-    //  String decodedString = await  File(debugLogFilePath).readAsString();
-    // String decoded = utf8.decode(encryptedBase64EncodedString);
-
-
   }catch(e){
     print("error $e");
   }
@@ -183,7 +171,7 @@ createFolder() async{
   } else {
     print('Invalid file index');
   }
-} */
+}
 
 Future<bool> isFileExistsInFolder(String folderPath, String fileName) async {
   final folder = Directory(folderPath);

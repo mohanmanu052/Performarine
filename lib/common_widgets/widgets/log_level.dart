@@ -17,11 +17,6 @@ File? mainFile;
 DateTime now = DateTime.now().toLocal();
 String formattedDate = DateFormat('yyyy-MM-dd').format(now);
 
-Future<void> performarineLogFile() async {
-  final Directory directory = await getApplicationDocumentsDirectory();
-  mainFile = File('${directory.path}/performarinelogs_$formattedDate.log');
-  print("file path: $mainFile");
-}
 
 /*
 Future<void> exportFile() async {
@@ -83,7 +78,7 @@ class CustomLogger{
 
     var output = formatLogMessage(logEvent);
     await writeToLogFile(output,logEvent);
-    print(output);
+  //  print(output);
   }
 
   String formatLogMessage(LogEvent logEvent) {
