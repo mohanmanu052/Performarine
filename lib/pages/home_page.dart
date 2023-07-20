@@ -6,6 +6,7 @@ import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:logger/logger.dart';
@@ -24,7 +25,7 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/authentication/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
-import 'package:performarine/pages/trip_analytics.dart';
+//import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -471,6 +472,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                         child: GestureDetector(
                             onTap: ()async{
                               final image = await controller.capture();
+                              CustomLogger().logWithFile(Level.info, "User navigating to User feedback screen-> $page");
                               Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                 imagePath: image.toString(),
                                 uIntList: image,)));
@@ -669,9 +671,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                     'End Trip', context, buttonBGColor,
                                         () async {
 
-                                      setDialogState(() {
-                                        isEndTripBtnClicked = true;
-                                      });
                                           List<String>? tripData = sharedPreferences!
                                               .getStringList('trip_data');
 
@@ -694,30 +693,42 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                               ((durationTime.inMilliseconds) / 1000)
                                                   .toInt());
 
-                                          Utils.customPrint(
-                                              'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
-                                      CustomLogger().logWithFile(Level.info, "FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}-> $page");
+                                          debugPrint("DURATION !!!!!! $tripDuration");
+                                          CustomLogger().logWithFile(Level.info, "DURATION !!!!!! $tripDuration -> $page");
 
-                                          EndTrip().endTrip(
-                                              context: context,
-                                              scaffoldKey: scaffoldKey,
-                                              duration: tripDuration,
-                                              onEnded: () async {
+                                          bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
-                                                Future.delayed(Duration(seconds: 1), (){
-                                                  setDialogState(() {
-                                                    isEndTripBtnClicked = false;
-                                                  });
+                                          if(!isSmallTrip)
+                                          {
+                                            Navigator.pop(context);
 
-                                                  Navigator.of(context).pop();
-                                                });
+                                            Utils().showDeleteTripDialog(context, endTripBtnClick: (){
+                                              EasyLoading.show(
+                                                  status: 'Please wait...',
+                                                  maskType: EasyLoadingMaskType.black);
+                                              endTripMethod(setDialogState);
+                                              debugPrint("SMALL TRIPP IDDD ${tripId}");
 
-                                                Utils.customPrint('TRIPPPPPP ENDEDDD:');
-                                                CustomLogger().logWithFile(Level.info, "TRIPPPPPP ENDEDDD: -> $page");
-                                                setState(() {
-                                                  getVesselFuture = _databaseService.vessels();
-                                                });
+                                              CustomLogger().logWithFile(Level.info, "SMALL TRIPP IDDD ${tripId} -> $page");
+
+                                              Future.delayed(Duration(seconds: 1), (){
+                                                if(!isSmallTrip)
+                                                {
+                                                  debugPrint("SMALL TRIPP IDDD 11 ${tripId}");
+                                                  CustomLogger().logWithFile(Level.info, "SMALL TRIPP IDDD 11 ${tripId} -> $page");
+                                                  DatabaseService().deleteTripFromDB(tripId);
+                                                }
                                               });
+                                            }, onCancelClick: (){
+                                              endTripMethod(setDialogState);
+                                            }
+                                            );
+                                          }
+                                          else
+                                          {
+                                            endTripMethod(setDialogState);
+                                          }
+
                                     },
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,
@@ -819,5 +830,65 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                 notificationIcon: '@drawable/noti_logo',
                 notificationTapCallback:
                 LocationCallbackHandler.notificationCallback)));
+  }
+
+  endTripMethod(StateSetter setDialogState)async
+  {
+
+    debugPrint("Set Dialog set ${setDialogState == null}");
+
+    /*if(mounted)
+      {
+        setDialogState(() {
+          isEndTripBtnClicked = true;
+        });
+      }*/
+    List<String>? tripData = sharedPreferences!
+        .getStringList('trip_data');
+
+    String tripId = '';
+    if (tripData != null) {
+      tripId = tripData[0];
+    }
+
+    final currentTrip =
+        await _databaseService.getTrip(tripId);
+
+    DateTime createdAtTime =
+    DateTime.parse(currentTrip.createdAt!);
+
+    var durationTime = DateTime.now()
+        .toUtc()
+        .difference(createdAtTime);
+    String tripDuration =
+    Utils.calculateTripDuration(
+        ((durationTime.inMilliseconds) / 1000)
+            .toInt());
+
+    Utils.customPrint(
+        'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+    CustomLogger().logWithFile(Level.info, "FINAL PATH: ${sharedPreferences!.getStringList('trip_data')} -> $page");
+
+    EndTrip().endTrip(
+        context: context,
+        scaffoldKey: scaffoldKey,
+        duration: tripDuration,
+        onEnded: () async {
+
+          Future.delayed(Duration(seconds: 1), (){
+           /* setDialogState(() {
+              isEndTripBtnClicked = false;
+            });*/
+            EasyLoading.dismiss();
+
+            Navigator.of(context).pop();
+          });
+
+          Utils.customPrint('TRIPPPPPP ENDEDDD:');
+          CustomLogger().logWithFile(Level.info, "TRIPPPPPP ENDEDDD -> $page");
+          setState(() {
+            getVesselFuture = _databaseService.vessels();
+          });
+        });
   }
 }

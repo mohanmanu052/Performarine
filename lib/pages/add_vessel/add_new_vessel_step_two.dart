@@ -397,8 +397,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                         .getOrCreateFolderForAddVessel();
                                 Utils.customPrint(
                                     'FOLDER PATH: $vesselImagesDirPath');
-                                loggD.d('FOLDER PATH: $vesselImagesDirPath -> $page ${DateTime.now()}');
-                                loggV.v('FOLDER PATH: $vesselImagesDirPath -> $page ${DateTime.now()}');
                                 CustomLogger().logWithFile(Level.info, "FOLDER PATH: $vesselImagesDirPath -> $page");
 
                                 File copiedFile = File(commonProvider

@@ -147,8 +147,7 @@ class DatabaseService {
   Future<int> updateVessel(CreateVessel vessel) async {
     final db = await _databaseService.database;
     Utils.customPrint("vessel.toMap():${vessel.toMap()}");
-    loggD.d("vessel.toMap():${vessel.toMap()} -> $page ${DateTime.now()}");
-    loggV.v("vessel.toMap():${vessel.toMap()} -> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "vessel.toMap():${vessel.toMap()} -> $page");
     int result = await db.update('vessels', vessel.toMap(),
         where: 'id = ?', whereArgs: [vessel.id]);
     Utils.customPrint('UPDATE: $result');
@@ -508,5 +507,19 @@ class DatabaseService {
 
     //return List.generate(maps.length, (index) => Trip.fromMap(maps[index]));
     return finalTripList;
+  }
+
+  Future<void> deleteTripFromDB(String tripId) async {
+    // Get a reference to the database.
+    final db = await _databaseService.database;
+
+    // Remove the Trip from the database.
+    await db.delete(
+      'trips',
+      // Use a `where` clause to delete a specific trip.
+      where: 'id = ?',
+      // Pass the Trip's id as a whereArg to prevent SQL injection.
+      whereArgs: [tripId],
+    );
   }
 }

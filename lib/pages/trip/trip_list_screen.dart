@@ -386,8 +386,6 @@ class _TripListScreenState extends State<TripListScreen> {
                             },
                             onEnd: () {
                               Utils.customPrint('END');
-                              loggD.d('END -> $page ${DateTime.now()}');
-                              loggV.v('END -> $page ${DateTime.now()}');
                               CustomLogger().logWithFile(Level.info, "End -> $page");
                               stateSetter(() {
                                 isStartButton = true;
@@ -978,8 +976,6 @@ class _TripListScreenState extends State<TripListScreen> {
       /// STOP WRITING & CREATE NEW FILE
     } else {
       Utils.customPrint('WRITING');
-      loggD.d('WRITING -> $page ${DateTime.now()}');
-      loggV.v('WRITING -> $page ${DateTime.now()}');
       CustomLogger().logWithFile(Level.info, "WRITING -> $page");
 
       latitude = '0.0';

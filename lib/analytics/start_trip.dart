@@ -421,8 +421,7 @@ class StartTrip {
                   'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot'
               ).catchError((onError){
                 print('UPDATE NOTI ERROR: $onError');
-                loggV.v('UPDATE NOTI ERROR: $onError -> $page ${DateTime.now()}');
-                loggE.e('UPDATE NOTI ERROR: $onError -> $page ${DateTime.now()}');
+                CustomLogger().logWithFile(Level.error, "UPDATE NOTI ERROR: $onError -> $page");
               });
             }
 

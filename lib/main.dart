@@ -223,8 +223,6 @@ onDidReceiveBackgroundNotificationResponse(
   var pref = await SharedPreferences.getInstance();
   pref.setBool('sp_key_called_from_noti', true);
   Utils.customPrint('APP RESTART 24');
-  loggD.d('APP RESTART 2 -> $page ${DateTime.now()}');
-  loggV.v('APP RESTART 2 -> $page ${DateTime.now()}');
   CustomLogger().logWithFile(Level.info, "APP RESTART 2 -> $page");
   /// APP RESTART
 }
@@ -242,8 +240,6 @@ void bgLocationCallBack() async {
 onDidReceiveLocalNotification(
     int id, String? title, String? body, String? payload) {
   Utils.customPrint('APP RESTART 3');
-  loggD.e('APP RESTART 3 -> $page ${DateTime.now()}');
-  loggV.e('APP RESTART 3 -> $page ${DateTime.now()}');
   CustomLogger().logWithFile(Level.info, "APP RESTART 3");
   /// APP RESTART
 }
@@ -281,15 +277,10 @@ Future<void> initializeService() async {
   flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onDidReceiveNotificationResponse: (value) async {
     Utils.customPrint('APP RESTART 1');
-    loggD.d('APP RESTART 1 -> $page ${DateTime.now()}');
-    loggV.v('APP RESTART 1 -> $page ${DateTime.now()}');
-    CustomLogger().logWithFile(Level.verbose, "APP RESTART 1 -> $page");
     CustomLogger().logWithFile(Level.info, "APP RESTART 1 -> $page");
 
     if (value.id == 776 || value.id == 1 || value.id == 889) {
       Utils.customPrint('NOTIFICATION ID: ${value.id}');
-      loggD.d('NOTIFICATION ID: ${value.id} -> $page ${DateTime.now()}');
-      loggV.v('NOTIFICATION ID: ${value.id} -> $page ${DateTime.now()}');
       CustomLogger().logWithFile(Level.info, "NOTIFICATION ID: ${value.id} -> $page ");
       var pref = await SharedPreferences.getInstance();
       pref.setBool('sp_key_called_from_noti', true);
@@ -297,8 +288,6 @@ Future<void> initializeService() async {
       bool? isTripStarted = pref.getBool('trip_started');
 
       print("IS APP KILLED MAIN $isAppKilledFromBGMain");
-      loggD.d('IS APP KILLED MAIN -> $page ${DateTime.now()}');
-      loggV.v('IS APP KILLED MAIN -> $page ${DateTime.now()}');
       CustomLogger().logWithFile(Level.info, "IS APP KILLED MAIN $isAppKilledFromBGMain -> $page ");
       if(isAppKilledFromBGMain)
         {
@@ -352,20 +341,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
        CustomLogger().logWithFile(Level.info, "URI: ${uri} -> $page");
         if (uri != null) {
           Utils.customPrint('Deep link received: $uri');
-          loggD.d('Deep link received -> $page ${DateTime.now()}');
-          loggV.v('Deep link received -> $page ${DateTime.now()}');
           CustomLogger().logWithFile(Level.info, "Deep link received -> $page ");
 
           if(uri.queryParameters['verify'] != null){
             Utils.customPrint("reset: ${uri.queryParameters['verify'].toString()}");
-            loggD.d('reset: ${uri.queryParameters['verify'].toString()} -> $page ${DateTime.now()}');
-            loggV.v('reset: ${uri.queryParameters['verify'].toString()} -> $page ${DateTime.now()}');
             CustomLogger().logWithFile(Level.info, "reset: ${uri.queryParameters['verify'].toString()} -> $page ");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
 
             Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
-            loggD.d('isUserLoggedIn: $isUserLoggedIn -> $page ${DateTime.now()}');
-            loggV.v('isUserLoggedIn: $isUserLoggedIn -> $page ${DateTime.now()}');
             CustomLogger().logWithFile(Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page ");
             Map<String, dynamic> arguments = {
               "isComingFromReset": true,
@@ -390,14 +373,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         }
       }, onError: (err) {
         Utils.customPrint('Error handling deep link: $err');
-        loggE.d('Error handling deep link: $err -> $page ${DateTime.now()}');
-        loggV.v('Error handling deep link: $err -> $page ${DateTime.now()}');
         CustomLogger().logWithFile(Level.error, "Error handling deep link: $err -> $page ");
       });
     } on PlatformException {
       Utils.customPrint("Exception while handling with uni links : ${PlatformException}");
-      loggE.d('Exception while handling with uni links : ${PlatformException} -> $page ${DateTime.now()}');
-      loggV.v('Exception while handling with uni links : ${PlatformException} -> $page ${DateTime.now()}');
       CustomLogger().logWithFile(Level.error, "Exception while handling with uni links : ${PlatformException} -> $page ");
     }
   }
@@ -408,8 +387,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     initDeepLinkListener();
     Utils.customPrint('APP IN BG INIT');
-    loggD.d('APP IN BG INIT -> $page ${DateTime.now()}');
-    loggV.v('APP IN BG INIT -> $page ${DateTime.now()}');
     CustomLogger().logWithFile(Level.info, "APP IN BG INIT -> -> $page ");
   }
 
@@ -419,8 +396,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     sharedPreferences!.getBool('trip_started');
 
     print("TRIP IN PROGRESS MAIN $isTripStarted");
-    loggD.d('TRIP IN PROGRESS MAIN $isTripStarted -> $page ${DateTime.now()}');
-    loggV.v('TRIP IN PROGRESS MAIN $isTripStarted -> $page ${DateTime.now()}');
     CustomLogger().logWithFile(Level.info, "TRIP IN PROGRESS MAIN $isTripStarted -> $page");
   }
 
@@ -431,8 +406,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     _sub?.cancel();
     super.dispose();
     Utils.customPrint('APP IN BG DISPOSE');
-    loggD.d('APP IN BG DISPOSE -> $page ${DateTime.now()}');
-    loggV.v('APP IN BG DISPOSE -> $page ${DateTime.now()}');
     CustomLogger().logWithFile(Level.info, "APP IN BG DISPOSE -> $page");
   }
 

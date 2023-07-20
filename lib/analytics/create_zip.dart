@@ -37,10 +37,6 @@ class CreateZip {
       //Utils.customPrint('DOWNLOADED FILE PATH: $downloadedFilePath');
     } catch (e) {
       Utils.customPrint('$e');
-      loggD.d('$e -> $page ${DateTime.now()}');
-      loggV.v('$e -> $page ${DateTime.now()}');
-      loggE.e('$e -> $page ${DateTime.now()}');
-      loggV.v('$e -> $page ${DateTime.now()}');
 
       CustomLogger().logWithFile(Level.error, "$e -> $page");
     }

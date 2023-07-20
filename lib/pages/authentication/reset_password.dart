@@ -167,8 +167,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                             },
                             onSaved: (String value) {
                               Utils.customPrint(value);
-                              loggD.d("$value  -> $page ${DateTime.now()}");
-                              loggV.v("$value  -> $page ${DateTime.now()}");
                               CustomLogger().logWithFile(Level.info, "New password $value -> $page");
                             }),
                         SizedBox(height: displayWidth(context) * 0.03),
@@ -234,8 +232,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                                 bool check = await Utils().check(scaffoldKey);
 
                                 Utils.customPrint("NETWORK $check");
-                                loggD.d("NETWORK $check  -> $page ${DateTime.now()}");
-                                loggV.v("NETWORK$check  -> $page ${DateTime.now()}");
                                 CustomLogger().logWithFile(Level.info, "NETWORK$check  -> $page");
 
                                 FocusScope.of(context)

@@ -7,12 +7,12 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 
 File? mainFile;
 
-var loggD = Logger(level: Level.debug);
-var loggE = Logger(level: Level.error);
-var loggI = Logger(level: Level.info);
-var loggW = Logger(level: Level.warning);
-var loggWTF = Logger(level: Level.wtf);
-var loggV = Logger(level: Level.verbose);
+// var loggD = Logger(level: Level.debug);
+// var loggE = Logger(level: Level.error);
+// var loggI = Logger(level: Level.info);
+// var loggW = Logger(level: Level.warning);
+// var loggWTF = Logger(level: Level.wtf);
+// var loggV = Logger(level: Level.verbose);
 
 DateTime now = DateTime.now().toLocal();
 String formattedDate = DateFormat('yyyy-MM-dd').format(now);

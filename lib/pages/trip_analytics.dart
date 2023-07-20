@@ -8,6 +8,7 @@ import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -1046,73 +1047,56 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                 "END TRIP CURRENT TIME ${DateTime.now()}");
                                                             CustomLogger().logWithFile(Level.info, "END TRIP CURRENT TIME  -> $page");
 
-                                                            Utils().showEndTripDialog(
-                                                                context, () async {
-                                                              if (durationTimer !=
-                                                                  null) {
-                                                                durationTimer!
-                                                                    .cancel();
+                                                            bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+
+                                                            debugPrint("SMALL TRIPP IDDD bool$isSmallTrip");
+
+                                                            if(!isSmallTrip)
+                                                              {
+                                                                Utils().showDeleteTripDialog(context,
+                                                                    endTripBtnClick: (){
+
+                                                                      endTrip();
+
+                                                                     // Navigator.pop(context);
+
+                                                                      debugPrint("SMALL TRIPP IDDD ${tripData!
+                                                                          .id!}");
+
+                                                                      Future.delayed(Duration(seconds: 1), (){
+                                                                        if(!isSmallTrip)
+                                                                        {
+
+                                                                          debugPrint("SMALL TRIPP IDDD ${tripData!
+                                                                              .id!}");
+                                                                          DatabaseService().deleteTripFromDB(tripData!
+                                                                              .id!);
+
+                                                                          Navigator.pushAndRemoveUntil(
+                                                                              context,
+                                                                              MaterialPageRoute(builder: (context) => HomePage()),
+                                                                              ModalRoute.withName(""));
+                                                                        }
+                                                                      });
+                                                                    },
+                                                                    onCancelClick: (){
+                                                                      Navigator.pop(context);
+                                                                    }
+                                                                );
                                                               }
-                                                              setState(() {
-                                                                isTripEnded = true;
-                                                              });
-                                                              Navigator.pop(context);
+                                                            else
+                                                              {
+                                                                Utils().showEndTripDialog(
+                                                                    context, () async {
 
-                                                              EndTrip().endTrip(
-                                                                  context: context,
-                                                                  scaffoldKey:
-                                                                      scaffoldKey,
-                                                                  duration:
-                                                                      tripDuration,
-                                                                  IOSAvgSpeed:
-                                                                      tripAvgSpeed,
-                                                                  IOSpeed: tripSpeed,
-                                                                  IOStripDistance:
-                                                                      tripDistance,
-                                                                  onEnded: () async {
-                                                                    setState(() {
-                                                                      tripIsRunning =
-                                                                          false;
-                                                                      isTripEnded =
-                                                                          false;
-                                                                    });
-                                                                    Trip tripDetails =
-                                                                        await _databaseService
-                                                                            .getTrip(
-                                                                                tripData!
-                                                                                    .id!);
-                                                                    debugPrint(
-                                                                        "abhi:${tripDetails.time}");
-                                                                    debugPrint(
-                                                                        "abhi:${tripDuration}");
-                                                                    debugPrint(
-                                                                        "abhi:${tripAvgSpeed}");
-                                                                    debugPrint(
-                                                                        "abhi:${tripSpeed}");
+                                                                  endTrip();
 
-                                                                    CustomLogger().logWithFile(Level.info, "abhi:${tripDetails.time}  -> $page");
-                                                                    CustomLogger().logWithFile(Level.info, "abhi:${tripDuration}  -> $page");
-                                                                    CustomLogger().logWithFile(Level.info, "abhi:${tripAvgSpeed}  -> $page");
-                                                                    CustomLogger().logWithFile(Level.info, "abhi:${tripSpeed}  -> $page");
-                                                                    setState(() {
-                                                                      tripData =
-                                                                          tripDetails;
-                                                                    });
+                                                                }, () {
+                                                                  Navigator.pop(context);
+                                                                });
+                                                              }
 
-                                                                    Utils.customPrint(
-                                                                        'TRIP ENDED DETAILS: ${tripDetails.isSync}');
-                                                                    Utils.customPrint(
-                                                                        'TRIP ENDED DETAILS: ${tripData!.isSync}');
 
-                                                                    CustomLogger().logWithFile(Level.info, "TRIP ENDED DETAILS: ${tripDetails.isSync}  -> $page");
-                                                                    CustomLogger().logWithFile(Level.info, "TRIP ENDED DETAILS: ${tripData!.isSync}  -> $page");
-
-                                                                    isDataUpdated =
-                                                                        true;
-                                                                  });
-                                                            }, () {
-                                                              Navigator.pop(context);
-                                                            });
                                                           }),
 
                                                       Padding(
@@ -2214,66 +2198,154 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                     'End Trip', context, buttonBGColor,
                                         () async {
 
-                                      setDialogState(() {
-                                        isEndTripBtnClicked = true;
-                                      });
+                                      bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
-                                      if (durationTimer !=
-                                          null) {
-                                        durationTimer!
-                                            .cancel();
+                                      if(!isSmallTrip)
+                                      {
+                                        Navigator.pop(context);
+
+                                        Utils().showDeleteTripDialog(context,
+                                             endTripBtnClick: (){
+
+                                                  if (durationTimer !=
+                                                      null) {
+                                                    durationTimer!
+                                                        .cancel();
+                                                  }
+                                                  setState(() {
+                                                    isTripEnded = true;
+                                                  });
+                                                  Navigator.pop(context);
+
+                                                  EndTrip().endTrip(
+                                                      context: context,
+                                                      scaffoldKey:
+                                                      scaffoldKey,
+                                                      duration:
+                                                      tripDuration,
+                                                      IOSAvgSpeed:
+                                                      tripAvgSpeed,
+                                                      IOSpeed: tripSpeed,
+                                                      IOStripDistance:
+                                                      tripDistance,
+                                                      onEnded: () async {
+                                                        setState(() {
+                                                          tripIsRunning =
+                                                          false;
+                                                          isTripEnded =
+                                                          false;
+                                                        });
+                                                        Trip tripDetails =
+                                                        await _databaseService
+                                                            .getTrip(
+                                                            tripData!
+                                                                .id!);
+                                                        debugPrint(
+                                                            "abhi:${tripDetails.time}");
+                                                        debugPrint(
+                                                            "abhi:${tripDuration}");
+                                                        debugPrint(
+                                                            "abhi:${tripAvgSpeed}");
+                                                        debugPrint(
+                                                            "abhi:${tripSpeed}");
+                                                        setState(() {
+                                                          tripData =
+                                                              tripDetails;
+                                                        });
+
+                                                        Utils.customPrint(
+                                                            'TRIP ENDED DETAILS: ${tripDetails.isSync}');
+                                                        Utils.customPrint(
+                                                            'TRIP ENDED DETAILS: ${tripData!.isSync}');
+
+                                                        isDataUpdated = true;
+
+                                                        Future.delayed(Duration(seconds: 1), (){
+                                                          if(!isSmallTrip)
+                                                          {
+                                                            debugPrint("SMALL TRIPP IDDD ${tripData!
+                                                                .id!}");
+                                                            DatabaseService().deleteTripFromDB(tripData!
+                                                                .id!);
+
+                                                            Navigator.pushAndRemoveUntil(
+                                                                context,
+                                                                MaterialPageRoute(builder: (context) => HomePage()),
+                                                                ModalRoute.withName(""));
+                                                          }
+                                                        });
+                                                      });
+
+                                                  debugPrint("SMALL TRIPP IDDD ${tripData!
+                                                      .id!}");
+
+                                                },
+                                             onCancelClick: (){
+                                               Navigator.pop(context);
+                                            }
+                                        );
                                       }
-                                      setState(() {
-                                        isTripEnded = true;
-                                      });
-                                      Navigator.pop(context);
+                                      else {
+                                        setDialogState(() {
+                                          isEndTripBtnClicked = true;
+                                        });
 
-                                      EndTrip().endTrip(
-                                          context: context,
-                                          scaffoldKey:
-                                          scaffoldKey,
-                                          duration:
-                                          tripDuration,
-                                          IOSAvgSpeed:
-                                          tripAvgSpeed,
-                                          IOSpeed: tripSpeed,
-                                          IOStripDistance:
-                                          tripDistance,
-                                          onEnded: () async {
-                                            setState(() {
-                                              tripIsRunning =
-                                              false;
-                                              isTripEnded =
-                                              false;
+                                        if (durationTimer !=
+                                            null) {
+                                          durationTimer!
+                                              .cancel();
+                                        }
+                                        setState(() {
+                                          isTripEnded = true;
+                                        });
+                                        Navigator.pop(context);
+
+                                        EndTrip().endTrip(
+                                            context: context,
+                                            scaffoldKey:
+                                            scaffoldKey,
+                                            duration:
+                                            tripDuration,
+                                            IOSAvgSpeed:
+                                            tripAvgSpeed,
+                                            IOSpeed: tripSpeed,
+                                            IOStripDistance:
+                                            tripDistance,
+                                            onEnded: () async {
+                                              setState(() {
+                                                tripIsRunning =
+                                                false;
+                                                isTripEnded =
+                                                false;
+                                              });
+                                              Trip tripDetails =
+                                              await _databaseService
+                                                  .getTrip(
+                                                  tripData!
+                                                      .id!);
+                                              debugPrint(
+                                                  "abhi:${tripDetails.time}");
+                                              debugPrint(
+                                                  "abhi:${tripDuration}");
+                                              debugPrint(
+                                                  "abhi:${tripAvgSpeed}");
+                                              debugPrint(
+                                                  "abhi:${tripSpeed}");
+                                              setState(() {
+                                                tripData =
+                                                    tripDetails;
+                                              });
+
+                                              Utils.customPrint(
+                                                  'TRIP ENDED DETAILS: ${tripDetails
+                                                      .isSync}');
+                                              Utils.customPrint(
+                                                  'TRIP ENDED DETAILS: ${tripData!
+                                                      .isSync}');
+
+                                              isDataUpdated = true;
                                             });
-                                            Trip tripDetails =
-                                            await _databaseService
-                                                .getTrip(
-                                                tripData!
-                                                    .id!);
-                                            debugPrint(
-                                                "abhi:${tripDetails.time}");
-                                            debugPrint(
-                                                "abhi:${tripDuration}");
-                                            debugPrint(
-                                                "abhi:${tripAvgSpeed}");
-                                            debugPrint(
-                                                "abhi:${tripSpeed}");
-                                            setState(() {
-                                              tripData =
-                                                  tripDetails;
-                                            });
-
-                                            Utils.customPrint(
-                                                'TRIP ENDED DETAILS: ${tripDetails.isSync}');
-                                            Utils.customPrint(
-                                                'TRIP ENDED DETAILS: ${tripData!.isSync}');
-
-                                            CustomLogger().logWithFile(Level.info, "TRIP ENDED DETAILS: ${tripDetails.isSync} -> $page");
-                                            CustomLogger().logWithFile(Level.info, "TRIP ENDED DETAILS: ${tripData!.isSync} -> $page");
-
-                                            isDataUpdated = true;
-                                          });
+                                      }
                                     },
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,
@@ -2386,5 +2458,69 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                 notificationIcon: '@drawable/noti_logo',
                 notificationTapCallback:
                 LocationCallbackHandler.notificationCallback)));
+  }
+
+  endTrip()
+  {
+
+    if (durationTimer !=
+        null) {
+      durationTimer!
+          .cancel();
+    }
+
+    setState(() {
+      isTripEnded = true;
+    });
+
+    Navigator.pop(context);
+
+    Utils.customPrint(
+        "TRIP DURATION WHILE END TRIP $tripDuration");
+
+    EndTrip().endTrip(
+        context: context,
+        scaffoldKey:
+        scaffoldKey,
+        duration:
+        tripDuration,
+        IOSAvgSpeed:
+        tripAvgSpeed,
+        IOSpeed: tripSpeed,
+        IOStripDistance:
+        tripDistance,
+        onEnded: () async {
+          setState(() {
+            tripIsRunning =
+            false;
+            isTripEnded =
+            false;
+          });
+          Trip tripDetails =
+          await _databaseService
+              .getTrip(
+              tripData!
+                  .id!);
+          debugPrint(
+              "abhi:${tripDetails.time}");
+          debugPrint(
+              "abhi:${tripDuration}");
+          debugPrint(
+              "abhi:${tripAvgSpeed}");
+          debugPrint(
+              "abhi:${tripSpeed}");
+          setState(() {
+            tripData =
+                tripDetails;
+          });
+
+          Utils.customPrint(
+              'TRIP ENDED DETAILS: ${tripDetails.isSync}');
+          Utils.customPrint(
+              'TRIP ENDED DETAILS: ${tripData!.isSync}');
+
+          isDataUpdated =
+          true;
+        });
   }
 }

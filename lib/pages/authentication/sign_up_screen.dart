@@ -277,9 +277,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         });
                                       } catch (e) {
                                         Utils.customPrint('EXE: $e');
-                                        loggD.d('EXE: $e -> $page ${DateTime.now()}');
-                                        loggV.v('EXE: $e -> $page ${DateTime.now()}');
-                                        loggE.e('EXE: $e -> $page ${DateTime.now()}');
                                         CustomLogger().logWithFile(Level.error, "EXE: $e -> $page");
                                         // TODO handle
                                       }

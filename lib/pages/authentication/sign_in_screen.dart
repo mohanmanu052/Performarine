@@ -302,8 +302,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                             });
                                           } catch (e) {
                                             Utils.customPrint('EXE: $e');
-                                            loggE.e("EXE: $e -> $page ${DateTime.now()}");
-                                            loggV.v("EXE: $e -> $page ${DateTime.now()}");
+                                            CustomLogger().logWithFile(Level.error, "EXE: $e -> $page");
                                             // TODO handle
                                           }
                                         }
@@ -345,8 +344,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                   bool check = await Utils().check(scaffoldKey);
 
                                   Utils.customPrint("NETWORK $check");
-                                  loggD.d("NETWORK $check  -> $page ${DateTime.now()}");
-                                  loggV.v("NETWORK $check  -> $page ${DateTime.now()}");
                                   CustomLogger().logWithFile(Level.info, "Network: $check -> $page");
 
                                   FocusScope.of(context)

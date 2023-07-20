@@ -57,6 +57,7 @@ class CommonProvider with ChangeNotifier {
   bool isBluetoothEnabled = false;
   UserFeedbackModel? userFeedbackModel;
 
+
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
     Utils.customPrint('LOGIN DATA: $loginData');

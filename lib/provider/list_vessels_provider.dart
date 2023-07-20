@@ -37,14 +37,10 @@ class TripListApiProvider extends ChangeNotifier {
           ? null
           : debugPrint('Trip Status code : ' + response.statusCode.toString());
       debugPrint('Trip Status code 1: $decodedData');
-      loggD.d('Trip Status code 1: $decodedData -> $page ${DateTime.now()}');
-      loggV.v('Trip Status code 1: $decodedData -> $page ${DateTime.now()}');
       CustomLogger().logWithFile(Level.info, "Trip Status code 1: $decodedData -> $page");
 
       if (response.statusCode == HttpStatus.ok) {
         tripListModel = TripList.fromJson(json.decode(response.body));
-        loggI.i("API response status is ${response.statusCode} on -> $page ${DateTime.now()}");
-        loggV.v("API response status is ${response.statusCode} on -> $page ${DateTime.now()}");
         CustomLogger().logWithFile(Level.info, "Register Response : ' + ${response.body}-> $page");
         CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.GetTripList}  is: ${response.statusCode}-> $page");
 

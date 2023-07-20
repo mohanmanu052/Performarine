@@ -101,8 +101,6 @@ class EditVesselApiProvider with ChangeNotifier {
 // here
       if (responseValue.statusCode == HttpStatus.ok) {
         Utils.customPrint('Register Response : ' + responseValue.body);
-        loggI.i("API response is ${responseValue.statusCode} on -> $page ${DateTime.now()}");
-        loggV.v("API response is ${responseValue.statusCode} on -> $page ${DateTime.now()}");
         CustomLogger().logWithFile(Level.info, "Register Response : ' + ${responseValue.body} -> $page");
         CustomLogger().logWithFile(Level.info, "API response is ${responseValue.statusCode} on -> $page");
 
@@ -146,9 +144,6 @@ class EditVesselApiProvider with ChangeNotifier {
     } on SocketException catch (_) {
       await Utils().check(scaffoldKey);
       Utils.customPrint('Socket Exception');
-      loggD.d('Socket Exception -> $page ${DateTime.now()}');
-      loggE.e('Socket Exception -> $page ${DateTime.now()}');
-      loggV.v('Socket Exception -> $page ${DateTime.now()}');
       CustomLogger().logWithFile(Level.error, "Socket Exception -> $page");
 
       addVesselModel = null;
