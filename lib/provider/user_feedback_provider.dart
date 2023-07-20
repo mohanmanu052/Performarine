@@ -135,12 +135,20 @@ class UserFeedbackProvider with ChangeNotifier {
       List<File?> fileList,
       GlobalKey<ScaffoldState> scaffoldKey) async {
 
+
+    debugPrint("REPORT PROVIDER TOKEN $token");
+
     Uri uri = Uri.https(Urls.baseUrl, Urls.userFeedback);
 
     var request = http.MultipartRequest(
         'POST',
         uri
     );
+
+    var headers = {
+      HttpHeaders.contentTypeHeader : 'multipart/form-data',
+      "x-access-token" : token,
+    };
 
     fileList.forEach((element) async {
       http.MultipartFile multipartFile = await http.MultipartFile.fromPath('files', element!.path);
@@ -151,13 +159,6 @@ class UserFeedbackProvider with ChangeNotifier {
     request.fields['subject'] = subject;
     request.fields['description'] = description;
     request.fields['deviceInfo'] = jsonEncode(deviceInfo);
-
-
-
-    var headers = {
-      HttpHeaders.contentTypeHeader : 'multipart/form-data',
-      "x-access-token" : token,
-    };
 
     request.headers.addAll(headers);
 

@@ -44,7 +44,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
   List<File?> sendFiles = [];
   File? imageFile;
 
-  CommonProvider? commonProvider;
+  late CommonProvider commonProvider;
   bool isBtnClick = false;
 
   String? _result;
@@ -60,6 +60,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
   void initState() {
     super.initState();
     commonProvider = context.read<CommonProvider>();
+    commonProvider.init();
     nameController  = TextEditingController();
     descriptionController = TextEditingController();
   }
@@ -322,6 +323,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                           };
                         }
                         Utils.customPrint("deviceDetails:${deviceDetails!.toString()}");
+                        Utils.customPrint("deviceDetails:${commonProvider.loginModel!.token!}");
                         if(check){
                           final Directory appDir = await getApplicationDocumentsDirectory();
                           final String fileName = DateTime.now().toIso8601String() + '.png';
@@ -384,6 +386,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
                             setState(() {
                               isBtnClick = true;
                             });
+
+                            debugPrint("REPORT TOKEN ${commonProvider!.loginModel!.token!}");
                             commonProvider?.sendUserFeedbackDio(
                                 context,
                                 commonProvider!.loginModel!.token!,

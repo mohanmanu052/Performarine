@@ -463,7 +463,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                         },
                       ),
 
-                      Padding(
+                      commonProvider.tripsCount == 0
+                      ? Container()
+                      : Padding(
                         padding: EdgeInsets.only(
                           left: displayWidth(context) * 0.28,
                           bottom : displayWidth(context) * 0.02,

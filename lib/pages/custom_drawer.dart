@@ -579,7 +579,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                               Brightness.dark
                                           ? Colors.white
                                           : Colors.black,
-                                      displayHeight(context) * 0.016,
+                                      displayHeight(context) * 0.015,
                                       Colors.grey.shade400,
                                       '',
                                       fontWeight: FontWeight.w500),
@@ -616,7 +616,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             displayHeight(context) * 0.05,
                                             primaryColor,
                                             Colors.white,
-                                            displayHeight(context) * 0.016,
+                                            displayHeight(context) * 0.015,
                                             buttonBGColor,
                                             '',
                                             fontWeight: FontWeight.w500),
