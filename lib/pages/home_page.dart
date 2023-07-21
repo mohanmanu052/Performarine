@@ -443,6 +443,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                       TripViewListing(
                         scaffoldKey: scaffoldKey,
                         calledFrom: 'HomePage',
+                        isTripDeleted: ()async{
+                         // setState(() async {
+                         //   tripsCount = await commonProvider.tripsCount;
+                         //   print("trips count: $tripsCount");
+                         // // });
+                        },
                         onTripEnded: (){
                           commonProvider.getTripsByVesselId('');
                         },

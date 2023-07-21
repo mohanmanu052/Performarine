@@ -228,7 +228,7 @@ class _TripWidgetState extends State<TripWidget> {
                             children: [
                               SizedBox(
                                   height: displayHeight(context) * 0.038,
-                                  width: displayWidth(context) * .4,
+                                  width: displayWidth(context) * .385,
                                   child: CommonButtons.getRichTextActionButton(
                                       buttonPrimaryColor: buttonBGColor,
                                       fontSize: displayWidth(context) * 0.026,
@@ -247,7 +247,7 @@ class _TripWidgetState extends State<TripWidget> {
                                       width: displayWidth(context) * 0.38,
                                       title: 'Route Map')),
                               SizedBox(
-                                width: 10,
+                                width: 5,
                               ),
                               SizedBox(
                                   height: displayHeight(context) * 0.038,
@@ -957,39 +957,4 @@ class _TripWidgetState extends State<TripWidget> {
     return result;
   }
 
-  deleteTripFunctionality(String tripId)
-  {
-
-    if(mounted)
-      {
-        setState(() {
-          isDeleteTripBtnClicked = true;
-        });
-      }
-
-
-    if(isTripUploaded)
-      {
-        commonProvider.deleteTrip(context, commonProvider.loginModel!.token!, tripId,  widget.scaffoldKey!).then((value) {
-          if(value != null)
-            {
-              if(value.status!)
-                {
-                  setState(() {
-                    isDeleteTripBtnClicked = false;
-                  });
-                }
-            }
-        });
-      }
-    else
-      {
-        DatabaseService().deleteTripFromDB(tripId).then((value)
-        {
-          setState(() {
-            isDeleteTripBtnClicked = false;
-          });
-        });
-      }
-  }
 }

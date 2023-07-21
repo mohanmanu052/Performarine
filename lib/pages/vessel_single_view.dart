@@ -439,6 +439,11 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   scaffoldKey: scaffoldKey,
                                   vesselId: widget.vessel!.id,
                                   calledFrom: 'VesselSingleView',
+                                  isTripDeleted: ()async{
+                                    setState(() {
+                                      getVesselAnalytics(widget.vessel!.id!);
+                                    });
+                                  },
                                   onTripEnded: () async {
                                     Utils.customPrint('SINGLE VIEW TRIP END');
                                     await tripIsRunningOrNot();
