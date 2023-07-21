@@ -16,7 +16,8 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
-import 'package:performarine/pages/authentication/sign_in_screen.dart';
+import 'package:performarine/pages/auth/change_password.dart';
+import 'package:performarine/pages/auth/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/reports/search_and_filters.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
@@ -28,7 +29,6 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 
-import 'authentication/change_password.dart';
 
 class CustomDrawer extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;

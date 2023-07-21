@@ -1,7 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:performarine/pages/authentication/sign_in_screen.dart';
+import 'package:performarine/pages/auth/sign_in_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/utils/colors.dart';

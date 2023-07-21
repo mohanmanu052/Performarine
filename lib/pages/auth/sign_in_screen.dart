@@ -12,7 +12,7 @@ import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/zig_zag_line_widget.dart';
-import 'package:performarine/pages/authentication/sign_up_screen.dart';
+import 'package:performarine/pages/auth/sign_up_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';

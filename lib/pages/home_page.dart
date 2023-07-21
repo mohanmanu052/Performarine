@@ -23,7 +23,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/pages/authentication/reset_password.dart';
+import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/trip_analytics.dart';

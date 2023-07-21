@@ -13,7 +13,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
-import 'package:performarine/pages/authentication/reset_password.dart';
+import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/intro_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
