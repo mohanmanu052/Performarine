@@ -173,7 +173,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                   left: displayWidth(context) * 0.06,
                   right: displayWidth(context) * 0.06,
                 ),
-                child: CommonTextField(
+                child: CommonExpandTextField(
                     controller: descriptionController,
                     focusNode: descriptionFocusNode,
                     labelText: 'Description',
