@@ -11,6 +11,7 @@ class CommonTextField extends StatefulWidget {
   TextInputType? textInputType;
   TextCapitalization? textCapitalization;
   int? maxLength;
+  int? maxLines;
   IconData? prefixIcon;
   Widget? suffixIcon;
   String? labelText;
@@ -50,7 +51,8 @@ class CommonTextField extends StatefulWidget {
       this.onFieldSubmitted,
       this.onSaved,
       this.onTap,
-      this.inputFormatter
+      this.inputFormatter,
+      this.maxLines = 1
       //this.formFieldKey
       })
       : super(key: key);
@@ -86,6 +88,9 @@ class _CommonTextFieldState extends State<CommonTextField> {
           textCapitalization: widget.textCapitalization!,
           textInputAction: widget.textInputAction,
           keyboardType: widget.textInputType,
+          //expands: true,
+          maxLines: widget.maxLines,
+          //maxLength: widget.maxLines,
           inputFormatters: [
             LengthLimitingTextInputFormatter(widget.maxLength),
             if (widget.textInputType == TextInputType.number)

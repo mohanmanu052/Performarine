@@ -27,6 +27,7 @@ Widget commonText(
   return Text(
     text ?? '',
     textAlign: textAlign!,
+    textScaleFactor: 1,
     style: TextStyle(
         fontSize: textSize,
         color: textColor,

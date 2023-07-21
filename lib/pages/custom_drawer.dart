@@ -284,16 +284,23 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ].map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value,style:TextStyle(color:Colors.black),),
+                            child: commonText(
+                                context: context,
+                                text: value,
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black54,
+                                textSize: textSize,
+                                textAlign: TextAlign.start)
                           );
                         }).toList(),
-                        hint:Text(
-                          chosenValue!,
-                          style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: textSize,
-                              fontWeight: FontWeight.w500),
-                        ),
+                        hint: commonText(
+                            context: context,
+                            text: chosenValue,
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.black54,
+                            textSize: textSize,
+                            textAlign: TextAlign.start),
+
                         onChanged: (String? value) {
                           setState(() {
                             chosenValue = value;

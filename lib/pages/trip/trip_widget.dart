@@ -61,7 +61,8 @@ class _TripWidgetState extends State<TripWidget> {
       isTripUploaded = false,
       isTripEndedOrNot = false,
       tripIsRunning = false,
-      tripIsUploading = false;
+      tripIsUploading = false,
+      isDeleteTripBtnClicked = false;
   late DeviceInfoPlugin deviceDetails;
 
   int progress = 0;
@@ -954,5 +955,41 @@ class _TripWidgetState extends State<TripWidget> {
     }
 
     return result;
+  }
+
+  deleteTripFunctionality(String tripId)
+  {
+
+    if(mounted)
+      {
+        setState(() {
+          isDeleteTripBtnClicked = true;
+        });
+      }
+
+
+    if(isTripUploaded)
+      {
+        commonProvider.deleteTrip(context, commonProvider.loginModel!.token!, tripId,  widget.scaffoldKey!).then((value) {
+          if(value != null)
+            {
+              if(value.status!)
+                {
+                  setState(() {
+                    isDeleteTripBtnClicked = false;
+                  });
+                }
+            }
+        });
+      }
+    else
+      {
+        DatabaseService().deleteTripFromDB(tripId).then((value)
+        {
+          setState(() {
+            isDeleteTripBtnClicked = false;
+          });
+        });
+      }
   }
 }

@@ -189,6 +189,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     textInputType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
                     // maxLength: 32,
+                    maxLines: null,
                     prefixIcon: null,
                     requestFocusNode: null,
                     obscureText: false,

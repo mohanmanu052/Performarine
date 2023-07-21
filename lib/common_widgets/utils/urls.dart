@@ -31,4 +31,6 @@ class Urls {
   //User feedback
   static const userFeedback = '/api/userFeedback';
 
+  // Delete Trip
+  static const deleteTrip = '/api/getTripById';
 }

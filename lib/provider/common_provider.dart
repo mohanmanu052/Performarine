@@ -6,6 +6,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/add_vessel_model.dart';
 import 'package:performarine/models/common_model.dart';
+import 'package:performarine/models/delete_trip_model.dart';
 import 'package:performarine/models/get_user_config_model.dart';
 import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/registration_model.dart';
@@ -15,6 +16,7 @@ import 'package:performarine/models/upload_trip_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/provider/add_vessel_api_provider.dart';
 import 'package:performarine/provider/change_password_provider.dart';
+import 'package:performarine/provider/delete_trip_api_provider.dart';
 import 'package:performarine/provider/get_user_config_api_provider.dart';
 import 'package:performarine/provider/login_api_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
@@ -56,6 +58,7 @@ class CommonProvider with ChangeNotifier {
   ChangePasswordModel? changePasswordModel;
   bool isBluetoothEnabled = false;
   UserFeedbackModel? userFeedbackModel;
+  DeleteTripModel? deleteTripModel;
 
 
   init() {
@@ -412,5 +415,17 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
 
     return userFeedbackModel!;
+  }
+
+  Future<DeleteTripModel> deleteTrip(
+      BuildContext context,
+      String token,
+      String tripId,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    deleteTripModel = DeleteTripModel();
+    deleteTripModel = await DeleteTripApiProvider().deleteTrip(context, token, tripId, scaffoldKey);
+    notifyListeners();
+
+    return deleteTripModel!;
   }
 }
