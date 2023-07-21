@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -39,7 +40,7 @@ class _SignInScreenState extends State<SignInScreen> {
   FocusNode passwordFocusNode = FocusNode();
   FocusNode phoneFocusNode = FocusNode();
 
-  String? selectedCountryCode;
+  String? selectedCountryCode, currentVersion;
 
   bool validateCountryCodeWidget = false,
       isLoginByEmailId = true,
@@ -63,6 +64,8 @@ class _SignInScreenState extends State<SignInScreen> {
     super.initState();
 
     commonProvider = context.read<CommonProvider>();
+
+    getVersion();
     // commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
 
     emailController.addListener(() {
@@ -88,6 +91,13 @@ class _SignInScreenState extends State<SignInScreen> {
     });
   }
 
+  getVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      currentVersion = packageInfo.version;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
@@ -110,10 +120,25 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
       body: Stack(
         children: [
-          Positioned(
-              left: 0,
-              bottom: displayHeight(context) * 0.06,
-              child: ZigZagLineWidget()),
+          Stack(
+            children: [
+              Positioned(
+                bottom: 5,
+                left: 0,
+                right: 0,
+                child: commonText(
+                    text: 'Version $currentVersion',
+                    context: context,
+                    textSize: displayWidth(context) * 0.03,
+                    textColor: Colors.black54,
+                    fontWeight: FontWeight.w400),
+              ),
+              Positioned(
+                  left: 0,
+                  bottom: displayHeight(context) * 0.06,
+                  child: ZigZagLineWidget()),
+            ],
+          ),
           Form(
             key: formKey,
             //autovalidateMode: AutovalidateMode.,

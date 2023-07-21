@@ -1,6 +1,12 @@
 class Urls {
+
+
+  //static String baseUrl =  baseUrlVersion;
+
+
   //dev
   static const String baseUrl = 'goeapidev.azurewebsites.net';
+
   //UAT
   //static const String baseUrl = 'goeapiuat.azurewebsites.net';
   //Client Environment
@@ -27,10 +33,15 @@ class Urls {
   // Reports module
   static const String reportModule = '/api/reports';
 //  Privacy & terms
-  static const privacy="$baseUrl/privacy";
-  static const terms="$baseUrl/terms";
+  static  String privacy="$baseUrl/privacy";
+  static  String terms="$baseUrl/terms";
 
   //User feedback
   static const userFeedback = '/api/userFeedback';
+
+
+  static String baseUrlVersion = '';
+
+
 
 }

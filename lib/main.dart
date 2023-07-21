@@ -1,17 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -48,7 +51,10 @@ void main() async {
 
   tz.initializeTimeZones();
 
+  //await Firebase.initializeApp(options: DefaultFi);
+
   await Firebase.initializeApp();
+  //Firebase.initializeApp
 
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
@@ -239,9 +245,73 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+
+    getBaseUrl();
+
     WidgetsBinding.instance.addObserver(this);
     initDeepLinkListener();
     Utils.customPrint('APP IN BG INIT');
+
+  }
+
+  readData()async{
+    final _storage = const FlutterSecureStorage();
+    final all = await _storage.read(
+      key: 'baseUrl'
+    );
+
+    print('ERROR: $all');
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    var version = packageInfo.version;
+
+    var AllVersions = all.toString().replaceAll("{", "").replaceAll("}", "").split(",");
+    var firstVersion = AllVersions[0].split(":").first;
+
+    var actualVersion = firstVersion.replaceAll('"', "");
+    var actualURL =AllVersions[0].split(":").last.replaceAll('"', "");
+
+    var secondVersion = AllVersions[1].split(":").first;
+
+    var actualSecondVersion = secondVersion.replaceAll('"', "");
+    var actualSecondURL =AllVersions[1].split(":").last.replaceAll('"', "");
+
+
+    //String firstVersionSplit = split[0];
+    //var replaceFirst = firstVersionSplit.replaceAll("{", "");
+    //var replaceSecond = firstVersionSplit.replaceFirst("", "");
+
+    debugPrint("BASE URL VERSION 1 $actualSecondVersion");
+    debugPrint("BASE URL VERSION 1 $actualSecondURL");
+    debugPrint("BASE URL VERSION 2 $actualVersion");
+    debugPrint("BASE URL VERSION 2 $actualURL");
+
+    if(version == actualVersion)
+      {
+        debugPrint("BASE Actual URL VERSION $actualURL");
+
+        Urls.baseUrlVersion = actualURL;
+
+      }
+    else if(version == actualSecondVersion)
+      {
+        debugPrint("BASE Actual URL VERSION 2 $actualSecondURL");
+
+        Urls.baseUrlVersion = actualSecondURL;
+      }
+    else{
+      debugPrint("BASE URL NO VERSION ");
+    }
+
+   //var version =  all.toString().split(",").first;
+
+
+
+    Urls.baseUrlVersion = all.toString();
+
+
+
+    debugPrint("SECURE STORAGE $all");
   }
 
   getTripData()async
@@ -401,5 +471,30 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         print('\n\ndetached');
         break;
     }
+  }
+
+  void getBaseUrl() async {
+    FirebaseRemoteConfig data = await setupRemoteConfig();
+    String vinValidation = data.getString('version');
+
+    print('VINNNNNNNNNNNNNNN $vinValidation');
+
+    final FlutterSecureStorage storage = FlutterSecureStorage();
+
+    await storage.write(key: 'baseUrl', value: vinValidation);
+
+    readData();
+
+  }
+
+  Future<FirebaseRemoteConfig> setupRemoteConfig() async {
+    final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.instance;
+    await remoteConfig.setConfigSettings(RemoteConfigSettings(
+      fetchTimeout: const Duration(seconds: 10),
+      minimumFetchInterval: const Duration(hours: 1),
+    ));
+    await remoteConfig.fetchAndActivate();
+    RemoteConfigValue(null, ValueSource.valueStatic);
+    return remoteConfig;
   }
 }

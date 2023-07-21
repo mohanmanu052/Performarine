@@ -703,22 +703,59 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               await Utils.getLocationPermission(
                                   context, scaffoldKey);
 
-                              await Permission.locationAlways.request();
+                              if(Platform.isAndroid)
+                                {
+                                  bool isLocationAlwaysPermitted =
+                                  await Permission.locationAlways.isGranted;
 
-                              bool isGranted = await Permission.locationAlways.isGranted;
+                                  if(!isLocationAlwaysPermitted){
+                                    if (!isLocationDialogBoxOpen) {
+                                      Utils.customPrint("ELSE CONDITION");
 
-                              if(!isGranted)
-                              {
-                                Utils.showSnackBar(context,
-                                    scaffoldKey: scaffoldKey,
-                                    message:
-                                    'Location permissions are denied without permissions we are unable to start the trip');
+                                      showDialog(
+                                          context: scaffoldKey.currentContext!,
+                                          builder: (BuildContext context) {
+                                            isLocationDialogBoxOpen = true;
+                                            return LocationPermissionCustomDialog(
+                                              isLocationDialogBox: true,
+                                              text:
+                                              'Always Allow Access to “Location”',
+                                              subText:
+                                              "To track your trip while you use other apps we need background access to your location",
+                                              buttonText: 'Ok',
+                                              buttonOnTap: () async {
+                                                Get.back();
 
-                                // Future.delayed(Duration(seconds: 3),
-                                //         () async {
-                                //       await openAppSettings();
-                                //     });
-                              }
+                                                await openAppSettings();
+                                              },
+                                            );
+                                          }).then((value) {
+                                        isLocationDialogBoxOpen = false;
+                                      });
+                                    }
+                                  }
+
+                                }
+                              else
+                                {
+                                  await Permission.locationAlways.request();
+
+                                  bool isGranted = await Permission.locationAlways.isGranted;
+
+                                  if(!isGranted)
+                                  {
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message:
+                                        'Location permissions are denied without permissions we are unable to start the trip 3');
+
+                                    // Future.delayed(Duration(seconds: 3),
+                                    //         () async {
+                                    //       await openAppSettings();
+                                    //     });
+                                  }
+                                }
+
                             }
                             else
                             {
@@ -797,7 +834,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
                                     Utils.showSnackBar(context,
                                         scaffoldKey: scaffoldKey,
-                                        message: "Location permissions are denied without permissions we are unable to start the trip");
+                                        message: "Location permissions are denied without permissions we are unable to start the trip 4");
 
                                     Future.delayed(Duration(seconds: 3),
                                             () async {
@@ -810,7 +847,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   {
                                     Utils.showSnackBar(context,
                                         scaffoldKey: scaffoldKey,
-                                        message: "Location permissions are denied without permissions we are unable to start the trip");
+                                        message: "Location permissions are denied without permissions we are unable to start the trip 5");
 
                                     Future.delayed(Duration(seconds: 3),
                                             () async {

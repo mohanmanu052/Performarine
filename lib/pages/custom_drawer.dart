@@ -49,6 +49,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   late DeviceInfoPlugin deviceDetails;
   bool isSync = false, isUploadStarted = false;
 
+
   @override
   void initState() {
     commonProvider = context.read<CommonProvider>();
