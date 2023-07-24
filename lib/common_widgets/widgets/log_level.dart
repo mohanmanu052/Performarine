@@ -83,7 +83,7 @@ class CustomLogger{
 
     var output = formatLogMessage(logEvent);
     await writeToLogFile(output,logEvent);
-    print(output);
+   // print(output);
   }
 
   String formatLogMessage(LogEvent logEvent) {
