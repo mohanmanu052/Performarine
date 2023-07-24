@@ -138,7 +138,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                                      Utils.customPrint("call back for delete trip in list");
                                                      snapshot.data!.removeAt(index);
                                                      //Navigator.pop(context);
-                                                     Navigator.pop(context);
+                                                     // Navigator.pop(context);
 
                                                    }
                                                );
@@ -447,10 +447,10 @@ class _TripViewListingState extends State<TripViewListing> {
                                                        onDeleteCallBack.call();
                                                      }
                                                  );
-                                              Navigator.of(context).pop();
+                                              // Navigator.of(context).pop();
                                           }, () {
                                               print("cancel button action");
-                                              Navigator.of(ctx);
+                                              // Navigator.of(ctx);
                                               });
                                     },
                                     displayWidth(context) * 0.65,
@@ -536,7 +536,10 @@ class _TripViewListingState extends State<TripViewListing> {
                                       'Cancel',
                                       context,
                                       Colors.transparent,
-                                      onCancelClick,
+                                      (){
+                                        Navigator.pop(dialogContext);
+                                        onCancelClick.call();
+                                      },
                                       displayWidth(context) * 0.5,
                                       displayHeight(context) * 0.05,
                                       primaryColor,
@@ -564,7 +567,10 @@ class _TripViewListingState extends State<TripViewListing> {
                                       'OK',
                                       context,
                                       buttonBGColor,
-                                      deleteTripBtnClick,
+                                      (){
+                                        Navigator.pop(dialogContext);
+                                        deleteTripBtnClick.call();
+                                      },
                                       displayWidth(context) * 0.5,
                                       displayHeight(context) * 0.05,
                                       primaryColor,
