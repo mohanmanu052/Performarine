@@ -38,15 +38,15 @@ class _TripViewListingState extends State<TripViewListing> {
 
   late Future<List<Trip>> future;
   late Future<List<Trip>> getTripsByIdFuture;
-  Future<List<Trip>> getTripsByVesselId() {
-    if (widget.vesselId == null || widget.vesselId == "") {
-      getTripsByIdFuture = _databaseService.trips();
-    } else {
-      getTripsByIdFuture =
-          _databaseService.getAllTripsByVesselId(widget.vesselId.toString());
-    }
-    return getTripsByIdFuture;
-  }
+  // Future<List<Trip>> getTripsByVesselId() {
+  //   if (widget.vesselId == null || widget.vesselId == "") {
+  //     getTripsByIdFuture = _databaseService.trips();
+  //   } else {
+  //     getTripsByIdFuture =
+  //         _databaseService.getAllTripsByVesselId(widget.vesselId.toString());
+  //   }
+  //   return getTripsByIdFuture;
+  // }
 
   @override
   void initState() {

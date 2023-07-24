@@ -11,6 +11,7 @@ class UserFeedback{
   
   Widget getUserFeedback(BuildContext context){
     return Container(
+      margin: EdgeInsets.only(top: 8),
       height: displayWidth(context) * 0.05,
       width: displayWidth(context),
       child: Row(
@@ -30,7 +31,7 @@ class UserFeedback{
               text: 'Feedback',
               fontWeight: FontWeight.w300,
               textColor: userFeedbackBtnColor,
-              textSize: displayWidth(context) * 0.038,
+              textSize: displayWidth(context) * 0.036,
               textAlign: TextAlign.start),
 
           commonText(
@@ -38,7 +39,7 @@ class UserFeedback{
               text: ' / Report',
               fontWeight: FontWeight.w300,
               textColor: userFeedbackBtnColor,
-              textSize: displayWidth(context) * 0.038,
+              textSize: displayWidth(context) * 0.036,
               textAlign: TextAlign.start)
         ],
       ),

@@ -439,7 +439,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           fontWeight: FontWeight.w400),
                       TextButton(
                         onPressed: () {
-                          Utils.launchURL('https://www.paccore.com/');
+                          //Utils.launchURL('https://www.paccore.com/');
+
+                          Navigator.of(context).pop();
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CustomWebView(url:'https://www.paccore.com/', isPaccore: true)),
+                          );
                         },
                         child: Text('paccore.com',
                             style: TextStyle(

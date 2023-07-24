@@ -964,12 +964,15 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                       ),
                                     ),
                                   )
-                                : Center(
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          circularProgressColor),
+                                : Container(
+                                  height: displayHeight(context) * 0.1,
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(
+                                            circularProgressColor),
+                                      ),
                                     ),
-                                  ),
+                                ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [

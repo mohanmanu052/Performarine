@@ -76,7 +76,7 @@ class _TripWidgetState extends State<TripWidget> {
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
 
-    debugPrint("###### DATA ###### ${widget.tripList!.id}");
+    // debugPrint("###### DATA ###### ${widget.tripList!.id}");
 
     tripIsRunningOrNot();
   }

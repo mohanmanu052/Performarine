@@ -92,192 +92,229 @@ class _FeedbackReportState extends State<FeedbackReport> {
             textSize: displayWidth(context) * 0.05,
             textAlign: TextAlign.start),
       ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: [
+      body: Form(
+        key: formKey,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
 
-              Image.asset(
-                "assets/images/mail_new.png",
-                //width: displayWidth(context) * 0.4,
-                height: displayHeight(context) * 0.2,
-              ),
+                  Image.asset(
+                    "assets/images/mail_new.png",
+                    //width: displayWidth(context) * 0.4,
+                    height: displayHeight(context) * 0.2,
+                  ),
 
-              Padding(
-                padding: EdgeInsets.only(
-                  left: displayWidth(context) * 0.07,
-                  right: displayWidth(context) * 0.07,
-                  top: displayWidth(context) * 0.04,
-                ),
-                child: commonText(
-                    context: context,
-                    text: 'Please let us know what happened so we can fix it. Your feedback is important to us. Thank you for your support!',
-                    fontWeight: FontWeight.w400,
-                    textColor: Colors.black,
-                    textSize: displayWidth(context) * 0.035,
-                    textAlign: TextAlign.start
-                ),
-              ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: displayWidth(context) * 0.07,
+                      right: displayWidth(context) * 0.07,
+                      top: displayWidth(context) * 0.04,
+                    ),
+                    child: commonText(
+                        context: context,
+                        text: 'Please let us know what happened so we can fix it. Your feedback is important to us. Thank you for your support!',
+                        fontWeight: FontWeight.w400,
+                        textColor: Colors.black,
+                        textSize: displayWidth(context) * 0.035,
+                        textAlign: TextAlign.start
+                    ),
+                  ),
 
-              Padding(
-                padding: EdgeInsets.only(
-                  left: displayWidth(context) * 0.07,
-                  right: displayWidth(context) * 0.07,
-                  top: displayWidth(context) * 0.06,
-                ),
-                child: commonText(
-                    context: context,
-                    text: 'If you experienced a crash or error message, please provide any details or steps that may have led to the issue. The more information you can provide, the better equipped we"ll be to diagnose and address the problem.',
-                    fontWeight: FontWeight.w400,
-                    textColor: Colors.black,
-                    textSize: displayWidth(context) * 0.035,
-                    textAlign: TextAlign.start),
-              ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: displayWidth(context) * 0.07,
+                      right: displayWidth(context) * 0.07,
+                      top: displayWidth(context) * 0.06,
+                    ),
+                    child: commonText(
+                        context: context,
+                        text: 'If you experienced a crash or error message, please provide any details or steps that may have led to the issue. The more information you can provide, the better equipped we"ll be to diagnose and address the problem.',
+                        fontWeight: FontWeight.w400,
+                        textColor: Colors.black,
+                        textSize: displayWidth(context) * 0.035,
+                        textAlign: TextAlign.start),
+                  ),
 
-              Padding(
-                padding: EdgeInsets.only(
-                  top: displayWidth(context) * 0.05,
-                  left: displayWidth(context) * 0.06,
-                  right: displayWidth(context) * 0.06,
-                ),
-                child: CommonTextField(
-                    controller: nameController,
-                    focusNode: nameFocusNode,
-                    labelText: 'Subject*',
-                    hintText: '',
-                    suffixText: null,
-                    textInputAction: TextInputAction.next,
-                    textInputType: TextInputType.text,
-                    textCapitalization: TextCapitalization.words,
-                    // maxLength: 32,
-                    prefixIcon: null,
-                    requestFocusNode: descriptionFocusNode,
-                    obscureText: false,
-                    onTap: () {},
-                    onChanged: (String value) {},
-                    validator: (value) {
-                      if (value!.trim().isEmpty) {
-                        return 'Enter Subject';
-                      }
-                      return null;
-                    },
-                    onSaved: (String value) {
-                      Utils.customPrint(value);
-                    }),
-              ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: displayWidth(context) * 0.05,
+                      left: displayWidth(context) * 0.06,
+                      right: displayWidth(context) * 0.06,
+                    ),
+                    child: CommonTextField(
+                        controller: nameController,
+                        focusNode: nameFocusNode,
+                        labelText: 'Subject*',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.next,
+                        textInputType: TextInputType.text,
+                        textCapitalization: TextCapitalization.words,
+                        // maxLength: 32,
+                        prefixIcon: null,
+                        requestFocusNode: descriptionFocusNode,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {},
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter Subject';
+                          }
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                        }),
+                  ),
 
-              Padding(
-                padding: EdgeInsets.only(
-                  top: displayWidth(context) * 0.05,
-                  left: displayWidth(context) * 0.06,
-                  right: displayWidth(context) * 0.06,
-                ),
-                child: CommonExpandTextField(
-                    controller: descriptionController,
-                    focusNode: descriptionFocusNode,
-                    labelText: 'Description',
-                    hintText: '',
-                    suffixText: null,
-                    textInputAction: TextInputAction.done,
-                    textInputType: TextInputType.text,
-                    textCapitalization: TextCapitalization.words,
-                    // maxLength: 32,
-                    prefixIcon: null,
-                    requestFocusNode: null,
-                    obscureText: false,
-                    onTap: () {},
-                    onChanged: (String value) {},
-                    validator: (value) {
-                      // if (value!.trim().isEmpty) {
-                      //   return 'Enter Description';
-                      // }
-                      // return true;
-                    },
-                    onSaved: (String value) {
-                      Utils.customPrint(value);
-                    }),
-              ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: displayWidth(context) * 0.03,
+                      left: displayWidth(context) * 0.06,
+                      right: displayWidth(context) * 0.06,
+                    ),
+                    child: CommonTextField(
+                        controller: descriptionController,
+                        focusNode: descriptionFocusNode,
+                        labelText: 'Description*',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.done,
+                        textInputType: TextInputType.text,
+                        textCapitalization: TextCapitalization.words,
+                        maxLines: null,
+                        //maxLength: 32,
+                        prefixIcon: null,
+                        requestFocusNode: null,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {},
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                        }),
+                  ),
 
-              Container(
-                margin: EdgeInsets.only(top: 10.0),
-                child: CommonButtons.getDottedButton(
-                    'Upload Images', context, () {
-                  uploadImageFunction();
-                  Utils.customPrint(
-                      'FIIALLL: ${finalSelectedFiles.length}');
-                }, Colors.grey),
-              ),
+                  /*Padding(
+                    padding: EdgeInsets.only(
+                      top: displayWidth(context) * 0.05,
+                      left: displayWidth(context) * 0.06,
+                      right: displayWidth(context) * 0.06,
+                    ),
+                    child: CommonExpandTextField(
+                        controller: descriptionController,
+                        focusNode: descriptionFocusNode,
+                        labelText: 'Description',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.done,
+                        textInputType: TextInputType.text,
+                        textCapitalization: TextCapitalization.words,
+                        // maxLength: 32,
+                        prefixIcon: null,
+                        requestFocusNode: null,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {},
+                        validator: (value) {
+                          // if (value!.trim().isEmpty) {
+                          //   return 'Enter Description';
+                          // }
+                          // return true;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                        }),
+                  ),*/
 
-              Container(
-               // margin: const EdgeInsets.only(top: 15.0),
-                child: SingleChildScrollView(
-                  child: GridView.builder(
-                      gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        childAspectRatio: 1,
-                        mainAxisSpacing: 1,
-                      ),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: finalSelectedFiles.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return SizedBox(
-                          height: displayHeight(context) * 0.035,
-                          width: displayHeight(context) * 0.045,
-                          child: Stack(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.all(6),
-                                alignment: Alignment.topRight,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.shade200,
-                                    borderRadius:
-                                    BorderRadius.circular(8),
-                                    border: Border.all(
-                                        color: Colors.grey.shade300),
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: FileImage(
-                                          File(finalSelectedFiles[
-                                          index]!
-                                              .path),
-                                        ))),
-                                /*child: Icon(
-                                              Icons.close,
-                                              size: displayWidth(context) * 0.05,
-                                            ),*/
-                              ),
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: InkWell(
-                                  onTap: () {
-                                    Utils.customPrint(
-                                        'FIIALLL: ${finalSelectedFiles.length}');
-                                    setState(() {
-                                      finalSelectedFiles
-                                          .removeAt(index);
-                                    });
-                                    Utils.customPrint(
-                                        'FIIALLL: ${finalSelectedFiles.length}');
-                                  },
-                                  child: Icon(
-                                    Icons.close,
-                                    size:
-                                    displayWidth(context) * 0.05,
-                                  ),
-                                ),
-                              ),
-                            ],
+                  Container(
+                    margin: EdgeInsets.only(top: 15.0, bottom: 10),
+                    child: CommonButtons.getDottedButton(
+                        'Upload Images', context, () {
+                      uploadImageFunction();
+                      Utils.customPrint(
+                          'FIIALLL: ${finalSelectedFiles.length}');
+                    }, Colors.grey),
+                  ),
+
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    child: SingleChildScrollView(
+                      child: GridView.builder(
+                          gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            childAspectRatio: 1,
+                            mainAxisSpacing: 1,
                           ),
-                        );
-                      }),
-                ),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: finalSelectedFiles.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return SizedBox(
+                              height: displayHeight(context) * 0.035,
+                              width: displayHeight(context) * 0.045,
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.all(6),
+                                    alignment: Alignment.topRight,
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius:
+                                        BorderRadius.circular(8),
+                                        border: Border.all(
+                                            color: Colors.grey.shade300),
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: FileImage(
+                                              File(finalSelectedFiles[
+                                              index]!
+                                                  .path),
+                                            ))),
+                                    /*child: Icon(
+                                                  Icons.close,
+                                                  size: displayWidth(context) * 0.05,
+                                                ),*/
+                                  ),
+                                  Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    child: InkWell(
+                                      onTap: () {
+                                        Utils.customPrint(
+                                            'FIIALLL: ${finalSelectedFiles.length}');
+                                        setState(() {
+                                          finalSelectedFiles
+                                              .removeAt(index);
+                                        });
+                                        Utils.customPrint(
+                                            'FIIALLL: ${finalSelectedFiles.length}');
+                                      },
+                                      child: Icon(
+                                        Icons.close,
+                                        size:
+                                        displayWidth(context) * 0.05,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                    ),
+                  ),
+                ],
               ),
+            ),
 
-              Padding(
+            Positioned(
+              bottom: 5,
+              right: 0,
+              left: 0,
+              child: Padding(
                 padding: EdgeInsets.only(
                   left: displayWidth(context) * 0.06,
                   right: displayWidth(context) * 0.06,
@@ -425,9 +462,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     }
                 ),
               ),
-
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -916,75 +916,73 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                       child: Column(
                                         children: [
                                           Expanded(
-                                            child: SingleChildScrollView(
-                                              child: Container(
-                                                height:
-                                                    displayHeight(context) / 1.8,
-                                                margin: EdgeInsets.only(
-                                                    top: 20, left: 17, right: 17),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.start,
-                                                      children: [
-                                                        Container(
-                                                          margin: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal: 12),
-                                                          child: commonText(
-                                                            context: context,
-                                                            text: 'Analytics',
-                                                            fontWeight:
-                                                                FontWeight.w700,
-                                                            textColor:
-                                                                Colors.black87,
-                                                            textSize:
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.032,
-                                                          ),
+                                            child: Container(
+                                              height:
+                                                  displayHeight(context) / 1.8,
+                                              margin: EdgeInsets.only(
+                                                  top: 20, left: 17, right: 17),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Container(
+                                                        margin: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 12),
+                                                        child: commonText(
+                                                          context: context,
+                                                          text: 'Analytics',
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          textColor:
+                                                              Colors.black87,
+                                                          textSize:
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.032,
                                                         ),
-                                                        getTripDetailsFromNoti
-                                                            ? Container(
-                                                                height: displayHeight(
-                                                                        context) *
-                                                                    0.2,
-                                                                child: Center(
-                                                                    child:
-                                                                        CircularProgressIndicator()),
-                                                              )
-                                                            : vesselAnalytics(
-                                                                context,
-                                                                tripIsRunning
-                                                                    ? '$tripDuration'
-                                                                    : '${tripData!.time} ',
-                                                                tripIsRunning
-                                                                    ? '${(tripDistance)}'
-                                                                    : '${tripData!.distance} ',
-                                                                tripIsRunning
-                                                                    ? '${tripSpeed} '
-                                                                    : '${tripData!.speed} ',
-                                                                tripIsRunning
-                                                                    ? '${tripAvgSpeed} '
-                                                                    : '${tripData!.avgSpeed} ',
-                                                                tripIsRunning),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height:
-                                                          displayHeight(context) *
-                                                              0.01,
-                                                    ),
-                                                  ],
-                                                ),
+                                                      ),
+                                                      getTripDetailsFromNoti
+                                                          ? Container(
+                                                              height: displayHeight(
+                                                                      context) *
+                                                                  0.2,
+                                                              child: Center(
+                                                                  child:
+                                                                      CircularProgressIndicator()),
+                                                            )
+                                                          : vesselAnalytics(
+                                                              context,
+                                                              tripIsRunning
+                                                                  ? '$tripDuration'
+                                                                  : '${tripData!.time} ',
+                                                              tripIsRunning
+                                                                  ? '${(tripDistance)}'
+                                                                  : '${tripData!.distance} ',
+                                                              tripIsRunning
+                                                                  ? '${tripSpeed} '
+                                                                  : '${tripData!.speed} ',
+                                                              tripIsRunning
+                                                                  ? '${tripAvgSpeed} '
+                                                                  : '${tripData!.avgSpeed} ',
+                                                              tripIsRunning),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height:
+                                                        displayHeight(context) *
+                                                            0.01,
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
