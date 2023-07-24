@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -15,6 +17,7 @@ import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import 'dart:io';
 
@@ -123,17 +126,23 @@ class _TripViewListingState extends State<TripViewListing> {
                                         children: [
                                           SlidableAction(
                                              onPressed: (BuildContext context)async{
-                                                print("Trip id is: ${snapshot.data![index].id!}");
-                                                if(snapshot.data![index].isSync != 0){
-                                                  bool deletedtrip =  await deleteTripFunctionality(snapshot.data![index].id!);
-                                                  setState(() {
-                                                    if(deletedtrip){
-                                                      commonProvider.getTripsCount();
-                                                      widget.isTripDeleted!.call();
-                                                      snapshot.data!.removeAt(index);
-                                                    }
-                                                  });
-                                                }
+                                             print("Trip id is: ${snapshot.data![index].id!}");
+                                             if(snapshot.data![index].isSync != 0){
+                                               showDeleteTripDialogBox(
+                                                   context,
+                                                   snapshot.data![index].id!,
+                                                   snapshot.data![index].createdAt!,
+                                                   snapshot.data![index].time!,
+                                                   snapshot.data![index].distance!,
+                                                   (){
+                                                     Utils.customPrint("call back for delete trip in list");
+                                                     snapshot.data!.removeAt(index);
+                                                     //Navigator.pop(context);
+                                                     Navigator.pop(context);
+
+                                                   }
+                                               );
+                                             }
                                               },
                                             icon: Icons.delete,
                                             backgroundColor: Colors.red,
@@ -271,6 +280,314 @@ class _TripViewListingState extends State<TripViewListing> {
     );
   }
 
+  showDeleteTripDialogBox(BuildContext context,String tripId,String startDate, String totalTime, String distance,Function() onDeleteCallBack) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.45,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(context) * 0.1,
+                                width: displayWidth(context),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                  'Do you want to delete the Trip?',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.04,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: displayHeight(context) * 0.06,
+                            right: displayHeight(context) * 0.01,
+                          ),
+                          child: Row(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                  'Start Date:   ',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.025,
+                                  textAlign: TextAlign.center),
+
+                              commonText(
+                                  context: context,
+                                  text:
+                                  startDate,
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.025,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: displayHeight(context) * 0.06,
+                            right: displayHeight(context) * 0.01,
+                          ),
+                          child: Row(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                  'Total Time:   ',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.025,
+                                  textAlign: TextAlign.center),
+
+                              commonText(
+                                  context: context,
+                                  text:
+                                  totalTime,
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.025,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: displayHeight(context) * 0.06,
+                            right: displayHeight(context) * 0.01,
+                          ),
+                          child: Row(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                  'Distance:   ',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.025,
+                                  textAlign: TextAlign.center),
+
+                              commonText(
+                                  context: context,
+                                  text:
+                                  distance,
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.025,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        // SizedBox(
+                        //   height: displayHeight(context) * 0.01,
+                        // ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 8.0,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Delete Trip', context, buttonBGColor,
+                                        () async {
+                                          Navigator.pop(dialogContext);
+                                          showDeleteTripDialogConfirmation(
+                                            dialogContext, ()async{
+                                              print("Ok button action");
+                                              bool deletedtrip = false;
+                                                 deletedtrip =  await deleteTripFunctionality(
+                                                   tripId,
+                                                     (){
+                                                       commonProvider.getTripsCount();
+                                                       widget.isTripDeleted!.call();
+                                                       onDeleteCallBack.call();
+                                                     }
+                                                 );
+                                              Navigator.of(context).pop();
+                                          }, () {
+                                              print("cancel button action");
+                                              Navigator.of(ctx);
+                                              });
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Colors.white,
+                                    displayHeight(context) * 0.018,
+                                    buttonBGColor,
+                                    '',
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(height: 10,),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }).then((value) {
+
+    });
+  }
+
+  //Delete trip dialog for user confirmation to delete trip
+  showDeleteTripDialogConfirmation(BuildContext context, Function() deleteTripBtnClick,
+      Function() onCancelClick) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.24,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: commonText(
+                              context: context,
+                              text: 'This action is irreversible. do you want to delete it?',
+                              fontWeight: FontWeight.w600,
+                              textColor: Colors.black,
+                              textSize: displayWidth(context) * 0.042,
+                              textAlign: TextAlign.center),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                            ? Colors.white
+                                            : Colors.grey)),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Cancel',
+                                      context,
+                                      Colors.transparent,
+                                      onCancelClick,
+                                      displayWidth(context) * 0.5,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark
+                                          ? Colors.white
+                                          : Colors.grey,
+                                      displayHeight(context) * 0.015,
+                                      Colors.transparent,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15.0,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'OK',
+                                      context,
+                                      buttonBGColor,
+                                      deleteTripBtnClick,
+                                      displayWidth(context) * 0.5,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.015,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
+  }
+
   /// To Check trip is Running or not
   Future<bool> tripIsRunningOrNot(Trip trip) async {
     bool result = await _databaseService.tripIsRunning();
@@ -338,16 +655,8 @@ class _TripViewListingState extends State<TripViewListing> {
         });
   }
 
-  bool deleteTripFunctionality(String tripId)
+  bool deleteTripFunctionality(String tripId,VoidCallback onDeleteCallBack)
   {
-
-    // if(mounted)
-    // {
-    //   setState(() {
-    //     isDeleteTripBtnClicked = true;
-    //   });
-    // }
-
      commonProvider.deleteTrip(context, commonProvider.loginModel!.token!, tripId,  widget.scaffoldKey!).then((value) {
         if(value != null)
         {
@@ -360,6 +669,7 @@ class _TripViewListingState extends State<TripViewListing> {
                 isDeleteTripBtnClicked = false;
               });
             });
+            onDeleteCallBack.call();
             setState(() {
               isDeleteTripBtnClicked = false;
             });
