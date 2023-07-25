@@ -41,8 +41,6 @@ class ChangePasswordProvider with ChangeNotifier {
       if (response.statusCode == HttpStatus.ok) {
         Utils.customPrint('Register Response : ' + response.body);
 
-        final pref = await Utils.initSharedPreferences();
-
         changePasswordModel = ChangePasswordModel.fromJson(json.decode(response.body));
 
         Utils.showSnackBar(context,

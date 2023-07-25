@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -24,7 +23,6 @@ import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/pages/web_navigation/privacy_and_policy_web_view.dart';
-import 'package:performarine/pages/web_navigation/terms_and_condition_web_view.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
@@ -120,10 +118,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       InkWell(
                         onTap: () {
                           Navigator.of(context).pop();
-
-                          // throw Exception();
-                          // return;
-
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
@@ -280,7 +274,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                commonProvider.loginModel!.loginType == "regular" ?   InkWell(
                     onTap: ()async {
-                      //Navigator.of(context).pop();
 
                       bool? isTripStarted =
                       sharedPreferences!.getBool('trip_started');
@@ -319,11 +312,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           );
                         }
                       }
-                      /*Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChangePassword()),
-                      );*/
                     },
                     child: commonText(
                         context: context,
@@ -393,11 +381,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       if (isTripStarted != null) {
                         if (isTripStarted) {
                           Navigator.of(context).pop();
-                          // Utils.showSnackBar(context,
-                          //     scaffoldKey: widget.scaffoldKey,
-                          //     message:
-                          //         'Please end the trip which is already running');
-
                           showEndTripDialogBox(context);
                         } else {
                           if (vesselsSyncDetails || tripSyncDetails) {
@@ -439,7 +422,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           fontWeight: FontWeight.w400),
                       TextButton(
                         onPressed: () {
-                          Utils.launchURL('https://www.paccore.com/');
+                          Navigator.of(context).pop();
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CustomWebView(url:'https://www.paccore.com/', isPaccore: true)),
+                          );
                         },
                         child: Text('paccore.com',
                             style: TextStyle(
@@ -946,7 +935,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             //"userID": commonProvider.loginModel!.userId!
           };
 
-          print('QQQQQQ: $queryParameters');
+          Utils.customPrint('QQQQQQ: $queryParameters');
 
           await commonProvider
               .sendSensorInfo(
@@ -972,13 +961,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
               });
             }
           }).catchError((onError) {
-            print('DIOOOOOOOOOOOOO');
+            Utils.customPrint('DIOOOOOOOOOOOOO');
             setState(() {
               tripErrorOccurred = true;
             });
-            /*Utils.showSnackBar(context,
-                scaffoldKey: widget.scaffoldKey,
-                message: 'Failed to sync data to cloud. Please try again.');*/
           });
         }
       }
@@ -1094,7 +1080,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       'Go to trip', context, buttonBGColor,
                                           () async {
 
-                                        debugPrint("Click on GO TO TRIP 1");
+                                        Utils.customPrint("Click on GO TO TRIP 1");
 
                                         List<String>? tripData =
                                         sharedPreferences!.getStringList('trip_data');
@@ -1106,7 +1092,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           vesselName = tripData[1];
                                         }
 
-                                        debugPrint("Click on GO TO TRIP 2");
+                                        Utils.customPrint("Click on GO TO TRIP 2");
 
                                         Navigator.of(dialogContext).pop();
 
@@ -1118,19 +1104,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                               tripIsRunningOrNot: runningTrip)),
                                         );
 
-                                        /*Get.to(() => TripAnalyticsScreen(
-                                                  tripId: tripId,
-                                                  vesselId: tripData![1],
-                                                  tripIsRunningOrNot: tripIsRunning));
+                                        Utils.customPrint("Click on GO TO TRIP 3");
 
-                                        Get.to(TripAnalyticsScreen(
-                                                  tripId: tripId,
-                                                  vesselId: tripData![1],
-                                                  tripIsRunningOrNot: tripIsRunning));*/
-
-                                        debugPrint("Click on GO TO TRIP 3");
-
-                                        //Navigator.of(context).pop();
                                       },
                                       displayWidth(context) * 0.65,
                                       displayHeight(context) * 0.054,

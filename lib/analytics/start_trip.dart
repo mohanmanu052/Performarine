@@ -6,7 +6,6 @@ import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/location_dto.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:performarine/analytics/calculation.dart';
 import 'package:performarine/analytics/get_file.dart';
@@ -106,7 +105,7 @@ class StartTrip {
       );
     }
 
-    print("AFTER SESNOR DATA");
+    Utils.customPrint("AFTER SESNOR DATA");
 
     double latitude = 0.0;
     double longitude = 0.0;
@@ -117,15 +116,7 @@ class StartTrip {
     String mobileFileName = 'mobile_$fileIndex.csv';
     String lprFileName = 'lpr_$fileIndex.csv';
 
-    print("BEFORE PORT LISTEN");
-    // Future<bool> hasActiveNotifications() async {
-    //   var activeNotifications = await flutterLocalNotificationsPlugin
-    //       .resolvePlatformSpecificImplementation<
-    //           AndroidFlutterLocalNotificationsPlugin>()
-    //       ?.getActiveNotifications();
-    //
-    //   return activeNotifications?.isEmpty ?? true;
-    // }
+    Utils.customPrint("BEFORE PORT LISTEN");
 
     var activeNotifications = await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
@@ -145,7 +136,7 @@ class StartTrip {
       LocationDto? locationDto =
           data != null ? LocationDto.fromJson(data) : null;
 
-      print("LOCATION DTO $locationDto");
+      Utils.customPrint("LOCATION DTO $locationDto");
 
       if (locationDto != null) {
 
@@ -207,21 +198,21 @@ class StartTrip {
             _currentPosition.longitude,
           );
 
-          debugPrint("PREV LAT ${_previousPosition.latitude}");
-          debugPrint("PREV LONG ${_previousPosition.longitude}");
-          debugPrint("CURR LAT ${_currentPosition.latitude}");
-          debugPrint("CURR LONG ${_currentPosition.longitude}");
+          Utils.customPrint("PREV LAT ${_previousPosition.latitude}");
+          Utils.customPrint("PREV LONG ${_previousPosition.longitude}");
+          Utils.customPrint("CURR LAT ${_currentPosition.latitude}");
+          Utils.customPrint("CURR LONG ${_currentPosition.longitude}");
 
           if(isReinitialize)
             {
               String? tempDistInNM = sharedPreferences!.getString('tripDistance');
-              print('@@@@: $tempDistInNM');
+              Utils.customPrint('@@@@: $tempDistInNM');
               double tempDistInMeter = (double.parse(tempDistInNM ?? '0.00')* 1852);
               finalTripDistance += tempDistInMeter;
             }
 
           finalTripDistance += _distanceBetweenLastTwoLocations;
-          debugPrint('Total Distance: $finalTripDistance');
+          Utils.customPrint('Total Distance: $finalTripDistance');
           pref.setDouble('temp_trip_dist', finalTripDistance);
 
           /// Calculate distance with formula
@@ -238,7 +229,7 @@ class StartTrip {
         int finalTripDuration = (diff.inMilliseconds);
 
         /// Here is the actual trip duration
-        print('FINAL TRIP DUR RRR : $finalTripDuration');
+        Utils.customPrint('FINAL TRIP DUR RRR : $finalTripDuration');
 
         /// DURATION 00:00:00
         String tripDurationForStorage =
@@ -255,7 +246,7 @@ class StartTrip {
 
         tripSpeedForStorage =
         Calculation().calculateCurrentSpeed(speed);
-        print('FINAL TRIP SPEED: $tripSpeedForStorage}');
+        Utils.customPrint('FINAL TRIP SPEED: $tripSpeedForStorage}');
 
         /// AVG. SPEED
         tripAvgSpeedForStorage = Calculation()
@@ -270,31 +261,6 @@ class StartTrip {
             : double.parse(tripSpeedForStorage);
 
         Utils.customPrint('SPEED SPEED SPEED 666: $num');
-
-        /// To cancel TripDurationTimer
-        // if (tripDurationTimer != null) {
-        //   if (tripDurationTimer!.isActive) {
-        //     tripDurationTimer!.cancel();
-        //   }
-        // }
-
-        // await flutterLocalNotificationsPlugin.cancel(889);
-
-        // tripDurationTimer =
-        //     Timer.periodic(Duration(seconds: 1), (timer) async {
-        //       var durationTime = DateTime.now().toUtc().difference(createdAtTime);
-        //
-        //       /// To calculate trip duration periodically
-        //       String tripDuration = Utils.calculateTripDuration(
-        //           ((durationTime.inMilliseconds) ~/ 1000).toInt());
-        //
-        //       /// To update notification content
-        //       await BackgroundLocator.updateNotificationText(
-        //           title: '',
-        //           msg: 'Trip is in progress',
-        //           bigMsg:
-        //           'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot');
-        //     });
 
         ///
         pref.setString('tripDuration', tripDurationForStorage);
@@ -391,7 +357,7 @@ class StartTrip {
                   bigMsg:
                   'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot'
               ).catchError((onError){
-                print('UPDATE NOTI ERROR: $onError');
+                Utils.customPrint('UPDATE NOTI ERROR: $onError');
               });
             }
 

@@ -39,8 +39,6 @@ class ForgotPasswordProvider with ChangeNotifier {
       if (response.statusCode == HttpStatus.ok) {
         Utils.customPrint('Register Response : ' + response.body);
 
-        final pref = await Utils.initSharedPreferences();
-
         forgotPasswordModel = ForgotPasswordModel.fromJson(json.decode(response.body));
 
         Utils.showSnackBar(scaffoldKey.currentContext!,

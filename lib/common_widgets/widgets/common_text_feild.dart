@@ -11,6 +11,7 @@ class CommonTextField extends StatefulWidget {
   TextInputType? textInputType;
   TextCapitalization? textCapitalization;
   int? maxLength;
+  int? maxLines;
   IconData? prefixIcon;
   Widget? suffixIcon;
   String? labelText;
@@ -50,7 +51,8 @@ class CommonTextField extends StatefulWidget {
       this.onFieldSubmitted,
       this.onSaved,
       this.onTap,
-      this.inputFormatter
+      this.inputFormatter,
+        this.maxLines = 1
       //this.formFieldKey
       })
       : super(key: key);
@@ -93,12 +95,13 @@ class _CommonTextFieldState extends State<CommonTextField> {
             if (widget.textInputType == TextInputType.number)
               FilteringTextInputFormatter.digitsOnly
           ],
+          maxLines: widget.maxLines,
           //maxLength: widget.maxLength,
           obscureText: obscureText!,
           obscuringCharacter: '*',
           onChanged: widget.onChanged,
           decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             filled: true,
             fillColor: Colors.grey.shade200.withOpacity(0.7),
             hintText: widget.hintText,
@@ -355,9 +358,7 @@ class _CommonExpandTextFieldState extends State<CommonExpandTextField> {
                 borderRadius: const BorderRadius.all(Radius.circular(15))),
           ),
           onFieldSubmitted: (value) {
-            /*if (widget.onFieldSubmitted != null) {
-              widget.onFieldSubmitted!(value);
-            }*/
+
             FocusScope.of(context).requestFocus(widget.requestFocusNode);
           },
           style: TextStyle(

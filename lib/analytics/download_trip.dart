@@ -79,7 +79,6 @@ class DownloadTrip {
           }
         }
       } else {
-        //File copiedFile = File('${ourDirectory!.path}.zip');
         File copiedFile = File('${ourDirectory!.path}/${tripId}.zip');
 
         Utils.customPrint('DIR PATH RT ${copiedFile.path}');
@@ -173,7 +172,7 @@ class DownloadTrip {
             await dio.download(imageUrl, cloudImagePath,
                 onReceiveProgress: (progress, total) {});
           } on d.DioError catch (e) {
-            print('DOWNLOAD EXE: ${e.error}');
+            Utils.customPrint('DOWNLOAD EXE: ${e.error}');
 
             Navigator.pop(context);
           }
@@ -192,7 +191,7 @@ class DownloadTrip {
               await dio.download(imageUrl, cloudImagePath,
                   onReceiveProgress: (progress, total) {});
             } on d.DioError catch (e) {
-              print('DOWNLOAD EXE: ${e.error}');
+              Utils.customPrint('DOWNLOAD EXE: ${e.error}');
 
               Navigator.pop(context);
             }
@@ -209,9 +208,8 @@ class DownloadTrip {
           await dio.download(imageUrl, cloudImagePath,
               onReceiveProgress: (progress, total) {});
         } on d.DioError catch (e) {
-          print('DOWNLOAD EXE: ${e.error}');
+          Utils.customPrint('DOWNLOAD EXE: ${e.error}');
 
-          // Navigator.pop(context);
         }
       }
     } else {
@@ -230,13 +228,12 @@ class DownloadTrip {
         await dio.download(imageUrl, cloudImagePath,
             onReceiveProgress: (progress, total) {});
       } on d.DioError catch (e) {
-        print('DOWNLOAD EXE: ${e.error}');
+        Utils.customPrint('DOWNLOAD EXE: ${e.error}');
 
-        //Navigator.pop(context);
       } on SocketException catch (s) {
-        print('DOWNLOAD EXE SOCKET EXCEPTION: $s');
+        Utils.customPrint('DOWNLOAD EXE SOCKET EXCEPTION: $s');
       } catch (er) {
-        print('DOWNLOAD EXE SOCKET EXCEPTION: $er');
+        Utils.customPrint('DOWNLOAD EXE SOCKET EXCEPTION: $er');
       }
     }
 

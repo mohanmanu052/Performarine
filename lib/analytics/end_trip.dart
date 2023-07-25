@@ -24,7 +24,7 @@ class EndTrip {
     Utils.customPrint("END TRIP FUNCTIONALITY");
     WidgetsFlutterBinding.ensureInitialized();
     await sharedPreferences!.reload();
-    debugPrint("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance");
+    Utils.customPrint("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance");
     ReceivePort port = ReceivePort();
     String? latitude, longitude;
     port.listen((dynamic data) async {
@@ -37,7 +37,7 @@ class EndTrip {
       ;
     });
 
-    debugPrint("endtrip location:$latitude");
+    Utils.customPrint("endtrip location:$latitude");
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
     Utils.customPrint('TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')}');
@@ -80,9 +80,9 @@ class EndTrip {
     sharedPreferences!.remove('current_loc_list');
     sharedPreferences!.remove('temp_trip_dist');
 
-    debugPrint("END TRIP 1 $latitude");
-    debugPrint("END TRIP 2 $longitude");
-    debugPrint("END TRIP 3 $tripDistance");
+    Utils.customPrint("END TRIP 1 $latitude");
+    Utils.customPrint("END TRIP 2 $longitude");
+    Utils.customPrint("END TRIP 3 $tripDistance");
     await DatabaseService().updateTripStatus(
         1,
         file.path,
@@ -99,7 +99,6 @@ class EndTrip {
 
     Wakelock.disable();
 
-    //await flutterLocalNotificationsPlugin.cancel(888);
     await flutterLocalNotificationsPlugin.cancel(889);
     await flutterLocalNotificationsPlugin.cancel(776);
     await flutterLocalNotificationsPlugin.cancel(1);

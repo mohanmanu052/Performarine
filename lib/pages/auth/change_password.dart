@@ -129,9 +129,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                             return null;
                           },
                           onFieldSubmitted: (value) {
-                            //emailFormFieldKey.currentState!.validate();
-                            /* FocusScope.of(context)
-                              .requestFocus(passwordFocusNode);*/
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
@@ -140,7 +137,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                       SizedBox(height: displayWidth(context) * 0.03),
 
                       CommonTextField(
-                        //key: emailFormFieldKey,
                           controller: newPasswordController,
                           focusNode: newPasswordFocusNode,
                           labelText: 'Enter New Password\*',
@@ -168,9 +164,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                             return null;
                           },
                           onFieldSubmitted: (value) {
-                            //emailFormFieldKey.currentState!.validate();
-                            /* FocusScope.of(context)
-                              .requestFocus(passwordFocusNode);*/
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
@@ -178,7 +171,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                       SizedBox(height: displayWidth(context) * 0.03),
 
                       CommonTextField(
-                        //key: emailFormFieldKey,
                           controller: reenterPasswordController,
                           focusNode: reenterPasswordFocusNode,
                           labelText: 'Confirm New Password\*',
@@ -209,9 +201,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                             return null;
                           },
                           onFieldSubmitted: (value) {
-                            //emailFormFieldKey.currentState!.validate();
-                            /* FocusScope.of(context)
-                              .requestFocus(passwordFocusNode);*/
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
@@ -248,7 +237,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                       isBtnClick = false;
                                     });
 
-                                    print("Status code of change password is: ${value.statusCode}");
+                                    Utils.customPrint("Status code of change password is: ${value.statusCode}");
                                     if(value.status!){
                                       //signOut();
                                       if(widget.isChange!){

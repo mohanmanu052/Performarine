@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
-import 'package:performarine/models/get_user_config_model.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -145,21 +144,21 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   //Convertion of date time into year-month-day format
   String convertIntoYearMonthDay(DateTime date) {
     String dateString = DateFormat('yyyy-MM-dd').format(date);
-    print(dateString);
+    Utils.customPrint(dateString);
     return dateString;
   }
 
   //Convertion of date time into month/day/year format
   String convertIntoMonthDayYear(DateTime date) {
     String dateString = DateFormat('MM/dd/yyyy').format(date);
-    print(dateString);
+    Utils.customPrint(dateString);
     return dateString;
   }
 
   //Convertion of date time into year-month-day format
   String convertIntoYearMonthDayToShow(DateTime date) {
     String dateString = DateFormat('MM-dd-yyyy').format(date);
-    print(dateString);
+    Utils.customPrint(dateString);
     return dateString;
   }
 
@@ -208,8 +207,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           setState(() {
             isTripIdListLoading = true;
           });
-          print("value of trip list: ${value.data}");
-          //debugger();
+          Utils.customPrint("value of trip list: ${value.data}");
           tripIdList!.clear();
           dateTimeList!.clear();
           for (int i = 0; i < value.data!.length; i++) {
@@ -219,12 +217,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             }
             children!.add("Trip ${i.toString()}");
           }
-          // selectedTripsAndDateDetails = children!.join(", ");
           childrenValue = List.generate(children!.length, (index) => false);
 
-          print("trip id list: $tripIdList");
-          print("children: ${children}");
-          print("dateTimeList: $dateTimeList");
+          Utils.customPrint("trip id list: $tripIdList");
+          Utils.customPrint("children: ${children}");
+          Utils.customPrint("dateTimeList: $dateTimeList");
         } else {
           setState(() {
             isTripIdListLoading = false;
@@ -239,7 +236,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       setState(() {
         isTripIdListLoading = false;
       });
-      print("issue while getting trip list data: $e");
+      Utils.customPrint("issue while getting trip list data: $e");
     }
   }
 
@@ -255,20 +252,20 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             .getUserConfigData(context, commonProvider.loginModel!.userId!,
                 commonProvider.loginModel!.token!, scaffoldKey)
             .then((value) {
-          print("value is: ${value!.status}");
+          Utils.customPrint("value is: ${value!.status}");
           if (value != null) {
-            print("value 1 is: ${value.status}");
+            Utils.customPrint("value 1 is: ${value.status}");
             setState(() {
               isVesselDataLoading = true;
             });
-            print("value of get user config by id: ${value.vessels}");
+            Utils.customPrint("value of get user config by id: ${value.vessels}");
             if(value.vessels!.length == 0){
               isVesselsFound = true;
             }
             vesselData = List<DropdownItem>.from(value.vessels!.map(
                 (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
 
-            print("vesselData: ${vesselData.length}");
+            Utils.customPrint("vesselData: ${vesselData.length}");
           } else {
             setState(() {
               isVesselDataLoading = true;
@@ -288,7 +285,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       setState(() {
         isVesselDataLoading = true;
       });
-      print("Error while fetching data from getUserConfigById: $e");
+      Utils.customPrint("Error while fetching data from getUserConfigById: $e");
     }
   }
 
@@ -372,13 +369,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     : durationWithSeconds(
                         value.data!.avgInfo!.avgDuration ?? '0:0:0');
 
-            print("NEW AVG DATA ${value.data?.avgInfo?.avgDuration}");
+            Utils.customPrint("NEW AVG DATA ${value.data?.avgInfo?.avgDuration}");
 
             avgDuration = myAvgDuration ?? 0;
 
             avgFuelConsumption = value.data?.avgInfo?.avgFuelConsumption;
             avgPower = value.data?.avgInfo?.avgPower ?? 0.0;
-            print(
+            Utils.customPrint(
                 "duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed");
             triSpeedList = List<TripModel>.from(value.data!.trips!.map(
                 (tripData) => TripModel(
@@ -404,12 +401,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               for (int j = 0;
                   j < durationGraphData[i].tripsByDate!.length;
                   j++) {
-                print(
+                Utils.customPrint(
                     "trip duration data is: ${durationGraphData[i].tripsByDate![j].id}");
                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
                   durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
                     color: circularProgressColor,
-                    // pointColorMapper: barsColor,
                     width: 0.4,
                     enableTooltip: true,
                     dataSource: triSpeedList,
@@ -428,11 +424,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             : null,
                     onPointTap: (ChartPointDetails args) {
                       if (mounted) {
-                        // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
-                        // setState(() async {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
-                        print("selected index: $selectedIndex");
-                        // });
+                        Utils.customPrint("selected index: $selectedIndex");
                       }
                     },
                     name: 'Trip Duration',
@@ -456,11 +449,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             : null,
                     onPointTap: (ChartPointDetails args) {
                       if (mounted) {
-                        // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
-                        // setState(() async {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
-                        print("selected index: $selectedIndex");
-                        // });
+                        Utils.customPrint("selected index: $selectedIndex");
                       }
                     },
                     name: 'Avg Speed',
@@ -483,11 +473,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             : null,
                     onPointTap: (ChartPointDetails args) {
                       if (mounted) {
-                        // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
                         setState(() async {
                           selectedIndex =
                               await triSpeedList[i].tripsByDate![j].id!;
-                          print("selected index: $selectedIndex");
+                          Utils.customPrint("selected index: $selectedIndex");
                         });
                       }
                     },
@@ -512,11 +501,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             : null,
                     onPointTap: (ChartPointDetails args) {
                       if (mounted) {
-                        // await updateTripId(triSpeedList[i].tripsByDate![j].id!);
                         setState(() async {
                           selectedIndex =
                               await triSpeedList[i].tripsByDate![j].id!;
-                          print("selected index: $selectedIndex");
+                          Utils.customPrint("selected index: $selectedIndex");
                         });
                       }
                     },
@@ -543,13 +531,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 tripList.add(data);
               }
             }
-            print("length: ${tripList.length}, tripList: $tripList");
+            Utils.customPrint("length: ${tripList.length}, tripList: $tripList");
             duration1 = durationWithMilli(
                 value.data?.avgInfo?.avgDuration ?? '0:0:0.0');
             avgSpeed1 = value.data?.avgInfo?.avgSpeed ?? 0.0;
             fuelUsage = value.data?.avgInfo?.avgFuelConsumption ?? 0.0;
             powerUsage = value.data?.avgInfo?.avgPower ?? 0.0;
-            print(
+            Utils.customPrint(
                 "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
 
             finalData = [
@@ -580,7 +568,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       setState(() {
         isBtnClick = false;
       });
-      print("Error while getting data from report api : $e \n $s");
+      Utils.customPrint("Error while getting data from report api : $e \n $s");
     }
   }
 
@@ -598,7 +586,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           parts[2],
         ));
     int totalMinutes = dateTime.hour * 60 + dateTime.minute;
-    print('TOTAL MIN: $totalMinutes');
+    Utils.customPrint('TOTAL MIN: $totalMinutes');
     return double.parse('$totalMinutes.${parts[2]}');
   }
 
@@ -616,13 +604,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           parts[2],
         ));
     int totalMinutes = dateTime.hour * 60 + dateTime.minute;
-    print('TOTAL MIN: $totalMinutes');
+    Utils.customPrint('TOTAL MIN: $totalMinutes');
     return double.parse('$totalMinutes.${parts[2]}');
   }
 
   //Returns trip duration on tap of column bar in Avg Duration tab
   dynamic tripDuration(String tripDuration) {
-    print("DDDDD: $tripDuration");
+    Utils.customPrint("DDDDD: $tripDuration");
     String inputDuration = tripDuration;
     String formattedDuration = "";
     List<String> parts = inputDuration.split(".");
@@ -635,11 +623,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
     Duration duration =
         Duration(hours: hours, minutes: minutes, seconds: seconds);
-    print("duration: $duration");
+    Utils.customPrint("duration: $duration");
     formattedDuration = formatDurations(duration);
 // formattedDuration = duration.toString().split(".")[0];
 
-    print(formattedDuration);
+    Utils.customPrint(formattedDuration);
     return formattedDuration;
   }
 
@@ -678,7 +666,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   //Duration with milli seconds
   dynamic durationWithMilli(String timesString) {
     String time = timesString;
-    print('TIME STRING: $timesString');
+    Utils.customPrint('TIME STRING: $timesString');
     String timeString = time;
     String integerTimeString = timeString.split('.')[0];
     return integerTimeString;
@@ -765,10 +753,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           initiallyExpanded: isExpansionCollapse!,
                           onExpansionChanged: (isExpanded) {
                             setState(() {
-                              print("isExpansionCollapse : $isExpanded");
+                              Utils.customPrint("isExpansionCollapse : $isExpanded");
                               isExpansionCollapse = !isExpansionCollapse!;
                               isExpandedTile = !isExpandedTile;
-                              // isExpansionCollapse = isExpanded;
                             });
                           },
                           collapsedBackgroundColor: dateBackgroundColor,
@@ -889,7 +876,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                           : Colors.white
                                                       : Colors.black),
                                               value: selectedValue,
-                                              // value: selectState,
                                               items: vesselData.map((item) {
                                                 return DropdownMenuItem<
                                                     DropdownItem>(
@@ -916,7 +902,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 );
                                               }).toList(),
                                               onChanged: (item) {
-                                                print("id is: ${item?.id} ");
+                                                Utils.customPrint("id is: ${item?.id} ");
                                                 parentValue = false;
                                                 selectedVessel = item!.id;
                                                 selectedVesselName = item.name;
@@ -954,9 +940,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 dateTimeList!.clear();
                                                 children!.clear();
                                                 getTripListData(item.id!);
-
-                                                // state.didChange(item);
-                                                // onChanged!(item);
                                               },
                                             ),
                                           ),
@@ -964,12 +947,15 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                       ),
                                     ),
                                   )
-                                : Center(
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          circularProgressColor),
+                                : Container(
+                                  height: displayHeight(context) * 0.1,
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(
+                                            circularProgressColor),
+                                      ),
                                     ),
-                                  ),
+                                ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -985,7 +971,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                       setState(() {
                                         isSHowGraph = false;
                                         selectedCaseType = 1;
-                                        print(
+                                        Utils.customPrint(
                                             "selectedCaseType: $selectedCaseType ");
                                         _selectedOption = value!;
                                         selectedTripsAndDateString = "Date Range";
@@ -1004,7 +990,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         selectedTripsAndDateDetails = "";
                                         selectedCaseType = 2;
                                         isSHowGraph = false;
-                                        print(
+                                        Utils.customPrint(
                                             "selectedCaseType: $selectedCaseType ");
                                         _selectedOption = value!;
                                         selectedTripsAndDateString =
@@ -1175,7 +1161,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                       child: GestureDetector(
                                           onTap: ()async{
                                             final image = await controller.capture();
-                                            print("Image is: ${image.toString()}");
+                                            Utils.customPrint("Image is: ${image.toString()}");
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                               imagePath: image.toString(),
                                               uIntList: image,)));
@@ -1268,7 +1254,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 });
                                               },
                                               child: Container(
-                                                //  color: dateBackgroundColor,
                                                 width:
                                                     displayWidth(context) * 0.23,
                                                 height:
@@ -1309,7 +1294,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 });
                                               },
                                               child: Container(
-                                                //  color: dateBackgroundColor,
                                                 width:
                                                     displayWidth(context) * 0.19,
                                                 height:
@@ -1349,7 +1333,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 });
                                               },
                                               child: Container(
-                                                //  color: dateBackgroundColor,
                                                 width:
                                                     displayWidth(context) * 0.20,
                                                 height:
@@ -1389,7 +1372,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 });
                                               },
                                               child: Container(
-                                                //  color: dateBackgroundColor,
                                                 width:
                                                     displayWidth(context) * 0.22,
                                                 height:
@@ -1449,7 +1431,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                     child: GestureDetector(
                                         onTap: ()async{
                                           final image = await controller.capture();
-                                          print("Image is: ${image.toString()}");
+                                          Utils.customPrint("Image is: ${image.toString()}");
                                           Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                             imagePath: image.toString(),
                                             uIntList: image,)));
@@ -1497,17 +1479,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 ),
               ),
             ),
-            /*DataColumn(
-                label: Expanded(
-              child: Center(
-                child: Text(
-                  'Trip Details',
-                  style: TextStyle(color: tableHeaderColor),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            )),*/
-            //DataColumn(label: _verticalDivider),
+
             DataColumn(
                 label: Expanded(
               child: Center(
@@ -1549,11 +1521,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         child: Text(dateWithZeros(person['date'])!,
                             textAlign: TextAlign.center)),
                   ),
-                  /*DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text(person['tripDetails']!,
-                          textAlign: TextAlign.center))),*/
-                  //DataCell(_verticalDivider),
                   DataCell(Align(
                       alignment: Alignment.center,
                       child: Text(person['duration']!,
@@ -1580,13 +1547,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           fontWeight: FontWeight.w800),
                     ),
                   ),
-                  /*DataCell(Text(
-                    e['tripDetails']!,
-                    style: TextStyle(
-                        color: circularProgressColor,
-                        fontWeight: FontWeight.w800),
-                  )),*/
-                  //DataCell(_verticalDivider),
                   DataCell(Align(
                     alignment: Alignment.center,
                     child: Text(
@@ -1632,7 +1592,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   //Custom selection graph
   buildGraph(BuildContext context) {
-    debugPrint('SELECTED BUTTON Text $selectedButton');
+    Utils.customPrint('SELECTED BUTTON Text $selectedButton');
 
     switch (selectedButton.toLowerCase()) {
       case 'trip duration':
@@ -1700,7 +1660,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       )),
                   TextButton(
                     onPressed: () {
-                      print("tapped on go to report button");
+                      Utils.customPrint("tapped on go to report button");
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -1847,7 +1807,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               ),
               TextButton(
                 onPressed: () {
-                  print("tapped on go to report button");
+                  Utils.customPrint("tapped on go to report button");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -1858,7 +1818,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 vesselId: selectedVessel,
                                 tripIsRunningOrNot: false,
                                 calledFrom: 'Report',
-                                // vessel: getVesselById[0]
                               )));
                 },
                 child: Text('Go to Trip Report',
@@ -1874,7 +1833,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     );
 
     return SingleChildScrollView(
-      //physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       child: SizedBox(
         width: avgSpeedColumnSeriesData.length > 3
@@ -1943,7 +1901,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           dynamic pointIndex) {
         CartesianChartPoint currentPoint = point;
         final double? yValue = currentPoint.y;
-        print("fuel y data is: ${yValue}");
+        Utils.customPrint("fuel y data is: ${yValue}");
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
@@ -1982,18 +1940,16 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               ),
               TextButton(
                 onPressed: () {
-                  print("tapped on go to report button");
+                  Utils.customPrint("tapped on go to report button");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => TripAnalyticsScreen(
                                 tripId: selectedIndex,
                                 vesselName: selectedVesselName,
-                                // avgInfo: reportModel!.data!.avgInfo,
                                 vesselId: selectedVessel,
                                 tripIsRunningOrNot: false,
                                 calledFrom: 'Report',
-                                // vessel: getVesselById[0]
                               )));
                 },
                 child: Text('Go to Trip Report',
@@ -2009,7 +1965,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     );
 
     return SingleChildScrollView(
-      // physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       child: SizedBox(
         width: fuelUsageColumnSeriesData.length > 3
@@ -2017,7 +1972,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             : displayWidth(context),
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
-          //palette: barsColor,
           tooltipBehavior: tooltipBehavior,
           primaryXAxis: CategoryAxis(
               autoScrollingMode: AutoScrollingMode.end,
@@ -2030,7 +1984,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               )),
           primaryYAxis: NumericAxis(
               labelFormat: '{value} gal',
-              // interval: 5,
               axisLine: AxisLine(width: 2),
               title: AxisTitle(
                   text: 'Galance',
@@ -2078,7 +2031,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           dynamic pointIndex) {
         CartesianChartPoint currentPoint = point;
         final double? yValue = currentPoint.y;
-        print("power y data is: ${yValue}");
+        Utils.customPrint("power y data is: ${yValue}");
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
@@ -2117,18 +2070,16 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               ),
               TextButton(
                 onPressed: () {
-                  print("tapped on go to report button");
+                  Utils.customPrint("tapped on go to report button");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => TripAnalyticsScreen(
                                 tripId: selectedIndex,
                                 vesselName: selectedVesselName,
-                                //   avgInfo: reportModel!.data!.avgInfo,
                                 vesselId: selectedVessel,
                                 tripIsRunningOrNot: false,
                                 calledFrom: 'Report',
-                                // vessel: getVesselById[0]
                               )));
                 },
                 child: Text('Go to Trip Report',
@@ -2144,7 +2095,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     );
 
     return SingleChildScrollView(
-      // physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       child: SizedBox(
         width: powerUsageColumnSeriesData.length > 3
@@ -2152,7 +2102,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             : displayWidth(context),
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
-          // palette: barsColor,
           tooltipBehavior: tooltipBehavior,
           primaryXAxis: CategoryAxis(
               autoScrollingMode: AutoScrollingMode.end,
@@ -2164,7 +2113,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 fontFamily: poppins,
               )),
           primaryYAxis: NumericAxis(
-              // interval: 5,
               axisLine: AxisLine(width: 2),
               title: AxisTitle(
                   text: 'Wats',
@@ -2221,7 +2169,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     });
                   },
                   child: Container(
-                    //  color: dateBackgroundColor,
                     width: displayWidth(context) * 0.385,
                     height: displayWidth(context) * 0.14,
                     decoration: BoxDecoration(
@@ -2259,7 +2206,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     });
                   },
                   child: Container(
-                    //  color: dateBackgroundColor,
                     width: displayWidth(context) * 0.385,
                     height: displayWidth(context) * 0.14,
                     decoration: BoxDecoration(
@@ -2382,14 +2328,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           focusedDayString = focusDay.toString();
                           pickStartDate = convertIntoMonthDayYear(selectDay);
                           selectedStartDateFromCal = selectDay;
-                          print("pick start date: $pickStartDate");
+                          Utils.customPrint("pick start date: $pickStartDate");
                         });
-                        print("focusedDay: $focusDay");
+                        Utils.customPrint("focusedDay: $focusDay");
                       },
                       headerStyle: HeaderStyle(
                         formatButtonVisible: false,
-                        // rightChevronVisible: DateTime(lastDate.year, lastDate.month , lastDate.day) == DateTime(now.year, now.month , now.day)  ? true:false,
-
                         formatButtonDecoration: BoxDecoration(
                           color: Colors.brown,
                           borderRadius: BorderRadius.circular(22.0),
@@ -2491,9 +2435,9 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               lastFocusedDayString = focusDay.toString();
                               pickEndDate = convertIntoMonthDayYear(selectDay);
                               selectedEndDateFromCal = selectDay;
-                              print("pick end date: $pickEndDate");
+                              Utils.customPrint("pick end date: $pickEndDate");
                             });
-                            print("lastDayFocused: $lastDayFocused");
+                            Utils.customPrint("lastDayFocused: $lastDayFocused");
                           },
                           headerStyle: HeaderStyle(
                             formatButtonVisible: false,
@@ -2539,9 +2483,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             value: parentValue != null ? parentValue! : false,
                             onChanged: (value) {
                               if (value) {
-                                print("select all status: $value");
-                                // Checked/Unchecked
-                                //selectedTripIdList = tripIdList;
+                                Utils.customPrint("select all status: $value");
                                 selectedTripIdList!.addAll(tripIdList!);
                                 selectedTripLabelList!.clear();
                                 selectedTripLabelList!.addAll(children!);
@@ -2576,7 +2518,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 tripId: tripIdList![index],
                                 dateTime: dateTimeList![index],
                                 onChanged: (value) {
-                                  print("trip list id: ${tripIdList![index]}");
+                                  Utils.customPrint("trip list id: ${tripIdList![index]}");
                                   if (!selectedTripIdList!
                                       .contains(tripIdList![index])) {
                                     selectedTripIdList!.add(tripIdList![index]);

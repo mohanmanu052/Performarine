@@ -131,7 +131,6 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             Form(
               key: formKey,
-              //autovalidateMode: AutovalidateMode.,
               child: Container(
                 height: displayHeight(context),
                 margin: const EdgeInsets.symmetric(horizontal: 25),
@@ -172,16 +171,12 @@ class _SignInScreenState extends State<SignInScreen> {
                             return null;
                           },
                           onFieldSubmitted: (value) {
-                            //emailFormFieldKey.currentState!.validate();
-                            /* FocusScope.of(context)
-                                .requestFocus(passwordFocusNode);*/
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
                           }),
                       SizedBox(height: displayHeight(context) * 0.03),
                       CommonTextField(
-                          // key: passwordFormFieldKey,
                           controller: passwordController,
                           focusNode: passwordFocusNode,
                           labelText: 'Password\*',
@@ -285,13 +280,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                                       isGoogleSignInBtnClicked =
                                                           false;
                                                     });
-                                                    /*Navigator.pushAndRemoveUntil(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            HomePage(),
-                                                      ),
-                                                      ModalRoute.withName(""));*/
                                                     var bool = await Utils()
                                                         .check(scaffoldKey);
 
@@ -346,9 +334,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               width: displayWidth(context),
                               onTap: () async {
 
-                                // throw Exception();
-                                // return;
-
                                 if (formKey.currentState!.validate()) {
                                     bool check = await Utils().check(scaffoldKey);
 
@@ -378,14 +363,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
                                           if (value != null) {
                                             if (value.status!) {
-                                              /*Navigator.pushAndRemoveUntil(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    HomePage(),
-                                              ),
-                                              ModalRoute.withName(""));*/
-
                                               Navigator.pushAndRemoveUntil(
                                                   context,
                                                   MaterialPageRoute(

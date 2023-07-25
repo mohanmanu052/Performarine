@@ -130,8 +130,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   getData() async {
 
-    //await flutterLocalNotificationsPlugin.cancel(1);
-
     if (widget.calledFrom == 'Report') {
       final DatabaseService _databaseService = DatabaseService();
       final tripDetails = await _databaseService.getTrip(widget.tripId!);
@@ -173,13 +171,13 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     await sharedPreferences!.reload();
 
     durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      print('##TDATA updated time delay from 1 sec to 400 MS by abhi');
+      Utils.customPrint('##TDATA updated time delay from 1 sec to 400 MS by abhi');
       tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
       tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
       tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
 
-      debugPrint("TRIP ANALYTICS SPEED $tripSpeed");
-      debugPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
+      Utils.customPrint("TRIP ANALYTICS SPEED $tripSpeed");
+      Utils.customPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
 
       var durationTime = DateTime.now().toUtc().difference(createdAtTime);
       tripDuration = Utils.calculateTripDuration(
@@ -728,7 +726,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                     child: GestureDetector(
                                                         onTap: ()async{
                                                           final image = await controller.capture();
-                                                          print("Image is: ${image.toString()}");
+                                                          Utils.customPrint("Image is: ${image.toString()}");
                                                           Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                                             imagePath: image.toString(),
                                                             uIntList: image,)));
@@ -892,7 +890,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                     child: GestureDetector(
                                                         onTap: ()async{
                                                           final image = await controller.capture();
-                                                          print("Image is: ${image.toString()}");
+                                                          Utils.customPrint("Image is: ${image.toString()}");
                                                           Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                                             imagePath: image.toString(),
                                                             uIntList: image,)));
@@ -916,75 +914,73 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                       child: Column(
                                         children: [
                                           Expanded(
-                                            child: SingleChildScrollView(
-                                              child: Container(
-                                                height:
-                                                    displayHeight(context) / 1.8,
-                                                margin: EdgeInsets.only(
-                                                    top: 20, left: 17, right: 17),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.start,
-                                                      children: [
-                                                        Container(
-                                                          margin: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal: 12),
-                                                          child: commonText(
-                                                            context: context,
-                                                            text: 'Analytics',
-                                                            fontWeight:
-                                                                FontWeight.w700,
-                                                            textColor:
-                                                                Colors.black87,
-                                                            textSize:
-                                                                displayWidth(
-                                                                        context) *
-                                                                    0.032,
-                                                          ),
+                                            child: Container(
+                                              height:
+                                                  displayHeight(context) / 1.8,
+                                              margin: EdgeInsets.only(
+                                                  top: 20, left: 17, right: 17),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Container(
+                                                        margin: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 12),
+                                                        child: commonText(
+                                                          context: context,
+                                                          text: 'Analytics',
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          textColor:
+                                                              Colors.black87,
+                                                          textSize:
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.032,
                                                         ),
-                                                        getTripDetailsFromNoti
-                                                            ? Container(
-                                                                height: displayHeight(
-                                                                        context) *
-                                                                    0.2,
-                                                                child: Center(
-                                                                    child:
-                                                                        CircularProgressIndicator()),
-                                                              )
-                                                            : vesselAnalytics(
-                                                                context,
-                                                                tripIsRunning
-                                                                    ? '$tripDuration'
-                                                                    : '${tripData!.time} ',
-                                                                tripIsRunning
-                                                                    ? '${(tripDistance)}'
-                                                                    : '${tripData!.distance} ',
-                                                                tripIsRunning
-                                                                    ? '${tripSpeed} '
-                                                                    : '${tripData!.speed} ',
-                                                                tripIsRunning
-                                                                    ? '${tripAvgSpeed} '
-                                                                    : '${tripData!.avgSpeed} ',
-                                                                tripIsRunning),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height:
-                                                          displayHeight(context) *
-                                                              0.01,
-                                                    ),
-                                                  ],
-                                                ),
+                                                      ),
+                                                      getTripDetailsFromNoti
+                                                          ? Container(
+                                                              height: displayHeight(
+                                                                      context) *
+                                                                  0.2,
+                                                              child: Center(
+                                                                  child:
+                                                                      CircularProgressIndicator()),
+                                                            )
+                                                          : vesselAnalytics(
+                                                              context,
+                                                              tripIsRunning
+                                                                  ? '$tripDuration'
+                                                                  : '${tripData!.time} ',
+                                                              tripIsRunning
+                                                                  ? '${(tripDistance)}'
+                                                                  : '${tripData!.distance} ',
+                                                              tripIsRunning
+                                                                  ? '${tripSpeed} '
+                                                                  : '${tripData!.speed} ',
+                                                              tripIsRunning
+                                                                  ? '${tripAvgSpeed} '
+                                                                  : '${tripData!.avgSpeed} ',
+                                                              tripIsRunning),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height:
+                                                        displayHeight(context) *
+                                                            0.01,
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
@@ -1061,13 +1057,13 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                         .getTrip(
                                                                         tripData!
                                                                             .id!);
-                                                                    debugPrint(
+                                                                    Utils.customPrint(
                                                                         "abhi:${tripDetails.time}");
-                                                                    debugPrint(
+                                                                    Utils.customPrint(
                                                                         "abhi:${tripDuration}");
-                                                                    debugPrint(
+                                                                    Utils.customPrint(
                                                                         "abhi:${tripAvgSpeed}");
-                                                                    debugPrint(
+                                                                    Utils.customPrint(
                                                                         "abhi:${tripSpeed}");
                                                                     setState(() {
                                                                       tripData =
@@ -1096,7 +1092,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                         child: GestureDetector(
                                                             onTap: ()async{
                                                               final image = await controller.capture();
-                                                              print("Image is: ${image.toString()}");
+                                                              Utils.customPrint("Image is: ${image.toString()}");
                                                               Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                                                 imagePath: image.toString(),
                                                                 uIntList: image,)));
@@ -1486,7 +1482,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                           child: GestureDetector(
                                                               onTap: ()async{
                                                                 final image = await controller.capture();
-                                                                print("Image is: ${image.toString()}");
+                                                                Utils.customPrint("Image is: ${image.toString()}");
                                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                                                   imagePath: image.toString(),
                                                                   uIntList: image,)));
@@ -1638,7 +1634,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                           child: GestureDetector(
                                                               onTap: ()async{
                                                                 final image = await controller.capture();
-                                                                print("Image is: ${image.toString()}");
+                                                                Utils.customPrint("Image is: ${image.toString()}");
                                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                                                   imagePath: image.toString(),
                                                                   uIntList: image,)));
@@ -2206,13 +2202,13 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                     .getTrip(
                                                     tripData!
                                                         .id!);
-                                                debugPrint(
+                                                Utils.customPrint(
                                                     "abhi:${tripDetails.time}");
-                                                debugPrint(
+                                                Utils.customPrint(
                                                     "abhi:${tripDuration}");
-                                                debugPrint(
+                                                Utils.customPrint(
                                                     "abhi:${tripAvgSpeed}");
-                                                debugPrint(
+                                                Utils.customPrint(
                                                     "abhi:${tripSpeed}");
                                                 setState(() {
                                                   tripData =
@@ -2242,16 +2238,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                     'Continue Trip', context, Colors.transparent,
                                         () async {
 
-                                          /*setDialogState(() {
-                                            tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
-                                            tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
-                                            tripSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
-
-                                          });
-                                          print("ANALYTICS MAIN $tripDistance");
-                                          print("ANALYTICS MAIN $tripSpeed");
-                                          print("ANALYTICS MAIN $tripSpeed");*/
-
                                       final _isRunning = await BackgroundLocator();
 
                                       Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
@@ -2259,15 +2245,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
                                       reInitializeService();
-
-                                      //final isRunning1 = await BackgroundLocator.isServiceRunning();
-                                      //
-                                      // StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
-                                      //
-                                      // final isRunning2 = await BackgroundLocator.isServiceRunning();
-
-
-                                      //Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
 
                                       StartTrip().startBGLocatorTrip(tripData![0], DateTime.now(), true);
 
@@ -2305,12 +2282,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   /// Reinitialized service after user killed app while trip is running
   reInitializeService() async {
-    // print('RE-Initializing...');
     await BackgroundLocator.initialize();
-    // String logStr = await FileManager.readLogFile();
-    // print('RE-Initialization done');
-    // final _isRunning = await BackgroundLocator.isServiceRunning();
-
     Map<String, dynamic> data = {'countInit': 1};
     return await BackgroundLocator.registerLocationUpdate(
         LocationCallbackHandler.callback,
