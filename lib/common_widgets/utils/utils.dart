@@ -404,7 +404,10 @@ class Utils {
 
   // Custom print through out the project
   static customPrint(String text) {
-    Utils.customPrint('$text');
+    if(!kReleaseMode)
+      {
+        debugPrint('$text');
+      }
   }
 
   //End trip dialog for user confirmation to end trip

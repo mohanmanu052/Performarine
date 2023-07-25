@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
@@ -260,46 +261,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
 
     Utils.customPrint('ERROR: $all');
+    Map<String, dynamic> decodedData = jsonDecode(all!);
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    var version = packageInfo.version;
+    var appVersion = packageInfo.version;
 
-    var AllVersions = all.toString().replaceAll("{", "").replaceAll("}", "").split(",");
-    var firstVersion = AllVersions[0].split(":").first;
+    Utils.customPrint('VERSION 1 $appVersion');
 
-    var actualVersion = firstVersion.replaceAll('"', "");
-    var actualURL =AllVersions[0].split(":").last.replaceAll('"', "");
-
-    var secondVersion = AllVersions[1].split(":").first;
-
-    var actualSecondVersion = secondVersion.replaceAll('"', "");
-    var actualSecondURL =AllVersions[1].split(":").last.replaceAll('"', "");
-
-    Utils.customPrint("BASE URL VERSION 1 $actualSecondVersion");
-    Utils.customPrint("BASE URL VERSION 1 $actualSecondURL");
-    Utils.customPrint("BASE URL VERSION 2 $actualVersion");
-    Utils.customPrint("BASE URL VERSION 2 $actualURL");
-
-    if(version == actualVersion)
+    for(String version in decodedData.keys)
       {
-        Utils.customPrint("BASE Actual URL VERSION $actualURL");
+        Utils.customPrint('VERSION of firebase $version');
+        Utils.customPrint('VERSION of app $appVersion');
+        if(version == appVersion)
+          {
+            Urls.baseUrlVersion = decodedData[version];
 
-        Urls.baseUrlVersion = actualURL;
-
+            Utils.customPrint('VERSION 3 $version');
+            Utils.customPrint('VERSION MAIN ${decodedData[version]}');
+          }
       }
-    else if(version == actualSecondVersion)
-      {
-        Utils.customPrint("BASE Actual URL VERSION 2 $actualSecondURL");
-
-        Urls.baseUrlVersion = actualSecondURL;
-      }
-    else{
-      Utils.customPrint("BASE URL NO VERSION ");
-    }
-
-    Urls.baseUrlVersion = all.toString();
-
-    Utils.customPrint("SECURE STORAGE $all");
   }
 
   getTripData()async
@@ -456,7 +436,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     FirebaseRemoteConfig data = await setupRemoteConfig();
     String vinValidation = data.getString('version');
 
-    Utils.customPrint('VINNNNNNNNNNNNNNN $vinValidation');
+    Utils.customPrint('VINNNNNNNNNNNNNNN ${vinValidation}');
 
     final FlutterSecureStorage storage = FlutterSecureStorage();
 
