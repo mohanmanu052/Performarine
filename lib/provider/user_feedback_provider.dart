@@ -7,11 +7,13 @@ import 'package:dio/dio.dart' as d;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/models/common_model.dart';
 import 'package:performarine/models/upload_trip_model.dart';
 
+import '../common_widgets/widgets/log_level.dart';
 import '../models/user_feedback_model.dart';
 import 'common_provider.dart';
 import 'package:http/http.dart' as http;
@@ -19,6 +21,7 @@ import 'package:http/http.dart' as http;
 class UserFeedbackProvider with ChangeNotifier {
   UserFeedbackModel? userFeedbackModel;
   CommonProvider? commonProvider;
+  String page = "user_feedback_provider";
 
   Future<UserFeedbackModel?> sendUserFeedbackDio(
       BuildContext context,
@@ -63,6 +66,7 @@ class UserFeedbackProvider with ChangeNotifier {
     try{
 
       print('STREAM RESPONSE: ${responseValue.body}');
+      CustomLogger().logWithFile(Level.info, "STREAM RESPONSE: ${responseValue.body}-> $page");
 
       dynamic decodedData = json.decode(responseValue.body);
 
@@ -70,8 +74,14 @@ class UserFeedbackProvider with ChangeNotifier {
       {
         userFeedbackModel = UserFeedbackModel.fromJson(json.decode(responseValue.body));
 
+        CustomLogger().logWithFile(Level.info, "Register Response : ' + ${responseValue.body}-> $page");
+        CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.userFeedback}  is: ${response.statusCode}-> $page");
+
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
+        if(userFeedbackModel == null){
+          CustomLogger().logWithFile(Level.error, "Error while parsing json data on userFeedbackModel -> $page");
+        }
 
         return UserFeedbackModel.fromJson(decodedData);
 
@@ -81,6 +91,9 @@ class UserFeedbackProvider with ChangeNotifier {
 
         kReleaseMode ? null : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         kReleaseMode ? null : debugPrint('EXE RESP: $response');
+
+        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
 
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
@@ -93,6 +106,9 @@ class UserFeedbackProvider with ChangeNotifier {
 
         kReleaseMode ? null : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         kReleaseMode ? null : debugPrint('EXE RESP: $response');
+
+        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
       }
       else{
 
@@ -102,6 +118,9 @@ class UserFeedbackProvider with ChangeNotifier {
         kReleaseMode ? null : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         kReleaseMode ? null : debugPrint('EXE RESP: $response');
 
+        CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.info, "EXE RESP: $response -> $page");
+
         userFeedbackModel = null;
 
       }
@@ -110,6 +129,8 @@ class UserFeedbackProvider with ChangeNotifier {
       await Utils().check(scaffoldKey);
       Utils.customPrint('Socket Exception');
 
+      CustomLogger().logWithFile(Level.error, "Socket Exception -> $page");
+
       userFeedbackModel = null;
     }catch (exception, s) {
       //_networkConnectivity.disposeStream();
@@ -117,6 +138,7 @@ class UserFeedbackProvider with ChangeNotifier {
       await Utils().check(scaffoldKey);
 
       Utils.customPrint('error caught exception:- $exception \n $s');
+      CustomLogger().logWithFile(Level.error, "error caught user feedback:- $exception \n $s -> $page");
       userFeedbackModel = null;
     }
 

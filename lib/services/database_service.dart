@@ -1,11 +1,15 @@
+import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../common_widgets/widgets/log_level.dart';
+
 class DatabaseService {
   // Singleton pattern
+  String page = "Data_base_service";
   static final DatabaseService _databaseService = DatabaseService._internal();
   factory DatabaseService() => _databaseService;
   DatabaseService._internal();
@@ -102,8 +106,10 @@ class DatabaseService {
 
   /// To add vessel into database
   Future<void> insertVessel(CreateVessel vessel) async {
+
     final db = await _databaseService.database;
     Utils.customPrint("vessel.toMap():${vessel.toMap()}");
+    CustomLogger().logWithFile(Level.info, "vessel.toMap():${vessel.toMap()} -> $page");
     await db.insert(
       'vessels',
       vessel.toMap(),
@@ -141,9 +147,11 @@ class DatabaseService {
   Future<int> updateVessel(CreateVessel vessel) async {
     final db = await _databaseService.database;
     Utils.customPrint("vessel.toMap():${vessel.toMap()}");
+    CustomLogger().logWithFile(Level.info, "vessel.toMap():${vessel.toMap()} -> $page");
     int result = await db.update('vessels', vessel.toMap(),
         where: 'id = ?', whereArgs: [vessel.id]);
     Utils.customPrint('UPDATE: $result');
+    CustomLogger().logWithFile(Level.info, "UPDATE: $result -> $page");
 
     return result;
   }
@@ -159,6 +167,7 @@ class DatabaseService {
       String speed,
       String avgSpeed,
       String tripId) async {
+
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
         'UPDATE trips SET tripStatus = ?, filePath = ?, updatedAt = ?,endPosition = ?, duration = ?, distance = ?, speed = ?, avgSpeed = ? WHERE id = ?',
@@ -174,6 +183,7 @@ class DatabaseService {
           tripId
         ]);
     Utils.customPrint('updated: $count');
+    CustomLogger().logWithFile(Level.info, "UPDATEd: $count -> $page");
   }
 
   /// It will change vessel to retired vessel
@@ -214,17 +224,20 @@ class DatabaseService {
     );
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST $exists');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
     return exists == 1;
   }
 
   /// To check trip is running for which vessel
   Future<bool> checkIfTripIsRunningForSpecificVessel(String vesselId) async {
+
     final db = await _databaseService.database;
     var result = await db.rawQuery(
       'SELECT EXISTS(SELECT 1 FROM trips WHERE vesselId="$vesselId" AND tripStatus="0")',
     );
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST $exists');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
     return exists == 1;
   }
 
@@ -247,6 +260,7 @@ class DatabaseService {
         [vesselId, 0]);
     int? exists = Sqflite.firstIntValue(list);
     Utils.customPrint('IS SYNC EXIST $exists');
+    CustomLogger().logWithFile(Level.info, "IS SYNCEXIST $exists -> $page");
     return exists == 1;
   }
 
@@ -269,6 +283,7 @@ class DatabaseService {
     int update = await db.rawUpdate(
         '''UPDATE vessels SET isSync = ? WHERE id = ?''', [isSyncValue, id]);
     Utils.customPrint('UPDATEDDDDD: $update');
+    CustomLogger().logWithFile(Level.info, "UPDATEDDDDD $update -> $page");
     return update;
   }
 
@@ -290,41 +305,49 @@ class DatabaseService {
   /// Update vessel details with analytics
   Future<void> updateVesselDataWithDurationSpeedDistance(String time,
       String distance, String speed, String avgSpeed, String vesselId) async {
+
     final db = await _databaseService.database;
     int count = await db.rawUpdate(
         'UPDATE vessels SET duration = ?, distance = ?, speed = ?, avgSpeed = ? WHERE id = ?',
         [time, distance, speed, avgSpeed, vesselId]);
     Utils.customPrint('updated: $count');
+    CustomLogger().logWithFile(Level.info, "updated $count -> $page");
   }
 
   /// To get trip sync details
   Future<bool> tripSyncDetails() async {
+
     final db = await _databaseService.database;
     var result = await db.rawQuery(
       'SELECT EXISTS(SELECT 1 FROM trips WHERE isSync="0")',
     );
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST $exists');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
     return exists == 1;
   }
 
   /// To get vessel sync details
   Future<bool> vesselsSyncDetails() async {
+
     final db = await _databaseService.database;
     var result = await db.rawQuery(
       'SELECT EXISTS(SELECT 1 FROM vessels WHERE isSync="0")',
     );
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST $exists');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
     return exists == 1;
   }
 
   /// To delete vessel
   Future<bool> deleteDataFromVesselTable() async {
+
     final db = await _databaseService.database;
     var result = await db.rawQuery('DELETE FROM vessels');
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST Vessels  $exists');
+    CustomLogger().logWithFile(Level.info, "EXIST Vessels $exists -> $page");
     return exists == 1;
   }
 
@@ -334,22 +357,26 @@ class DatabaseService {
     var result = await db.rawQuery('DELETE FROM trips');
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST TRIPS  $exists');
+    CustomLogger().logWithFile(Level.info, "EXIST TRIPS $exists -> $page");
     return exists == 1;
   }
 
   /// To check vessel is exist in cloud
   Future<bool> vesselsExistInCloud(String vesselId) async {
+
     final db = await _databaseService.database;
     var result = await db.rawQuery(
       'SELECT EXISTS(SELECT 1 FROM vessels WHERE id="$vesselId")',
     );
     int? exists = Sqflite.firstIntValue(result);
     Utils.customPrint('EXIST $exists');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
     return exists == 1;
   }
 
   /// To get vessel analytics data
   Future<List<String>> getVesselAnalytics(String vesselId) async {
+
     final db = await _databaseService.database;
     final List<Map<String, dynamic>> maps =
         await db.query('trips', where: 'vesselId = ?', whereArgs: [vesselId]);
@@ -377,16 +404,23 @@ class DatabaseService {
       print('UTC START TIME: $startTime');
       print('UTC END TIME: $endTime');
 
+      CustomLogger().logWithFile(Level.info, "UTC START TIME: $startTime -> $page");
+      CustomLogger().logWithFile(Level.info, "UTC END TIME: $endTime -> $page");
+
       DateTime startDateTime = DateTime.parse(startTime);
       DateTime endDateTime = DateTime.parse(endTime);
 
       print('DATE TIME START: $startDateTime');
       print('DATE TIME END: $endDateTime');
 
+      CustomLogger().logWithFile(Level.info, "DATE TIME START: $startDateTime -> $page");
+      CustomLogger().logWithFile(Level.info, "DATE TIME END: $endDateTime -> $page");
+
       Duration diffDuration = endDateTime.difference(startDateTime);
       totalTripsDuration = totalTripsDuration + diffDuration.inSeconds;
 
       print('DIFFERENCE DURATION IN SECONDS: $totalTripsDuration');
+      CustomLogger().logWithFile(Level.info, "DIFFERENCE DURATION IN SECONDS: $totalTripsDuration -> $page");
 
       totalAverageSpeed = totalAverageSpeed + singleTripAvgSpeed;
       totalDistanceSum = totalDistanceSum + singleTripDistance;

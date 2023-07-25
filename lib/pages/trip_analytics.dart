@@ -12,6 +12,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/analytics/end_trip.dart';
@@ -32,6 +33,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/status_tag.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
 import '../models/reports_model.dart';
@@ -92,6 +94,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   late DeviceInfoPlugin deviceDetails;
 
   final controller = ScreenshotController();
+  String page = "Trip_analytics";
 
   @override
   void initState() {
@@ -99,9 +102,13 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     super.initState();
 
     Utils.customPrint('CURRENT TIME TIME ${widget.tripId}');
+    CustomLogger().logWithFile(Level.info, "CURRENT TIME TIME ${widget.tripId} -> $page");
     Utils.customPrint('CURRENT TIME TIME ${widget.vesselId}');
+    CustomLogger().logWithFile(Level.info, "CURRENT TIME TIME ${widget.vesselId} -> $page");
     Utils.customPrint('CURRENT TIME TIME ${widget.tripIsRunningOrNot}');
+    CustomLogger().logWithFile(Level.info, "CURRENT TIME TIME ${widget.tripIsRunningOrNot} -> $page");
     Utils.customPrint('CURRENT TIME TIME ${widget.isAppKilled}');
+    CustomLogger().logWithFile(Level.info, "CURRENT TIME TIME ${widget.isAppKilled} -> $page");
 
     sharedPreferences!.remove('sp_key_called_from_noti');
 
@@ -175,12 +182,17 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
     durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       print('##TDATA updated time delay from 1 sec to 400 MS by abhi');
+      CustomLogger().logWithFile(Level.info, "##TDATA updated time delay from 1 sec to 400 MS by abhi -> $page");
+
       tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
       tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
       tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
 
       debugPrint("TRIP ANALYTICS SPEED $tripSpeed");
       debugPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
+
+      CustomLogger().logWithFile(Level.info, "TRIP ANALYTICS SPEED $tripSpeed -> $page");
+      CustomLogger().logWithFile(Level.info, "TRIP ANALYTICS AVG SPEED $tripAvgSpeed -> $page");
 
       var durationTime = DateTime.now().toUtc().difference(createdAtTime);
       tripDuration = Utils.calculateTripDuration(
@@ -206,32 +218,34 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     commonProvider = context.watch<CommonProvider>();
     return WillPopScope(
       onWillPop: () async {
-        if (widget.calledFrom == null) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-              ModalRoute.withName(""));
-          return false;
-        } else if (widget.calledFrom! == 'HomePage') {
-          if (isDataUpdated) {
+        Wakelock.disable().then((value) {
+          if (widget.calledFrom == null) {
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => HomePage(
-                          tabIndex: 1,
-                        )),
+                MaterialPageRoute(builder: (context) => HomePage()),
                 ModalRoute.withName(""));
             return false;
-          } else {
-            Navigator.of(context).pop();
+          } else if (widget.calledFrom! == 'HomePage') {
+            if (isDataUpdated) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomePage(
+                        tabIndex: 1,
+                      )),
+                  ModalRoute.withName(""));
+              return false;
+            } else {
+              Navigator.of(context).pop();
+            }
+          } else if (widget.calledFrom == 'VesselSingleView') {
+            Navigator.of(context).pop(isDataUpdated);
+            return false;
+          } else if (widget.calledFrom == 'Report') {
+            Navigator.pop(context);
+            return false;
           }
-        } else if (widget.calledFrom == 'VesselSingleView') {
-          Navigator.of(context).pop(isDataUpdated);
-          return false;
-        } else if (widget.calledFrom == 'Report') {
-          Navigator.pop(context);
-          return false;
-        }
+        });
         return false;
       },
       child: Screenshot(
@@ -245,37 +259,39 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             leading: IconButton(
               onPressed: () {
                 // Navigator.of(context).pop();
+                 Wakelock.disable().then((value) {
+                   if (widget.calledFrom == null) {
+                     Navigator.pushAndRemoveUntil(
+                         context,
+                         MaterialPageRoute(builder: (context) => HomePage()),
+                         ModalRoute.withName(""));
+                   } else if (widget.calledFrom! == 'HomePage') {
+                     Navigator.pushAndRemoveUntil(
+                         context,
+                         MaterialPageRoute(
+                             builder: (context) => HomePage(
+                               tabIndex: 1,
+                             )),
+                         ModalRoute.withName(""));
+                   } else if (widget.calledFrom! == 'HomePage') {
+                     if (isDataUpdated) {
+                       Navigator.pushAndRemoveUntil(
+                           context,
+                           MaterialPageRoute(
+                               builder: (context) => HomePage(
+                                 tabIndex: 1,
+                               )),
+                           ModalRoute.withName(""));
+                     } else {
+                       Navigator.of(context).pop();
+                     }
+                   } else if (widget.calledFrom == 'VesselSingleView') {
+                     Navigator.of(context).pop(isDataUpdated);
+                   } else if (widget.calledFrom == "Report") {
+                     Navigator.pop(context);
+                   }
+                 });
 
-                if (widget.calledFrom == null) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      ModalRoute.withName(""));
-                } else if (widget.calledFrom! == 'HomePage') {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(
-                                tabIndex: 1,
-                              )),
-                      ModalRoute.withName(""));
-                } else if (widget.calledFrom! == 'HomePage') {
-                  if (isDataUpdated) {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => HomePage(
-                                  tabIndex: 1,
-                                )),
-                        ModalRoute.withName(""));
-                  } else {
-                    Navigator.of(context).pop();
-                  }
-                } else if (widget.calledFrom == 'VesselSingleView') {
-                  Navigator.of(context).pop(isDataUpdated);
-                } else if (widget.calledFrom == "Report") {
-                  Navigator.pop(context);
-                }
               },
               icon: const Icon(Icons.arrow_back),
               color: Theme.of(context).brightness == Brightness.dark
@@ -730,6 +746,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                         onTap: ()async{
                                                           final image = await controller.capture();
                                                           print("Image is: ${image.toString()}");
+                                                          CustomLogger().logWithFile(Level.info, "User navigating to user feedback screen -> $page");
                                                           Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                                             imagePath: image.toString(),
                                                             uIntList: image,)));
@@ -847,6 +864,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                             Utils.customPrint(
                                                                                 'UPLOADED 1 ${isTripUploaded}');
 
+                                                                            CustomLogger().logWithFile(Level.info, "UPLOADED ${tripData?.isSync != 0} -> $page");
+                                                                            CustomLogger().logWithFile(Level.info, "UPLOADED 1 ${isTripUploaded} -> $page");
+
                                                                             Utils
                                                                                 .showSnackBar(
                                                                               context,
@@ -868,6 +888,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                                   .mobile) {
                                                                             Utils.customPrint(
                                                                                 'Mobile');
+                                                                            CustomLogger().logWithFile(Level.info, "Mobile -> $page");
                                                                             showDialogBoxToUploadTrip();
                                                                           } else if (connectivityResult ==
                                                                               ConnectivityResult
@@ -881,6 +902,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                                                             Utils.customPrint(
                                                                                 'WIFI');
+                                                                            CustomLogger().logWithFile(Level.info, "wifi -> $page");
                                                                           }
                                                                         })
                                                       ],
@@ -894,6 +916,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                         onTap: ()async{
                                                           final image = await controller.capture();
                                                           print("Image is: ${image.toString()}");
+                                                          CustomLogger().logWithFile(Level.info, "User navigating to user feedback screen -> $page");
                                                           Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                                             imagePath: image.toString(),
                                                             uIntList: image,)));
@@ -1022,6 +1045,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                                             Utils.customPrint(
                                                                 "END TRIP CURRENT TIME ${DateTime.now()}");
+                                                            CustomLogger().logWithFile(Level.info, "END TRIP CURRENT TIME  -> $page");
 
                                                             bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
@@ -1084,6 +1108,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                             onTap: ()async{
                                                               final image = await controller.capture();
                                                               print("Image is: ${image.toString()}");
+                                                              CustomLogger().logWithFile(Level.info, "User navigating to user feedback screen -> $page");
                                                               Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                                                 imagePath: image.toString(),
                                                                 uIntList: image,)));
@@ -1474,6 +1499,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                               onTap: ()async{
                                                                 final image = await controller.capture();
                                                                 print("Image is: ${image.toString()}");
+                                                                CustomLogger().logWithFile(Level.info, "User navigating to user feedback screen  -> $page");
                                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                                                   imagePath: image.toString(),
                                                                   uIntList: image,)));
@@ -1589,6 +1615,9 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                                   Utils.customPrint('UPLOADED ${tripData?.isSync != 0}');
                                                                                   Utils.customPrint('UPLOADED 1 ${isTripUploaded}');
 
+                                                                                  CustomLogger().logWithFile(Level.info, "UPLOADED ${tripData?.isSync != 0} -> $page");
+                                                                                  CustomLogger().logWithFile(Level.info, "UPLOADED 1 ${isTripUploaded} -> $page");
+
                                                                                   Utils.showSnackBar(
                                                                                     context,
                                                                                     scaffoldKey: scaffoldKey,
@@ -1604,6 +1633,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                                 if (connectivityResult ==
                                                                                     ConnectivityResult.mobile) {
                                                                                   Utils.customPrint('Mobile');
+                                                                                  CustomLogger().logWithFile(Level.info, "Mobile -> $page");
                                                                                   showDialogBoxToUploadTrip();
                                                                                 } else if (connectivityResult ==
                                                                                     ConnectivityResult.wifi) {
@@ -1613,6 +1643,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                                                   uploadDataIfDataIsNotSync();
 
                                                                                   Utils.customPrint('WIFI');
+                                                                                  CustomLogger().logWithFile(Level.info, "Wifi -> $page");
                                                                                 }
                                                                               })
                                                             ],
@@ -1626,6 +1657,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                               onTap: ()async{
                                                                 final image = await controller.capture();
                                                                 print("Image is: ${image.toString()}");
+                                                                CustomLogger().logWithFile(Level.info, "User Navigating to user feedback screen -> $page");
                                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                                                   imagePath: image.toString(),
                                                                   uIntList: image,)));
@@ -1657,6 +1689,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     setState(() {
       vesselIsSync = result;
       Utils.customPrint('Vessel isSync $vesselIsSync');
+      CustomLogger().logWithFile(Level.info, "Vessel isSync $vesselIsSync -> $page");
     });
 
     return result;
@@ -1812,6 +1845,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     var startPosition = tripData.startPosition!.split(",");
     var endPosition = tripData.endPosition!.split(",");
     Utils.customPrint('START POSITION 0 ${startPosition}');
+    CustomLogger().logWithFile(Level.info, "START POSITION 0 ${startPosition} -> $page");
 
     Directory tripDir = await getApplicationDocumentsDirectory();
 
@@ -1853,7 +1887,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     };
 
     Utils.customPrint('Send Sensor Data: $queryParameters');
-
+    CustomLogger().logWithFile(Level.info, "Send Sensor Data: $queryParameters-> $page");
     commonProvider
         .sendSensorInfo(
             Get.context!,
@@ -1876,13 +1910,16 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             });
           }
           Utils.customPrint("tripData!.id: ${tripData.id}");
+          CustomLogger().logWithFile(Level.info, "tripData!.id: ${tripData.id}-> $page");
           _databaseService.updateTripIsSyncStatus(1, tripData.id.toString());
           Trip tripDetails = await _databaseService.getTrip(tripData.id!);
           Utils.customPrint('TRIP DETAILS: ${tripDetails.toJson()}');
+          CustomLogger().logWithFile(Level.info, "TRIP DETAILS: ${tripDetails.toJson()}-> $page");
           if (mounted) {
             setState(() {
               this.tripData = tripDetails;
               Utils.customPrint('TRIP STATUS ${tripData.isSync}');
+              CustomLogger().logWithFile(Level.info, "TRIP STATUS ${tripData.isSync}-> $page");
             });
           }
 
@@ -1913,6 +1950,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         });
       }
       Utils.customPrint('ON ERROR $onError \n $s');
+      CustomLogger().logWithFile(Level.error, "ON ERROR $onError \n $s-> $page");
     });
   }
 
@@ -1928,6 +1966,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     commonProvider.updateTripUploadingStatus(true);
     await vesselIsSyncOrNot(tripData!.vesselId.toString());
     Utils.customPrint('VESSEL STATUS isSync $vesselIsSync');
+    CustomLogger().logWithFile(Level.info, "VESSEL STATUS isSync $vesselIsSync -> $page");
 
     commonProvider.updateTripUploadingStatus(true);
     progress = 0;
@@ -1959,6 +1998,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           .getVesselFromVesselID((tripData!.vesselId.toString()));
 
       Utils.customPrint('VESSEL DATA ${vesselData!.id}');
+      CustomLogger().logWithFile(Level.info, "VESSEL DATA ${vesselData.id} -> $page");
 
       commonProvider.addVesselRequestModel = CreateVessel();
       commonProvider.addVesselRequestModel!.id = vesselData.id;
@@ -1992,6 +2032,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             finalSelectedFiles;
 
         Utils.customPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
+        CustomLogger().logWithFile(Level.info, "VESSEL DATA ${vesselData.imageURLs} -> $page");
       } else {
         commonProvider.addVesselRequestModel!.selectedImages = [];
       }
@@ -2013,6 +2054,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           } else {
             commonProvider.updateTripUploadingStatus(false);
             Utils.customPrint('UPLOADEDDDD: ${value.message}');
+            CustomLogger().logWithFile(Level.info, "UPLOADEDDDD: ${value.message} -> $page");
             await cancelOnGoingProgressNotification(tripData!.id!);
             showFailedNoti(tripData!.id!);
             if (mounted) {
@@ -2243,8 +2285,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                             }
                                         );
                                       }
-                                      else
-                                      {
+                                      else {
                                         setDialogState(() {
                                           isEndTripBtnClicked = true;
                                         });
@@ -2296,9 +2337,11 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                               });
 
                                               Utils.customPrint(
-                                                  'TRIP ENDED DETAILS: ${tripDetails.isSync}');
+                                                  'TRIP ENDED DETAILS: ${tripDetails
+                                                      .isSync}');
                                               Utils.customPrint(
-                                                  'TRIP ENDED DETAILS: ${tripData!.isSync}');
+                                                  'TRIP ENDED DETAILS: ${tripData!
+                                                      .isSync}');
 
                                               isDataUpdated = true;
                                             });
@@ -2332,6 +2375,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                       final _isRunning = await BackgroundLocator();
 
                                       Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
+                                      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING 1212 $_isRunning -> $page");
 
                                       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
@@ -2351,6 +2395,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                       final isRunning2 = await BackgroundLocator.isServiceRunning();
 
                                       Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING 2222 $_isRunning -> $page");
                                       Navigator.of(context).pop();
                                     },
                                     displayWidth(context) * 0.65,

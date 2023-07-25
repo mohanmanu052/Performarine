@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
@@ -11,6 +12,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/pages/authentication/reset_password.dart';
@@ -22,6 +24,11 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:uni_links/uni_links.dart';
+import 'package:wakelock/wakelock.dart';
+import 'package:workmanager/workmanager.dart';
+
+import 'analytics/get_or_create_folder.dart';
+import 'common_widgets/widgets/log_level.dart';
 
 SharedPreferences? sharedPreferences;
 bool? isStart;
@@ -37,6 +44,9 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 final StreamController<String?> selectNotificationStream =
     StreamController<String?>.broadcast();
 
+const logFileUpload = "logFileUpload";
+String page = "main";
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -50,6 +60,15 @@ void main() async {
 
   await Firebase.initializeApp();
 
+  bool wakelockEnabled = await Wakelock.enabled;
+
+  if(wakelockEnabled){
+    print("wake lock enabled: $wakelockEnabled");
+    Wakelock.disable();
+  } else{
+    Wakelock.disable();
+  }
+
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
@@ -59,11 +78,115 @@ void main() async {
     return true;
   };
 
+  performarineLogFile();
+
+  createFolder();
+
 
   SharedPreferences.getInstance().then((value) {
     sharedPreferences = value;
     runApp(Phoenix(child: MyApp()));
   });
+}
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    switch (task) {
+      case logFileUpload:
+        final now = DateTime.now();
+        if(now.hour == 0 && now.minute == 0){
+          print("Log file upload at 12 AM ${DateTime.now()}");
+        }
+        print("statement for log file upload ${DateTime.now()}");
+        break;
+    }
+    return Future.value(true);
+  });
+}
+
+registerBackgroundTask() async{
+  await Workmanager().initialize(callbackDispatcher);
+  await Workmanager().registerPeriodicTask(
+    "1",
+    logFileUpload,
+    frequency: Duration(hours: 1),
+    constraints: Constraints(
+      networkType: NetworkType.connected,
+    ),
+  );
+}
+
+Future<void> performarineLogFile() async {
+  final Directory directory = await getApplicationDocumentsDirectory();
+  mainFile = File('${directory.path}/performarinelogs_$formattedDate.log');
+  print("file path: $mainFile");
+}
+
+createFolder() async{
+
+  File? file;
+  final Directory documentDirectory = await getApplicationDocumentsDirectory();
+  file = File('${documentDirectory.path}/LogFiles');
+  final directory = Directory(file.path);
+
+  final debugLogFile = mainFile;
+  String debugLogFilePath = debugLogFile!.path;
+  String debugFileName = debugLogFilePath.split('/').last;
+  String debugPath = await getFile(debugFileName);
+
+  print("Debug file path is: ${debugPath}");
+  bool fileExists = await isFileExistsInFolder(file.path, debugFileName);
+  print("fileExists status: $fileExists");
+  if (!directory.existsSync()) {
+    directory.createSync(recursive: true);
+    print('Folder created successfully');
+  }
+  else{
+    print('Content not appended to file');
+  }
+  File fileee;
+  try{
+    fileee = File(debugLogFilePath);
+
+    if(fileee != null && fileee.existsSync()){
+      String data = await fileee.readAsString(encoding: Latin1Codec());
+
+      print("main data is: ${data.toString()}");
+      File files = File(debugPath);
+      files.writeAsString(data,mode: FileMode.append);
+    }
+  }catch(e){
+    print("error $e");
+  }
+
+  List<FileSystemEntity> filesList = directory.listSync();
+  filesList.sort((a, b) => a.statSync().changed.compareTo(b.statSync().changed));
+
+  print("filesList is: ${filesList}");
+  if (filesList.length > 7) {
+    File fileToDelete = filesList.first as File;
+    fileToDelete.deleteSync();
+    print('File deleted: ${fileToDelete.path}');
+  } else {
+    print('Invalid file index');
+  }
+}
+
+Future<bool> isFileExistsInFolder(String folderPath, String fileName) async {
+  final folder = Directory(folderPath);
+  if (await folder.exists()) {
+    final file = File('${folder.path}/$fileName');
+    return await file.exists();
+  }
+  return false;
+}
+
+Future<String> getFile(String fileName) async {
+  String folderPath = await GetOrCreateFolder().getOrCreateFolder('LogFiles');
+
+  File logFileData = File('$folderPath/$fileName');
+  return logFileData.path;
 }
 
 configEasyLoading() {
@@ -88,7 +211,7 @@ onDidReceiveBackgroundNotificationResponse(
   var pref = await SharedPreferences.getInstance();
   pref.setBool('sp_key_called_from_noti', true);
   Utils.customPrint('APP RESTART 24');
-
+  CustomLogger().logWithFile(Level.info, "APP RESTART 2 -> $page");
   /// APP RESTART
 }
 
@@ -98,14 +221,14 @@ void bgLocationCallBack() async {
   var pref = await SharedPreferences.getInstance();
   pref.setBool('sp_key_called_from_noti', true);
   Utils.customPrint('APP RESTART 23');
-
+  CustomLogger().logWithFile(Level.info, "bgLocationCallBack APP RESTART 23-> $page");
   /// APP RESTART
 }
 
 onDidReceiveLocalNotification(
     int id, String? title, String? body, String? payload) {
   Utils.customPrint('APP RESTART 3');
-
+  CustomLogger().logWithFile(Level.info, "APP RESTART 3");
   /// APP RESTART
 }
 
@@ -142,16 +265,18 @@ Future<void> initializeService() async {
   flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onDidReceiveNotificationResponse: (value) async {
     Utils.customPrint('APP RESTART 1');
+    CustomLogger().logWithFile(Level.info, "APP RESTART 1 -> $page");
 
     if (value.id == 776 || value.id == 1 || value.id == 889) {
       Utils.customPrint('NOTIFICATION ID: ${value.id}');
+      CustomLogger().logWithFile(Level.info, "NOTIFICATION ID: ${value.id} -> $page ");
       var pref = await SharedPreferences.getInstance();
       pref.setBool('sp_key_called_from_noti', true);
       List<String>? tripData = pref.getStringList('trip_data');
       bool? isTripStarted = pref.getBool('trip_started');
 
       print("IS APP KILLED MAIN $isAppKilledFromBGMain");
-
+      CustomLogger().logWithFile(Level.info, "IS APP KILLED MAIN $isAppKilledFromBGMain -> $page ");
       if(isAppKilledFromBGMain)
         {
           Get.to(TripAnalyticsScreen(
@@ -200,14 +325,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
          isComingFromUnilink = true;
        });
 
-        print("URI: ${uri}");
+       Utils.customPrint("URI: ${uri}");
+       CustomLogger().logWithFile(Level.info, "URI: ${uri} -> $page");
         if (uri != null) {
-          print('Deep link received: $uri');
+          Utils.customPrint('Deep link received: $uri');
+          CustomLogger().logWithFile(Level.info, "Deep link received -> $page ");
+
           if(uri.queryParameters['verify'] != null){
-            print("reset: ${uri.queryParameters['verify'].toString()}");
+            Utils.customPrint("reset: ${uri.queryParameters['verify'].toString()}");
+            CustomLogger().logWithFile(Level.info, "reset: ${uri.queryParameters['verify'].toString()} -> $page ");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
 
-            print("isUserLoggedIn: $isUserLoggedIn");
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page ");
             Map<String, dynamic> arguments = {
               "isComingFromReset": true,
               "token": uri.queryParameters['verify'].toString()
@@ -218,21 +348,24 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   {
                     sharedPreferences!.setBool('reset_dialog_opened', false);
                     Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
-
+                    CustomLogger().logWithFile(Level.info, "User navigating to home page -> $page ");
                   }
               }
             else
               {
                 Get.to(ResetPassword(token: uri.queryParameters['verify'].toString(),));
+                CustomLogger().logWithFile(Level.info, "User navigating to reset password screen -> $page ");
               }
 
           }
         }
       }, onError: (err) {
-        print('Error handling deep link: $err');
+        Utils.customPrint('Error handling deep link: $err');
+        CustomLogger().logWithFile(Level.error, "Error handling deep link: $err -> $page ");
       });
     } on PlatformException {
-      print("Exception while handling with uni links : ${PlatformException}");
+      Utils.customPrint("Exception while handling with uni links : ${PlatformException}");
+      CustomLogger().logWithFile(Level.error, "Exception while handling with uni links : ${PlatformException} -> $page ");
     }
   }
 
@@ -242,6 +375,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     initDeepLinkListener();
     Utils.customPrint('APP IN BG INIT');
+    CustomLogger().logWithFile(Level.info, "APP IN BG INIT -> -> $page ");
   }
 
   getTripData()async
@@ -250,6 +384,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     sharedPreferences!.getBool('trip_started');
 
     print("TRIP IN PROGRESS MAIN $isTripStarted");
+    CustomLogger().logWithFile(Level.info, "TRIP IN PROGRESS MAIN $isTripStarted -> $page");
   }
 
   @override
@@ -259,6 +394,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     _sub?.cancel();
     super.dispose();
     Utils.customPrint('APP IN BG DISPOSE');
+    CustomLogger().logWithFile(Level.info, "APP IN BG DISPOSE -> $page");
   }
 
   @override
@@ -290,6 +426,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         String? result = sharedPreferences!.getString('tripAvgSpeed');
 
         print("RESUME MAIN $result");
+        CustomLogger().logWithFile(Level.info, "RESUME MAIN $result -> $page");
 
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
           await Future.delayed(Duration(seconds: 1), () async {
@@ -339,6 +476,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   EasyLoading.dismiss();
 
                   print("LIFE CYCLE KILLED $isAppKilledFromBGMain");
+                  CustomLogger().logWithFile(Level.info, "LIFE CYCLE KILLED $isAppKilledFromBGMain -> $page");
 
                   if(isAppKilledFromBGMain)
                     {
@@ -347,6 +485,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                         vesselId: tripData[1],
                         isAppKilled: false,
                         tripIsRunningOrNot: isTripStarted));
+                      CustomLogger().logWithFile(Level.info, "User navigating to trip analytics screen :: isAppKilledFromBGMain $isAppKilledFromBGMain -> $page");
                     }
                   else
                     {
@@ -355,6 +494,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                           vesselId: tripData[1],
                           isAppKilled: true,
                           tripIsRunningOrNot: isTripStarted));
+                      CustomLogger().logWithFile(Level.info, "User navigating to trip analytics screen :: isAppKilledFromBGMain $isAppKilledFromBGMain -> $page");
                     }
 
 
@@ -383,9 +523,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.inactive:
         print('\n\ninactive');
+        CustomLogger().logWithFile(Level.info, "App is inActive -> $page");
         break;
       case AppLifecycleState.paused:
         print('\n\npaused');
+        CustomLogger().logWithFile(Level.info, "App is paused -> $page");
         sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences!.reload();
         break;
@@ -397,6 +539,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         String? result = sharedPreferences!.getString('tripAvgSpeed');
 
         print("DETACH MAIN $result");
+        CustomLogger().logWithFile(Level.info, "DETACH MAIN $result -> $page");
 
         print('\n\ndetached');
         break;

@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/location_dto.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/analytics/create_zip.dart';
 import 'package:performarine/analytics/location_service_repository.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -11,7 +12,10 @@ import 'package:performarine/main.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../common_widgets/widgets/log_level.dart';
+
 class EndTrip {
+  String page = "End_trip";
   endTrip({
     BuildContext? context,
     GlobalKey<ScaffoldState>? scaffoldKey,
@@ -21,10 +25,13 @@ class EndTrip {
     IOSpeed = "",
     IOSAvgSpeed = "",
   }) async {
+
     Utils.customPrint("END TRIP FUNCTIONALITY");
+    CustomLogger().logWithFile(Level.info, "END TRIP FUNCTIONALITY -> -> $page");
     WidgetsFlutterBinding.ensureInitialized();
     await sharedPreferences!.reload();
-    debugPrint("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance");
+
+    CustomLogger().logWithFile(Level.info, "abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance -> $page");
     ReceivePort port = ReceivePort();
     String? latitude, longitude;
     port.listen((dynamic data) async {
@@ -38,9 +45,11 @@ class EndTrip {
     });
 
     debugPrint("endtrip location:$latitude");
+    CustomLogger().logWithFile(Level.info, "endtrip location:$latitude -> $page");
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
     Utils.customPrint('TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')}');
+    CustomLogger().logWithFile(Level.info, "TIMER STOPPED 121212 ${sharedPreferences!.getStringList('trip_data')} -> $page");
 
     String tripId = tripData![0];
     String vesselId = tripData[1];
@@ -83,6 +92,10 @@ class EndTrip {
     debugPrint("END TRIP 1 $latitude");
     debugPrint("END TRIP 2 $longitude");
     debugPrint("END TRIP 3 $tripDistance");
+
+    CustomLogger().logWithFile(Level.info, "END TRIP 1 $latitude -> $page");
+    CustomLogger().logWithFile(Level.info, "END TRIP 2 $longitude -> $page");
+    CustomLogger().logWithFile(Level.info, "END TRIP 3 $tripDistance -> $page");
     await DatabaseService().updateTripStatus(
         1,
         file.path,

@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -17,6 +18,7 @@ import 'package:performarine/pages/coming_soon_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../common_widgets/widgets/log_level.dart';
 import '../web_navigation/privacy_and_policy_web_view.dart';
 import '../web_navigation/terms_and_condition_web_view.dart';
 
@@ -58,6 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isChecked = false;
 
   late CommonProvider commonProvider;
+  String page = "Sign_up_screen";
 
   GoogleSignIn googleSignIn = GoogleSignIn(
     scopes: <String>[
@@ -188,17 +191,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         Utils.customPrint(
                                             'NAME: ${googleSignInAccount.id}');
                                         Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.email}');
+                                            'Email: ${googleSignInAccount.email}');
                                         Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.displayName}');
+                                            'Display Name: ${googleSignInAccount.displayName}');
                                         Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.photoUrl}');
+                                            'PhotoURL: ${googleSignInAccount.photoUrl}');
                                         Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.serverAuthCode}');
+                                            'ServerAuthCode: ${googleSignInAccount.serverAuthCode}');
                                         Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.authHeaders}');
+                                            'AuthHeaders: ${googleSignInAccount.authHeaders}');
                                         Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.toString()}');
+                                            'Google SignIn Account: ${googleSignInAccount.toString()}');
+
+                                        CustomLogger().logWithFile(Level.info, "NAME: ${googleSignInAccount.id} -> $page");
+                                        CustomLogger().logWithFile(Level.info, "Email: ${googleSignInAccount.email} -> $page");
+                                        CustomLogger().logWithFile(Level.info, "Display Name: ${googleSignInAccount.displayName} -> $page");
+                                        CustomLogger().logWithFile(Level.info, "PhotoURL: ${googleSignInAccount.photoUrl} -> $page");
+                                        CustomLogger().logWithFile(Level.info, "ServerAuthCode: ${googleSignInAccount.serverAuthCode} -> $page");
+                                        CustomLogger().logWithFile(Level.info, "AuthHeaders: ${googleSignInAccount.authHeaders} -> $page");
+                                        CustomLogger().logWithFile(Level.info, "Google SignIn Account: ${googleSignInAccount.toString()} -> $page");
 
                                         setState(() {
                                           isGoogleSignInBtnClicked = true;
@@ -266,6 +277,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         });
                                       } catch (e) {
                                         Utils.customPrint('EXE: $e');
+                                        CustomLogger().logWithFile(Level.error, "EXE: $e -> $page");
                                         // TODO handle
                                       }
                                     }
@@ -294,6 +306,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             selectedCountry = value;
 
                             Utils.customPrint('country $selectedCountry');
+                            CustomLogger().logWithFile(Level.info, "country $selectedCountry -> $page");
                           });
                         },
                         dataSource: [
@@ -346,6 +359,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Zip code or Postal Code $value -> $page");
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
@@ -387,6 +401,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Email $value -> $page");
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
@@ -417,6 +432,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Mobile Number $value -> $page");
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
@@ -448,6 +464,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Create Password $value -> $page");
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
@@ -482,6 +499,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Confirm Password $value -> $page");
                         }),
                     SizedBox(height: displayHeight(context) * 0.03),
                     CircularRadioTile(

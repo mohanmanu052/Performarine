@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -13,6 +14,7 @@ import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import 'dart:io';
 
@@ -47,6 +49,8 @@ class _TripViewListingState extends State<TripViewListing> {
     }
     return getTripsByIdFuture;
   }
+
+  String page = "Trip_View_builder";
 
   @override
   void initState() {
@@ -102,6 +106,8 @@ class _TripViewListingState extends State<TripViewListing> {
                           Utils.customPrint("TRIP DETAILS ${snapshot.data!.length}");
                           Utils.customPrint(
                               "TRIP DETAILS 1 ${snapshot.data![0].distance}");
+                          CustomLogger().logWithFile(Level.info, "TRIP DETAILS ${snapshot.data!.length} -> $page");
+                          CustomLogger().logWithFile(Level.info, "TRIP DETAILS 1 ${snapshot.data![0].distance}-> $page");
                           return Padding(
                             padding: const EdgeInsets.only(
                                 left: 8.0, right: 8.0, top: 8.0),
@@ -144,6 +150,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                                   1000)
                                                   .toInt());
                                           debugPrint("DURATION !!!!!! $tripDuration");
+                                          CustomLogger().logWithFile(Level.info, "DURATION !!!!!! $tripDuration -> $page");
 
                                           bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
@@ -153,11 +160,13 @@ class _TripViewListingState extends State<TripViewListing> {
                                                   endTripBtnClick: (){
                                                     endTripMethod(tripDuration, snapshot.data![index]);
                                                     debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
+                                                    CustomLogger().logWithFile(Level.info, "SMALL TRIPP IDDD ${snapshot.data![index].id!} -> $page");
 
                                                     Future.delayed(Duration(seconds: 1), (){
                                                       if(!isSmallTrip)
                                                       {
                                                         debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
+                                                        CustomLogger().logWithFile(Level.info, "SMALL TRIPP IDDD 11 ${snapshot.data![index].id!} -> $page");
                                                         DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
                                                       }
                                                     });
@@ -186,6 +195,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                                             1000)
                                                             .toInt());
                                                     debugPrint("DURATION !!!!!! $tripDuration");
+                                                    CustomLogger().logWithFile(Level.info, "DURATION !!!!!! $tripDuration -> $page");
 
                                                     endTripMethod(tripDuration, snapshot.data![index]);
 
@@ -247,6 +257,7 @@ class _TripViewListingState extends State<TripViewListing> {
     setState(() {
       tripIsRunning = result;
       Utils.customPrint('Trip is Running $tripIsRunning');
+      CustomLogger().logWithFile(Level.info, "Trip is Running $tripIsRunning -> $page");
       setState(() {
         trip.isEndTripClicked = false;
       });
@@ -284,6 +295,7 @@ class _TripViewListingState extends State<TripViewListing> {
             .toInt());
 
     print('***DIST: ${currentTrip.toJson()}');
+    CustomLogger().logWithFile(Level.info, "***DIST: ${currentTrip.toJson()} -> $page");
 
     EndTrip().endTrip(
         context: context,

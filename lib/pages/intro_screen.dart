@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/analytics/file_manager.dart';
 import 'package:performarine/analytics/location_callback_handler.dart';
 import 'package:performarine/analytics/location_service_repository.dart';
@@ -26,6 +27,7 @@ import 'package:performarine/pages/trip_analytics.dart';
 import 'package:uni_links/uni_links.dart';
 
 import '../common_widgets/utils/constants.dart';
+import '../common_widgets/widgets/log_level.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({Key? key}) : super(key: key);
@@ -37,6 +39,7 @@ class IntroScreen extends StatefulWidget {
 class _IntroScreenState extends State<IntroScreen> {
   bool? isBtnVisible = false, isTripRunningCurrently = false;
   StreamSubscription? _sub;
+  String page = "Intro_screen";
 
   @override
   void initState() {
@@ -158,6 +161,8 @@ class _IntroScreenState extends State<IntroScreen> {
     bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
 
     Utils.customPrint('INTRO START $isTripStarted');
+    CustomLogger().logWithFile(Level.info, "INTRO START $isTripStarted -> $page");
+    CustomLogger().logWithFile(Level.info, "INTRO START $isTripStarted -> $page");
 
     setState(() {
       isTripRunningCurrently = isTripStarted;
@@ -186,6 +191,7 @@ class _IntroScreenState extends State<IntroScreen> {
 
       if (notificationAppLaunchDetails == null) {
         Utils.customPrint('NotificationAppLaunchDetails IS NULL');
+        CustomLogger().logWithFile(Level.info, "NotificationAppLaunchDetails IS NULL -> $page");
         Future.delayed(Duration(seconds: 3), () {
           if (mounted) {
             setState(() {
@@ -196,6 +202,7 @@ class _IntroScreenState extends State<IntroScreen> {
       } else {
         if (!notificationAppLaunchDetails.didNotificationLaunchApp) {
           Utils.customPrint('NotificationAppLaunchDetails IS FALSE');
+          CustomLogger().logWithFile(Level.info, "NotificationAppLaunchDetails IS FALSE -> $page");
 
           Future.delayed(Duration(seconds: 3), () {
             if (mounted) {
@@ -206,6 +213,7 @@ class _IntroScreenState extends State<IntroScreen> {
            });
         } else {
           Utils.customPrint('NotificationAppLaunchDetails IS TRUE');
+          CustomLogger().logWithFile(Level.info, "NotificationAppLaunchDetails IS TRUE -> $page");
 
           if (notificationAppLaunchDetails.notificationResponse!.id == 889 || notificationAppLaunchDetails.notificationResponse!.id == 776 || notificationAppLaunchDetails.notificationResponse!.id == 1) {
             List<String>? tripData =
@@ -247,6 +255,9 @@ class _IntroScreenState extends State<IntroScreen> {
     Utils.customPrint('ISUSERLOGEDIN $isUserLoggedIn');
     Utils.customPrint('ISUSERLOGEDIN 1212 $isTripStarted');
 
+    CustomLogger().logWithFile(Level.info, "ISUSERLOGEDIN  $isUserLoggedIn -> $page");
+    CustomLogger().logWithFile(Level.info, "ISUSERLOGEDIN 1212 $isTripStarted -> $page");
+
     if (isTripStarted == null) {
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(
@@ -275,12 +286,14 @@ class _IntroScreenState extends State<IntroScreen> {
     }
     else if (isTripStarted) {
       Utils.customPrint('INTRO TRIP IS RUNNING $isTripStarted');
+      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING $isTripStarted -> $page");
 
       flutterLocalNotificationsPlugin.cancel(1);
 
       final _isRunning = await BackgroundLocator();
 
       Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
+      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING $_isRunning -> $page");
 
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
@@ -561,15 +574,19 @@ class _IntroScreenState extends State<IntroScreen> {
     try {
       initialLink = await getInitialUri();
       debugPrint('UNI LINK: $initialLink');
+      CustomLogger().logWithFile(Level.info, "UNI LINK: $initialLink -> $page");
 
       if(initialLink != null)
         {
           print('Deep link received: $initialLink');
+          CustomLogger().logWithFile(Level.info, "Deep link received: $initialLink -> $page");
           if(initialLink.queryParameters['verify'] != null){
             print("reset: ${initialLink.queryParameters['verify'].toString()}");
+            CustomLogger().logWithFile(Level.info, "reset: ${initialLink.queryParameters['verify'].toString()} -> $page");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
 
             print("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(Level.info, "isUserLoggedIn: $isUserLoggedIn-> $page");
             Map<String, dynamic> arguments = {
               "isComingFromReset": true,
               "token": initialLink.queryParameters['verify'].toString()
@@ -615,13 +632,17 @@ class _IntroScreenState extends State<IntroScreen> {
         });*/
 
         print("URI: ${uri}");
+        CustomLogger().logWithFile(Level.info, "URI: $uri-> $page");
         if (uri != null) {
           print('Deep link received: $uri');
+          CustomLogger().logWithFile(Level.info, "Deep link received-> $page");
           if(uri.queryParameters['verify'] != null){
             print("reset: ${uri.queryParameters['verify'].toString()}");
+            CustomLogger().logWithFile(Level.info, "reset: ${uri.queryParameters['verify'].toString()} -> $page");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
 
             print("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page");
             Map<String, dynamic> arguments = {
               "isComingFromReset": true,
               "token": uri.queryParameters['verify'].toString()
@@ -653,9 +674,11 @@ class _IntroScreenState extends State<IntroScreen> {
           }
       }, onError: (err) {
         print('Error handling deep link: $err');
+        CustomLogger().logWithFile(Level.error, "Error handling deep link -> $page");
       });
     } on PlatformException {
       print("Exception while handling with uni links : ${PlatformException}");
+      CustomLogger().logWithFile(Level.error, "Exception while handling with uni links : ${PlatformException} -> $page");
     }
   }
 }

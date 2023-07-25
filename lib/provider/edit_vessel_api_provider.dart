@@ -3,13 +3,17 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/models/add_vessel_model.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 
+import '../common_widgets/widgets/log_level.dart';
+
 class EditVesselApiProvider with ChangeNotifier {
   AddVesselModel? addVesselModel;
+  String page = "Edit_vessel_api_provider";
 
   Future<AddVesselModel> editVesselData(
       BuildContext context,
@@ -18,6 +22,7 @@ class EditVesselApiProvider with ChangeNotifier {
       String vesselId,
       String accessToken,
       GlobalKey<ScaffoldState> scaffoldKey) async {
+
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
       "x_access_token": '$accessToken',
@@ -96,9 +101,16 @@ class EditVesselApiProvider with ChangeNotifier {
 // here
       if (responseValue.statusCode == HttpStatus.ok) {
         Utils.customPrint('Register Response : ' + responseValue.body);
+        CustomLogger().logWithFile(Level.info, "Register Response : ' + ${responseValue.body} -> $page");
+        CustomLogger().logWithFile(Level.info, "API response is ${responseValue.statusCode} on -> $page");
 
         addVesselModel =
             AddVesselModel.fromJson(json.decode(responseValue.body));
+
+        if(addVesselModel == null){
+          CustomLogger().logWithFile(Level.error, "Error while parsing json data on -> $page");
+        }
+        CustomLogger().logWithFile(Level.info, "Register Response: ' + ${json.decode(responseValue.body)} + '-> $page");
 
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
@@ -107,6 +119,9 @@ class EditVesselApiProvider with ChangeNotifier {
       } else if (responseValue.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
         Utils.customPrint('EXE RESP: $responseValue');
+
+        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.error, "EXE RESP: $responseValue -> $page");
 
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -122,15 +137,20 @@ class EditVesselApiProvider with ChangeNotifier {
 
         Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
         Utils.customPrint('EXE RESP: $responseValue');
+        CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.info, "EXE RESP: $responseValue -> $page");
       }
       addVesselModel = null;
     } on SocketException catch (_) {
       await Utils().check(scaffoldKey);
       Utils.customPrint('Socket Exception');
+      CustomLogger().logWithFile(Level.error, "Socket Exception -> $page");
 
       addVesselModel = null;
     } catch (exception, s) {
-      Utils.customPrint('error caught login:- $exception \n $s');
+      Utils.customPrint('error caught edit vessel api provider:- $exception \n $s');
+      CustomLogger().logWithFile(Level.error, "error caught edit vessel api provider:- $exception \n $s");
+
       addVesselModel = null;
     }
 

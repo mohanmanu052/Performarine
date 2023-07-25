@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/get_or_create_folder.dart';
@@ -16,6 +17,8 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
+
+import '../../common_widgets/widgets/log_level.dart';
 
 // Add new vessel step two
 class AddNewVesselStepTwo extends StatefulWidget {
@@ -60,6 +63,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
   late CommonProvider commonProvider;
 
   bool? isBtnClicked = false;
+  String page = "Add_new_vessel_step_two";
 
   @override
   void initState() {
@@ -142,6 +146,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       },
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "Vessel Freeboard $value -> $page");
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -168,6 +173,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       },
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "Vessel Length Overall $value -> $page");
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -195,6 +201,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       },
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "Vessel Beam $value -> $page");
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -222,6 +229,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       },
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "Vessel Draft $value -> $page");
                       }),
                   SizedBox(height: displayHeight(context) * 0.025),
                   commonText(
@@ -256,6 +264,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       },
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "Vessel Size $value -> $page");
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -282,6 +291,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       },
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "Vessel Capacity $value -> $page");
                       }),
                   SizedBox(height: displayHeight(context) * 0.015),
                   CommonTextField(
@@ -312,6 +322,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       },
                       onSaved: (String value) {
                         Utils.customPrint(value);
+                        CustomLogger().logWithFile(Level.info, "Built year: $value -> $page");
                       }),
                 ],
               ),
@@ -380,11 +391,13 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                   .selectedImages!.isNotEmpty) {
                                 print(
                                     'XXXXX:${commonProvider.addVesselRequestModel!.selectedImages!}');
+                                CustomLogger().logWithFile(Level.info, "XXXXX:${commonProvider.addVesselRequestModel!.selectedImages!} -> $page");
                                 String vesselImagesDirPath =
                                     await GetOrCreateFolder()
                                         .getOrCreateFolderForAddVessel();
                                 Utils.customPrint(
                                     'FOLDER PATH: $vesselImagesDirPath');
+                                CustomLogger().logWithFile(Level.info, "FOLDER PATH: $vesselImagesDirPath -> $page");
 
                                 File copiedFile = File(commonProvider
                                     .addVesselRequestModel!
@@ -416,6 +429,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                     'COPIED FILE PATH: ${directory.path}');
                                 Utils.customPrint(
                                     'COPIED FILE PATH EXISTS: ${File(directory.path).existsSync()}');
+                                CustomLogger().logWithFile(Level.info, "DOES FILE EXIST: ${copiedFile.existsSync()} -> $page");
+                                CustomLogger().logWithFile(Level.info, "COPIED FILE PATH: ${copiedFile.path} -> $page");
+                                CustomLogger().logWithFile(Level.info, "COPIED FILE PATH: ${directory.path} -> $page");
 
                                 commonProvider.addVesselRequestModel!
                                     .imageURLs = directory.path;
@@ -436,6 +452,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                     'VESSEL NAME: ${widget.addVesselData!.name}');
                                 Utils.customPrint(
                                     'VESSEL NAME: ${commonProvider.addVesselRequestModel!.toMap()}');
+
+                                CustomLogger().logWithFile(Level.info, "VESSEL NAME: ${widget.addVesselData!.name} -> $page");
+                                CustomLogger().logWithFile(Level.info, "VESSEL NAME: ${commonProvider.addVesselRequestModel!.toMap()} -> $page");;
 
                                 await _databaseService
                                     .updateVessel(
@@ -458,6 +477,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                         commonProvider
                                             .addVesselRequestModel!.name!,
                                         widget.addVesselData!.id!.toString());
+
+                                    CustomLogger().logWithFile(Level.info, "User Navigating to SuccessfullyAddedScreen -> $page");
 
                                     Navigator.pushReplacement(
                                       context,

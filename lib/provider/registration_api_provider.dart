@@ -3,12 +3,16 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/models/registration_model.dart';
 
+import '../common_widgets/widgets/log_level.dart';
+
 class RegistrationApiProvider with ChangeNotifier {
   RegistrationModel? registrationModel;
+  String page = "Registration_API_Provider";
 
   Future<RegistrationModel> registerUser(
       BuildContext context,
@@ -24,6 +28,7 @@ class RegistrationApiProvider with ChangeNotifier {
       String socialLoginId,
       String profileImage,
       GlobalKey<ScaffoldState> scaffoldKey) async {
+
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
@@ -61,19 +66,27 @@ class RegistrationApiProvider with ChangeNotifier {
 
     try {
       Utils.customPrint('REGISTER REQ ${jsonEncode(queryParameters)}');
+      CustomLogger().logWithFile(Level.info, "Register REQ $queryParameters -> $page");
 
       final response = await http.post(uri,
           body: jsonEncode(queryParameters), headers: headers);
 
       Utils.customPrint('REGISTER REQ : ' + response.body);
+      CustomLogger().logWithFile(Level.info, "REGISTER REs : ' + ${response.body} -> $page");
 
       var decodedData = json.decode(response.body);
 
       if (response.statusCode == HttpStatus.ok) {
         Utils.customPrint('Register Response : ' + response.body);
 
+        CustomLogger().logWithFile(Level.info, "Register Response : ' + ${response.body}-> $page");
+        CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.registrationUrl}  is: ${response.statusCode}-> $page");
+
         registrationModel =
             RegistrationModel.fromJson(json.decode(response.body));
+        if(registrationModel == null){
+          CustomLogger().logWithFile(Level.error, "Error while parsing json data on registrationModel -> $page");
+        }
 
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
@@ -82,6 +95,10 @@ class RegistrationApiProvider with ChangeNotifier {
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
+
+        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
+
 
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -97,16 +114,21 @@ class RegistrationApiProvider with ChangeNotifier {
 
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
+
+        CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.info, "EXE RESP: $response -> $page");
       }
       registrationModel = null;
     } on SocketException catch (_) {
       await Utils().check(scaffoldKey);
 
       Utils.customPrint('Socket Exception');
+      CustomLogger().logWithFile(Level.error, "Socket Exception -> $page");
 
       registrationModel = null;
     } catch (exception, s) {
-      Utils.customPrint('error caught login:- $exception \n $s');
+      Utils.customPrint('error caught registration:- $exception \n $s');
+      CustomLogger().logWithFile(Level.error, "error caught registration:- $exception \n $s -> $page");
       registrationModel = null;
     }
 

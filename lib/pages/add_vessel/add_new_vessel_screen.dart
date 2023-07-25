@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -10,6 +11,7 @@ import 'package:performarine/pages/add_vessel/add_new_vessel_step_two.dart';
 import 'package:performarine/pages/home_page.dart';
 
 import '../../common_widgets/utils/colors.dart';
+import '../../common_widgets/widgets/log_level.dart';
 
 //Add new vessel page
 class AddNewVesselScreen extends StatefulWidget {
@@ -31,11 +33,11 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
   late PageController pageController;
 
   int pageIndex = 0;
+  String page = "Add_new_vessel_screen";
 
   @override
   void initState() {
     super.initState();
-
     pageController = PageController();
   }
 
@@ -72,6 +74,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
           leading: IconButton(
             onPressed: () {
               if (widget.calledFrom == 'SuccessFullScreen') {
+                CustomLogger().logWithFile(Level.info, "User navigating to Home page -> $page");
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
@@ -116,6 +119,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                       pageIndex = value;
                     });
                     Utils.customPrint('PAGEVIEW INDEX $pageIndex');
+                    CustomLogger().logWithFile(Level.info, "PAGEVIEW INDEX $pageIndex -> $page");
                   },
                   children: [
                     AddVesselStepOne(

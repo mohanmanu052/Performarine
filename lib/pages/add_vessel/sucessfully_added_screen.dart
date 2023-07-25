@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import 'package:lottie/lottie.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -9,6 +10,8 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
+
+import '../../common_widgets/widgets/log_level.dart';
 
 //Successfully added screen
 class SuccessfullyAddedScreen extends StatefulWidget {
@@ -24,6 +27,7 @@ class SuccessfullyAddedScreen extends StatefulWidget {
 
 class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+  String page = "Successfully_added_screen";
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +70,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
               width: displayWidth(context),
               onTap: () {
                 if (widget.isEdit!) {
+                  CustomLogger().logWithFile(Level.info, "User Navigating to VesselSingleView -> $page");
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -73,6 +78,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                             VesselSingleView(vessel: widget.data!)),
                   );
                 } else {
+                  CustomLogger().logWithFile(Level.info, "User Navigating to AddNewVesselScreen -> $page");
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -88,6 +94,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
           leading: IconButton(
             onPressed: () {
               if (widget.isEdit!) {
+                CustomLogger().logWithFile(Level.info, "User Navigating to VesselSingleView -> $page");
                 // Navigator.of(context).pop([true, widget.data]);
                 Navigator.push(
                   context,
@@ -98,6 +105,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                           )),
                 );
               } else {
+                CustomLogger().logWithFile(Level.info, "User Navigating to Home Page -> $page");
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
@@ -134,6 +142,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     child: Lottie.asset('assets/lottie/done.json')),
                 vesselSingleViewCard(context, widget.data!,
                     (CreateVessel value) {
+                      CustomLogger().logWithFile(Level.info, "User Navigating to Vessel Single View -> $page");
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -150,6 +159,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     ),
                     InkWell(
                       onTap: () {
+                        CustomLogger().logWithFile(Level.info, "User Navigating to Home Page -> $page");
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(

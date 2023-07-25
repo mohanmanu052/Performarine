@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +12,7 @@ import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/common_text_feild.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
 import '../../common_widgets/widgets/custom_dialog_new.dart';
+import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/zig_zag_line_widget.dart';
 import '../../provider/common_provider.dart';
 
@@ -32,9 +34,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   late CommonProvider commonProvider;
   bool? isBtnClick = false;
 
+  String page = "forgot_password";
+
   @override
   void initState() {
     super.initState();
+
     commonProvider = context.read<CommonProvider>();
     emailController = TextEditingController();
   }
@@ -121,6 +126,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Email $value -> $page");
                         }),
 
                     SizedBox(height: displayHeight(context) * 0.27),
@@ -151,7 +157,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     isBtnClick = false;
                                   });
                                   print("status code of forgot password: ${value.statusCode}");
+                                  CustomLogger().logWithFile(Level.info, "status code of forgot password: ${value.statusCode} -> $page");
                                   if(value.statusCode == 200){
+                                    CustomLogger().logWithFile(Level.info, "User navigating to Sign in Screen -> $page");
                                     Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(

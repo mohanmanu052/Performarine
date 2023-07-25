@@ -5,6 +5,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/end_trip.dart';
@@ -20,6 +21,7 @@ import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
+import '../../common_widgets/widgets/log_level.dart';
 import '../../models/trip.dart';
 
 class TripListScreen extends StatefulWidget {
@@ -67,6 +69,8 @@ class _TripListScreenState extends State<TripListScreen> {
 
   String selectedVesselWeight = 'Select Current Load';
 
+  String page = "Trip_list_screen";
+
   final DatabaseService _databaseService = DatabaseService();
 
   late Future<List<Trip>> future;
@@ -102,6 +106,7 @@ class _TripListScreenState extends State<TripListScreen> {
             model: iosDeviceInfo?.model,
             version: iosDeviceInfo?.utsname.release);
     Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
+    CustomLogger().logWithFile(Level.info, "deviceDetails:${deviceDetails!.toJson().toString()}-> $page");
   }
 
   @override
@@ -258,6 +263,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                 String? tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
 
                                 debugPrint("ERROR ERROR $tripDistance\n$tripSpeed\ntripAvgSpeed");
+                                CustomLogger().logWithFile(Level.error, "ERROR ERROR $tripDistance\n$tripSpeed\ntripAvgSpeed-> $page");
 
                                 EndTrip().endTrip(
                                     context: context,
@@ -380,6 +386,7 @@ class _TripListScreenState extends State<TripListScreen> {
                             },
                             onEnd: () {
                               Utils.customPrint('END');
+                              CustomLogger().logWithFile(Level.info, "End -> $page");
                               stateSetter(() {
                                 isStartButton = true;
                               });
@@ -593,6 +600,7 @@ class _TripListScreenState extends State<TripListScreen> {
 
                                     Utils.customPrint(
                                         'DOES FILE EXIST: ${copiedFile.existsSync()}');
+                                    CustomLogger().logWithFile(Level.info, "DOES FILE EXIST: ${copiedFile.existsSync()}-> $page");
 
                                     if (copiedFile.existsSync()) {
                                       Utils.showSnackBar(context,
@@ -816,6 +824,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                       if (timer != null) timer!.cancel();
                                       Utils.customPrint(
                                           'TIMER STOPPED ${ourDirectory!.path}');
+                                      CustomLogger().logWithFile(Level.info, "TIMER STOPPED ${ourDirectory!.path} -> $page");
                                       final dataDir =
                                           Directory(ourDirectory!.path);
 
@@ -829,8 +838,10 @@ class _TripListScreenState extends State<TripListScreen> {
                                             recurseSubDirs: true);
                                         Utils.customPrint(
                                             'our path is $dataDir');
+                                        CustomLogger().logWithFile(Level.info, "our path is $dataDir -> $page");
                                       } catch (e) {
                                         Utils.customPrint('$e');
+                                        CustomLogger().logWithFile(Level.error, "$e-> $page");
                                       }
 
                                       File file = File(zipFile!.path);
@@ -842,6 +853,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                       });
                                       Utils.customPrint(
                                           'FINAL PATH: ${file.path}');
+                                      CustomLogger().logWithFile(Level.info, "FINAL PATH: ${file.path} -> $page");
                                       onSave(file);
                                     })
                                 : CommonButtons.getActionButton(
@@ -914,6 +926,8 @@ class _TripListScreenState extends State<TripListScreen> {
 
     Utils.customPrint('LAT ${latitude}');
     Utils.customPrint('LONG ${longitude}');
+    CustomLogger().logWithFile(Level.info, "LONG ${longitude} -> $page");
+    CustomLogger().logWithFile(Level.info, "LONG ${longitude} -> $page");
 
     return;
   }
@@ -922,7 +936,9 @@ class _TripListScreenState extends State<TripListScreen> {
     fileName = '$fileIndex.csv';
 
     Utils.customPrint('CREATE TRIP $fileName');
+    CustomLogger().logWithFile(Level.info, "CREATE TRIP $fileName -> $page");
     Utils.customPrint(widget.vesselId.toString());
+    CustomLogger().logWithFile(Level.info, "${widget.vesselId.toString()} -> $page");
     writeSensorDataToFile(widget.vesselId!);
     stateSetter(() {
       isStartButton = false;
@@ -940,6 +956,9 @@ class _TripListScreenState extends State<TripListScreen> {
     if (fileSize >= 10) {
       Utils.customPrint('STOPPED WRITING');
       Utils.customPrint('CREATING NEW FILE');
+
+      CustomLogger().logWithFile(Level.info, "STOPPED WRITING -> $page");
+      CustomLogger().logWithFile(Level.info, "CREATING NEW FILE -> $page");
       // if (timer != null) timer!.cancel();
       // Utils.customPrint('TIMER STOPPED');
 
@@ -949,18 +968,23 @@ class _TripListScreenState extends State<TripListScreen> {
         fileName = '$fileIndex.csv';
 
         Utils.customPrint('FILE NAME: $fileName');
+        CustomLogger().logWithFile(Level.info, "FILE NAME: $fileName -> $page");
       });
       Utils.customPrint('NEW FILE CREATED');
+      CustomLogger().logWithFile(Level.info, "NEW FILE CREATED -> $page");
 
       /// STOP WRITING & CREATE NEW FILE
     } else {
       Utils.customPrint('WRITING');
+      CustomLogger().logWithFile(Level.info, "WRITING -> $page");
 
       latitude = '0.0';
       longitude = '0.0';
 
       Utils.customPrint('LAT ${latitude}');
       Utils.customPrint('LONG ${longitude}');
+      CustomLogger().logWithFile(Level.info, "LAT ${latitude} -> $page");
+      CustomLogger().logWithFile(Level.info, "LONG ${longitude} -> $page");
 
       String acc = convertDataToString('AAC', _accelerometerValues ?? []);
       String uacc = convertDataToString('UACC', _userAccelerometerValues ?? []);
@@ -992,6 +1016,10 @@ class _TripListScreenState extends State<TripListScreen> {
       Utils.customPrint('FILE SIZE: $sizeInMB');
       Utils.customPrint('FILE SIZE KB: $sizeInKB');
       Utils.customPrint('FINAL FILE SIZE: $finalSizeInMB');
+
+      CustomLogger().logWithFile(Level.info, "FILE SIZE: $sizeInMB -> $page");
+      CustomLogger().logWithFile(Level.info, "FILE SIZE KB: $sizeInKB -> $page");
+      CustomLogger().logWithFile(Level.info, "FINAL FILE SIZE: $finalSizeInMB -> $page");
       return sizeInKB.toInt();
     } else {
       return -1;
@@ -1019,6 +1047,7 @@ class _TripListScreenState extends State<TripListScreen> {
     ourDirectory = Directory('${appDirectory.path}/$tripId');
 
     Utils.customPrint('FOLDER PATHH $ourDirectory');
+    CustomLogger().logWithFile(Level.info, "FOLDER PATHH $ourDirectory -> $page");
     var status = await Permission.storage.status;
     if (!status.isGranted) {
       await Permission.storage.request();
@@ -1040,6 +1069,7 @@ class _TripListScreenState extends State<TripListScreen> {
     String longitude = '0.0';
 
     Utils.customPrint("current lod:$currentLoad");
+    CustomLogger().logWithFile(Level.info, "current lod:$currentLoad -> $page");
     final String getTripId = ObjectId().toString();
     await _databaseService.insertTrip(Trip(
         id: getTripId,

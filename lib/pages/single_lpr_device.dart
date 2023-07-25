@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:logger/logger.dart';
+
+import '../common_widgets/widgets/log_level.dart';
 
 class SingleLPRDevice extends StatefulWidget {
   final BluetoothDevice? device;
@@ -25,6 +28,14 @@ class SingleLPRDevice extends StatefulWidget {
 class _SingleLPRDeviceState extends State<SingleLPRDevice> {
   bool isConnect = false;
   DateTime? connectDeviceClickTime;
+  String page = "single_lpr_device";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +48,15 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
         widget.device!.connect().then((value) {}).catchError((s) {
           print('ERROR $s');
+          CustomLogger().logWithFile(Level.error, "ERROR $s-> $page");
           widget.device!.state.listen((event) {
             if (event == BluetoothDeviceState.connected) {
               print('CONNECTION EVENT ${event}');
+              CustomLogger().logWithFile(Level.info, "CONNECTION EVENT ${event}-> $page");
               widget.device!.disconnect().then((value) {
                 widget.device!.connect().then((value) {
                   print('CONNECTION NAME ${widget.device!.name}');
+                  CustomLogger().logWithFile(Level.info, "CONNECTION NAME ${widget.device!.name}-> $page");
                   widget.onSelected!(
                       widget.device!.name == null || widget.device!.name.isEmpty
                           ? widget.device!.id.toString()
@@ -61,9 +75,12 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               });
             } else {
               print('ERROR CONNECTED 1212');
+              CustomLogger().logWithFile(Level.error, "ERROR CONNECTED 1212-> $page");
             }
           });
         });
+        CustomLogger().logWithFile(Level.error, "ERROR CONNECTED-> $page");
+        CustomLogger().logWithFile(Level.error, "ERROR CONNECTED FIRST-> $page");
         print('ERROR CONNECTED');
         print('ERROR CONNECTED FIRST');
 

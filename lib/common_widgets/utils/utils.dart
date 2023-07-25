@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
@@ -19,7 +20,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../widgets/log_level.dart';
+
 class Utils {
+  String page = "Utils";
   static DateTime? currentBackPressedTime;
 
   //Select images from local photos
@@ -177,6 +181,7 @@ class Utils {
   //To get storage permission of user
   static Future<bool> getStoragePermission(BuildContext context,
       [Permission permission = Permission.storage]) async {
+
     bool isPermissionGranted = false;
 
     if (Platform.isAndroid) {
@@ -200,10 +205,12 @@ class Utils {
           isPermissionGranted = false;
         }
         Utils.customPrint('PD');
+        CustomLogger().logWithFile(Level.info, "PD -> Utils");
 
         isPermissionGranted = await openAppSettings();
       } else if (await Permission.locationAlways.request().isDenied) {
         Utils.customPrint('D');
+        CustomLogger().logWithFile(Level.warning, "D -> Utils");
         isPermissionGranted = false;
       }
     } catch (e) {
@@ -215,6 +222,7 @@ class Utils {
   // Check user is connected to internet or not
   Future<bool> check(GlobalKey<ScaffoldState> scaffoldKey,
       {bool userConfig = false, VoidCallback? onRetryTap}) async {
+
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -222,6 +230,8 @@ class Utils {
       }
     } on SocketException catch (_) {
       Utils.customPrint('No Internet');
+      CustomLogger().logWithFile(Level.error, "No Internet -> $page");
+      CustomLogger().logWithFile(Level.warning, "No Internet -> $page");
       showDialog(
           context: scaffoldKey.currentContext!,
           builder: (BuildContext context) {
@@ -246,6 +256,7 @@ class Utils {
   //To get user notification permission
   static Future<bool> getNotificationPermission(BuildContext context,
       [Permission permission = Permission.notification]) async {
+
     bool isPermissionGranted = false;
 
     /*final androidInfo = await DeviceInfoPlugin().androidInfo;
@@ -262,10 +273,12 @@ class Utils {
       } else if (await permission.request().isPermanentlyDenied) {
         isPermissionGranted = false;
         Utils.customPrint('PD');
+        CustomLogger().logWithFile(Level.warning, "PD -> Utils");
 
         isPermissionGranted = await openAppSettings();
       } else if (await Permission.notification.request().isDenied) {
         Utils.customPrint('D');
+        CustomLogger().logWithFile(Level.warning, "D -> Utils");
         isPermissionGranted = false;
         //getStoragePermission(context, scaffoldKey);
       }
@@ -389,9 +402,11 @@ class Utils {
     var now = tz.TZDateTime.now(canada).toUtc();
     var localNow = DateTime.now();
     Utils.customPrint(DateFormat('dd-MM-yyyy hh:mm a').format(now));
+    CustomLogger().logWithFile(Level.info, "${DateFormat('dd-MM-yyyy hh:mm a').format(now)} -> Utils");
 
     /// TZ
     Utils.customPrint(DateFormat('dd-MM-yyyy hh:mm a').format(localNow));
+    CustomLogger().logWithFile(Level.info, "${DateFormat('dd-MM-yyyy hh:mm a').format(localNow)} -> Utils");
 
     /// LOCAL
     return now.toString();

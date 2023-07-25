@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +11,7 @@ import '../../common_widgets/utils/utils.dart';
 import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/common_text_feild.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
+import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/zig_zag_line_widget.dart';
 import '../../main.dart';
 import '../../provider/common_provider.dart';
@@ -42,9 +44,12 @@ class _ChangePasswordState extends State<ChangePassword> {
   bool? isBtnClick = false;
   final DatabaseService _databaseService = DatabaseService();
 
+  String page = "change_password";
+
   @override
   void initState() {
     super.initState();
+
     commonProvider = context.read<CommonProvider>();
     currentPasswordController = TextEditingController();
     newPasswordController = TextEditingController();
@@ -135,6 +140,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "Current Password: $value -> $page");
                           }),
 
                       SizedBox(height: displayWidth(context) * 0.03),
@@ -174,6 +180,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "New Password: $value -> $page");
                           }),
                       SizedBox(height: displayWidth(context) * 0.03),
 
@@ -215,6 +222,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "Confirm New Password: $value -> $page");
                           }),
 
                       SizedBox(height: displayHeight(context) * 0.2),
@@ -249,6 +257,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                     });
 
                                     print("Status code of change password is: ${value.statusCode}");
+                                    CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode} -> $page");
                                     if(value.status!){
                                       //signOut();
                                       if(widget.isChange!){
@@ -293,6 +302,8 @@ class _ChangePasswordState extends State<ChangePassword> {
 
     Utils.customPrint('DELETE $vesselDelete');
     Utils.customPrint('DELETE $tripsDelete');
+    CustomLogger().logWithFile(Level.info, "DELETE $tripsDelete -> $page");
+    CustomLogger().logWithFile(Level.info, "DELETE $tripsDelete -> $page");
 
     sharedPreferences!.clear();
     GoogleSignIn googleSignIn = GoogleSignIn(

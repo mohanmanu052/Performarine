@@ -4,10 +4,12 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
@@ -28,6 +30,7 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 
+import '../common_widgets/widgets/log_level.dart';
 import 'authentication/change_password.dart';
 
 class CustomDrawer extends StatefulWidget {
@@ -48,6 +51,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
   late List<Trip> getTrip;
   late DeviceInfoPlugin deviceDetails;
   bool isSync = false, isUploadStarted = false;
+  String page = "Custom_drawer";
+  String? chosenValue = "Info";
 
   @override
   void initState() {
@@ -118,6 +123,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     children: [
                       InkWell(
                         onTap: () {
+                          CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
                           Navigator.of(context).pop();
 
                           // throw Exception();
@@ -143,6 +149,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       InkWell(
                         onTap: () {
+                          CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
                           Navigator.of(context).pop();
 
                           Navigator.push(
@@ -165,6 +172,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       InkWell(
                         onTap: () {
+                          CustomLogger().logWithFile(Level.info, "User Navigating to Retired Vessel Screen -> $page");
                           Navigator.of(context).pop();
 
                           Navigator.push(
@@ -187,6 +195,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       InkWell(
                         onTap: () {
+                          CustomLogger().logWithFile(Level.info, "User Navigating to Search and Filter -> $page");
                           Navigator.of(context).pop();
 
                           Navigator.push(
@@ -218,6 +227,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                           Utils.customPrint(
                               "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                          CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
 
                           if (isTripStarted != null) {
                             if (isTripStarted) {
@@ -227,6 +237,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   message:
                                       'Please end the trip which is already running');
                             } else {
+                              CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -240,7 +251,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   context, widget.scaffoldKey!, false);
                             } else {
                               Navigator.of(context).pop();
-
+                              CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -258,8 +269,52 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             textSize: textSize,
                             textAlign: TextAlign.start),
                       ),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
+                      DropdownButton<String>(
+                        focusColor:Colors.transparent,
+                        value: chosenValue,
+                        //elevation: 5,
+                        style: TextStyle(color: Colors.white),
+                        iconEnabledColor:Colors.black54,
+                        items: <String>[
+                          'Info',
+                          'Debug',
+                          'Warning',
+                          'Error',
+                          'Verbose',
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value,style:TextStyle(color:Colors.black),),
+                          );
+                        }).toList(),
+                        hint:Text(
+                          chosenValue!,
+                          style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: textSize,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        onChanged: (String? value) {
+                          setState(() {
+                            chosenValue = value;
+                            if(chosenValue == "Info"){
+                              logLevel = "info";
+                            //  extractLogsFromFile(mainFile!, exportNewFile!, ['info:']);
+                            } else if(chosenValue == "Debug"){
+                              logLevel = "debug";
+                            //  extractLogsFromFile(mainFile!, exportNewFile!, ['debug:', 'info:']);
+                            } else if(chosenValue == "Warning"){
+                              logLevel = "warning";
+                             // extractLogsFromFile(mainFile!, exportNewFile!, ['debug:','info:', 'warning:']);
+                            } else if(chosenValue == "Error"){
+                              logLevel = "error";
+                            //  extractLogsFromFile(mainFile!, exportNewFile!, ['debug:','info:','warning:', 'error:']);
+                            } else if(chosenValue == "Verbose"){
+                              logLevel = "verbose";
+                             // extractLogsFromFile(mainFile!, exportNewFile!, ['debug:','info:','warning:', 'error:','verbose:']);
+                            }
+                          });
+                        },
                       ),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
@@ -291,6 +346,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                       Utils.customPrint(
                           "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                      CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
 
                       if (isTripStarted != null) {
                         if (isTripStarted) {
@@ -298,8 +354,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           showEndTripDialogBox(context, );
                         } else {
                           if (vesselsSyncDetails || tripSyncDetails) {
+                            CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
                             showDialogBoxToUploadData(context, widget.scaffoldKey!, true);
                           } else {
+                            CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -309,8 +367,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         }
                       } else {
                         if (vesselsSyncDetails || tripSyncDetails) {
+                          CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
                           showDialogBoxToUploadData(context, widget.scaffoldKey!, true);
                         } else {
+                          CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -337,6 +397,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                   InkWell(
                     onTap: () {
+                      CustomLogger().logWithFile(Level.info, "User Navigating to Terms and Conditions screen-> $page");
                       Navigator.of(context).pop();
 
                       Navigator.push(
@@ -358,6 +419,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                   InkWell(
                     onTap: () {
+                      CustomLogger().logWithFile(Level.info, "User Navigating to Privacy and Policy screen-> $page");
                       Navigator.of(context).pop();
                       Navigator.push(
                         context,
@@ -388,6 +450,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                       Utils.customPrint(
                           "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                      CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page");
 
                       if (isTripStarted != null) {
                         if (isTripStarted) {
@@ -396,6 +459,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           //     scaffoldKey: widget.scaffoldKey,
                           //     message:
                           //         'Please end the trip which is already running');
+                          CustomLogger().logWithFile(Level.warning, "show End trip dialog box for user confirmation -> $page");
 
                           showEndTripDialogBox(context);
                         } else {
@@ -479,6 +543,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     Utils.customPrint('DELETE $vesselDelete');
     Utils.customPrint('DELETE $tripsDelete');
+    CustomLogger().logWithFile(Level.info, "DELETE $vesselDelete' -> $page");
+    CustomLogger().logWithFile(Level.info, "DELETE $tripsDelete' -> $page");
 
     sharedPreferences!.clear();
     GoogleSignIn googleSignIn = GoogleSignIn(
@@ -838,11 +904,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
     Utils.customPrint("VESSEL SYNC TRIP $vesselsSyncDetails");
     Utils.customPrint("VESSEL SYNC TRIP $tripSyncDetails");
 
+    CustomLogger().logWithFile(Level.info, "VESSEL SYNC TRIP ${getTrip.length}' -> $page");
+    CustomLogger().logWithFile(Level.info, "VESSEL SYNC TRIP $vesselsSyncDetails' -> $page");
+    CustomLogger().logWithFile(Level.info, "VESSEL SYNC TRIP $tripSyncDetails' -> $page");
+
     if (vesselsSyncDetails) {
       for (int i = 0; i < getVesselFuture.length; i++) {
         var vesselSyncOrNot = getVesselFuture[i].isSync;
         Utils.customPrint(
             "VESSEL SUCCESS MESSAGE ${getVesselFuture[i].imageURLs}");
+        CustomLogger().logWithFile(Level.info, "VESSEL SUCCESS MESSAGE ${getVesselFuture[i].imageURLs}' -> $page");
 
         if (vesselSyncOrNot == 0) {
           if (getVesselFuture[i].imageURLs != null &&
@@ -857,6 +928,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
             Utils.customPrint(
                 'VESSEL Data ${File(getVesselFuture[i].imageURLs!)}');
+            CustomLogger().logWithFile(Level.info, "VESSEL Data ${File(getVesselFuture[i].imageURLs!)}' -> $page");
           } else {
             getVesselFuture[i].selectedImages = [];
           }
@@ -880,16 +952,19 @@ class _CustomDrawerState extends State<CustomDrawer> {
             }
           }).catchError((error) {
             Utils.customPrint("ADD VESSEL ERROR $error");
+            CustomLogger().logWithFile(Level.error, "ADD VESSEL ERROR $error' -> $page");
             setState(() {
               vesselErrorOccurred = true;
             });
           });
         } else {
           Utils.customPrint("VESSEL DATA NOT Uploaded");
+          CustomLogger().logWithFile(Level.error, "VESSEL DATA NOT Uploaded -> $page");
         }
       }
 
       Utils.customPrint("VESSEL DATA Uploaded");
+      CustomLogger().logWithFile(Level.info, "VESSEL DATA Uploaded -> $page");
     }
     if (tripSyncDetails) {
       for (int i = 0; i < getTrip.length; i++) {
@@ -946,6 +1021,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           };
 
           print('QQQQQQ: $queryParameters');
+          CustomLogger().logWithFile(Level.info, "QQQQQQ: $queryParameters -> $page");
 
           await commonProvider
               .sendSensorInfo(
@@ -961,17 +1037,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
               .then((value) async {
             if (value!.status!) {
               Utils.customPrint("TRIP SUCCESS MESSAGE ${value.message}");
+              CustomLogger().logWithFile(Level.info, "TRIP SUCCESS MESSAGE ${value.message}  -> $page");
 
               await _databaseService.updateTripIsSyncStatus(
                   1, getTrip[i].id.toString());
             } else {
               Utils.customPrint("TRIP MESSAGE ${value.message}");
+              CustomLogger().logWithFile(Level.info, "TRIP MESSAGE ${value.message}  -> $page");
               setState(() {
                 tripErrorOccurred = true;
               });
             }
           }).catchError((onError) {
             print('DIOOOOOOOOOOOOO');
+            CustomLogger().logWithFile(Level.error, "DIOoooooo -> $page");
             setState(() {
               tripErrorOccurred = true;
             });
@@ -1013,12 +1092,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
         signOut();
       }
       Utils.customPrint("ERROR WHILE SYNC AND SIGN OUT IF SIGN OUTT");
+      CustomLogger().logWithFile(Level.error, "ERROR WHILE SYNC AND SIGN OUT IF SIGN OUTT -> $page");
     } else {
       Utils.showSnackBar(context,
           scaffoldKey: widget.scaffoldKey,
           message: 'Failed to sync data to cloud. Please try again.');
 
       Utils.customPrint("ERROR WHILE SYNC AND SIGN OUT ELSE");
+      CustomLogger().logWithFile(Level.error, "ERROR WHILE SYNC AND SIGN OUT ELSE-> $page");
     }
   }
 
@@ -1094,6 +1175,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           () async {
 
                                         debugPrint("Click on GO TO TRIP 1");
+                                        CustomLogger().logWithFile(Level.info, "Click on go to trip 1-> $page");
 
                                         List<String>? tripData =
                                         sharedPreferences!.getStringList('trip_data');
@@ -1106,6 +1188,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         }
 
                                         debugPrint("Click on GO TO TRIP 2");
+                                        CustomLogger().logWithFile(Level.info, "Click on go to trip 2-> $page");
 
                                         Navigator.of(dialogContext).pop();
 
@@ -1128,6 +1211,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                                   tripIsRunningOrNot: tripIsRunning));*/
 
                                         debugPrint("Click on GO TO TRIP 3");
+                                        CustomLogger().logWithFile(Level.info, "Click on go to trip 3-> $page");
 
                                         //Navigator.of(context).pop();
                                       },

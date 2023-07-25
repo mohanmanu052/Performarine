@@ -9,11 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/common_model.dart';
 import 'package:performarine/models/upload_trip_model.dart';
+
+import '../common_widgets/widgets/log_level.dart';
 
 class SendSensorInfoApiProvider with ChangeNotifier {
   //CreateTripModel? createTripModel;
@@ -22,6 +25,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
 
   Map _source = {ConnectivityResult.none: false};
   String string = '';
+  String page = "Send_sensor_info_api_provider";
 
   Future<UploadTripModel?> sendSensorDataInfoDio(
       BuildContext context,
@@ -31,6 +35,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       String tripId,
       GlobalKey<ScaffoldState> scaffoldKey,
       {bool calledFromSignOut = false}) async {
+
     d.Dio dio = d.Dio();
     print('ZIPPPP: ${zipFile!.path}');
     print('ZIPPPP: ${zipFile.existsSync()}');
@@ -87,13 +92,24 @@ class SendSensorInfoApiProvider with ChangeNotifier {
        // _networkConnectivity.disposeStream();
         Utils.customPrint('RESPONSE: ${response.statusCode}');
         Utils.customPrint('RESPONSE: ${jsonEncode(response.data)}');
+        CustomLogger().logWithFile(Level.info, "RESPONSE: ${response.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.info, "RESPONSE: ${jsonEncode(response.data)} -> $page");
         var decodedData = json.decode(jsonEncode(response.data));
         if (response.statusCode == HttpStatus.ok) {
-          Utils.customPrint('Register Response : ' + response.data.toString());
+          Utils.customPrint('Send sensor info api Response : ' + response.data.toString());
+
+          CustomLogger().logWithFile(Level.info, "Send sensor info api Response : ' + ${response.data.toString()} -> $page");
+          CustomLogger().logWithFile(Level.info, "API response status is: ${response.statusCode} on -> $page");
 
           if (decodedData['status']) {
+            if(uploadTripModel == null){
+              CustomLogger().logWithFile(Level.error, "Error while parsing json data on uploadTripModel -> $page");
+            }
             uploadTripModel = UploadTripModel.fromJson(decodedData);
           } else {
+            if(uploadTripModel == null){
+              CustomLogger().logWithFile(Level.error, "Error while parsing json data on uploadTripModellll -> $page");
+            }
             if (scaffoldKey != null) {
               Utils.showSnackBar(context,
                   scaffoldKey: scaffoldKey, message: decodedData['message']);
@@ -104,6 +120,9 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         } else if (response.statusCode == HttpStatus.gatewayTimeout) {
           Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
           Utils.customPrint('EXE RESP: $response');
+
+          CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+          CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
 
           if (scaffoldKey != null) {
             if (!calledFromSignOut) {
@@ -123,11 +142,16 @@ class SendSensorInfoApiProvider with ChangeNotifier {
 
           Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
           Utils.customPrint('EXE RESP: $response');
+          CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+          CustomLogger().logWithFile(Level.info, "EXE RESP: $response -> $page");
         }
         uploadTripModel = null;
       }).onError((error, stackTrace) async{
        // _networkConnectivity.disposeStream();
         Utils.customPrint('ERROR DIO: $error\n$stackTrace');
+
+        CustomLogger().logWithFile(Level.error, "ERROR DIO: $error\n$stackTrace -> $page");
+        CustomLogger().logWithFile(Level.warning, "Failed to upload trip. Please check internet connection and try again.-> $page");
         if (scaffoldKey != null) {
           if (!calledFromSignOut) {
             Utils.showSnackBar(context,
@@ -149,6 +173,8 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       await Utils().check(scaffoldKey);
       Utils.customPrint('Socket Exception');
 
+      CustomLogger().logWithFile(Level.error, "Socket Exception -> $page");
+
       uploadTripModel = null;
     }catch (exception, s) {
       //_networkConnectivity.disposeStream();
@@ -156,6 +182,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       await Utils().check(scaffoldKey);
 
       Utils.customPrint('error caught exception:- $exception \n $s');
+      CustomLogger().logWithFile(Level.error, "error caught uploadTripModel:- $exception \n $s -> $page");
       uploadTripModel = null;
     }
 

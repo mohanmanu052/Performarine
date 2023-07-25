@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +13,7 @@ import '../../common_widgets/utils/utils.dart';
 import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/common_text_feild.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
+import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/zig_zag_line_widget.dart';
 import '../../main.dart';
 import '../../provider/common_provider.dart';
@@ -43,9 +45,12 @@ class _ResetPasswordState extends State<ResetPassword> {
   bool? isBtnClick = false;
   final DatabaseService _databaseService = DatabaseService();
 
+  String page = "reset_password";
+
   @override
   void initState() {
     super.initState();
+
     commonProvider = context.read<CommonProvider>();
     newPasswordController = TextEditingController();
     reenterPasswordController = TextEditingController();
@@ -162,6 +167,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             },
                             onSaved: (String value) {
                               Utils.customPrint(value);
+                              CustomLogger().logWithFile(Level.info, "New password $value -> $page");
                             }),
                         SizedBox(height: displayWidth(context) * 0.03),
 
@@ -203,6 +209,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             },
                             onSaved: (String value) {
                               Utils.customPrint(value);
+                              CustomLogger().logWithFile(Level.info, "Confirm New password $value -> $page");
                             }),
 
                         SizedBox(height: displayHeight(context) * 0.2),
@@ -225,6 +232,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                 bool check = await Utils().check(scaffoldKey);
 
                                 Utils.customPrint("NETWORK $check");
+                                CustomLogger().logWithFile(Level.info, "NETWORK$check  -> $page");
 
                                 FocusScope.of(context)
                                     .requestFocus(FocusNode());
@@ -239,6 +247,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                         isBtnClick = false;
                                       });
                                       print("Status code of change password is: ${value.statusCode}");
+                                      CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode}  -> $page");
                                       if(value.statusCode == 200 && value.message == "Password reset was successfully completed!"){
                                         if(widget.isCalledFrom == "HomePage"){
                                             Navigator.pop(context);
@@ -250,6 +259,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                         if(widget.isCalledFrom == "HomePage"){
                                           Navigator.pop(context);
                                         } else{
+                                          CustomLogger().logWithFile(Level.info, "User navigating into sign in scren -> $page");
                                           Navigator.pushAndRemoveUntil(
                                               context,
                                               MaterialPageRoute(builder: (context) => const SignInScreen()),
@@ -291,6 +301,8 @@ class _ResetPasswordState extends State<ResetPassword> {
 
     Utils.customPrint('DELETE $vesselDelete');
     Utils.customPrint('DELETE $tripsDelete');
+    CustomLogger().logWithFile(Level.info, "DELETE $tripsDelete -> $page");
+    CustomLogger().logWithFile(Level.info, "DELETE $tripsDelete -> $page");
 
     sharedPreferences!.clear();
     GoogleSignIn googleSignIn = GoogleSignIn(

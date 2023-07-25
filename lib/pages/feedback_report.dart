@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -16,6 +17,7 @@ import '../common_widgets/widgets/common_text_feild.dart';
 import '../common_widgets/widgets/common_widgets.dart';
 import 'dart:io';
 
+import '../common_widgets/widgets/log_level.dart';
 import '../models/device_model.dart';
 
 class FeedbackReport extends StatefulWidget {
@@ -56,9 +58,12 @@ class _FeedbackReportState extends State<FeedbackReport> {
   AndroidDeviceInfo? androidDeviceInfo;
   Map<String,dynamic>? deviceDetails;
 
+  String page = "feedback_report";
+
   @override
   void initState() {
     super.initState();
+
     commonProvider = context.read<CommonProvider>();
     nameController  = TextEditingController();
     descriptionController = TextEditingController();
@@ -163,6 +168,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     },
                     onSaved: (String value) {
                       Utils.customPrint(value);
+                      CustomLogger().logWithFile(Level.info, "Subject: $value-> $page");
                     }),
               ),
 
@@ -195,6 +201,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     },
                     onSaved: (String value) {
                       Utils.customPrint(value);
+                      CustomLogger().logWithFile(Level.info, "Description: $value-> $page");
                     }),
               ),
 
@@ -205,6 +212,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                   uploadImageFunction();
                   Utils.customPrint(
                       'FIIALLL: ${finalSelectedFiles.length}');
+                  CustomLogger().logWithFile(Level.info, "FIIALLL: ${finalSelectedFiles.length} -> $page");
                 }, Colors.grey),
               ),
 
@@ -255,12 +263,14 @@ class _FeedbackReportState extends State<FeedbackReport> {
                                   onTap: () {
                                     Utils.customPrint(
                                         'FIIALLL: ${finalSelectedFiles.length}');
+                                    CustomLogger().logWithFile(Level.info, "FIIALLL: ${finalSelectedFiles.length} -> $page");
                                     setState(() {
                                       finalSelectedFiles
                                           .removeAt(index);
                                     });
                                     Utils.customPrint(
                                         'FIIALLL: ${finalSelectedFiles.length}');
+                                    CustomLogger().logWithFile(Level.info, "FIIALLL: ${finalSelectedFiles.length} -> $page");
                                   },
                                   child: Icon(
                                     Icons.close,
@@ -322,6 +332,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                           };
                         }
                         Utils.customPrint("deviceDetails:${deviceDetails!.toString()}");
+                        CustomLogger().logWithFile(Level.info, "deviceDetails:${deviceDetails!.toString()} -> $page");
                         if(check){
                           final Directory appDir = await getApplicationDocumentsDirectory();
                           final String fileName = DateTime.now().toIso8601String() + '.png';
@@ -357,6 +368,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                                   isBtnClick = false;
                                 });
                                 print("status of send user feedback is: ${value.status}");
+                                CustomLogger().logWithFile(Level.info, "status of send user feedback is: ${value.status} -> $page");
                                 if(value.status!){
                                   deleteImageFile(imageFile!.path);
                                   sendFiles.clear();
@@ -397,6 +409,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                                   isBtnClick = false;
                                 });
                                 print("status of send user feedback is: ${value.status}");
+                                CustomLogger().logWithFile(Level.info, "status of send user feedback is: ${value.status} -> $page");
                                 if(value.status!){
                                   deleteImageFile(imageFile!.path);
                                   Navigator.pop(context);
@@ -439,6 +452,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
       }
     });
     print('totalSize: $totalSize');
+    CustomLogger().logWithFile(Level.info, "totalSize: $totalSize -> $page");
     return totalSize;
   }
 
@@ -463,6 +477,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
       ''';
 
     print("file size: $fileSize");
+    CustomLogger().logWithFile(Level.info, "file Size: $fileSize -> $page");
 
     setState(() {
       _result = fileSize;
@@ -495,6 +510,9 @@ class _FeedbackReportState extends State<FeedbackReport> {
                   Utils.customPrint(
                       'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
 
+                  CustomLogger().logWithFile(Level.info, "CAMERA FILE 2 ${finalSelectedFiles[0]!.path} -> $page");
+                  CustomLogger().logWithFile(Level.info, "CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page");
+
                   /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
             });*/
@@ -522,6 +540,9 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
                     Utils.customPrint('finalSelectedFiles length:  ${finalSelectedFiles.length}');
 
+                    CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
+                    CustomLogger().logWithFile(Level.info, "finalSelectedFiles length:  ${finalSelectedFiles.length}-> $page");
+
                     /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
             });*/
@@ -532,6 +553,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
       }
     } else {
       Utils.customPrint('OTHER ELSE');
+      CustomLogger().logWithFile(Level.info, "OTHER ELSE -> $page");
       await selectImage(context, Colors.red,
               (List<File?> selectedImageFileList) {
             if (selectedImageFileList.isNotEmpty) {
@@ -542,6 +564,10 @@ class _FeedbackReportState extends State<FeedbackReport> {
                 Utils.customPrint(
                     'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
                 Utils.customPrint('finalSelectedFiles length1:  ${finalSelectedFiles.length}');
+
+                CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
+                CustomLogger().logWithFile(Level.info, "CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()} -> $page");
+                CustomLogger().logWithFile(Level.info, "finalSelectedFiles length:  ${finalSelectedFiles.length}-> $page");
 
                 /* setState(() {
               finalSelectedFiles.addAll(finalSelectedFiles);
@@ -560,7 +586,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
     final String fileName = DateTime.now().toIso8601String() + '.png';
     imageFile = File('${appDir.path}/$fileName');
-    print("file path is: ${imageFile!.path}");
+    print("file path is: ${imageFile!.path}-> $page ${DateTime.now()}");
+    CustomLogger().logWithFile(Level.info, "file path is: ${imageFile!.path} -> $page");
 
     await imageFile!.writeAsBytes(widget.uIntList!);
 
@@ -569,22 +596,15 @@ class _FeedbackReportState extends State<FeedbackReport> {
     return imageFile!.path;
   }
 
-  /*
-  void deleteImageAfterDelay(String imagePath) {
-    const delayDuration = Duration(seconds: 2);
-
-    Timer(delayDuration, () {
-      print("delete confirmation");
-      deleteImageFile(imagePath);
-    });
-  } */
 
   Future<void> deleteImageFile(String filePath) async {
     try {
       final file = File(filePath);
       await file.delete();
       print('Image deleted successfully');
+      CustomLogger().logWithFile(Level.info, "Image deleted successfully -> $page");
     } catch (e) {
+      CustomLogger().logWithFile(Level.error, "Failed to delete image -> $page");
       print('Failed to delete image: $e');
     }
   }

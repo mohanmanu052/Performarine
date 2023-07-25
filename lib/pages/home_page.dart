@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -24,7 +25,7 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/authentication/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
-import 'package:performarine/pages/trip_analytics.dart';
+//import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -34,6 +35,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../analytics/location_callback_handler.dart';
+import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
 import 'feedback_report.dart';
 
@@ -76,6 +78,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   List<String> tripData = [];
 
   final controller = ScreenshotController();
+  String page = "Home_page";
 
   @override
   void didUpdateWidget(covariant HomePage oldWidget) {
@@ -90,12 +93,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
         setState(() {});
 
         print("isComingFromReset: ${isComingFrom}");
+        CustomLogger().logWithFile(Level.info, "isComingFromReset: ${isComingFrom} -> $page");
         if(mounted){
           if(isComingFrom != null && isComingFrom )
           {
 
             Future.delayed(Duration(microseconds: 500), (){
               print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+              CustomLogger().logWithFile(Level.info, "XXXXXXXXX ${_isThereCurrentDialogShowing(context)} -> $page");
 
               if(!_isThereCurrentDialogShowing(context))
               {
@@ -112,6 +117,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
           }
         }
         print('HomeScreen did update');
+        CustomLogger().logWithFile(Level.info, "HomeScreen did update -> $page");
       }
   }
 
@@ -143,10 +149,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     bool? isAppKilledFromBg = sharedPreferences!.getBool('app_killed_from_bg');
 */
     debugPrint("IS APP KILLED FROM BG ${widget.isAppKilled}");
+    CustomLogger().logWithFile(Level.info, "IS APP KILLED FROM BG ${widget.isAppKilled} -> $page");
 
     bool? isTripStarted = sharedPreferences!.getBool('trip_started');
 
     debugPrint("IS APP KILLED FROM BG 1212 $isTripStarted");
+    CustomLogger().logWithFile(Level.info, "IS APP KILLED FROM BG 1212 $isTripStarted -> $page");
 
     if(widget.isAppKilled!)
       {
@@ -216,6 +224,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     switch (state) {
       case AppLifecycleState.resumed:
         print("APP STATE - app in resumed");
+        CustomLogger().logWithFile(Level.info, "APP STATE - app in resumed -> $page");
         dynamic arg = Get.arguments;
         if(arg !=  null)
         {
@@ -227,12 +236,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
             setState(() {});
           }
           print("isComingFromReset: ${isComingFrom}");
+          CustomLogger().logWithFile(Level.info, "isComingFromReset: ${isComingFrom} -> $page");
           if(mounted){
             if(isComingFrom != null && isComingFrom )
             {
 
               Future.delayed(Duration(microseconds: 500), (){
                 print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+                CustomLogger().logWithFile(Level.info, "XXXXXXXXX ${_isThereCurrentDialogShowing(context)} -> $page");
                 bool? result;
                 if(sharedPreferences != null){
                   result = sharedPreferences!.getBool('reset_dialog_opened');
@@ -255,16 +266,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
             }
           }
           print('HomeScreen did update');
+          CustomLogger().logWithFile(Level.info, "HomeScreen did update -> $page");
         }
         break;
       case AppLifecycleState.inactive:
         print("APP STATE - app in inactive");
+        CustomLogger().logWithFile(Level.info, "APP STATE - app in inactive-> $page");
         break;
       case AppLifecycleState.paused:
         print("APP STATE - app in paused");
+        CustomLogger().logWithFile(Level.info, "APP STATE - app in paused-> $page");
         break;
       case AppLifecycleState.detached:
         print("APP STATE - app in detached");
+        CustomLogger().logWithFile(Level.info, "APP STATE - app in detached-> $page");
         break;
     }
   }
@@ -424,6 +439,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                       commonProvider.getTripsCount();
                       if (result != null) {
                         Utils.customPrint('RESULT HOME PAGE $result');
+                        CustomLogger().logWithFile(Level.info, "RESULT HOME PAGE $result-> $page");
                         if (result) {
                           setState(() {
                             getVesselFuture = _databaseService.vessels();
@@ -456,6 +472,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                         child: GestureDetector(
                             onTap: ()async{
                               final image = await controller.capture();
+                              CustomLogger().logWithFile(Level.info, "User navigating to User feedback screen-> $page");
                               Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                 imagePath: image.toString(),
                                 uIntList: image,)));
@@ -677,6 +694,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                                   .toInt());
 
                                           debugPrint("DURATION !!!!!! $tripDuration");
+                                          CustomLogger().logWithFile(Level.info, "DURATION !!!!!! $tripDuration -> $page");
 
                                           bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
@@ -691,12 +709,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                               endTripMethod(setDialogState);
                                               debugPrint("SMALL TRIPP IDDD ${tripId}");
 
-                                              debugPrint("SMALL TRIPP IDDD ${tripId}");
+                                              CustomLogger().logWithFile(Level.info, "SMALL TRIPP IDDD ${tripId} -> $page");
 
                                               Future.delayed(Duration(seconds: 1), (){
                                                 if(!isSmallTrip)
                                                 {
                                                   debugPrint("SMALL TRIPP IDDD 11 ${tripId}");
+                                                  CustomLogger().logWithFile(Level.info, "SMALL TRIPP IDDD 11 ${tripId} -> $page");
                                                   DatabaseService().deleteTripFromDB(tripId);
                                                 }
                                               });
@@ -728,6 +747,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                       final _isRunning = await BackgroundLocator();
 
                                           Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
+                                      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING 1212 $_isRunning -> $page");
 
                                           List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
@@ -747,6 +767,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                           final isRunning2 = await BackgroundLocator.isServiceRunning();
 
                                           Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING 2222 $_isRunning -> $page");
                                       Navigator.of(context).pop();
                                     },
                                     displayWidth(context) * 0.65,
@@ -846,6 +867,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
     Utils.customPrint(
         'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+    CustomLogger().logWithFile(Level.info, "FINAL PATH: ${sharedPreferences!.getStringList('trip_data')} -> $page");
 
     EndTrip().endTrip(
         context: context,
@@ -863,6 +885,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
           });
 
           Utils.customPrint('TRIPPPPPP ENDEDDD:');
+          CustomLogger().logWithFile(Level.info, "TRIPPPPPP ENDEDDD -> $page");
           setState(() {
             getVesselFuture = _databaseService.vessels();
           });

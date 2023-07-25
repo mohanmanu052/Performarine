@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
@@ -15,6 +16,7 @@ import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/utils.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
 import '../../common_widgets/widgets/custom_labled_checkbox.dart';
+import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import '../../models/reports_model.dart';
 import '../../provider/common_provider.dart';
@@ -131,6 +133,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   String selectedIndex = "";
   String? pickStartDate = "Start Date";
   String? pickEndDate = "End Date";
+  String page = "Search_and_filter";
 
   List<TripModel> durationGraphData = [];
   double chartWidth = 0.0;
@@ -146,6 +149,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   String convertIntoYearMonthDay(DateTime date) {
     String dateString = DateFormat('yyyy-MM-dd').format(date);
     print(dateString);
+    CustomLogger().logWithFile(Level.info, "convertIntoYearMonthDay: $dateString -> $page");
     return dateString;
   }
 
@@ -153,6 +157,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   String convertIntoMonthDayYear(DateTime date) {
     String dateString = DateFormat('MM/dd/yyyy').format(date);
     print(dateString);
+    CustomLogger().logWithFile(Level.info, "convertIntoMonthDayYear: $dateString -> $page");
     return dateString;
   }
 
@@ -160,6 +165,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   String convertIntoYearMonthDayToShow(DateTime date) {
     String dateString = DateFormat('MM-dd-yyyy').format(date);
     print(dateString);
+    CustomLogger().logWithFile(Level.info, "convertIntoYearMonthDayToShow: $dateString -> $page");
     return dateString;
   }
 
@@ -209,6 +215,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             isTripIdListLoading = true;
           });
           print("value of trip list: ${value.data}");
+          CustomLogger().logWithFile(Level.info, "value of trip list: ${value.data} -> $page");
           //debugger();
           tripIdList!.clear();
           dateTimeList!.clear();
@@ -225,6 +232,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           print("trip id list: $tripIdList");
           print("children: ${children}");
           print("dateTimeList: $dateTimeList");
+
+          CustomLogger().logWithFile(Level.info, "trip id list: $tripIdList -> $page");
+          CustomLogger().logWithFile(Level.info, "children: ${children} -> $page");
+          CustomLogger().logWithFile(Level.info, "dateTimeList: $dateTimeList -> $page");
         } else {
           setState(() {
             isTripIdListLoading = false;
@@ -240,6 +251,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         isTripIdListLoading = false;
       });
       print("issue while getting trip list data: $e");
+      CustomLogger().logWithFile(Level.error, "issue while getting trip list data: $e -> $page");
     }
   }
 
@@ -256,12 +268,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 commonProvider.loginModel!.token!, scaffoldKey)
             .then((value) {
           print("value is: ${value!.status}");
+          CustomLogger().logWithFile(Level.info, "value is: ${value.status} -> $page");
           if (value != null) {
             print("value 1 is: ${value.status}");
             setState(() {
               isVesselDataLoading = true;
             });
             print("value of get user config by id: ${value.vessels}");
+            CustomLogger().logWithFile(Level.info, "value of get user config by id: ${value.vessels} -> $page");
             if(value.vessels!.length == 0){
               isVesselsFound = true;
             }
@@ -269,6 +283,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
 
             print("vesselData: ${vesselData.length}");
+            CustomLogger().logWithFile(Level.info, "vesselData: ${vesselData.length} -> $page");
           } else {
             setState(() {
               isVesselDataLoading = true;
@@ -289,6 +304,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         isVesselDataLoading = true;
       });
       print("Error while fetching data from getUserConfigById: $e");
+      CustomLogger().logWithFile(Level.error, "Error while fetching data from getUserConfigById: $e -> $page");
     }
   }
 
@@ -373,6 +389,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         value.data!.avgInfo!.avgDuration ?? '0:0:0');
 
             print("NEW AVG DATA ${value.data?.avgInfo?.avgDuration}");
+            CustomLogger().logWithFile(Level.info, "NEW AVG DATA ${value.data?.avgInfo?.avgDuration} -> $page");
 
             avgDuration = myAvgDuration ?? 0;
 
@@ -380,6 +397,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             avgPower = value.data?.avgInfo?.avgPower ?? 0.0;
             print(
                 "duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed");
+            CustomLogger().logWithFile(Level.info, "duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed -> $page");
             triSpeedList = List<TripModel>.from(value.data!.trips!.map(
                 (tripData) => TripModel(
                     date: tripData.date, tripsByDate: tripData.tripsByDate)));
@@ -399,6 +417,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               chartWidth = displayHeight(context) * 7;
             }
             Utils.customPrint('list total data : ${durationGraphData}');
+            CustomLogger().logWithFile(Level.info, "list total data : ${durationGraphData} -> $page");
 
             for (int i = 0; i < durationGraphData.length; i++) {
               for (int j = 0;
@@ -406,6 +425,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   j++) {
                 print(
                     "trip duration data is: ${durationGraphData[i].tripsByDate![j].id}");
+                CustomLogger().logWithFile(Level.info, "trip duration data is: ${durationGraphData[i].tripsByDate![j].id} -> $page");
                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
                   durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
                     color: circularProgressColor,
@@ -432,6 +452,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         // setState(() async {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
                         print("selected index: $selectedIndex");
+                        CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
                         // });
                       }
                     },
@@ -460,6 +481,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         // setState(() async {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
                         print("selected index: $selectedIndex");
+                        CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
                         // });
                       }
                     },
@@ -488,6 +510,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           selectedIndex =
                               await triSpeedList[i].tripsByDate![j].id!;
                           print("selected index: $selectedIndex");
+                          CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
                         });
                       }
                     },
@@ -517,6 +540,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           selectedIndex =
                               await triSpeedList[i].tripsByDate![j].id!;
                           print("selected index: $selectedIndex");
+                          CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
                         });
                       }
                     },
@@ -544,6 +568,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               }
             }
             print("length: ${tripList.length}, tripList: $tripList");
+            CustomLogger().logWithFile(Level.info, "length: ${tripList.length}, tripList: $tripList -> $page");
             duration1 = durationWithMilli(
                 value.data?.avgInfo?.avgDuration ?? '0:0:0.0');
             avgSpeed1 = value.data?.avgInfo?.avgSpeed ?? 0.0;
@@ -551,6 +576,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             powerUsage = value.data?.avgInfo?.avgPower ?? 0.0;
             print(
                 "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
+            CustomLogger().logWithFile(Level.info, "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage -> $page");
 
             finalData = [
               {
@@ -581,6 +607,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         isBtnClick = false;
       });
       print("Error while getting data from report api : $e \n $s");
+      CustomLogger().logWithFile(Level.error, "Error while getting data from report api : $e \n $s -> $page");
     }
   }
 
@@ -599,6 +626,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         ));
     int totalMinutes = dateTime.hour * 60 + dateTime.minute;
     print('TOTAL MIN: $totalMinutes');
+    CustomLogger().logWithFile(Level.info, "TOTAL MIN: $totalMinutes -> $page");
     return double.parse('$totalMinutes.${parts[2]}');
   }
 
@@ -617,12 +645,14 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         ));
     int totalMinutes = dateTime.hour * 60 + dateTime.minute;
     print('TOTAL MIN: $totalMinutes');
+    CustomLogger().logWithFile(Level.info, "TOTAL MIN: $totalMinutes -> $page");
     return double.parse('$totalMinutes.${parts[2]}');
   }
 
   //Returns trip duration on tap of column bar in Avg Duration tab
   dynamic tripDuration(String tripDuration) {
     print("DDDDD: $tripDuration");
+    CustomLogger().logWithFile(Level.info, "DDDDD: $tripDuration -> $page");
     String inputDuration = tripDuration;
     String formattedDuration = "";
     List<String> parts = inputDuration.split(".");
@@ -636,10 +666,12 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
     Duration duration =
         Duration(hours: hours, minutes: minutes, seconds: seconds);
     print("duration: $duration");
+    CustomLogger().logWithFile(Level.info, "duration: $duration -> $page");
     formattedDuration = formatDurations(duration);
 // formattedDuration = duration.toString().split(".")[0];
 
     print(formattedDuration);
+    CustomLogger().logWithFile(Level.info, "formattedDuration: $formattedDuration -> $page");
     return formattedDuration;
   }
 
@@ -679,6 +711,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   dynamic durationWithMilli(String timesString) {
     String time = timesString;
     print('TIME STRING: $timesString');
+    CustomLogger().logWithFile(Level.info, "TIME STRING: $timesString -> $page");
     String timeString = time;
     String integerTimeString = timeString.split('.')[0];
     return integerTimeString;
@@ -687,6 +720,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   @override
   void initState() {
     super.initState();
+
     commonProvider = context.read<CommonProvider>();
     parentValue = false;
     isTripIdListLoading = true;
@@ -766,6 +800,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           onExpansionChanged: (isExpanded) {
                             setState(() {
                               print("isExpansionCollapse : $isExpanded");
+                              CustomLogger().logWithFile(Level.info, "isExpansionCollapse : $isExpanded -> $page");
                               isExpansionCollapse = !isExpansionCollapse!;
                               isExpandedTile = !isExpandedTile;
                               // isExpansionCollapse = isExpanded;
@@ -917,6 +952,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                               }).toList(),
                                               onChanged: (item) {
                                                 print("id is: ${item?.id} ");
+                                                CustomLogger().logWithFile(Level.info, "id is: ${item?.id}-> $page");
                                                 parentValue = false;
                                                 selectedVessel = item!.id;
                                                 selectedVesselName = item.name;
@@ -987,6 +1023,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         selectedCaseType = 1;
                                         print(
                                             "selectedCaseType: $selectedCaseType ");
+                                        CustomLogger().logWithFile(Level.info, "selectedCaseType: $selectedCaseType-> $page");
                                         _selectedOption = value!;
                                         selectedTripsAndDateString = "Date Range";
                                       });
@@ -1006,6 +1043,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         isSHowGraph = false;
                                         print(
                                             "selectedCaseType: $selectedCaseType ");
+                                        CustomLogger().logWithFile(Level.info, "selectedCaseType: $selectedCaseType-> $page");
                                         _selectedOption = value!;
                                         selectedTripsAndDateString =
                                             "Selected Trips";
@@ -1176,6 +1214,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                           onTap: ()async{
                                             final image = await controller.capture();
                                             print("Image is: ${image.toString()}");
+                                            CustomLogger().logWithFile(Level.info, "User navigating to user feedback screen -> $page");
                                             Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                                               imagePath: image.toString(),
                                               uIntList: image,)));
@@ -1633,6 +1672,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   //Custom selection graph
   buildGraph(BuildContext context) {
     debugPrint('SELECTED BUTTON Text $selectedButton');
+    CustomLogger().logWithFile(Level.info, "SELECTED BUTTON Text $selectedButton -> $page");
 
     switch (selectedButton.toLowerCase()) {
       case 'trip duration':
@@ -1701,6 +1741,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   TextButton(
                     onPressed: () {
                       print("tapped on go to report button");
+                      CustomLogger().logWithFile(Level.info, "Navigating user into Trip Analytics Screen -> $page");
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -1848,6 +1889,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               TextButton(
                 onPressed: () {
                   print("tapped on go to report button");
+                  CustomLogger().logWithFile(Level.info, "Navigating user into Trip Analytics Screen -> $page");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -1944,6 +1986,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         CartesianChartPoint currentPoint = point;
         final double? yValue = currentPoint.y;
         print("fuel y data is: ${yValue}");
+        CustomLogger().logWithFile(Level.info, "fuel y data is: ${yValue} -> $page");
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
@@ -1983,6 +2026,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               TextButton(
                 onPressed: () {
                   print("tapped on go to report button");
+                  CustomLogger().logWithFile(Level.info, "Navigating user into Trip Analytics Screen -> $page");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -2079,6 +2123,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         CartesianChartPoint currentPoint = point;
         final double? yValue = currentPoint.y;
         print("power y data is: ${yValue}");
+        CustomLogger().logWithFile(Level.info, "power y data is: ${yValue} -> $page");
         return Container(
           width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
@@ -2118,6 +2163,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               TextButton(
                 onPressed: () {
                   print("tapped on go to report button");
+                  CustomLogger().logWithFile(Level.info, "Navigating user into Trip Analytics Screen -> $page");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -2383,8 +2429,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                           pickStartDate = convertIntoMonthDayYear(selectDay);
                           selectedStartDateFromCal = selectDay;
                           print("pick start date: $pickStartDate");
+                          CustomLogger().logWithFile(Level.info, "pick start date: $pickStartDate -> $page");
                         });
                         print("focusedDay: $focusDay");
+                        CustomLogger().logWithFile(Level.info, "focused Day: $focusedDay -> $page");
                       },
                       headerStyle: HeaderStyle(
                         formatButtonVisible: false,
@@ -2492,8 +2540,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               pickEndDate = convertIntoMonthDayYear(selectDay);
                               selectedEndDateFromCal = selectDay;
                               print("pick end date: $pickEndDate");
+                              CustomLogger().logWithFile(Level.info, "pick end date: $pickEndDate -> $page");
                             });
                             print("lastDayFocused: $lastDayFocused");
+                            CustomLogger().logWithFile(Level.info, "lastDayFocused: $lastDayFocused -> $page");
                           },
                           headerStyle: HeaderStyle(
                             formatButtonVisible: false,
@@ -2547,6 +2597,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 selectedTripLabelList!.addAll(children!);
                                 Utils.customPrint(
                                     "selected trip label list: ${selectedTripLabelList}");
+                                CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
                                 _checkAll(value);
                               } else if (!value) {
                                 // Tristate
@@ -2577,6 +2628,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 dateTime: dateTimeList![index],
                                 onChanged: (value) {
                                   print("trip list id: ${tripIdList![index]}");
+                                  CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
                                   if (!selectedTripIdList!
                                       .contains(tripIdList![index])) {
                                     selectedTripIdList!.add(tripIdList![index]);
@@ -2584,6 +2636,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         .add(children![index]);
                                     Utils.customPrint(
                                         "selected trip label list: ${selectedTripLabelList}");
+                                    CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
                                   } else {
                                     selectedTripIdList!
                                         .remove(tripIdList![index]);
@@ -2592,6 +2645,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         .remove(children![index]);
                                     Utils.customPrint(
                                         "selected trip label list: ${selectedTripLabelList}");
+                                    CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
                                   }
                                   manageTristate(index, value);
                                 },

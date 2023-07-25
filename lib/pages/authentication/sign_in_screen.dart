@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -16,6 +17,7 @@ import 'package:performarine/pages/authentication/sign_up_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
+import '../../common_widgets/widgets/log_level.dart';
 import 'forgot_password.dart';
 
 //Sign in page
@@ -56,6 +58,7 @@ class _SignInScreenState extends State<SignInScreen> {
   );
 
   Timer? searchOnStoppedTyping;
+  String page = "Sign_in_screen";
 
 
   @override
@@ -163,6 +166,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Email:$value -> $page");
                         }),
                     SizedBox(height: displayHeight(context) * 0.03),
                     CommonTextField(
@@ -194,6 +198,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Password:$value -> $page");
                         }),
                     SizedBox(height: displayHeight(context) * 0.03),
                     Row(
@@ -297,6 +302,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                             });
                                           } catch (e) {
                                             Utils.customPrint('EXE: $e');
+                                            CustomLogger().logWithFile(Level.error, "EXE: $e -> $page");
                                             // TODO handle
                                           }
                                         }
@@ -338,6 +344,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   bool check = await Utils().check(scaffoldKey);
 
                                   Utils.customPrint("NETWORK $check");
+                                  CustomLogger().logWithFile(Level.info, "Network: $check -> $page");
 
                                   FocusScope.of(context)
                                       .requestFocus(FocusNode());
