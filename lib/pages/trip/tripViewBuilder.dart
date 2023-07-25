@@ -129,7 +129,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                           SlidableAction(
                                              onPressed: (BuildContext context)async{
                                              print("Trip id is: ${snapshot.data![index].id!}");
-                                             if(snapshot.data![index].isSync != 0){
+                                           //  if(snapshot.data![index].isSync != 0){
                                                showDeleteTripDialogBox(
                                                    context,
                                                    snapshot.data![index].id!,
@@ -144,7 +144,7 @@ class _TripViewListingState extends State<TripViewListing> {
 
                                                    },widget.scaffoldKey!
                                                );
-                                             }
+                                          //   }
                                               },
                                             icon: Icons.delete,
                                             backgroundColor: Colors.red,
