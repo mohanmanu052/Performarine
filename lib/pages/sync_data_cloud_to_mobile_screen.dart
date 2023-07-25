@@ -347,12 +347,13 @@ class _SyncDataCloudToMobileScreenState
             lastIndex = 0;
           });
 
-          print('LENGTH: ${value.vessels!.length}');
+      Utils.customPrint('LENGTH: ${value.vessels!.length}');
           CustomLogger().logWithFile(Level.info, "LENGTH: ${value.vessels!.length} -> $page");
           for (int i = 0; i < value.vessels!.length; i++) {
             if (value.vessels![i].name == 'rrrrr 12') {
-              print('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()}');
+      Utils.customPrint('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()}');
               CustomLogger().logWithFile(Level.info, "RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()} -> $page");
+
             }
 
             Utils.customPrint(
@@ -415,7 +416,6 @@ class _SyncDataCloudToMobileScreenState
                   downloadedFile.absolute.path,
                   '$targetPath/${downloadedFile.path.split('/').last}',
                   quality: 50,
-                  //format: CompressFormat.jpeg
                 );
 
                 downloadedCompressImageFile = result!.path;
@@ -534,9 +534,6 @@ class _SyncDataCloudToMobileScreenState
 
             CreateVessel? vesselData = await _databaseService
                 .getVesselFromVesselID(value.trips![i].vesselId.toString());
-
-            //Utils.customPrint("TRIPS VESSEL ID ${value.trips![i].vesselId}");
-            //Utils.customPrint("VESSEL NAME ${vesselData!.name}");
 
             if (vesselData != null) {
               Trip tripData = Trip(

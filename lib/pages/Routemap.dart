@@ -3,6 +3,7 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../common_widgets/utils/urls.dart';
+import '../common_widgets/utils/utils.dart';
 
 class RouteMap extends StatefulWidget {
   String? tripID;
@@ -14,7 +15,7 @@ class RouteMap extends StatefulWidget {
 class _RouteMapState extends State<RouteMap> {
   @override
   Widget build(BuildContext context) {
-    print('https://' + "${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9");
+    Utils.customPrint('https://' + "${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9");
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,

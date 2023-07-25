@@ -122,14 +122,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                             children: <TextSpan>[
                               TextSpan(
                                 text: ' OK',
-                                recognizer: TapGestureRecognizer()
-                                /*..onTap = () async {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return SignUpScreen();
-                                      }));
-                                    }*/
-                                ,
+                                recognizer: TapGestureRecognizer(),
                                 style: TextStyle(
                                     color: Theme.of(context).brightness ==
                                             Brightness.dark
@@ -171,14 +164,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                             children: <TextSpan>[
                               TextSpan(
                                 text: ' Permissions',
-                                recognizer: TapGestureRecognizer()
-                                /*..onTap = () async {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return SignUpScreen();
-                                      }));
-                                    }*/
-                                ,
+                                recognizer: TapGestureRecognizer(),
                                 style: TextStyle(
                                     color: Theme.of(context).brightness ==
                                             Brightness.dark
@@ -222,14 +208,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                 text: isLocationDialogBox
                                     ? ' Location/GPS'
                                     : ' Nearby devices',
-                                recognizer: TapGestureRecognizer()
-                                /*..onTap = () async {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return SignUpScreen();
-                                      }));
-                                    }*/
-                                ,
+                                recognizer: TapGestureRecognizer(),
                                 style: TextStyle(
                                     color: Theme.of(context).brightness ==
                                             Brightness.dark

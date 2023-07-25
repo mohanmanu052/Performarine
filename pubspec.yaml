@@ -38,7 +38,7 @@ dependencies:
   permission_handler: 10.3.0
   device_info_plus: ^8.0.0
   google_sign_in: ^5.4.2
-  firebase_core: ^2.3.0
+  firebase_core: ^2.15.0
 #  sign_in_with_apple: ^4.1.0
   shared_preferences: ^2.0.15
   cached_network_image: ^3.2.1
@@ -84,6 +84,11 @@ dependencies:
   logger: ^1.4.0
   workmanager: ^0.5.1
   flutter_slidable: ^3.0.0
+  firebase_remote_config: 3.0.15
+  flutter_secure_storage: ^8.0.0
+  firebase_core_platform_interface: ^4.8.0
+  firebase_remote_config_platform_interface: ^1.4.4
+
 
 dependency_overrides:
   ffi: ^2.0.1
@@ -108,7 +113,6 @@ flutter:
   assets:
     - assets/images/
     - assets/lottie/
-    - assets/reports/
 
   fonts:
     - family: Poppins

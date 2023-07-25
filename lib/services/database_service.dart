@@ -401,8 +401,8 @@ class DatabaseService {
       String startTime = tripsList[i].createdAt.toString();
       String endTime = tripsList[i].updatedAt.toString();
 
-      print('UTC START TIME: $startTime');
-      print('UTC END TIME: $endTime');
+      Utils.customPrint('UTC START TIME: $startTime');
+      Utils.customPrint('UTC END TIME: $endTime');
 
       CustomLogger().logWithFile(Level.info, "UTC START TIME: $startTime -> $page");
       CustomLogger().logWithFile(Level.info, "UTC END TIME: $endTime -> $page");
@@ -410,8 +410,8 @@ class DatabaseService {
       DateTime startDateTime = DateTime.parse(startTime);
       DateTime endDateTime = DateTime.parse(endTime);
 
-      print('DATE TIME START: $startDateTime');
-      print('DATE TIME END: $endDateTime');
+      Utils.customPrint('DATE TIME START: $startDateTime');
+      Utils.customPrint('DATE TIME END: $endDateTime');
 
       CustomLogger().logWithFile(Level.info, "DATE TIME START: $startDateTime -> $page");
       CustomLogger().logWithFile(Level.info, "DATE TIME END: $endDateTime -> $page");
@@ -419,8 +419,9 @@ class DatabaseService {
       Duration diffDuration = endDateTime.difference(startDateTime);
       totalTripsDuration = totalTripsDuration + diffDuration.inSeconds;
 
-      print('DIFFERENCE DURATION IN SECONDS: $totalTripsDuration');
+    Utils.customPrint('DIFFERENCE DURATION IN SECONDS: $totalTripsDuration');
       CustomLogger().logWithFile(Level.info, "DIFFERENCE DURATION IN SECONDS: $totalTripsDuration -> $page");
+
 
       totalAverageSpeed = totalAverageSpeed + singleTripAvgSpeed;
       totalDistanceSum = totalDistanceSum + singleTripDistance;

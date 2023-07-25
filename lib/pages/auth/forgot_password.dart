@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/utils/colors.dart';
@@ -120,9 +121,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           return null;
                         },
                         onFieldSubmitted: (value) {
-                          //emailFormFieldKey.currentState!.validate();
-                          /* FocusScope.of(context)
-                              .requestFocus(passwordFocusNode);*/
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
@@ -156,8 +154,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                   setState(() {
                                     isBtnClick = false;
                                   });
-                                  print("status code of forgot password: ${value.statusCode}");
+                                Utils.customPrint("status code of forgot password: ${value.statusCode}");
                                   CustomLogger().logWithFile(Level.info, "status code of forgot password: ${value.statusCode} -> $page");
+
                                   if(value.statusCode == 200){
                                     CustomLogger().logWithFile(Level.info, "User navigating to Sign in Screen -> $page");
                                     Navigator.pushAndRemoveUntil(

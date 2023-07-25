@@ -54,9 +54,6 @@ class _ResetPasswordState extends State<ResetPassword> {
     commonProvider = context.read<CommonProvider>();
     newPasswordController = TextEditingController();
     reenterPasswordController = TextEditingController();
-
-    //Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: "${widget.isCalledFrom}");
-
   }
   @override
   Widget build(BuildContext context) {
@@ -82,9 +79,6 @@ class _ResetPasswordState extends State<ResetPassword> {
           backgroundColor: commonBackgroundColor,
           leading: IconButton(
             onPressed: () {
-
-              //Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: "${widget.isCalledFrom}");
-
               if(widget.isCalledFrom == "Main")
               {
                 Get.offAll(SignInScreen());
@@ -161,9 +155,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                               return null;
                             },
                             onFieldSubmitted: (value) {
-                              //emailFormFieldKey.currentState!.validate();
-                              /* FocusScope.of(context)
-                                .requestFocus(passwordFocusNode);*/
                             },
                             onSaved: (String value) {
                               Utils.customPrint(value);
@@ -172,7 +163,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                         SizedBox(height: displayWidth(context) * 0.03),
 
                         CommonTextField(
-                          //key: emailFormFieldKey,
                             controller: reenterPasswordController,
                             focusNode: reenterPasswordFocusNode,
                             labelText: 'Confirm New Password\*',
@@ -203,9 +193,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                               return null;
                             },
                             onFieldSubmitted: (value) {
-                              //emailFormFieldKey.currentState!.validate();
-                              /* FocusScope.of(context)
-                                .requestFocus(passwordFocusNode);*/
                             },
                             onSaved: (String value) {
                               Utils.customPrint(value);
@@ -246,8 +233,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                                       setState(() {
                                         isBtnClick = false;
                                       });
-                                      print("Status code of change password is: ${value.statusCode}");
+                                    Utils.customPrint("Status code of change password is: ${value.statusCode}");
                                       CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode}  -> $page");
+
                                       if(value.statusCode == 200 && value.message == "Password reset was successfully completed!"){
                                         if(widget.isCalledFrom == "HomePage"){
                                             Navigator.pop(context);

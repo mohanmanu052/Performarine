@@ -33,8 +33,9 @@ class CreateZip {
       ZipFile.createFromDirectory(
           sourceDir: dataDir, zipFile: zipFile, recurseSubDirs: true);
       Utils.customPrint('our path is $dataDir');
+
       CustomLogger().logWithFile(Level.info, "our path is $dataDir -> $page");
-      //Utils.customPrint('DOWNLOADED FILE PATH: $downloadedFilePath');
+
     } catch (e) {
       Utils.customPrint('$e');
 

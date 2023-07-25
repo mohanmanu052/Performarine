@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/pages/authentication/sign_in_screen.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/utils/colors.dart';
@@ -134,9 +135,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                             return null;
                           },
                           onFieldSubmitted: (value) {
-                            //emailFormFieldKey.currentState!.validate();
-                            /* FocusScope.of(context)
-                              .requestFocus(passwordFocusNode);*/
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
@@ -146,7 +144,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                       SizedBox(height: displayWidth(context) * 0.03),
 
                       CommonTextField(
-                        //key: emailFormFieldKey,
                           controller: newPasswordController,
                           focusNode: newPasswordFocusNode,
                           labelText: 'Enter New Password\*',
@@ -174,9 +171,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                             return null;
                           },
                           onFieldSubmitted: (value) {
-                            //emailFormFieldKey.currentState!.validate();
-                            /* FocusScope.of(context)
-                              .requestFocus(passwordFocusNode);*/
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
@@ -185,7 +179,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                       SizedBox(height: displayWidth(context) * 0.03),
 
                       CommonTextField(
-                        //key: emailFormFieldKey,
                           controller: reenterPasswordController,
                           focusNode: reenterPasswordFocusNode,
                           labelText: 'Confirm New Password\*',
@@ -216,9 +209,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                             return null;
                           },
                           onFieldSubmitted: (value) {
-                            //emailFormFieldKey.currentState!.validate();
-                            /* FocusScope.of(context)
-                              .requestFocus(passwordFocusNode);*/
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
@@ -256,12 +246,13 @@ class _ChangePasswordState extends State<ChangePassword> {
                                       isBtnClick = false;
                                     });
 
-                                    print("Status code of change password is: ${value.statusCode}");
+                                  Utils.customPrint("Status code of change password is: ${value.statusCode}");
                                     CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode} -> $page");
+
                                     if(value.status!){
-                                      //signOut();
+
                                       if(widget.isChange!){
-                                       // Navigator.pop(context);
+
                                         Navigator.pop(context);
                                       }else{
                                         Navigator.pop(context);

@@ -6,6 +6,8 @@ import 'dart:ui';
 import 'package:background_locator_2/location_dto.dart';
 import 'package:performarine/analytics/file_manager.dart';
 
+import '../common_widgets/utils/utils.dart';
+
 class LocationServiceRepository {
   static LocationServiceRepository _instance = LocationServiceRepository._();
 
@@ -14,14 +16,13 @@ class LocationServiceRepository {
   factory LocationServiceRepository() {
     return _instance;
   }
-
   static const String isolateName = 'LocatorIsolate';
 
   int _count = -1;
 
   Future<void> init(Map<dynamic, dynamic> params) async {
     //TODO change logs
-    print("***********Init callback handler");
+    Utils.customPrint("***********Init callback handler");
     if (params.containsKey('countInit')) {
       dynamic tmpCount = params['countInit'];
       if (tmpCount is double) {
@@ -36,22 +37,22 @@ class LocationServiceRepository {
     } else {
       _count = 0;
     }
-    print("$_count");
+    Utils.customPrint("$_count");
     await setLogLabel("start");
     final SendPort? send = IsolateNameServer.lookupPortByName(isolateName);
     send?.send(null);
   }
 
   Future<void> dispose() async {
-    print("***********Dispose callback handler");
-    print("$_count");
+    Utils.customPrint("***********Dispose callback handler");
+    Utils.customPrint("$_count");
     await setLogLabel("end");
     final SendPort? send = IsolateNameServer.lookupPortByName(isolateName);
     send?.send(null);
   }
 
   Future<void> callback(LocationDto locationDto) async {
-    print('$_count location in dart: ${locationDto.toString()}');
+    Utils.customPrint('$_count location in dart: ${locationDto.toString()}');
     // await setLogPosition(_count, locationDto);
     final SendPort? send = IsolateNameServer.lookupPortByName(isolateName);
     send?.send(locationDto.toJson());

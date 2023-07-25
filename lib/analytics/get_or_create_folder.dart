@@ -12,7 +12,8 @@ class GetOrCreateFolder {
   Future<String> getOrCreateFolderForAddVessel() async {
 
     final appDirectory = await getApplicationDocumentsDirectory();
-    print('ADD V AD PATH: ${appDirectory.path}');
+
+    Utils.customPrint('ADD V AD PATH: ${appDirectory.path}');
     CustomLogger().logWithFile(Level.info, "ADD V AD PATH: ${appDirectory.path} -> $page");
     Directory directory = Directory('${appDirectory.path}/vesselImages');
     Utils.customPrint('FOLDER PATH ${directory.path}');

@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../common_widgets/utils/utils.dart';
+
 
 class UserFeedback extends StatefulWidget {
   const UserFeedback({Key? key}) : super(key: key);
@@ -38,9 +40,8 @@ class _UserFeedbackState extends State<UserFeedback> {
                       ),
                       onPressed: (){
                         final image = controller.capture();
-                        print("Image is: ${image.toString()}");
+                        Utils.customPrint("Image is: ${image.toString()}");
                         captureAndSaveScreenshot();
-                        //handleScreenshotAndAPI();
                       },
                       child: Text(
                         "Capture Image",
@@ -75,7 +76,7 @@ class _UserFeedbackState extends State<UserFeedback> {
     const delayDuration = Duration(seconds: 2);
 
     Timer(delayDuration, () {
-      print("delete confirmation");
+      Utils.customPrint("delete confirmation");
       deleteImageFile(imagePath);
     });
   }
@@ -84,9 +85,9 @@ class _UserFeedbackState extends State<UserFeedback> {
     try {
       final file = File(filePath);
       await file.delete();
-      print('Image deleted successfully');
+      Utils.customPrint('Image deleted successfully');
     } catch (e) {
-      print('Failed to delete image: $e');
+      Utils.customPrint('Failed to delete image: $e');
     }
   }
 
@@ -97,7 +98,7 @@ class _UserFeedbackState extends State<UserFeedback> {
 
     final String fileName = DateTime.now().toIso8601String() + '.png';
     imageFile = File('${appDir.path}/$fileName');
-    print("file path is: ${imageFile!.path}");
+    Utils.customPrint("file path is: ${imageFile!.path}");
 
     // Write the image bytes to the file
     await imageFile!.writeAsBytes(imageBytes!);
@@ -107,25 +108,12 @@ class _UserFeedbackState extends State<UserFeedback> {
     return imageFile!.path;
   }
 
-  // Future<void> sendImageToAPI(String imagePath) async {
-  //   // Once you receive a successful response, you can delete the image from the directory
-  //   final File imageFile = File(imagePath);
-  //   await imageFile.delete();
-  // }
-
   void handleScreenshotAndAPI() async {
-    // String imagePath = await captureAndSaveScreenshot();
-
     bool apiResponse = true;
 
     if (apiResponse) {
       deleteImageAfterDelay(imageFile!.path);
     }
-    //else {
-    // If the API response is not successful, you can delete the image from the directory
-    //final File imageFile = File(imagePath);
-    // await imageFile.delete();
-    // }
   }
 
   Widget buildImage(){

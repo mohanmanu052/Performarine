@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
-import 'package:performarine/pages/home_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class TermsAndConditionsWebView extends StatefulWidget {
@@ -14,7 +13,7 @@ class TermsAndConditionsWebView extends StatefulWidget {
 class _TermsAndConditionsWebViewState extends State<TermsAndConditionsWebView> {
   @override
   Widget build(BuildContext context) {
-    print('Url is: ${widget.url}');
+    Utils.customPrint('Url is: ${widget.url}');
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -33,23 +32,6 @@ class _TermsAndConditionsWebViewState extends State<TermsAndConditionsWebView> {
               ? Colors.white
               : Colors.black,
         ),
-      /*  actions: [
-          Container(
-            margin: EdgeInsets.only(right: 8),
-            child: IconButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                    ModalRoute.withName(""));
-              },
-              icon: Image.asset('assets/images/home.png'),
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-            ),
-          ),
-        ], */
       ),
       body: WebView(
         initialUrl:

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -18,20 +17,19 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
-import 'package:performarine/pages/authentication/sign_in_screen.dart';
+import 'package:performarine/pages/auth/change_password.dart';
+import 'package:performarine/pages/auth/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/reports/search_and_filters.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/pages/web_navigation/privacy_and_policy_web_view.dart';
-import 'package:performarine/pages/web_navigation/terms_and_condition_web_view.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 
 import '../common_widgets/widgets/log_level.dart';
-import 'authentication/change_password.dart';
 
 class CustomDrawer extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
@@ -53,6 +51,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   bool isSync = false, isUploadStarted = false;
   String page = "Custom_drawer";
   String? chosenValue = "Info";
+
 
   @override
   void initState() {
@@ -125,10 +124,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         onTap: () {
                           CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
                           Navigator.of(context).pop();
-
-                          // throw Exception();
-                          // return;
-
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
@@ -341,7 +336,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                commonProvider.loginModel!.loginType == "regular" ?   InkWell(
                     onTap: ()async {
-                      //Navigator.of(context).pop();
 
                       bool? isTripStarted =
                       sharedPreferences!.getBool('trip_started');
@@ -385,11 +379,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           );
                         }
                       }
-                      /*Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChangePassword()),
-                      );*/
                     },
                     child: commonText(
                         context: context,
@@ -462,10 +451,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       if (isTripStarted != null) {
                         if (isTripStarted) {
                           Navigator.of(context).pop();
-                          // Utils.showSnackBar(context,
-                          //     scaffoldKey: widget.scaffoldKey,
-                          //     message:
-                          //         'Please end the trip which is already running');
+
                           CustomLogger().logWithFile(Level.warning, "show End trip dialog box for user confirmation -> $page");
 
                           showEndTripDialogBox(context);
@@ -509,7 +495,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           fontWeight: FontWeight.w400),
                       TextButton(
                         onPressed: () {
-                          Utils.launchURL('https://www.paccore.com/');
+                          Navigator.of(context).pop();
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CustomWebView(url:'https://www.paccore.com/', isPaccore: true)),
+                          );
                         },
                         child: Text('paccore.com',
                             style: TextStyle(
@@ -1027,7 +1019,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             //"userID": commonProvider.loginModel!.userId!
           };
 
-          print('QQQQQQ: $queryParameters');
+    Utils.customPrint('QQQQQQ: $queryParameters');
           CustomLogger().logWithFile(Level.info, "QQQQQQ: $queryParameters -> $page");
 
           await commonProvider
@@ -1056,14 +1048,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
               });
             }
           }).catchError((onError) {
-            print('DIOOOOOOOOOOOOO');
+
+            Utils.customPrint('DIOOOOOOOOOOOOO');
             CustomLogger().logWithFile(Level.error, "DIOoooooo -> $page");
+
             setState(() {
               tripErrorOccurred = true;
             });
-            /*Utils.showSnackBar(context,
-                scaffoldKey: widget.scaffoldKey,
-                message: 'Failed to sync data to cloud. Please try again.');*/
           });
         }
       }
@@ -1181,8 +1172,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       'Go to trip', context, buttonBGColor,
                                           () async {
 
-                                        debugPrint("Click on GO TO TRIP 1");
+                                            Utils.customPrint("Click on GO TO TRIP 1");
                                         CustomLogger().logWithFile(Level.info, "Click on go to trip 1-> $page");
+
 
                                         List<String>? tripData =
                                         sharedPreferences!.getStringList('trip_data');
@@ -1194,8 +1186,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           vesselName = tripData[1];
                                         }
 
-                                        debugPrint("Click on GO TO TRIP 2");
+                                            Utils.customPrint("Click on GO TO TRIP 2");
                                         CustomLogger().logWithFile(Level.info, "Click on go to trip 2-> $page");
+
 
                                         Navigator.of(dialogContext).pop();
 
@@ -1207,20 +1200,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                               tripIsRunningOrNot: runningTrip)),
                                         );
 
-                                        /*Get.to(() => TripAnalyticsScreen(
-                                                  tripId: tripId,
-                                                  vesselId: tripData![1],
-                                                  tripIsRunningOrNot: tripIsRunning));
+                                        Utils.customPrint("Click on GO TO TRIP 3");
+                                            CustomLogger().logWithFile(Level.info, "Click on go to trip 3-> $page");
 
-                                        Get.to(TripAnalyticsScreen(
-                                                  tripId: tripId,
-                                                  vesselId: tripData![1],
-                                                  tripIsRunningOrNot: tripIsRunning));*/
-
-                                        debugPrint("Click on GO TO TRIP 3");
-                                        CustomLogger().logWithFile(Level.info, "Click on go to trip 3-> $page");
-
-                                        //Navigator.of(context).pop();
                                       },
                                       displayWidth(context) * 0.65,
                                       displayHeight(context) * 0.054,

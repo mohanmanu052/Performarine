@@ -471,9 +471,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     child: UserFeedback().getUserFeedback(context)
                                 ),
                               ),
-                              // SizedBox(
-                              //   height: 20,
-                              // ),
                             ],
                           ),
                         ),
@@ -601,7 +598,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             bool isNDPermDenied = await Permission
                                 .bluetoothConnect.isPermanentlyDenied;
 
-                            // print('BYEE: $isNDPermDenied');
                             if (isNDPermDenied) {
                               showDialog(
                                   context: context,
@@ -614,8 +610,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       buttonText: 'OK',
                                       buttonOnTap: () async {
                                         Get.back();
-
-                                        // await openAppSettings();
                                       },
                                     );
                                   });
@@ -714,22 +708,54 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               await Utils.getLocationPermission(
                                   context, scaffoldKey);
 
-                              await Permission.locationAlways.request();
+                              if(Platform.isAndroid)
+                                {
+                                  bool isLocationAlwaysPermitted =
+                                  await Permission.locationAlways.isGranted;
 
-                              bool isGranted = await Permission.locationAlways.isGranted;
+                                  if(!isLocationAlwaysPermitted){
+                                    if (!isLocationDialogBoxOpen) {
+                                      Utils.customPrint("ELSE CONDITION");
 
-                              if(!isGranted)
-                              {
-                                Utils.showSnackBar(context,
-                                    scaffoldKey: scaffoldKey,
-                                    message:
-                                    'Location permissions are denied without permissions we are unable to start the trip');
+                                      showDialog(
+                                          context: scaffoldKey.currentContext!,
+                                          builder: (BuildContext context) {
+                                            isLocationDialogBoxOpen = true;
+                                            return LocationPermissionCustomDialog(
+                                              isLocationDialogBox: true,
+                                              text:
+                                              'Always Allow Access to “Location”',
+                                              subText:
+                                              "To track your trip while you use other apps we need background access to your location",
+                                              buttonText: 'Ok',
+                                              buttonOnTap: () async {
+                                                Get.back();
 
-                                // Future.delayed(Duration(seconds: 3),
-                                //         () async {
-                                //       await openAppSettings();
-                                //     });
-                              }
+                                                await openAppSettings();
+                                              },
+                                            );
+                                          }).then((value) {
+                                        isLocationDialogBoxOpen = false;
+                                      });
+                                    }
+                                  }
+
+                                }
+                              else
+                                {
+                                  await Permission.locationAlways.request();
+
+                                  bool isGranted = await Permission.locationAlways.isGranted;
+
+                                  if(!isGranted)
+                                  {
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message:
+                                        'Location permissions are denied without permissions we are unable to start the trip');
+                                  }
+                                }
+
                             }
                             else
                             {
@@ -858,7 +884,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               }
                               else {
                                 if (Platform.isIOS) {
-                                  // bool? isLocationAlwaysPermitted;
                                   await Permission.locationAlways.request();
 
                                   bool isLocationAlwaysPermitted =
@@ -948,7 +973,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         FlutterBluePlus.instance.scanResults.listen((results) async {
           for (ScanResult r in results) {
             if (r.device.name.toLowerCase().contains("lpr")) {
-              print('FOUND DEVICE AGAIN');
+              Utils.customPrint('FOUND DEVICE AGAIN');
 
               r.device.connect().catchError((e) {
                 r.device.state.listen((event) {
@@ -981,7 +1006,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             } else {
               r.device
                   .disconnect()
-                  .then((value) => print("is device disconnected:"));
+                  .then((value) => Utils.customPrint("is device disconnected:"));
             }
           }
         });
@@ -1026,7 +1051,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               } else {
                 r.device
                     .disconnect()
-                    .then((value) => print("is device disconnected: "));
+                    .then((value) => Utils.customPrint("is device disconnected: "));
               }
             }
           });
@@ -1041,7 +1066,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         FlutterBluePlus.instance.scanResults.listen((results) async {
           for (ScanResult r in results) {
             if (r.device.name.toLowerCase().contains("lpr")) {
-              print('FOUND DEVICE AGAIN');
+              Utils.customPrint('FOUND DEVICE AGAIN');
 
               r.device.connect().catchError((e) {
                 r.device.state.listen((event) {
@@ -1074,7 +1099,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             } else {
               r.device
                   .disconnect()
-                  .then((value) => print("is device disconnected: "));
+                  .then((value) => Utils.customPrint("is device disconnected: "));
             }
           }
         });
@@ -1118,7 +1143,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               } else {
                 r.device
                     .disconnect()
-                    .then((value) => print("is device disconnected: "));
+                    .then((value) => Utils.customPrint("is device disconnected: "));
               }
             }
           });
@@ -1607,8 +1632,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             message:
                                             'File downloaded successfully');
                                       }
-
-                                      // Utils.download(context, scaffoldKey,ourDirectory!.path);
                                     },
                                     child: Row(
                                       mainAxisAlignment:
@@ -2205,7 +2228,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         );
 
         if (result != null) {
-          debugPrint('VESSEL SINGLE VIEW RESULT $result');
+          Utils.customPrint('VESSEL SINGLE VIEW RESULT $result');
         }
       }
     });
@@ -2220,25 +2243,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
         vessel!.add(widget.vessel!);
         await locationPermissions(widget.vessel!.vesselSize!,
             widget.vessel!.name!, widget.vessel!.id!);
-        print(" bluetooth state$value");
+        Utils.customPrint(" bluetooth state$value");
       } else {
         bool isNearByDevicePermitted =
         await Permission.bluetoothConnect.isGranted;
-
-        // if(await Permission.bluetooth.isPermanentlyDenied){
-        //   Utils.showSnackBar(context,
-        //       scaffoldKey: scaffoldKey,
-        //       message:
-        //       'Bluetooth is needed. Please enable bluetooth of device.');
-        //
-        //   Future.delayed(Duration(seconds: 3),
-        //           () async {
-        //         await openAppSettings();
-        //       });
-        // }
-
-        // print('XXXX: ${await Permission.bluetooth.isPermanentlyDenied}');
-
         if (!isNearByDevicePermitted) {
           await Permission.bluetoothConnect.request();
         }
@@ -2247,7 +2255,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         }
       }
     }).catchError((e) {
-      print("ENABLE BT$e");
+      Utils.customPrint("ENABLE BT$e");
     });
   }
 
@@ -2326,7 +2334,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
       776,
       '',
       'Trip is in progress',
-      /*'Duration: $tripDurationForStorage        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',*/
       NotificationDetails(
           android: AndroidNotificationDetails(
               'performarine_trip_$getTripId', '$getTripId',
@@ -2340,7 +2347,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
           )),
     )
         .catchError((onError) {
-      print('IOS NOTI ERROR: $onError');
+      Utils.customPrint('IOS NOTI ERROR: $onError');
     });
 
 
@@ -2365,9 +2372,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
   /// It will initialize background_locator_2
   Future<void> initPlatformStateBGL() async {
-    print('Initializing...');
+    Utils.customPrint('Initializing...');
     await BackgroundLocator.initialize();
-    print('Initialization done');
+    Utils.customPrint('Initialization done');
 
     Map<String, dynamic> data = {'countInit': 1};
     return await BackgroundLocator.registerLocationUpdate(
@@ -2404,8 +2411,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
         if (activeNotifications != null && activeNotifications.isNotEmpty) {
           if (activeNotifications[0].channelId == 'app.yukams/locator_plugin' || activeNotifications[0].channelId == 'performarine_trip_$getTripId-3') {
-            debugPrint("CHANNEL ID MATCH");
-            debugPrint("CHANNEL ID MATCH: ${activeNotifications[0].id}");
+            Utils.customPrint("CHANNEL ID MATCH");
+            Utils.customPrint("CHANNEL ID MATCH: ${activeNotifications[0].id}");
 
             await flutterLocalNotificationsPlugin.cancel(776);
 
@@ -2413,19 +2420,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
               notiTimer!.cancel();
             }
           }
-          /*for (int i = 0; i <= activeNotifications.length; i++) {
-            if (activeNotifications[i].channelId ==
-                'app.yukams/locator_plugin') {
-              debugPrint("CHANNEL ID MATCH");
-
-              if (notiTimer != null) {
-                notiTimer!.cancel();
-              }
-            }
-          }*/
         }
       });
-      //await flutterLocalNotificationsPlugin.cancel(889);
     });
   }
 
@@ -2500,7 +2496,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       'Go to trip', context, buttonBGColor,
                                           () async {
 
-                                        debugPrint("Click on GO TO TRIP 1");
+                                        Utils.customPrint("Click on GO TO TRIP 1");
 
                                         List<String>? tripData =
                                         sharedPreferences!.getStringList('trip_data');
@@ -2512,7 +2508,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           vesselName = tripData[1];
                                         }
 
-                                        debugPrint("Click on GO TO TRIP 2");
+                                        Utils.customPrint("Click on GO TO TRIP 2");
 
                                         Navigator.of(dialogContext).pop();
 
@@ -2524,19 +2520,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               tripIsRunningOrNot: runningTrip)),
                                         );
 
-                                        /*Get.to(() => TripAnalyticsScreen(
-                                                  tripId: tripId,
-                                                  vesselId: tripData![1],
-                                                  tripIsRunningOrNot: tripIsRunning));
+                                        Utils.customPrint("Click on GO TO TRIP 3");
 
-                                        Get.to(TripAnalyticsScreen(
-                                                  tripId: tripId,
-                                                  vesselId: tripData![1],
-                                                  tripIsRunningOrNot: tripIsRunning));*/
-
-                                        debugPrint("Click on GO TO TRIP 3");
-
-                                        //Navigator.of(context).pop();
                                       },
                                       displayWidth(context) * 0.65,
                                       displayHeight(context) * 0.054,
@@ -2644,7 +2629,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         children: [
                           GestureDetector(
                             onTap: () {
-                              print("Tapped on cancel button");
+                              Utils.customPrint("Tapped on cancel button");
                               Navigator.pop(context);
                             },
                             child: Container(
@@ -2668,7 +2653,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              print("Tapped on enable Bluetooth");
+                              Utils.customPrint("Tapped on enable Bluetooth");
                               Navigator.pop(context);
                               enableBT();
                               //showBluetoothListDialog(context);
@@ -2842,7 +2827,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                print("Tapped on scan button");
+                                Utils.customPrint("Tapped on scan button");
 
                                 if (mounted) {
                                   setDialogState(() {
@@ -2850,7 +2835,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   });
                                 }
 
-                                //   FlutterBluePlus.instance.stopScan();
                                 FlutterBluePlus.instance.startScan(
                                     timeout: const Duration(seconds: 2));
 
@@ -2907,7 +2891,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                 );
               }));
         }).then((value) {
-      print('DIALOG VALUE $value');
+      Utils.customPrint('DIALOG VALUE $value');
 
       if (bluetoothName != '') {
         stateSetter(() {
@@ -2923,16 +2907,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
       }
     });
   }
-
-  /*Future<bool> blueIsOn() async
-  {
-    FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
-    final isOn = await _flutterBlue.isOn;
-    if(isOn) return true;
-
-    sleep(const Duration(milliseconds: 200));
-    return await _flutterBlue.isOn;
-  }*/
 
   /// To get all the data of vessel (trip count, avg trip speed etc)
   void getVesselAnalytics(String vesselId) async {

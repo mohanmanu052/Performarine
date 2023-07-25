@@ -48,8 +48,6 @@ class ForgotPasswordProvider with ChangeNotifier {
         CustomLogger().logWithFile(Level.info, "Register Response : ' + ${json.decode(response.body)}-> $page");
         CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.forgotPassword}  is: ${response.statusCode}-> $page");
 
-        final pref = await Utils.initSharedPreferences();
-
         forgotPasswordModel = ForgotPasswordModel.fromJson(json.decode(response.body));
         if(forgotPasswordModel == null){
           CustomLogger().logWithFile(Level.error, "Error while parsing json data on forgotPasswordModel -> $page");

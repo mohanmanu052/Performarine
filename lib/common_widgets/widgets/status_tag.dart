@@ -8,7 +8,6 @@ class StatusTag extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      //..color = Colors.green.shade300
       ..color = color!
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.fill;
