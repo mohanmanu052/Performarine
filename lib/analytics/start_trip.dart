@@ -400,8 +400,7 @@ class StartTrip {
             flutterLocalNotificationsPlugin
                 .show(
               1,
-              '',
-              // 'Trip is in progress 3',
+              'Trip is in progress',
               'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
               NotificationDetails(
                 android: AndroidNotificationDetails(
@@ -413,7 +412,6 @@ class StartTrip {
                     priority: Priority.low),),
             )
                 .catchError((onError) {
-              print('IOS NOTI ERROR: $onError');
             });
           }
 

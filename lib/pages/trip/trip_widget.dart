@@ -76,7 +76,7 @@ class _TripWidgetState extends State<TripWidget> {
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
 
-    debugPrint("###### DATA ###### ${widget.tripList!.id}");
+    // debugPrint("###### DATA ###### ${widget.tripList!.id}");
 
     tripIsRunningOrNot();
   }
@@ -559,9 +559,9 @@ class _TripWidgetState extends State<TripWidget> {
       "avgSpeed": double.parse(tripAvgSpeed),
     };
 
-    Utils.customPrint('CREATE TRIP: $queryParameters');
-    Utils.customPrint(
-        'CREATE TRIP FILE PATH: ${'/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'}');
+    // Utils.customPrint('CREATE TRIP: $queryParameters');
+    // Utils.customPrint(
+    //     'CREATE TRIP FILE PATH: ${'/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'}');
 
     commonProvider
         .sendSensorInfo(

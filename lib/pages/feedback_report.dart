@@ -54,7 +54,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
   IosDeviceInfo? iosDeviceInfo;
   AndroidDeviceInfo? androidDeviceInfo;
-  Map<String,dynamic>? deviceDetails;
+  Map<String,dynamic>? deviceDetails1;
+  late DeviceInfoPlugin deviceDetails;
 
   @override
   void initState() {
@@ -204,8 +205,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
                 child: CommonButtons.getDottedButton(
                     'Upload Images', context, () {
                   uploadImageFunction();
-                  Utils.customPrint(
-                      'FIIALLL: ${finalSelectedFiles.length}');
+                  // Utils.customPrint(
+                  //     'FIIALLL: ${finalSelectedFiles.length}');
                 }, Colors.grey),
               ),
 
@@ -254,14 +255,14 @@ class _FeedbackReportState extends State<FeedbackReport> {
                                 top: 0,
                                 child: InkWell(
                                   onTap: () {
-                                    Utils.customPrint(
-                                        'FIIALLL: ${finalSelectedFiles.length}');
+                                    // Utils.customPrint(
+                                    //     'FIIALLL: ${finalSelectedFiles.length}');
                                     setState(() {
                                       finalSelectedFiles
                                           .removeAt(index);
                                     });
-                                    Utils.customPrint(
-                                        'FIIALLL: ${finalSelectedFiles.length}');
+                                    // Utils.customPrint(
+                                    //     'FIIALLL: ${finalSelectedFiles.length}');
                                   },
                                   child: Icon(
                                     Icons.close,
@@ -300,31 +301,33 @@ class _FeedbackReportState extends State<FeedbackReport> {
                       if(formKey.currentState!.validate()){
                         bool check = await Utils().check(scaffoldKey);
 
-                        final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+                        deviceDetails = DeviceInfoPlugin();
                         if (Platform.isAndroid) {
-                          androidDeviceInfo = await deviceInfoPlugin.androidInfo;
-                          deviceDetails = {
-                            'deviceId': androidDeviceInfo?.id,
-                            'model': androidDeviceInfo?.model,
-                            'version': androidDeviceInfo?.version.release,
-                            'make': androidDeviceInfo?.manufacturer,
-                            'board': androidDeviceInfo?.board,
-                            'deviceType': androidDeviceInfo?.type,
-                          };
-                        } else if (Platform.isIOS) {
-                          iosDeviceInfo = await deviceInfoPlugin.iosInfo;
-                          deviceDetails = {
-                            'deviceId': '',
-                            'model': iosDeviceInfo?.model,
-                            'version': iosDeviceInfo?.utsname.release,
-                            'make': iosDeviceInfo?.utsname.machine,
-                            'board': iosDeviceInfo?.utsname.machine,
-                            'deviceType': iosDeviceInfo?.utsname.machine,
-                          };
+                          androidDeviceInfo = await deviceDetails.androidInfo;
+                        } else {
+                          iosDeviceInfo = await deviceDetails.iosInfo;
                         }
-                        Utils.customPrint("deviceDetails:${deviceDetails!.toString()}");
-                        Utils.customPrint("deviceDetails:${commonProvider.loginModel!.token!}");
-                        if(check){
+
+
+                        // print(deviceInfoPlugin.androidInfo);
+                        // if (Platform.isAndroid) {
+                          // androidDeviceInfo = await deviceInfoPlugin.androidInfo;
+                          deviceDetails1 = {
+                            'Device Id': Platform.isAndroid ? androidDeviceInfo!.id :Platform.isIOS? iosDeviceInfo?.identifierForVendor:"",
+                            'Model': Platform.isAndroid
+                            ? androidDeviceInfo!.model
+                          : Platform.isIOS? iosDeviceInfo!.model:"",
+                            'OS version': Platform.isAndroid
+                      ? androidDeviceInfo!.version.release
+                          :Platform.isIOS?  iosDeviceInfo!.utsname.release:"",
+                            'Make': Platform.isAndroid
+                      ? androidDeviceInfo!.manufacturer
+                          : Platform.isIOS?iosDeviceInfo?.utsname.machine:"",
+                            'Board': Platform.isAndroid
+                            ? androidDeviceInfo!.board
+                          : "",
+                            'Device Type': Platform.operatingSystem,};
+                         if(check){
                           final Directory appDir = await getApplicationDocumentsDirectory();
                           final String fileName = DateTime.now().toIso8601String() + '.png';
                           Directory directory = Directory('${appDir.path}/Feedback');
@@ -346,35 +349,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
                             setState(() {
                               isBtnClick = true;
                             });
-                            commonProvider?.sendUserFeedbackDio(
-                                context,
-                                commonProvider!.loginModel!.token!,
-                                nameController.text,
-                                descriptionController.text,
-                                deviceDetails!,
-                                sendFiles,
-                                scaffoldKey).then((value) async{
-                              if(value != null){
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                                print("status of send user feedback is: ${value.status}");
-                                if(value.status!){
-                                  deleteImageFile(imageFile!.path);
-                                  sendFiles.clear();
-                                  finalSelectedFiles.clear();
-                                  Navigator.pop(context);
-                                }
-                              } else{
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                              }
-                            }).catchError((e){
-                              setState(() {
-                                isBtnClick = false;
-                              });
-                            });
                           } else {
                             directory.create();
                             imageFile = File('${directory.path}/$fileName');
@@ -387,35 +361,37 @@ class _FeedbackReportState extends State<FeedbackReport> {
                               isBtnClick = true;
                             });
 
-                            debugPrint("REPORT TOKEN ${commonProvider!.loginModel!.token!}");
-                            commonProvider?.sendUserFeedbackDio(
-                                context,
-                                commonProvider!.loginModel!.token!,
-                                nameController.text,
-                                descriptionController.text,
-                                {},
-                                sendFiles,
-                                scaffoldKey).then((value) async{
-                              if(value != null){
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                                print("status of send user feedback is: ${value.status}");
-                                if(value.status!){
-                                  deleteImageFile(imageFile!.path);
-                                  Navigator.pop(context);
-                                }
-                              } else{
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                              }
-                            }).catchError((e){
+                            // debugPrint("REPORT TOKEN ${commonProvider!.loginModel!.token!}");
+                          }
+                          commonProvider?.sendUserFeedbackDio(
+                              context,
+                              commonProvider!.loginModel!.token!,
+                              nameController.text,
+                              descriptionController.text,
+                              deviceDetails1!,
+                              sendFiles,
+                              scaffoldKey).then((value) async{
+                            if(value != null){
                               setState(() {
                                 isBtnClick = false;
                               });
+                              // print("status of send user feedback is: ${value.status}");
+                              if(value.status!){
+                                deleteImageFile(imageFile!.path);
+                                sendFiles.clear();
+                                finalSelectedFiles.clear();
+                                Navigator.pop(context);
+                              }
+                            } else{
+                              setState(() {
+                                isBtnClick = false;
+                              });
+                            }
+                          }).catchError((e){
+                            setState(() {
+                              isBtnClick = false;
                             });
-                          }
+                          });
                         }else{
                           setState(() {
                             isBtnClick = false;
@@ -442,7 +418,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
         totalSize += fileBytes.lengthInBytes;
       }
     });
-    print('totalSize: $totalSize');
+    // print('totalSize: $totalSize');
     return totalSize;
   }
 

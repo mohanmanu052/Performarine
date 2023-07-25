@@ -136,7 +136,7 @@ class UserFeedbackProvider with ChangeNotifier {
       GlobalKey<ScaffoldState> scaffoldKey) async {
 
 
-    debugPrint("REPORT PROVIDER TOKEN $token");
+    // debugPrint("REPORT PROVIDER TOKEN $token");
 
     Uri uri = Uri.https(Urls.baseUrl, Urls.userFeedback);
 
@@ -152,10 +152,10 @@ class UserFeedbackProvider with ChangeNotifier {
 
     fileList.forEach((element) async {
       http.MultipartFile multipartFile = await http.MultipartFile.fromPath('files', element!.path);
-      print("request: ${request.files.length}");
+      // print("request: ${request.files.length}");
       request.files.add(multipartFile);
     });
-
+    // print("device info :${jsonEncode(deviceInfo)}");
     request.fields['subject'] = subject;
     request.fields['description'] = description;
     request.fields['deviceInfo'] = jsonEncode(deviceInfo);
