@@ -294,8 +294,8 @@ class _TripViewListingState extends State<TripViewListing> {
             child: StatefulBuilder(
               builder: (ctx, StateSetter stateSetter) {
                 return Container(
-                  height: displayHeight(context) * 0.45,
-                  width: MediaQuery.of(context).size.width,
+                  height: displayHeight(ctx) * 0.45,
+                  width: MediaQuery.of(ctx).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 15, bottom: 15),
@@ -306,7 +306,7 @@ class _TripViewListingState extends State<TripViewListing> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                              height: displayHeight(context) * 0.02,
+                              height: displayHeight(ctx) * 0.02,
                             ),
 
                             ClipRRect(
@@ -315,14 +315,14 @@ class _TripViewListingState extends State<TripViewListing> {
                                   //color: Color(0xfff2fffb),
                                   child: Image.asset(
                                     'assets/images/boat.gif',
-                                    height: displayHeight(context) * 0.1,
-                                    width: displayWidth(context),
+                                    height: displayHeight(ctx) * 0.1,
+                                    width: displayWidth(ctx),
                                     fit: BoxFit.contain,
                                   ),
                                 )),
 
                             SizedBox(
-                              height: displayHeight(context) * 0.02,
+                              height: displayHeight(ctx) * 0.02,
                             ),
 
                             Padding(
@@ -336,7 +336,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                         'Do you want to delete the Trip? This action can"t be irreversible.',
                                         fontWeight: FontWeight.w500,
                                         textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.04,
+                                        textSize: displayWidth(ctx) * 0.04,
                                         textAlign: TextAlign.center),
                                   ),
                                 ],
@@ -345,8 +345,8 @@ class _TripViewListingState extends State<TripViewListing> {
 
                             Padding(
                               padding: EdgeInsets.only(
-                                left: displayHeight(context) * 0.06,
-                                right: displayHeight(context) * 0.01,
+                                left: displayHeight(ctx) * 0.06,
+                                right: displayHeight(ctx) * 0.01,
                               ),
                               child: Row(
                                 children: [
@@ -356,7 +356,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                       'Start Date:   ',
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.025,
+                                      textSize: displayWidth(ctx) * 0.025,
                                       textAlign: TextAlign.center),
 
                                   commonText(
@@ -365,7 +365,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                       startDate,
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.025,
+                                      textSize: displayWidth(ctx) * 0.025,
                                       textAlign: TextAlign.center),
                                 ],
                               ),
@@ -373,8 +373,8 @@ class _TripViewListingState extends State<TripViewListing> {
 
                             Padding(
                               padding: EdgeInsets.only(
-                                left: displayHeight(context) * 0.06,
-                                right: displayHeight(context) * 0.01,
+                                left: displayHeight(ctx) * 0.06,
+                                right: displayHeight(ctx) * 0.01,
                               ),
                               child: Row(
                                 children: [
@@ -384,7 +384,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                       'Total Time:   ',
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.025,
+                                      textSize: displayWidth(ctx) * 0.025,
                                       textAlign: TextAlign.center),
 
                                   commonText(
@@ -393,7 +393,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                       totalTime,
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.025,
+                                      textSize: displayWidth(ctx) * 0.025,
                                       textAlign: TextAlign.center),
                                 ],
                               ),
@@ -401,8 +401,8 @@ class _TripViewListingState extends State<TripViewListing> {
 
                             Padding(
                               padding: EdgeInsets.only(
-                                left: displayHeight(context) * 0.06,
-                                right: displayHeight(context) * 0.01,
+                                left: displayHeight(ctx) * 0.06,
+                                right: displayHeight(ctx) * 0.01,
                               ),
                               child: Row(
                                 children: [
@@ -412,7 +412,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                       'Distance:   ',
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.025,
+                                      textSize: displayWidth(ctx) * 0.025,
                                       textAlign: TextAlign.center),
 
                                   commonText(
@@ -421,7 +421,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                       distance,
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.025,
+                                      textSize: displayWidth(ctx) * 0.025,
                                       textAlign: TextAlign.center),
                                 ],
                               ),
@@ -440,20 +440,23 @@ class _TripViewListingState extends State<TripViewListing> {
                                           (){
                                         Navigator.pop(dialogContext);
                                       },
-                                      displayWidth(context) * 0.34,
-                                      displayHeight(context) * 0.05,
+                                      displayWidth(ctx) * 0.34,
+                                      displayHeight(ctx) * 0.05,
                                       primaryColor,
-                                      Theme.of(context).brightness ==
+                                      Theme.of(ctx).brightness ==
                                           Brightness.dark
                                           ? Colors.white
                                           : Colors.grey,
-                                      displayHeight(context) * 0.015,
+                                      displayHeight(ctx) * 0.015,
                                       Colors.transparent,
                                       '',
                                       fontWeight: FontWeight.w500),
 
                                  isBtnClick ? Center(
-                                   child: CircularProgressIndicator(),
+                                   child: CircularProgressIndicator(
+                                     valueColor:
+                                     AlwaysStoppedAnimation<Color>(circularProgressColor),
+                                   ),
                                  ) :  Center(
                                    child: CommonButtons.getAcceptButton(
                                         'Delete Trip', context, buttonBGColor,
@@ -481,11 +484,11 @@ class _TripViewListingState extends State<TripViewListing> {
                                                 });
                                               }
                                         },
-                                       displayWidth(context) * 0.34,
-                                       displayHeight(context) * 0.05,
+                                       displayWidth(ctx) * 0.34,
+                                       displayHeight(ctx) * 0.05,
                                         primaryColor,
                                         Colors.white,
-                                        displayHeight(context) * 0.018,
+                                        displayHeight(ctx) * 0.018,
                                         buttonBGColor,
                                         '',
                                         fontWeight: FontWeight.w500),
@@ -494,7 +497,7 @@ class _TripViewListingState extends State<TripViewListing> {
                               ),
                             ),
                             SizedBox(
-                              height: displayHeight(context) * 0.005,
+                              height: displayHeight(ctx) * 0.005,
                             ),
                           ],
                         ),
@@ -502,7 +505,7 @@ class _TripViewListingState extends State<TripViewListing> {
 
                         Positioned(
                           right: 10,
-                          top: 10,
+                          top: 2,
                           child: Container(
                             height: 30,
                             width: 30,
