@@ -32,12 +32,14 @@ class TripListApiProvider extends ChangeNotifier {
 
       var decodedData = json.decode(response.body);
 
-      kReleaseMode ? null : debugPrint('Trip : ' + response.body);
+      kReleaseMode ? null : Utils.customPrint('Trip : ' + response.body);
       kReleaseMode
           ? null
-          : debugPrint('Trip Status code : ' + response.statusCode.toString());
-      debugPrint('Trip Status code 1: $decodedData');
+
+          : Utils.customPrint('Trip Status code : ' + response.statusCode.toString());
+    Utils.customPrint('Trip Status code 1: $decodedData');
       CustomLogger().logWithFile(Level.info, "Trip Status code 1: $decodedData -> $page");
+
 
       if (response.statusCode == HttpStatus.ok) {
         tripListModel = TripList.fromJson(json.decode(response.body));
@@ -52,8 +54,8 @@ class TripListApiProvider extends ChangeNotifier {
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         kReleaseMode
             ? null
-            : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $response');
+            : Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+        kReleaseMode ? null : Utils.customPrint('EXE RESP: $response');
 
         CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
         CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
@@ -72,8 +74,8 @@ class TripListApiProvider extends ChangeNotifier {
 
         kReleaseMode
             ? null
-            : debugPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-        kReleaseMode ? null : debugPrint('EXE RESP: $response');
+            : Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+        kReleaseMode ? null : Utils.customPrint('EXE RESP: $response');
 
         CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
         CustomLogger().logWithFile(Level.info, "EXE RESP: $response -> $page");
@@ -82,14 +84,16 @@ class TripListApiProvider extends ChangeNotifier {
       }
     } on SocketException catch (_) {
       Utils().check(scaffoldKey);
-      kReleaseMode ? null : debugPrint('Socket Exception');
+
+      kReleaseMode ? null : Utils.customPrint('Socket Exception');
       CustomLogger().logWithFile(Level.error, "Socket Exception -> $page");
 
       tripListModel = null;
     } catch (exception, s) {
-      kReleaseMode ? null : debugPrint('error caught tripListModel:- $exception \n $s');
+      kReleaseMode ? null : Utils.customPrint('error caught tripListModel:- $exception \n $s');
 
       CustomLogger().logWithFile(Level.error, "error caught tripListModel:- $exception \n $s -> $page");
+
 
       tripListModel = null;
     }

@@ -81,7 +81,7 @@ class _TripWidgetState extends State<TripWidget> {
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
 
-    debugPrint("###### DATA ###### ${widget.tripList!.id}");
+    Utils.customPrint("###### DATA ###### ${widget.tripList!.id}");
     CustomLogger().logWithFile(Level.info, "###### DATA ###### ${widget.tripList!.id} -> $page");
 
     tripIsRunningOrNot();
@@ -278,7 +278,6 @@ class _TripWidgetState extends State<TripWidget> {
                                                       tripIsRunningOrNot: false,
                                                       calledFrom:
                                                           widget.calledFrom
-                                                      // vessel: getVesselById[0]
                                                       ),
                                             ),
                                           );
@@ -333,7 +332,6 @@ class _TripWidgetState extends State<TripWidget> {
                                                                 false,
                                                             calledFrom: widget
                                                                 .calledFrom
-                                                            // vessel: getVesselById[0]
                                                             ),
                                                   ),
                                                 );
@@ -429,8 +427,6 @@ class _TripWidgetState extends State<TripWidget> {
                                                         setState(() {
                                                           isTripUploaded = true;
                                                         });
-
-                                                        // downloadTrip(true);
 
                                                         uploadDataIfDataIsNotSync();
 
@@ -907,8 +903,9 @@ class _TripWidgetState extends State<TripWidget> {
         if (value != null) {
           if (value.status!) {
 
-            debugPrint("Add Vessel R ${value.status}");
+        Utils.customPrint("Add Vessel R ${value.status}");
             CustomLogger().logWithFile(Level.info, "Add Vessel R ${value.status}-> $page");
+
 
             _databaseService.updateIsSyncStatus(
                 1, widget.tripList!.vesselId.toString());

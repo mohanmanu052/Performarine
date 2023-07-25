@@ -381,7 +381,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                   DateTime.now().toUtc().toString();
                               commonProvider.addVesselRequestModel!.updatedAt =
                                   DateTime.now().toUtc().toString();
-                              //ToDo: @ruapli add the created by as login userid.
                               commonProvider.addVesselRequestModel!.createdBy =
                                   commonProvider.loginModel!.userId.toString();
                               commonProvider.addVesselRequestModel!.updatedBy =
@@ -389,7 +388,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
 
                               if (commonProvider.addVesselRequestModel!
                                   .selectedImages!.isNotEmpty) {
-                                print(
+                                Utils.customPrint(
                                     'XXXXX:${commonProvider.addVesselRequestModel!.selectedImages!}');
                                 CustomLogger().logWithFile(Level.info, "XXXXX:${commonProvider.addVesselRequestModel!.selectedImages!} -> $page");
                                 String vesselImagesDirPath =
@@ -441,11 +440,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                         .addVesselRequestModel!.imageURLs ??
                                     '';
                               }
-
-                              /*setState(() {
-                                isBtnClicked = false;
-                              });
-                              return;*/
 
                               if (widget.isEdit!) {
                                 Utils.customPrint(
@@ -500,14 +494,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                     .insertVessel(
                                         commonProvider.addVesselRequestModel!)
                                     .then((value) {
-                                  // Navigator.pushReplacement(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       builder: (context) =>
-                                  //           SuccessfullyAddedScreen(
-                                  //               data: value.addVesselData,
-                                  //               isEdit: widget.isEdit)),
-                                  // );
                                   setState(() {
                                     isBtnClicked = false;
                                   });

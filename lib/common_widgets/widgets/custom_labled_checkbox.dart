@@ -148,32 +148,5 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
             color: dateColor),
       ),
     );
-
-    /* return InkWell(
-      onTap: _onChanged,
-      child: Padding(
-        padding: EdgeInsets.only(left: 0, right: 0),
-        child: Row(
-          children: <Widget>[
-            checkboxType == CheckboxType.Parent
-                ? SizedBox(width: 0)
-                : SizedBox(width: 0),
-            Checkbox(
-              tristate: tristate,
-              value: value,
-              onChanged: (_) {
-                _onChanged();
-              },
-              activeColor: activeColor ?? themeData.toggleableActiveColor,
-            ),
-            SizedBox(width: 8),
-            Text(
-              label,
-              style: themeData.textTheme.labelLarge,
-            )
-          ],
-        ),
-      ),
-    ); */
   }
 }

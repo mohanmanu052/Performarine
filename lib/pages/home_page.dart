@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -21,15 +24,13 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/pages/authentication/reset_password.dart';
+import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
-import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -89,7 +90,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
       setState(() {});
 
-      print("isComingFromReset: ${isComingFrom}");
+
+    Utils.customPrint("isComingFromReset: ${isComingFrom}");
       if(mounted){
         if(isComingFrom != null && isComingFrom )
         {
@@ -102,7 +104,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
               WidgetsBinding.instance.addPostFrameCallback((duration)
               {
                 showResetPasswordDialogBox(context,updatedToken);
-
               });
             }
 
@@ -111,7 +112,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
         }
       }
-      print('HomeScreen did update');
+      Utils.customPrint('HomeScreen did update');
     }
   }
 
@@ -124,7 +125,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
     commonProvider.getTripsCount();
-    // commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
 
     getVesselFuture = _databaseService.vessels();
 
@@ -139,14 +139,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
       });
     });
 
-    /*sharedPreferences!.reload();
-    bool? isAppKilledFromBg = sharedPreferences!.getBool('app_killed_from_bg');
-*/
-    debugPrint("IS APP KILLED FROM BG ${widget.isAppKilled}");
+    Utils.customPrint("IS APP KILLED FROM BG ${widget.isAppKilled}");
 
     bool? isTripStarted = sharedPreferences!.getBool('trip_started');
 
-    debugPrint("IS APP KILLED FROM BG 1212 $isTripStarted");
+    Utils.customPrint("IS APP KILLED FROM BG 1212 $isTripStarted");
 
     if(widget.isAppKilled!)
     {
@@ -175,47 +172,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
   }
 
-  //TODO future reference code
-  /*@override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-
-    tripData = widget.tripData;
-
-    if (tripData.isNotEmpty) {
-      String tripId = tripData[0];
-      String vesselId = tripData[1];
-      String vesselName = tripData[2];
-      String vesselWeight = tripData[3];
-
-      Utils.customPrint('TRIP DATA: $tripId * $vesselId * $vesselName');
-
-      widget.tripData = [];
-      Future.delayed(Duration(milliseconds: 300), () {
-        widget.tripData = [];
-        Utils().showEndTripDialog(context, () async {
-          CreateTrip().endTrip(
-              context: context,
-              scaffoldKey: scaffoldKey,
-              onEnded: () {
-                widget.tripData = [];
-                Navigator.pop(context);
-              });
-        }, () {
-          widget.tripData = [];
-          Navigator.of(context).pop();
-        });
-        // showAlertDialog(context, tripId, vesselId, vesselName, vesselWeight);
-      });
-    }
-  }*/
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        print("APP STATE - app in resumed");
+        Utils.customPrint("APP STATE - app in resumed");
         dynamic arg = Get.arguments;
         if(arg !=  null)
         {
@@ -226,13 +187,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
           if(mounted){
             setState(() {});
           }
-          print("isComingFromReset: ${isComingFrom}");
+          Utils.customPrint("isComingFromReset: ${isComingFrom}");
           if(mounted){
             if(isComingFrom != null && isComingFrom )
             {
-
               Future.delayed(Duration(microseconds: 500), (){
-                print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+                Utils.customPrint("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
                 bool? result;
                 if(sharedPreferences != null){
                   result = sharedPreferences!.getBool('reset_dialog_opened');
@@ -250,21 +210,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                   });
                   setState(() {});
                 }
-
               });
             }
           }
-          print('HomeScreen did update');
+          Utils.customPrint('HomeScreen did update');
         }
         break;
       case AppLifecycleState.inactive:
-        print("APP STATE - app in inactive");
+        Utils.customPrint("APP STATE - app in inactive");
         break;
       case AppLifecycleState.paused:
-        print("APP STATE - app in paused");
+        Utils.customPrint("APP STATE - app in paused");
         break;
       case AppLifecycleState.detached:
-        print("APP STATE - app in detached");
+        Utils.customPrint("APP STATE - app in detached");
         break;
     }
   }
@@ -513,7 +472,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                         ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
-                              //color: Color(0xfff2fffb),
                               child: Image.asset(
                                 'assets/images/boat.gif',
                                 height: displayHeight(context) * 0.1,
@@ -553,12 +511,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                 'OK', context, buttonBGColor,
                                     () async {
                                   Navigator.pop(dialogContext);
-                                  //Navigator.pop(dialogContext);
-                                  var result = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ResetPassword(token: token,isCalledFrom:  "HomePage",)),);
-                                  // Navigator.pop(scaffoldKey.currentContext!);
-                                },
+
+                                     var result = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => ResetPassword(token: token,isCalledFrom:  "HomePage",)),);
+                                     },
                                 displayWidth(context) * 0.65,
                                 displayHeight(context) * 0.054,
                                 primaryColor,
@@ -617,7 +574,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                         ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
-                              //color: Color(0xfff2fffb),
                               child: Image.asset(
                                 'assets/images/boat.gif',
                                 height: displayHeight(context) * 0.1,
@@ -741,16 +697,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
                                       reInitializeService();
 
-                                      //final isRunning1 = await BackgroundLocator.isServiceRunning();
-                                      //
-                                      // StartTrip().startBGLocatorTrip(tripData[0], DateTime.now());
-                                      //
-                                      // final isRunning2 = await BackgroundLocator.isServiceRunning();
+                                          StartTrip().startBGLocatorTrip(tripData![0], DateTime.now(), true);
 
-
-                                      //Utils.customPrint('INTRO TRIP IS RUNNING 11111 $isRunning1');
-
-                                      StartTrip().startBGLocatorTrip(tripData![0], DateTime.now(), true);
 
                                       final isRunning2 = await BackgroundLocator.isServiceRunning();
 
@@ -786,11 +734,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
   /// Reinitialized service after user killed app while trip is running
   reInitializeService() async {
-    // print('RE-Initializing...');
+
     await BackgroundLocator.initialize();
-    // String logStr = await FileManager.readLogFile();
-    // print('RE-Initialization done');
-    // final _isRunning = await BackgroundLocator.isServiceRunning();
 
     Map<String, dynamic> data = {'countInit': 1};
     return await BackgroundLocator.registerLocationUpdate(
@@ -807,7 +752,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
             accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
-            //client: bglas.LocationClient.android,
             androidNotificationSettings: AndroidNotificationSettings(
                 notificationChannelName: 'Location tracking',
                 notificationTitle: 'Trip is in progress',

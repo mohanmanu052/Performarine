@@ -101,7 +101,6 @@ class _VesselFormPageState extends State<VesselFormPage> {
             builtYear: int.parse(builtYear),
             isSync: 0,
             vesselStatus: 1,
-            //ToDo: Need to add the image urls in base 64 format
             imageURLs: "",
             createdAt: DateTime.now().toUtc().toString(),
             createdBy: "",

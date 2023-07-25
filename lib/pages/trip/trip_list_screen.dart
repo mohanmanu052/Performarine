@@ -262,16 +262,14 @@ class _TripListScreenState extends State<TripListScreen> {
                                 String? tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
                                 String? tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
 
-                                debugPrint("ERROR ERROR $tripDistance\n$tripSpeed\ntripAvgSpeed");
+                                Utils.customPrint("ERROR ERROR $tripDistance\n$tripSpeed\ntripAvgSpeed");
                                 CustomLogger().logWithFile(Level.error, "ERROR ERROR $tripDistance\n$tripSpeed\ntripAvgSpeed-> $page");
+
 
                                 EndTrip().endTrip(
                                     context: context,
                                     scaffoldKey: scaffoldKey,
                                     duration: tripDuration,
-                                    /*IOSAvgSpeed: tripAvgSpeed,
-                                    IOSpeed: tripSpeed,
-                                    IOStripDistance: tripDistance,*/
                                     onEnded: () {
                                       setState(() {
                                         future = _databaseService
@@ -582,7 +580,6 @@ class _TripListScreenState extends State<TripListScreen> {
                           isZipFileCreate
                               ? InkWell(
                                   onTap: () async {
-                                    // File copiedFile = File('${ourDirectory!.path}/${getTripId}.zip');
                                     File copiedFile =
                                         File('${ourDirectory!.path}.zip');
 
@@ -609,7 +606,6 @@ class _TripListScreenState extends State<TripListScreen> {
                                               'File downloaded successfully');
                                     }
 
-                                    // Utils.download(context, scaffoldKey,ourDirectory!.path);
                                   },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,

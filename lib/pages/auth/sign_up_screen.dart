@@ -13,14 +13,12 @@ import 'package:performarine/common_widgets/widgets/common_dropdown.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/zig_zag_line_widget.dart';
-import 'package:performarine/pages/authentication/sign_in_screen.dart';
-import 'package:performarine/pages/coming_soon_screen.dart';
+import 'package:performarine/pages/auth/sign_in_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/widgets/log_level.dart';
 import '../web_navigation/privacy_and_policy_web_view.dart';
-import '../web_navigation/terms_and_condition_web_view.dart';
 
 //Sign up page
 class SignUpScreen extends StatefulWidget {
@@ -143,8 +141,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: SingleChildScrollView(
               child: Form(
                 key: formKey,
-                // autovalidateMode: AutovalidateMode.onUserInteraction,
-                //autovalidate: _autoValidate
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -254,10 +250,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                       builder: (context) => SignInScreen(),
                                                     ),
                                                     ModalRoute.withName(""));
-// <<<<<<< Report-code-merge
-// =======
-
-// >>>>>>> Bug_loc_reports
                                               });
                                             } else {
                                               setState(() {
@@ -363,7 +355,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         }),
                     SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
-                        //key: registrationEmailFormFieldKey,
                         controller: emailController,
                         focusNode: emailFocusNode,
                         labelText: 'Email\*',
@@ -377,11 +368,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         requestFocusNode: null,
                         obscureText: false,
                         onFieldSubmitted: (value) {
-                          /*registrationEmailFormFieldKey.currentState!
-                              .validate();*/
                         },
                         onTap: () {
-                          //zipCodeFormFieldKey.currentState!.validate();
                         },
                         onChanged: (String value) {},
                         validator: (value) {

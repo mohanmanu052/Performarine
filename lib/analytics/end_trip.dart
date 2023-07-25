@@ -30,7 +30,7 @@ class EndTrip {
     CustomLogger().logWithFile(Level.info, "END TRIP FUNCTIONALITY -> -> $page");
     WidgetsFlutterBinding.ensureInitialized();
     await sharedPreferences!.reload();
-
+    Utils.customPrint("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance");
     CustomLogger().logWithFile(Level.info, "abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance -> $page");
     ReceivePort port = ReceivePort();
     String? latitude, longitude;
@@ -44,7 +44,8 @@ class EndTrip {
       ;
     });
 
-    debugPrint("endtrip location:$latitude");
+
+    Utils.customPrint("endtrip location:$latitude");
     CustomLogger().logWithFile(Level.info, "endtrip location:$latitude -> $page");
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
@@ -89,9 +90,9 @@ class EndTrip {
     sharedPreferences!.remove('current_loc_list');
     sharedPreferences!.remove('temp_trip_dist');
 
-    debugPrint("END TRIP 1 $latitude");
-    debugPrint("END TRIP 2 $longitude");
-    debugPrint("END TRIP 3 $tripDistance");
+    Utils.customPrint("END TRIP 1 $latitude");
+    Utils.customPrint("END TRIP 2 $longitude");
+    Utils.customPrint("END TRIP 3 $tripDistance");
 
     CustomLogger().logWithFile(Level.info, "END TRIP 1 $latitude -> $page");
     CustomLogger().logWithFile(Level.info, "END TRIP 2 $longitude -> $page");
@@ -112,7 +113,6 @@ class EndTrip {
 
     Wakelock.disable();
 
-    //await flutterLocalNotificationsPlugin.cancel(888);
     await flutterLocalNotificationsPlugin.cancel(889);
     await flutterLocalNotificationsPlugin.cancel(776);
     await flutterLocalNotificationsPlugin.cancel(1);

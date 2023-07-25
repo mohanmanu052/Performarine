@@ -49,8 +49,6 @@ class ChangePasswordProvider with ChangeNotifier {
         CustomLogger().logWithFile(Level.info, "Register Response : ' + ${response.body}-> $page");
         CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.changePassword}  is: ${response.statusCode}-> $page");
 
-        final pref = await Utils.initSharedPreferences();
-
         changePasswordModel = ChangePasswordModel.fromJson(json.decode(response.body));
 
         Utils.showSnackBar(context,

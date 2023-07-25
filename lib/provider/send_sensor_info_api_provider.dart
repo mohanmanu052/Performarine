@@ -19,7 +19,6 @@ import 'package:performarine/models/upload_trip_model.dart';
 import '../common_widgets/widgets/log_level.dart';
 
 class SendSensorInfoApiProvider with ChangeNotifier {
-  //CreateTripModel? createTripModel;
   CommonModel? commonModel;
   UploadTripModel? uploadTripModel;
 
@@ -37,8 +36,8 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       {bool calledFromSignOut = false}) async {
 
     d.Dio dio = d.Dio();
-    print('ZIPPPP: ${zipFile!.path}');
-    print('ZIPPPP: ${zipFile.existsSync()}');
+    Utils.customPrint('ZIPPPP: ${zipFile!.path}');
+    Utils.customPrint('ZIPPPP: ${zipFile.existsSync()}');
     var formData = d.FormData.fromMap({
       "tripData": jsonEncode(tripData),
       'sensorZipFiles': await d.MultipartFile.fromFile(
@@ -158,12 +157,6 @@ class SendSensorInfoApiProvider with ChangeNotifier {
                 scaffoldKey: scaffoldKey,
                 message:
                     'Failed to upload trip. Please check internet connection and try again.');}
-          // }else{
-          //     Utils.showSnackBar(context,
-          //         scaffoldKey: scaffoldKey,
-          //         message:
-          //         'Failed to upload trip. Please check internet connection and try again.');
-          //   }
         }
         flutterLocalNotificationsPlugin.cancel(9989);
         uploadTripModel = null;
@@ -177,7 +170,6 @@ class SendSensorInfoApiProvider with ChangeNotifier {
 
       uploadTripModel = null;
     }catch (exception, s) {
-      //_networkConnectivity.disposeStream();
 
       await Utils().check(scaffoldKey);
 

@@ -74,11 +74,11 @@ class CommonProvider with ChangeNotifier {
   Future<dynamic> checkIfBluetoothIsEnabled(GlobalKey<ScaffoldState> scaffoldKey, VoidCallback showBluetoothDialog) async{
 
     bool isBLEEnabled = await flutterBluePlus!.isOn;
-    print('isBLEEnabled: $isBLEEnabled');
+    Utils.customPrint('isBLEEnabled: $isBLEEnabled');
 
     if(isBLEEnabled){
       bool isGranted = await Permission.bluetooth.isGranted;
-      print('isGranted: $isGranted');
+      Utils.customPrint('isGranted: $isGranted');
       if(!isGranted){
         await Permission.bluetooth.request();
         bool isPermGranted = await Permission.bluetooth.isGranted;
@@ -121,8 +121,7 @@ class CommonProvider with ChangeNotifier {
     }
     else{
       bool isGranted = await Permission.bluetooth.isGranted;
-      print('isGranted: $isGranted');
-      // print('isGranted: ${await Permission.bluetooth.isPermanentlyDenied}');
+      Utils.customPrint('isGranted: $isGranted');
       if(!isGranted){
         if(await Permission.bluetooth.isPermanentlyDenied){
           Utils.showSnackBar(scaffoldKey.currentContext!,
@@ -141,18 +140,6 @@ class CommonProvider with ChangeNotifier {
         }
       }
       else{
-        /*bool isBCGranted = await flutterBluePlus!.isOn;
-        print('isBCGranted: $isBCGranted');
-        if(!isBCGranted){
-          showBluetoothDialog.call();
-         // Navigator.pop(scaffoldKey.currentContext!);
-        }
-        else{
-          print('VOID CALL BACK 2');
-          showBluetoothDialog.call();
-          return true;
-        }*/
-
         FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
         final isOn = await _flutterBlue.isOn;
         if(isOn) isBluetoothEnabled =  true;

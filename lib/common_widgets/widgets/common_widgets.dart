@@ -98,10 +98,6 @@ Widget? selectImage(
                           TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                     ),
                     onTap: () async {
-                      /* Navigator.pop(context);
-                      List<File> list = await Utils.pickCameraImages();
-                      onSelectImage(list);*/
-
                       bool isCameraPermissionGranted =
                           await Permission.camera.isGranted;
 
@@ -257,14 +253,6 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                           Image.file(
                             File(vesselData.imageURLs!),
                             fit: BoxFit.cover,
-                            /*errorBuilder:
-                                (BuildContext context, exception, stackTrace) {
-                              return Image.asset(
-                                'assets/images/vessel_default_img.png',
-                                width: displayWidth(context) * 0.65,
-                                fit: BoxFit.cover,
-                              );
-                            },*/
                             height: displayHeight(context) * 0.22,
                             width: displayWidth(context),
                           ),
