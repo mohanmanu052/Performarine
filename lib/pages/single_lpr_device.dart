@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
+import '../common_widgets/utils/utils.dart';
+
 class SingleLPRDevice extends StatefulWidget {
   final BluetoothDevice? device;
   final BuildContext? dialogContext;
@@ -36,13 +38,13 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
         });
 
         widget.device!.connect().then((value) {}).catchError((s) {
-          print('ERROR $s');
+          Utils.customPrint('ERROR $s');
           widget.device!.state.listen((event) {
             if (event == BluetoothDeviceState.connected) {
-              print('CONNECTION EVENT ${event}');
+              Utils.customPrint('CONNECTION EVENT ${event}');
               widget.device!.disconnect().then((value) {
                 widget.device!.connect().then((value) {
-                  print('CONNECTION NAME ${widget.device!.name}');
+                  Utils.customPrint('CONNECTION NAME ${widget.device!.name}');
                   widget.onSelected!(
                       widget.device!.name == null || widget.device!.name.isEmpty
                           ? widget.device!.id.toString()
@@ -60,12 +62,12 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                 });
               });
             } else {
-              print('ERROR CONNECTED 1212');
+              Utils.customPrint('ERROR CONNECTED 1212');
             }
           });
         });
-        print('ERROR CONNECTED');
-        print('ERROR CONNECTED FIRST');
+        Utils.customPrint('ERROR CONNECTED');
+        Utils.customPrint('ERROR CONNECTED FIRST');
 
         widget.setSetter!(() {
           widget.onBluetoothConnection!(true);

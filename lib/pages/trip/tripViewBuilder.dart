@@ -38,15 +38,6 @@ class _TripViewListingState extends State<TripViewListing> {
 
   late Future<List<Trip>> future;
   late Future<List<Trip>> getTripsByIdFuture;
-  // Future<List<Trip>> getTripsByVesselId() {
-  //   if (widget.vesselId == null || widget.vesselId == "") {
-  //     getTripsByIdFuture = _databaseService.trips();
-  //   } else {
-  //     getTripsByIdFuture =
-  //         _databaseService.getAllTripsByVesselId(widget.vesselId.toString());
-  //   }
-  //   return getTripsByIdFuture;
-  // }
 
   @override
   void initState() {
@@ -156,7 +147,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                                         1000)
                                                         .toInt());
 
-                                                print('***DIST: ${currentTrip.toJson()}');
+                                                Utils.customPrint('***DIST: ${currentTrip.toJson()}');
 
                                                 EndTrip().endTrip(
                                                     context: context,
@@ -219,11 +210,9 @@ class _TripViewListingState extends State<TripViewListing> {
                         );
                 }
               }
-
               return Container();
             },
           ),
-
         ],
       ),
     );
@@ -244,9 +233,5 @@ class _TripViewListingState extends State<TripViewListing> {
     return result;
   }
 
-  endTripMethod(String tripDuration, Trip trip,)async
-  {
-
-
-  }
+  endTripMethod(String tripDuration, Trip trip,)async {}
 }

@@ -98,7 +98,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
     if (widget.isEdit!) {
       if (widget.addVesselData != null) {
         Utils.customPrint('ENGINE TYPE ${widget.addVesselData!.engineType!}');
-        //Utils.customPrint('Image ${widget.addVesselData!.imageURLs!}');
 
         nameController.text = widget.addVesselData!.name!;
         modelController.text = widget.addVesselData!.model!;
@@ -228,13 +227,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       obscureText: false,
                       onTap: () {},
                       onChanged: (String value) {},
-                      /*validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Enter registration number';
-                        }
-
-                        return null;
-                      },*/
                       onSaved: (String value) {
                         Utils.customPrint(value);
                       }),
@@ -254,13 +246,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       obscureText: false,
                       onTap: () {},
                       onChanged: (String value) {},
-                      /*validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Enter MMSI';
-                        }
-
-                        return null;
-                      },*/
                       onSaved: (String value) {
                         Utils.customPrint(value);
                       }),
@@ -299,8 +284,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                       hintText: 'Engine Type*',
                       labelText: '',
                       onChanged: (String value) {
-                        // formKey.currentState!.validate();
-
                         setState(() {
                           selectedEngineType = value;
                           Utils.customPrint('engine $selectedEngineType');
@@ -387,7 +370,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                           children: [
                             SizedBox(height: displayHeight(context) * 0.015),
 
-                            //SizedBox(height: displayHeight(context) * 0.015),
                             CommonTextField(
                                 controller: batteryCapacityController,
                                 focusNode: batteryCapacityFocusNode,
@@ -450,7 +432,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                                       width: displayHeight(
                                                               context) *
                                                           0.1,
-                                                      // imageUrl: 'https://picsum.photos/200',
                                                       imageUrl: widget
                                                           .addVesselData!
                                                           .imageURLs!,
@@ -513,9 +494,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                               top: 0,
                                               child: InkWell(
                                                 onTap: () async {
-                                                  /* await _databaseService
-                                                  .deleteVesselImage(widget
-                                                      .addVesselData!.id!);*/
                                                   setState(() {
                                                     widget.addVesselData!
                                                         .imageURLs = '';
@@ -567,10 +545,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                                             index]!
                                                         .path),
                                                   ))),
-                                          /*child: Icon(
-                                            Icons.close,
-                                            size: displayWidth(context) * 0.05,
-                                          ),*/
                                         ),
                                         Positioned(
                                           right: 0,
@@ -652,7 +626,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                             batteryCapacityController.text.isEmpty
                                 ? '0'
                                 : batteryCapacityController.text;
-                        //Utils.customPrint('ImageURL NEXT ${widget.addVesselData!.imageURLs}');
                         commonProvider.addVesselRequestModel!.imageURLs =
                             widget.addVesselData == null
                                 ? ''
@@ -660,10 +633,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                         widget.addVesselData!.imageURLs!.isEmpty
                                     ? ''
                                     : widget.addVesselData!.imageURLs;
-                        /* commonProvider.addVesselRequestModel!.imageURLs =
-                            deletedImageUrls.isNotEmpty
-                                ? deletedImageUrls.join(',')
-                                : " ";*/
 
                         Utils.customPrint(
                             'Step ONE VESSEL NAME: ${nameController.text}');
@@ -675,10 +644,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                             duration: Duration(milliseconds: 300),
                             curve: Curves.easeOut);
                       }
-                      /*Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const VerifyEmailScreen()),
-                              ); */
                     }),
               ),
             ],
@@ -698,8 +663,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
         isStoragePermissionGranted = await Permission.photos.isGranted;
       }
 
-      // bool isStoragePermissionGranted = await Permission.storage.isGranted;
-
       if (isStoragePermissionGranted) {
         await selectImage(context, Colors.red,
             (List<File?> selectedImageFileList) {
@@ -710,10 +673,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
               Utils.customPrint('CAMERA FILE 2 ${finalSelectedFiles[0]!.path}');
               Utils.customPrint(
                   'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
-
-              /* setState(() {
-              finalSelectedFiles.addAll(finalSelectedFiles);
-            });*/
             });
           }
         });
@@ -736,10 +695,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                 finalSelectedFiles.clear();
                 finalSelectedFiles.addAll(selectedImageFileList);
                 Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
-
-                /* setState(() {
-              finalSelectedFiles.addAll(finalSelectedFiles);
-            });*/
               });
             }
           });
@@ -756,10 +711,6 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
             Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
             Utils.customPrint(
                 'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
-
-            /* setState(() {
-              finalSelectedFiles.addAll(finalSelectedFiles);
-            });*/
           });
         }
       });

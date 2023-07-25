@@ -76,8 +76,6 @@ class _TripWidgetState extends State<TripWidget> {
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
 
-    // debugPrint("###### DATA ###### ${widget.tripList!.id}");
-
     tripIsRunningOrNot();
   }
 
@@ -271,7 +269,6 @@ class _TripWidgetState extends State<TripWidget> {
                                                       tripIsRunningOrNot: false,
                                                       calledFrom:
                                                           widget.calledFrom
-                                                      // vessel: getVesselById[0]
                                                       ),
                                             ),
                                           );
@@ -325,7 +322,6 @@ class _TripWidgetState extends State<TripWidget> {
                                                                 false,
                                                             calledFrom: widget
                                                                 .calledFrom
-                                                            // vessel: getVesselById[0]
                                                             ),
                                                   ),
                                                 );
@@ -420,8 +416,6 @@ class _TripWidgetState extends State<TripWidget> {
                                                         setState(() {
                                                           isTripUploaded = true;
                                                         });
-
-                                                        // downloadTrip(true);
 
                                                         uploadDataIfDataIsNotSync();
 
@@ -558,10 +552,6 @@ class _TripWidgetState extends State<TripWidget> {
       "speed": double.parse(tripSpeed),
       "avgSpeed": double.parse(tripAvgSpeed),
     };
-
-    Utils.customPrint('CREATE TRIP: $queryParameters');
-    Utils.customPrint(
-        'CREATE TRIP FILE PATH: ${'/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'}');
 
     commonProvider
         .sendSensorInfo(
@@ -883,7 +873,7 @@ class _TripWidgetState extends State<TripWidget> {
         if (value != null) {
           if (value.status!) {
 
-            debugPrint("Add Vessel R ${value.status}");
+            Utils.customPrint("Add Vessel R ${value.status}");
 
             _databaseService.updateIsSyncStatus(
                 1, widget.tripList!.vesselId.toString());

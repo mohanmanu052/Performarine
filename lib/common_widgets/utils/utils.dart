@@ -48,7 +48,6 @@ class Utils {
     }
   }
 
-
   //To display snackbar
   static void showSnackBar(BuildContext context,
       {GlobalKey<ScaffoldState>? scaffoldKey,
@@ -58,7 +57,7 @@ class Utils {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
 
-    debugPrint("STATUS $status");
+    Utils.customPrint("STATUS $status");
 
     final snackBar = SnackBar(
       backgroundColor: status ? Colors.blue : Colors.red,
@@ -85,7 +84,6 @@ class Utils {
       duration: Duration(seconds: duration),
       behavior: SnackBarBehavior.floating,
     );
-    // scaffoldKey?.currentState?.showSnackBar(snackBar);
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
@@ -121,15 +119,15 @@ class Utils {
       if (status == PermissionStatus.denied) {
         await Permission.locationWhenInUse.request();
         bool isGranted = await Permission.locationWhenInUse.isGranted;
-        debugPrint("LOCATION PERMISSION $isGranted");
-        print('LOCCC: ${await Permission.location.isGranted}');
-        print('LOCCC: ${await Permission.locationWhenInUse.isGranted}');
-        print('LOCCC: ${await Permission.locationAlways.isGranted}');
+        Utils.customPrint("LOCATION PERMISSION $isGranted");
+        Utils.customPrint('LOCCC: ${await Permission.location.isGranted}');
+        Utils.customPrint('LOCCC: ${await Permission.locationWhenInUse.isGranted}');
+        Utils.customPrint('LOCCC: ${await Permission.locationAlways.isGranted}');
         if (!isGranted) {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey,
               message:
-                  'Location permissions are denied without permissions we are unable to start the trip 1');
+                  'Location permissions are denied without permissions we are unable to start the trip');
           Future.delayed(Duration(seconds: 2), () async {
             await openAppSettings();
           });
@@ -138,7 +136,7 @@ class Utils {
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey,
             message:
-                'Location permissions are denied without permissions we are unable to start the trip 2');
+                'Location permissions are denied without permissions we are unable to start the trip');
         Future.delayed(Duration(seconds: 2), () async {
           await openAppSettings();
         });
@@ -248,15 +246,6 @@ class Utils {
   static Future<bool> getNotificationPermission(BuildContext context,
       [Permission permission = Permission.notification]) async {
     bool isPermissionGranted = false;
-
-    /*final androidInfo = await DeviceInfoPlugin().androidInfo;
-
-    if (permission == Permission.notification) {
-      if (androidInfo.version.sdkInt > 33) {
-        permission = Permission.notification;
-      }
-    }*/
-
     try {
       if (await permission.request().isGranted) {
         isPermissionGranted = true;
@@ -415,8 +404,7 @@ class Utils {
 
   // Custom print through out the project
   static customPrint(String text) {
-    // kReleaseMode ? null : debugPrint('$text');
-    debugPrint('$text');
+    Utils.customPrint('$text');
   }
 
   //End trip dialog for user confirmation to end trip

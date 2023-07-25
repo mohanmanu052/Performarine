@@ -10,7 +10,6 @@ import '../../common_widgets/utils/utils.dart';
 import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/common_text_feild.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
-import '../../common_widgets/widgets/custom_dialog_new.dart';
 import '../../common_widgets/widgets/zig_zag_line_widget.dart';
 import '../../provider/common_provider.dart';
 
@@ -115,9 +114,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           return null;
                         },
                         onFieldSubmitted: (value) {
-                          //emailFormFieldKey.currentState!.validate();
-                          /* FocusScope.of(context)
-                              .requestFocus(passwordFocusNode);*/
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
@@ -150,7 +146,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                   setState(() {
                                     isBtnClick = false;
                                   });
-                                  print("status code of forgot password: ${value.statusCode}");
+                                  Utils.customPrint("status code of forgot password: ${value.statusCode}");
                                   if(value.statusCode == 200){
                                     Navigator.pushAndRemoveUntil(
                                         context,

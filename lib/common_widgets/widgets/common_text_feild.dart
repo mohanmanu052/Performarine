@@ -188,6 +188,9 @@ class _CommonTextFieldState extends State<CommonTextField> {
     );
   }
 }
+
+
+
 class CommonExpandTextField extends StatefulWidget {
   TextEditingController? controller;
   FocusNode? focusNode;
@@ -355,9 +358,7 @@ class _CommonExpandTextFieldState extends State<CommonExpandTextField> {
                 borderRadius: const BorderRadius.all(Radius.circular(15))),
           ),
           onFieldSubmitted: (value) {
-            /*if (widget.onFieldSubmitted != null) {
-              widget.onFieldSubmitted!(value);
-            }*/
+
             FocusScope.of(context).requestFocus(widget.requestFocusNode);
           },
           style: TextStyle(

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +13,6 @@ import '../common_widgets/widgets/common_buttons.dart';
 import '../common_widgets/widgets/common_text_feild.dart';
 import '../common_widgets/widgets/common_widgets.dart';
 import 'dart:io';
-
-import '../models/device_model.dart';
 
 class FeedbackReport extends StatefulWidget {
   final String? imagePath;
@@ -54,7 +50,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
   IosDeviceInfo? iosDeviceInfo;
   AndroidDeviceInfo? androidDeviceInfo;
-  Map<String,dynamic>? deviceDetails;
+  Map<String,dynamic>? deviceDetails1;
+  late DeviceInfoPlugin deviceDetails;
 
   @override
   void initState() {
@@ -197,38 +194,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
                         }),
                   ),
 
-                  /*Padding(
-                    padding: EdgeInsets.only(
-                      top: displayWidth(context) * 0.05,
-                      left: displayWidth(context) * 0.06,
-                      right: displayWidth(context) * 0.06,
-                    ),
-                    child: CommonExpandTextField(
-                        controller: descriptionController,
-                        focusNode: descriptionFocusNode,
-                        labelText: 'Description',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.done,
-                        textInputType: TextInputType.text,
-                        textCapitalization: TextCapitalization.words,
-                        // maxLength: 32,
-                        prefixIcon: null,
-                        requestFocusNode: null,
-                        obscureText: false,
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          // if (value!.trim().isEmpty) {
-                          //   return 'Enter Description';
-                          // }
-                          // return true;
-                        },
-                        onSaved: (String value) {
-                          Utils.customPrint(value);
-                        }),
-                  ),*/
-
                   Container(
                     margin: EdgeInsets.only(top: 15.0, bottom: 10),
                     child: CommonButtons.getDottedButton(
@@ -274,10 +239,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
                                               index]!
                                                   .path),
                                             ))),
-                                    /*child: Icon(
-                                                  Icons.close,
-                                                  size: displayWidth(context) * 0.05,
-                                                ),*/
                                   ),
                                   Positioned(
                                     right: 0,
@@ -337,31 +298,29 @@ class _FeedbackReportState extends State<FeedbackReport> {
                       if(formKey.currentState!.validate()){
                         bool check = await Utils().check(scaffoldKey);
 
-                        final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+                        deviceDetails = DeviceInfoPlugin();
                         if (Platform.isAndroid) {
-                          androidDeviceInfo = await deviceInfoPlugin.androidInfo;
-                          deviceDetails = {
-                            'deviceId': androidDeviceInfo?.id,
-                            'model': androidDeviceInfo?.model,
-                            'version': androidDeviceInfo?.version.release,
-                            'make': androidDeviceInfo?.manufacturer,
-                            'board': androidDeviceInfo?.board,
-                            'deviceType': androidDeviceInfo?.type,
-                          };
-                        } else if (Platform.isIOS) {
-                          iosDeviceInfo = await deviceInfoPlugin.iosInfo;
-                          deviceDetails = {
-                            'deviceId': '',
-                            'model': iosDeviceInfo?.model,
-                            'version': iosDeviceInfo?.utsname.release,
-                            'make': iosDeviceInfo?.utsname.machine,
-                            'board': iosDeviceInfo?.utsname.machine,
-                            'deviceType': iosDeviceInfo?.utsname.machine,
-                          };
+                          androidDeviceInfo = await deviceDetails.androidInfo;
+                        } else {
+                          iosDeviceInfo = await deviceDetails.iosInfo;
                         }
-                        Utils.customPrint("deviceDetails:${deviceDetails!.toString()}");
-                        Utils.customPrint("deviceDetails:${commonProvider.loginModel!.token!}");
-                        if(check){
+
+                          deviceDetails1 = {
+                            'Device Id': Platform.isAndroid ? androidDeviceInfo!.id :Platform.isIOS? iosDeviceInfo?.identifierForVendor:"",
+                            'Model': Platform.isAndroid
+                            ? androidDeviceInfo!.model
+                          : Platform.isIOS? iosDeviceInfo!.model:"",
+                            'OS version': Platform.isAndroid
+                      ? androidDeviceInfo!.version.release
+                          :Platform.isIOS?  iosDeviceInfo!.utsname.release:"",
+                            'Make': Platform.isAndroid
+                      ? androidDeviceInfo!.manufacturer
+                          : Platform.isIOS?iosDeviceInfo?.utsname.machine:"",
+                            'Board': Platform.isAndroid
+                            ? androidDeviceInfo!.board
+                          : "",
+                            'Device Type': Platform.operatingSystem,};
+                         if(check){
                           final Directory appDir = await getApplicationDocumentsDirectory();
                           final String fileName = DateTime.now().toIso8601String() + '.png';
                           Directory directory = Directory('${appDir.path}/Feedback');
@@ -383,35 +342,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
                             setState(() {
                               isBtnClick = true;
                             });
-                            commonProvider?.sendUserFeedbackDio(
-                                context,
-                                commonProvider!.loginModel!.token!,
-                                nameController.text,
-                                descriptionController.text,
-                                deviceDetails!,
-                                sendFiles,
-                                scaffoldKey).then((value) async{
-                              if(value != null){
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                                print("status of send user feedback is: ${value.status}");
-                                if(value.status!){
-                                  deleteImageFile(imageFile!.path);
-                                  sendFiles.clear();
-                                  finalSelectedFiles.clear();
-                                  Navigator.pop(context);
-                                }
-                              } else{
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                              }
-                            }).catchError((e){
-                              setState(() {
-                                isBtnClick = false;
-                              });
-                            });
                           } else {
                             directory.create();
                             imageFile = File('${directory.path}/$fileName');
@@ -423,36 +353,35 @@ class _FeedbackReportState extends State<FeedbackReport> {
                             setState(() {
                               isBtnClick = true;
                             });
-
-                            debugPrint("REPORT TOKEN ${commonProvider!.loginModel!.token!}");
-                            commonProvider?.sendUserFeedbackDio(
-                                context,
-                                commonProvider!.loginModel!.token!,
-                                nameController.text,
-                                descriptionController.text,
-                                {},
-                                sendFiles,
-                                scaffoldKey).then((value) async{
-                              if(value != null){
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                                print("status of send user feedback is: ${value.status}");
-                                if(value.status!){
-                                  deleteImageFile(imageFile!.path);
-                                  Navigator.pop(context);
-                                }
-                              } else{
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                              }
-                            }).catchError((e){
+                          }
+                          commonProvider.sendUserFeedbackDio(
+                              context,
+                              commonProvider.loginModel!.token!,
+                              nameController.text,
+                              descriptionController.text,
+                              deviceDetails1!,
+                              sendFiles,
+                              scaffoldKey).then((value) async{
+                            if(value != null){
                               setState(() {
                                 isBtnClick = false;
                               });
+                              if(value.status!){
+                                deleteImageFile(imageFile!.path);
+                                sendFiles.clear();
+                                finalSelectedFiles.clear();
+                                Navigator.pop(context);
+                              }
+                            } else{
+                              setState(() {
+                                isBtnClick = false;
+                              });
+                            }
+                          }).catchError((e){
+                            setState(() {
+                              isBtnClick = false;
                             });
-                          }
+                          });
                         }else{
                           setState(() {
                             isBtnClick = false;
@@ -478,7 +407,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
         totalSize += fileBytes.lengthInBytes;
       }
     });
-    print('totalSize: $totalSize');
     return totalSize;
   }
 
@@ -502,7 +430,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
   $fileSizeInTB TB
       ''';
 
-    print("file size: $fileSize");
+    Utils.customPrint("file size: $fileSize");
 
     setState(() {
       _result = fileSize;
@@ -522,22 +450,16 @@ class _FeedbackReportState extends State<FeedbackReport> {
         isStoragePermissionGranted = await Permission.photos.isGranted;
       }
 
-      // bool isStoragePermissionGranted = await Permission.storage.isGranted;
-
       if (isStoragePermissionGranted) {
         await selectImage(context, Colors.red,
                 (List<File?> selectedImageFileList) {
               if (selectedImageFileList.isNotEmpty) {
                 setState(() {
-                  //finalSelectedFiles.clear();
                   finalSelectedFiles.addAll(selectedImageFileList);
                   Utils.customPrint('CAMERA FILE 2 ${finalSelectedFiles[0]!.path}');
                   Utils.customPrint(
                       'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
 
-                  /* setState(() {
-              finalSelectedFiles.addAll(finalSelectedFiles);
-            });*/
                 });
               }
             });
@@ -557,14 +479,10 @@ class _FeedbackReportState extends State<FeedbackReport> {
                   (List<File?> selectedImageFileList) {
                 if (selectedImageFileList.isNotEmpty) {
                   setState(() {
-                    //  finalSelectedFiles.clear();
                     finalSelectedFiles.addAll(selectedImageFileList);
                     Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
                     Utils.customPrint('finalSelectedFiles length:  ${finalSelectedFiles.length}');
 
-                    /* setState(() {
-              finalSelectedFiles.addAll(finalSelectedFiles);
-            });*/
                   });
                 }
               });
@@ -583,9 +501,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     'CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
                 Utils.customPrint('finalSelectedFiles length1:  ${finalSelectedFiles.length}');
 
-                /* setState(() {
-              finalSelectedFiles.addAll(finalSelectedFiles);
-            });*/
               });
             }
           });
@@ -594,38 +509,24 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
 
   Future<String> captureAndSaveScreenshot() async {
-    // final Uint8List? imageBytes = await controller.capture();
-
     final Directory appDir = await getApplicationDocumentsDirectory();
 
     final String fileName = DateTime.now().toIso8601String() + '.png';
     imageFile = File('${appDir.path}/$fileName');
-    print("file path is: ${imageFile!.path}");
+    Utils.customPrint("file path is: ${imageFile!.path}");
 
     await imageFile!.writeAsBytes(widget.uIntList!);
 
-    // deleteImageAfterDelay(imageFile!.path);
-
     return imageFile!.path;
   }
-
-  /*
-  void deleteImageAfterDelay(String imagePath) {
-    const delayDuration = Duration(seconds: 2);
-
-    Timer(delayDuration, () {
-      print("delete confirmation");
-      deleteImageFile(imagePath);
-    });
-  } */
 
   Future<void> deleteImageFile(String filePath) async {
     try {
       final file = File(filePath);
       await file.delete();
-      print('Image deleted successfully');
+      Utils.customPrint('Image deleted successfully');
     } catch (e) {
-      print('Failed to delete image: $e');
+      Utils.customPrint('Failed to delete image: $e');
     }
   }
 

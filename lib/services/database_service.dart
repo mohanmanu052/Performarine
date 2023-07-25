@@ -374,19 +374,19 @@ class DatabaseService {
       String startTime = tripsList[i].createdAt.toString();
       String endTime = tripsList[i].updatedAt.toString();
 
-      print('UTC START TIME: $startTime');
-      print('UTC END TIME: $endTime');
+      Utils.customPrint('UTC START TIME: $startTime');
+      Utils.customPrint('UTC END TIME: $endTime');
 
       DateTime startDateTime = DateTime.parse(startTime);
       DateTime endDateTime = DateTime.parse(endTime);
 
-      print('DATE TIME START: $startDateTime');
-      print('DATE TIME END: $endDateTime');
+      Utils.customPrint('DATE TIME START: $startDateTime');
+      Utils.customPrint('DATE TIME END: $endDateTime');
 
       Duration diffDuration = endDateTime.difference(startDateTime);
       totalTripsDuration = totalTripsDuration + diffDuration.inSeconds;
 
-      print('DIFFERENCE DURATION IN SECONDS: $totalTripsDuration');
+      Utils.customPrint('DIFFERENCE DURATION IN SECONDS: $totalTripsDuration');
 
       totalAverageSpeed = totalAverageSpeed + singleTripAvgSpeed;
       totalDistanceSum = totalDistanceSum + singleTripDistance;

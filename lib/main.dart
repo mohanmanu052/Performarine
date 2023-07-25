@@ -51,10 +51,9 @@ void main() async {
 
   tz.initializeTimeZones();
 
-  //await Firebase.initializeApp(options: DefaultFi);
-
-  await Firebase.initializeApp();
   //Firebase.initializeApp
+  await Firebase.initializeApp();
+
 
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
@@ -156,7 +155,7 @@ Future<void> initializeService() async {
       List<String>? tripData = pref.getStringList('trip_data');
       bool? isTripStarted = pref.getBool('trip_started');
 
-      print("IS APP KILLED MAIN $isAppKilledFromBGMain");
+      Utils.customPrint("IS APP KILLED MAIN $isAppKilledFromBGMain");
 
       if(isAppKilledFromBGMain)
         {
@@ -206,14 +205,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
          isComingFromUnilink = true;
        });
 
-        print("URI: ${uri}");
+        Utils.customPrint("URI: ${uri}");
         if (uri != null) {
-          print('Deep link received: $uri');
+          Utils.customPrint('Deep link received: $uri');
           if(uri.queryParameters['verify'] != null){
-            print("reset: ${uri.queryParameters['verify'].toString()}");
+            Utils.customPrint("reset: ${uri.queryParameters['verify'].toString()}");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
 
-            print("isUserLoggedIn: $isUserLoggedIn");
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
             Map<String, dynamic> arguments = {
               "isComingFromReset": true,
               "token": uri.queryParameters['verify'].toString()
@@ -235,10 +234,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           }
         }
       }, onError: (err) {
-        print('Error handling deep link: $err');
+        Utils.customPrint('Error handling deep link: $err');
       });
     } on PlatformException {
-      print("Exception while handling with uni links : ${PlatformException}");
+      Utils.customPrint("Exception while handling with uni links : ${PlatformException}");
     }
   }
 
@@ -260,7 +259,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       key: 'baseUrl'
     );
 
-    print('ERROR: $all');
+    Utils.customPrint('ERROR: $all');
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     var version = packageInfo.version;
@@ -276,42 +275,31 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     var actualSecondVersion = secondVersion.replaceAll('"', "");
     var actualSecondURL =AllVersions[1].split(":").last.replaceAll('"', "");
 
-
-    //String firstVersionSplit = split[0];
-    //var replaceFirst = firstVersionSplit.replaceAll("{", "");
-    //var replaceSecond = firstVersionSplit.replaceFirst("", "");
-
-    debugPrint("BASE URL VERSION 1 $actualSecondVersion");
-    debugPrint("BASE URL VERSION 1 $actualSecondURL");
-    debugPrint("BASE URL VERSION 2 $actualVersion");
-    debugPrint("BASE URL VERSION 2 $actualURL");
+    Utils.customPrint("BASE URL VERSION 1 $actualSecondVersion");
+    Utils.customPrint("BASE URL VERSION 1 $actualSecondURL");
+    Utils.customPrint("BASE URL VERSION 2 $actualVersion");
+    Utils.customPrint("BASE URL VERSION 2 $actualURL");
 
     if(version == actualVersion)
       {
-        debugPrint("BASE Actual URL VERSION $actualURL");
+        Utils.customPrint("BASE Actual URL VERSION $actualURL");
 
         Urls.baseUrlVersion = actualURL;
 
       }
     else if(version == actualSecondVersion)
       {
-        debugPrint("BASE Actual URL VERSION 2 $actualSecondURL");
+        Utils.customPrint("BASE Actual URL VERSION 2 $actualSecondURL");
 
         Urls.baseUrlVersion = actualSecondURL;
       }
     else{
-      debugPrint("BASE URL NO VERSION ");
+      Utils.customPrint("BASE URL NO VERSION ");
     }
-
-   //var version =  all.toString().split(",").first;
-
-
 
     Urls.baseUrlVersion = all.toString();
 
-
-
-    debugPrint("SECURE STORAGE $all");
+    Utils.customPrint("SECURE STORAGE $all");
   }
 
   getTripData()async
@@ -319,7 +307,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     bool? isTripStarted =
     sharedPreferences!.getBool('trip_started');
 
-    print("TRIP IN PROGRESS MAIN $isTripStarted");
+    Utils.customPrint("TRIP IN PROGRESS MAIN $isTripStarted");
   }
 
   @override
@@ -354,12 +342,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     switch (state) {
       case AppLifecycleState.resumed:
-        print('\n\n**********resumed');
+        Utils.customPrint('\n\n**********resumed');
         // var pref = await SharedPreferences.getInstance();
 
         String? result = sharedPreferences!.getString('tripAvgSpeed');
 
-        print("RESUME MAIN $result");
+        Utils.customPrint("RESUME MAIN $result");
 
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
           await Future.delayed(Duration(seconds: 1), () async {
@@ -397,7 +385,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               bool? result =
                   sharedPreferences!.getBool('sp_key_called_from_noti');
 
-              print('********$result');
+              Utils.customPrint('********$result');
 
               if (result != null) {
                 if (result) {
@@ -408,7 +396,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
                   EasyLoading.dismiss();
 
-                  print("LIFE CYCLE KILLED $isAppKilledFromBGMain");
+                  Utils.customPrint("LIFE CYCLE KILLED $isAppKilledFromBGMain");
 
                   if(isAppKilledFromBGMain)
                     {
@@ -427,15 +415,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                           tripIsRunningOrNot: isTripStarted));
                     }
 
-
-                  // Navigator.pushAndRemoveUntil(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => TripAnalyticsScreen(
-                  //             tripId: tripData![0],
-                  //             vesselId: tripData[1],
-                  //             tripIsRunningOrNot: isTripStarted)),
-                  //     ModalRoute.withName(""));
                 } else {
                   EasyLoading.dismiss();
                 }
@@ -445,17 +424,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 bool? result =
                     sharedPreferences!.getBool('sp_key_called_from_noti');
 
-                print('********$result');
+                Utils.customPrint('********$result');
               }
             });
           });
         });
         break;
       case AppLifecycleState.inactive:
-        print('\n\ninactive');
+        Utils.customPrint('\n\ninactive');
         break;
       case AppLifecycleState.paused:
-        print('\n\npaused');
+        Utils.customPrint('\n\npaused');
         sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences!.reload();
         break;
@@ -466,9 +445,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
         String? result = sharedPreferences!.getString('tripAvgSpeed');
 
-        print("DETACH MAIN $result");
+        Utils.customPrint("DETACH MAIN $result");
 
-        print('\n\ndetached');
+        Utils.customPrint('\n\ndetached');
         break;
     }
   }
@@ -477,7 +456,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     FirebaseRemoteConfig data = await setupRemoteConfig();
     String vinValidation = data.getString('version');
 
-    print('VINNNNNNNNNNNNNNN $vinValidation');
+    Utils.customPrint('VINNNNNNNNNNNNNNN $vinValidation');
 
     final FlutterSecureStorage storage = FlutterSecureStorage();
 

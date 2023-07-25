@@ -110,7 +110,6 @@ flutter:
   assets:
     - assets/images/
     - assets/lottie/
-    - assets/reports/
 
   fonts:
     - family: Poppins
