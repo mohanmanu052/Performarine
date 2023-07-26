@@ -95,7 +95,6 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                   ? widget.device!.id.toString()
                   : widget.device!.name);
         });
-        //debugger();
 
         Future.delayed(Duration(seconds: 1), () {
           if (mounted) {

@@ -1,7 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
@@ -11,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -97,7 +93,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
         {
 
           Future.delayed(Duration(microseconds: 500), (){
-            print("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+            Utils.customPrint("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
 
             if(!_isThereCurrentDialogShowing(context))
             {
@@ -403,10 +399,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                         scaffoldKey: scaffoldKey,
                         calledFrom: 'HomePage',
                         isTripDeleted: ()async{
-                         // setState(() async {
-                         //   tripsCount = await commonProvider.tripsCount;
-                         //   print("trips count: $tripsCount");
-                         // // });
                         },
                         onTripEnded: (){
                           commonProvider.getTripsByVesselId('');
@@ -640,7 +632,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                           ((durationTime.inMilliseconds) / 1000)
                                               .toInt());
 
-                                      debugPrint("DURATION !!!!!! $tripDuration");
+                                      Utils.customPrint("DURATION !!!!!! $tripDuration");
 
                                       bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
@@ -653,14 +645,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                               status: 'Please wait...',
                                               maskType: EasyLoadingMaskType.black);
                                           endTripMethod(setDialogState);
-                                          debugPrint("SMALL TRIPP IDDD ${tripId}");
+                                          Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
 
-                                          debugPrint("SMALL TRIPP IDDD ${tripId}");
+                                          Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
 
                                           Future.delayed(Duration(seconds: 1), (){
                                             if(!isSmallTrip)
                                             {
-                                              debugPrint("SMALL TRIPP IDDD 11 ${tripId}");
+                                              Utils.customPrint("SMALL TRIPP IDDD 11 ${tripId}");
                                               DatabaseService().deleteTripFromDB(tripId);
                                             }
                                           });
@@ -766,14 +758,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   endTripMethod(StateSetter setDialogState)async
   {
 
-    debugPrint("Set Dialog set ${setDialogState == null}");
-
-    /*if(mounted)
-      {
-        setDialogState(() {
-          isEndTripBtnClicked = true;
-        });
-      }*/
+    Utils.customPrint("Set Dialog set ${setDialogState == null}");
     List<String>? tripData = sharedPreferences!
         .getStringList('trip_data');
 
@@ -806,9 +791,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
         onEnded: () async {
 
           Future.delayed(Duration(seconds: 1), (){
-            /* setDialogState(() {
-              isEndTripBtnClicked = false;
-            });*/
+
             EasyLoading.dismiss();
 
             Navigator.of(context).pop();

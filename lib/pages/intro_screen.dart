@@ -12,7 +12,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
 import 'package:logger/logger.dart';
-import 'package:performarine/analytics/file_manager.dart';
 import 'package:performarine/analytics/location_callback_handler.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -353,7 +352,6 @@ class _IntroScreenState extends State<IntroScreen> {
             accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
-            //client: bglas.LocationClient.android,
             androidNotificationSettings: AndroidNotificationSettings(
                 notificationChannelName: 'Location tracking',
                 notificationTitle: 'Trip is in progress',
@@ -449,9 +447,6 @@ class _IntroScreenState extends State<IntroScreen> {
             }
             else
             {
-              // Future.delayed(Duration(seconds: 2), (){
-              //   Get.offAll(ResetPassword(token: initialLink!.queryParameters['verify'].toString(), isCalledFrom: "Main"));
-              // });
             }
 
           }

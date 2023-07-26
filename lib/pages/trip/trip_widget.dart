@@ -106,7 +106,6 @@ class _TripWidgetState extends State<TripWidget> {
                 tripIsRunningOrNot:
                     widget.tripList!.tripStatus == 0 ? true : false,
                 calledFrom: widget.calledFrom,
-                // vessel: getVesselById[0]
               ),
             ),
           );
@@ -871,7 +870,6 @@ class _TripWidgetState extends State<TripWidget> {
           vesselData.vesselStatus;
       commonProvider.addVesselRequestModel!.batteryCapacity =
           vesselData.batteryCapacity;
-      //commonProvider.addVesselRequestModel!.imageURLs = vesselData.imageURLs!;
 
       if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
         if (vesselData.imageURLs!.startsWith("https")) {
@@ -905,7 +903,6 @@ class _TripWidgetState extends State<TripWidget> {
 
         Utils.customPrint("Add Vessel R ${value.status}");
             CustomLogger().logWithFile(Level.info, "Add Vessel R ${value.status}-> $page");
-
 
             _databaseService.updateIsSyncStatus(
                 1, widget.tripList!.vesselId.toString());

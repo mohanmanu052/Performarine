@@ -301,19 +301,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             chosenValue = value;
                             if(chosenValue == "Info"){
                               logLevel = "info";
-                            //  extractLogsFromFile(mainFile!, exportNewFile!, ['info:']);
                             } else if(chosenValue == "Debug"){
                               logLevel = "debug";
-                            //  extractLogsFromFile(mainFile!, exportNewFile!, ['debug:', 'info:']);
                             } else if(chosenValue == "Warning"){
                               logLevel = "warning";
-                             // extractLogsFromFile(mainFile!, exportNewFile!, ['debug:','info:', 'warning:']);
                             } else if(chosenValue == "Error"){
                               logLevel = "error";
-                            //  extractLogsFromFile(mainFile!, exportNewFile!, ['debug:','info:','warning:', 'error:']);
                             } else if(chosenValue == "Verbose"){
                               logLevel = "verbose";
-                             // extractLogsFromFile(mainFile!, exportNewFile!, ['debug:','info:','warning:', 'error:','verbose:']);
                             }
                           });
                         },
@@ -898,7 +893,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     getVesselFuture = await _databaseService.syncAndSignOutVesselList();
     getTrip = await _databaseService.trips();
-    // Utils.customPrint("VESSEL SYNC ${getVesselFuture[7].imageURLs}");
+
     Utils.customPrint("VESSEL SYNC TRIP ${getTrip.length}");
     Utils.customPrint("VESSEL SYNC TRIP $vesselsSyncDetails");
     Utils.customPrint("VESSEL SYNC TRIP $tripSyncDetails");

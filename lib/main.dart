@@ -69,7 +69,7 @@ void main() async {
   bool wakelockEnabled = await Wakelock.enabled;
 
   if(wakelockEnabled){
-    print("wake lock enabled: $wakelockEnabled");
+    Utils.customPrint("wake lock enabled: $wakelockEnabled");
     Wakelock.disable();
   } else{
     Wakelock.disable();
@@ -102,9 +102,9 @@ void callbackDispatcher() {
       case logFileUpload:
         final now = DateTime.now();
         if(now.hour == 0 && now.minute == 0){
-          print("Log file upload at 12 AM ${DateTime.now()}");
+          Utils.customPrint("Log file upload at 12 AM ${DateTime.now()}");
         }
-        print("statement for log file upload ${DateTime.now()}");
+        Utils.customPrint("statement for log file upload ${DateTime.now()}");
         break;
     }
     return Future.value(true);
@@ -126,7 +126,7 @@ registerBackgroundTask() async{
 Future<void> performarineLogFile() async {
   final Directory directory = await getApplicationDocumentsDirectory();
   mainFile = File('${directory.path}/performarinelogs_$formattedDate.log');
-  print("file path: $mainFile");
+  Utils.customPrint("file path: $mainFile");
 }
 
 createFolder() async{
@@ -141,15 +141,15 @@ createFolder() async{
   String debugFileName = debugLogFilePath.split('/').last;
   String debugPath = await getFile(debugFileName);
 
-  print("Debug file path is: ${debugPath}");
+  Utils.customPrint("Debug file path is: ${debugPath}");
   bool fileExists = await isFileExistsInFolder(file.path, debugFileName);
-  print("fileExists status: $fileExists");
+  Utils.customPrint("fileExists status: $fileExists");
   if (!directory.existsSync()) {
     directory.createSync(recursive: true);
-    print('Folder created successfully');
+    Utils.customPrint('Folder created successfully');
   }
   else{
-    print('Content not appended to file');
+    Utils.customPrint('Content not appended to file');
   }
   File fileee;
   try{
@@ -158,24 +158,24 @@ createFolder() async{
     if(fileee != null && fileee.existsSync()){
       String data = await fileee.readAsString(encoding: Latin1Codec());
 
-      print("main data is: ${data.toString()}");
+      Utils.customPrint("main data is: ${data.toString()}");
       File files = File(debugPath);
       files.writeAsString(data,mode: FileMode.append);
     }
   }catch(e){
-    print("error $e");
+    Utils.customPrint("error $e");
   }
 
   List<FileSystemEntity> filesList = directory.listSync();
   filesList.sort((a, b) => a.statSync().changed.compareTo(b.statSync().changed));
 
-  print("filesList is: ${filesList}");
+  Utils.customPrint("filesList is: ${filesList}");
   if (filesList.length > 7) {
     File fileToDelete = filesList.first as File;
     fileToDelete.deleteSync();
-    print('File deleted: ${fileToDelete.path}');
+    Utils.customPrint('File deleted: ${fileToDelete.path}');
   } else {
-    print('Invalid file index');
+    Utils.customPrint('Invalid file index');
   }
 }
 

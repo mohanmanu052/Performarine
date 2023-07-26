@@ -456,7 +456,6 @@ class _SyncDataCloudToMobileScreenState
                     downloadedFile.absolute.path,
                     '$targetPath/${downloadedFile.path.split('/').last}',
                     quality: 50,
-                    //format: CompressFormat.jpeg
                   );
 
                   downloadedCompressImageFile = result!.path;

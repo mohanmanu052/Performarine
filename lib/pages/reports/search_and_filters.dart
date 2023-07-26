@@ -854,7 +854,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         right: 10,
                                         top: displayWidth(context) * 0.025),
                                     child: Container(
-                                      // margin: EdgeInsets.only(bottom: displayHeight(context) * 0.005),
                                       child: InputDecorator(
                                         decoration: InputDecoration(
                                           focusColor: dropDownBackgroundColor,
@@ -1779,9 +1778,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             : displayWidth(context),
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
-          //tooltipBehavior: CustomTooltipBehavior(),
-          // palette: barsColor,
-          // borderWidth: 6,
           tooltipBehavior: tooltipBehavior,
           enableSideBySideSeriesPlacement: true,
           primaryXAxis: CategoryAxis(

@@ -775,7 +775,6 @@ showDialogBox(BuildContext context, CreateVessel vesselData,
 //Widget for vessel Analytics on vessel analytics screen
 Widget vesselAnalytics(BuildContext context, String duration, String distance,
     String currentSpeed, String avgSpeed, bool isTripIsRunning) {
-  //double avgSpeed = int.parse(distance) / int.parse(duration);
   return Container(
     margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
     child: Column(

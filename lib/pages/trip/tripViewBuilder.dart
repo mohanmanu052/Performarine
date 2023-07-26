@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:http/http.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
-import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
@@ -119,7 +114,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                         children: [
                                           SlidableAction(
                                              onPressed: (BuildContext context)async{
-                                             print("Trip id is: ${snapshot.data![index].id!}");
+                                             Utils.customPrint("Trip id is: ${snapshot.data![index].id!}");
                                            //  if(snapshot.data![index].isSync != 0){
                                                showDeleteTripDialogBox(
                                                    context,
@@ -175,7 +170,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                           ((durationTime.inMilliseconds) /
                                               1000)
                                               .toInt());
-                                      debugPrint("DURATION !!!!!! $tripDuration");
+                                      Utils.customPrint("DURATION !!!!!! $tripDuration");
 
                                       bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
@@ -184,12 +179,12 @@ class _TripViewListingState extends State<TripViewListing> {
                                         Utils().showDeleteTripDialog(context,
                                             endTripBtnClick: (){
                                               endTripMethod(tripDuration, snapshot.data![index]);
-                                              debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
+                                              Utils.customPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
 
                                               Future.delayed(Duration(seconds: 1), (){
                                                 if(!isSmallTrip)
                                                 {
-                                                  debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
+                                                  Utils.customPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
                                                   DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
                                                 }
                                               });
@@ -217,7 +212,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                                   ((durationTime.inMilliseconds) /
                                                       1000)
                                                       .toInt());
-                                              debugPrint("DURATION !!!!!! $tripDuration");
+                                              Utils.customPrint("DURATION !!!!!! $tripDuration");
 
                                               endTripMethod(tripDuration, snapshot.data![index]);
 
@@ -457,7 +452,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                                   stateSetter(() {
                                                     isBtnClick = true;
                                                   });
-                                                print("Ok button action : $isBtnClick");
+                                                Utils.customPrint("Ok button action : $isBtnClick");
                                                 bool deletedtrip = false;
                                                 deletedtrip =  await deleteTripFunctionality(
                                                     tripId,
@@ -678,7 +673,7 @@ class _TripViewListingState extends State<TripViewListing> {
             1000)
             .toInt());
 
-    print('***DIST: ${currentTrip.toJson()}');
+    Utils.customPrint('***DIST: ${currentTrip.toJson()}');
 
     EndTrip().endTrip(
         context: context,
@@ -726,15 +721,6 @@ class _TripViewListingState extends State<TripViewListing> {
       });
 
     return isDeletedSuccessfully;
-  /*  else
-    {
-      DatabaseService().deleteTripFromDB(tripId).then((value)
-      {
-        setState(() {
-          isDeleteTripBtnClicked = false;
-        });
-      });
-    } */
   }
 }
 

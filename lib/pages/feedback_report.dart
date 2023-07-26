@@ -359,7 +359,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                                 setState(() {
                                   isBtnClick = false;
                                 });
-                                print("status of send user feedback is: ${value.status}");
+                                Utils.customPrint("status of send user feedback is: ${value.status}");
                                 CustomLogger().logWithFile(Level.info, "status of send user feedback is: ${value.status} -> $page");
                                 if(value.status!){
                                   deleteImageFile(imageFile!.path);

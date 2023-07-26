@@ -272,7 +272,6 @@ class Utils {
         Utils.customPrint('D');
         CustomLogger().logWithFile(Level.warning, "D -> Utils");
         isPermissionGranted = false;
-        //getStoragePermission(context, scaffoldKey);
       }
     } catch (e) {
       isPermissionGranted = false;

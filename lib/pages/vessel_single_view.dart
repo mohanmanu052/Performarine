@@ -527,7 +527,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               ((durationTime.inMilliseconds) / 1000)
                                   .toInt());
 
-                          debugPrint("DURATION !!!!!! $tripDuration");
+                          Utils.customPrint("DURATION !!!!!! $tripDuration");
 
                           bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
@@ -536,14 +536,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
                             Utils().showDeleteTripDialog(context,
                                 endTripBtnClick: (){
                                   endTripMethod();
-                                  debugPrint("SMALL TRIPP IDDD ${tripId}");
+                                  Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
 
-                                  debugPrint("SMALL TRIPP IDDD ${tripId}");
+                                  Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
 
                                   Future.delayed(Duration(seconds: 1), (){
                                     if(!isSmallTrip)
                                     {
-                                      debugPrint("SMALL TRIPP IDDD 11 ${tripId}");
+                                      Utils.customPrint("SMALL TRIPP IDDD 11 ${tripId}");
                                       DatabaseService().deleteTripFromDB(tripId);
                                     }
                                   });

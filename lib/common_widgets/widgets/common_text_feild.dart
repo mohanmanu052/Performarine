@@ -263,9 +263,7 @@ class _CommonExpandTextFieldState extends State<CommonExpandTextField> {
   Widget build(BuildContext context) {
     return SizedBox(
       child: TextFormField(
-        //key: widget.formFieldKey,
           onTap: widget.onTap!,
-          //autovalidateMode: AutovalidateMode.onUserInteraction,
           autofocus: false,
           readOnly: widget.readOnly!,
           focusNode: widget.focusNode,

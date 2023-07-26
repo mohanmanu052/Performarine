@@ -50,8 +50,6 @@ class ResetPasswordProvider with ChangeNotifier {
         CustomLogger().logWithFile(Level.info, "Register Response : ' + ${response.body}-> $page");
         CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.resetPassword}  is: ${response.statusCode}-> $page");
 
-        final pref = await Utils.initSharedPreferences();
-
         if(resetPasswordModel == null){
           CustomLogger().logWithFile(Level.error, "Error while parsing json data on resetPasswordModel -> $page");
         }
