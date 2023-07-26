@@ -152,7 +152,7 @@ class _SyncDataCloudToMobileScreenState
                     !commonProvider.exceptionOccurred
                         ? Container(
                             margin: EdgeInsets.only(
-                                bottom: displayHeight(context) * 0.02,
+                                bottom: displayHeight(context) * 0.005,
                                 top: displayHeight(context) * 0.02),
                             child: CommonButtons.getActionButton(
                                 title: 'Skip & Continue',
@@ -181,7 +181,7 @@ class _SyncDataCloudToMobileScreenState
                               Expanded(
                                 child: Container(
                                   margin: EdgeInsets.only(
-                                      bottom: displayHeight(context) * 0.02,
+                                      bottom: displayHeight(context) * 0.005,
                                       top: displayHeight(context) * 0.02),
                                   child: CommonButtons.getActionButton(
                                       title: 'Skip & Continue',
@@ -212,7 +212,7 @@ class _SyncDataCloudToMobileScreenState
                               Expanded(
                                 child: Container(
                                   margin: EdgeInsets.only(
-                                      bottom: displayHeight(context) * 0.02,
+                                      bottom: displayHeight(context) * 0.005,
                                       top: displayHeight(context) * 0.02),
                                   child: CommonButtons.getActionButton(
                                       title: 'Retry',
@@ -235,7 +235,6 @@ class _SyncDataCloudToMobileScreenState
                     commonProvider.exceptionOccurred
                     ? Padding(
                       padding: EdgeInsets.only(
-                        left: displayWidth(context) * 0.22,
                         //top: displayWidth(context) * 0.01,
                       ),
                       child: GestureDetector(
