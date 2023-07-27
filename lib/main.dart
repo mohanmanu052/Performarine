@@ -88,7 +88,6 @@ void main() async {
 
   createFolder();
 
-
   SharedPreferences.getInstance().then((value) {
     sharedPreferences = value;
     runApp(Phoenix(child: MyApp()));
@@ -518,7 +517,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
                   EasyLoading.dismiss();
 
-    Utils.customPrint("LIFE CYCLE KILLED $isAppKilledFromBGMain");
+                  Utils.customPrint("LIFE CYCLE KILLED $isAppKilledFromBGMain");
                   CustomLogger().logWithFile(Level.info, "LIFE CYCLE KILLED $isAppKilledFromBGMain -> $page");
 
                   if(isAppKilledFromBGMain)

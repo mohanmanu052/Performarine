@@ -368,7 +368,7 @@ class CommonProvider with ChangeNotifier {
       ) async {
     resetPasswordModel = ResetPasswordModel();
 
-    resetPasswordModel = await ResetPasswordProvider().resetPassword(context,token, password,scaffoldKey);
+    resetPasswordModel = await ResetPasswordProvider().resetPassword(context,token, password, scaffoldKey);
     notifyListeners();
 
     return resetPasswordModel!;

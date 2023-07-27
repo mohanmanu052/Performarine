@@ -135,7 +135,7 @@ class Utils {
               message:
                   'Location permissions are denied without permissions we are unable to start the trip');
           Future.delayed(Duration(seconds: 2), () async {
-            await openAppSettings();
+            //await openAppSettings();
           });
         }
       } else if (status == PermissionStatus.permanentlyDenied) {

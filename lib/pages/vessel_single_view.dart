@@ -708,39 +708,40 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               await Utils.getLocationPermission(
                                   context, scaffoldKey);
 
-                              if(Platform.isAndroid)
-                                {
-                                  bool isLocationAlwaysPermitted =
-                                  await Permission.locationAlways.isGranted;
+                              if(Platform.isAndroid){
+                                if (!(await Permission.locationWhenInUse
+                                    .shouldShowRequestRationale)) {
+                                  Utils.customPrint(
+                                      'XXXXX@@@ ${await Permission.locationWhenInUse.shouldShowRequestRationale}');
 
-                                  if(!isLocationAlwaysPermitted){
-                                    if (!isLocationDialogBoxOpen) {
-                                      Utils.customPrint("ELSE CONDITION");
-
-                                      showDialog(
-                                          context: scaffoldKey.currentContext!,
-                                          builder: (BuildContext context) {
-                                            isLocationDialogBoxOpen = true;
-                                            return LocationPermissionCustomDialog(
-                                              isLocationDialogBox: true,
-                                              text:
-                                              'Always Allow Access to “Location”',
-                                              subText:
-                                              "To track your trip while you use other apps we need background access to your location",
-                                              buttonText: 'Ok',
-                                              buttonOnTap: () async {
-                                                Get.back();
-
-                                                await openAppSettings();
-                                              },
-                                            );
-                                          }).then((value) {
-                                        isLocationDialogBoxOpen = false;
-                                      });
-                                    }
+                                  if(await Permission.locationWhenInUse
+                                      .isDenied || await Permission.locationWhenInUse
+                                      .isPermanentlyDenied){
+                                    await openAppSettings();
                                   }
 
+                                  /*showDialog(
+                                      context: scaffoldKey.currentContext!,
+                                      builder: (BuildContext context) {
+                                        isLocationDialogBoxOpen = true;
+                                        return LocationPermissionCustomDialog(
+                                          isLocationDialogBox: true,
+                                          text:
+                                          'Always Allow Access to “Location”',
+                                          subText:
+                                          "To track your trip while you use other apps we need background access to your location",
+                                          buttonText: 'Ok',
+                                          buttonOnTap: () async {
+                                            Get.back();
+
+                                            await openAppSettings();
+                                          },
+                                        );
+                                      }).then((value) {
+                                    isLocationDialogBoxOpen = false;
+                                  });*/
                                 }
+                              }
                               else
                                 {
                                   await Permission.locationAlways.request();
