@@ -27,6 +27,10 @@ class CreateZip {
     CustomLogger().logWithFile(Level.info, "CREATE ZIP  ${ourDirectory!.path}/$tripId -> $page");
     final dataDir = Directory('${ourDirectory!.path}/$tripId');
 
+    if(!dataDir.existsSync()){
+      dataDir.createSync();
+    }
+
     try {
       zipFile = File('${ourDirectory!.path}/$tripId.zip');
 
