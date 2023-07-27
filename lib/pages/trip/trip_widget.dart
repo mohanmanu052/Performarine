@@ -129,7 +129,7 @@ class _TripWidgetState extends State<TripWidget> {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Container(
-            width: size.width - 60,
+            //width: size.width - 40,
             //height: 110,
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(boxShadow: [
@@ -224,6 +224,7 @@ class _TripWidgetState extends State<TripWidget> {
                 widget.tripList?.tripStatus != 0
                     ? widget.tripList!.isCloud != 0
                         ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
                                   height: displayHeight(context) * 0.038,
