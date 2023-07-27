@@ -1228,7 +1228,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
                                     !isSHowGraph! ?   Padding(
                                       padding: EdgeInsets.only(
-                                        left: displayWidth(context) * 0.22,
                                         top: displayWidth(context) * 0.01,
                                       ),
                                       child: GestureDetector(
@@ -1501,7 +1500,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
                                   Padding(
                                     padding: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.28,
                                       bottom: displayWidth(context) * 0.025,
                                     ),
                                     child: GestureDetector(

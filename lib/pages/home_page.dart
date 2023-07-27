@@ -409,7 +409,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                       ? Container()
                       : Padding(
                         padding: EdgeInsets.only(
-                          left: displayWidth(context) * 0.28,
                           bottom : displayWidth(context) * 0.02,
                         ),
                         child: GestureDetector(

@@ -457,7 +457,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               ),
                               Padding(
                                 padding: EdgeInsets.only(
-                                  left: displayWidth(context) * 0.28,
                                   top : displayWidth(context) * 0.01,
                                   bottom : displayWidth(context) * 0.01,
                                 ),
@@ -2144,7 +2143,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                             Padding(
                               padding: EdgeInsets.only(
-                                left: displayWidth(context) * 0.28,
                                 top : displayWidth(context) * 0.01,
                               ),
                               child: GestureDetector(

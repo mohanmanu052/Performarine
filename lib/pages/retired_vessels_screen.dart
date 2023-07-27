@@ -139,7 +139,6 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                             ),
                             Padding(
                               padding: EdgeInsets.only(
-                                left: displayWidth(context) * 0.28,
                                 //top: displayWidth(context) * 0.01,
                               ),
                               child: GestureDetector(

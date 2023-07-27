@@ -719,7 +719,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                   Padding(
                                     padding: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.22,
                                     ),
                                     child: GestureDetector(
                                         onTap: ()async{
@@ -880,7 +879,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.22,
                                       // top: displayWidth(context) * 0.03,
                                     ),
                                     child: GestureDetector(
@@ -1068,7 +1066,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                 Padding(
                                   padding: EdgeInsets.only(
-                                    left: displayWidth(context) * 0.22,
 
                                   ),
                                   child: GestureDetector(
@@ -1458,7 +1455,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                   Padding(
                                     padding: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.22,
                                       // top: displayWidth(context) * 0.03,
                                     ),
                                     child: GestureDetector(
@@ -1610,7 +1606,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.22,
                                       //top: displayWidth(context) * 0.01,
                                     ),
                                     child: GestureDetector(

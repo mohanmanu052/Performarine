@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -8,11 +10,15 @@ import 'common_widgets.dart';
 class UserFeedback{
   
   Widget getUserFeedback(BuildContext context){
+
+    double value = Platform.isIOS ? displayHeight(context) * 0.015 : 0;
+
     return Container(
-      margin: EdgeInsets.only(top: 8),
+      margin: EdgeInsets.only(top: 8, bottom: value),
       height: displayWidth(context) * 0.05,
       width: displayWidth(context),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.warning,
