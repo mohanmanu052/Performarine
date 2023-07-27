@@ -448,10 +448,10 @@ class _TripViewListingState extends State<TripViewListing> {
                             ),
                             Container(
                               margin: EdgeInsets.only(
-                                top: 8.0,
+                                top: 8.0,left: displayWidth(ctx) * 0.035,right: displayWidth(ctx) * 0.035
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   CommonButtons.getAcceptButton(
                                       'Cancel',
@@ -460,7 +460,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                           (){
                                         Navigator.pop(dialogContext);
                                       },
-                                      displayWidth(ctx) * 0.34,
+                                      displayWidth(ctx) * 0.32,
                                       displayHeight(ctx) * 0.05,
                                       primaryColor,
                                       Theme.of(ctx).brightness ==
@@ -472,69 +472,71 @@ class _TripViewListingState extends State<TripViewListing> {
                                       '',
                                       fontWeight: FontWeight.w500),
 
+                                  // SizedBox(
+                                  //   width: displayWidth(ctx) * 0.02,
+                                  // ),
+
                                   isBtnClick ? Center(
-                                    child: CircularProgressIndicator(
-                                      valueColor:
-                                      AlwaysStoppedAnimation<Color>(circularProgressColor),
+                                    child: Container(
+                                      width: displayWidth(ctx) * 0.32,
+                                      child: Center(child: CircularProgressIndicator()),
                                     ),
-                                  ) :  Center(
-                                    child: CommonButtons.getAcceptButton(
-                                        'Delete Trip', context, buttonBGColor,
-                                            () async {
-                                          internalStateSetter = stateSetter;
-                                          bool internet =
-                                          await Utils().check(scaffoldKey);
+                                  ) :  CommonButtons.getAcceptButton(
+                                      'Delete Trip', context, buttonBGColor,
+                                          () async {
+                                        internalStateSetter = stateSetter;
+                                        bool internet =
+                                        await Utils().check(scaffoldKey);
+                                        stateSetter(() {
+                                          isBtnClick = true;
+                                        });
+                                        if(internet){
                                           stateSetter(() {
                                             isBtnClick = true;
                                           });
-                                          if(internet){
-                                            stateSetter(() {
-                                              isBtnClick = true;
-                                            });
-                                            Utils.customPrint("Ok button action : $isBtnClick");
-                                            bool deletedtrip = false;
-                                            deletedtrip =  await deleteTripFunctionality(
-                                                tripId,
-                                                    (){
-                                                  commonProvider.getTripsCount();
-                                                  widget.isTripDeleted!.call();
-                                                  onDeleteCallBack.call();
-                                                  Navigator.pop(dialogContext);
-                                                }
-                                            );
-                                          } else if(tripUploadStatus){
-                                            stateSetter(() {
-                                              isBtnClick = true;
-                                            });
-                                            DatabaseService().deleteTripFromDB(tripId).then((value)
-                                            {
-                                              deleteFilePath('${ourDirectory!.path}/${tripId}.zip');
-                                              deleteFolder('${ourDirectory!.path}/${tripId}');
-                                              commonProvider.getTripsCount();
-                                              widget.isTripDeleted!.call();
-                                              onDeleteCallBack.call();
+                                          Utils.customPrint("Ok button action : $isBtnClick");
+                                          bool deletedtrip = false;
+                                          deletedtrip =  await deleteTripFunctionality(
+                                              tripId,
+                                                  (){
+                                                commonProvider.getTripsCount();
+                                                widget.isTripDeleted!.call();
+                                                onDeleteCallBack.call();
+                                                Navigator.pop(dialogContext);
+                                              }
+                                          );
+                                        } else if(tripUploadStatus){
+                                          stateSetter(() {
+                                            isBtnClick = true;
+                                          });
+                                          DatabaseService().deleteTripFromDB(tripId).then((value)
+                                          {
+                                            deleteFilePath('${ourDirectory!.path}/${tripId}.zip');
+                                            deleteFolder('${ourDirectory!.path}/${tripId}');
+                                            commonProvider.getTripsCount();
+                                            widget.isTripDeleted!.call();
+                                            onDeleteCallBack.call();
 
-                                              stateSetter(() {
-                                                isBtnClick = false;
-                                              });
-                                              Navigator.pop(dialogContext);
-                                              Navigator.pop(dialogContext);
-                                            });
-                                          } else{
                                             stateSetter(() {
                                               isBtnClick = false;
                                             });
-                                          }
-                                        },
-                                        displayWidth(ctx) * 0.34,
-                                        displayHeight(ctx) * 0.05,
-                                        primaryColor,
-                                        Colors.white,
-                                        displayHeight(ctx) * 0.018,
-                                        buttonBGColor,
-                                        '',
-                                        fontWeight: FontWeight.w500),
-                                  ),
+                                            Navigator.pop(dialogContext);
+                                            Navigator.pop(dialogContext);
+                                          });
+                                        } else{
+                                          stateSetter(() {
+                                            isBtnClick = false;
+                                          });
+                                        }
+                                      },
+                                      displayWidth(ctx) * 0.32,
+                                      displayHeight(ctx) * 0.05,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(ctx) * 0.018,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
                                 ],
                               ),
                             ),

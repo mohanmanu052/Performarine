@@ -1149,10 +1149,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 selectedDateForEndDate!.isBefore(
                                                     selectedDateForStartDate)) {
                                               isBtnClick = false;
-                                              setState(() {
-                                                isSelectedStartDay = false;
-                                                isSelectedEndDay = false;
-                                              });
+                                              // setState(() {
+                                              //   isSelectedStartDay = false;
+                                              //   isSelectedEndDay = false;
+                                              // });
                                               Utils.showSnackBar(context,
                                                   scaffoldKey: scaffoldKey,
                                                   message:

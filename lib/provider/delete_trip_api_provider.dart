@@ -42,7 +42,8 @@ class DeleteTripApiProvider with ChangeNotifier
       if (response.statusCode == HttpStatus.ok) {
         deleteTripModel = DeleteTripModel.fromJson(json.decode(response.body));
 
-
+        Utils.showSnackBar(scaffoldKey.currentContext!,
+            scaffoldKey: scaffoldKey, message: deleteTripModel!.message);
         return deleteTripModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         kReleaseMode

@@ -608,7 +608,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                     : CommonButtons.getAcceptButton(
                                     'End Trip', context, buttonBGColor,
                                         () async {
-
+                                          setDialogState(() {
+                                         isEndTripBtnClicked = true;
+                                       });
                                       List<String>? tripData = sharedPreferences!
                                           .getStringList('trip_data');
 
