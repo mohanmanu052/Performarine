@@ -181,7 +181,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     child: CommonTextField(
                         controller: descriptionController,
                         focusNode: descriptionFocusNode,
-                        labelText: 'Description*',
+                        labelText: 'Description',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.done,
@@ -202,6 +202,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     margin: EdgeInsets.only(top: 15.0, bottom: 10),
                     child: CommonButtons.getDottedButton(
                         'Upload Images', context, () {
+                      unFocusKeyBoard(context);
                       uploadImageFunction();
                       Utils.customPrint(
                           'FIIALLL: ${finalSelectedFiles.length}');
@@ -273,171 +274,182 @@ class _FeedbackReportState extends State<FeedbackReport> {
                   ),
 
                   SizedBox(
-                    height: displayWidth(context) * 0.15,
-                  )
+                    height: displayWidth(context) * 0.1,
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: displayWidth(context) * 0.06,
+                      right: displayWidth(context) * 0.06,
+                      // top: displayWidth(context) * 0.02,
+                    ),
+                    child: isBtnClick ?  Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              circularProgressColor),
+                        ))
+                        : CommonButtons.getActionButton(
+                        title: 'Submit',
+                        context: context,
+                        fontSize: displayWidth(context) * 0.044,
+                        textColor: Colors.white,
+                        buttonPrimaryColor: buttonBGColor,
+                        borderColor: buttonBGColor,
+                        width: displayWidth(context),
+                        onTap: () async {
+                          if(formKey.currentState!.validate()){
+                            unFocusKeyBoard(context);
+                            bool check = await Utils().check(scaffoldKey);
+
+                            deviceDetails = DeviceInfoPlugin();
+                            if (Platform.isAndroid) {
+                              androidDeviceInfo = await deviceDetails.androidInfo;
+                            } else {
+                              iosDeviceInfo = await deviceDetails.iosInfo;
+                            }
+
+                            deviceDetails1 = {
+                              'Device Id': Platform.isAndroid ? androidDeviceInfo!.id :Platform.isIOS? iosDeviceInfo?.identifierForVendor:"",
+                              'Model': Platform.isAndroid
+                                  ? androidDeviceInfo!.model
+                                  : Platform.isIOS? iosDeviceInfo!.model:"",
+                              'OS version': Platform.isAndroid
+                                  ? androidDeviceInfo!.version.release
+                                  :Platform.isIOS?  iosDeviceInfo!.utsname.release:"",
+                              'Make': Platform.isAndroid
+                                  ? androidDeviceInfo!.manufacturer
+                                  : Platform.isIOS?iosDeviceInfo?.utsname.machine:"",
+                              'Board': Platform.isAndroid
+                                  ? androidDeviceInfo!.board
+                                  : "",
+                              'Device Type': Platform.operatingSystem,};
+                            if(check){
+                              final Directory appDir = await getApplicationDocumentsDirectory();
+                              final String fileName = DateTime.now().toIso8601String() + '.png';
+                              Directory directory = Directory('${appDir.path}/Feedback');
+                              if ((await directory.exists())) {
+                                var size = await _displayDirectorySize(directory.path,true);
+                                if(size > 1.0){
+                                  directory.listSync().forEach((entity) {
+                                    if (entity is File) {
+                                      entity.deleteSync();
+                                    }
+                                  });
+                                }
+
+                                imageFile = File('${directory.path}/$fileName');
+                                await imageFile?.writeAsBytes(widget.uIntList!);
+
+                                sendFiles.addAll(finalSelectedFiles);
+                                sendFiles.add(imageFile);
+                                setState(() {
+                                  isBtnClick = true;
+                                });
+
+                                commonProvider?.sendUserFeedbackDio(
+                                    context,
+                                    commonProvider!.loginModel!.token!,
+                                    nameController.text,
+                                    descriptionController.text,
+                                    deviceDetails1!,
+                                    sendFiles,
+                                    scaffoldKey).then((value) async{
+                                  if(value != null){
+                                    setState(() {
+                                      isBtnClick = false;
+                                    });
+                                    Utils.customPrint("status of send user feedback is: ${value.status}");
+                                    CustomLogger().logWithFile(Level.info, "status of send user feedback is: ${value.status} -> $page");
+                                    if(value.status!){
+                                      deleteImageFile(imageFile!.path);
+                                      sendFiles.clear();
+                                      finalSelectedFiles.clear();
+                                      Navigator.pop(context);
+                                    }
+                                  } else{
+                                    setState(() {
+                                      isBtnClick = false;
+                                    });
+                                  }
+                                }).catchError((e){
+                                  setState(() {
+                                    isBtnClick = false;
+                                  });
+                                });
+
+                              } else {
+                                directory.create();
+                                imageFile = File('${directory.path}/$fileName');
+                                sendFiles.addAll(finalSelectedFiles);
+                                await imageFile?.writeAsBytes(widget.uIntList!);
+
+
+                                sendFiles.add(imageFile);
+                                setState(() {
+                                  isBtnClick = true;
+                                });
+
+                                commonProvider.sendUserFeedbackDio(
+                                    context,
+                                    commonProvider.loginModel!.token!,
+                                    nameController.text,
+                                    descriptionController.text,
+                                    deviceDetails1!,
+                                    sendFiles,
+                                    scaffoldKey).then((value) async{
+                                  if(value != null){
+                                    setState(() {
+                                      isBtnClick = false;
+                                    });
+                                    if(value.status!){
+                                      deleteImageFile(imageFile!.path);
+                                      sendFiles.clear();
+                                      finalSelectedFiles.clear();
+                                      Navigator.pop(context);
+                                    }
+                                  } else{
+                                    setState(() {
+                                      isBtnClick = false;
+                                    });
+                                  }
+                                }).catchError((e){
+                                  setState(() {
+                                    isBtnClick = false;
+                                  });
+                                });
+                              }
+
+                            }else{
+                              setState(() {
+                                isBtnClick = false;
+                              });
+                            }
+                          }
+                        }
+                    ),
+                  ),
                 ],
               ),
             ),
 
-            Positioned(
-              bottom: 5,
-              right: 0,
-              left: 0,
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: displayWidth(context) * 0.06,
-                  right: displayWidth(context) * 0.06,
-                  // top: displayWidth(context) * 0.02,
-                ),
-                child: isBtnClick ?  Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          circularProgressColor),
-                    ))
-                    : CommonButtons.getActionButton(
-                    title: 'Submit',
-                    context: context,
-                    fontSize: displayWidth(context) * 0.044,
-                    textColor: Colors.white,
-                    buttonPrimaryColor: buttonBGColor,
-                    borderColor: buttonBGColor,
-                    width: displayWidth(context),
-                    onTap: () async {
-                      if(formKey.currentState!.validate()){
-                        bool check = await Utils().check(scaffoldKey);
-
-                        deviceDetails = DeviceInfoPlugin();
-                        if (Platform.isAndroid) {
-                          androidDeviceInfo = await deviceDetails.androidInfo;
-                        } else {
-                          iosDeviceInfo = await deviceDetails.iosInfo;
-                        }
-
-                          deviceDetails1 = {
-                            'Device Id': Platform.isAndroid ? androidDeviceInfo!.id :Platform.isIOS? iosDeviceInfo?.identifierForVendor:"",
-                            'Model': Platform.isAndroid
-                            ? androidDeviceInfo!.model
-                          : Platform.isIOS? iosDeviceInfo!.model:"",
-                            'OS version': Platform.isAndroid
-                      ? androidDeviceInfo!.version.release
-                          :Platform.isIOS?  iosDeviceInfo!.utsname.release:"",
-                            'Make': Platform.isAndroid
-                      ? androidDeviceInfo!.manufacturer
-                          : Platform.isIOS?iosDeviceInfo?.utsname.machine:"",
-                            'Board': Platform.isAndroid
-                            ? androidDeviceInfo!.board
-                          : "",
-                            'Device Type': Platform.operatingSystem,};
-                         if(check){
-                          final Directory appDir = await getApplicationDocumentsDirectory();
-                          final String fileName = DateTime.now().toIso8601String() + '.png';
-                          Directory directory = Directory('${appDir.path}/Feedback');
-                          if ((await directory.exists())) {
-                            var size = await _displayDirectorySize(directory.path,true);
-                            if(size > 1.0){
-                              directory.listSync().forEach((entity) {
-                                if (entity is File) {
-                                  entity.deleteSync();
-                                }
-                              });
-                            }
-
-                            imageFile = File('${directory.path}/$fileName');
-                            await imageFile?.writeAsBytes(widget.uIntList!);
-
-                            sendFiles.addAll(finalSelectedFiles);
-                            sendFiles.add(imageFile);
-                            setState(() {
-                              isBtnClick = true;
-                            });
-
-                            commonProvider?.sendUserFeedbackDio(
-                                context,
-                                commonProvider!.loginModel!.token!,
-                                nameController.text,
-                                descriptionController.text,
-                                deviceDetails1!,
-                                sendFiles,
-                                scaffoldKey).then((value) async{
-                              if(value != null){
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                                Utils.customPrint("status of send user feedback is: ${value.status}");
-                                CustomLogger().logWithFile(Level.info, "status of send user feedback is: ${value.status} -> $page");
-                                if(value.status!){
-                                  deleteImageFile(imageFile!.path);
-                                  sendFiles.clear();
-                                  finalSelectedFiles.clear();
-                                  Navigator.pop(context);
-                                }
-                              } else{
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                              }
-                            }).catchError((e){
-                              setState(() {
-                                isBtnClick = false;
-                              });
-                            });
-
-                          } else {
-                            directory.create();
-                            imageFile = File('${directory.path}/$fileName');
-                            sendFiles.addAll(finalSelectedFiles);
-                            await imageFile?.writeAsBytes(widget.uIntList!);
-
-
-                            sendFiles.add(imageFile);
-                            setState(() {
-                              isBtnClick = true;
-                            });
-
-                            commonProvider.sendUserFeedbackDio(
-                                context,
-                                commonProvider.loginModel!.token!,
-                                nameController.text,
-                                descriptionController.text,
-                                deviceDetails1!,
-                                sendFiles,
-                                scaffoldKey).then((value) async{
-                              if(value != null){
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                                if(value.status!){
-                                  deleteImageFile(imageFile!.path);
-                                  sendFiles.clear();
-                                  finalSelectedFiles.clear();
-                                  Navigator.pop(context);
-                                }
-                              } else{
-                                setState(() {
-                                  isBtnClick = false;
-                                });
-                              }
-                            }).catchError((e){
-                              setState(() {
-                                isBtnClick = false;
-                              });
-                            });
-                          }
-
-                        }else{
-                          setState(() {
-                            isBtnClick = false;
-                          });
-                        }
-                      }
-                    }
-                ),
-              ),
-            ),
+            // Positioned(
+            //   bottom: 5,
+            //   right: 0,
+            //   left: 0,
+            //   child:
+            // ),
           ],
         ),
       ),
     );
+  }
+
+  static unFocusKeyBoard(BuildContext context){
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if(!currentFocus.hasPrimaryFocus &&
+        currentFocus.focusedChild != null){
+      FocusScope.of(context).requestFocus(new FocusNode());
+    }
   }
 
   Future<int> _getDirectorySize(String path, bool isRecursive) async {

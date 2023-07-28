@@ -74,7 +74,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
         controller: controller,
         child: Scaffold(
           key: scaffoldKey,
-          resizeToAvoidBottomInset: false,
+        //  resizeToAvoidBottomInset: false,
           backgroundColor: commonBackgroundColor,
           appBar: AppBar(
             elevation: 0.0,
