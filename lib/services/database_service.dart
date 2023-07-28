@@ -401,6 +401,8 @@ class DatabaseService {
       String startTime = tripsList[i].createdAt.toString();
       String endTime = tripsList[i].updatedAt.toString();
 
+      String duration = tripsList[i].time.toString();
+
       Utils.customPrint('UTC START TIME: $startTime');
       Utils.customPrint('UTC END TIME: $endTime');
 
@@ -417,7 +419,8 @@ class DatabaseService {
       CustomLogger().logWithFile(Level.info, "DATE TIME END: $endDateTime -> $page");
 
       Duration diffDuration = endDateTime.difference(startDateTime);
-      totalTripsDuration = totalTripsDuration + diffDuration.inSeconds;
+      //totalTripsDuration = totalTripsDuration + diffDuration.inSeconds;
+      totalTripsDuration = totalTripsDuration + Utils.convertDurationToSeconds(duration);
 
     Utils.customPrint('DIFFERENCE DURATION IN SECONDS: $totalTripsDuration');
       CustomLogger().logWithFile(Level.info, "DIFFERENCE DURATION IN SECONDS: $totalTripsDuration -> $page");

@@ -412,6 +412,12 @@ class Utils {
     return "${twoDigit(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 
+  static int convertDurationToSeconds(String duration){
+    List<String> splitted = duration.split(':');
+    Duration convertedDuration = Duration(hours: int.parse(splitted[0]), minutes: int.parse(splitted[1]), seconds: int.parse(splitted[2]));
+    return convertedDuration.inSeconds;
+  }
+
   //Launch Url from custom(side) menu
   static Future<void> launchURL(String url) async {
     await launchUrl(Uri.parse(url));
