@@ -271,6 +271,10 @@ class _FeedbackReportState extends State<FeedbackReport> {
                           }),
                     ),
                   ),
+
+                  SizedBox(
+                    height: displayWidth(context) * 0.15,
+                  )
                 ],
               ),
             ),
@@ -389,35 +393,37 @@ class _FeedbackReportState extends State<FeedbackReport> {
                             setState(() {
                               isBtnClick = true;
                             });
-                          }
-                          commonProvider.sendUserFeedbackDio(
-                              context,
-                              commonProvider.loginModel!.token!,
-                              nameController.text,
-                              descriptionController.text,
-                              deviceDetails1!,
-                              sendFiles,
-                              scaffoldKey).then((value) async{
-                            if(value != null){
-                              setState(() {
-                                isBtnClick = false;
-                              });
-                              if(value.status!){
-                                deleteImageFile(imageFile!.path);
-                                sendFiles.clear();
-                                finalSelectedFiles.clear();
-                                Navigator.pop(context);
+
+                            commonProvider.sendUserFeedbackDio(
+                                context,
+                                commonProvider.loginModel!.token!,
+                                nameController.text,
+                                descriptionController.text,
+                                deviceDetails1!,
+                                sendFiles,
+                                scaffoldKey).then((value) async{
+                              if(value != null){
+                                setState(() {
+                                  isBtnClick = false;
+                                });
+                                if(value.status!){
+                                  deleteImageFile(imageFile!.path);
+                                  sendFiles.clear();
+                                  finalSelectedFiles.clear();
+                                  Navigator.pop(context);
+                                }
+                              } else{
+                                setState(() {
+                                  isBtnClick = false;
+                                });
                               }
-                            } else{
+                            }).catchError((e){
                               setState(() {
                                 isBtnClick = false;
                               });
-                            }
-                          }).catchError((e){
-                            setState(() {
-                              isBtnClick = false;
                             });
-                          });
+                          }
+
                         }else{
                           setState(() {
                             isBtnClick = false;

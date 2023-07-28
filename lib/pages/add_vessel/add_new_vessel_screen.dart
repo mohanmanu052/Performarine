@@ -9,9 +9,12 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_step_one.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_step_two.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:screenshot/screenshot.dart';
 
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/widgets/log_level.dart';
+import '../../common_widgets/widgets/user_feed_back.dart';
+import '../feedback_report.dart';
 
 //Add new vessel page
 class AddNewVesselScreen extends StatefulWidget {
@@ -34,6 +37,8 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
 
   int pageIndex = 0;
   String page = "Add_new_vessel_screen";
+
+  final controller = ScreenshotController();
 
   @override
   void initState() {
@@ -65,81 +70,125 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
           return true;
         }
       },
-      child: Scaffold(
-        key: scaffoldKey,
-        backgroundColor: commonBackgroundColor,
-        appBar: AppBar(
-          elevation: 0.0,
+      child: Screenshot(
+        controller: controller,
+        child: Scaffold(
+          key: scaffoldKey,
+          resizeToAvoidBottomInset: false,
           backgroundColor: commonBackgroundColor,
-          leading: IconButton(
-            onPressed: () {
-              if (widget.calledFrom == 'SuccessFullScreen') {
-                CustomLogger().logWithFile(Level.info, "User navigating to Home page -> $page");
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(),
-                    ),
-                    ModalRoute.withName(""));
-              } else if (pageIndex == 1) {
-                pageController.previousPage(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeOut);
-              } else {
-                Navigator.of(context).pop();
-              }
-            },
-            icon: const Icon(Icons.arrow_back),
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black,
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: commonBackgroundColor,
+            leading: IconButton(
+              onPressed: () {
+                if (widget.calledFrom == 'SuccessFullScreen') {
+                  CustomLogger().logWithFile(Level.info, "User navigating to Home page -> $page");
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ),
+                      ModalRoute.withName(""));
+                } else if (pageIndex == 1) {
+                  pageController.previousPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeOut);
+                } else {
+                  Navigator.of(context).pop();
+                }
+              },
+              icon: const Icon(Icons.arrow_back),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+            centerTitle: true,
+            title: commonText(
+                context: context,
+                text: widget.isEdit! ? 'Edit Vessel' : 'Add New Vessel',
+                fontWeight: FontWeight.w700,
+                textColor: Colors.black,
+                textSize: displayWidth(context) * 0.05,
+                textAlign: TextAlign.start),
           ),
-          centerTitle: true,
-          title: commonText(
-              context: context,
-              text: widget.isEdit! ? 'Edit Vessel' : 'Add New Vessel',
-              fontWeight: FontWeight.w700,
-              textColor: Colors.black,
-              textSize: displayWidth(context) * 0.05,
-              textAlign: TextAlign.start),
-        ),
-        body: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 17),
-          width: MediaQuery.of(context).size.width,
-          height: displayHeight(context),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Flexible(
-                child: PageView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: pageController,
-                  onPageChanged: (value) {
-                    setState(() {
-                      pageIndex = value;
-                    });
-                    Utils.customPrint('PAGEVIEW INDEX $pageIndex');
-                    CustomLogger().logWithFile(Level.info, "PAGEVIEW INDEX $pageIndex -> $page");
-                  },
-                  children: [
-                    AddVesselStepOne(
-                      pageController: pageController,
-                      scaffoldKey: scaffoldKey,
-                      addVesselData:
-                          widget.isEdit! ? widget.createVessel : null,
-                      isEdit: widget.isEdit,
+          body: SingleChildScrollView(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 17),
+              width: MediaQuery.of(context).size.width,
+              height: displayHeight(context),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Flexible(
+                    child: PageView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      controller: pageController,
+                      onPageChanged: (value) {
+                        setState(() {
+                          pageIndex = value;
+                        });
+                        Utils.customPrint('PAGEVIEW INDEX $pageIndex');
+                        CustomLogger().logWithFile(Level.info, "PAGEVIEW INDEX $pageIndex -> $page");
+                      },
+                      children: [
+                        Column(
+                          children: [
+                            AddVesselStepOne(
+                              pageController: pageController,
+                              scaffoldKey: scaffoldKey,
+                              addVesselData:
+                                  widget.isEdit! ? widget.createVessel : null,
+                              isEdit: widget.isEdit,
+                            ),
+
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom : 0,
+                              ),
+                              child: GestureDetector(
+                                  onTap: ()async{
+                                    final image = await controller.capture();
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                      imagePath: image.toString(),
+                                      uIntList: image,)));
+                                  },
+                                  child: UserFeedback().getUserFeedback(context)
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            AddNewVesselStepTwo(
+                              pageController: pageController,
+                              scaffoldKey: scaffoldKey,
+                              addVesselData:
+                                  widget.isEdit! ? widget.createVessel : null,
+                              isEdit: widget.isEdit,
+                            ),
+
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom : 0,
+                              ),
+                              child: GestureDetector(
+                                  onTap: ()async{
+                                    final image = await controller.capture();
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                      imagePath: image.toString(),
+                                      uIntList: image,)));
+                                  },
+                                  child: UserFeedback().getUserFeedback(context)
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    AddNewVesselStepTwo(
-                      pageController: pageController,
-                      scaffoldKey: scaffoldKey,
-                      addVesselData:
-                          widget.isEdit! ? widget.createVessel : null,
-                      isEdit: widget.isEdit,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
