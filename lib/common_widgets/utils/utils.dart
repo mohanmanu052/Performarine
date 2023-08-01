@@ -414,7 +414,7 @@ class Utils {
 
   static int convertDurationToSeconds(String duration){
     List<String> splitted = duration.split(':');
-    Duration convertedDuration = Duration(hours: int.parse(splitted[0]), minutes: int.parse(splitted[1]), seconds: int.parse(splitted[2]));
+    Duration convertedDuration = Duration(hours: int.parse(splitted[0].isEmpty ? '0' : splitted[0]), minutes: int.parse(splitted[1].isEmpty ? '0' : splitted[1]), seconds: int.parse(splitted[2].isEmpty ? '0': splitted[2]));
     return convertedDuration.inSeconds;
   }
 
@@ -459,8 +459,8 @@ class Utils {
                           child: commonText(
                               context: context,
                               text: 'Your trip is less than 10s going to be archive. Do you want to End the trip ?',
-                              fontWeight: FontWeight.w600,
-                              textColor: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.black87,
                               textSize: displayWidth(context) * 0.042,
                               textAlign: TextAlign.center),
                         ),

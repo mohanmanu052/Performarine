@@ -420,6 +420,9 @@ class DatabaseService {
 
       Duration diffDuration = endDateTime.difference(startDateTime);
       //totalTripsDuration = totalTripsDuration + diffDuration.inSeconds;
+
+      duration = duration.isEmpty ? '00:00:00' : duration;
+
       totalTripsDuration = totalTripsDuration + Utils.convertDurationToSeconds(duration);
 
     Utils.customPrint('DIFFERENCE DURATION IN SECONDS: $totalTripsDuration');
