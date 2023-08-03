@@ -81,20 +81,23 @@ class _VesselBuilderState extends State<VesselBuilder> {
                     ),
                   );
                 } else {
-                  return Container(
-                    color:commonBackgroundColor,
-                    padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 8, bottom: 70),
-                    child: ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        final vessel = snapshot.data![index];
-                        return vessel.vesselStatus == 1
-                            ? SingleVesselCard(vessel, (CreateVessel value) {
-                                widget.onTap(value);
-                              }, widget.scaffoldKey!)
-                            : SizedBox();
-                      },
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: displayWidth(context) * 0.07),
+                    child: Container(
+                      color:commonBackgroundColor,
+                      padding: const EdgeInsets.only(
+                          left: 8.0, right: 8.0, top: 8, bottom: 70),
+                      child: ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          final vessel = snapshot.data![index];
+                          return vessel.vesselStatus == 1
+                              ? SingleVesselCard(vessel, (CreateVessel value) {
+                                  widget.onTap(value);
+                                }, widget.scaffoldKey!)
+                              : SizedBox();
+                        },
+                      ),
                     ),
                   );
                 }

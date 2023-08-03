@@ -132,7 +132,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       suffixText: null,
                       textInputAction: TextInputAction.next,
                       textInputType:
-                          TextInputType.numberWithOptions(decimal: true),
+                          TextInputType.number,
                       textCapitalization: TextCapitalization.words,
                       maxLength: 6,
                       prefixIcon: null,
@@ -159,8 +159,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       hintText: '',
                       suffixText: null,
                       textInputAction: TextInputAction.next,
-                      textInputType:
-                          TextInputType.numberWithOptions(decimal: true),
+                      textInputType: TextInputType.number,
                       textCapitalization: TextCapitalization.words,
                       maxLength: 6,
                       prefixIcon: null,
@@ -186,8 +185,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       hintText: '',
                       suffixText: null,
                       textInputAction: TextInputAction.next,
-                      textInputType:
-                          TextInputType.numberWithOptions(decimal: true),
+                      textInputType: TextInputType.number,
                       textCapitalization: TextCapitalization.words,
                       maxLength: 6,
                       prefixIcon: null,
@@ -214,8 +212,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                       hintText: '',
                       suffixText: null,
                       textInputAction: TextInputAction.next,
-                      textInputType:
-                          TextInputType.numberWithOptions(decimal: true),
+                      textInputType: TextInputType.number,
                       textCapitalization: TextCapitalization.words,
                       maxLength: 6,
                       prefixIcon: null,

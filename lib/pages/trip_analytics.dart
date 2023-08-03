@@ -1028,12 +1028,14 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                         Utils().showDeleteTripDialog(context,
                                             endTripBtnClick: (){
 
-                                              endTrip();
+                                              endTrip(isTripDeleted: true);
 
                                               Utils.customPrint("SMALL TRIPP IDDD ${tripData!
                                                   .id!}");
 
-                                              Future.delayed(Duration(seconds: 1), (){
+                                              int value = Platform.isAndroid ? 1 : 0;
+
+                                              Future.delayed(Duration(seconds: value), (){
                                                 if(!isSmallTrip)
                                                 {
 
@@ -2383,7 +2385,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                 LocationCallbackHandler.notificationCallback)));
   }
 
-  endTrip()
+  endTrip({bool isTripDeleted = false})
   {
 
     if (durationTimer !=
@@ -2413,34 +2415,30 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         IOStripDistance:
         tripDistance,
         onEnded: () async {
-          setState(() {
-            tripIsRunning =
-            false;
-            isTripEnded =
-            false;
-          });
-          Trip tripDetails =
-          await _databaseService
-              .getTrip(
-              tripData!
-                  .id!);
-          Utils.customPrint(
-              "abhi:${tripDetails.time}");
-          Utils.customPrint(
-              "abhi:${tripDuration}");
-          Utils.customPrint(
-              "abhi:${tripAvgSpeed}");
-          Utils.customPrint(
-              "abhi:${tripSpeed}");
-          setState(() {
-            tripData =
-                tripDetails;
-          });
 
-          Utils.customPrint(
-              'TRIP ENDED DETAILS: ${tripDetails.isSync}');
-          Utils.customPrint(
-              'TRIP ENDED DETAILS: ${tripData!.isSync}');
+          if(mounted)
+            {
+              setState(() {
+                tripIsRunning =
+                false;
+                isTripEnded =
+                false;
+              });
+            }
+
+          if(!isTripDeleted)
+            {
+              Trip tripDetails =
+              await _databaseService
+                  .getTrip(
+                  tripData!
+                      .id!);
+
+              setState(() {
+                tripData =
+                    tripDetails;
+              });
+            }
 
           isDataUpdated =
           true;

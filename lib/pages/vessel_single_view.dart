@@ -2924,6 +2924,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
       totalDuration = analyticsData[3];
       vesselAnalytics = false;
     });
+
+    Utils.customPrint('VESSEl ANA $vesselAnalytics');
   }
 
   endTripMethod() async{
