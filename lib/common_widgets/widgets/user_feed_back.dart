@@ -23,7 +23,7 @@ class UserFeedback{
           Icon(
             Icons.warning,
             color: userFeedbackBtnColor,
-            size: displayWidth(context) * 0.04,
+            size: displayWidth(context) * 0.035,
           ),
 
           SizedBox(
@@ -35,7 +35,7 @@ class UserFeedback{
               text: 'Feedback',
               fontWeight: FontWeight.w300,
               textColor: userFeedbackBtnColor,
-              textSize: displayWidth(context) * 0.036,
+              textSize: displayWidth(context) * 0.032,
               textAlign: TextAlign.start),
 
           commonText(
@@ -43,7 +43,7 @@ class UserFeedback{
               text: ' / Report',
               fontWeight: FontWeight.w300,
               textColor: userFeedbackBtnColor,
-              textSize: displayWidth(context) * 0.036,
+              textSize: displayWidth(context) * 0.032,
               textAlign: TextAlign.start)
         ],
       ),

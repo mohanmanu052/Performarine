@@ -246,9 +246,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                   scaffoldKey.currentState!.openDrawer();
                 },
                 child: Padding(
-                  padding: const EdgeInsets.all(19),
+                  padding: const EdgeInsets.all(16),
                   child: Image.asset(
-                    'assets/images/menu.png',
+                    'assets/icons/menu.png',
                   ),
                 ),
               ),

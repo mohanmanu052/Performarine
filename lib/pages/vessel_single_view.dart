@@ -33,6 +33,7 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lpr_bluetooth_list.dart';
+import 'package:performarine/pages/start_trip/start_trip_recording_screen.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -1011,7 +1012,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
           }
         });
 
-        getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected)));
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
@@ -1055,8 +1056,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               }
             }
           });
-          getBottomSheet(
-              context, size, vesselName, weight, isLocationPermitted);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected)));
         }
       }
     } else {
@@ -1103,7 +1103,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             }
           }
         });
-        getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected)));
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
@@ -1147,8 +1147,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               }
             }
           });
-          getBottomSheet(
-              context, size, vesselName, weight, isLocationPermitted);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected)));
         }
       }
     }
