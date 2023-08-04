@@ -1,19 +1,13 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/main.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/start_trip/map_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_analytics_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../common_widgets/utils/utils.dart';
-import '../../common_widgets/vessel_builder.dart';
-import '../../services/database_service.dart';
 
 class TripRecordingScreen extends StatefulWidget {
   final String? vesselId, tripId;
@@ -160,8 +154,8 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
       body: TabBarView(
         controller: tabController,
         children: [
-          MapScreen(scaffoldKey: scaffoldKey, tripId: widget.tripId, vesselId: widget.vesselId, tripIsRunningOrNot: widget.tripIsRunningOrNot,),
-          TripRecordingAnalyticsScreen(),
+          MapScreen(scaffoldKey: scaffoldKey, tripId: widget.tripId, vesselId: widget.vesselId, tripIsRunningOrNot: widget.tripIsRunningOrNot, context: context,),
+          TripRecordingAnalyticsScreen(scaffoldKey: scaffoldKey, tripId: widget.tripId, vesselId: widget.vesselId, tripIsRunningOrNot: widget.tripIsRunningOrNot, context: context),
         ],
       ),
     );

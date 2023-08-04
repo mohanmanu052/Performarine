@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:logger/logger.dart';
@@ -432,22 +433,82 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                               textSize: displayWidth(context) * 0.038,
                             ),
 
-                            Slider(
-                                value: valueHolder.toDouble(),
-                                min: 1,
-                                max: 10,
-                                divisions: 10,
-                                activeColor: Color(0xff2663DB),
-                                inactiveColor: Colors.grey,
-                                label: '${valueHolder.round()}',
-                                onChanged: (double newValue) {
-                                  setState(() {
-                                    valueHolder = newValue.round();
-                                  });
-                                },
-                                semanticFormatterCallback: (double newValue) {
-                                  return '${newValue.round()}';
-                                }
+                            Stack(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  child: Container(
+                                    height: 30,
+                                    child: FlutterSlider(
+                                      values: [5],
+                                      max: 10,
+                                      min: 0,
+                                      trackBar: FlutterSliderTrackBar(
+                                          activeTrackBarHeight: 4.5,
+                                          inactiveTrackBarHeight: 4.5,
+                                          activeTrackBar: BoxDecoration(
+                                              color: Color(0xff2663DB))),
+                                      tooltip: FlutterSliderTooltip(
+                                          custom: (value) {
+                                            String data =
+                                            value.toInt().toString();
+                                            return Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 6, vertical: 2),
+                                              child: commonText(
+                                                context: context,
+                                                text: '$data',
+                                                fontWeight: FontWeight.w500,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                displayWidth(context) *
+                                                    0.028,
+                                              ),
+                                            );
+                                          },
+                                          alwaysShowTooltip: true,
+                                          positionOffset:
+                                          FlutterSliderTooltipPositionOffset(
+                                              top: -14)),
+                                      handlerWidth: 15,
+                                      handlerHeight: 15,
+                                      handler: FlutterSliderHandler(
+                                          child: Container(
+                                            height: 15,
+                                            width: 15,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Color(0xff2663DB)),
+                                          )),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 0),
+                                  child: commonText(
+                                    context: context,
+                                    text: '0',
+                                    fontWeight: FontWeight.w500,
+                                    textColor: Colors.black,
+                                    textSize: displayWidth(context) * 0.028,
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 0),
+                                    child: commonText(
+                                      context: context,
+                                      text: '10+',
+                                      fontWeight: FontWeight.w500,
+                                      textColor: Colors.black,
+                                      textSize: displayWidth(context) * 0.028,
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
 
                             SizedBox(height: displayHeight(context) * 0.03,),

@@ -1,19 +1,11 @@
 import 'dart:async';
 import 'dart:io';
-
-import 'package:background_locator_2/background_locator.dart';
-import 'package:background_locator_2/settings/android_settings.dart';
-import 'package:background_locator_2/settings/ios_settings.dart';
-import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:performarine/analytics/end_trip.dart';
-import 'package:performarine/analytics/location_callback_handler.dart';
-import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
-import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -32,7 +24,8 @@ class MapScreen extends StatefulWidget {
   final String? vesselId, tripId;
   final bool isAppKilled;
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  const MapScreen({super.key, this.scaffoldKey, this.tripIsRunningOrNot, this.vesselId, this.tripId, this.isAppKilled = false});
+  final BuildContext? context;
+  const MapScreen({super.key, this.scaffoldKey, this.tripIsRunningOrNot, this.vesselId, this.tripId, this.isAppKilled = false, this.context});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -53,14 +46,19 @@ class _MapScreenState extends State<MapScreen> {
 
   bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false, isEndTripBtnClicked = false, isDataUpdated = false;
 
+  Trip? tripData;
+  CreateVessel? vesselData;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
+    Utils.customPrint("LATEST TRIP ID ${widget.tripId}");
+
     setState(() {
       tripIsRunning = widget.tripIsRunningOrNot!;
+      getData();
     });
 
     if (tripIsRunning) {
@@ -116,25 +114,23 @@ class _MapScreenState extends State<MapScreen> {
           padding: const EdgeInsets.only(top: 10, bottom: 8),
           child: Stack(
             children: [
-              Flexible(
-                child: FlutterMap(
-                  options: MapOptions(
-                    center: LatLng(56.704173, 11.543808),
-                    minZoom: 12,
-                    maxZoom: 14,
-                    bounds: LatLngBounds(
-                      LatLng(56.7378, 11.6644),
-                      LatLng(56.6877, 11.5089),
-                    )
-                  ),
-                  children: [
-                    TileLayer(
-                      tileProvider: AssetTileProvider(),
-                      maxZoom: 14,
-                      urlTemplate: 'assets/map/anholt_osmbright/{z}/{x}/{y}.png',
-                    ),
-                  ],
+              FlutterMap(
+                options: MapOptions(
+                  center: LatLng(56.704173, 11.543808),
+                  minZoom: 12,
+                  maxZoom: 14,
+                  bounds: LatLngBounds(
+                    LatLng(56.7378, 11.6644),
+                    LatLng(56.6877, 11.5089),
+                  )
                 ),
+                children: [
+                  TileLayer(
+                    tileProvider: AssetTileProvider(),
+                    maxZoom: 14,
+                    urlTemplate: 'assets/map/anholt_osmbright/{z}/{x}/{y}.png',
+                  ),
+                ],
               ),
 
               Positioned(
@@ -263,26 +259,26 @@ class _MapScreenState extends State<MapScreen> {
 
                                   endTrip(isTripDeleted: true);
 
-                                  // Utils.customPrint("SMALL TRIPP IDDD ${tripData!
-                                  //     .id!}");
-                                  //
-                                  // int value = Platform.isAndroid ? 1 : 0;
-                                  //
-                                  // Future.delayed(Duration(seconds: value), (){
-                                  //   if(!isSmallTrip)
-                                  //   {
-                                  //
-                                  //     Utils.customPrint("SMALL TRIPP IDDD ${tripData!
-                                  //         .id!}");
-                                  //     DatabaseService().deleteTripFromDB(tripData!
-                                  //         .id!);
-                                  //
-                                  //     Navigator.pushAndRemoveUntil(
-                                  //         context,
-                                  //         MaterialPageRoute(builder: (context) => HomePage()),
-                                  //         ModalRoute.withName(""));
-                                  //   }
-                                  // });
+                                  Utils.customPrint("SMALL TRIPP IDDD ${tripData!
+                                      .id!}");
+
+                                  int value = Platform.isAndroid ? 1 : 0;
+
+                                  Future.delayed(Duration(seconds: value), (){
+                                    if(!isSmallTrip)
+                                    {
+
+                                      Utils.customPrint("SMALL TRIPP IDDD ${tripData!
+                                          .id!}");
+                                      DatabaseService().deleteTripFromDB(tripData!
+                                          .id!);
+
+                                      Navigator.pushAndRemoveUntil(
+                                          widget.context!,
+                                          MaterialPageRoute(builder: (context) => HomePage()),
+                                          ModalRoute.withName(""));
+                                    }
+                                  });
                                 },
                                 onCancelClick: (){
                                   Navigator.pop(context);
@@ -338,7 +334,7 @@ class _MapScreenState extends State<MapScreen> {
                         child: GestureDetector(
                             onTap: ()async{
                               final image = await controller.capture();
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                              Navigator.push(widget.context!, MaterialPageRoute(builder: (context) => FeedbackReport(
                                 imagePath: image.toString(),
                                 uIntList: image,)));
                             },
@@ -397,30 +393,47 @@ class _MapScreenState extends State<MapScreen> {
             });
           }
 
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              ),
-              ModalRoute.withName(""));
+          if(!isTripDeleted)
+          {
 
-          // if(!isTripDeleted)
-          // {
-          //   Trip tripDetails =
-          //   await _databaseService
-          //       .getTrip(
-          //       tripData!
-          //           .id!);
-          //
-          //   setState(() {
-          //     tripData =
-          //         tripDetails;
-          //   });
-          // }
+            Trip tripDetails =
+            await _databaseService
+                .getTrip(
+                tripData!
+                    .id!);
+
+            setState(() {
+              tripData =
+                  tripDetails;
+            });
+          }
 
           isDataUpdated =
           true;
+
+          if(!isTripDeleted)
+          {
+            Navigator.pushAndRemoveUntil(
+                widget.context!,
+                MaterialPageRoute(
+                  builder: (context) => HomePage(),
+                ),
+                ModalRoute.withName(""));
+          }
         });
+  }
+
+  getData() async {
+    final DatabaseService _databaseService = DatabaseService();
+    final tripDetails = await _databaseService.getTrip(widget.tripId!);
+
+    List<CreateVessel> vesselDetails =
+    await _databaseService.getVesselNameByID(widget.vesselId!);
+
+    setState(() {
+      tripData = tripDetails;
+      vesselData = vesselDetails[0];
+    });
   }
 
   @override

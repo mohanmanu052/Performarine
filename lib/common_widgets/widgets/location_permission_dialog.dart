@@ -22,7 +22,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
         Container(
           width: displayWidth(context),
           height: isLocationDialogBox
-              ? displayHeight(context) * 0.76
+              ? displayHeight(context) * 0.58
               : displayHeight(context) * 0.65,
           margin: EdgeInsets.all(10),
           decoration: new BoxDecoration(
@@ -48,58 +48,64 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min, // To make the card compact
                     children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(top: 10.0, left: 10, right: 10),
-                        child: commonText(
-                            text: isLocationDialogBox
-                                ? 'Location Permission Required'
-                                : 'Nearby Devices Permission Required',
-                            context: context,
-                            textSize: displayWidth(context) * 0.045,
-                            textColor:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.white
-                                    : Colors.blueAccent,
-                            fontWeight: FontWeight.w600),
-                      ),
+
+                      SizedBox(height: displayHeight(context) * 0.02,),
+
                       Center(
                         child: Container(
                           child: isLocationDialogBox
                               ? Image.asset(
-                                  'assets/images/location_permission.png',
-                                  height: displayHeight(context) * 0.18,
-                                  fit: BoxFit.contain,
-                                )
+                            'assets/icons/location_permission.png',
+                            height: displayHeight(context) * 0.1,
+                            fit: BoxFit.contain,
+                          )
                               : Container(
-                                  padding: EdgeInsets.only(top: 15, bottom: 15),
-                                  child: Icon(
-                                    Icons.bluetooth,
-                                    size: 50,
-                                  ),
-                                ),
+                            padding: EdgeInsets.only(top: 15, bottom: 15),
+                            child: Icon(
+                              Icons.bluetooth,
+                              size: 50,
+                            ),
+                          ),
                         ),
                       ),
+
                       Container(
-                        margin: EdgeInsets.only(top: 6.0),
                         alignment: Alignment.center,
+                        margin: EdgeInsets.only(top: 10.0, left: 10, right: 10),
                         child: commonText(
-                            text: text,
+                            text: isLocationDialogBox
+                                ? 'Location Permission required'
+                                : 'Nearby Devices Permission Required',
                             context: context,
                             textSize: displayWidth(context) * 0.04,
                             textColor:
                                 Theme.of(context).brightness == Brightness.dark
                                     ? Colors.white
                                     : Colors.black,
+                            fontWeight: FontWeight.w600),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.only(top: 10.0),
+                        alignment: Alignment.center,
+                        child: commonText(
+                            text: text,
+                            context: context,
+                            textSize: displayWidth(context) * 0.032,
+                            textColor:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.blueAccent,
                             fontWeight: FontWeight.w600,
                             textAlign: TextAlign.center),
                       ),
                       Container(
                         margin: EdgeInsets.only(
-                            top: 6.0, bottom: 10.0, left: 10, right: 10),
+                            top: 10.0, bottom: 10.0, left: 10, right: 10),
                         child: commonText(
                             text: subText!,
                             context: context,
-                            textSize: displayWidth(context) * 0.03,
+                            textSize: displayWidth(context) * 0.032,
                             textColor:
                                 Theme.of(context).brightness == Brightness.dark
                                     ? Colors.white
@@ -107,7 +113,8 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(top: 10.0, bottom: 6.0),
                         child: RichText(
                           text: TextSpan(
                             text: 'Click',
@@ -118,7 +125,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                     : Colors.black54,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: poppins,
-                                fontSize: displayWidth(context) * 0.032),
+                                fontSize: displayWidth(context) * 0.03),
                             children: <TextSpan>[
                               TextSpan(
                                 text: ' OK',
@@ -130,7 +137,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                         : Colors.black,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: poppins,
-                                    fontSize: displayWidth(context) * 0.032),
+                                    fontSize: displayWidth(context) * 0.03),
                               ),
                               TextSpan(
                                 text: ' to access App Info',
@@ -142,14 +149,15 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                         : Colors.black54,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: poppins,
-                                    fontSize: displayWidth(context) * 0.032),
+                                    fontSize: displayWidth(context) * 0.03),
                               )
                             ],
                           ),
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(top: 6.0, bottom: 6.0),
                         child: RichText(
                           text: TextSpan(
                             text: 'Click',
@@ -160,7 +168,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                     : Colors.black54,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: poppins,
-                                fontSize: displayWidth(context) * 0.032),
+                                fontSize: displayWidth(context) * 0.03),
                             children: <TextSpan>[
                               TextSpan(
                                 text: ' Permissions',
@@ -172,7 +180,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                         : Colors.black,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: poppins,
-                                    fontSize: displayWidth(context) * 0.032),
+                                    fontSize: displayWidth(context) * 0.03),
                               ),
                               TextSpan(
                                 text: ' to access Permission Info',
@@ -184,14 +192,15 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                         : Colors.black54,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: poppins,
-                                    fontSize: displayWidth(context) * 0.032),
+                                    fontSize: displayWidth(context) * 0.03),
                               )
                             ],
                           ),
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(top: 6.0, bottom: 10.0),
                         child: RichText(
                           text: TextSpan(
                             text: 'Select',
@@ -202,7 +211,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                     : Colors.black54,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: poppins,
-                                fontSize: displayWidth(context) * 0.032),
+                                fontSize: displayWidth(context) * 0.03),
                             children: <TextSpan>[
                               TextSpan(
                                 text: isLocationDialogBox
@@ -216,7 +225,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                         : Colors.black,
                                     fontWeight: FontWeight.w600,
                                     fontFamily: poppins,
-                                    fontSize: displayWidth(context) * 0.032),
+                                    fontSize: displayWidth(context) * 0.03),
                               ),
                               TextSpan(
                                 text: isLocationDialogBox
@@ -230,7 +239,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                                         : Colors.black54,
                                     fontWeight: FontWeight.w500,
                                     fontFamily: poppins,
-                                    fontSize: displayWidth(context) * 0.032),
+                                    fontSize: displayWidth(context) * 0.03),
                               )
                             ],
                           ),
