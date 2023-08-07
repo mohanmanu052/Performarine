@@ -25,3 +25,4 @@ const dateColor = Color(0xFF6B6363);
 const dividerColor = Color(0xFFDADADA);
 const checkColor = Color(0xFF41C1C8);
 const userFeedbackBtnColor = Color(0xFFDE6767);
+const reportsNewTabColor = Color(0xFFE4F5F5);

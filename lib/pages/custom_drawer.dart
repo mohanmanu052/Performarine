@@ -21,6 +21,7 @@ import 'package:performarine/pages/auth/change_password.dart';
 import 'package:performarine/pages/auth/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/reports/search_and_filters.dart';
+import 'package:performarine/pages/reports_module/reports.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
@@ -197,7 +198,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SearchAndFilters()),
+                                builder: (context) => ReportsModule()),
                           );
                         },
                         child: commonText(
