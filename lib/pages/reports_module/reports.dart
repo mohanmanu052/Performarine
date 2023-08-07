@@ -38,8 +38,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   final _formKey = GlobalKey<FormState>();
   final controller = ScreenshotController();
   late CommonProvider commonProvider;
-  int? _key;
-  int? newKey;
+  int? _key, newKey;
   List<DropdownItem> vesselData = [];
   List<String> filters = ["Filter by Date", "Filter by Trips"];
   DropdownItem? selectedValue;

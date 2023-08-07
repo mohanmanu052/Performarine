@@ -34,10 +34,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
   final controller = ScreenshotController();
 
-  String tripDistance = '0.00';
-  String tripDuration = '00:00:00';
-  String tripSpeed = '0.1';
-  String tripAvgSpeed = '0.1';
+  String tripDistance = '0.00', tripDuration = '00:00:00', tripSpeed = '0.1', tripAvgSpeed = '0.1';
 
   Trip? tripData;
   CreateVessel? vesselData;
