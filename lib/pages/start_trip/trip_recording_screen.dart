@@ -8,6 +8,8 @@ import 'package:performarine/pages/start_trip/trip_recording_analytics_screen.da
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../bottom_navigation.dart';
+
 
 class TripRecordingScreen extends StatefulWidget {
   final String? vesselId, tripId;
@@ -140,7 +142,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(builder: (context) => BottomNavigation()),
                     ModalRoute.withName(""));
               },
               icon: Image.asset('assets/images/home.png'),

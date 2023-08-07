@@ -18,6 +18,7 @@ import '../../common_widgets/widgets/user_feed_back.dart';
 import '../../main.dart';
 import '../../models/vessel.dart';
 import '../../services/database_service.dart';
+import '../bottom_navigation.dart';
 
 class MapScreen extends StatefulWidget {
   final bool? tripIsRunningOrNot;
@@ -275,7 +276,7 @@ class _MapScreenState extends State<MapScreen> {
 
                                       Navigator.pushAndRemoveUntil(
                                           widget.context!,
-                                          MaterialPageRoute(builder: (context) => HomePage()),
+                                          MaterialPageRoute(builder: (context) => BottomNavigation()),
                                           ModalRoute.withName(""));
                                     }
                                   });
@@ -416,7 +417,7 @@ class _MapScreenState extends State<MapScreen> {
             Navigator.pushAndRemoveUntil(
                 widget.context!,
                 MaterialPageRoute(
-                  builder: (context) => HomePage(),
+                  builder: (context) => BottomNavigation(),
                 ),
                 ModalRoute.withName(""));
           }

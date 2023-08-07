@@ -64,7 +64,9 @@ class CustomLabeledCheckbox extends StatelessWidget {
             SizedBox(width: 8),
             Text(
               label,
-              style: TextStyle(fontWeight: FontWeight.w700, color: Colors.black),
+              style: TextStyle(
+                fontSize: displayWidth(context) * 0.04,
+                  fontWeight: FontWeight.bold, color: Colors.black,fontFamily: outfit),
             )
           ],
         ),
@@ -201,7 +203,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
         height: displayHeight(context) * 0.09,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
-          color: Colors.grey.withOpacity(0.1)
+          color: reportTripsListColor
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -217,8 +219,8 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
              ),
              Image.asset(
                "assets/images/reports-boat.png",
-               height: displayHeight(context) * 0.07,
-               width: displayWidth(context) * 0.15,
+               height: displayHeight(context) * 0.06,
+               width: displayWidth(context) * 0.13,
              ),
 
              SizedBox(
@@ -232,8 +234,8 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                  Text(
                    "$dateTime",
                    style: TextStyle(
-                       fontWeight: FontWeight.w700,
-                       fontFamily: inter,
+                       fontWeight: FontWeight.bold,
+                       fontFamily: outfit,
                        fontSize: displayWidth(context) * 0.032,
                        color: blutoothDialogTxtColor),
                  ),
@@ -245,8 +247,8 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                  Text(
                    "Date",
                    style: TextStyle(
-                       fontWeight: FontWeight.w500,
-                       fontFamily: inter,
+                       fontWeight: FontWeight.w400,
+                       fontFamily: poppins,
                        fontSize: displayWidth(context) * 0.026,
                        color: blutoothDialogTxtColor),
                  ),
@@ -275,8 +277,8 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                  Text(
                    "$distance",
                    style: TextStyle(
-                       fontWeight: FontWeight.w700,
-                       fontFamily: inter,
+                       fontWeight: FontWeight.bold,
+                       fontFamily: outfit,
                        fontSize: displayWidth(context) * 0.032,
                        color: blutoothDialogTxtColor),
                  ),
@@ -288,8 +290,8 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                  Text(
                    "Distance",
                    style: TextStyle(
-                       fontWeight: FontWeight.w500,
-                       fontFamily: inter,
+                       fontWeight: FontWeight.w400,
+                       fontFamily: poppins,
                        fontSize: displayWidth(context) * 0.026,
                        color: blutoothDialogTxtColor),
                  ),
@@ -318,8 +320,8 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                  Text(
                    "$time",
                    style: TextStyle(
-                       fontWeight: FontWeight.w700,
-                       fontFamily: inter,
+                       fontWeight: FontWeight.bold,
+                       fontFamily: outfit,
                        fontSize: displayWidth(context) * 0.032,
                        color: blutoothDialogTxtColor),
                  ),
@@ -331,8 +333,8 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                  Text(
                    "Time",
                    style: TextStyle(
-                       fontWeight: FontWeight.w500,
-                       fontFamily: inter,
+                       fontWeight: FontWeight.w400,
+                       fontFamily: poppins,
                        fontSize: displayWidth(context) * 0.026,
                        color: blutoothDialogTxtColor),
                  ),

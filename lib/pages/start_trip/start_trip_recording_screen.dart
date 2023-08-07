@@ -43,6 +43,7 @@ import '../../analytics/location_callback_handler.dart';
 import '../../analytics/start_trip.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import '../../models/device_model.dart';
+import '../bottom_navigation.dart';
 import '../lpr_bluetooth_list.dart';
 import '../trip_analytics.dart';
 
@@ -50,7 +51,7 @@ import '../trip_analytics.dart';
 class StartTripRecordingScreen extends StatefulWidget {
   final bool? isLocationPermitted;
   final bool? isBluetoothConnected;
-  const StartTripRecordingScreen({super.key, this.isLocationPermitted, this.isBluetoothConnected});
+  const StartTripRecordingScreen({super.key, this.isLocationPermitted = false, this.isBluetoothConnected = false});
 
   @override
   State<StartTripRecordingScreen> createState() => _StartTripRecordingScreenState();
@@ -138,7 +139,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => BottomNavigation()),
                       ModalRoute.withName(""));
                 },
                 icon: Image.asset('assets/images/home.png'),

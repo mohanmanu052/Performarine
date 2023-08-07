@@ -34,6 +34,7 @@ import 'package:wakelock/wakelock.dart';
 import '../common_widgets/widgets/status_tag.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
 import '../models/reports_model.dart';
+import 'bottom_navigation.dart';
 import 'feedback_report.dart';
 
 class TripAnalyticsScreen extends StatefulWidget {
@@ -208,7 +209,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           if (widget.calledFrom == null) {
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => HomePage()),
+                MaterialPageRoute(builder: (context) => BottomNavigation()),
                 ModalRoute.withName(""));
             return false;
           } else if (widget.calledFrom! == 'HomePage') {
@@ -216,7 +217,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => HomePage(
+                      builder: (context) => BottomNavigation(
                         tabIndex: 1,
                       )),
                   ModalRoute.withName(""));
@@ -249,13 +250,13 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                   if (widget.calledFrom == null) {
                     Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
+                        MaterialPageRoute(builder: (context) => BottomNavigation()),
                         ModalRoute.withName(""));
                   } else if (widget.calledFrom! == 'HomePage') {
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => HomePage(
+                            builder: (context) => BottomNavigation(
                               tabIndex: 1,
                             )),
                         ModalRoute.withName(""));
@@ -264,7 +265,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => HomePage(
+                              builder: (context) => BottomNavigation(
                                 tabIndex: 1,
                               )),
                           ModalRoute.withName(""));
@@ -332,7 +333,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                   onPressed: () {
                     Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
+                        MaterialPageRoute(builder: (context) => BottomNavigation()),
                         ModalRoute.withName(""));
                   },
                   icon: Image.asset('assets/images/home.png'),
@@ -714,7 +715,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                               MaterialPageRoute(
                                                 builder:
                                                     (context) =>
-                                                    HomePage(),
+                                                    BottomNavigation(),
                                               ),
                                               ModalRoute
                                                   .withName(
@@ -808,7 +809,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      HomePage(),
+                                                      BottomNavigation(),
                                                 ),
                                                 ModalRoute.withName(""));
                                           })
@@ -1046,7 +1047,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                                   Navigator.pushAndRemoveUntil(
                                                       context,
-                                                      MaterialPageRoute(builder: (context) => HomePage()),
+                                                      MaterialPageRoute(builder: (context) => BottomNavigation()),
                                                       ModalRoute.withName(""));
                                                 }
                                               });
@@ -1453,7 +1454,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    HomePage(),
+                                                    BottomNavigation(),
                                               ),
                                               ModalRoute.withName(
                                                   ""));
@@ -1551,7 +1552,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                             Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => HomePage(),
+                                                  builder: (context) => BottomNavigation(),
                                                 ),
                                                 ModalRoute.withName(""));
                                           })
@@ -2221,7 +2222,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                                         Navigator.pushAndRemoveUntil(
                                                             context,
-                                                            MaterialPageRoute(builder: (context) => HomePage()),
+                                                            MaterialPageRoute(builder: (context) => BottomNavigation()),
                                                             ModalRoute.withName(""));
                                                       }
                                                     });

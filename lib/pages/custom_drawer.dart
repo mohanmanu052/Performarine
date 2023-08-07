@@ -32,6 +32,7 @@ import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 
 import '../common_widgets/widgets/log_level.dart';
+import 'bottom_navigation.dart';
 
 class CustomDrawer extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
@@ -129,7 +130,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomePage(),
+                                builder: (context) => BottomNavigation(),
                               ),
                               ModalRoute.withName(""));
                         },

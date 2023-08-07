@@ -13,6 +13,7 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/services/database_service.dart';
 
+import '../../pages/bottom_navigation.dart';
 import 'log_level.dart';
 
 //Expansion card on vessel Single viw
@@ -976,7 +977,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
 
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (_) => HomePage(),
+                                        builder: (_) => BottomNavigation(),
                                         fullscreenDialog: true,
                                       ),
                                     );

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 
 import '../utils/colors.dart';
 import 'common_widgets.dart';
@@ -36,7 +37,9 @@ class UserFeedback{
               fontWeight: FontWeight.w300,
               textColor: userFeedbackBtnColor,
               textSize: displayWidth(context) * 0.032,
-              textAlign: TextAlign.start),
+              textAlign: TextAlign.start,
+            fontFamily: inter
+          ),
 
           commonText(
               context: context,
@@ -44,7 +47,9 @@ class UserFeedback{
               fontWeight: FontWeight.w300,
               textColor: userFeedbackBtnColor,
               textSize: displayWidth(context) * 0.032,
-              textAlign: TextAlign.start)
+              textAlign: TextAlign.start,
+              fontFamily: inter
+          )
         ],
       ),
     );
