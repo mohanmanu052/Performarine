@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 const primaryColor = Color(0xFF3B878E);
 const letsGetStartedButtonColor = Color(0xFF202022);
 const dropDownBackgroundColor = Color(0xFFECF3F9);
-const backgroundColor = Color(0xFFBFF2B9);
+//const backgroundColor = Color(0xFFBFF2B9);
+const backgroundColor = Color(0xFFFFFFFF);
 const buttonBGColor = Color(0xFF1A3154);
 const circularProgressColor = Color(0xFF1C75BC);
 const blutoothDialogTitleColor = Color(0xFF0F0F11);
@@ -31,3 +32,7 @@ const reportFilterBackColor = Color(0xFFF4F6F8);
 const reportDropdownColor = Color(0xFFE4E8F0);
 const reportTripsListBackColor = Color(0xFFFAFDFF);
 const reportTripsListColor = Color(0xFFF5FBF9);
+const blueColor = Color(0xFF2663DB);
+const uploadTripBtnColor = Color(0xFFE19C16);
+const routeMapBtnColor = Color(0xFF67C6C7);
+

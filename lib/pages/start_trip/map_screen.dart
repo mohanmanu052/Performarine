@@ -36,10 +36,7 @@ class _MapScreenState extends State<MapScreen> {
 
   final controller = ScreenshotController();
 
-  String tripDistance = '0.00';
-  String tripDuration = '00:00:00';
-  String tripSpeed = '0.1';
-  String tripAvgSpeed = '0.1';
+  String tripDistance = '0.00', tripDuration = '00:00:00', tripSpeed = '0.1', tripAvgSpeed = '0.1';
 
   Timer? durationTimer;
 
@@ -112,7 +109,7 @@ class _MapScreenState extends State<MapScreen> {
       controller: controller,
       child: Container(
         child: Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 8),
+          padding: const EdgeInsets.only(top: 10, bottom: 0),
           child: Stack(
             children: [
               FlutterMap(
@@ -142,7 +139,7 @@ class _MapScreenState extends State<MapScreen> {
                   margin: EdgeInsets.symmetric(horizontal: 38),
                   height: displayHeight(context) * 0.26,
                   decoration: BoxDecoration(
-                    color: commonBackgroundColor,
+                    color: backgroundColor,
                     borderRadius: BorderRadius.circular(8)
                   ),
                   child: Column(

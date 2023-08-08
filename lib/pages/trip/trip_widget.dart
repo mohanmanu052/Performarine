@@ -121,10 +121,10 @@ class _TripWidgetState extends State<TripWidget> {
         }
       },
       child: Container(
-        margin: EdgeInsets.only(left: 10, right: 10, top: 6),
+        margin: EdgeInsets.only(left: 5, right: 5, top: 6),
         child: Card(
           elevation: 3,
-          color: Colors.white,
+          color: backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -132,7 +132,10 @@ class _TripWidgetState extends State<TripWidget> {
             //width: size.width - 40,
             //height: 110,
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(boxShadow: [
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: backgroundColor,
+                boxShadow: [
               BoxShadow(color: Colors.black.withOpacity(0.09), blurRadius: 2)
             ]),
             child: Column(
@@ -143,7 +146,7 @@ class _TripWidgetState extends State<TripWidget> {
                   children: [
                     commonText(
                         context: context,
-                        text: 'Trip ID - ${widget.tripList?.id ?? ''}',
+                        text: 'Trip ID - #${widget.tripList?.id ?? ''}',
                         fontWeight: FontWeight.w500,
                         textColor: Colors.black,
                         textSize: displayWidth(context) * 0.022,
@@ -191,10 +194,10 @@ class _TripWidgetState extends State<TripWidget> {
                     CustomPaint(
                       painter: StatusTag(
                           color: widget.tripList?.isSync != 0
-                              ? buttonBGColor
+                              ? blueColor
                               : widget.tripList?.tripStatus != 0
-                                  ? primaryColor
-                                  : Color(0xFF41C1C8)),
+                                  ? routeMapBtnColor
+                                  : routeMapBtnColor),
                       child: Container(
                         margin:
                             EdgeInsets.only(left: displayWidth(context) * 0.05),
@@ -229,20 +232,12 @@ class _TripWidgetState extends State<TripWidget> {
                               SizedBox(
                                   height: displayHeight(context) * 0.038,
                                   width: displayWidth(context) * .385,
-                                  child: CommonButtons.getRichTextActionButton(
-                                      buttonPrimaryColor: buttonBGColor,
+                                  child: CommonButtons.getTextActionButton(
+                                      buttonPrimaryColor: routeMapBtnColor,
                                       fontSize: displayWidth(context) * 0.026,
                                       onTap: () async {
                                         _launchURL();
                                       },
-                                      icon: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 8),
-                                        child: Icon(
-                                          Icons.map_outlined,
-                                          size: 18,
-                                        ),
-                                      ),
                                       context: context,
                                       width: displayWidth(context) * 0.38,
                                       title: 'Route Map')),
@@ -252,8 +247,8 @@ class _TripWidgetState extends State<TripWidget> {
                               SizedBox(
                                   height: displayHeight(context) * 0.038,
                                   width: displayWidth(context) * .39,
-                                  child: CommonButtons.getRichTextActionButton(
-                                      buttonPrimaryColor: buttonBGColor,
+                                  child: CommonButtons.getTextActionButton(
+                                      buttonPrimaryColor: blueColor,
                                       fontSize: displayWidth(context) * 0.026,
                                       onTap: () async {
                                         getVesselById = await _databaseService
@@ -283,14 +278,6 @@ class _TripWidgetState extends State<TripWidget> {
                                           );
                                         }
                                       },
-                                      icon: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 8),
-                                        child: Icon(
-                                          Icons.analytics_outlined,
-                                          size: 18,
-                                        ),
-                                      ),
                                       context: context,
                                       width: displayWidth(context) * 0.38,
                                       title: 'Trip Analytics'))
@@ -299,11 +286,92 @@ class _TripWidgetState extends State<TripWidget> {
                         : Row(
                             children: [
                               Expanded(
+                                child: widget.tripList?.isSync != 0
+                                    ? SizedBox(
+                                    height: displayHeight(context) * 0.038,
+                                    child: CommonButtons
+                                        .getTextActionButton(
+                                        buttonPrimaryColor:
+                                        blueColor,
+                                        borderColor: buttonBGColor
+                                            .withOpacity(.5),
+                                        fontSize:
+                                        displayWidth(context) *
+                                            0.026,
+                                        onTap: () async {
+                                          DownloadTrip().downloadTrip(
+                                              context,
+                                              widget.scaffoldKey!,
+                                              widget.tripList!.id!);
+                                        },
+                                        context: context,
+                                        width: displayWidth(context) *
+                                            0.38,
+                                        title: 'Download Trip Data'))
+                                    : SizedBox(
+                                    height: displayHeight(context) * 0.038,
+                                    child: isTripUploaded
+                                        ? Center(
+                                        child: SizedBox(
+                                            height: 28,
+                                            width: 28,
+                                            child:
+                                            CircularProgressIndicator(
+                                              valueColor:
+                                              AlwaysStoppedAnimation<
+                                                  Color>(
+                                                  circularProgressColor),
+                                            )))
+                                        : CommonButtons
+                                        .getTextActionButton(
+                                      buttonPrimaryColor:
+                                      uploadTripBtnColor,
+                                      fontSize:
+                                      displayWidth(context) *
+                                          0.026,
+                                      onTap: () async {
+                                        await Utils().check(
+                                            widget.scaffoldKey!);
+
+                                        var connectivityResult =
+                                        await (Connectivity()
+                                            .checkConnectivity());
+                                        if (connectivityResult ==
+                                            ConnectivityResult
+                                                .mobile) {
+                                          Utils.customPrint(
+                                              'Mobile');
+                                          CustomLogger().logWithFile(Level.info, "Mobile -> $page");
+                                          showDialogBox();
+                                        } else if (connectivityResult ==
+                                            ConnectivityResult
+                                                .wifi) {
+                                          setState(() {
+                                            isTripUploaded = true;
+                                          });
+
+                                          uploadDataIfDataIsNotSync();
+
+                                          Utils.customPrint(
+                                              'WIFI');
+                                          CustomLogger().logWithFile(Level.info, "Wifi -> $page");
+                                        }
+                                      },
+                                      context: context,
+                                      width:
+                                      displayWidth(context) *
+                                          0.38,
+                                      title: 'Upload trip Data ',)),
+                              ),
+                              SizedBox(
+                                width: 14,
+                              ),
+                              Expanded(
                                 child: SizedBox(
                                     height: displayHeight(context) * 0.038,
                                     child:
-                                        CommonButtons.getRichTextActionButton(
-                                            buttonPrimaryColor: buttonBGColor,
+                                        CommonButtons.getTextActionButton(
+                                            buttonPrimaryColor: blueColor,
                                             fontSize:
                                                 displayWidth(context) * 0.026,
                                             onTap: () async {
@@ -337,120 +405,11 @@ class _TripWidgetState extends State<TripWidget> {
                                                 );
                                               }
                                             },
-                                            icon: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 8),
-                                              child: Icon(
-                                                Icons.analytics_outlined,
-                                                size: 18,
-                                              ),
-                                            ),
+
                                             context: context,
                                             width: displayWidth(context) * 0.38,
                                             title: 'Trip Analytics')),
                               ),
-                              SizedBox(
-                                width: 14,
-                              ),
-                              Expanded(
-                                child: widget.tripList?.isSync != 0
-                                    ? SizedBox(
-                                        height: displayHeight(context) * 0.038,
-                                        child: CommonButtons
-                                            .getRichTextActionButton(
-                                                buttonPrimaryColor:
-                                                    buttonBGColor
-                                                        .withOpacity(.5),
-                                                borderColor: buttonBGColor
-                                                    .withOpacity(.5),
-                                                icon: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 8),
-                                                  child: Icon(
-                                                    Icons
-                                                        .download_for_offline_outlined,
-                                                    size: 18,
-                                                  ),
-                                                ),
-                                                fontSize:
-                                                    displayWidth(context) *
-                                                        0.026,
-                                                onTap: () async {
-                                                  DownloadTrip().downloadTrip(
-                                                      context,
-                                                      widget.scaffoldKey!,
-                                                      widget.tripList!.id!);
-                                                },
-                                                context: context,
-                                                width: displayWidth(context) *
-                                                    0.38,
-                                                title: 'Download Trip'))
-                                    : SizedBox(
-                                        height: displayHeight(context) * 0.038,
-                                        child: isTripUploaded
-                                            ? Center(
-                                                child: SizedBox(
-                                                    height: 28,
-                                                    width: 28,
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                      valueColor:
-                                                          AlwaysStoppedAnimation<
-                                                                  Color>(
-                                                              circularProgressColor),
-                                                    )))
-                                            : CommonButtons
-                                                .getRichTextActionButton(
-                                                    buttonPrimaryColor:
-                                                        primaryColor,
-                                                    fontSize:
-                                                        displayWidth(context) *
-                                                            0.026,
-                                                    onTap: () async {
-                                                      await Utils().check(
-                                                          widget.scaffoldKey!);
-
-                                                      var connectivityResult =
-                                                          await (Connectivity()
-                                                              .checkConnectivity());
-                                                      if (connectivityResult ==
-                                                          ConnectivityResult
-                                                              .mobile) {
-                                                        Utils.customPrint(
-                                                            'Mobile');
-                                                        CustomLogger().logWithFile(Level.info, "Mobile -> $page");
-                                                        showDialogBox();
-                                                      } else if (connectivityResult ==
-                                                          ConnectivityResult
-                                                              .wifi) {
-                                                        setState(() {
-                                                          isTripUploaded = true;
-                                                        });
-
-                                                        uploadDataIfDataIsNotSync();
-
-                                                        Utils.customPrint(
-                                                            'WIFI');
-                                                        CustomLogger().logWithFile(Level.info, "Wifi -> $page");
-                                                      }
-                                                    },
-                                                    icon: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 8),
-                                                      child: Icon(
-                                                        Icons
-                                                            .cloud_upload_outlined,
-                                                        size: 18,
-                                                      ),
-                                                    ),
-                                                    context: context,
-                                                    width:
-                                                        displayWidth(context) *
-                                                            0.38,
-                                                    title: 'Upload Trip ')),
-                              )
                             ],
                           )
                     : commonProvider.tripStatus

@@ -107,10 +107,10 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
     return Screenshot(
       controller: controller,
       child: Scaffold(
-        backgroundColor: commonBackgroundColor,
+        backgroundColor: backgroundColor,
         key: scaffoldKey,
         appBar: AppBar(
-          backgroundColor: commonBackgroundColor,
+          backgroundColor: backgroundColor,
           elevation: 0,
           leading: InkWell(
             onTap: () {
@@ -123,14 +123,12 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
               ),
             ),
           ),
-          title: Container(
-            child: commonText(
-              context: context,
-              text: 'Start Trip Recording',
-              fontWeight: FontWeight.w600,
-              textColor: Colors.black87,
-              textSize: displayWidth(context) * 0.045,
-            ),
+          title: commonText(
+            context: context,
+            text: 'Start Trip Recording',
+            fontWeight: FontWeight.w600,
+            textColor: Colors.black87,
+            textSize: displayWidth(context) * 0.045,
           ),
           actions: [
             Container(
@@ -193,7 +191,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                   width: displayWidth(context),
                   height: displayHeight(context) * 0.75,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     color: Color(0xffECF3F9)
                   ),
                   child: Padding(
@@ -211,10 +209,10 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                               text: 'Pre Departure Checklist',
                               fontWeight: FontWeight.w600,
                               textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.04,
+                              textSize: displayWidth(context) * 0.038,
                             ),
 
-                            SizedBox(height: displayHeight(context) * 0.01,),
+                            SizedBox(height: displayHeight(context) * 0.005,),
 
                             DropdownButtonHideUnderline(
                               child: DropdownButtonFormField<
@@ -266,7 +264,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                           : Colors.black54,
                                       fontSize:
                                       displayWidth(context) *
-                                          0.034,
+                                          0.032,
                                       fontFamily: inter,
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -298,7 +296,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                       style: TextStyle(
                                           fontSize: displayWidth(
                                               context) *
-                                              0.0346,
+                                              0.032,
                                           color: Theme.of(context)
                                               .brightness ==
                                               Brightness.dark
@@ -326,7 +324,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                               ),
                             ),
 
-                            SizedBox(height: displayHeight(context) * 0.02,),
+                            SizedBox(height: displayHeight(context) * 0.012,),
 
                             DropdownButtonHideUnderline(
                               child: DropdownButtonFormField<dynamic>(
@@ -363,7 +361,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                     color: Theme.of(context)
                                         .brightness ==
                                         Brightness.dark
-                                        ? "Select Vessel" ==
+                                        ? "Select Current Load" ==
                                         'User SubRole'
                                         ? Colors.black
                                         : Colors.white
@@ -373,11 +371,11 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                     text:
                                     selectedVesselWeight,
                                     fontWeight:
-                                    FontWeight.w500,
+                                    FontWeight.w400,
                                     textColor: Colors.black54,
                                     textSize: displayWidth(
                                         context) *
-                                        0.032,
+                                        0.03,
                                     textAlign:
                                     TextAlign.start),
                                 //  Text(
@@ -386,17 +384,61 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                 items: [
                                   DropdownMenuItem(
                                       value: '1',
-                                      child: Text('Empty')),
+                                      child: commonText(
+                                          context: context,
+                                          text:
+                                          'Empty',
+                                          fontWeight:
+                                          FontWeight.w500,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(
+                                              context) *
+                                              0.032,
+                                          textAlign:
+                                          TextAlign.start)),
                                   DropdownMenuItem(
                                       value: '2',
-                                      child: Text('Half')),
+                                      child: commonText(
+                                      context: context,
+                                      text:
+                                      'Half',
+                                      fontWeight:
+                                      FontWeight.w500,
+                                      textColor: Colors.black,
+                                      textSize: displayWidth(
+                                          context) *
+                                          0.032,
+                                      textAlign:
+                                      TextAlign.start)),
                                   DropdownMenuItem(
                                       value: '3',
-                                      child: Text('Full')),
+                                      child: commonText(
+                                          context: context,
+                                          text:
+                                          'Full',
+                                          fontWeight:
+                                          FontWeight.w500,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(
+                                              context) *
+                                              0.032,
+                                          textAlign:
+                                          TextAlign.start)),
                                   DropdownMenuItem(
                                       value: '4',
-                                      child:
-                                      Text('Variable')),
+                                      child: commonText(
+                                          context: context,
+                                          text:
+                                          'Variable',
+                                          fontWeight:
+                                          FontWeight.w500,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(
+                                              context) *
+                                              0.032,
+                                          textAlign:
+                                          TextAlign.start)
+                                      ),
                                 ],
                                 onChanged: (weightValue) {
                                   setState(() {
@@ -424,15 +466,16 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                               ),
                             ),
 
-                            SizedBox(height: displayHeight(context) * 0.03,),
+                            SizedBox(height: displayHeight(context) * 0.02,),
 
                             commonText(
                               context: context,
                               text: 'Number of Passengers',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.038,
+                              textSize: displayWidth(context) * 0.034,
                             ),
+                            SizedBox(height: displayHeight(context) * 0.008,),
 
                             Stack(
                               children: [
@@ -512,110 +555,118 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                               ],
                             ),
 
-                            SizedBox(height: displayHeight(context) * 0.03,),
+                            SizedBox(height: displayHeight(context) * 0.02,),
 
-                            commonText(
-                              context: context,
-                              text: 'Sensor Information',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.038,
-                            ),
-
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10),
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 20),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset('assets/icons/location.png',
-                                            height: displayHeight(context) * 0.04,
-                                            width: displayWidth(context) * 0.07,),
-
-                                          SizedBox(width: displayWidth(context) * 0.04,),
-
-                                          commonText(
-                                            context: context,
-                                            text: 'GPS Signal',
-                                            fontWeight: FontWeight.w400,
-                                            textColor: Colors.black45,
-                                            textSize: displayWidth(context) * 0.036,
-                                          ),
-                                        ],
-                                      ),
-                                      commonText(
-                                        context: context,
-                                        text: widget.isLocationPermitted! ? 'OK' : 'No Connected',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: widget.isLocationPermitted! ? Colors.green : Colors.grey,
-                                        textSize: displayWidth(context) * 0.03,
-                                      ),
-                                    ],
+                                  commonText(
+                                    context: context,
+                                    text: 'Sensor Information',
+                                    fontWeight: FontWeight.w500,
+                                    textColor: Colors.black,
+                                    textSize: displayWidth(context) * 0.034,
                                   ),
-                                  SizedBox(height: displayHeight(context) * 0.007,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset('assets/icons/lpr.png',
-                                            height: displayHeight(context) * 0.04,
-                                            width: displayWidth(context) * 0.07,),
 
-                                          SizedBox(width: displayWidth(context) * 0.04,),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Image.asset('assets/icons/location.png',
+                                                  height: displayHeight(context) * 0.04,
+                                                  width: displayWidth(context) * 0.07,),
 
-                                          commonText(
-                                            context: context,
-                                            text: 'LPR',
-                                            fontWeight: FontWeight.w400,
-                                            textColor: Colors.black45,
-                                            textSize: displayWidth(context) * 0.036,
-                                          ),
-                                        ],
-                                      ),
+                                                SizedBox(width: displayWidth(context) * 0.04,),
 
-                                      commonText(
-                                        context: context,
-                                        text: widget.isBluetoothConnected! ? 'Connected' : 'Disconnected',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: widget.isBluetoothConnected! ? Colors.green : Colors.red,
-                                        textSize: displayWidth(context) * 0.03,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: displayHeight(context) * 0.007,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset('assets/icons/ble.png',
-                                            height: displayHeight(context) * 0.04,
-                                            width: displayWidth(context) * 0.06,),
+                                                commonText(
+                                                  context: context,
+                                                  text: 'GPS Signal',
+                                                  fontWeight: FontWeight.w400,
+                                                  textColor: Colors.black45,
+                                                  textSize: displayWidth(context) * 0.034,
+                                                ),
+                                              ],
+                                            ),
+                                            commonText(
+                                              context: context,
+                                              text: widget.isLocationPermitted! ? 'OK' : 'No Connected',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: widget.isLocationPermitted! ? Colors.green : Colors.grey,
+                                              textSize: displayWidth(context) * 0.03,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: displayHeight(context) * 0.007,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Image.asset('assets/icons/lpr.png',
+                                                  height: displayHeight(context) * 0.04,
+                                                  width: displayWidth(context) * 0.07,),
 
-                                          SizedBox(width: displayWidth(context) * 0.04,),
+                                                SizedBox(width: displayWidth(context) * 0.04,),
 
-                                          commonText(
-                                            context: context,
-                                            text: 'Wireless NMEA',
-                                            fontWeight: FontWeight.w400,
-                                            textColor: Colors.black45,
-                                            textSize: displayWidth(context) * 0.036,
-                                          ),
-                                        ],
-                                      ),
+                                                commonText(
+                                                  context: context,
+                                                  text: 'LPR',
+                                                  fontWeight: FontWeight.w400,
+                                                  textColor: Colors.black45,
+                                                  textSize: displayWidth(context) * 0.034,
+                                                ),
+                                              ],
+                                            ),
 
-                                      commonText(
-                                        context: context,
-                                        text: 'Not Configured',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: Colors.amber,
-                                        textSize: displayWidth(context) * 0.03,
-                                      ),
-                                    ],
+                                            commonText(
+                                              context: context,
+                                              text: widget.isBluetoothConnected! ? 'Connected' : 'Disconnected',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: widget.isBluetoothConnected! ? Colors.green : Colors.red,
+                                              textSize: displayWidth(context) * 0.03,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: displayHeight(context) * 0.007,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Image.asset('assets/icons/ble.png',
+                                                  height: displayHeight(context) * 0.04,
+                                                  width: displayWidth(context) * 0.06,),
+
+                                                SizedBox(width: displayWidth(context) * 0.04,),
+
+                                                commonText(
+                                                  context: context,
+                                                  text: 'Wireless NMEA',
+                                                  fontWeight: FontWeight.w400,
+                                                  textColor: Colors.black45,
+                                                  textSize: displayWidth(context) * 0.034,
+                                                ),
+                                              ],
+                                            ),
+
+                                            commonText(
+                                              context: context,
+                                              text: 'Not Configured',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.amber,
+                                              textSize: displayWidth(context) * 0.03,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -632,6 +683,23 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                 : InkWell(
                               onTap: ()async
                               {
+
+                                if (selectedValue ==
+                                    null) {
+                                  Utils.customPrint(
+                                      'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    behavior:
+                                    SnackBarBehavior.floating,
+                                    content: Text(
+                                        "Please select vessel"),
+                                    duration: Duration(seconds: 1),
+                                    backgroundColor: Colors.blue,
+                                  ));
+                                  return;
+                                }
+
                                 Utils.customPrint(
                                     'SELECTED VESSEL WEIGHT $selectedVesselWeight');
                                 if (selectedVesselWeight ==
@@ -644,22 +712,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                     SnackBarBehavior.floating,
                                     content: Text(
                                         "Please select current load"),
-                                    duration: Duration(seconds: 1),
-                                    backgroundColor: Colors.blue,
-                                  ));
-                                  return;
-                                }
-
-                                if (selectedValue ==
-                                    null) {
-                                  Utils.customPrint(
-                                      'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    behavior:
-                                    SnackBarBehavior.floating,
-                                    content: Text(
-                                        "Please select vessel"),
                                     duration: Duration(seconds: 1),
                                     backgroundColor: Colors.blue,
                                   ));

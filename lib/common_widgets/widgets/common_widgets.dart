@@ -137,7 +137,8 @@ Widget dashboardRichText(
     {String? modelName,
     String? builderName,
     BuildContext? context,
-    Color? color}) {
+    Color? color,}) {
+
   return Row(
     mainAxisAlignment: MainAxisAlignment.start,
     children: [
@@ -182,6 +183,155 @@ Widget dashboardRichText(
           maxLines: 1,
         ),
       ),
+    ],
+  );
+}
+
+
+Widget vesselSingleViewRichText(
+    {String? capacity,
+      String? built,
+      String regNo = '',
+      BuildContext? context,
+      Color? color,}) {
+
+  Utils.customPrint("EXPANSION CARD ${regNo}");
+
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      Flexible(
+        child: Column(
+          children: [
+
+            Text(
+              '${capacity!}CC',
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: displayWidth(context!) * 0.04,
+                color: color,
+                fontFamily: poppins,
+                fontWeight: FontWeight.w600,
+              ),
+              overflow: TextOverflow.ellipsis,
+              softWrap: true,
+              maxLines: 1,
+            ),
+
+            Text(
+              'Capacity',
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: displayWidth(context) * 0.03,
+                color: Colors.grey,
+                fontFamily: poppins,
+                fontWeight: FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
+              softWrap: true,
+              maxLines: 1,
+            ),
+          ],
+        ),
+      ),
+      SizedBox(
+        width: displayWidth(context) * 0.02,
+      ),
+      Container(
+        height: displayHeight(context) * 0.03,
+        color: Colors.grey,
+        width: displayWidth(context) * 0.0045,
+      ),
+      SizedBox(
+        width: displayWidth(context) * 0.025,
+      ),
+      Flexible(
+        child: Column(
+          children: [
+            Text(
+              built!,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: displayWidth(context) * 0.04,
+                color: color,
+                fontFamily: poppins,
+                fontWeight: FontWeight.w600,
+              ),
+              overflow: TextOverflow.ellipsis,
+              softWrap: true,
+              maxLines: 1,
+            ),
+            Text(
+              'Built',
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: displayWidth(context) * 0.03,
+                color: Colors.grey,
+                fontFamily: poppins,
+                fontWeight: FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
+              softWrap: true,
+              maxLines: 1,
+            ),
+          ],
+        ),
+      ),
+
+       regNo != null && regNo != ''
+          ? Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: displayWidth(context) * 0.025,
+          ),
+          Container(
+            height: displayHeight(context) * 0.03,
+            color: Colors.grey,
+            width: displayWidth(context) * 0.0045,
+          ),
+          SizedBox(
+            width: displayWidth(context) * 0.02,
+          ),
+        ],
+      )
+          : SizedBox(),
+
+      regNo != null && regNo != ''
+          ? Flexible(
+        child: Column(
+          children: [
+            Text(
+              regNo,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: displayWidth(context) * 0.04,
+                color: color,
+                fontFamily: poppins,
+                fontWeight: FontWeight.w600,
+              ),
+              overflow: TextOverflow.ellipsis,
+              softWrap: true,
+              maxLines: 1,
+            ),
+
+            Text(
+              'Registration Number',
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: displayWidth(context) * 0.03,
+                color: Colors.grey,
+                fontFamily: poppins,
+                fontWeight: FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
+              softWrap: true,
+              maxLines: 1,
+            ),
+          ],
+        ),
+      )
+          : SizedBox(),
     ],
   );
 }
@@ -963,7 +1113,7 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
     String distance, String totalCount, String avgSpeed) {
   double finalAvgSpeed = double.parse(avgSpeed);
   return Container(
-    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+    margin: EdgeInsets.symmetric(horizontal: 10,),
     child: Column(
       children: [
         Row(
@@ -972,7 +1122,7 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: Color(0XFFE4F5F5)),
+                    color: backgroundColor),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
@@ -1006,7 +1156,7 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: Color(0XFFE4F5F5)),
+                    color: backgroundColor),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
@@ -1044,7 +1194,7 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: Color(0XFFE4F5F5)),
+                    color: backgroundColor),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
@@ -1078,7 +1228,7 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: Color(0XFFE4F5F5)),
+                    color: backgroundColor),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
