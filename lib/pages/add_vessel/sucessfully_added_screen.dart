@@ -12,6 +12,7 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 
 import '../../common_widgets/widgets/log_level.dart';
+import '../bottom_navigation.dart';
 
 //Successfully added screen
 class SuccessfullyAddedScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(),
+                builder: (context) => BottomNavigation(),
               ),
               ModalRoute.withName("SuccessFullScreen"));
         }
@@ -109,7 +110,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => HomePage(),
+                      builder: (context) => BottomNavigation(),
                     ),
                     ModalRoute.withName(""));
               }
@@ -163,7 +164,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => HomePage(),
+                              builder: (context) => BottomNavigation(),
                             ),
                             ModalRoute.withName(""));
                       },

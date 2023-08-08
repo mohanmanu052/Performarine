@@ -91,6 +91,7 @@ dependencies:
   flutter_map: ^4.0.0
   latlong2: ^0.8.2
   flutter_xlider: ^3.5.0
+  animated_bottom_navigation_bar: ^1.2.0
 
 
 dependency_overrides:
@@ -165,3 +166,11 @@ flutter:
     - family: Inter
       fonts:
         - asset: assets/fonts/inter.ttf
+
+    - family: ReemKufiInk
+      fonts:
+        - asset: assets/fonts/ReemKufiInk-Regular.ttf
+
+    - family: Outfit
+      fonts:
+        - asset: assets/fonts/Outfit-VariableFont_wght.ttf

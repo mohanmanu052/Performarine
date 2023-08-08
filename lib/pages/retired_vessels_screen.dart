@@ -9,6 +9,7 @@ import 'package:performarine/services/database_service.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../common_widgets/widgets/user_feed_back.dart';
+import 'bottom_navigation.dart';
 import 'feedback_report.dart';
 
 class RetiredVesselsScreen extends StatefulWidget {
@@ -68,7 +69,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => BottomNavigation()),
                       ModalRoute.withName(""));
                 },
                 icon: Image.asset('assets/images/home.png'),

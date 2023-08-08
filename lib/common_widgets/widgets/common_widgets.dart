@@ -13,6 +13,7 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../pages/bottom_navigation.dart';
 import 'log_level.dart';
 
 //custom text widget
@@ -23,7 +24,8 @@ Widget commonText(
     Color? textColor,
     FontWeight? fontWeight,
     TextAlign? textAlign = TextAlign.center,
-    TextDecoration textDecoration = TextDecoration.none}) {
+    TextDecoration textDecoration = TextDecoration.none,String fontFamily = poppins
+    }) {
   return Text(
     text ?? '',
     textAlign: textAlign!,
@@ -31,7 +33,7 @@ Widget commonText(
     style: TextStyle(
         fontSize: textSize,
         color: textColor,
-        fontFamily: poppins,
+        fontFamily: fontFamily,
         fontWeight: fontWeight,
         decoration: textDecoration),
     overflow: TextOverflow.clip,
@@ -891,7 +893,7 @@ showDialogBox(BuildContext context, CreateVessel vesselData,
                                     Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => HomePage(),
+                                          builder: (context) => BottomNavigation(),
                                         ),
                                         ModalRoute.withName(""));
                                   });

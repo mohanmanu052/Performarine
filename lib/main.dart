@@ -21,7 +21,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
-import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/intro_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -354,7 +354,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 if(isUserLoggedIn)
                   {
                     sharedPreferences!.setBool('reset_dialog_opened', false);
-                    Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
+                    Get.to(BottomNavigation(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
                     CustomLogger().logWithFile(Level.info, "User navigating to home page -> $page ");
                   }
               }
@@ -452,7 +452,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         builder: EasyLoading.init(),
         getPages: [
           GetPage(name: '/', page: () => IntroScreen()),
-          GetPage(name: '/HomePage', page: () => HomePage()),
+          GetPage(name: '/BottomNavigation', page: () => BottomNavigation()),
         ],
       ),
     );

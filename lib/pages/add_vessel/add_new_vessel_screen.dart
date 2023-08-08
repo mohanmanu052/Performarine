@@ -14,6 +14,7 @@ import 'package:screenshot/screenshot.dart';
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
+import '../bottom_navigation.dart';
 import '../feedback_report.dart';
 
 //Add new vessel page
@@ -54,7 +55,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(),
+                builder: (context) => BottomNavigation(),
               ),
               ModalRoute.withName(""));
 
@@ -86,7 +87,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomePage(),
+                        builder: (context) => BottomNavigation(),
                       ),
                       ModalRoute.withName(""));
                 } else if (pageIndex == 1) {

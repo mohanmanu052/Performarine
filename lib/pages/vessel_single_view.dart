@@ -47,6 +47,7 @@ import 'package:uuid/uuid.dart';
 
 import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
+import 'bottom_navigation.dart';
 import 'feedback_report.dart';
 
 class VesselSingleView extends StatefulWidget {
@@ -260,7 +261,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(),
+                builder: (context) => BottomNavigation(),
               ),
               ModalRoute.withName(""));
 
@@ -304,7 +305,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomePage(),
+                        builder: (context) => BottomNavigation(),
                       ),
                       ModalRoute.withName(""));
                 } else {
@@ -323,7 +324,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                   onPressed: () {
                     Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
+                        MaterialPageRoute(builder: (context) => BottomNavigation()),
                         ModalRoute.withName(""));
                   },
                   icon: Image.asset('assets/images/home.png'),

@@ -27,6 +27,12 @@ const dividerColor = Color(0xFFDADADA);
 const checkColor = Color(0xFF41C1C8);
 const userFeedbackBtnColor = Color(0xFFDE6767);
 const reportsNewTabColor = Color(0xFFE4F5F5);
+const floatingBtnColor = Color(0xFFDB2667);
+const reportFilterBackColor = Color(0xFFF4F6F8);
+const reportDropdownColor = Color(0xFFE4E8F0);
+const reportTripsListBackColor = Color(0xFFFAFDFF);
+const reportTripsListColor = Color(0xFFF5FBF9);
 const blueColor = Color(0xFF2663DB);
 const uploadTripBtnColor = Color(0xFFE19C16);
 const routeMapBtnColor = Color(0xFF67C6C7);
+

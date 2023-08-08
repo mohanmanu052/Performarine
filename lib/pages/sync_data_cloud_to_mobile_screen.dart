@@ -22,6 +22,7 @@ import 'package:status_stepper/status_stepper.dart';
 
 import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
+import 'bottom_navigation.dart';
 import 'feedback_report.dart';
 
 class SyncDataCloudToMobileScreen extends StatefulWidget {
@@ -172,7 +173,7 @@ class _SyncDataCloudToMobileScreenState
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => HomePage()),
+                                          builder: (context) => BottomNavigation()),
                                       ModalRoute.withName(""));
                                 }),
                           )
@@ -201,7 +202,7 @@ class _SyncDataCloudToMobileScreenState
                                         Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) => HomePage()),
+                                                builder: (context) => BottomNavigation()),
                                             ModalRoute.withName(""));
                                       }),
                                 ),
@@ -572,7 +573,7 @@ class _SyncDataCloudToMobileScreenState
 
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => HomePage()),
+                MaterialPageRoute(builder: (context) => BottomNavigation()),
                 ModalRoute.withName(""));
           });
         }

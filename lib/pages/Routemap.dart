@@ -4,6 +4,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../common_widgets/utils/urls.dart';
 import '../common_widgets/utils/utils.dart';
+import 'bottom_navigation.dart';
 
 class RouteMap extends StatefulWidget {
   String? tripID;
@@ -41,7 +42,7 @@ class _RouteMapState extends State<RouteMap> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(builder: (context) => BottomNavigation()),
                     ModalRoute.withName(""));
               },
               icon: Image.asset('assets/images/home.png'),

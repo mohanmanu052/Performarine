@@ -16,6 +16,7 @@ import '../../main.dart';
 import '../../models/trip.dart';
 import '../../models/vessel.dart';
 import '../../services/database_service.dart';
+import '../bottom_navigation.dart';
 import '../feedback_report.dart';
 
 class TripRecordingAnalyticsScreen extends StatefulWidget {
@@ -313,7 +314,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
                                 Navigator.pushAndRemoveUntil(
                                     context,
-                                    MaterialPageRoute(builder: (context) => HomePage()),
+                                    MaterialPageRoute(builder: (context) => BottomNavigation()),
                                     ModalRoute.withName(""));
                               }
                             });
@@ -450,7 +451,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
             Navigator.pushAndRemoveUntil(
                 widget.context!,
                 MaterialPageRoute(
-                  builder: (context) => HomePage(),
+                  builder: (context) => BottomNavigation(),
                 ),
                 ModalRoute.withName(""));
           }

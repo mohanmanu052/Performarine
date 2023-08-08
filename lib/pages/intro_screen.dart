@@ -26,6 +26,7 @@ import 'package:uni_links/uni_links.dart';
 
 import '../common_widgets/utils/constants.dart';
 import '../common_widgets/widgets/log_level.dart';
+import 'bottom_navigation.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({Key? key}) : super(key: key);
@@ -266,7 +267,7 @@ class _IntroScreenState extends State<IntroScreen> {
         } else {
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => HomePage(isAppKilled:  true)),
+              MaterialPageRoute(builder: (context) => BottomNavigation(isAppKilled:  true)),
               ModalRoute.withName(""));
         }
       } else {
@@ -294,13 +295,13 @@ class _IntroScreenState extends State<IntroScreen> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (context) => HomePage(tripData: tripData ?? [], isAppKilled:  true,)),
+                  builder: (context) => BottomNavigation(tripData: tripData ?? [], isAppKilled:  true,)),
               ModalRoute.withName(""));
         } else if (!isCalledFromNoti) {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (context) => HomePage(tripData: tripData ?? [], isAppKilled:  true)),
+                  builder: (context) => BottomNavigation(tripData: tripData ?? [], isAppKilled:  true)),
               ModalRoute.withName(""));
         } else {
           Navigator.pushAndRemoveUntil(
@@ -323,7 +324,7 @@ class _IntroScreenState extends State<IntroScreen> {
       } else if (isUserLoggedIn) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomePage(isAppKilled:  true)),
+            MaterialPageRoute(builder: (context) => BottomNavigation(isAppKilled:  true)),
             ModalRoute.withName(""));
       } else {
         Navigator.pushAndRemoveUntil(
@@ -392,7 +393,7 @@ class _IntroScreenState extends State<IntroScreen> {
               if(isUserLoggedIn)
               {
                 sharedPreferences!.setBool('reset_dialog_opened', false);
-                Get.to(HomePage(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
+                Get.to(BottomNavigation(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
 
               }
             }
@@ -441,7 +442,7 @@ class _IntroScreenState extends State<IntroScreen> {
               if(isUserLoggedIn)
               {
                 sharedPreferences!.setBool('reset_dialog_opened', false);
-                Get.to(HomePage(isComingFromReset: true,token: uri.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
+                Get.to(BottomNavigation(isComingFromReset: true,token: uri.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
 
               }
             }

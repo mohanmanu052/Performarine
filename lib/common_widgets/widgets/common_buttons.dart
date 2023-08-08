@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/dash_rect.dart';
 
@@ -122,7 +123,7 @@ class CommonButtons {
     double textSize,
     Color buttonPrimaryColor,
     String orgId, {
-    FontWeight fontWeight = FontWeight.bold,
+    FontWeight fontWeight = FontWeight.bold,String fontFamily = outfit
   }) {
     if (width == null) {
       width = displayWidth(context) * 0.45;
@@ -149,7 +150,8 @@ class CommonButtons {
               context: context,
               textSize: textSize,
               textColor: textColor,
-              fontWeight: fontWeight)),
+              fontWeight: fontWeight,fontFamily: fontFamily
+          )),
     );
   }
 
