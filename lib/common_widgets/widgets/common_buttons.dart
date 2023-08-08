@@ -110,6 +110,34 @@ class CommonButtons {
     );
   }
 
+  //Upload Vessel Image along with dots
+  static Widget uploadVesselImage(String title, BuildContext context,
+      Function() onTap, Color primaryTextColor,
+      [double? height]) {
+    if (height == null) {
+      height = displayHeight(context) * 0.22;
+    }
+
+    return Center(
+      child: Container(
+        height: height,
+        width: displayWidth(context) * 0.85,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Color(0xFFECF3F9),
+        ),
+        child: DashedRectToUploadImage(
+          color: primaryTextColor,
+          strokeWidth: 1.5,
+          gap: 5.0,
+          onTap: onTap,
+          title: title,
+          primaryTextColor: primaryTextColor,
+        ),
+      ),
+    );
+  }
+
   //custom button with id
   static Widget getAcceptButton(
     String? title,
