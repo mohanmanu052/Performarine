@@ -51,9 +51,9 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
     commonProvider = context.watch<CommonProvider>();
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: commonBackgroundColor,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: commonBackgroundColor,
+        backgroundColor: backgroundColor,
         elevation: 0,
         leading: IconButton(
           onPressed: () async {
@@ -91,7 +91,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
               decoration: BoxDecoration(
                   color: currentTabIndex == 0
                       ? Color(0xff2663DB)
-                      : commonBackgroundColor,
+                      : backgroundColor,
                   border: Border.all(color: Color(0xff2663DB)),
                   borderRadius: BorderRadius.all(
                       Radius.circular(10))),
@@ -103,7 +103,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                   fontWeight: FontWeight.w400,
                   textColor:
                   currentTabIndex == 0 ? Colors.white : Colors.black,
-                  textSize: displayWidth(context) * 0.036,
+                  textSize: displayWidth(context) * 0.034,
                 ),
                 // Text('Vessels'),
               ),
@@ -114,7 +114,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
               decoration: BoxDecoration(
                   color: currentTabIndex == 1
                       ? Color(0xff2663DB)
-                      : commonBackgroundColor,
+                      : backgroundColor,
                   border: Border.all(color: Color(0xff2663DB)),
                   borderRadius: BorderRadius.all(
                       Radius.circular(10))),
@@ -127,7 +127,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                   fontWeight: FontWeight.w400,
                   textColor:
                   currentTabIndex == 1 ? Colors.white : Colors.black,
-                  textSize: displayWidth(context) * 0.036,
+                  textSize: displayWidth(context) * 0.034,
                 ),
               ),
             ),
