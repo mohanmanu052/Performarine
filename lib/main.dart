@@ -20,6 +20,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/intro_screen.dart';
@@ -285,7 +286,13 @@ Future<void> initializeService() async {
 
       if(isAppKilledFromBGMain)
         {
-          Get.to(TripAnalyticsScreen(
+          /*Get.to(TripAnalyticsScreen(
+              tripId: tripData![0],
+              vesselId: tripData[1],
+              isAppKilled: false,
+              tripIsRunningOrNot: isTripStarted));*/
+
+          Get.to(NewTripAnalyticsScreen(
               tripId: tripData![0],
               vesselId: tripData[1],
               isAppKilled: false,
@@ -293,7 +300,13 @@ Future<void> initializeService() async {
         }
       else
         {
-          Get.to(TripAnalyticsScreen(
+          /*Get.to(TripAnalyticsScreen(
+              tripId: tripData![0],
+              vesselId: tripData[1],
+              isAppKilled: true,
+              tripIsRunningOrNot: isTripStarted));*/
+
+          Get.to(NewTripAnalyticsScreen(
               tripId: tripData![0],
               vesselId: tripData[1],
               isAppKilled: true,
@@ -522,7 +535,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
                   if(isAppKilledFromBGMain)
                     {
-                      Get.to(TripAnalyticsScreen(
+                      Get.to(NewTripAnalyticsScreen(
                         tripId: tripData![0],
                         vesselId: tripData[1],
                         isAppKilled: false,
@@ -531,7 +544,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     }
                   else
                     {
-                      Get.to(TripAnalyticsScreen(
+                      Get.to(NewTripAnalyticsScreen(
                           tripId: tripData![0],
                           vesselId: tripData[1],
                           isAppKilled: true,

@@ -19,6 +19,7 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
@@ -97,7 +98,7 @@ class _TripWidgetState extends State<TripWidget> {
             .getVesselNameByID(widget.tripList!.vesselId.toString());
 
         if (!isTripUploaded) {
-          var result = await Navigator.push(
+          /*var result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => TripAnalyticsScreen(
@@ -106,6 +107,19 @@ class _TripWidgetState extends State<TripWidget> {
                 tripIsRunningOrNot:
                     widget.tripList!.tripStatus == 0 ? true : false,
                 calledFrom: widget.calledFrom,
+              ),
+            ),
+          );*/
+
+          var result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NewTripAnalyticsScreen(
+                tripId: widget.tripList!.id,
+                vesselId: getVesselById[0].id,
+                tripIsRunningOrNot: widget.tripList!.tripStatus == 0 ? true : false,
+                calledFrom: widget.calledFrom,
+                vessel: getVesselById[0],
               ),
             ),
           );
@@ -265,7 +279,7 @@ class _TripWidgetState extends State<TripWidget> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  TripAnalyticsScreen(
+                                                  NewTripAnalyticsScreen(
                                                       tripId:
                                                           widget.tripList!.id,
                                                       vesselId:
@@ -390,7 +404,7 @@ class _TripWidgetState extends State<TripWidget> {
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) =>
-                                                        TripAnalyticsScreen(
+                                                        NewTripAnalyticsScreen(
                                                             tripId: widget
                                                                 .tripList!.id,
                                                             vesselId:

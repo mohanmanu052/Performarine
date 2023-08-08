@@ -47,6 +47,7 @@ import 'package:uuid/uuid.dart';
 
 import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
+import '../new_trip_analytics_screen.dart';
 import 'bottom_navigation.dart';
 import 'feedback_report.dart';
 
@@ -2664,7 +2665,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         var result = Navigator.pushReplacement(
           scaffoldKey.currentContext!,
           MaterialPageRoute(
-              builder: (context) => TripAnalyticsScreen(
+              builder: (context) => NewTripAnalyticsScreen(
                 tripId: tripDetails.id,
                 vesselId: widget.vessel!.id,
                 tripIsRunningOrNot: tripIsRunning,
@@ -2958,7 +2959,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
+                                          MaterialPageRoute(builder: (context) => NewTripAnalyticsScreen(
                                               tripId: tripId,
                                               vesselId: tripData![1],
                                               tripIsRunningOrNot: runningTrip)),
