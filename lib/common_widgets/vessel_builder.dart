@@ -8,10 +8,11 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/single_vessel_card.dart';
 import 'package:screenshot/screenshot.dart';
+
+import '../pages/add_vessel_new/add_new_vessel_screen.dart';
 
 //To show all vessels in home page
 class VesselBuilder extends StatefulWidget {
@@ -127,7 +128,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const AddNewVesselScreen()),
+                              builder: (context) =>  AddNewVesselPage()),
                         );
                       }),
                 ),

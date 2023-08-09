@@ -28,7 +28,7 @@ class CommonButtons {
                 Size(width, displayHeight(context!) * 0.065)),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 side: BorderSide(color: borderColor!),
-                borderRadius: BorderRadius.circular(5.0)))),
+                borderRadius: BorderRadius.circular(10.0)))),
         child: Center(
           child: RichText(
             text: TextSpan(
@@ -44,7 +44,7 @@ class CommonButtons {
                         context: context,
                         textSize: fontSize,
                         textColor: textColor,
-                        fontWeight: FontWeight.w500),
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
               ],
@@ -102,6 +102,34 @@ class CommonButtons {
           color: Colors.white,
         ),
         child: DashedRect(
+          color: primaryTextColor,
+          strokeWidth: 1.5,
+          gap: 5.0,
+          onTap: onTap,
+          title: title,
+          primaryTextColor: primaryTextColor,
+        ),
+      ),
+    );
+  }
+
+  //Upload Vessel Image along with dots
+  static Widget uploadVesselImage(String title, BuildContext context,
+      Function() onTap, Color primaryTextColor,
+      [double? height]) {
+    if (height == null) {
+      height = displayHeight(context) * 0.22;
+    }
+
+    return Center(
+      child: Container(
+        height: height,
+        width: displayWidth(context) * 0.85,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Color(0xFFECF3F9),
+        ),
+        child: DashedRectToUploadImage(
           color: primaryTextColor,
           strokeWidth: 1.5,
           gap: 5.0,

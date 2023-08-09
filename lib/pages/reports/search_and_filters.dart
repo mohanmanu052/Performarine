@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -1741,7 +1742,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       Utils.customPrint("tapped on go to report button");
                       CustomLogger().logWithFile(Level.info, "Navigating user into Trip Analytics Screen -> $page");
 
-                      Navigator.push(
+                      /*Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => TripAnalyticsScreen(
@@ -1752,7 +1753,20 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                     tripIsRunningOrNot: false,
                                     calledFrom: 'Report',
                                     // vessel: getVesselById[0]
-                                  )));
+                                  )));*/
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewTripAnalyticsScreen(
+                                tripId: selectedIndex,
+                                vesselName: selectedVesselName,
+                                // avgInfo: reportModel!.data!.avgInfo,
+                                vesselId: selectedVessel,
+                                tripIsRunningOrNot: false,
+                                calledFrom: 'Report',
+                                // vessel: getVesselById[0]
+                              )));
                     },
                     child: Text('Go to Trip Report',
                         style: TextStyle(
@@ -1891,7 +1905,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TripAnalyticsScreen(
+                          builder: (context) => NewTripAnalyticsScreen(
                                 tripId: selectedIndex,
                                 vesselName: selectedVesselName,
                                 // avgInfo: reportModel!.data!.avgInfo,
@@ -2030,7 +2044,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TripAnalyticsScreen(
+                          builder: (context) => NewTripAnalyticsScreen(
                                 tripId: selectedIndex,
                                 vesselName: selectedVesselName,
                                 vesselId: selectedVessel,
@@ -2165,7 +2179,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TripAnalyticsScreen(
+                          builder: (context) => NewTripAnalyticsScreen(
                                 tripId: selectedIndex,
                                 vesselName: selectedVesselName,
                                 vesselId: selectedVessel,

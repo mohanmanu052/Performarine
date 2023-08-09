@@ -1193,13 +1193,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                                         Navigator.of(dialogContext).pop();
 
-                                        Navigator.push(
+                                        /*Navigator.push(
                                           dialogContext,
                                           MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
                                               tripId: tripId,
                                               vesselId: tripData![1],
                                               tripIsRunningOrNot: runningTrip)),
-                                        );
+                                        );*/
+                                            Navigator.push(
+                                              dialogContext,
+                                              MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                                  tripId: tripId,
+                                                  vesselId: tripData![1],
+                                                  tripIsRunningOrNot: runningTrip)),
+                                            );
 
                                         Utils.customPrint("Click on GO TO TRIP 3");
                                             CustomLogger().logWithFile(Level.info, "Click on go to trip 3-> $page");

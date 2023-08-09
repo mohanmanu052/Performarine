@@ -35,4 +35,5 @@ const reportTripsListColor = Color(0xFFF5FBF9);
 const blueColor = Color(0xFF2663DB);
 const uploadTripBtnColor = Color(0xFFE19C16);
 const routeMapBtnColor = Color(0xFF67C6C7);
+const endTripBtnColor = Color(0xFFF9759D);
 

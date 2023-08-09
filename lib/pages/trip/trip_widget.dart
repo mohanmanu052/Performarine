@@ -111,7 +111,7 @@ class _TripWidgetState extends State<TripWidget> {
             ),
           );*/
 
-          var result = await Navigator.push(
+          /*var result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => NewTripAnalyticsScreen(
@@ -131,7 +131,7 @@ class _TripWidgetState extends State<TripWidget> {
                 widget.onTripEnded!.call();
               }
             }
-          }
+          }*/
         }
       },
       child: Container(

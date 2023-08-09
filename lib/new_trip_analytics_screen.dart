@@ -11,7 +11,6 @@ import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:wakelock/wakelock.dart';
 
 import 'common_widgets/utils/common_size_helper.dart';
 import 'common_widgets/utils/utils.dart';
@@ -94,53 +93,12 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     sharedPreferences!.remove('sp_key_called_from_noti');
 
     setState(() {
-      tripIsRunning = widget.tripIsRunningOrNot!;
       getData();
     });
-
-    if (tripIsRunning) {
-      getRealTimeTripDetails();
-      Wakelock.enable();
-    }
 
     Utils.customPrint('CURRENT TIME TIME ${tripDuration}');
     //Utils.customPrint('CURRENT TIME TIME ${tripData!.time}');
 
-  }
-
-  getRealTimeTripDetails() async {
-    if (mounted) {
-      setState(() {
-        getTripDetailsFromNoti = true;
-      });
-    }
-
-    final currentTrip = await _databaseService.getTrip(widget.tripId!);
-
-    DateTime createdAtTime = DateTime.parse(currentTrip.createdAt!);
-
-    WidgetsFlutterBinding.ensureInitialized();
-
-    await sharedPreferences!.reload();
-
-    durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      Utils.customPrint('##TDATA updated time delay from 1 sec to 400 MS by abhi');
-      tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
-      /*tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
-      tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";*/
-
-      /*Utils.customPrint("TRIP ANALYTICS SPEED $tripSpeed");
-      Utils.customPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
-*/
-      var durationTime = DateTime.now().toUtc().difference(createdAtTime);
-      tripDuration = Utils.calculateTripDuration(
-          ((durationTime.inMilliseconds) ~/ 1000).toInt());
-
-      if (mounted)
-        setState(() {
-          getTripDetailsFromNoti = false;
-        });
-    });
   }
 
   @override
@@ -687,9 +645,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
                                      commonText(
                                        context: context,
-                                       text: tripIsRunning
-                                           ? '$tripDuration'
-                                           : '${tripData!.time} ',
+                                       text: '${tripData!.time} ',
                                        fontWeight: FontWeight.w700,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.044,
@@ -785,9 +741,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
                                      commonText(
                                        context: context,
-                                       text: tripIsRunning
-                                           ? '${(tripDistance)}'
-                                           : '${tripData!.distance} ',
+                                       text: '${tripData!.distance} ',
                                        fontWeight: FontWeight.w700,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.044,

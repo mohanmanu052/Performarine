@@ -48,6 +48,7 @@ import 'package:uuid/uuid.dart';
 import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
 import '../new_trip_analytics_screen.dart';
+import 'add_vessel_new/add_new_vessel_screen.dart';
 import 'bottom_navigation.dart';
 import 'feedback_report.dart';
 
@@ -237,7 +238,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     setState(() {
       tripIsRunning = result;
-      Utils.customPrint('Trip is Running $tripIsRunning');
+      Utils.customPrint('Trip is Running VESSEL VESSEL $tripIsRunning');
 
       if (tripIsRunning) {
         getRunningTripDetails();
@@ -353,7 +354,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 (value) async {
                               var result = await Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => AddNewVesselScreen(
+                                  builder: (_) => AddNewVesselPage(
                                     isEdit: true,
                                     createVessel: widget.vessel,
                                   ),
@@ -942,13 +943,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           valueColor: AlwaysStoppedAnimation<Color>(
                               circularProgressColor),
                         ))
-                        : CommonButtons.getActionButton(
+                        : CommonButtons.getRichTextActionButton(
+                        icon: Image.asset('assets/icons/end_btn.png',
+                          height: displayHeight(context) * 0.055,
+                          width: displayWidth(context) * 0.12,
+                        ),
                         title: 'End Trip',
                         context: context,
                         fontSize: displayWidth(context) * 0.042,
                         textColor: Colors.white,
-                        buttonPrimaryColor: buttonBGColor,
-                        borderColor: buttonBGColor,
+                        buttonPrimaryColor: endTripBtnColor,
+                        borderColor: endTripBtnColor,
                         width: displayWidth(context),
                         onTap: () async {
 

@@ -14,7 +14,8 @@ import '../bottom_navigation.dart';
 class TripRecordingScreen extends StatefulWidget {
   final String? vesselId, tripId;
   final bool? tripIsRunningOrNot;
-  const TripRecordingScreen({super.key, this.tripId, this.vesselId, this.tripIsRunningOrNot});
+  final bool isAppKilled;
+  const TripRecordingScreen({super.key, this.tripId, this.vesselId, this.tripIsRunningOrNot, this.isAppKilled = false,});
 
   @override
   State<TripRecordingScreen> createState() => _TripRecordingScreenState();
@@ -156,8 +157,19 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
       body: TabBarView(
         controller: tabController,
         children: [
-          MapScreen(scaffoldKey: scaffoldKey, tripId: widget.tripId, vesselId: widget.vesselId, tripIsRunningOrNot: widget.tripIsRunningOrNot, context: context,),
-          TripRecordingAnalyticsScreen(scaffoldKey: scaffoldKey, tripId: widget.tripId, vesselId: widget.vesselId, tripIsRunningOrNot: widget.tripIsRunningOrNot, context: context),
+          MapScreen(
+            scaffoldKey: scaffoldKey,
+            tripId: widget.tripId,
+            vesselId: widget.vesselId,
+            tripIsRunningOrNot: widget.tripIsRunningOrNot,
+            context: context, isAppKilled: widget.isAppKilled),
+          TripRecordingAnalyticsScreen(
+              scaffoldKey: scaffoldKey,
+              tripId: widget.tripId,
+              vesselId: widget.vesselId,
+              tripIsRunningOrNot: widget.tripIsRunningOrNot,
+              context: context,
+              isAppKilled: widget.isAppKilled),
         ],
       ),
     );

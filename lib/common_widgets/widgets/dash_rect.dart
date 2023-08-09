@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'dart:math' as math;
 
@@ -45,6 +46,64 @@ class DashedRect extends StatelessWidget {
                   : Colors.black,
               fontWeight: FontWeight.w500,
             )),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//To show dashed rectangle
+class DashedRectToUploadImage extends StatelessWidget {
+  final Color? color;
+  final double? strokeWidth;
+  final double? gap;
+  final Function()? onTap;
+  final String? title;
+  final Color? backgroundColor, primaryTextColor;
+
+  DashedRectToUploadImage(
+      {this.color = Colors.black,
+        this.strokeWidth = 1.0,
+        this.gap = 5.0,
+        this.onTap,
+        this.title,
+        this.primaryTextColor,
+        this.backgroundColor});
+
+  @override
+  Widget build(
+      BuildContext context,
+      ) {
+    return Container(
+      color: backgroundColor,
+      child: Padding(
+        padding: EdgeInsets.all(strokeWidth! / 1),
+        child: CustomPaint(
+          painter: DashRectPainter(
+              color: color!, strokeWidth: strokeWidth!, gap: gap!),
+          child: MaterialButton(
+            onPressed: onTap,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/images/upload_image.png',
+                    height: displayHeight(context) * 0.059,
+                    width: displayWidth(context) * 0.18,
+                  ),
+                  commonText(
+                    text: title!,
+                    context: context,
+                    textSize: displayWidth(context) * 0.03,
+                    textColor: Theme.of(context).brightness == Brightness.dark
+                        ? primaryTextColor!
+                        : blueColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
