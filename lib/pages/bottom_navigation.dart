@@ -2,6 +2,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/pages/dashboard/dashboard.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/reports_module/reports.dart';
 import 'package:performarine/pages/start_trip/start_trip_recording_screen.dart';
@@ -10,6 +11,7 @@ import '../common_widgets/utils/colors.dart';
 import '../common_widgets/utils/common_size_helper.dart';
 import '../common_widgets/widgets/common_widgets.dart';
 import 'custom_drawer.dart';
+import 'package:performarine/pages/trips/Trips.dart';
 
 class BottomNavigation extends StatefulWidget {
   List<String> tripData;
@@ -52,9 +54,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     var screensList = [
-      HomePage(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: widget.isComingFromReset,isAppKilled: widget.isAppKilled,token: widget.token),
+      Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: widget.isComingFromReset,isAppKilled: widget.isAppKilled,token: widget.token),
       ReportsModule(),
-      HomePage(),
+      Trips(),
       HomePage(),
       StartTripRecordingScreen(),
     ];
