@@ -661,6 +661,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                       child: Column(
+
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -669,7 +670,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                 child: commonText(
                                     context: context,
                                     text: '${widget.vessel!.name}',
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w700,
                                     textColor: Colors.black87,
                                     textSize: displayWidth(context) * 0.045,
                                     textAlign: TextAlign.start),

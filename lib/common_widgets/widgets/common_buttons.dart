@@ -37,12 +37,15 @@ class CommonButtons {
                   child: Container(child: icon),
                 ),
                 WidgetSpan(
-                  child: commonText(
-                      text: title,
-                      context: context,
-                      textSize: fontSize,
-                      textColor: textColor,
-                      fontWeight: FontWeight.w500),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10.0, bottom: 10, left: 6),
+                    child: commonText(
+                        text: title,
+                        context: context,
+                        textSize: fontSize,
+                        textColor: textColor,
+                        fontWeight: FontWeight.w500),
+                  ),
                 ),
               ],
             ),

@@ -53,17 +53,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
   CreateVessel? vesselData;
   Trip? tripData;
 
- List<AnalyticsData> analyticsData = [
-   AnalyticsData(title:'Date of journey', value: '14-Jul' , type: '2023'),
-   AnalyticsData(title:'Total Time', value: '2:32:12' , type: 'hh🇸🇸 :ss'),
-   AnalyticsData(title:'Trip Cost', value: '37 \$' , type: 'CAD'),
-   AnalyticsData(title:'Total Fuel Used', value: '18.25' , type: 'Ltr'),
-   AnalyticsData(title:'Distance', value: '32.36' , type: 'Nautical Miles'),
-   AnalyticsData(title:'People On Board', value: '3' , type: 'People'),
-   AnalyticsData(title:'Total CO2 Emissions', value: '6.23' , type: 'kg'),
-   AnalyticsData(title:'Savings if hybrid', value: '27\$' , type: 'CAD'),
- ];
-
   String tripDistance = '0.00', tripDuration = '00:00:00', dateOfJourney = '', yearOfTheJourney = '';
 
   String? finalTripDuration, finalTripDistance, finalAvgSpeed;

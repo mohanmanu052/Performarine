@@ -628,7 +628,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                                 textAlign: TextAlign.start),
                                                             commonText(
                                                                 context: context,
-                                                                text: 'Capacity',
+                                                                text: 'Capacity' ,
                                                                 fontWeight: FontWeight.w500,
                                                                 textColor: Colors.grey,
                                                                 textSize:
@@ -1012,13 +1012,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
 
                         })
-                        : CommonButtons.getActionButton(
+                        : CommonButtons.getRichTextActionButton(
+                          icon: Image.asset('assets/icons/start_btn.png',
+                            height: displayHeight(context) * 0.055,
+                            width: displayWidth(context) * 0.12,
+                          ),
                         title: 'Start Trip',
                         context: context,
                         fontSize: displayWidth(context) * 0.042,
                         textColor: Colors.white,
-                        buttonPrimaryColor: buttonBGColor,
-                        borderColor: buttonBGColor,
+                        buttonPrimaryColor: blueColor,
+                        borderColor: blueColor,
                         width: displayWidth(context),
                         onTap: () async {
                           bool? isTripStarted =
