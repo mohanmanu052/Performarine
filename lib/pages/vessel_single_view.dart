@@ -47,6 +47,7 @@ import 'package:uuid/uuid.dart';
 
 import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
+import 'add_vessel_new/add_new_vessel_screen.dart';
 import 'bottom_navigation.dart';
 import 'feedback_report.dart';
 
@@ -352,7 +353,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 (value) async {
                               var result = await Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => AddNewVesselScreen(
+                                  builder: (_) => AddNewVesselPage(
                                     isEdit: true,
                                     createVessel: widget.vessel,
                                   ),
