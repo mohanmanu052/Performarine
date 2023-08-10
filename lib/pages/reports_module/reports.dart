@@ -754,7 +754,7 @@ class _ReportsModuleState extends State<ReportsModule> {
       child: Scaffold(
         backgroundColor: commonBackgroundColor,
         key: scaffoldKey,
-        appBar: AppBar(
+        /*appBar: AppBar(
           backgroundColor: commonBackgroundColor,
           elevation: 0,
           leading: InkWell(
@@ -795,7 +795,7 @@ class _ReportsModuleState extends State<ReportsModule> {
               ),
             ),
           ],
-        ),
+        ),*/
         body: SingleChildScrollView(
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
@@ -1188,7 +1188,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                   CommonButtons.getAcceptButton(
                                     "Generate Report",
                                     context,
-                                    primaryColor,
+                                    blueColor,
                                     () {
                                       if (_formKey.currentState!.validate()) {
                                         setState(() {
@@ -1319,7 +1319,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                         ? Colors.white
                                         : Colors.white,
                                     displayHeight(context) * 0.022,
-                                    Color(0xff2663DB),
+                                    blueColor,
                                     '',
                                   ),
                                   !isSHowGraph!

@@ -318,7 +318,7 @@ class _TripViewListingState extends State<TripViewListing> {
                   width: MediaQuery.of(ctx).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                        left: 15.0, right: 15.0, top: 15, bottom: 15),
                     child: Stack(
                       children: [
                         Column(
@@ -335,7 +335,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                   //color: Color(0xfff2fffb),
                                   child: Image.asset(
                                     'assets/images/boat.gif',
-                                    height: displayHeight(ctx) * 0.1,
+                                    height: displayHeight(ctx) * 0.12,
                                     width: displayWidth(ctx),
                                     fit: BoxFit.contain,
                                   ),
@@ -346,102 +346,29 @@ class _TripViewListingState extends State<TripViewListing> {
                             ),
 
                             Padding(
-                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              padding: const EdgeInsets.only(left: 10.0, right: 10),
                               child: Column(
                                 children: [
                                   Center(
                                     child: commonText(
                                         context: context,
                                         text:
-                                        'Do you want to delete the Trip? This action can"t be irreversible.',
-                                        fontWeight: FontWeight.w500,
+                                        'Do you want to delete the Trip? ',
+                                        fontWeight: FontWeight.w600,
                                         textColor: Colors.black,
                                         textSize: displayWidth(ctx) * 0.04,
                                         textAlign: TextAlign.center),
                                   ),
-                                ],
-                              ),
-                            ),
-
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: displayHeight(ctx) * 0.06,
-                                right: displayHeight(ctx) * 0.01,
-                              ),
-                              child: Row(
-                                children: [
+                                  SizedBox(
+                                    height: displayHeight(ctx) * 0.005,
+                                  ),
                                   commonText(
                                       context: context,
                                       text:
-                                      'Start Date:   ',
+                                      'This action is irreversible. do you want to delete it?',
                                       fontWeight: FontWeight.w500,
-                                      textColor: Colors.black,
-                                      textSize: displayWidth(ctx) * 0.025,
-                                      textAlign: TextAlign.center),
-
-                                  commonText(
-                                      context: context,
-                                      text:
-                                      startDate,
-                                      fontWeight: FontWeight.w500,
-                                      textColor: Colors.black,
-                                      textSize: displayWidth(ctx) * 0.025,
-                                      textAlign: TextAlign.center),
-                                ],
-                              ),
-                            ),
-
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: displayHeight(ctx) * 0.06,
-                                right: displayHeight(ctx) * 0.01,
-                              ),
-                              child: Row(
-                                children: [
-                                  commonText(
-                                      context: context,
-                                      text:
-                                      'Total Time:   ',
-                                      fontWeight: FontWeight.w500,
-                                      textColor: Colors.black,
-                                      textSize: displayWidth(ctx) * 0.025,
-                                      textAlign: TextAlign.center),
-
-                                  commonText(
-                                      context: context,
-                                      text:
-                                      totalTime,
-                                      fontWeight: FontWeight.w500,
-                                      textColor: Colors.black,
-                                      textSize: displayWidth(ctx) * 0.025,
-                                      textAlign: TextAlign.center),
-                                ],
-                              ),
-                            ),
-
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: displayHeight(ctx) * 0.06,
-                                right: displayHeight(ctx) * 0.01,
-                              ),
-                              child: Row(
-                                children: [
-                                  commonText(
-                                      context: context,
-                                      text:
-                                      'Distance:   ',
-                                      fontWeight: FontWeight.w500,
-                                      textColor: Colors.black,
-                                      textSize: displayWidth(ctx) * 0.025,
-                                      textAlign: TextAlign.center),
-
-                                  commonText(
-                                      context: context,
-                                      text:
-                                      distance,
-                                      fontWeight: FontWeight.w500,
-                                      textColor: Colors.black,
-                                      textSize: displayWidth(ctx) * 0.025,
+                                      textColor: Colors.grey,
+                                      textSize: displayWidth(ctx) * 0.035,
                                       textAlign: TextAlign.center),
                                 ],
                               ),
@@ -450,31 +377,9 @@ class _TripViewListingState extends State<TripViewListing> {
                               margin: EdgeInsets.only(
                                 top: 8.0,left: displayWidth(ctx) * 0.035,right: displayWidth(ctx) * 0.035
                               ),
-                              child: Row(
+                              child: Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  CommonButtons.getAcceptButton(
-                                      'Cancel',
-                                      context,
-                                      Colors.grey,
-                                          (){
-                                        Navigator.pop(dialogContext);
-                                      },
-                                      displayWidth(ctx) * 0.32,
-                                      displayHeight(ctx) * 0.05,
-                                      primaryColor,
-                                      Theme.of(ctx).brightness ==
-                                          Brightness.dark
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      displayHeight(ctx) * 0.015,
-                                      Colors.transparent,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-
-                                  // SizedBox(
-                                  //   width: displayWidth(ctx) * 0.02,
-                                  // ),
 
                                   isBtnClick ? Center(
                                     child: Container(
@@ -482,7 +387,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                       child: Center(child: CircularProgressIndicator()),
                                     ),
                                   ) :  CommonButtons.getAcceptButton(
-                                      'Delete Trip', context, buttonBGColor,
+                                      'Delete Trip', context, endTripBtnColor,
                                           () async {
                                         internalStateSetter = stateSetter;
                                         bool internet =
@@ -529,14 +434,33 @@ class _TripViewListingState extends State<TripViewListing> {
                                           });
                                         }
                                       },
-                                      displayWidth(ctx) * 0.32,
+                                      displayWidth(ctx) ,
                                       displayHeight(ctx) * 0.05,
-                                      primaryColor,
+                                      endTripBtnColor,
                                       Colors.white,
-                                      displayHeight(ctx) * 0.018,
+                                      displayHeight(ctx) * 0.02,
                                       buttonBGColor,
                                       '',
-                                      fontWeight: FontWeight.w500),
+                                      fontWeight: FontWeight.w700),
+
+                                  CommonButtons.getAcceptButton(
+                                      'Cancel',
+                                      context,
+                                      Colors.transparent,
+                                          (){
+                                        Navigator.pop(dialogContext);
+                                      },
+                                      displayWidth(ctx) ,
+                                      displayHeight(ctx) * 0.05,
+                                      primaryColor,
+                                      Theme.of(ctx).brightness ==
+                                          Brightness.dark
+                                          ? Colors.white
+                                          : Colors.grey,
+                                      displayHeight(ctx) * 0.02,
+                                      Colors.transparent,
+                                      '',
+                                      fontWeight: FontWeight.w700),
                                 ],
                               ),
                             ),

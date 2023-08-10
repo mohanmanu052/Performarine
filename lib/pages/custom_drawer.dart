@@ -87,8 +87,40 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                   Container(
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Expanded(
+
+                        Image.asset('assets/images/home.png', height: displayHeight(context) * 0.04,),
+
+                        SizedBox(width: displayWidth(context) * 0.015,),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            commonText(
+                                context: context,
+                                text: 'Username',
+                                fontWeight: FontWeight.w700,
+                                textSize: textSize,
+                                textAlign: TextAlign.start),
+                            SizedBox(height: displayHeight(context) * 0.005,),
+                            Flexible(
+                              child: Text(
+                                "${commonProvider.loginModel!.userEmail} !",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: displayWidth(context) * 0.03,
+                                  fontFamily: poppins,
+                                ),
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.clip,
+                                softWrap: true,
+                              ),
+                            ),
+                          ],
+                        )
+                       /* Expanded(
                           child: RichText(
                             text: TextSpan(
                                 text: "Hey ",
@@ -114,7 +146,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   )
                                 ]),
                           ),
-                        ),
+                        ),*/
                       ],
                     ),
                   ),
@@ -124,6 +156,30 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      InkWell(
+                        onTap: () {
+                          CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
+                          Navigator.of(context).pop();
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BottomNavigation(),
+                              ),
+                              ModalRoute.withName(""));
+
+
+                        },
+                        child: commonText(
+                            context: context,
+                            text: 'Dashboard',
+                            fontWeight: FontWeight.w500,
+                            textColor: blueColor,
+                            textSize: textSize,
+                            textAlign: TextAlign.start),
+                      ),
+                      SizedBox(
+                        height: displayHeight(context) * 0.02,
+                      ),
                       InkWell(
                         onTap: () {
                           CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
@@ -385,7 +441,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         context: context,
                         text: 'Change Password',
                         fontWeight: FontWeight.w500,
-                        textColor: Colors.black54,
+                        textColor: blueColor,
                         textSize: textSize,
                         textAlign: TextAlign.start),
                   ) : Container(),
@@ -477,14 +533,22 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         commonText(
                             context: context,
                             text: 'Sign Out',
-                            fontWeight: FontWeight.w600,
-                            textColor: Colors.black,
-                            textSize: textSize,
+                            fontWeight: FontWeight.w500,
+                            textColor: floatingBtnColor,
+                            textSize: displayWidth(context) * 0.05,
                             textAlign: TextAlign.start),
-                        Icon(Icons.logout, color: Colors.black54),
+                        //Icon(Icons.logout, color: Colors.black54),
                       ],
                     ),
                   ),
+                  SizedBox(height: displayHeight(context) * 0.02,),
+                  commonText(
+                      text: 'Version $currentVersion',
+                      context: context,
+                      textSize: displayWidth(context) * 0.03,
+                      textColor: Colors.black54,
+                      fontWeight: FontWeight.w400),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -508,17 +572,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             style: TextStyle(
                                 decoration: TextDecoration.underline,
                                 fontSize: displayWidth(context) * 0.035,
-                                color: Colors.black54,
+                                color: primaryColor,
                                 fontWeight: FontWeight.w500)),
                       )
                     ],
                   ),
-                  commonText(
-                      text: 'Version $currentVersion',
-                      context: context,
-                      textSize: displayWidth(context) * 0.03,
-                      textColor: Colors.black54,
-                      fontWeight: FontWeight.w400),
+
                 ],
               ),
             ),

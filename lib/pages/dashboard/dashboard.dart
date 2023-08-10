@@ -208,56 +208,11 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
             child: Scaffold(
               backgroundColor: commonBackgroundColor,
               key: scaffoldKey,
-              appBar: AppBar(
-                backgroundColor: commonBackgroundColor,
-                elevation: 0,
-                centerTitle: true,
-                leading: InkWell(
-                  onTap: () {
-                    scaffoldKey.currentState!.openDrawer();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Image.asset(
-                      'assets/icons/menu.png',
-                    ),
-                  ),
-                ),
-                title: Container(
-                  width: MediaQuery.of(context).size.width / 2,
-                  // color: Colors.yellow,
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        WidgetSpan(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  "assets/images/lognotitle.png",
-                                  height: 50,
-                                  width: 50,
-                                ),
-                                commonText(
-                                  context: context,
-                                  text: 'PerforMarine',
-                                  fontWeight: FontWeight.w600,
-                                  textColor: Colors.black87,
-                                  textSize: displayWidth(context) * 0.045,
-                                ),
-                              ],
-                            )),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
               body: Column(
+                //mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: displayWidth(context) * 0.07,right: displayWidth(context) * 0.07),
+                    padding: EdgeInsets.only(left: displayWidth(context) * 0.05,right: displayWidth(context) * 0.05, ),
                     child: SearchTextField(
                         'Search by vessel, trip id, date',
                         searchController,
@@ -278,8 +233,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                         enabled: true,
                         isForTwoDecimal: false),
                   ),
-                  Container(
-                    height: displayHeight(context) * 0.76,
+                  Expanded(
                     child: VesselBuilder(
                       future: getVesselFuture,
                       onEdit: (value) async {
@@ -502,7 +456,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                                 child: isEndTripBtnClicked
                                     ? CircularProgressIndicator()
                                     : CommonButtons.getAcceptButton(
-                                    'End Trip', context, buttonBGColor,
+                                    'End Trip', context, Colors.transparent,
                                         () async {
                                       setDialogState(() {
                                         isEndTripBtnClicked = true;
@@ -568,10 +522,10 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                                     displayHeight(context) * 0.054,
                                     primaryColor,
                                     Colors.white,
-                                    displayHeight(context) * 0.018,
-                                    buttonBGColor,
+                                    displayHeight(context) * 0.02,
+                                    endTripBtnColor,
                                     '',
-                                    fontWeight: FontWeight.w500),
+                                    fontWeight: FontWeight.w700),
                               ),
                               SizedBox(height: 10,),
                               Center(
@@ -598,11 +552,11 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,
                                     Colors.transparent,
-                                    Color(0xff3B878E),
+                                    blueColor,
                                     displayHeight(context) * 0.018,
                                     Colors.transparent,
                                     '',
-                                    fontWeight: FontWeight.w500),
+                                    fontWeight: FontWeight.w700),
                               ),
                             ],
                           ),

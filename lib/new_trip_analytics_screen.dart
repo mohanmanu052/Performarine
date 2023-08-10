@@ -148,7 +148,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
           ],
         ),
         body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 17),
           child: vesselData == null
               ? Center(
                 child: CircularProgressIndicator(
@@ -158,7 +157,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
             children: [
               SingleChildScrollView(
                 child: Container(
-                  margin: EdgeInsets.only(bottom: displayHeight(context) * 0.1),
+                  margin: EdgeInsets.only(left: 17, right: 17, bottom: displayHeight(context) * 0.1),
                   child: Column(
                     children: [
                       Stack(
@@ -1039,52 +1038,55 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                 bottom: 0,
                 right: 0,
                 left: 0,
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(top: 10,),
-                      width: displayWidth(context),
-                      height: displayHeight(context) * 0.055,
-                      decoration: BoxDecoration(
-                        color: blueColor,
-                        borderRadius: BorderRadius.circular(8)
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset('assets/icons/download.png',),
-                              SizedBox(width: 10,),
-                              commonText(
-                                context: context,
-                                text: 'Export Complete Report',
-                                fontWeight: FontWeight.w600,
-                                textColor: Colors.white,
-                                textSize: displayWidth(context) * 0.036,
-                              ),
-                            ],
+                child: Container(
+                  color: backgroundColor,
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 10, left: 17, right: 17),
+                        width: displayWidth(context),
+                        height: displayHeight(context) * 0.055,
+                        decoration: BoxDecoration(
+                          color: blueColor,
+                          borderRadius: BorderRadius.circular(8)
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset('assets/icons/download.png',),
+                                SizedBox(width: 10,),
+                                commonText(
+                                  context: context,
+                                  text: 'Export Complete Report',
+                                  fontWeight: FontWeight.w600,
+                                  textColor: Colors.white,
+                                  textSize: displayWidth(context) * 0.036,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 8
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 8
+                        ),
+                        child: GestureDetector(
+                            onTap: ()async{
+                              final image = await controller.capture();
+                              Utils.customPrint("Image is: ${image.toString()}");
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                imagePath: image.toString(),
+                                uIntList: image,)));
+                            },
+                            child: UserFeedback().getUserFeedback(context)
+                        ),
                       ),
-                      child: GestureDetector(
-                          onTap: ()async{
-                            final image = await controller.capture();
-                            Utils.customPrint("Image is: ${image.toString()}");
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                              imagePath: image.toString(),
-                              uIntList: image,)));
-                          },
-                          child: UserFeedback().getUserFeedback(context)
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               )
             ],

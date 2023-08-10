@@ -29,6 +29,7 @@ import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
@@ -109,6 +110,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
       child: Scaffold(
         backgroundColor: backgroundColor,
         key: scaffoldKey,
+        drawer: CustomDrawer(),
         appBar: AppBar(
           backgroundColor: backgroundColor,
           elevation: 0,
@@ -189,7 +191,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                 Container(
                   margin: EdgeInsets.only(top: 20),
                   width: displayWidth(context),
-                  height: displayHeight(context) * 0.75,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                     color: Color(0xffECF3F9)
@@ -1338,22 +1339,19 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                           ],
                         ),
 
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              top : displayWidth(context) * 0.01,
-                              bottom : displayWidth(context) * 0.01,
-                            ),
-                            child: GestureDetector(
-                                onTap: ()async{
-                                  final image = await controller.capture();
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                    imagePath: image.toString(),
-                                    uIntList: image,)));
-                                },
-                                child: UserFeedback().getUserFeedback(context)
-                            ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top : displayWidth(context) * 0.01,
+                            bottom : displayWidth(context) * 0.01,
+                          ),
+                          child: GestureDetector(
+                              onTap: ()async{
+                                final image = await controller.capture();
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                  imagePath: image.toString(),
+                                  uIntList: image,)));
+                              },
+                              child: UserFeedback().getUserFeedback(context)
                           ),
                         ),
                       ],
@@ -1718,10 +1716,10 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                       displayHeight(context) * 0.054,
                                       primaryColor,
                                       Colors.white,
-                                      displayHeight(context) * 0.015,
-                                      buttonBGColor,
+                                      displayHeight(context) * 0.2,
+                                      blueColor,
                                       '',
-                                      fontWeight: FontWeight.w500),
+                                      fontWeight: FontWeight.w700),
                                 ),
                               ),
                               SizedBox(
@@ -1733,7 +1731,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                 ),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Ok go back', context, buttonBGColor, () {
+                                      'Ok go back', context, Colors.transparent, () {
                                     Navigator.of(context).pop();
                                   },
                                       displayWidth(context) * 0.65,
@@ -1742,11 +1740,11 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                       Theme.of(context).brightness ==
                                           Brightness.dark
                                           ? Colors.white
-                                          : Colors.grey,
+                                          : blueColor,
                                       displayHeight(context) * 0.015,
                                       Colors.white,
                                       '',
-                                      fontWeight: FontWeight.w500),
+                                      fontWeight: FontWeight.w700),
                                 ),
                               ),
 
