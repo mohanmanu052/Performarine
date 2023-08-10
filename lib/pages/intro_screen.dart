@@ -20,6 +20,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/auth/sign_in_screen.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:uni_links/uni_links.dart';
@@ -212,10 +213,20 @@ class _IntroScreenState extends State<IntroScreen> {
             List<String>? tripData =
                 sharedPreferences!.getStringList('trip_data');
 
-            Navigator.pushAndRemoveUntil(
+            /*Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                     builder: (context) => TripAnalyticsScreen(
+                        tripId: tripData![0],
+                        vesselId: tripData[1],
+                        isAppKilled: true,
+                        tripIsRunningOrNot: isTripStarted)),
+                ModalRoute.withName(""));*/
+
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TripRecordingScreen(
                         tripId: tripData![0],
                         vesselId: tripData[1],
                         isAppKilled: true,
@@ -304,10 +315,19 @@ class _IntroScreenState extends State<IntroScreen> {
                   builder: (context) => BottomNavigation(tripData: tripData ?? [], isAppKilled:  true)),
               ModalRoute.withName(""));
         } else {
-          Navigator.pushAndRemoveUntil(
+          /*Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                   builder: (context) => TripAnalyticsScreen(
+                      tripId: tripData![0],
+                      vesselId: tripData[1],
+                      tripIsRunningOrNot: isTripStarted)),
+              ModalRoute.withName(""));*/
+
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TripRecordingScreen(
                       tripId: tripData![0],
                       vesselId: tripData[1],
                       tripIsRunningOrNot: isTripStarted)),

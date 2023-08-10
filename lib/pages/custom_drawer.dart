@@ -16,6 +16,7 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/auth/change_password.dart';
 import 'package:performarine/pages/auth/sign_in_screen.dart';
@@ -133,6 +134,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 builder: (context) => BottomNavigation(),
                               ),
                               ModalRoute.withName(""));
+
+
                         },
                         child: commonText(
                             context: context,
@@ -1190,13 +1193,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                                         Navigator.of(dialogContext).pop();
 
-                                        Navigator.push(
+                                        /*Navigator.push(
                                           dialogContext,
                                           MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
                                               tripId: tripId,
                                               vesselId: tripData![1],
                                               tripIsRunningOrNot: runningTrip)),
-                                        );
+                                        );*/
+                                            Navigator.push(
+                                              dialogContext,
+                                              MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                                  tripId: tripId,
+                                                  vesselId: tripData![1],
+                                                  tripIsRunningOrNot: runningTrip)),
+                                            );
 
                                         Utils.customPrint("Click on GO TO TRIP 3");
                                             CustomLogger().logWithFile(Level.info, "Click on go to trip 3-> $page");

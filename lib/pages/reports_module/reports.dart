@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -1976,7 +1977,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => TripAnalyticsScreen(
+                              builder: (context) => NewTripAnalyticsScreen(
                                     tripId: selectedIndex,
                                     vesselName: selectedVesselName,
                                     // avgInfo: reportModel!.data!.avgInfo,
@@ -2122,7 +2123,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TripAnalyticsScreen(
+                          builder: (context) => NewTripAnalyticsScreen(
                                 tripId: selectedIndex,
                                 vesselName: selectedVesselName,
                                 // avgInfo: reportModel!.data!.avgInfo,
@@ -2262,7 +2263,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TripAnalyticsScreen(
+                          builder: (context) => NewTripAnalyticsScreen(
                                 tripId: selectedIndex,
                                 vesselName: selectedVesselName,
                                 vesselId: selectedVessel,
@@ -2399,7 +2400,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => TripAnalyticsScreen(
+                          builder: (context) => NewTripAnalyticsScreen(
                                 tripId: selectedIndex,
                                 vesselName: selectedVesselName,
                                 vesselId: selectedVessel,

@@ -208,7 +208,7 @@ Widget vesselSingleViewRichText(
               '${capacity!}CC',
               textAlign: TextAlign.start,
               style: TextStyle(
-                fontSize: displayWidth(context!) * 0.04,
+                fontSize: displayWidth(context!) * 0.038,
                 color: color,
                 fontFamily: poppins,
                 fontWeight: FontWeight.w600,
@@ -252,7 +252,7 @@ Widget vesselSingleViewRichText(
               built!,
               textAlign: TextAlign.start,
               style: TextStyle(
-                fontSize: displayWidth(context) * 0.04,
+                fontSize: displayWidth(context) * 0.038,
                 color: color,
                 fontFamily: poppins,
                 fontWeight: FontWeight.w600,
@@ -305,7 +305,7 @@ Widget vesselSingleViewRichText(
               regNo,
               textAlign: TextAlign.start,
               style: TextStyle(
-                fontSize: displayWidth(context) * 0.04,
+                fontSize: displayWidth(context) * 0.038,
                 color: color,
                 fontFamily: poppins,
                 fontWeight: FontWeight.w600,

@@ -47,6 +47,7 @@ import 'package:uuid/uuid.dart';
 
 import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
+import '../new_trip_analytics_screen.dart';
 import 'add_vessel_new/add_new_vessel_screen.dart';
 import 'bottom_navigation.dart';
 import 'feedback_report.dart';
@@ -237,7 +238,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     setState(() {
       tripIsRunning = result;
-      Utils.customPrint('Trip is Running $tripIsRunning');
+      Utils.customPrint('Trip is Running VESSEL VESSEL $tripIsRunning');
 
       if (tripIsRunning) {
         getRunningTripDetails();
@@ -628,7 +629,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                                 textAlign: TextAlign.start),
                                                             commonText(
                                                                 context: context,
-                                                                text: 'Capacity',
+                                                                text: 'Capacity' ,
                                                                 fontWeight: FontWeight.w500,
                                                                 textColor: Colors.grey,
                                                                 textSize:
@@ -942,13 +943,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
                           valueColor: AlwaysStoppedAnimation<Color>(
                               circularProgressColor),
                         ))
-                        : CommonButtons.getActionButton(
+                        : CommonButtons.getRichTextActionButton(
+                        icon: Image.asset('assets/icons/end_btn.png',
+                          height: displayHeight(context) * 0.055,
+                          width: displayWidth(context) * 0.12,
+                        ),
                         title: 'End Trip',
                         context: context,
                         fontSize: displayWidth(context) * 0.042,
                         textColor: Colors.white,
-                        buttonPrimaryColor: buttonBGColor,
-                        borderColor: buttonBGColor,
+                        buttonPrimaryColor: endTripBtnColor,
+                        borderColor: endTripBtnColor,
                         width: displayWidth(context),
                         onTap: () async {
 
@@ -1012,13 +1017,17 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
 
                         })
-                        : CommonButtons.getActionButton(
+                        : CommonButtons.getRichTextActionButton(
+                          icon: Image.asset('assets/icons/start_btn.png',
+                            height: displayHeight(context) * 0.055,
+                            width: displayWidth(context) * 0.12,
+                          ),
                         title: 'Start Trip',
                         context: context,
                         fontSize: displayWidth(context) * 0.042,
                         textColor: Colors.white,
-                        buttonPrimaryColor: buttonBGColor,
-                        borderColor: buttonBGColor,
+                        buttonPrimaryColor: blueColor,
+                        borderColor: blueColor,
                         width: displayWidth(context),
                         onTap: () async {
                           bool? isTripStarted =
@@ -2665,7 +2674,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         var result = Navigator.pushReplacement(
           scaffoldKey.currentContext!,
           MaterialPageRoute(
-              builder: (context) => TripAnalyticsScreen(
+              builder: (context) => NewTripAnalyticsScreen(
                 tripId: tripDetails.id,
                 vesselId: widget.vessel!.id,
                 tripIsRunningOrNot: tripIsRunning,
@@ -2959,7 +2968,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
+                                          MaterialPageRoute(builder: (context) => NewTripAnalyticsScreen(
                                               tripId: tripId,
                                               vesselId: tripData![1],
                                               tripIsRunningOrNot: runningTrip)),

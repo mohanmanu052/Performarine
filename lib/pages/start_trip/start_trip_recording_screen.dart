@@ -674,7 +674,332 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
 
                             SizedBox(height: displayHeight(context) * 0.03,),
 
+
                             addingDataToDB
+                                ? Center(
+                                child: CircularProgressIndicator(
+                                    valueColor:
+                                    AlwaysStoppedAnimation<Color>(
+                                        circularProgressColor)))
+                                :  Container(
+                                  child: CommonButtons.getRichTextActionButton(
+                                  icon: Image.asset('assets/icons/start_btn.png',
+                                    height: displayHeight(context) * 0.055,
+                                    width: displayWidth(context) * 0.12,
+                                  ),
+                                  title: 'Start Trip',
+                                  context: context,
+                                  fontSize: displayWidth(context) * 0.042,
+                                  textColor: Colors.white,
+                                  buttonPrimaryColor: blueColor,
+                                  borderColor: blueColor,
+                                  width: displayWidth(context),
+                                  onTap: () async
+                                  {
+
+                                    if (selectedValue ==
+                                        null) {
+                                      Utils.customPrint(
+                                          'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        behavior:
+                                        SnackBarBehavior.floating,
+                                        content: Text(
+                                            "Please select vessel"),
+                                        duration: Duration(seconds: 1),
+                                        backgroundColor: Colors.blue,
+                                      ));
+                                      return;
+                                    }
+
+                                    Utils.customPrint(
+                                        'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+                                    if (selectedVesselWeight ==
+                                        'Select Current Load') {
+                                      Utils.customPrint(
+                                          'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        behavior:
+                                        SnackBarBehavior.floating,
+                                        content: Text(
+                                            "Please select current load"),
+                                        duration: Duration(seconds: 1),
+                                        backgroundColor: Colors.blue,
+                                      ));
+                                      return;
+                                    }
+
+                                    bool isLocationPermitted =
+                                    await Permission
+                                        .location.isGranted;
+
+                                    if (isLocationPermitted) {
+
+                                      if (Platform.isAndroid) {
+                                        final androidInfo =
+                                        await DeviceInfoPlugin()
+                                            .androidInfo;
+
+                                        if (androidInfo.version.sdkInt <
+                                            29) {
+                                          var isStoragePermitted =
+                                          await Permission
+                                              .storage.status;
+                                          if (isStoragePermitted
+                                              .isGranted) {
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  context);
+                                            } else {
+                                              await Utils
+                                                  .getNotificationPermission(
+                                                  context);
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    context);
+                                              }
+                                            }
+                                          } else {
+                                            await Utils
+                                                .getStoragePermission(
+                                                context);
+                                            final androidInfo =
+                                            await DeviceInfoPlugin()
+                                                .androidInfo;
+
+                                            var isStoragePermitted =
+                                            await Permission
+                                                .storage.status;
+
+                                            if (isStoragePermitted
+                                                .isGranted) {
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    context);
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                    context);
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      context);
+                                                }
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          bool isNotificationPermitted =
+                                          await Permission
+                                              .notification
+                                              .isGranted;
+
+                                          if (isNotificationPermitted) {
+                                            startWritingDataToDB(
+                                                context);
+                                          } else {
+                                            await Utils
+                                                .getNotificationPermission(
+                                                context);
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  context);
+                                            }
+                                          }
+                                        }
+                                      }
+                                      else {
+                                        bool isNotificationPermitted =
+                                        await Permission
+                                            .notification.isGranted;
+
+                                        if (isNotificationPermitted) {
+                                          startWritingDataToDB(
+                                              context);
+                                        } else {
+                                          await Utils
+                                              .getNotificationPermission(
+                                              context);
+                                          bool isNotificationPermitted =
+                                          await Permission
+                                              .notification
+                                              .isGranted;
+                                          if (isNotificationPermitted) {
+                                            startWritingDataToDB(
+                                                context);
+                                          }
+                                        }
+                                      }
+                                    }
+                                    else {
+                                      await Utils.getLocationPermission(
+                                          context, scaffoldKey);
+                                      bool isLocationPermitted =
+                                      await Permission
+                                          .location.isGranted;
+
+                                      if (isLocationPermitted) {
+                                        // service.startService();
+
+                                        if (Platform.isAndroid) {
+                                          final androidInfo =
+                                          await DeviceInfoPlugin()
+                                              .androidInfo;
+
+                                          if (androidInfo
+                                              .version.sdkInt <
+                                              29) {
+                                            var isStoragePermitted =
+                                            await Permission
+                                                .storage.status;
+                                            if (isStoragePermitted
+                                                .isGranted) {
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    context);
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                    context);
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      context);
+                                                }
+                                              }
+                                            } else {
+                                              await Utils
+                                                  .getStoragePermission(
+                                                  context);
+                                              final androidInfo =
+                                              await DeviceInfoPlugin()
+                                                  .androidInfo;
+
+                                              var isStoragePermitted =
+                                              await Permission
+                                                  .storage.status;
+
+                                              if (isStoragePermitted
+                                                  .isGranted) {
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      context);
+                                                } else {
+                                                  await Utils
+                                                      .getNotificationPermission(
+                                                      context);
+                                                  bool
+                                                  isNotificationPermitted =
+                                                  await Permission
+                                                      .notification
+                                                      .isGranted;
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        context);
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  context);
+                                            } else {
+                                              await Utils
+                                                  .getNotificationPermission(
+                                                  context);
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    context);
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          bool isNotificationPermitted =
+                                          await Permission
+                                              .notification
+                                              .isGranted;
+
+                                          if (isNotificationPermitted) {
+                                            startWritingDataToDB(
+                                                context);
+                                          } else {
+                                            await Utils
+                                                .getNotificationPermission(
+                                                context);
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                context,);
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  ),
+                                ),
+
+                           /* addingDataToDB
                                 ? Center(
                                 child: CircularProgressIndicator(
                                     valueColor:
@@ -1009,7 +1334,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                   ),
                                 ),
                               ),
-                            ),
+                            ),*/
                           ],
                         ),
 
