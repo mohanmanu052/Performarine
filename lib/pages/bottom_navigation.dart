@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/pages/dashboard/dashboard.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lpr_bluetooth_list.dart';
 import 'package:performarine/pages/reports_module/reports.dart';
@@ -27,6 +28,7 @@ import '../new_trip_analytics_screen.dart';
 import '../provider/common_provider.dart';
 import '../services/database_service.dart';
 import 'custom_drawer.dart';
+import 'package:performarine/pages/trips/Trips.dart';
 
 class BottomNavigation extends StatefulWidget {
   List<String> tripData;
@@ -83,9 +85,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
     var screensList = [
-      HomePage(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: widget.isComingFromReset,isAppKilled: widget.isAppKilled,token: widget.token),
+      Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: widget.isComingFromReset,isAppKilled: widget.isAppKilled,token: widget.token),
       ReportsModule(),
-      HomePage(),
+      Trips(),
       HomePage(),
       StartTripRecordingScreen(),
     ];
