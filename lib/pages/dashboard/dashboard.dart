@@ -24,7 +24,7 @@ import '../../main.dart';
 import '../../models/vessel.dart';
 import '../../provider/common_provider.dart';
 import '../../services/database_service.dart';
-import '../auth/reset_password.dart';
+import 'package:performarine/pages/auth_new/reset_password.dart';
 import '../vessel_form.dart';
 import '../vessel_single_view.dart';
 

@@ -27,6 +27,7 @@ import '../models/trip.dart';
 import '../new_trip_analytics_screen.dart';
 import '../provider/common_provider.dart';
 import '../services/database_service.dart';
+import 'add_vessel_new/add_new_vessel_screen.dart';
 import 'custom_drawer.dart';
 import 'package:performarine/pages/trips/Trips.dart';
 
@@ -86,7 +87,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     commonProvider = context.watch<CommonProvider>();
     var screensList = [
       Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: widget.isComingFromReset,isAppKilled: widget.isAppKilled,token: widget.token),
-      ReportsModule(),
+      AddNewVesselPage(),
       Trips(),
       HomePage(),
       StartTripRecordingScreen(),
