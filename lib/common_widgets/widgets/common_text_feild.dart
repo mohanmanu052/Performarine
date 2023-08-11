@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 
+import '../utils/colors.dart';
+
 //Custom text field
 class CommonTextField extends StatefulWidget {
   TextEditingController? controller;
@@ -103,7 +105,7 @@ class _CommonTextFieldState extends State<CommonTextField> {
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             filled: true,
-            fillColor: Colors.grey.shade200.withOpacity(0.7),
+            fillColor: dropDownBackgroundColor,
             hintText: widget.hintText,
             labelText: widget.labelText,
             suffixText: widget.suffixText,
@@ -112,14 +114,14 @@ class _CommonTextFieldState extends State<CommonTextField> {
                     ? Colors.white
                     : Colors.grey,
                 fontSize: displayWidth(context) * 0.04,
-                fontFamily: inter),
+                fontFamily: outfit),
             labelStyle: TextStyle(
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.grey
                     : Colors.grey,
-                fontSize: displayWidth(context) * 0.040,
-                fontWeight: FontWeight.w500,
-                fontFamily: inter),
+                fontSize: displayWidth(context) * 0.032,
+                fontWeight: FontWeight.w400,
+                fontFamily: outfit),
             suffixStyle: TextStyle(
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.grey
@@ -156,11 +158,11 @@ class _CommonTextFieldState extends State<CommonTextField> {
                 : widget.suffixIcon,
             focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    width: 1.5, color: Colors.grey.shade200.withOpacity(0.7)),
+                    width: 1.5, color: dropDownBackgroundColor),
                 borderRadius: BorderRadius.all(Radius.circular(8))),
             enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    width: 1.5, color: Colors.grey.shade200.withOpacity(0.7)),
+                    width: 1.5, color: dropDownBackgroundColor),
                 borderRadius: const BorderRadius.all(Radius.circular(8))),
             errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(

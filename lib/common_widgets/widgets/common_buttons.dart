@@ -76,14 +76,16 @@ class CommonButtons {
                 Size(width, height)),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 side: BorderSide(color: borderColor!),
-                borderRadius: BorderRadius.circular(5.0)))),
+                borderRadius: BorderRadius.circular(10.0)))),
         child: Center(
           child: commonText(
               text: title,
               context: context,
               textSize: fontSize,
               textColor: textColor,
-              fontWeight: FontWeight.w500),
+              fontWeight: FontWeight.w500,
+              fontFamily: outfit
+          ),
         ));
   }
 

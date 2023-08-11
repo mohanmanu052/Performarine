@@ -7,9 +7,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:performarine/pages/add_vessel_new/successfully_added_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:status_stepper/status_stepper.dart';
 
 import '../../analytics/get_or_create_folder.dart';
+import '../../common_widgets/stepper/status_stepper.dart';
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/common_size_helper.dart';
 import '../../common_widgets/utils/utils.dart';
@@ -72,8 +72,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     ),
   );
 
-  int curIndex = 1;
-  int lastIndex = -1;
+  double curIndex = 1;
+  double lastIndex = -1;
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
 
@@ -622,19 +622,19 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
 
   stepperWidget(){
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: displayWidth(context) * 0.3, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.height * 0.1, vertical: 8),
       child: Column(
         children: [
           StatusStepper(
-            connectorCurve: Curves.easeIn,
+            connectorCurve: Curves.linear,
             itemCurve: Curves.easeOut,
-            activeColor: Colors.black,
-            disabledColor: Colors.grey,
+            activeColor: Colors.grey,
+            disabledColor: blueColor,
             animationDuration: const Duration(milliseconds: 500),
-            children: statuses,
             lastActiveIndex: lastIndex,
             currentIndex: curIndex,
             connectorThickness: 5,
+            children: statuses,
           ),
           SizedBox(
             height: 14,
@@ -645,26 +645,24 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
             children: [
               Expanded(
                   child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: commonText(
-                        text: 'Step 1',
-                        context: context,
-                        textSize: displayWidth(context) * 0.029,
-                        textColor: Colors.black,
-                        fontWeight: FontWeight.w500,
-                        textAlign: TextAlign.center,
-                      ))),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Step 1",
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black
+                      ),
+                    ),)),
               Expanded(
                   child: Align(
-                      alignment: Alignment.centerRight,
-                      child: commonText(
-                        text: 'Step 2',
-                        context: context,
-                        textSize: displayWidth(context) * 0.029,
-                        textColor: Colors.black,
-                        fontWeight: FontWeight.w500,
-                        textAlign: TextAlign.center,
-                      ))),
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "Step 2",
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black
+                      ),
+                    ),)),
             ],
           )
         ],
