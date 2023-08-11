@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/pages/add_vessel_new/successfully_added_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +73,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     ),
   );
 
-  double curIndex = 1;
+  double curIndex = 0;
   double lastIndex = -1;
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
@@ -146,19 +147,21 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                   ],
                 ),
 
-                SizedBox(height: displayHeight(context) * 0.02),
+                SizedBox(height: displayHeight(context) * 0.03),
                 commonText(
                     context: context,
                     text: 'Size of the boat',
                     fontWeight: FontWeight.w500,
-                    textColor: Colors.black54,
+                    textColor: blutoothDialogTxtColor,
                     textSize: displayWidth(context) * 0.035,
-                    textAlign: TextAlign.start),
-                SizedBox(height: displayHeight(context) * 0.02),
+                    textAlign: TextAlign.start,
+                  fontFamily: outfit
+                ),
+                SizedBox(height: displayHeight(context) * 0.01),
                 CommonTextField(
                     controller: freeBoardController,
                     focusNode: freeBoardFocusNode,
-                    labelText: 'Freeboard (ft)*',
+                    labelText: 'Freeboard (ft)',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.next,
@@ -186,7 +189,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                 CommonTextField(
                     controller: lengthOverallController,
                     focusNode: lengthOverallFocusNode,
-                    labelText: 'Length overall (ft)*',
+                    labelText: 'Length overall (ft)',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.next,
@@ -212,7 +215,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                 CommonTextField(
                     controller: moldedBeamController,
                     focusNode: moldedBeamFocusNode,
-                    labelText: 'Beam (ft)*',
+                    labelText: 'Beam (ft)',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.next,
@@ -239,7 +242,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                 CommonTextField(
                     controller: moldedDepthController,
                     focusNode: moldedDepthFocusNode,
-                    labelText: 'Draft (ft)*',
+                    labelText: 'Draft (ft)',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.next,
@@ -262,19 +265,21 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       Utils.customPrint(value);
                       CustomLogger().logWithFile(Level.info, "Vessel Draft $value -> $page");
                     }),
-                SizedBox(height: displayHeight(context) * 0.025),
+                SizedBox(height: displayHeight(context) * 0.02),
                 commonText(
                     context: context,
-                    text: 'Engine characteristics*',
+                    text: 'Engine characteristics',
                     fontWeight: FontWeight.w500,
-                    textColor: Colors.black54,
+                    textColor: blutoothDialogTxtColor,
                     textSize: displayWidth(context) * 0.035,
-                    textAlign: TextAlign.start),
-                SizedBox(height: displayHeight(context) * 0.025),
+                    textAlign: TextAlign.start,
+                  fontFamily: outfit
+                ),
+                SizedBox(height: displayHeight(context) * 0.02),
                 CommonTextField(
                     controller: sizeController,
                     focusNode: sizeFocusNode,
-                    labelText: 'Size (hp)*',
+                    labelText: 'Size',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.next,
@@ -301,7 +306,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                 CommonTextField(
                     controller: capacityController,
                     focusNode: capacityFocusNode,
-                    labelText: 'Capacity (cc)*',
+                    labelText: 'Capacity',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.next,
@@ -328,7 +333,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                 CommonTextField(
                     controller: builtYearController,
                     focusNode: builtYearFocusNode,
-                    labelText: 'Built Year (YYYY)*',
+                    labelText: 'Built Year (YYYY)',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.done,
@@ -628,13 +633,14 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
           StatusStepper(
             connectorCurve: Curves.linear,
             itemCurve: Curves.easeOut,
-            activeColor: Colors.grey,
-            disabledColor: blueColor,
+            activeColor: blueColor,
+            disabledColor: dropDownBackgroundColor,
             animationDuration: const Duration(milliseconds: 500),
             lastActiveIndex: lastIndex,
             currentIndex: curIndex,
             connectorThickness: 5,
             children: statuses,
+            value: 1,
           ),
           SizedBox(
             height: 14,

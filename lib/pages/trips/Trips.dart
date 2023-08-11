@@ -33,54 +33,8 @@ class _TripsState extends State<Trips> {
     return Screenshot(
       controller: controller,
       child: Scaffold(
-        backgroundColor: commonBackgroundColor,
+        backgroundColor: backgroundColor,
         key: scaffoldKey,
-        // appBar: AppBar(
-        //   backgroundColor: commonBackgroundColor,
-        //   elevation: 0,
-        //   centerTitle: true,
-        //   leading: InkWell(
-        //     onTap: () {
-        //       scaffoldKey.currentState!.openDrawer();
-        //     },
-        //     child: Padding(
-        //       padding: const EdgeInsets.all(16),
-        //       child: Image.asset(
-        //         'assets/icons/menu.png',
-        //       ),
-        //     ),
-        //   ),
-        //   title: Container(
-        //     width: MediaQuery.of(context).size.width / 2,
-        //     // color: Colors.yellow,
-        //     child: RichText(
-        //       textAlign: TextAlign.center,
-        //       text: TextSpan(
-        //         children: [
-        //           WidgetSpan(
-        //               child: Row(
-        //                 mainAxisAlignment: MainAxisAlignment.center,
-        //                 crossAxisAlignment: CrossAxisAlignment.center,
-        //                 children: [
-        //                   Image.asset(
-        //                     "assets/images/lognotitle.png",
-        //                     height: 50,
-        //                     width: 50,
-        //                   ),
-        //                   commonText(
-        //                     context: context,
-        //                     text: 'Trips',
-        //                     fontWeight: FontWeight.w600,
-        //                     textColor: Colors.black87,
-        //                     textSize: displayWidth(context) * 0.045,
-        //                   ),
-        //                 ],
-        //               )),
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // ),
         body: Column(
           children: [
             Padding(

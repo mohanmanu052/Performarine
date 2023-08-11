@@ -31,7 +31,10 @@ class StatusStepper extends StatelessWidget {
 
   final double connectorThickness;
 
+  final double value;
+
   const StatusStepper({
+    required this.value,
     required this.children,
     this.animationDuration = const Duration(milliseconds: 200),
     this.lastActiveIndex = -1,
@@ -65,6 +68,7 @@ class StatusStepper extends StatelessWidget {
               disabledColor: disabledColor,
               curve: connectorCurve,
               connectorThickness: connectorThickness,
+              value: value,
             ),
           StepperItem(
             animationDuration: animationDuration,

@@ -206,7 +206,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
         child: Screenshot(
           controller: controller,
             child: Scaffold(
-              backgroundColor: commonBackgroundColor,
+              backgroundColor: backgroundColor,
               key: scaffoldKey,
               body: Column(
                 //mainAxisSize: MainAxisSize.min,

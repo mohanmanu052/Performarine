@@ -89,7 +89,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
     ),
   );
 
-  double curIndex = 0.1;
+  double curIndex = 0;
   double lastIndex = -1;
 
   bool isImageSelected = false;
@@ -314,7 +314,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     }),
                 SizedBox(height: displayHeight(context) * 0.015),
                 Container(
-                  margin: EdgeInsets.only(top: 8.0),
+                  margin: EdgeInsets.only(top: 2.0),
                   child: CommonDropDownFormField(
                     context: context,
                     value: selectedEngineType,
@@ -674,12 +674,13 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
             connectorCurve: Curves.linear,
             itemCurve: Curves.easeOut,
             activeColor: blueColor,
-            disabledColor: blueColor,
+            disabledColor: dropDownBackgroundColor,
             animationDuration: const Duration(milliseconds: 500),
             lastActiveIndex: lastIndex,
             currentIndex: curIndex,
             connectorThickness: 5,
             children: statuses,
+            value: 0.35,
           ),
           SizedBox(
             height: 14,

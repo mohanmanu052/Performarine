@@ -69,10 +69,10 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
         child: Scaffold(
           key: scaffoldKey,
           //  resizeToAvoidBottomInset: false,
-          backgroundColor: commonBackgroundColor,
+          backgroundColor: backgroundColor,
           appBar: AppBar(
             elevation: 0.0,
-            backgroundColor: commonBackgroundColor,
+            backgroundColor: backgroundColor,
             leading: IconButton(
               onPressed: () {
                 if (widget.calledFrom == 'SuccessFullScreen') {
@@ -96,7 +96,7 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
                   ? Colors.white
                   : Colors.black,
             ),
-            centerTitle: true,
+            centerTitle: false,
             title: commonText(
                 context: context,
                 text: widget.isEdit! ? 'Edit Vessel' : 'Add New Vessel',
@@ -104,6 +104,23 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
                 textColor: Colors.black,
                 textSize: displayWidth(context) * 0.05,
                 textAlign: TextAlign.start),
+            actions: [
+              Container(
+                margin: EdgeInsets.only(right: 8),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                        ModalRoute.withName(""));
+                  },
+                  icon: Image.asset('assets/images/home.png'),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             child: Container(

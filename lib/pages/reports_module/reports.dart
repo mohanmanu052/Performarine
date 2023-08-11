@@ -752,7 +752,7 @@ class _ReportsModuleState extends State<ReportsModule> {
     return Screenshot(
       controller: controller,
       child: Scaffold(
-        backgroundColor: commonBackgroundColor,
+        backgroundColor: backgroundColor,
         key: scaffoldKey,
         /*appBar: AppBar(
           backgroundColor: commonBackgroundColor,

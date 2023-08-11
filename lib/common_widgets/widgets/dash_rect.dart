@@ -5,6 +5,8 @@ import 'dart:math' as math;
 
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 
+import '../utils/constants.dart';
+
 //To show dashed rectangle
 class DashedRect extends StatelessWidget {
   final Color? color;
@@ -95,11 +97,12 @@ class DashedRectToUploadImage extends StatelessWidget {
                   commonText(
                     text: title!,
                     context: context,
-                    textSize: displayWidth(context) * 0.03,
+                    textSize: displayWidth(context) * 0.033,
                     textColor: Theme.of(context).brightness == Brightness.dark
                         ? primaryTextColor!
                         : blueColor,
                     fontWeight: FontWeight.w500,
+                    fontFamily: outfit
                   ),
                 ],
               ),
