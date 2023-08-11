@@ -85,7 +85,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                   return Container(
                     color:commonBackgroundColor,
                     padding: EdgeInsets.only(
-                        left: displayWidth(context) * 0.065, right: displayWidth(context) * 0.065, top: 8, bottom: 0),
+                        left: displayWidth(context) * 0.04, right: displayWidth(context) * 0.04, top: 8, bottom: 0),
                     child: ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {

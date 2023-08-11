@@ -520,7 +520,7 @@ class _MapScreenState extends State<MapScreen> {
                                 child: isEndTripBtnClicked
                                     ? CircularProgressIndicator()
                                     : CommonButtons.getAcceptButton(
-                                    'End Trip', context, buttonBGColor,
+                                    'End Trip', context, Colors.transparent,
                                         () async {
 
                                       bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
@@ -684,10 +684,10 @@ class _MapScreenState extends State<MapScreen> {
                                     displayHeight(context) * 0.054,
                                     primaryColor,
                                     Colors.white,
-                                    displayHeight(context) * 0.018,
-                                    buttonBGColor,
+                                    displayHeight(context) * 0.02,
+                                    endTripBtnColor,
                                     '',
-                                    fontWeight: FontWeight.w500),
+                                    fontWeight: FontWeight.w700),
                               ),
                               SizedBox(height: 10,),
                               Center(
@@ -713,11 +713,11 @@ class _MapScreenState extends State<MapScreen> {
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,
                                     Colors.transparent,
-                                    Color(0xff3B878E),
+                                    blueColor,
                                     displayHeight(context) * 0.018,
                                     Colors.transparent,
                                     '',
-                                    fontWeight: FontWeight.w500),
+                                    fontWeight: FontWeight.w700),
                               ),
                             ],
                           ),

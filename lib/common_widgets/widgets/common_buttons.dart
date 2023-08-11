@@ -62,8 +62,10 @@ class CommonButtons {
       double? fontSize,
       Function()? onTap,
       double? width,
+      double? height,
       Color? buttonPrimaryColor}) {
     width ??= displayWidth(context!);
+    height ??= displayHeight(context!) * 0.065;
     borderColor ??= buttonPrimaryColor;
 
     return ElevatedButton(
@@ -71,7 +73,7 @@ class CommonButtons {
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(buttonPrimaryColor),
             fixedSize: MaterialStateProperty.all(
-                Size(width, displayHeight(context!) * 0.058)),
+                Size(width, height)),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 side: BorderSide(color: borderColor!),
                 borderRadius: BorderRadius.circular(10.0)))),

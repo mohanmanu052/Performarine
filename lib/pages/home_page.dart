@@ -606,7 +606,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                 child: isEndTripBtnClicked
                                     ? CircularProgressIndicator()
                                     : CommonButtons.getAcceptButton(
-                                    'End Trip', context, buttonBGColor,
+                                    'End Trip', context, Colors.transparent,
                                         () async {
                                           setDialogState(() {
                                          isEndTripBtnClicked = true;
@@ -672,10 +672,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                     displayHeight(context) * 0.054,
                                     primaryColor,
                                     Colors.white,
-                                    displayHeight(context) * 0.018,
-                                    buttonBGColor,
+                                    displayHeight(context) * 0.02,
+                                    endTripBtnColor,
                                     '',
-                                    fontWeight: FontWeight.w500),
+                                    fontWeight: FontWeight.w700),
                               ),
                               SizedBox(height: 10,),
                               Center(
@@ -701,11 +701,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,
                                     Colors.transparent,
-                                    Color(0xff3B878E),
+                                    blueColor,
                                     displayHeight(context) * 0.018,
                                     Colors.transparent,
                                     '',
-                                    fontWeight: FontWeight.w500),
+                                    fontWeight: FontWeight.w700),
                               ),
                             ],
                           ),

@@ -20,6 +20,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/new-design/new_splash_screen.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/auth_new/reset_password.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
@@ -36,6 +37,7 @@ import 'package:workmanager/workmanager.dart';
 
 import 'analytics/get_or_create_folder.dart';
 import 'common_widgets/widgets/log_level.dart';
+import 'new-design/new_intro_screen.dart';
 
 SharedPreferences? sharedPreferences;
 bool? isStart;
@@ -477,7 +479,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         initialRoute: "/",
         builder: EasyLoading.init(),
         getPages: [
-          GetPage(name: '/', page: () => IntroScreen()),
+          GetPage(name: '/', page: () => NewSplashScreen()),
           GetPage(name: '/BottomNavigation', page: () => BottomNavigation()),
         ],
       ),
