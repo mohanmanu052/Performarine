@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 
+import '../utils/colors.dart';
+
 //Custom drop down form field
 class CommonDropDownFormField extends FormField<dynamic> {
   final BuildContext? context;
@@ -95,19 +97,19 @@ class CommonDropDownFormField extends FormField<dynamic> {
                         color: Theme.of(context).brightness == Brightness.dark
                             ? Colors.white
                             : Colors.grey,
-                        fontSize: displayWidth(context) * 0.04,
+                        fontSize: displayWidth(context) * 0.032,
                         fontFamily: inter),
                     filled: true,
-                    fillColor: Colors.grey.shade200.withOpacity(0.7),
+                    fillColor: dropDownBackgroundColor,
                     focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                             width: 1.5,
-                            color: Colors.grey.shade200.withOpacity(0.7)),
+                            color: dropDownBackgroundColor),
                         borderRadius: BorderRadius.all(Radius.circular(8))),
                     enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
                             width: 1.5,
-                            color: Colors.grey.shade200.withOpacity(0.7)),
+                            color: dropDownBackgroundColor),
                         borderRadius: BorderRadius.all(Radius.circular(8))),
                     errorBorder: OutlineInputBorder(
                         borderSide: BorderSide(

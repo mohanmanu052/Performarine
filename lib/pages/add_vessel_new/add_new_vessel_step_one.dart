@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:status_stepper/status_stepper.dart';
 
+import '../../common_widgets/stepper/status_stepper.dart';
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/common_size_helper.dart';
 import '../../common_widgets/utils/utils.dart';
@@ -89,8 +89,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
     ),
   );
 
-  int curIndex = 1;
-  int lastIndex = -1;
+  double curIndex = 0.1;
+  double lastIndex = -1;
 
   bool isImageSelected = false;
 
@@ -666,55 +666,53 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   }
 
   stepperWidget(){
-     return Padding(
-       padding: EdgeInsets.symmetric(horizontal: displayWidth(context) * 0.3, vertical: 8),
-       child: Column(
-         children: [
-           StatusStepper(
-             connectorCurve: Curves.easeIn,
-             itemCurve: Curves.easeOut,
-             activeColor: Colors.black,
-             disabledColor: Colors.grey,
-             animationDuration: const Duration(milliseconds: 500),
-             children: statuses,
-             lastActiveIndex: lastIndex,
-             currentIndex: curIndex,
-             connectorThickness: 5,
-           ),
-           SizedBox(
-             height: 14,
-           ),
-           Row(
-             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-             crossAxisAlignment: CrossAxisAlignment.start,
-             children: [
-               Expanded(
-                   child: Align(
-                       alignment: Alignment.centerLeft,
-                       child: commonText(
-                         text: 'Step 1',
-                         context: context,
-                         textSize: displayWidth(context) * 0.029,
-                         textColor: Colors.black,
-                         fontWeight: FontWeight.w500,
-                         textAlign: TextAlign.center,
-                       ))),
-               Expanded(
-                   child: Align(
-                       alignment: Alignment.centerRight,
-                       child: commonText(
-                         text: 'Step 2',
-                         context: context,
-                         textSize: displayWidth(context) * 0.029,
-                         textColor: Colors.black,
-                         fontWeight: FontWeight.w500,
-                         textAlign: TextAlign.center,
-                       ))),
-             ],
-           )
-         ],
-       ),
-     );
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.height * 0.1, vertical: 8),
+      child: Column(
+        children: [
+          StatusStepper(
+            connectorCurve: Curves.linear,
+            itemCurve: Curves.easeOut,
+            activeColor: blueColor,
+            disabledColor: blueColor,
+            animationDuration: const Duration(milliseconds: 500),
+            lastActiveIndex: lastIndex,
+            currentIndex: curIndex,
+            connectorThickness: 5,
+            children: statuses,
+          ),
+          SizedBox(
+            height: 14,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Step 1",
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black
+                      ),
+                    ),)),
+              Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "Step 2",
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black
+                      ),
+                    ),)),
+            ],
+          )
+        ],
+      ),
+    );
   }
 
   @override
