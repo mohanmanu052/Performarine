@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/colors.dart';
+
 class StepperConnector extends StatelessWidget {
   final bool isPassed;
   final bool shouldRedraw;
@@ -10,6 +12,7 @@ class StepperConnector extends StatelessWidget {
   final Color? disabledColor;
   final Curve curve;
   final double connectorThickness;
+  final double value;
 
   const StepperConnector({
     Key? key,
@@ -22,6 +25,7 @@ class StepperConnector extends StatelessWidget {
     this.animationAwaitDuration = Duration.zero,
     this.activeColor,
     this.disabledColor,
+    required this.value
   }) : super(key: key);
 
   @override
@@ -29,36 +33,11 @@ class StepperConnector extends StatelessWidget {
     return Expanded(
       child: Stack(
         children: [
-
           LinearProgressIndicator(
-            backgroundColor: Colors.grey,
-            valueColor: new AlwaysStoppedAnimation<Color>(disabledColor!),
-            value: 0.4,
+            backgroundColor: dropDownBackgroundColor,
+            valueColor: new AlwaysStoppedAnimation<Color>(blueColor),
+            value: value,
           ),
-          // Divider(
-          //   thickness: connectorThickness,
-          //   color: disabledColor ?? Theme.of(context).colorScheme.secondaryVariant,
-          // ),
-          /*  FutureBuilder(
-            future: Future.delayed(
-              animationDuration * delayFactor + animationAwaitDuration,
-            ),
-            builder: (context, snapshot) => AnimatedSwitcher(
-              switchInCurve: curve,
-              transitionBuilder: (child, animation) => SizeTransition(
-                sizeFactor: animation,
-                child: child,
-                axis: Axis.horizontal,
-              ),
-              duration: animationDuration,
-              child: isPassed && snapshot.connectionState == ConnectionState.done || !shouldRedraw
-                  ? Divider(
-                thickness: connectorThickness,
-                color: activeColor ?? Theme.of(context).primaryColor,
-              )
-                  : const SizedBox(),
-            ),
-          ), */
         ],
       ),
     );

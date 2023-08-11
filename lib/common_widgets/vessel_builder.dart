@@ -83,7 +83,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                   );
                 } else {
                   return Container(
-                    color:commonBackgroundColor,
+                    color:backgroundColor,
                     padding: EdgeInsets.only(
                         left: displayWidth(context) * 0.04, right: displayWidth(context) * 0.04, top: 8, bottom: 0),
                     child: ListView.builder(
