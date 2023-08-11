@@ -84,7 +84,7 @@ class _TripsState extends State<Trips> {
         body: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(left: displayWidth(context) * 0.07,right: displayWidth(context) * 0.07),
+              padding: EdgeInsets.only(left: displayWidth(context) * 0.03,right: displayWidth(context) * 0.03),
               child: SearchTextField(
                   'Search by vessel, trip id, date',
                   searchController,

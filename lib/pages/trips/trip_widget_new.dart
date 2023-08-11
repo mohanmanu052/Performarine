@@ -148,7 +148,6 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                 height: displayHeight(context) * 0.1,
                 width: displayWidth(context) * 0.2,
                 decoration: BoxDecoration(
-                  color: Colors.red,
                   borderRadius: BorderRadius.circular(15),
                   image: DecorationImage(
                     fit: BoxFit.cover,
@@ -390,7 +389,6 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                                     );
                                   }
                                 },
-
                                 context: context,
                                 width: displayWidth(context) * 0.3,
                                 title: 'View Analytics')),
