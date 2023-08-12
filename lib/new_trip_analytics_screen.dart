@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -14,7 +15,9 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'common_widgets/utils/common_size_helper.dart';
 import 'common_widgets/utils/utils.dart';
+import 'common_widgets/widgets/common_buttons.dart';
 import 'common_widgets/widgets/common_widgets.dart';
+import 'common_widgets/widgets/log_level.dart';
 import 'common_widgets/widgets/user_feed_back.dart';
 import 'main.dart';
 import 'models/reports_model.dart';
@@ -29,6 +32,8 @@ class NewTripAnalyticsScreen extends StatefulWidget {
   final String? vesselId, calledFrom;
   final bool? tripIsRunningOrNot;
   final bool isAppKilled;
+  Trip? tripData;
+  VoidCallback? isTripDeleted;
    NewTripAnalyticsScreen({
      super.key, this.vesselName,
     this.avgInfo,
@@ -37,7 +42,10 @@ class NewTripAnalyticsScreen extends StatefulWidget {
      this.vessel,
     this.tripIsRunningOrNot,
     this.isAppKilled = false,
-    this.calledFrom});
+    this.calledFrom,
+     this.tripData,
+     this.isTripDeleted
+   });
 
   @override
   State<NewTripAnalyticsScreen> createState() => _NewTripAnalyticsScreenState();
@@ -79,6 +87,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
   final controller = ScreenshotController();
 
   late CommonProvider commonProvider;
+  bool isBtnClick = false,
+      isDeleteTripBtnClicked = false,
+      isDeletedSuccessfully = false;
+  StateSetter? internalStateSetter;
 
   @override
   void initState() {
@@ -130,6 +142,45 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
             textSize: displayWidth(context) * 0.032,
           ),
           actions: [
+
+            InkWell(
+              onTap: ()async{
+                Utils.customPrint("Trip id is: ${widget.tripData!.id}");
+              //  bool tripRunning = await tripIsRunningOrNot(snapshot.data![index]);
+                bool tripUploadedStatus = false;
+                if (widget.tripData!.isSync == 0){
+                  tripUploadedStatus = true;
+                }
+             //   print("status: ${widget.vessel!.}");
+                if(widget.tripData!.tripStatus == 1){
+                  showDeleteTripDialogBox(
+                      context,
+                      widget.tripData!.id!,
+                      widget.tripData!.createdAt!,
+                      widget.tripData!.time!,
+                      widget.tripData!.distance!,
+                          (){
+                        Utils.customPrint("call back for delete trip in list");
+                        //snapshot.data!.removeAt(index);
+                        // Navigator.pop(context);
+
+                      },scaffoldKey,
+                      tripUploadedStatus
+                  );
+                } else{
+                  // Future.delayed(Duration(microseconds: 500), (){
+                  //   showEndTripDialogBox(context);
+                  // });
+                }
+              },
+              child: Transform.scale(
+                scale: 0.5,
+                child: Image.asset(
+                  'assets/images/Trash.png',
+                ),
+              ),
+            ),
+
             Container(
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
@@ -1094,6 +1145,278 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         ),
       ),
     );
+  }
+
+  showDeleteTripDialogBox(BuildContext context,String tripId,String startDate, String totalTime, String distance,Function() onDeleteCallBack, GlobalKey<ScaffoldState> scaffoldKey,bool tripUploadStatus) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx,  stateSetter) {
+                return Container(
+                  height: displayHeight(ctx) * 0.45,
+                  width: MediaQuery.of(ctx).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 15.0, right: 15.0, top: 15, bottom: 15),
+                    child: Stack(
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: displayHeight(ctx) * 0.02,
+                            ),
+
+                            ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  //color: Color(0xfff2fffb),
+                                  child: Image.asset(
+                                    'assets/images/boat.gif',
+                                    height: displayHeight(ctx) * 0.12,
+                                    width: displayWidth(ctx),
+                                    fit: BoxFit.contain,
+                                  ),
+                                )),
+
+                            SizedBox(
+                              height: displayHeight(ctx) * 0.02,
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0, right: 10),
+                              child: Column(
+                                children: [
+                                  Center(
+                                    child: commonText(
+                                        context: context,
+                                        text:
+                                        'Do you want to delete the Trip? ',
+                                        fontWeight: FontWeight.w600,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(ctx) * 0.04,
+                                        textAlign: TextAlign.center),
+                                  ),
+                                  SizedBox(
+                                    height: displayHeight(ctx) * 0.005,
+                                  ),
+                                  commonText(
+                                      context: context,
+                                      text:
+                                      'This action is irreversible. do you want to delete it?',
+                                      fontWeight: FontWeight.w500,
+                                      textColor: Colors.grey,
+                                      textSize: displayWidth(ctx) * 0.035,
+                                      textAlign: TextAlign.center),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  top: 8.0,left: displayWidth(ctx) * 0.035,right: displayWidth(ctx) * 0.035
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+
+                                  isBtnClick ? Center(
+                                    child: Container(
+                                      width: displayWidth(ctx) * 0.32,
+                                      child: Center(child: CircularProgressIndicator()),
+                                    ),
+                                  ) :  CommonButtons.getAcceptButton(
+                                      'Delete Trip', context, endTripBtnColor,
+                                          () async {
+                                        internalStateSetter = stateSetter;
+                                        bool internet =
+                                        await Utils().check(scaffoldKey);
+                                        stateSetter(() {
+                                          isBtnClick = true;
+                                        });
+                                        if(internet){
+                                          stateSetter(() {
+                                            isBtnClick = true;
+                                          });
+                                          Utils.customPrint("Ok button action : $isBtnClick");
+                                          bool deletedtrip = false;
+                                          deletedtrip =  await deleteTripFunctionality(
+                                              tripId,
+                                                  (){
+                                                commonProvider.getTripsCount();
+                                               // widget.isTripDeleted!.call();
+                                                onDeleteCallBack.call();
+                                                Navigator.pop(dialogContext);
+                                              }
+                                          );
+                                        } else if(tripUploadStatus){
+                                          stateSetter(() {
+                                            isBtnClick = true;
+                                          });
+                                          DatabaseService().deleteTripFromDB(tripId).then((value)
+                                          {
+                                            deleteFilePath('${ourDirectory!.path}/${tripId}.zip');
+                                            deleteFolder('${ourDirectory!.path}/${tripId}');
+                                            commonProvider.getTripsCount();
+                                           // widget.isTripDeleted!.call();
+                                            onDeleteCallBack.call();
+
+                                            stateSetter(() {
+                                              isBtnClick = false;
+                                            });
+                                            Navigator.pop(dialogContext);
+                                            Navigator.pop(dialogContext);
+                                          });
+                                        } else{
+                                          stateSetter(() {
+                                            isBtnClick = false;
+                                          });
+                                        }
+                                      },
+                                      displayWidth(ctx) ,
+                                      displayHeight(ctx) * 0.05,
+                                      endTripBtnColor,
+                                      Colors.white,
+                                      displayHeight(ctx) * 0.02,
+                                      buttonBGColor,
+                                      '',
+                                      fontWeight: FontWeight.w700),
+
+                                  CommonButtons.getAcceptButton(
+                                      'Cancel',
+                                      context,
+                                      Colors.transparent,
+                                          (){
+                                        Navigator.pop(dialogContext);
+                                      },
+                                      displayWidth(ctx) ,
+                                      displayHeight(ctx) * 0.05,
+                                      primaryColor,
+                                      Theme.of(ctx).brightness ==
+                                          Brightness.dark
+                                          ? Colors.white
+                                          : Colors.grey,
+                                      displayHeight(ctx) * 0.02,
+                                      Colors.transparent,
+                                      '',
+                                      fontWeight: FontWeight.w700),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: displayHeight(ctx) * 0.005,
+                            ),
+                          ],
+                        ),
+
+
+                        Positioned(
+                          right: 10,
+                          top: 2,
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,),
+                            child: Center(
+                              child: IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(dialogContext);
+                                  },
+                                  icon: Icon(Icons.close_rounded, color: buttonBGColor)),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }).then((value) {
+      setState(() {
+        isBtnClick = false;
+      });
+    });
+  }
+
+  Future<void> deleteFilePath(String filePath) async {
+    try {
+      final file = File(filePath);
+      await file.delete();
+
+      Utils.customPrint('Trip deleted successfully');
+      CustomLogger().logWithFile(Level.info, "Trip deleted successfully -> $page");
+    } catch (e) {
+      CustomLogger().logWithFile(Level.error, "Failed to delete trip -> $page");
+      Utils.customPrint('Failed to delete trip: $e');
+    }
+  }
+
+
+  void deleteFolder(String folderPath) async {
+    Directory directory = Directory(folderPath);
+
+    if (await directory.exists()) {
+      try {
+        await directory.delete(recursive: true);
+        print('Folder deleted successfully.');
+      } catch (e) {
+        print('Error while deleting folder: $e');
+      }
+    } else {
+      print('Folder does not exist.');
+    }
+  }
+
+  bool deleteTripFunctionality(String tripId,VoidCallback onDeleteCallBack)
+  {
+    try{
+      commonProvider.deleteTrip(context, commonProvider.loginModel!.token!, tripId, scaffoldKey).then((value) {
+        if(value != null)
+        {
+          if(value.status!)
+          {
+            isDeletedSuccessfully = value.status!;
+            DatabaseService().deleteTripFromDB(tripId).then((value)
+            {
+              deleteFilePath('${ourDirectory!.path}/${tripId}.zip');
+              deleteFolder('${ourDirectory!.path}/${tripId}');
+              setState(() {
+                isDeleteTripBtnClicked = false;
+              });
+            });
+            Navigator.pop(context);
+
+            setState(() {
+            //  widget.isTripDeleted!.call();
+              isBtnClick = false;
+              isDeleteTripBtnClicked = false;
+            });
+          }
+        } else{
+          setState(() {
+            isBtnClick = false;
+          });
+        }
+      }).catchError((e){
+        internalStateSetter!(() {
+          isBtnClick = false;
+        });
+      });
+    } catch(e){
+      internalStateSetter!(() {
+        isBtnClick = false;
+      });
+    }
+    return isDeletedSuccessfully;
   }
 
   getData() async {
