@@ -75,6 +75,7 @@ class _TripsState extends State<Trips> {
               ),
             ],
           ),
+
         ),
       ),
     );

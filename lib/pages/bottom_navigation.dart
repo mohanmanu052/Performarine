@@ -187,7 +187,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
             text: _bottomNavIndex == 0 ? 'Dashboard'
                 : _bottomNavIndex == 1
                 ? 'Reports'
-                : _bottomNavIndex == 3 ? 'Trips' : '' ,
+                : _bottomNavIndex == 3 ? 'Trips' : 'Profile' ,
             fontWeight: FontWeight.w700,
             textColor: Colors.black87,
             textSize: displayWidth(context) * 0.05,

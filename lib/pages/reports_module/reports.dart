@@ -2461,7 +2461,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                     child: Padding(
                       padding: EdgeInsets.only(
                           left: displayWidth(context) * 0.04,
-                          right: displayWidth(context) * 0.05),
+                          right: displayWidth(context) * 0.04),
                       child: Row(
                         children: [
                           Text(

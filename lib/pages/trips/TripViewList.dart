@@ -257,6 +257,7 @@ class _TripViewListState extends State<TripViewList> {
           }
           return Container();
         },
+
       ),
     );
   }

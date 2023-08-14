@@ -41,6 +41,7 @@ class CustomDrawer extends StatefulWidget {
 class _CustomDrawerState extends State<CustomDrawer> {
   final DatabaseService _databaseService = DatabaseService();
   late double textSize;
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   String? currentVersion;
   late CommonProvider commonProvider;
@@ -101,7 +102,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             SizedBox(height: displayHeight(context) * 0.005,),
                             Flexible(
                               child: Text(
-                                "${commonProvider.loginModel!.userEmail} !",
+                                "${commonProvider.loginModel!.userEmail}",
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontWeight: FontWeight.w500,
@@ -321,7 +322,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             textSize: textSize,
                             textAlign: TextAlign.start),
                       ),
-                      DropdownButton<String>(
+                   /*   DropdownButton<String>(
                         focusColor:Colors.transparent,
                         value: chosenValue,
                         //elevation: 5,
@@ -369,7 +370,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             }
                           });
                         },
-                      ),
+                      ), */
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
@@ -516,7 +517,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         }
                       } else {
                         if (vesselsSyncDetails || tripSyncDetails) {
-                          showDialogBox(context, widget.scaffoldKey!);
+                          showDialogBox(context, scaffoldKey);
                         } else {
                           signOut();
                         }
@@ -993,7 +994,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   getVesselFuture[i],
                   commonProvider.loginModel!.userId!,
                   commonProvider.loginModel!.token!,
-                  widget.scaffoldKey!,
+                  scaffoldKey,
                   calledFromSignOut: true)
               .then((value) async {
             if (value!.status!) {
@@ -1086,7 +1087,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       : '${tripDir.path}/${getTrip[i].id}.zip'),
                   queryParameters,
                   getTrip[i].id!,
-                  widget.scaffoldKey!,
+                  scaffoldKey,
                   calledFromSignOut: true)
               .then((value) async {
             if (value!.status!) {
