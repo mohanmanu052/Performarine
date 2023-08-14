@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
+import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -1232,7 +1233,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                       child: Center(child: CircularProgressIndicator()),
                                     ),
                                   ) :  CommonButtons.getAcceptButton(
-                                      'Delete Trip', context, endTripBtnColor,
+                                      'Confirm & Delete', context, deleteTripBtnColor,
                                           () async {
                                         internalStateSetter = stateSetter;
                                         bool internet =
@@ -1249,10 +1250,16 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                           deletedtrip =  await deleteTripFunctionality(
                                               tripId,
                                                   (){
-                                                commonProvider.getTripsCount();
-                                               // widget.isTripDeleted!.call();
-                                                onDeleteCallBack.call();
-                                                Navigator.pop(dialogContext);
+                                                setState(() {
+                                                  // widget.isTripDeleted!.call();
+                                                  Navigator.pop(dialogContext);
+                                                //  Navigator.pop(context);
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) => BottomNavigation()),
+                                                      ModalRoute.withName(""));
+                                                });
                                               }
                                           );
                                         } else if(tripUploadStatus){
@@ -1272,6 +1279,11 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                             });
                                             Navigator.pop(dialogContext);
                                             Navigator.pop(dialogContext);
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => BottomNavigation()),
+                                                ModalRoute.withName(""));
                                           });
                                         } else{
                                           stateSetter(() {
@@ -1280,11 +1292,11 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                         }
                                       },
                                       displayWidth(ctx) ,
-                                      displayHeight(ctx) * 0.05,
-                                      endTripBtnColor,
+                                      displayHeight(ctx) * 0.07,
+                                      deleteTripBtnColor,
                                       Colors.white,
                                       displayHeight(ctx) * 0.02,
-                                      buttonBGColor,
+                                      deleteTripBtnColor,
                                       '',
                                       fontWeight: FontWeight.w700),
 
@@ -1341,9 +1353,13 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
             ),
           );
         }).then((value) {
-      setState(() {
-        isBtnClick = false;
-      });
+         if(value == null) {
+           setState(() {
+             isBtnClick = false;
+           });
+           widget.isTripDeleted!.call();
+           return;
+         }
     });
   }
 
@@ -1393,10 +1409,11 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                 isDeleteTripBtnClicked = false;
               });
             });
-            Navigator.pop(context);
+            onDeleteCallBack.call();
+            // Navigator.pop(context);
+            // Navigator.of(context).pop(true);
 
-            setState(() {
-            //  widget.isTripDeleted!.call();
+            internalStateSetter!(() {
               isBtnClick = false;
               isDeleteTripBtnClicked = false;
             });

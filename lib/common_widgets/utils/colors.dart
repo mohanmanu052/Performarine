@@ -40,5 +40,7 @@ const statusTagCompletedColor = Color(0xFF5BC096);
 const statusTagProgressColor = Color(0xFFE19C16);
 const authBtnColors = Color(0xFFDFF9F9);
 const bottomNavColor = Color(0xFFF8FFFF);
+const filterByTripTxtColor = Color(0xFF979797);
+const deleteTripBtnColor = Color(0xFFFF2020);
 
 

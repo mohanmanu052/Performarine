@@ -10,8 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-import 'package:performarine/pages/auth/sign_in_screen.dart';
-import 'package:performarine/pages/auth/sign_up_screen.dart';
+import 'package:performarine/pages/auth_new/sign_in_screen.dart';
+import 'package:performarine/pages/auth_new/sign_up_screen.dart';
 import 'package:uni_links/uni_links.dart';
 
 import '../analytics/location_callback_handler.dart';
