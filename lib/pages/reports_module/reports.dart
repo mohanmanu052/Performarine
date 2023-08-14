@@ -754,48 +754,6 @@ class _ReportsModuleState extends State<ReportsModule> {
       child: Scaffold(
         backgroundColor: backgroundColor,
         key: scaffoldKey,
-        /*appBar: AppBar(
-          backgroundColor: commonBackgroundColor,
-          elevation: 0,
-          leading: InkWell(
-            onTap: () {
-              scaffoldKey.currentState!.openDrawer();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Image.asset(
-                'assets/icons/menu.png',
-              ),
-            ),
-          ),
-          title: Container(
-            child: commonText(
-              context: context,
-              text: 'Reports',
-              fontWeight: FontWeight.w600,
-              textColor: Colors.black87,
-              textSize: displayWidth(context) * 0.045,
-            ),
-          ),
-          actions: [
-            Container(
-              margin: EdgeInsets.only(right: 8),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BottomNavigation()),
-                      ModalRoute.withName(""));
-                },
-                icon: Image.asset('assets/images/home.png'),
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
-              ),
-            ),
-          ],
-        ),*/
         body: SingleChildScrollView(
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
@@ -828,8 +786,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                         "Search & Filters",
                         style: TextStyle(
                             color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            fontSize: displayWidth(context) * 0.043,
                             fontFamily: outfit),
                       ),
                       trailing: isExpandedTile
@@ -922,7 +880,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                                     displayWidth(context) *
                                                         0.034,
                                                 fontFamily: outfit,
-                                                fontWeight: FontWeight.w600),
+                                                fontWeight: FontWeight.w300),
                                           ),
                                           isExpanded: true,
                                           isDense: true,
@@ -1092,7 +1050,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           fontSize:
                                               displayWidth(context) * 0.034,
                                           fontFamily: outfit,
-                                          fontWeight: FontWeight.w600),
+                                          fontWeight: FontWeight.w300),
                                     ),
                                     isExpanded: true,
                                     isDense: true,
@@ -1318,7 +1276,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                             Brightness.dark
                                         ? Colors.white
                                         : Colors.white,
-                                    displayHeight(context) * 0.022,
+                                    displayHeight(context) * 0.021,
                                     blueColor,
                                     '',
                                   ),
@@ -1375,7 +1333,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(
-                                      height: displayWidth(context) * 0.07,
+                                      height: displayWidth(context) * 0.055,
                                     ),
                                     vesselDetails(context),
                                     SizedBox(
@@ -2502,7 +2460,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         color: dateBackgroundColor),
                     child: Padding(
                       padding: EdgeInsets.only(
-                          left: displayWidth(context) * 0.05,
+                          left: displayWidth(context) * 0.04,
                           right: displayWidth(context) * 0.05),
                       child: Row(
                         children: [
@@ -2510,7 +2468,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                             pickStartDate!,
                             style: TextStyle(
                                 fontSize: 15,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w500,
                                 fontFamily: inter),
                           ),
                           SizedBox(
@@ -2545,7 +2503,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         color: dateBackgroundColor),
                     child: Padding(
                       padding: EdgeInsets.only(
-                          left: displayWidth(context) * 0.05,
+                          left: displayWidth(context) * 0.038,
                           right: displayWidth(context) * 0.05),
                       child: Row(
                         children: [

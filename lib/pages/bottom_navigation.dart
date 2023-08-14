@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/pages/coming_soon_screen.dart';
 import 'package:performarine/pages/dashboard/dashboard.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lpr_bluetooth_list.dart';
@@ -57,14 +58,14 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     "assets/icons/Home.png",
     "assets/icons/reports.png",
     "assets/icons/trips.png",
-    "assets/icons/vessels.png",
+    "assets/icons/profile.png",
   ];
 
   final selectList = [
     "assets/icons/Home_select.png",
     "assets/icons/reports_select.png",
     "assets/icons/trips_select.png",
-    "assets/icons/vessel_select.png",
+    "assets/icons/profile_select.png",
   ];
 
   final bottomTabNames = [
@@ -79,7 +80,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     "Reports",
     "Start Trip",
     "Trips",
-    "Vessels"
+    "Profile"
   ];
 
 
@@ -155,7 +156,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
       ReportsModule(),
       StartTripRecordingScreen(),
       Trips(),
-      HomePage(),
+      ComingSoonScreen()
     ];
 
     return WillPopScope(

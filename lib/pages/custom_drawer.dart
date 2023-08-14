@@ -16,17 +16,12 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
-import 'package:performarine/pages/auth/change_password.dart';
-import 'package:performarine/pages/auth/sign_in_screen.dart';
-import 'package:performarine/pages/home_page.dart';
-import 'package:performarine/pages/reports/search_and_filters.dart';
-import 'package:performarine/pages/reports_module/reports.dart';
+import 'package:performarine/pages/auth_new/change_password.dart';
+import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
-import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/pages/web_navigation/privacy_and_policy_web_view.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
@@ -250,7 +245,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      InkWell(
+                   /*   InkWell(
                         onTap: () {
                           CustomLogger().logWithFile(Level.info, "User Navigating to Search and Filter -> $page");
                           Navigator.of(context).pop();
@@ -271,7 +266,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
-                      ),
+                      ), */
                       InkWell(
                         onTap: () async {
                           bool? isTripStarted =

@@ -32,7 +32,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   TextEditingController emailController = TextEditingController();
   FocusNode emailFocusNode = FocusNode();
   late CommonProvider commonProvider;
-  bool? isBtnClick = false;
+  bool? isBtnClick = false,isLinkSuccess = false;
 
   String page = "forgot_password";
 
@@ -129,6 +129,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           bool check = await Utils().check(scaffoldKey);
                           if(check){
                             setState(() {
+                              isLinkSuccess = false;
                               isBtnClick = true;
                             });
                             commonProvider.forgotPassword(context, emailController.text.toLowerCase().trim(), scaffoldKey).then((value){
@@ -141,6 +142,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
                                 if(value.statusCode == 200){
                                   CustomLogger().logWithFile(Level.info, "User navigating to Sign in Screen -> $page");
+                                  setState(() {
+                                    isLinkSuccess = true;
+                                  });
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
@@ -171,26 +175,32 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     height: displayHeight(context) * 0.11,
                   ),
 
-                  Container(
-                    height: displayHeight(context) * 0.08,
-                    decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                    child: Image.asset(
-                      'assets/images/success_image.png',
-                      height: displayHeight(context) * 0.25,
-                    ),),
+                  isLinkSuccess! ?  Column(
+                    children: [
+                      Container(
+                        height: displayHeight(context) * 0.08,
+                        decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                        child: Image.asset(
+                          'assets/images/success_image.png',
+                          height: displayHeight(context) * 0.25,
+                        ),),
 
-                  SizedBox(
-                    height: displayHeight(context) * 0.03,
+                      SizedBox(
+                        height: displayHeight(context) * 0.03,
+                      ),
+
+                      commonText(
+                          context: context,
+                          text: 'Reset Link sent successfully!',
+                          fontWeight: FontWeight.w500,
+                          textColor: blueColor,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start),
+                    ],
+                  ) : SizedBox(
+                    height: displayHeight(context) * 0.12,
                   ),
-
-                  commonText(
-                      context: context,
-                      text: 'Reset Link sent successfully!',
-                      fontWeight: FontWeight.w500,
-                      textColor: blueColor,
-                      textSize: displayWidth(context) * 0.03,
-                      textAlign: TextAlign.start),
 
                   SizedBox(
                     height: displayHeight(context) * 0.18,

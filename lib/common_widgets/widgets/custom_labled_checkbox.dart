@@ -241,7 +241,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                  ),
 
                  SizedBox(
-                   height: displayHeight(context) * 0.008,
+                   height: displayHeight(context) * 0.005,
                  ),
 
                  Text(
@@ -250,7 +250,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                        fontWeight: FontWeight.w400,
                        fontFamily: poppins,
                        fontSize: displayWidth(context) * 0.026,
-                       color: blutoothDialogTxtColor),
+                       color: filterByTripTxtColor),
                  ),
                ],
              ),
@@ -260,10 +260,10 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
              ),
 
              VerticalDivider(
-               indent: displayHeight(context) * 0.02,
-               endIndent: displayHeight(context) * 0.02,
+               indent: displayHeight(context) * 0.024,
+               endIndent: displayHeight(context) * 0.024,
                width: 3,
-               thickness: 1.5,
+               thickness: 1.3,
                color: Colors.black,
              ),
              SizedBox(
@@ -284,7 +284,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                  ),
 
                  SizedBox(
-                   height: displayHeight(context) * 0.008,
+                   height: displayHeight(context) * 0.005,
                  ),
 
                  Text(
@@ -293,7 +293,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                        fontWeight: FontWeight.w400,
                        fontFamily: poppins,
                        fontSize: displayWidth(context) * 0.026,
-                       color: blutoothDialogTxtColor),
+                       color: filterByTripTxtColor),
                  ),
                ],
              ),
@@ -303,10 +303,10 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
              ),
 
              VerticalDivider(
-               indent: displayHeight(context) * 0.02,
-               endIndent: displayHeight(context) * 0.02,
+               indent: displayHeight(context) * 0.024,
+               endIndent: displayHeight(context) * 0.024,
                width: 3,
-               thickness: 1.5,
+               thickness: 1.3,
                color: Colors.black,
              ),
              SizedBox(
@@ -336,7 +336,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                        fontWeight: FontWeight.w400,
                        fontFamily: poppins,
                        fontSize: displayWidth(context) * 0.026,
-                       color: blutoothDialogTxtColor),
+                       color: filterByTripTxtColor),
                  ),
                ],
              ),

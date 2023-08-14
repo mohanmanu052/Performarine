@@ -58,8 +58,9 @@ import 'feedback_report.dart';
 class VesselSingleView extends StatefulWidget {
   CreateVessel? vessel;
   final bool? isCalledFromSuccessScreen;
+  final VoidCallback? isTripDeleted;
 
-  VesselSingleView({this.vessel, this.isCalledFromSuccessScreen = false});
+  VesselSingleView({this.vessel, this.isCalledFromSuccessScreen = false,this.isTripDeleted});
   @override
   State createState() {
     return VesselSingleViewState();
@@ -190,6 +191,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
       avgSpeed = '0',
       tripsCount = '0',
       totalDuration = "00:00:00";
+
+  @override
+  void didUpdateWidget(covariant VesselSingleView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("came to vessel single view screen.");
+    getVesselAnalytics(widget.vessel!.id!);
+  }
 
   @override
   void initState() {
