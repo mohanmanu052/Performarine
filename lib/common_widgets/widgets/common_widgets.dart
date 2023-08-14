@@ -796,7 +796,9 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                       borderColor: blueColor,
                       width: displayWidth(context) * 0.26,
                       height: displayHeight(context) * 0.045,
-                      onTap: () async {}),
+                      onTap: () async {
+                        onTap(vesselData);
+                      }),
                   SizedBox(
                     width: displayWidth(context) * 0.02,
                   ),
