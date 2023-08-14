@@ -158,7 +158,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     text: widget.isEdit!
                         ? 'Vessel Updated Successfully'
                         : 'Vessel Added Successfully',
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                     textColor: blueColor,
                     textSize: displayWidth(context) * 0.05,
                     textAlign: TextAlign.start),
@@ -606,13 +606,12 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                 ),
 
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
                   color: Color(0xFFECF3F9),
                   borderRadius: BorderRadius.all(Radius.circular(15))
               ),
               child: Padding(
-                padding: EdgeInsets.all(6.0),
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
                 child: Column(
                   children: [
                     Theme(

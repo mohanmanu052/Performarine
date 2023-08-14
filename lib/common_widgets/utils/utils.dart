@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
@@ -288,10 +289,13 @@ class Utils {
         context: context,
         builder: (BuildContext dialogContext) {
           return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.24,
+                  height: displayHeight(context) * 0.45,
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -303,79 +307,80 @@ class Utils {
                         SizedBox(
                           height: displayHeight(context) * 0.02,
                         ),
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(context) * 0.1,
+                                width: displayWidth(context),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 8),
                           child: commonText(
                               context: context,
                               text: 'Are you sure, you want to End the Trip?',
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w400,
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.042,
-                              textAlign: TextAlign.center),
+                              textAlign: TextAlign.center, fontFamily: outfit),
                         ),
                         SizedBox(
-                          height: displayHeight(context) * 0.02,
+                          height: displayHeight(context) * 0.01,
                         ),
-                        Row(
+                        Column(
                           children: [
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.white
-                                            : Colors.grey)),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Cancel',
-                                      context,
-                                      Colors.transparent,
-                                      onCancelClick,
-                                      displayWidth(context) * 0.5,
-                                      displayHeight(context) * 0.05,
-                                      primaryColor,
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      displayHeight(context) * 0.015,
-                                      Colors.transparent,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: 10,
+                                  right: 10
+                              ),
+                              child: Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'End Trip',
+                                    context,
+                                    blueColor,
+                                    endTripBtnClick,
+                                    displayWidth(context) ,
+                                    displayHeight(context) * 0.05,
+                                    primaryColor,
+                                    Colors.white,
+                                    displayHeight(context) * 0.018,
+                                    blueColor,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                             SizedBox(
-                              width: 15.0,
+                              height: 8.0,
                             ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'OK',
-                                      context,
-                                      buttonBGColor,
-                                      endTripBtnClick,
-                                      displayWidth(context) * 0.5,
-                                      displayHeight(context) * 0.05,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.015,
-                                      buttonBGColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
+                            Center(
+                              child: CommonButtons.getAcceptButton(
+                                  'Cancel', context, Colors.transparent, onCancelClick,
+                                  displayWidth(context) * 0.65,
+                                  displayHeight(context) * 0.054,
+                                  primaryColor,
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                      ? Colors.white
+                                      : blueColor,
+                                  displayHeight(context) * 0.018,
+                                  Colors.white,
+                                  '',
+                                  fontWeight: FontWeight.w500),
                             ),
                           ],
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
                         ),
                       ],
                     ),

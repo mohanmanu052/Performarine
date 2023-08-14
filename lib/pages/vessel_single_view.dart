@@ -329,7 +329,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               ),
             ],
           ),
-          drawer: CustomDrawer(),
+          drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
           body: Container(
             color: Colors.white,
             //margin: EdgeInsets.only(bottom: 4),
@@ -2944,7 +2944,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         ),
 
                         Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          padding: const EdgeInsets.only(left: 14.0, right: 14),
                           child: Column(
                             children: [
                               commonText(
@@ -2953,7 +2953,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   'There is a trip in progress from another Vessel. Please end the trip and come back here',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black87,
-                                  textSize: displayWidth(context) * 0.038,
+                                  textSize: displayWidth(context) * 0.04,
                                   textAlign: TextAlign.center),
                             ],
                           ),

@@ -82,229 +82,182 @@ class _TripViewListState extends State<TripViewList> {
 
     return Screenshot(
       controller: controller,
-      child: Container(
-        //height: displayHeight(context) * 0.737,
-        child: FutureBuilder<List<Trip>>(
-          future: commonProvider.getTripsByIdFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return SizedBox(
-                height: displayHeight(context),
+      child: FutureBuilder<List<Trip>>(
+        future: commonProvider.getTripsByIdFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return SizedBox(
+              height: displayHeight(context),
+              child: Center(
+                child: CircularProgressIndicator(
+                  valueColor:
+                  AlwaysStoppedAnimation<Color>(circularProgressColor),
+                ),
+              ),
+            );
+          }
+
+          if (snapshot.hasData) {
+            if (snapshot.data!.isEmpty) {
+              return Container(
+                height: displayHeight(context) / 1.5,
                 child: Center(
-                  child: CircularProgressIndicator(
-                    valueColor:
-                    AlwaysStoppedAnimation<Color>(circularProgressColor),
-                  ),
+                  child: commonText(
+                      text: 'oops! No Trips are added yet',
+                      context: context,
+                      textSize: displayWidth(context) * 0.04,
+                      textColor: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                      fontWeight: FontWeight.w500),
+                ),
+              );
+            } else {
+              return snapshot.data != null
+                  ? StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setter) {
+                    Utils.customPrint("TRIP DETAILS ${snapshot.data!.length}");
+                    Utils.customPrint(
+                        "TRIP DETAILS 1 ${snapshot.data![0].distance}");
+                    return Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, top: 8.0),
+                        child: ListView.builder(
+                          physics: AlwaysScrollableScrollPhysics(),
+                          primary: false,
+                          shrinkWrap: true,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            final itemKey = ValueKey(index);
+                            return snapshot.data!.isNotEmpty
+                                ? TripWidgetNew(
+                                scaffoldKey: widget.scaffoldKey,
+                                tripList: snapshot.data![index],
+                                calledFrom: widget.calledFrom,
+                                onTripEnded: (){
+                                  if(mounted){
+                                    setState(() {
+                                      print("Call back for delete trips in list");
+                                    });
+                                  }
+                                },
+                                tripUploadedSuccessfully: () {
+                                  if (mounted) {
+                                    setState(() {
+                                      isTripUploaded = true;
+                                      commonProvider.getTripsByVesselId(
+                                          widget.vesselId);
+                                      future = _databaseService.trips();
+                                      //snapshot.data![index].tripStatus = 1;
+                                    });
+                                  }
+                                  commonProvider.getTripsCount();
+                                },
+                                onTap: () async {
+
+                                  final currentTrip = await _databaseService
+                                      .getTrip(snapshot.data![index].id!);
+
+                                  DateTime createdAtTime = DateTime.parse(
+                                      currentTrip.createdAt!);
+
+                                  var durationTime = DateTime.now()
+                                      .toUtc()
+                                      .difference(createdAtTime);
+                                  String tripDuration =
+                                  Utils.calculateTripDuration(
+                                      ((durationTime.inMilliseconds) /
+                                          1000)
+                                          .toInt());
+                                  debugPrint("DURATION !!!!!! $tripDuration");
+
+                                  bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+
+                                  if(!isSmallTrip)
+                                  {
+                                    Utils().showDeleteTripDialog(context,
+                                        endTripBtnClick: (){
+                                          endTripMethod(tripDuration, snapshot.data![index]);
+                                          debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
+
+                                          Future.delayed(Duration(seconds: 1), (){
+                                            if(!isSmallTrip)
+                                            {
+                                              debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
+                                              DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
+                                            }
+                                          });
+                                        }, onCancelClick: (){
+                                          Navigator.of(context).pop();
+                                        }
+                                    );
+                                  }
+                                  else
+                                  {
+                                    Utils().showEndTripDialog(context,
+                                            () async {
+
+                                          final currentTrip = await _databaseService
+                                              .getTrip(snapshot.data![index].id!);
+
+                                          DateTime createdAtTime = DateTime.parse(
+                                              currentTrip.createdAt!);
+
+                                          var durationTime = DateTime.now()
+                                              .toUtc()
+                                              .difference(createdAtTime);
+                                          String tripDuration =
+                                          Utils.calculateTripDuration(
+                                              ((durationTime.inMilliseconds) /
+                                                  1000)
+                                                  .toInt());
+                                          debugPrint("DURATION !!!!!! $tripDuration");
+
+                                          endTripMethod(tripDuration, snapshot.data![index]);
+
+                                          return;
+                                        }, () {
+                                          Navigator.of(context).pop();
+                                        });
+                                  }
+                                })
+                                : Container(
+                              height: displayHeight(context) / 1.5,
+                              child: Center(
+                                child: commonText(
+                                    text: 'oops! No Trips are added yet',
+                                    context: context,
+                                    textSize: displayWidth(context) * 0.04,
+                                    textColor:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            );
+                          },
+                        ),);
+                  })
+                  : Container(
+                height: displayHeight(context) / 1.5,
+                child: Center(
+                  child: commonText(
+                      text: 'oops! No Trips are added yet',
+                      context: context,
+                      textSize: displayWidth(context) * 0.04,
+                      textColor:
+                      Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                      fontWeight: FontWeight.w500),
                 ),
               );
             }
+          }
+          return Container();
+        },
 
-            if (snapshot.hasData) {
-              if (snapshot.data!.isEmpty) {
-                return Container(
-                  height: displayHeight(context) / 1.5,
-                  child: Center(
-                    child: commonText(
-                        text: 'oops! No Trips are added yet',
-                        context: context,
-                        textSize: displayWidth(context) * 0.04,
-                        textColor: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                        fontWeight: FontWeight.w500),
-                  ),
-                );
-              } else {
-                return snapshot.data != null
-                    ? StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setter) {
-                      Utils.customPrint("TRIP DETAILS ${snapshot.data!.length}");
-                      Utils.customPrint(
-                          "TRIP DETAILS 1 ${snapshot.data![0].distance}");
-                      return Padding(
-                          padding: const EdgeInsets.only(
-                              left: 8.0, right: 8.0, top: 8.0),
-                          child: SlidableAutoCloseBehavior(
-                            child: ListView.builder(
-                              physics: AlwaysScrollableScrollPhysics(),
-                              primary: false,
-                              shrinkWrap: true,
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) {
-                                final itemKey = ValueKey(index);
-                                return snapshot.data!.isNotEmpty
-                                    ? Slidable(
-                                  key: itemKey,
-                             /*     endActionPane: snapshot.data![index].tripStatus == 0 ? null : ActionPane(
-                                      extentRatio: 0.25,
-                                      motion: ScrollMotion(),
-                                      children: [
-                                        SlidableAction(
-                                          onPressed: (BuildContext context)async{
-                                            Utils.customPrint("Trip id is: ${snapshot.data![index].id!}");
-                                            bool tripRunning = await tripIsRunningOrNot(snapshot.data![index]);
-                                            bool tripUploadedStatus = false;
-                                            if (snapshot.data![index].isSync == 0){
-                                              tripUploadedStatus = true;
-                                            }
-                                            print("status: ${snapshot.data![index].tripStatus}");
-                                            if(snapshot.data![index].tripStatus == 1){
-                                              showDeleteTripDialogBox(
-                                                  context,
-                                                  snapshot.data![index].id!,
-                                                  snapshot.data![index].createdAt!,
-                                                  snapshot.data![index].time!,
-                                                  snapshot.data![index].distance!,
-                                                      (){
-                                                    Utils.customPrint("call back for delete trip in list");
-                                                    snapshot.data!.removeAt(index);
-                                                    // Navigator.pop(context);
-
-                                                  },widget.scaffoldKey!,
-                                                  tripUploadedStatus
-                                              );
-                                            } else{
-                                              // Future.delayed(Duration(microseconds: 500), (){
-                                              //   showEndTripDialogBox(context);
-                                              // });
-                                            }
-                                          },
-                                          icon: Icons.delete,
-                                          foregroundColor: Colors.black,
-                                          backgroundColor: Colors.transparent,
-                                          label: "Delete",
-                                        )
-                                      ]), */
-                                  child: TripWidgetNew(
-                                      scaffoldKey: widget.scaffoldKey,
-                                      tripList: snapshot.data![index],
-                                      calledFrom: widget.calledFrom,
-                                      onTripEnded: (){
-                                        if(mounted){
-                                          setState(() {
-                                            print("Call back for delete trips in list");
-                                          });
-                                        }
-                                      },
-                                      tripUploadedSuccessfully: () {
-                                        if (mounted) {
-                                          setState(() {
-                                            isTripUploaded = true;
-                                            commonProvider.getTripsByVesselId(
-                                                widget.vesselId);
-                                            future = _databaseService.trips();
-                                            //snapshot.data![index].tripStatus = 1;
-                                          });
-                                        }
-                                        commonProvider.getTripsCount();
-                                      },
-                                      onTap: () async {
-
-                                        final currentTrip = await _databaseService
-                                            .getTrip(snapshot.data![index].id!);
-
-                                        DateTime createdAtTime = DateTime.parse(
-                                            currentTrip.createdAt!);
-
-                                        var durationTime = DateTime.now()
-                                            .toUtc()
-                                            .difference(createdAtTime);
-                                        String tripDuration =
-                                        Utils.calculateTripDuration(
-                                            ((durationTime.inMilliseconds) /
-                                                1000)
-                                                .toInt());
-                                        debugPrint("DURATION !!!!!! $tripDuration");
-
-                                        bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
-
-                                        if(!isSmallTrip)
-                                        {
-                                          Utils().showDeleteTripDialog(context,
-                                              endTripBtnClick: (){
-                                                endTripMethod(tripDuration, snapshot.data![index]);
-                                                debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
-
-                                                Future.delayed(Duration(seconds: 1), (){
-                                                  if(!isSmallTrip)
-                                                  {
-                                                    debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
-                                                    DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
-                                                  }
-                                                });
-                                              }, onCancelClick: (){
-                                                Navigator.of(context).pop();
-                                              }
-                                          );
-                                        }
-                                        else
-                                        {
-                                          Utils().showEndTripDialog(context,
-                                                  () async {
-
-                                                final currentTrip = await _databaseService
-                                                    .getTrip(snapshot.data![index].id!);
-
-                                                DateTime createdAtTime = DateTime.parse(
-                                                    currentTrip.createdAt!);
-
-                                                var durationTime = DateTime.now()
-                                                    .toUtc()
-                                                    .difference(createdAtTime);
-                                                String tripDuration =
-                                                Utils.calculateTripDuration(
-                                                    ((durationTime.inMilliseconds) /
-                                                        1000)
-                                                        .toInt());
-                                                debugPrint("DURATION !!!!!! $tripDuration");
-
-                                                endTripMethod(tripDuration, snapshot.data![index]);
-
-                                                return;
-                                              }, () {
-                                                Navigator.of(context).pop();
-                                              });
-                                        }
-                                      }),
-                                )
-                                    : Container(
-                                  height: displayHeight(context) / 1.5,
-                                  child: Center(
-                                    child: commonText(
-                                        text: 'oops! No Trips are added yet',
-                                        context: context,
-                                        textSize: displayWidth(context) * 0.04,
-                                        textColor:
-                                        Theme.of(context).brightness ==
-                                            Brightness.dark
-                                            ? Colors.white
-                                            : Colors.black,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                );
-                              },
-                            ),
-                          ));
-                    })
-                    : Container(
-                  height: displayHeight(context) / 1.5,
-                  child: Center(
-                    child: commonText(
-                        text: 'oops! No Trips are added yet',
-                        context: context,
-                        textSize: displayWidth(context) * 0.04,
-                        textColor:
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                        fontWeight: FontWeight.w500),
-                  ),
-                );
-              }
-            }
-            return Container();
-          },
-        ),
       ),
     );
   }

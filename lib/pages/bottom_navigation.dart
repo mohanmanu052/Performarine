@@ -166,7 +166,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
       child: Scaffold(
         key: scaffoldKey,
         resizeToAvoidBottomInset: false,
-        drawer: CustomDrawer(),
+        drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
         appBar: AppBar(
           backgroundColor: backgroundColor,
           elevation: 0,
@@ -222,9 +222,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                 indicatorWeight: 18,
                   labelPadding: EdgeInsets.zero,
                   onTap: (index) async{
-                    setState(() {
-                      _bottomNavIndex = index;
-                    });
+
 
                     if(index == 2){
                       if(mounted) {
@@ -587,6 +585,11 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
 
                         });
                       }
+                    }
+                    else{
+                      setState(() {
+                        _bottomNavIndex = index;
+                      });
                     }
                   },
                   labelColor: Colors.white,
@@ -1299,8 +1302,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
             isLocationPermitted: isLocationPermitted,
-            isBluetoothConnected: isBluetoothConnected,
-          isCalledFrom: 'bottomSheet')));
+            isBluetoothConnected: isBluetoothConnected,)));
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
@@ -1346,8 +1348,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
           });
           Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
               isLocationPermitted: isLocationPermitted,
-              isBluetoothConnected: isBluetoothConnected,
-            isCalledFrom: 'bottomSheet',)));
+              isBluetoothConnected: isBluetoothConnected,)));
         }
       }
     } else {
@@ -1396,8 +1397,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
         });
         Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
             isLocationPermitted: isLocationPermitted,
-            isBluetoothConnected: isBluetoothConnected,
-          isCalledFrom: 'bottomSheet',)));
+            isBluetoothConnected: isBluetoothConnected,)));
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
@@ -1444,7 +1444,6 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
           Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
               isLocationPermitted: isLocationPermitted,
               isBluetoothConnected: isBluetoothConnected,
-            isCalledFrom: 'bottomSheet',
           )));
         }
       }

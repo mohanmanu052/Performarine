@@ -133,8 +133,93 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
                 SizedBox(height: displayHeight(context) * 0.05,),
 
+                Container(
+                  width: displayWidth(context),
+                  height: displayHeight(context) * 0.13,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Color(0xffECF3F9)
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                    child: Row(
+                     // crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+
+                        commonText(
+                          context: context,
+                          text: 'Fuel Cost',
+                          fontWeight: FontWeight.w400,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.036,
+                        ),
+
+                        SizedBox(width: displayWidth(context) * 0.005,),
+
+                        SizedBox(
+                          height: displayHeight(context) * 0.12,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+
+                              Row(
+                                children: [
+
+                                  commonText(
+                                    context: context,
+                                    text: '36',
+                                    fontWeight: FontWeight.w700,
+                                    textColor: Colors.black,
+                                    textSize: displayWidth(context) * 0.1,
+                                  ),
+
+                                  SizedBox(width: displayWidth(context) * 0.01,),
+
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          commonText(
+                                            context: context,
+                                            text: '\$',
+                                            fontWeight: FontWeight.w700,
+                                            textColor: Colors.black,
+                                            textSize: displayWidth(context) * 0.055,
+                                          ),
+
+                                          Icon(Icons.arrow_downward_outlined, color: floatingBtnColor, size: displayHeight(context) * 0.03,)
+                                        ],
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: 'Per hour',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.03,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+
+                              SizedBox(height: displayHeight(context) * 0.005,),
+
+
+                            ],
+                          ),
+                        ),
+                        
+                        Image.asset('assets/icons/fuel_cost_img.png', height: displayHeight(context) * 0.05,),
+                      ],
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: displayHeight(context) * 0.015,),
+
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
 
                     Container(
@@ -154,7 +239,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                             text: 'Distance',
                             fontWeight: FontWeight.w400,
                             textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.032,
+                            textSize: displayWidth(context) * 0.036,
                           ),
 
                           SizedBox(height: displayHeight(context) * 0.005,),
@@ -174,13 +259,13 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                             text: 'Nautical Miles',
                             fontWeight: FontWeight.w400,
                             textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.028,
+                            textSize: displayWidth(context) * 0.03,
                           ),
                         ],
                       ),
                     ),
 
-                    SizedBox(width: displayWidth(context) * 0.02,),
+                    SizedBox(width: displayWidth(context) * 0.03,),
 
                     Container(
                       width: displayWidth(context)* 0.43,
@@ -199,7 +284,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                             text: 'Current Speed',
                             fontWeight: FontWeight.w400,
                             textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.032,
+                            textSize: displayWidth(context) * 0.036,
                           ),
 
                           SizedBox(height: displayHeight(context) * 0.005,),
@@ -219,7 +304,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                             text: 'KT/Hr',
                             fontWeight: FontWeight.w400,
                             textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.028,
+                            textSize: displayWidth(context) * 0.03,
                           ),
                         ],
                       ),
@@ -228,49 +313,96 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                   ],
                 ),
 
-                SizedBox(height: displayHeight(context) * 0.03,),
+                SizedBox(height: displayHeight(context) * 0.015,),
 
-                Container(
-                  width: displayWidth(context),
-                  height: displayHeight(context) * 0.13,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Color(0xffECF3F9)
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-
-                      commonText(
-                        context: context,
-                        text: 'Total Time',
-                        fontWeight: FontWeight.w400,
-                        textColor: Colors.black,
-                        textSize: displayWidth(context) * 0.032,
+                Row(
+                  children: [
+                    Container(
+                      width: displayWidth(context)* 0.43,
+                      height: displayHeight(context) * 0.13,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Color(0xffECF3F9)
                       ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
 
-                      SizedBox(height: displayHeight(context) * 0.005,),
+                          commonText(
+                            context: context,
+                            text: 'Total Time',
+                            fontWeight: FontWeight.w400,
+                            textColor: Colors.black,
+                            textSize: displayWidth(context) * 0.036,
+                          ),
 
-                      commonText(
-                        context: context,
-                        text: tripDuration,
-                        fontWeight: FontWeight.w700,
-                        textColor: Colors.black,
-                        textSize: displayWidth(context) * 0.06,
+                          SizedBox(height: displayHeight(context) * 0.005,),
+
+                          commonText(
+                            context: context,
+                            text: tripDuration,
+                            fontWeight: FontWeight.w700,
+                            textColor: Colors.black,
+                            textSize: displayWidth(context) * 0.06,
+                          ),
+
+                          SizedBox(height: displayHeight(context) * 0.005,),
+
+                          commonText(
+                            context: context,
+                            text: 'Nautical Miles',
+                            fontWeight: FontWeight.w400,
+                            textColor: Colors.black,
+                            textSize: displayWidth(context) * 0.03,
+                          ),
+                        ],
                       ),
-
-                      SizedBox(height: displayHeight(context) * 0.005,),
-
-                      commonText(
-                        context: context,
-                        text: 'Nautical Miles',
-                        fontWeight: FontWeight.w400,
-                        textColor: Colors.black,
-                        textSize: displayWidth(context) * 0.028,
+                    ),
+                    SizedBox(width: displayWidth(context) * 0.03,),
+                    Container(
+                      width: displayWidth(context)* 0.43,
+                      height: displayHeight(context) * 0.13,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Color(0xffECF3F9)
                       ),
-                    ],
-                  ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+
+                          commonText(
+                            context: context,
+                            text: 'CO2 Emission',
+                            fontWeight: FontWeight.w400,
+                            textColor: Colors.black,
+                            textSize: displayWidth(context) * 0.036,
+                          ),
+
+                          SizedBox(height: displayHeight(context) * 0.005,),
+
+                          commonText(
+                            context: context,
+                            text: '6.3',
+                            fontWeight: FontWeight.w700,
+                            textColor: Colors.black,
+                            textSize: displayWidth(context) * 0.06,
+                          ),
+
+                          SizedBox(height: displayHeight(context) * 0.005,),
+
+                          commonText(
+                            context: context,
+                            text: 'Kgs',
+                            fontWeight: FontWeight.w400,
+                            textColor: Colors.black,
+                            textSize: displayWidth(context) * 0.03,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

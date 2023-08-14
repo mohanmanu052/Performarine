@@ -1,32 +1,13 @@
-import 'dart:async';
-
-import 'package:background_locator_2/background_locator.dart';
-import 'package:background_locator_2/settings/android_settings.dart';
-import 'package:background_locator_2/settings/ios_settings.dart';
-import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 import 'package:performarine/pages/auth_new/sign_up_screen.dart';
-import 'package:uni_links/uni_links.dart';
-
-import '../analytics/location_callback_handler.dart';
 import '../common_widgets/utils/colors.dart';
 import '../common_widgets/utils/common_size_helper.dart';
 import '../common_widgets/utils/constants.dart';
-import '../common_widgets/utils/utils.dart';
 import '../common_widgets/widgets/common_buttons.dart';
 import '../common_widgets/widgets/common_widgets.dart';
-import '../common_widgets/widgets/log_level.dart';
-import '../main.dart';
-import '../pages/auth/reset_password.dart';
-import '../pages/bottom_navigation.dart';
-import '../pages/start_trip/trip_recording_screen.dart';
-import '../pages/sync_data_cloud_to_mobile_screen.dart';
 
 class NewIntroScreen extends StatefulWidget {
   const NewIntroScreen({super.key});
@@ -84,51 +65,57 @@ class _NewIntroScreenState extends State<NewIntroScreen> {
                 left: 0,
                 bottom: displayHeight(context) * 0.03,
                 child:Container(
-                  margin: EdgeInsets.symmetric(horizontal: displayWidth(context)* 0.085),
+                  margin: EdgeInsets.symmetric(horizontal: displayWidth(context)* 0.1),
                   height: displayHeight(context) * 0.37,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.4),
+                    color: Colors.white.withOpacity(0.2),
                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 17),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        commonText(
-                            context: context,
-                            text: 'Improving marine intelligence and ecosystem health.',
-                            fontWeight: FontWeight.w700,
-                            textColor: Colors.white,
-                            textSize:
-                            displayWidth(context) * 0.05,
-                            textAlign: TextAlign.start),
-                        SizedBox(height: displayHeight(context) * 0.01,),
-                        commonText(
-                            context: context,
-                            text: 'We do this through electric boat propulsion kits, utilization of boat batteries as dynamic energy storage for power grids, and data collection.',
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.white70,
-                            textSize:
-                            displayWidth(context) * 0.032,
-                            textAlign: TextAlign.start),
-                        SizedBox(height: displayHeight(context) * 0.02,),
-                        CommonButtons.getActionButton(
-                          title: 'Sign Up as New User',
-                          context: context,
-                          fontSize: displayWidth(context) * 0.032,
-                          textColor: Colors.white,
-                          buttonPrimaryColor: blueColor,
-                          borderColor: blueColor,
-                          width: displayWidth(context),
-                          height: displayHeight(context) * 0.055,
-                          onTap: (){
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>  SignUpScreen()),
-                            );
-                          },),
-                        SizedBox(height: displayHeight(context) * 0.01,),
+                        Column(
+                          children: [
+                            commonText(
+                                context: context,
+                                text: 'Improving marine intelligence and ecosystem health.',
+                                fontWeight: FontWeight.w700,
+                                textColor: Colors.white,
+                                textSize:
+                                displayWidth(context) * 0.058,
+                                textAlign: TextAlign.start),
+                            SizedBox(height: displayHeight(context) * 0.01,),
+                            commonText(
+                                context: context,
+                                text: 'We do this through electric boat propulsion kits, utilization of boat batteries as dynamic energy storage for power grids, and data collection.',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.white,
+                                textSize:
+                                displayWidth(context) * 0.034,
+                                textAlign: TextAlign.start),
+                            SizedBox(height: displayHeight(context) * 0.02,),
+                            CommonButtons.getActionButton(
+                              title: 'Sign Up as New User',
+                              context: context,
+                              fontSize: displayWidth(context) * 0.036,
+                              textColor: Colors.white,
+                              buttonPrimaryColor: blueColor,
+                              borderColor: blueColor,
+                              width: displayWidth(context),
+                              height: displayHeight(context) * 0.055,
+                              onTap: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>  SignUpScreen()),
+                                );
+                              },),
+                            SizedBox(height: displayHeight(context) * 0.01,),
+                          ],
+                        ),
+
                         RichText(
                           text: TextSpan(
                             text: 'Already a member ?',
