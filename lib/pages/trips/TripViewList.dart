@@ -84,7 +84,7 @@ class _TripViewListState extends State<TripViewList> {
       controller: controller,
       child: SingleChildScrollView(
         child: Container(
-          height: displayHeight(context) * 0.737,
+          //height: displayHeight(context) * 0.737,
           child: FutureBuilder<List<Trip>>(
             future: commonProvider.getTripsByIdFuture,
             builder: (context, snapshot) {

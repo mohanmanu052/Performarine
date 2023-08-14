@@ -1152,9 +1152,9 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                                   context: context,
                                   text:
                                   'There is a trip in progress from another Vessel. Please end the trip and come back here',
-                                  fontWeight: FontWeight.w700,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.04,
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black87,
+                                  textSize: displayWidth(context) * 0.038,
                                   textAlign: TextAlign.center),
                             ],
                           ),
@@ -1171,7 +1171,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                                 ),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Go to trip', context, buttonBGColor,
+                                      'Go to trip', context, blueColor,
                                           () async {
 
                                         Utils.customPrint("Click on GO TO TRIP 1");
@@ -1208,33 +1208,29 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                                       displayHeight(context) * 0.02,
                                       blueColor,
                                       '',
-                                      fontWeight: FontWeight.w700),
+                                      fontFamily: outfit,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ),
                               SizedBox(
-                                height: 15.0,
+                                height: 8.0,
                               ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Ok go back', context, Colors.transparent, () {
-                                    Navigator.of(context).pop();
-                                  },
-                                      displayWidth(context) * 0.65,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                          ? Colors.white
-                                          : blueColor,
-                                      displayHeight(context) * 0.015,
-                                      Colors.white,
-                                      '',
-                                      fontWeight: FontWeight.w700),
-                                ),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Ok go back', context, Colors.transparent, () {
+                                  Navigator.of(context).pop();
+                                },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                        ? Colors.white
+                                        : blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.white,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
 
                             ],
@@ -1300,7 +1296,10 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
           }
         });
 
-        Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+            isLocationPermitted: isLocationPermitted,
+            isBluetoothConnected: isBluetoothConnected,
+          isCalledFrom: 'bottomSheet')));
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
@@ -1344,7 +1343,10 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
               }
             }
           });
-          Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+              isLocationPermitted: isLocationPermitted,
+              isBluetoothConnected: isBluetoothConnected,
+            isCalledFrom: 'bottomSheet',)));
         }
       }
     } else {
@@ -1391,7 +1393,10 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
             }
           }
         });
-        Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+            isLocationPermitted: isLocationPermitted,
+            isBluetoothConnected: isBluetoothConnected,
+          isCalledFrom: 'bottomSheet',)));
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
@@ -1435,7 +1440,11 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
               }
             }
           });
-          Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+              isLocationPermitted: isLocationPermitted,
+              isBluetoothConnected: isBluetoothConnected,
+            isCalledFrom: 'bottomSheet',
+          )));
         }
       }
     }

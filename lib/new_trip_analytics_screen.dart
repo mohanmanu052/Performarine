@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/pages/trips/Trips.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
@@ -121,6 +122,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     return Screenshot(
       controller: controller,
       child: Scaffold(
+        backgroundColor: backgroundColor,
         key: scaffoldKey,
         appBar: AppBar(
           backgroundColor: backgroundColor,
@@ -173,11 +175,9 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                   // });
                 }
               },
-              child: Transform.scale(
-                scale: 0.5,
-                child: Image.asset(
-                  'assets/images/Trash.png',
-                ),
+              child: Image.asset(
+                'assets/images/Trash.png',
+                width: displayWidth(context) * 0.065,
               ),
             ),
 
@@ -953,7 +953,22 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(height: displayHeight(context) * 0.03,),
+                      SizedBox(height: displayHeight(context) * 0.01,),
+
+                      InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                              Trips()));
+                        },
+                        child: commonText(
+                          context: context,
+                          text: 'View all Trips',
+                          fontWeight: FontWeight.w500,
+                          textColor: blueColor,
+                          textSize: displayWidth(context) * 0.03,
+                        ),
+                      ),
+                      SizedBox(height: displayHeight(context) * 0.04,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -1068,7 +1083,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                         ],
                       ),
                       SizedBox(height: displayHeight(context) * 0.03,),
-                      SfCartesianChart(
+                      /*SfCartesianChart(
                           series: <ChartSeries>[
                             SplineSeries<NewChartData, int>(
                                 dataSource: chartData,
@@ -1079,7 +1094,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 yValueMapper: (NewChartData data, _) => data.y
                             )
                           ]
-                      )
+                      )*/
                     ],
                   ),
                 ),

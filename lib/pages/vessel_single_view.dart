@@ -47,6 +47,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+import '../common_widgets/utils/constants.dart';
 import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
 import '../new_trip_analytics_screen.dart';
@@ -289,6 +290,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               fontWeight: FontWeight.w600,
               textColor: Colors.black87,
               textSize: displayWidth(context) * 0.045,
+              fontFamily: outfit
             ),
             leading: InkWell(
               onTap: () {
@@ -301,26 +303,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
                 ),
               ),
             ),
-            /*leading: IconButton(
-              onPressed: () async {
-                await tripIsRunningOrNot();
-
-                if (widget.isCalledFromSuccessScreen! || tripIsEnded) {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BottomNavigation(),
-                      ),
-                      ModalRoute.withName(""));
-                } else {
-                  Navigator.of(context).pop(true);
-                }
-              },
-              icon: const Icon(Icons.arrow_back),
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-            ),*/
             actions: [
               Container(
                 margin: EdgeInsets.only(right: 8),
@@ -505,8 +487,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       Row(
                                                         children: [
                                                           Image.asset(
-                                                              'assets/images/free_board.png',
-                                                              width: displayWidth(context) * 0.045,
+                                                              'assets/icons/beam.png',
+                                                              width: displayWidth(context) * 0.048,
                                                               color: Colors.black),
                                                           SizedBox(
                                                               width: displayWidth(context) * 0.016),
@@ -845,7 +827,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         fontWeight: FontWeight.w500,
                                         textColor: Colors.black,
                                         textSize: displayWidth(context) * 0.038,
-                                        textAlign: TextAlign.start),
+                                        textAlign: TextAlign.start,
+                                        fontFamily: poppins),
                                     children: [
                                       vesselAnalytics
                                           ? Padding(
@@ -882,7 +865,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.black,
                                       textSize: displayWidth(context) * 0.038,
-                                      textAlign: TextAlign.start),
+                                      textAlign: TextAlign.start,
+                                      fontFamily: poppins),
                                   children: [
                                     TripViewListing(
                                       scaffoldKey: scaffoldKey,
@@ -2960,8 +2944,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   text:
                                   'There is a trip in progress from another Vessel. Please end the trip and come back here',
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.04,
+                                  textColor: Colors.black87,
+                                  textSize: displayWidth(context) * 0.038,
                                   textAlign: TextAlign.center),
                             ],
                           ),
@@ -2978,7 +2962,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 ),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Go to trip', context, buttonBGColor,
+                                      'Go to trip', context, blueColor,
                                           () async {
 
                                         Utils.customPrint("Click on GO TO TRIP 1");
@@ -3015,33 +2999,28 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       displayHeight(context) * 0.02,
                                       blueColor,
                                       '',
-                                      fontWeight: FontWeight.w700),
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ),
                               SizedBox(
-                                height: 15.0,
+                                height: 8.0,
                               ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Ok Go Back', context, Colors.transparent, () {
-                                    Navigator.of(context).pop();
-                                  },
-                                      displayWidth(context) * 0.65,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                          ? Colors.white
-                                          : blueColor,
-                                      displayHeight(context) * 0.015,
-                                      Colors.white,
-                                      '',
-                                      fontWeight: FontWeight.w700),
-                                ),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Ok Go Back', context, Colors.transparent, () {
+                                  Navigator.of(context).pop();
+                                },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                        ? Colors.white
+                                        : blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.white,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
 
                             ],

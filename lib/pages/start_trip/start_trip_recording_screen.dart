@@ -52,7 +52,8 @@ import '../trip_analytics.dart';
 class StartTripRecordingScreen extends StatefulWidget {
   final bool? isLocationPermitted;
   final bool? isBluetoothConnected;
-  const StartTripRecordingScreen({super.key, this.isLocationPermitted = false, this.isBluetoothConnected = false});
+  final String? isCalledFrom;
+  const StartTripRecordingScreen({super.key, this.isLocationPermitted = false, this.isBluetoothConnected = false, this.isCalledFrom = ''});
 
   @override
   State<StartTripRecordingScreen> createState() => _StartTripRecordingScreenState();
@@ -107,776 +108,641 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
 
     return Screenshot(
       controller: controller,
-      child: Scaffold(
-        backgroundColor: backgroundColor,
-        key: scaffoldKey,
-        drawer: CustomDrawer(),
-        appBar: AppBar(
+      child: SafeArea(
+        child: Scaffold(
           backgroundColor: backgroundColor,
-          elevation: 0,
-          leading: InkWell(
-            onTap: () {
-              scaffoldKey.currentState!.openDrawer();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Image.asset(
-                'assets/icons/menu.png',
-              ),
+          key: scaffoldKey,
+          appBar: widget.isCalledFrom == 'bottomSheet' ? null : AppBar(
+            backgroundColor: backgroundColor,
+            elevation: 0,
+            leading: IconButton(
+              onPressed: () async {
+                Navigator.of(context).pop(true);
+              },
+              icon: const Icon(Icons.arrow_back),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
             ),
-          ),
-          title: commonText(
-            context: context,
-            text: 'Start Trip Recording',
-            fontWeight: FontWeight.w600,
-            textColor: Colors.black87,
-            textSize: displayWidth(context) * 0.045,
-          ),
-          actions: [
-            Container(
-              margin: EdgeInsets.only(right: 8),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => BottomNavigation()),
-                      ModalRoute.withName(""));
-                },
-                icon: Image.asset('assets/images/home.png'),
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
-              ),
+            title: commonText(
+              context: context,
+              text: 'Start Trip Recording',
+              fontWeight: FontWeight.w600,
+              textColor: Colors.black87,
+              textSize: displayWidth(context) * 0.045,
             ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
-            child: Column(
-              children: [
+            actions: [
+              Container(
+                margin: EdgeInsets.only(right: 8),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                        ModalRoute.withName(""));
+                  },
+                  icon: Image.asset('assets/images/home.png'),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              ),
+            ],
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
+              child: Column(
+                children: [
 
-                Container(
-                  height: displayHeight(context) * 0.4,
-                  width: displayWidth(context),
-                  child: Card(
-                    elevation: 3.0,
-                    shape: RoundedRectangleBorder(
+                  Container(
+                    height: displayHeight(context) * 0.4,
+                    width: displayWidth(context),
+                    child: Card(
+                      elevation: 3.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: ClipRRect(
                         borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: FlutterMap(
-                        options: MapOptions(
-                         center: LatLng(56.704173, 11.543808),
-                          minZoom: 12,
-                          maxZoom: 14,
-                          bounds: LatLngBounds(
-                             LatLng(56.7378, 11.6644),
-                             LatLng(56.6877, 11.5089),
-                          ),
-                        ),
-                        children: [
-                          TileLayer(
-                            tileProvider: AssetTileProvider(),
+                        child: FlutterMap(
+                          options: MapOptions(
+                           center: LatLng(56.704173, 11.543808),
+                            minZoom: 12,
                             maxZoom: 14,
-                            urlTemplate: 'assets/map/anholt_osmbright/{z}/{x}/{y}.png',
+                            bounds: LatLngBounds(
+                               LatLng(56.7378, 11.6644),
+                               LatLng(56.6877, 11.5089),
+                            ),
                           ),
-                        ],
+                          children: [
+                            TileLayer(
+                              tileProvider: AssetTileProvider(),
+                              maxZoom: 14,
+                              urlTemplate: 'assets/map/anholt_osmbright/{z}/{x}/{y}.png',
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                Container(
-                  margin: EdgeInsets.only(top: 20),
-                  width: displayWidth(context),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                    color: Color(0xffECF3F9)
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 20),
+                    width: displayWidth(context),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                      color: Color(0xffECF3F9)
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
 
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            commonText(
-                              context: context,
-                              text: 'Pre Departure Checklist',
-                              fontWeight: FontWeight.w600,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.038,
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              commonText(
+                                context: context,
+                                text: 'Pre Departure Checklist',
+                                fontWeight: FontWeight.w600,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.038,
+                              ),
 
-                            SizedBox(height: displayHeight(context) * 0.005,),
+                              SizedBox(height: displayHeight(context) * 0.005,),
 
-                            DropdownButtonHideUnderline(
-                              child: DropdownButtonFormField<
-                                  VesselDropdownItem>(
-                                autovalidateMode: AutovalidateMode
-                                    .onUserInteraction,
-                                dropdownColor:
-                                Theme.of(context).brightness ==
-                                    Brightness.dark
-                                    ? "Select Vessel" ==
-                                    'User SubRole'
-                                    ? Colors.white
-                                    : Colors.transparent
-                                    : Colors.white,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(width: 1.5, color: Colors.transparent),
-                                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(width: 1.5, color: Colors.transparent),
-                                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                                  errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1.5,
-                                          color: Colors.red.shade300.withOpacity(0.7)),
-                                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                                  errorStyle: TextStyle(
-                                      fontFamily: inter,
-                                      fontSize: displayWidth(context) * 0.025),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1.5,
-                                          color: Colors.red.shade300.withOpacity(0.7)),
-                                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                                  fillColor: Color(0xffE6E9F0),
-                                  filled: true,
-                                  hintText: "Select your vessel",
-                                  hintStyle: TextStyle(
+                              DropdownButtonHideUnderline(
+                                child: DropdownButtonFormField<
+                                    VesselDropdownItem>(
+                                  autovalidateMode: AutovalidateMode
+                                      .onUserInteraction,
+                                  dropdownColor:
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                      ? "Select Vessel" ==
+                                      'User SubRole'
+                                      ? Colors.white
+                                      : Colors.transparent
+                                      : Colors.white,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide:
+                                        BorderSide(width: 1.5, color: Colors.transparent),
+                                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide:
+                                        BorderSide(width: 1.5, color: Colors.transparent),
+                                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                                    errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.red.shade300.withOpacity(0.7)),
+                                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                                    errorStyle: TextStyle(
+                                        fontFamily: inter,
+                                        fontSize: displayWidth(context) * 0.025),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.red.shade300.withOpacity(0.7)),
+                                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                                    fillColor: Color(0xffE6E9F0),
+                                    filled: true,
+                                    hintText: "Select your vessel",
+                                    hintStyle: TextStyle(
+                                        color: Theme.of(context)
+                                            .brightness ==
+                                            Brightness.dark
+                                            ? "Select Vessel" ==
+                                            'User SubRole'
+                                            ? Colors.black54
+                                            : Colors.white
+                                            : Colors.black54,
+                                        fontSize:
+                                        displayWidth(context) *
+                                            0.032,
+                                        fontFamily: inter,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  isExpanded: true,
+                                  isDense: true,
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Select Vessel';
+                                    }
+                                    return null;
+                                  },
+                                  icon: Icon(
+                                      Icons.keyboard_arrow_down,
                                       color: Theme.of(context)
                                           .brightness ==
                                           Brightness.dark
                                           ? "Select Vessel" ==
                                           'User SubRole'
-                                          ? Colors.black54
+                                          ? Colors.black
                                           : Colors.white
-                                          : Colors.black54,
-                                      fontSize:
-                                      displayWidth(context) *
-                                          0.032,
-                                      fontFamily: inter,
-                                      fontWeight: FontWeight.w500),
+                                          : Colors.black),
+                                  value: selectedValue,
+                                  items: vesselData.map((item) {
+                                    return DropdownMenuItem<
+                                        VesselDropdownItem>(
+                                      value: item,
+                                      child: Text(
+                                        item.name!,
+                                        style: TextStyle(
+                                            fontSize: displayWidth(
+                                                context) *
+                                                0.032,
+                                            color: Theme.of(context)
+                                                .brightness ==
+                                                Brightness.dark
+                                                ? "Select Vessel" ==
+                                                'User SubRole'
+                                                ? Colors.black
+                                                : Colors.white
+                                                : Colors.black,
+                                            fontWeight:
+                                            FontWeight.w500),
+                                        overflow:
+                                        TextOverflow.ellipsis,
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (item) {
+                                    Utils.customPrint("id is: ${item?.id} ");
+                                    CustomLogger().logWithFile(Level.info, "id is: ${item?.id}-> $page");
+
+                                    selectedValue = item;
+                                    vesselId = item!.id;
+                                    selectedVesselName = item.name;
+
+                                  },
                                 ),
-                                isExpanded: true,
-                                isDense: true,
-                                validator: (value) {
-                                  if (value == null) {
-                                    return 'Select Vessel';
-                                  }
-                                  return null;
-                                },
-                                icon: Icon(
-                                    Icons.keyboard_arrow_down,
-                                    color: Theme.of(context)
-                                        .brightness ==
-                                        Brightness.dark
-                                        ? "Select Vessel" ==
-                                        'User SubRole'
-                                        ? Colors.black
-                                        : Colors.white
-                                        : Colors.black),
-                                value: selectedValue,
-                                items: vesselData.map((item) {
-                                  return DropdownMenuItem<
-                                      VesselDropdownItem>(
-                                    value: item,
-                                    child: Text(
-                                      item.name!,
-                                      style: TextStyle(
-                                          fontSize: displayWidth(
-                                              context) *
-                                              0.032,
-                                          color: Theme.of(context)
-                                              .brightness ==
-                                              Brightness.dark
-                                              ? "Select Vessel" ==
-                                              'User SubRole'
-                                              ? Colors.black
-                                              : Colors.white
-                                              : Colors.black,
-                                          fontWeight:
-                                          FontWeight.w500),
-                                      overflow:
-                                      TextOverflow.ellipsis,
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (item) {
-                                  Utils.customPrint("id is: ${item?.id} ");
-                                  CustomLogger().logWithFile(Level.info, "id is: ${item?.id}-> $page");
-
-                                  selectedValue = item;
-                                  vesselId = item!.id;
-                                  selectedVesselName = item.name;
-
-                                },
                               ),
-                            ),
 
-                            SizedBox(height: displayHeight(context) * 0.012,),
+                              SizedBox(height: displayHeight(context) * 0.012,),
 
-                            DropdownButtonHideUnderline(
-                              child: DropdownButtonFormField<dynamic>(
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(width: 1.5, color: Colors.transparent),
-                                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(width: 1.5, color: Colors.transparent),
-                                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                                  errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1.5,
-                                          color: Colors.red.shade300.withOpacity(0.7)),
-                                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                                  errorStyle: TextStyle(
-                                      fontFamily: inter,
-                                      fontSize: displayWidth(context) * 0.025),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1.5,
-                                          color: Colors.red.shade300.withOpacity(0.7)),
-                                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                                  fillColor: Color(0xffE6E9F0),
-                                  filled: true,
-                                ),
-                                value: null,
-                                isDense: true,
-                                icon: Icon(
-                                    Icons.keyboard_arrow_down,
-                                    color: Theme.of(context)
-                                        .brightness ==
-                                        Brightness.dark
-                                        ? "Select Current Load" ==
-                                        'User SubRole'
-                                        ? Colors.black
-                                        : Colors.white
-                                        : Colors.black),
-                                hint: commonText(
-                                    context: context,
-                                    text:
-                                    selectedVesselWeight,
-                                    fontWeight:
-                                    FontWeight.w400,
-                                    textColor: Colors.black54,
-                                    textSize: displayWidth(
-                                        context) *
-                                        0.03,
-                                    textAlign:
-                                    TextAlign.start),
-                                //  Text(
-                                //     '${selectedVesselWeight}'),
-                                isExpanded: true,
-                                items: [
-                                  DropdownMenuItem(
-                                      value: '1',
-                                      child: commonText(
-                                          context: context,
-                                          text:
-                                          'Empty',
-                                          fontWeight:
-                                          FontWeight.w500,
-                                          textColor: Colors.black,
-                                          textSize: displayWidth(
-                                              context) *
-                                              0.032,
-                                          textAlign:
-                                          TextAlign.start)),
-                                  DropdownMenuItem(
-                                      value: '2',
-                                      child: commonText(
+                              DropdownButtonHideUnderline(
+                                child: DropdownButtonFormField<dynamic>(
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide:
+                                        BorderSide(width: 1.5, color: Colors.transparent),
+                                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide:
+                                        BorderSide(width: 1.5, color: Colors.transparent),
+                                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                                    errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.red.shade300.withOpacity(0.7)),
+                                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                                    errorStyle: TextStyle(
+                                        fontFamily: inter,
+                                        fontSize: displayWidth(context) * 0.025),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.red.shade300.withOpacity(0.7)),
+                                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                                    fillColor: Color(0xffE6E9F0),
+                                    filled: true,
+                                  ),
+                                  value: null,
+                                  isDense: true,
+                                  icon: Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: Theme.of(context)
+                                          .brightness ==
+                                          Brightness.dark
+                                          ? "Select Current Load" ==
+                                          'User SubRole'
+                                          ? Colors.black
+                                          : Colors.white
+                                          : Colors.black),
+                                  hint: commonText(
                                       context: context,
                                       text:
-                                      'Half',
+                                      selectedVesselWeight,
                                       fontWeight:
-                                      FontWeight.w500,
-                                      textColor: Colors.black,
+                                      FontWeight.w400,
+                                      textColor: Colors.black54,
                                       textSize: displayWidth(
                                           context) *
-                                          0.032,
+                                          0.03,
                                       textAlign:
-                                      TextAlign.start)),
-                                  DropdownMenuItem(
-                                      value: '3',
-                                      child: commonText(
-                                          context: context,
-                                          text:
-                                          'Full',
-                                          fontWeight:
-                                          FontWeight.w500,
-                                          textColor: Colors.black,
-                                          textSize: displayWidth(
-                                              context) *
-                                              0.032,
-                                          textAlign:
-                                          TextAlign.start)),
-                                  DropdownMenuItem(
-                                      value: '4',
-                                      child: commonText(
-                                          context: context,
-                                          text:
-                                          'Variable',
-                                          fontWeight:
-                                          FontWeight.w500,
-                                          textColor: Colors.black,
-                                          textSize: displayWidth(
-                                              context) *
-                                              0.032,
-                                          textAlign:
-                                          TextAlign.start)
-                                      ),
-                                ],
-                                onChanged: (weightValue) {
-                                  setState(() {
-                                    if (int.parse(
-                                        weightValue) ==
-                                        1) {
-                                      selectedVesselWeight =
-                                      'Empty';
-                                    } else if (int.parse(
-                                        weightValue) ==
-                                        2) {
-                                      selectedVesselWeight =
-                                      'Half';
-                                    } else if (int.parse(
-                                        weightValue) ==
-                                        3) {
-                                      selectedVesselWeight =
-                                      'Full';
-                                    } else {
-                                      selectedVesselWeight =
-                                      'Variable';
-                                    }
-                                  });
-                                },
+                                      TextAlign.start),
+                                  //  Text(
+                                  //     '${selectedVesselWeight}'),
+                                  isExpanded: true,
+                                  items: [
+                                    DropdownMenuItem(
+                                        value: '1',
+                                        child: commonText(
+                                            context: context,
+                                            text:
+                                            'Empty',
+                                            fontWeight:
+                                            FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize: displayWidth(
+                                                context) *
+                                                0.032,
+                                            textAlign:
+                                            TextAlign.start)),
+                                    DropdownMenuItem(
+                                        value: '2',
+                                        child: commonText(
+                                        context: context,
+                                        text:
+                                        'Half',
+                                        fontWeight:
+                                        FontWeight.w500,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(
+                                            context) *
+                                            0.032,
+                                        textAlign:
+                                        TextAlign.start)),
+                                    DropdownMenuItem(
+                                        value: '3',
+                                        child: commonText(
+                                            context: context,
+                                            text:
+                                            'Full',
+                                            fontWeight:
+                                            FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize: displayWidth(
+                                                context) *
+                                                0.032,
+                                            textAlign:
+                                            TextAlign.start)),
+                                    DropdownMenuItem(
+                                        value: '4',
+                                        child: commonText(
+                                            context: context,
+                                            text:
+                                            'Variable',
+                                            fontWeight:
+                                            FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize: displayWidth(
+                                                context) *
+                                                0.032,
+                                            textAlign:
+                                            TextAlign.start)
+                                        ),
+                                  ],
+                                  onChanged: (weightValue) {
+                                    setState(() {
+                                      if (int.parse(
+                                          weightValue) ==
+                                          1) {
+                                        selectedVesselWeight =
+                                        'Empty';
+                                      } else if (int.parse(
+                                          weightValue) ==
+                                          2) {
+                                        selectedVesselWeight =
+                                        'Half';
+                                      } else if (int.parse(
+                                          weightValue) ==
+                                          3) {
+                                        selectedVesselWeight =
+                                        'Full';
+                                      } else {
+                                        selectedVesselWeight =
+                                        'Variable';
+                                      }
+                                    });
+                                  },
+                                ),
                               ),
-                            ),
 
-                            SizedBox(height: displayHeight(context) * 0.02,),
+                              SizedBox(height: displayHeight(context) * 0.02,),
 
-                            commonText(
-                              context: context,
-                              text: 'Number of Passengers',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.034,
-                            ),
-                            SizedBox(height: displayHeight(context) * 0.008,),
+                              commonText(
+                                context: context,
+                                text: 'Number of Passengers',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.034,
+                              ),
+                              SizedBox(height: displayHeight(context) * 0.008,),
 
-                            Stack(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(vertical: 12),
-                                  child: Container(
-                                    height: 30,
-                                    child: FlutterSlider(
-                                      values: [5],
-                                      max: 10,
-                                      min: 0,
-                                      trackBar: FlutterSliderTrackBar(
-                                          activeTrackBarHeight: 4.5,
-                                          inactiveTrackBarHeight: 4.5,
-                                          activeTrackBar: BoxDecoration(
-                                              color: Color(0xff2663DB))),
-                                      tooltip: FlutterSliderTooltip(
-                                          custom: (value) {
-                                            String data =
-                                            value.toInt().toString();
-                                            return Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 6, vertical: 2),
-                                              child: commonText(
-                                                context: context,
-                                                text: '$data',
-                                                fontWeight: FontWeight.w500,
-                                                textColor: Colors.black,
-                                                textSize:
-                                                displayWidth(context) *
-                                                    0.028,
-                                              ),
-                                            );
-                                          },
-                                          alwaysShowTooltip: true,
-                                          positionOffset:
-                                          FlutterSliderTooltipPositionOffset(
-                                              top: -14)),
-                                      handlerWidth: 15,
-                                      handlerHeight: 15,
-                                      handler: FlutterSliderHandler(
-                                          child: Container(
-                                            height: 15,
-                                            width: 15,
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Color(0xff2663DB)),
-                                          )),
+                              Stack(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(vertical: 12),
+                                    child: Container(
+                                      height: 30,
+                                      child: FlutterSlider(
+                                        values: [5],
+                                        max: 10,
+                                        min: 0,
+                                        trackBar: FlutterSliderTrackBar(
+                                            activeTrackBarHeight: 4.5,
+                                            inactiveTrackBarHeight: 4.5,
+                                            activeTrackBar: BoxDecoration(
+                                                color: Color(0xff2663DB))),
+                                        tooltip: FlutterSliderTooltip(
+                                            custom: (value) {
+                                              String data =
+                                              value.toInt().toString();
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 6, vertical: 2),
+                                                child: commonText(
+                                                  context: context,
+                                                  text: '$data',
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.black,
+                                                  textSize:
+                                                  displayWidth(context) *
+                                                      0.028,
+                                                ),
+                                              );
+                                            },
+                                            alwaysShowTooltip: true,
+                                            positionOffset:
+                                            FlutterSliderTooltipPositionOffset(
+                                                top: -14)),
+                                        handlerWidth: 15,
+                                        handlerHeight: 15,
+                                        handler: FlutterSliderHandler(
+                                            child: Container(
+                                              height: 15,
+                                              width: 15,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Color(0xff2663DB)),
+                                            )),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 0),
-                                  child: commonText(
-                                    context: context,
-                                    text: '0',
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.black,
-                                    textSize: displayWidth(context) * 0.028,
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 0,
-                                  child: Container(
+                                  Container(
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 6, vertical: 0),
                                     child: commonText(
                                       context: context,
-                                      text: '10+',
+                                      text: '0',
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.black,
                                       textSize: displayWidth(context) * 0.028,
                                     ),
                                   ),
-                                )
-                              ],
-                            ),
-
-                            SizedBox(height: displayHeight(context) * 0.02,),
-
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  commonText(
-                                    context: context,
-                                    text: 'Sensor Information',
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.black,
-                                    textSize: displayWidth(context) * 0.034,
-                                  ),
-
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Image.asset('assets/icons/location.png',
-                                                  height: displayHeight(context) * 0.04,
-                                                  width: displayWidth(context) * 0.07,),
-
-                                                SizedBox(width: displayWidth(context) * 0.04,),
-
-                                                commonText(
-                                                  context: context,
-                                                  text: 'GPS Signal',
-                                                  fontWeight: FontWeight.w400,
-                                                  textColor: Colors.black45,
-                                                  textSize: displayWidth(context) * 0.034,
-                                                ),
-                                              ],
-                                            ),
-                                            commonText(
-                                              context: context,
-                                              text: widget.isLocationPermitted! ? 'OK' : 'No Connected',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: widget.isLocationPermitted! ? Colors.green : Colors.grey,
-                                              textSize: displayWidth(context) * 0.03,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: displayHeight(context) * 0.007,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Image.asset('assets/icons/lpr.png',
-                                                  height: displayHeight(context) * 0.04,
-                                                  width: displayWidth(context) * 0.07,),
-
-                                                SizedBox(width: displayWidth(context) * 0.04,),
-
-                                                commonText(
-                                                  context: context,
-                                                  text: 'LPR',
-                                                  fontWeight: FontWeight.w400,
-                                                  textColor: Colors.black45,
-                                                  textSize: displayWidth(context) * 0.034,
-                                                ),
-                                              ],
-                                            ),
-
-                                            commonText(
-                                              context: context,
-                                              text: widget.isBluetoothConnected! ? 'Connected' : 'Disconnected',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: widget.isBluetoothConnected! ? Colors.green : Colors.red,
-                                              textSize: displayWidth(context) * 0.03,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: displayHeight(context) * 0.007,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Image.asset('assets/icons/ble.png',
-                                                  height: displayHeight(context) * 0.04,
-                                                  width: displayWidth(context) * 0.06,),
-
-                                                SizedBox(width: displayWidth(context) * 0.04,),
-
-                                                commonText(
-                                                  context: context,
-                                                  text: 'Wireless NMEA',
-                                                  fontWeight: FontWeight.w400,
-                                                  textColor: Colors.black45,
-                                                  textSize: displayWidth(context) * 0.034,
-                                                ),
-                                              ],
-                                            ),
-
-                                            commonText(
-                                              context: context,
-                                              text: 'Not Configured',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.amber,
-                                              textSize: displayWidth(context) * 0.03,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                  Positioned(
+                                    right: 0,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 0),
+                                      child: commonText(
+                                        context: context,
+                                        text: '10+',
+                                        fontWeight: FontWeight.w500,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.028,
+                                      ),
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
-                            ),
 
-                            SizedBox(height: displayHeight(context) * 0.03,),
+                              SizedBox(height: displayHeight(context) * 0.02,),
+
+                              Container(
+                                margin: EdgeInsets.symmetric(horizontal: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    commonText(
+                                      context: context,
+                                      text: 'Sensor Information',
+                                      fontWeight: FontWeight.w500,
+                                      textColor: Colors.black,
+                                      textSize: displayWidth(context) * 0.034,
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Image.asset('assets/icons/location.png',
+                                                    height: displayHeight(context) * 0.04,
+                                                    width: displayWidth(context) * 0.07,),
+
+                                                  SizedBox(width: displayWidth(context) * 0.04,),
+
+                                                  commonText(
+                                                    context: context,
+                                                    text: 'GPS Signal',
+                                                    fontWeight: FontWeight.w400,
+                                                    textColor: Colors.black45,
+                                                    textSize: displayWidth(context) * 0.034,
+                                                  ),
+                                                ],
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: widget.isLocationPermitted! ? 'OK' : 'No Connected',
+                                                fontWeight: FontWeight.w500,
+                                                textColor: widget.isLocationPermitted! ? Colors.green : Colors.grey,
+                                                textSize: displayWidth(context) * 0.03,
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: displayHeight(context) * 0.007,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Image.asset('assets/icons/lpr.png',
+                                                    height: displayHeight(context) * 0.04,
+                                                    width: displayWidth(context) * 0.07,),
+
+                                                  SizedBox(width: displayWidth(context) * 0.04,),
+
+                                                  commonText(
+                                                    context: context,
+                                                    text: 'LPR',
+                                                    fontWeight: FontWeight.w400,
+                                                    textColor: Colors.black45,
+                                                    textSize: displayWidth(context) * 0.034,
+                                                  ),
+                                                ],
+                                              ),
+
+                                              commonText(
+                                                context: context,
+                                                text: widget.isBluetoothConnected! ? 'Connected' : 'Disconnected',
+                                                fontWeight: FontWeight.w500,
+                                                textColor: widget.isBluetoothConnected! ? Colors.green : Colors.red,
+                                                textSize: displayWidth(context) * 0.03,
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: displayHeight(context) * 0.007,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Image.asset('assets/icons/ble.png',
+                                                    height: displayHeight(context) * 0.04,
+                                                    width: displayWidth(context) * 0.06,),
+
+                                                  SizedBox(width: displayWidth(context) * 0.04,),
+
+                                                  commonText(
+                                                    context: context,
+                                                    text: 'Wireless NMEA',
+                                                    fontWeight: FontWeight.w400,
+                                                    textColor: Colors.black45,
+                                                    textSize: displayWidth(context) * 0.034,
+                                                  ),
+                                                ],
+                                              ),
+
+                                              commonText(
+                                                context: context,
+                                                text: 'Not Configured',
+                                                fontWeight: FontWeight.w500,
+                                                textColor: Colors.amber,
+                                                textSize: displayWidth(context) * 0.03,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              SizedBox(height: displayHeight(context) * 0.03,),
 
 
-                            addingDataToDB
-                                ? Center(
-                                child: CircularProgressIndicator(
-                                    valueColor:
-                                    AlwaysStoppedAnimation<Color>(
-                                        circularProgressColor)))
-                                :  Container(
-                                  child: CommonButtons.getRichTextActionButton(
-                                  icon: Image.asset('assets/icons/start_btn.png',
-                                    height: displayHeight(context) * 0.055,
-                                    width: displayWidth(context) * 0.12,
-                                  ),
-                                  title: 'Start Trip',
-                                  context: context,
-                                  fontSize: displayWidth(context) * 0.042,
-                                  textColor: Colors.white,
-                                  buttonPrimaryColor: blueColor,
-                                  borderColor: blueColor,
-                                  width: displayWidth(context),
-                                  onTap: () async
-                                  {
+                              addingDataToDB
+                                  ? Center(
+                                  child: CircularProgressIndicator(
+                                      valueColor:
+                                      AlwaysStoppedAnimation<Color>(
+                                          circularProgressColor)))
+                                  :  Container(
+                                    child: CommonButtons.getRichTextActionButton(
+                                    icon: Image.asset('assets/icons/start_btn.png',
+                                      height: displayHeight(context) * 0.055,
+                                      width: displayWidth(context) * 0.12,
+                                    ),
+                                    title: 'Start Trip',
+                                    context: context,
+                                    fontSize: displayWidth(context) * 0.042,
+                                    textColor: Colors.white,
+                                    buttonPrimaryColor: blueColor,
+                                    borderColor: blueColor,
+                                    width: displayWidth(context),
+                                    onTap: () async
+                                    {
 
-                                    if (selectedValue ==
-                                        null) {
-                                      Utils.customPrint(
-                                          'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        behavior:
-                                        SnackBarBehavior.floating,
-                                        content: Text(
-                                            "Please select vessel"),
-                                        duration: Duration(seconds: 1),
-                                        backgroundColor: Colors.blue,
-                                      ));
-                                      return;
-                                    }
-
-                                    Utils.customPrint(
-                                        'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                    if (selectedVesselWeight ==
-                                        'Select Current Load') {
-                                      Utils.customPrint(
-                                          'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        behavior:
-                                        SnackBarBehavior.floating,
-                                        content: Text(
-                                            "Please select current load"),
-                                        duration: Duration(seconds: 1),
-                                        backgroundColor: Colors.blue,
-                                      ));
-                                      return;
-                                    }
-
-                                    bool isLocationPermitted =
-                                    await Permission
-                                        .location.isGranted;
-
-                                    if (isLocationPermitted) {
-
-                                      if (Platform.isAndroid) {
-                                        final androidInfo =
-                                        await DeviceInfoPlugin()
-                                            .androidInfo;
-
-                                        if (androidInfo.version.sdkInt <
-                                            29) {
-                                          var isStoragePermitted =
-                                          await Permission
-                                              .storage.status;
-                                          if (isStoragePermitted
-                                              .isGranted) {
-                                            bool
-                                            isNotificationPermitted =
-                                            await Permission
-                                                .notification
-                                                .isGranted;
-
-                                            if (isNotificationPermitted) {
-                                              startWritingDataToDB(
-                                                  context);
-                                            } else {
-                                              await Utils
-                                                  .getNotificationPermission(
-                                                  context);
-                                              bool
-                                              isNotificationPermitted =
-                                              await Permission
-                                                  .notification
-                                                  .isGranted;
-                                              if (isNotificationPermitted) {
-                                                startWritingDataToDB(
-                                                    context);
-                                              }
-                                            }
-                                          } else {
-                                            await Utils
-                                                .getStoragePermission(
-                                                context);
-                                            final androidInfo =
-                                            await DeviceInfoPlugin()
-                                                .androidInfo;
-
-                                            var isStoragePermitted =
-                                            await Permission
-                                                .storage.status;
-
-                                            if (isStoragePermitted
-                                                .isGranted) {
-                                              bool
-                                              isNotificationPermitted =
-                                              await Permission
-                                                  .notification
-                                                  .isGranted;
-
-                                              if (isNotificationPermitted) {
-                                                startWritingDataToDB(
-                                                    context);
-                                              } else {
-                                                await Utils
-                                                    .getNotificationPermission(
-                                                    context);
-                                                bool
-                                                isNotificationPermitted =
-                                                await Permission
-                                                    .notification
-                                                    .isGranted;
-                                                if (isNotificationPermitted) {
-                                                  startWritingDataToDB(
-                                                      context);
-                                                }
-                                              }
-                                            }
-                                          }
-                                        } else {
-                                          bool isNotificationPermitted =
-                                          await Permission
-                                              .notification
-                                              .isGranted;
-
-                                          if (isNotificationPermitted) {
-                                            startWritingDataToDB(
-                                                context);
-                                          } else {
-                                            await Utils
-                                                .getNotificationPermission(
-                                                context);
-                                            bool
-                                            isNotificationPermitted =
-                                            await Permission
-                                                .notification
-                                                .isGranted;
-                                            if (isNotificationPermitted) {
-                                              startWritingDataToDB(
-                                                  context);
-                                            }
-                                          }
-                                        }
+                                      if (selectedValue ==
+                                          null) {
+                                        Utils.customPrint(
+                                            'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          behavior:
+                                          SnackBarBehavior.floating,
+                                          content: Text(
+                                              "Please select vessel"),
+                                          duration: Duration(seconds: 1),
+                                          backgroundColor: Colors.blue,
+                                        ));
+                                        return;
                                       }
-                                      else {
-                                        bool isNotificationPermitted =
-                                        await Permission
-                                            .notification.isGranted;
 
-                                        if (isNotificationPermitted) {
-                                          startWritingDataToDB(
-                                              context);
-                                        } else {
-                                          await Utils
-                                              .getNotificationPermission(
-                                              context);
-                                          bool isNotificationPermitted =
-                                          await Permission
-                                              .notification
-                                              .isGranted;
-                                          if (isNotificationPermitted) {
-                                            startWritingDataToDB(
-                                                context);
-                                          }
-                                        }
+                                      Utils.customPrint(
+                                          'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+                                      if (selectedVesselWeight ==
+                                          'Select Current Load') {
+                                        Utils.customPrint(
+                                            'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          behavior:
+                                          SnackBarBehavior.floating,
+                                          content: Text(
+                                              "Please select current load"),
+                                          duration: Duration(seconds: 1),
+                                          backgroundColor: Colors.blue,
+                                        ));
+                                        return;
                                       }
-                                    }
-                                    else {
-                                      await Utils.getLocationPermission(
-                                          context, scaffoldKey);
+
                                       bool isLocationPermitted =
                                       await Permission
                                           .location.isGranted;
 
                                       if (isLocationPermitted) {
-                                        // service.startService();
 
                                         if (Platform.isAndroid) {
                                           final androidInfo =
                                           await DeviceInfoPlugin()
                                               .androidInfo;
 
-                                          if (androidInfo
-                                              .version.sdkInt <
+                                          if (androidInfo.version.sdkInt <
                                               29) {
                                             var isStoragePermitted =
                                             await Permission
@@ -946,8 +812,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                               }
                                             }
                                           } else {
-                                            bool
-                                            isNotificationPermitted =
+                                            bool isNotificationPermitted =
                                             await Permission
                                                 .notification
                                                 .isGranted;
@@ -970,11 +835,11 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                               }
                                             }
                                           }
-                                        } else {
+                                        }
+                                        else {
                                           bool isNotificationPermitted =
                                           await Permission
-                                              .notification
-                                              .isGranted;
+                                              .notification.isGranted;
 
                                           if (isNotificationPermitted) {
                                             startWritingDataToDB(
@@ -983,137 +848,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                             await Utils
                                                 .getNotificationPermission(
                                                 context);
-                                            bool
-                                            isNotificationPermitted =
-                                            await Permission
-                                                .notification
-                                                .isGranted;
-                                            if (isNotificationPermitted) {
-                                              startWritingDataToDB(
-                                                context,);
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  },
-                                  ),
-                                ),
-
-                           /* addingDataToDB
-                                ? Center(
-                                child: CircularProgressIndicator(
-                                    valueColor:
-                                    AlwaysStoppedAnimation<Color>(
-                                        circularProgressColor)))
-                                : InkWell(
-                              onTap: ()async
-                              {
-
-                                if (selectedValue ==
-                                    null) {
-                                  Utils.customPrint(
-                                      'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    behavior:
-                                    SnackBarBehavior.floating,
-                                    content: Text(
-                                        "Please select vessel"),
-                                    duration: Duration(seconds: 1),
-                                    backgroundColor: Colors.blue,
-                                  ));
-                                  return;
-                                }
-
-                                Utils.customPrint(
-                                    'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                if (selectedVesselWeight ==
-                                    'Select Current Load') {
-                                  Utils.customPrint(
-                                      'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    behavior:
-                                    SnackBarBehavior.floating,
-                                    content: Text(
-                                        "Please select current load"),
-                                    duration: Duration(seconds: 1),
-                                    backgroundColor: Colors.blue,
-                                  ));
-                                  return;
-                                }
-
-                                bool isLocationPermitted =
-                                await Permission
-                                    .location.isGranted;
-
-                                if (isLocationPermitted) {
-
-                                  if (Platform.isAndroid) {
-                                    final androidInfo =
-                                    await DeviceInfoPlugin()
-                                        .androidInfo;
-
-                                    if (androidInfo.version.sdkInt <
-                                        29) {
-                                      var isStoragePermitted =
-                                      await Permission
-                                          .storage.status;
-                                      if (isStoragePermitted
-                                          .isGranted) {
-                                        bool
-                                        isNotificationPermitted =
-                                        await Permission
-                                            .notification
-                                            .isGranted;
-
-                                        if (isNotificationPermitted) {
-                                          startWritingDataToDB(
-                                              context);
-                                        } else {
-                                          await Utils
-                                              .getNotificationPermission(
-                                              context);
-                                          bool
-                                          isNotificationPermitted =
-                                          await Permission
-                                              .notification
-                                              .isGranted;
-                                          if (isNotificationPermitted) {
-                                            startWritingDataToDB(
-                                                context);
-                                          }
-                                        }
-                                      } else {
-                                        await Utils
-                                            .getStoragePermission(
-                                            context);
-                                        final androidInfo =
-                                        await DeviceInfoPlugin()
-                                            .androidInfo;
-
-                                        var isStoragePermitted =
-                                        await Permission
-                                            .storage.status;
-
-                                        if (isStoragePermitted
-                                            .isGranted) {
-                                          bool
-                                          isNotificationPermitted =
-                                          await Permission
-                                              .notification
-                                              .isGranted;
-
-                                          if (isNotificationPermitted) {
-                                            startWritingDataToDB(
-                                                context);
-                                          } else {
-                                            await Utils
-                                                .getNotificationPermission(
-                                                context);
-                                            bool
-                                            isNotificationPermitted =
+                                            bool isNotificationPermitted =
                                             await Permission
                                                 .notification
                                                 .isGranted;
@@ -1124,71 +859,202 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                           }
                                         }
                                       }
-                                    } else {
-                                      bool isNotificationPermitted =
-                                      await Permission
-                                          .notification
-                                          .isGranted;
-
-                                      if (isNotificationPermitted) {
-                                        startWritingDataToDB(
-                                            context);
-                                      } else {
-                                        await Utils
-                                            .getNotificationPermission(
-                                            context);
-                                        bool
-                                        isNotificationPermitted =
+                                      else {
+                                        await Utils.getLocationPermission(
+                                            context, scaffoldKey);
+                                        bool isLocationPermitted =
                                         await Permission
-                                            .notification
-                                            .isGranted;
-                                        if (isNotificationPermitted) {
-                                          startWritingDataToDB(
-                                              context);
+                                            .location.isGranted;
+
+                                        if (isLocationPermitted) {
+                                          // service.startService();
+
+                                          if (Platform.isAndroid) {
+                                            final androidInfo =
+                                            await DeviceInfoPlugin()
+                                                .androidInfo;
+
+                                            if (androidInfo
+                                                .version.sdkInt <
+                                                29) {
+                                              var isStoragePermitted =
+                                              await Permission
+                                                  .storage.status;
+                                              if (isStoragePermitted
+                                                  .isGranted) {
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      context);
+                                                } else {
+                                                  await Utils
+                                                      .getNotificationPermission(
+                                                      context);
+                                                  bool
+                                                  isNotificationPermitted =
+                                                  await Permission
+                                                      .notification
+                                                      .isGranted;
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        context);
+                                                  }
+                                                }
+                                              } else {
+                                                await Utils
+                                                    .getStoragePermission(
+                                                    context);
+                                                final androidInfo =
+                                                await DeviceInfoPlugin()
+                                                    .androidInfo;
+
+                                                var isStoragePermitted =
+                                                await Permission
+                                                    .storage.status;
+
+                                                if (isStoragePermitted
+                                                    .isGranted) {
+                                                  bool
+                                                  isNotificationPermitted =
+                                                  await Permission
+                                                      .notification
+                                                      .isGranted;
+
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        context);
+                                                  } else {
+                                                    await Utils
+                                                        .getNotificationPermission(
+                                                        context);
+                                                    bool
+                                                    isNotificationPermitted =
+                                                    await Permission
+                                                        .notification
+                                                        .isGranted;
+                                                    if (isNotificationPermitted) {
+                                                      startWritingDataToDB(
+                                                          context);
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            } else {
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    context);
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                    context);
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      context);
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            bool isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  context);
+                                            } else {
+                                              await Utils
+                                                  .getNotificationPermission(
+                                                  context);
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                  context,);
+                                              }
+                                            }
+                                          }
                                         }
                                       }
-                                    }
-                                  }
-                                  else {
-                                    bool isNotificationPermitted =
-                                    await Permission
-                                        .notification.isGranted;
+                                    },
+                                    ),
+                                  ),
 
-                                    if (isNotificationPermitted) {
-                                      startWritingDataToDB(
-                                          context);
-                                    } else {
-                                      await Utils
-                                          .getNotificationPermission(
-                                          context);
-                                      bool isNotificationPermitted =
-                                      await Permission
-                                          .notification
-                                          .isGranted;
-                                      if (isNotificationPermitted) {
-                                        startWritingDataToDB(
-                                            context);
-                                      }
-                                    }
+                             /* addingDataToDB
+                                  ? Center(
+                                  child: CircularProgressIndicator(
+                                      valueColor:
+                                      AlwaysStoppedAnimation<Color>(
+                                          circularProgressColor)))
+                                  : InkWell(
+                                onTap: ()async
+                                {
+
+                                  if (selectedValue ==
+                                      null) {
+                                    Utils.customPrint(
+                                        'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      behavior:
+                                      SnackBarBehavior.floating,
+                                      content: Text(
+                                          "Please select vessel"),
+                                      duration: Duration(seconds: 1),
+                                      backgroundColor: Colors.blue,
+                                    ));
+                                    return;
                                   }
-                                }
-                                else {
-                                  await Utils.getLocationPermission(
-                                      context, scaffoldKey);
+
+                                  Utils.customPrint(
+                                      'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+                                  if (selectedVesselWeight ==
+                                      'Select Current Load') {
+                                    Utils.customPrint(
+                                        'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      behavior:
+                                      SnackBarBehavior.floating,
+                                      content: Text(
+                                          "Please select current load"),
+                                      duration: Duration(seconds: 1),
+                                      backgroundColor: Colors.blue,
+                                    ));
+                                    return;
+                                  }
+
                                   bool isLocationPermitted =
                                   await Permission
                                       .location.isGranted;
 
                                   if (isLocationPermitted) {
-                                    // service.startService();
 
                                     if (Platform.isAndroid) {
                                       final androidInfo =
                                       await DeviceInfoPlugin()
                                           .androidInfo;
 
-                                      if (androidInfo
-                                          .version.sdkInt <
+                                      if (androidInfo.version.sdkInt <
                                           29) {
                                         var isStoragePermitted =
                                         await Permission
@@ -1258,8 +1124,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                           }
                                         }
                                       } else {
-                                        bool
-                                        isNotificationPermitted =
+                                        bool isNotificationPermitted =
                                         await Permission
                                             .notification
                                             .isGranted;
@@ -1282,11 +1147,11 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                           }
                                         }
                                       }
-                                    } else {
+                                    }
+                                    else {
                                       bool isNotificationPermitted =
                                       await Permission
-                                          .notification
-                                          .isGranted;
+                                          .notification.isGranted;
 
                                       if (isNotificationPermitted) {
                                         startWritingDataToDB(
@@ -1295,71 +1160,206 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                         await Utils
                                             .getNotificationPermission(
                                             context);
-                                        bool
-                                        isNotificationPermitted =
+                                        bool isNotificationPermitted =
                                         await Permission
                                             .notification
                                             .isGranted;
                                         if (isNotificationPermitted) {
                                           startWritingDataToDB(
-                                            context,);
+                                              context);
                                         }
                                       }
                                     }
                                   }
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Color(0xff2663DB)
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset('assets/icons/start_btn.png',
-                                        height: displayHeight(context) * 0.055,
-                                        width: displayWidth(context) * 0.12,
-                                      ),
-                                      SizedBox(width: displayWidth(context) * 0.01,),
-                                      commonText(
-                                        context: context,
-                                        text: 'Start Trip',
-                                        fontWeight: FontWeight.w600,
-                                        textColor: Colors.white,
-                                        textSize: displayWidth(context) * 0.042,
-                                      ),
-                                    ],
+                                  else {
+                                    await Utils.getLocationPermission(
+                                        context, scaffoldKey);
+                                    bool isLocationPermitted =
+                                    await Permission
+                                        .location.isGranted;
+
+                                    if (isLocationPermitted) {
+                                      // service.startService();
+
+                                      if (Platform.isAndroid) {
+                                        final androidInfo =
+                                        await DeviceInfoPlugin()
+                                            .androidInfo;
+
+                                        if (androidInfo
+                                            .version.sdkInt <
+                                            29) {
+                                          var isStoragePermitted =
+                                          await Permission
+                                              .storage.status;
+                                          if (isStoragePermitted
+                                              .isGranted) {
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  context);
+                                            } else {
+                                              await Utils
+                                                  .getNotificationPermission(
+                                                  context);
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    context);
+                                              }
+                                            }
+                                          } else {
+                                            await Utils
+                                                .getStoragePermission(
+                                                context);
+                                            final androidInfo =
+                                            await DeviceInfoPlugin()
+                                                .androidInfo;
+
+                                            var isStoragePermitted =
+                                            await Permission
+                                                .storage.status;
+
+                                            if (isStoragePermitted
+                                                .isGranted) {
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    context);
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                    context);
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      context);
+                                                }
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          bool
+                                          isNotificationPermitted =
+                                          await Permission
+                                              .notification
+                                              .isGranted;
+
+                                          if (isNotificationPermitted) {
+                                            startWritingDataToDB(
+                                                context);
+                                          } else {
+                                            await Utils
+                                                .getNotificationPermission(
+                                                context);
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  context);
+                                            }
+                                          }
+                                        }
+                                      } else {
+                                        bool isNotificationPermitted =
+                                        await Permission
+                                            .notification
+                                            .isGranted;
+
+                                        if (isNotificationPermitted) {
+                                          startWritingDataToDB(
+                                              context);
+                                        } else {
+                                          await Utils
+                                              .getNotificationPermission(
+                                              context);
+                                          bool
+                                          isNotificationPermitted =
+                                          await Permission
+                                              .notification
+                                              .isGranted;
+                                          if (isNotificationPermitted) {
+                                            startWritingDataToDB(
+                                              context,);
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Color(0xff2663DB)
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset('assets/icons/start_btn.png',
+                                          height: displayHeight(context) * 0.055,
+                                          width: displayWidth(context) * 0.12,
+                                        ),
+                                        SizedBox(width: displayWidth(context) * 0.01,),
+                                        commonText(
+                                          context: context,
+                                          text: 'Start Trip',
+                                          fontWeight: FontWeight.w600,
+                                          textColor: Colors.white,
+                                          textSize: displayWidth(context) * 0.042,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),*/
-                          ],
-                        ),
+                              ),*/
+                            ],
+                          ),
 
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top : displayWidth(context) * 0.01,
-                            bottom : displayWidth(context) * 0.01,
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top : displayWidth(context) * 0.01,
+                              bottom : displayWidth(context) * 0.01,
+                            ),
+                            child: GestureDetector(
+                                onTap: ()async{
+                                  final image = await controller.capture();
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                    imagePath: image.toString(),
+                                    uIntList: image,)));
+                                },
+                                child: UserFeedback().getUserFeedback(context)
+                            ),
                           ),
-                          child: GestureDetector(
-                              onTap: ()async{
-                                final image = await controller.capture();
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                  imagePath: image.toString(),
-                                  uIntList: image,)));
-                              },
-                              child: UserFeedback().getUserFeedback(context)
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
 
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -1664,8 +1664,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                   text:
                                   'There is a trip in progress from another Vessel. Please end the trip and come back here',
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.04,
+                                  textColor: Colors.black87,
+                                  textSize: displayWidth(context) * 0.038,
                                   textAlign: TextAlign.center),
                             ],
                           ),
@@ -1682,7 +1682,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                 ),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Go to trip', context, buttonBGColor,
+                                      'Go to trip', context, blueColor,
                                           () async {
 
                                         Utils.customPrint("Click on GO TO TRIP 1");
@@ -1719,33 +1719,28 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                       displayHeight(context) * 0.2,
                                       blueColor,
                                       '',
-                                      fontWeight: FontWeight.w700),
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ),
                               SizedBox(
-                                height: 15.0,
+                                height: 8.0,
                               ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Ok go back', context, Colors.transparent, () {
-                                    Navigator.of(context).pop();
-                                  },
-                                      displayWidth(context) * 0.65,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                          ? Colors.white
-                                          : blueColor,
-                                      displayHeight(context) * 0.015,
-                                      Colors.white,
-                                      '',
-                                      fontWeight: FontWeight.w700),
-                                ),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Ok go back', context, Colors.transparent, () {
+                                  Navigator.of(context).pop();
+                                },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                        ? Colors.white
+                                        : blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.white,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
 
                             ],
