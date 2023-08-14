@@ -2708,6 +2708,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                 tripId: tripDetails.id,
                 vesselId: widget.vessel!.id,
                 tripIsRunningOrNot: tripIsRunning,
+                tripData: tripDetails,
               )),
         );
 

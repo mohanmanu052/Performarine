@@ -36,16 +36,19 @@ class TripWidget extends StatefulWidget {
   final VoidCallback? tripUploadedSuccessfully;
   final Function()? onTripEnded;
   final Trip? tripList;
+  VoidCallback? isTripDeleted;
   final GlobalKey<ScaffoldState>? scaffoldKey;
 
-  const TripWidget(
+   TripWidget(
       {super.key,
       this.calledFrom,
       this.tripList,
       this.onTap,
       this.tripUploadedSuccessfully,
       this.onTripEnded,
-      this.scaffoldKey});
+      this.scaffoldKey,
+        this.isTripDeleted
+      });
 
   @override
   State<TripWidget> createState() => _TripWidgetState();
@@ -286,7 +289,8 @@ class _TripWidgetState extends State<TripWidget> {
                                                           getVesselById[0].id,
                                                       tripIsRunningOrNot: false,
                                                       calledFrom:
-                                                          widget.calledFrom
+                                                          widget.calledFrom,
+                                                    tripData: widget.tripList,
                                                       ),
                                             ),
                                           );
@@ -413,7 +417,9 @@ class _TripWidgetState extends State<TripWidget> {
                                                             tripIsRunningOrNot:
                                                                 false,
                                                             calledFrom: widget
-                                                                .calledFrom
+                                                                .calledFrom,
+                                                          tripData: widget.tripList,
+                                                          isTripDeleted: widget.isTripDeleted,
                                                             ),
                                                   ),
                                                 );
