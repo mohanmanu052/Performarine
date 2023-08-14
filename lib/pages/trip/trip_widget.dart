@@ -167,7 +167,8 @@ class _TripWidgetState extends State<TripWidget> {
                         fontWeight: FontWeight.w500,
                         textColor: Colors.black,
                         textSize: displayWidth(context) * 0.022,
-                        textAlign: TextAlign.start),
+                        textAlign: TextAlign.start,
+                        fontFamily: poppins),
                     widget.tripList?.tripStatus == 0
                         ? commonText(
                             context: context,
@@ -176,6 +177,7 @@ class _TripWidgetState extends State<TripWidget> {
                             fontWeight: FontWeight.w500,
                             textColor: Colors.black,
                             textSize: displayWidth(context) * 0.018,
+                        fontFamily: poppins
                           )
                         : commonText(
                             context: context,
@@ -184,6 +186,7 @@ class _TripWidgetState extends State<TripWidget> {
                             fontWeight: FontWeight.w500,
                             textColor: Colors.black,
                             textSize: displayWidth(context) * 0.018,
+                        fontFamily: poppins
                           ),
                   ],
                 ),
@@ -231,6 +234,7 @@ class _TripWidgetState extends State<TripWidget> {
                               fontWeight: FontWeight.w500,
                               textColor: Colors.white,
                               textSize: displayWidth(context) * 0.03,
+                                fontFamily: poppins
                             ),
                           ),
                         ),

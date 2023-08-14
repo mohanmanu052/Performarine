@@ -194,7 +194,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                 textSize:
                                                 displayWidth(context) *
                                                     0.03,
-                                                textAlign: TextAlign.start),
+                                                textAlign: TextAlign.start,
+                                                fontFamily: outfit),
                                           ],
                                         ),
                                         SizedBox(
@@ -222,7 +223,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                 textSize:
                                                 displayWidth(context) *
                                                     0.03,
-                                                textAlign: TextAlign.start),
+                                                textAlign: TextAlign.start,
+                                                fontFamily: outfit),
                                           ],
                                         )
                                       ],
@@ -267,7 +269,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                     context) *
                                                     0.03,
                                                 textAlign:
-                                                TextAlign.start),
+                                                TextAlign.start,
+                                                fontFamily: outfit),
                                           ],
                                         ),
                                         SizedBox(
@@ -300,7 +303,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                     context) *
                                                     0.03,
                                                 textAlign:
-                                                TextAlign.start),
+                                                TextAlign.start,
+                                                fontFamily: outfit),
                                           ],
                                         )
                                       ],
@@ -338,7 +342,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                 textSize:
                                                 displayWidth(context) *
                                                     0.03,
-                                                textAlign: TextAlign.start),
+                                                textAlign: TextAlign.start,
+                                                fontFamily: outfit),
                                           ],
                                         ),
                                         SizedBox(

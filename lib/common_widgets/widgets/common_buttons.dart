@@ -185,7 +185,8 @@ class CommonButtons {
               context: context,
               textSize: textSize,
               textColor: textColor,
-              fontWeight: fontWeight,fontFamily: fontFamily
+              fontWeight: fontWeight,
+              fontFamily: fontFamily
           )),
     );
   }
@@ -198,9 +199,10 @@ class CommonButtons {
         double? fontSize,
         Function()? onTap,
         double? width,
-        Color? buttonPrimaryColor}) {
+        Color? buttonPrimaryColor, String? fontFamily}) {
     width ??= displayWidth(context!);
     borderColor ??= buttonPrimaryColor;
+    fontFamily ??= poppins;
 
     return ElevatedButton(
         onPressed: onTap,
@@ -217,7 +219,7 @@ class CommonButtons {
               context: context,
               textSize: fontSize,
               textColor: textColor,
-              fontWeight: FontWeight.w500),
+              fontWeight: FontWeight.w500, fontFamily: fontFamily),
 
         ));
   }
@@ -251,7 +253,6 @@ class CommonButtons {
               textSize: fontSize,
               textColor: textColor,
               fontWeight: FontWeight.w500),
-
         ));
   }
 }
