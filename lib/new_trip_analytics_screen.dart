@@ -957,8 +957,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
                       InkWell(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                              Trips()));
+                          /*Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                              Trips()));*/
                         },
                         child: commonText(
                           context: context,

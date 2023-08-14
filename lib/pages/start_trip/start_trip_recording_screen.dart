@@ -52,8 +52,7 @@ import '../trip_analytics.dart';
 class StartTripRecordingScreen extends StatefulWidget {
   final bool? isLocationPermitted;
   final bool? isBluetoothConnected;
-  final String? isCalledFrom;
-  const StartTripRecordingScreen({super.key, this.isLocationPermitted = false, this.isBluetoothConnected = false, this.isCalledFrom = ''});
+  const StartTripRecordingScreen({super.key, this.isLocationPermitted = false, this.isBluetoothConnected = false,});
 
   @override
   State<StartTripRecordingScreen> createState() => _StartTripRecordingScreenState();
@@ -72,7 +71,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
   int valueHolder = 1;
 
   bool? isGpsOn, isLPRConnected, isBleOn;
-  bool addingDataToDB = false, isServiceRunning = false, isLocationDialogBoxOpen = false, isStartButton = false;
+  bool addingDataToDB = false, isServiceRunning = false, isLocationDialogBoxOpen = false, isStartButton = false, isVesselDataLoading = false;
 
   final controller = ScreenshotController();
 
@@ -112,7 +111,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
         child: Scaffold(
           backgroundColor: backgroundColor,
           key: scaffoldKey,
-          appBar: widget.isCalledFrom == 'bottomSheet' ? null : AppBar(
+          appBar:  AppBar(
             backgroundColor: backgroundColor,
             elevation: 0,
             leading: IconButton(
@@ -187,9 +186,18 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                     ),
                   ),
 
-                  Container(
+                  !isVesselDataLoading ? Container(
+                    height: displayHeight(context) * 0.1,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        valueColor:
+                        AlwaysStoppedAnimation<Color>(
+                            circularProgressColor),
+                      ),
+                    ),
+                  )
+                  : Container(
                     margin: EdgeInsets.only(top: 20),
-                    width: displayWidth(context),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                       color: Color(0xffECF3F9)
@@ -265,8 +273,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                         fontSize:
                                         displayWidth(context) *
                                             0.032,
-                                        fontFamily: inter,
-                                        fontWeight: FontWeight.w500),
+                                        fontFamily: outfit,
+                                        fontWeight: FontWeight.w400),
                                   ),
                                   isExpanded: true,
                                   isDense: true,
@@ -377,7 +385,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                           context) *
                                           0.03,
                                       textAlign:
-                                      TextAlign.start),
+                                      TextAlign.start,
+                                    fontFamily: outfit
+                                  ),
                                   //  Text(
                                   //     '${selectedVesselWeight}'),
                                   isExpanded: true,
@@ -1372,6 +1382,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
     try {
       bool check = await Utils().check(scaffoldKey);
       if (check) {
+        setState(() {
+          isVesselDataLoading = false;
+        });
         commonProvider
             .getUserConfigData(context, commonProvider.loginModel!.userId!,
             commonProvider.loginModel!.token!, scaffoldKey)
@@ -1381,6 +1394,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
           CustomLogger().logWithFile(Level.info, "value is: ${value.status} -> $page");
 
           if (value != null) {
+            setState(() {
+              isVesselDataLoading = true;
+            });
             Utils.customPrint("value 1 is: ${value.status}");
 
             Utils.customPrint("value of get user config by id: ${value.vessels}");
@@ -1393,14 +1409,24 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
             CustomLogger().logWithFile(Level.info, "vesselData: ${vesselData.length} -> $page");
 
           } else {
+            setState(() {
+              isVesselDataLoading = true;
+            });
           }
         }).catchError((e) {
+          setState(() {
+            isVesselDataLoading = true;
+          });
         });
       } else {
-
+        setState(() {
+          isVesselDataLoading = true;
+        });
       }
     } catch (e) {
-
+      setState(() {
+        isVesselDataLoading = true;
+      });
 
       Utils.customPrint("Error while fetching data from getUserConfigById: $e");
       CustomLogger().logWithFile(Level.error, "Error while fetching data from getUserConfigById: $e -> $page");
