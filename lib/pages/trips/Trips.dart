@@ -60,15 +60,17 @@ class _TripsState extends State<Trips> {
                   isForTwoDecimal: false),
             ),
 
-            TripViewList(
-              scaffoldKey: scaffoldKey,
-              calledFrom: 'HomePage',
-              isTripDeleted: ()async{
+            Expanded(
+              child: TripViewList(
+                scaffoldKey: scaffoldKey,
+                calledFrom: 'HomePage',
+                isTripDeleted: ()async{
 
-              },
-              onTripEnded: (){
-                commonProvider.getTripsByVesselId('');
-              },
+                },
+                onTripEnded: (){
+                  commonProvider.getTripsByVesselId('');
+                },
+              ),
             ),
           ],
         ),

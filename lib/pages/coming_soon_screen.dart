@@ -19,13 +19,13 @@ class _ComingSoonScreenState extends State<ComingSoonScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      /*  appBar: AppBar(
           automaticallyImplyLeading: true,
           backgroundColor: primaryColor,
           elevation: 0,
           centerTitle: true,
           iconTheme: IconThemeData(color: Colors.white),
-        ),
+        ), */
         body: Center(
           child: commonText(
               text: 'COMING SOON',

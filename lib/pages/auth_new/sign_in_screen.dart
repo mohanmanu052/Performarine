@@ -222,72 +222,66 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                     SizedBox(height: displayHeight(context) * 0.02),
-                    Container(
-                      height: displayHeight(context) * 0.056,
-                      child: CommonTextField(
-                        //key: emailFormFieldKey,
-                          controller: emailController,
-                          focusNode: emailFocusNode,
-                          labelText: 'Enter your Email',
-                          hintText: '',
-                          suffixText: null,
-                          textInputAction: TextInputAction.next,
-                          textInputType: TextInputType.emailAddress,
-                          textCapitalization: TextCapitalization.words,
-                          maxLength: 52,
-                          prefixIcon: null,
-                          requestFocusNode: null,
-                          obscureText: false,
-                          readOnly: false,
-                          onTap: () {},
-                          onChanged: (value) {},
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter your Email';
-                            } else if (!EmailValidator.validate(value)) {
-                              return 'Enter valid email';
-                            }
-                            return null;
-                          },
-                          onFieldSubmitted: (value) {
-                          },
-                          onSaved: (String value) {
-                            Utils.customPrint(value);
-                          }),
-                    ),
+                    CommonTextField(
+                      //key: emailFormFieldKey,
+                        controller: emailController,
+                        focusNode: emailFocusNode,
+                        labelText: 'Enter your Email',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.next,
+                        textInputType: TextInputType.emailAddress,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 52,
+                        prefixIcon: null,
+                        requestFocusNode: null,
+                        obscureText: false,
+                        readOnly: false,
+                        onTap: () {},
+                        onChanged: (value) {},
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter your Email';
+                          } else if (!EmailValidator.validate(value)) {
+                            return 'Enter valid email';
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (value) {
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                        }),
                     SizedBox(height: displayHeight(context) * 0.012),
-                    Container(
-                      height: displayHeight(context) * 0.056,
-                      child: CommonTextField(
-                          controller: passwordController,
-                          focusNode: passwordFocusNode,
-                          labelText: 'Confirm Password',
-                          hintText: '',
-                          suffixText: null,
-                          textInputAction: TextInputAction.done,
-                          textInputType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
-                          maxLength: 32,
-                          prefixIcon: null,
-                          requestFocusNode: null,
-                          obscureText: true,
-                          onTap: () {},
-                          onFieldSubmitted: (value) {},
-                          onChanged: (String value) {},
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter Confirm Password';
-                            } else if (!RegExp(
-                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
-                                .hasMatch(value)) {
-                              return 'Invalid password';
-                            }
-                            return null;
-                          },
-                          onSaved: (String value) {
-                            Utils.customPrint(value);
-                          }),
-                    ),
+                    CommonTextField(
+                        controller: passwordController,
+                        focusNode: passwordFocusNode,
+                        labelText: 'Confirm Password',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.done,
+                        textInputType: TextInputType.text,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 32,
+                        prefixIcon: null,
+                        requestFocusNode: null,
+                        obscureText: true,
+                        onTap: () {},
+                        onFieldSubmitted: (value) {},
+                        onChanged: (String value) {},
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter Confirm Password';
+                          } else if (!RegExp(
+                              r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
+                              .hasMatch(value)) {
+                            return 'Invalid password';
+                          }
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                        }),
                     SizedBox(height: displayHeight(context) * 0.03),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -310,11 +304,14 @@ class _SignInScreenState extends State<SignInScreen> {
                         )),
 
                         isLoginBtnClicked!
-                            ? Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  circularProgressColor),
-                            ))
+                            ? Container(
+                          width: displayWidth(context) * 0.45,
+                              child: Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    circularProgressColor),
+                              )),
+                            )
                             : CommonButtons.getActionButton(
                             title: 'Sign In',
                             context: context,
