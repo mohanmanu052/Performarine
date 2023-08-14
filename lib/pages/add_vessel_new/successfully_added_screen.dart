@@ -721,8 +721,8 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                     Row(
                                       children: [
                                         Image.asset(
-                                            'assets/images/free_board.png',
-                                            width: displayWidth(context) * 0.045,
+                                            'assets/icons/beam.png',
+                                            width: displayWidth(context) * 0.048,
                                             color: Colors.black),
                                         SizedBox(
                                             width: displayWidth(context) * 0.016),

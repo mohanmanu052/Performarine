@@ -295,7 +295,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
         padding: EdgeInsets.only(
           left: displayWidth(context) * 0.06,
           right: displayWidth(context) * 0.06,
-          bottom: displayWidth(context) * 0.01
+          bottom: displayWidth(context) * 0.09
           // top: displayWidth(context) * 0.02,
         ),
         child: isBtnClick ?  Center(
