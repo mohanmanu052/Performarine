@@ -42,5 +42,6 @@ const authBtnColors = Color(0xFFDFF9F9);
 const bottomNavColor = Color(0xFFF8FFFF);
 const filterByTripTxtColor = Color(0xFF979797);
 const deleteTripBtnColor = Color(0xFFFF2020);
+const inProgressTrip = Color(0xFFFDBF21);
 
 

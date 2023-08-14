@@ -807,7 +807,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                               isVesselDataLoading!
                                   ? Container(
                                       width: displayWidth(context) * 0.8,
-                                      height: displayHeight(context) * 0.05,
+                                      //height: displayHeight(context) * 0.05,
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButtonFormField<
                                             DropdownItem>(
@@ -824,7 +824,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           decoration: InputDecoration(
                                             prefixIcon: Transform.scale(
                                               scale: 0.5,
-                                              child: Image.asset('assets/icons/vessels.png'),
+                                              child: Image.asset('assets/icons/vessels.png', height: displayHeight(context) * 0.02),
                                             ),
                                             contentPadding:
                                                 EdgeInsets.symmetric(
@@ -988,7 +988,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                               ),
                               Container(
                                 width: displayWidth(context) * 0.8,
-                                height: displayHeight(context) * 0.05,
+                                //height: displayHeight(context) * 0.05,
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButtonFormField<String>(
                                     autovalidateMode:
@@ -1003,7 +1003,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                     decoration: InputDecoration(
                                       prefixIcon: Transform.scale(
                                         scale: 0.5,
-                                        child: Image.asset('assets/icons/filter_icon.png'),
+                                        child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
                                       ),
                                       contentPadding:
                                           EdgeInsets.symmetric(horizontal: 10),
