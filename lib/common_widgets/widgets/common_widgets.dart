@@ -367,17 +367,15 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
-                              height: displayHeight(context) * 0.22,
+                             // height: displayHeight(context) * 0.22,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 //color: Colors.white,
                               ),
-                              child: Center(
-                                child: Image.asset(
-                                  'assets/images/vessel_default_img.png',
-                                  width: displayWidth(context) * 0.65,
-                                  fit: BoxFit.cover,
-                                ),
+                              child: Image.asset(
+                                'assets/icons/default_boat.png',
+                              //  width: displayWidth(context) * 0.65,
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
@@ -508,7 +506,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 'assets/images/fuel.png',
                                 width: displayWidth(context) *
                                     0.045,
-                                color: Colors.black87,
+                                color: backgroundColor,
                               ),
                               SizedBox(
                                 width: displayWidth(context) *
@@ -539,7 +537,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               Image.asset(
                                 'assets/images/combustion_engine.png',
                                 width: displayWidth(context) * 0.045,
-                                color: Colors.black87,
+                                color: backgroundColor,
                               ),
                               SizedBox(
                                 width: displayWidth(context) *
@@ -579,7 +577,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                     width: displayWidth(
                                         context) *
                                         0.027,
-                                    color: Colors.black87,
+                                    color: backgroundColor,
                                   )),
                               SizedBox(
                                 width:
@@ -593,7 +591,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                       .toString(),
                                   fontWeight:
                                   FontWeight.w500,
-                                  textColor: Colors.black87,
+                                  textColor: backgroundColor,
                                   textSize: displayWidth(
                                       context) *
                                       0.03,
@@ -614,7 +612,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 width:
                                 displayWidth(context) *
                                     0.045,
-                                color: Colors.black87,
+                                color: backgroundColor,
                               ),
                               SizedBox(
                                 width:
@@ -627,7 +625,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                       .engineType!,
                                   fontWeight:
                                   FontWeight.w500,
-                                  textColor: Colors.black87,
+                                  textColor: backgroundColor,
                                   textSize: displayWidth(
                                       context) *
                                       0.03,
@@ -650,7 +648,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 'assets/images/fuel.png',
                                 width: displayWidth(context) *
                                     0.045,
-                                color: Colors.black87,
+                                color: backgroundColor,
                               ),
                               SizedBox(
                                 width: displayWidth(context) *
@@ -689,7 +687,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                     width:
                                     displayWidth(context) *
                                         0.027,
-                                    color: Colors.black87,
+                                    color: backgroundColor,
                                   )),
                               SizedBox(
                                 width: displayWidth(context) *
@@ -721,7 +719,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 'assets/images/hybrid_engine.png',
                                 width: displayWidth(context) *
                                     0.045,
-                                color: Colors.black87,
+                                color: backgroundColor,
                               ),
                               SizedBox(
                                 width: displayWidth(context) *
@@ -747,7 +745,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
             ),
           ),
           Positioned(
-            bottom: 0,
+            bottom: 10,
             left: 0,
             right: 0,
             child: Container(

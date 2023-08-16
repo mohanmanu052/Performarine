@@ -148,20 +148,20 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
             InkWell(
               onTap: ()async{
-                Utils.customPrint("Trip id is: ${widget.tripData!.id}");
+                Utils.customPrint("Trip id is: ${tripData!.id}");
               //  bool tripRunning = await tripIsRunningOrNot(snapshot.data![index]);
                 bool tripUploadedStatus = false;
-                if (widget.tripData!.isSync == 0){
+                if (tripData!.isSync == 0){
                   tripUploadedStatus = true;
                 }
              //   print("status: ${widget.vessel!.}");
-                if(widget.tripData!.tripStatus == 1){
+                if(tripData!.tripStatus == 1){
                   showDeleteTripDialogBox(
                       context,
-                      widget.tripData!.id!,
-                      widget.tripData!.createdAt!,
-                      widget.tripData!.time!,
-                      widget.tripData!.distance!,
+                      tripData!.id!,
+                      tripData!.createdAt!,
+                      tripData!.time!,
+                      tripData!.distance!,
                           (){
                         Utils.customPrint("call back for delete trip in list");
                         //snapshot.data!.removeAt(index);
@@ -191,7 +191,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                       MaterialPageRoute(builder: (context) => HomePage()),
                       ModalRoute.withName(""));
                 },
-                icon: Image.asset('assets/images/home.png'),
+                icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.white
                     : Colors.black,
@@ -1250,12 +1250,13 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                   ) :  CommonButtons.getAcceptButton(
                                       'Confirm & Delete', context, deleteTripBtnColor,
                                           () async {
+                                            stateSetter(() {
+                                              isBtnClick = true;
+                                            });
                                         internalStateSetter = stateSetter;
                                         bool internet =
-                                        await Utils().check(scaffoldKey);
-                                        stateSetter(() {
-                                          isBtnClick = true;
-                                        });
+                                        await Utils().check(scaffoldKey,isFromDelete: true);
+
                                         if(internet){
                                           stateSetter(() {
                                             isBtnClick = true;
@@ -1372,7 +1373,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
            setState(() {
              isBtnClick = false;
            });
-           widget.isTripDeleted!.call();
+          // widget.isTripDeleted!.call();
            return;
          }
     });

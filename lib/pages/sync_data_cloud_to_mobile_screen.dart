@@ -102,12 +102,22 @@ class _SyncDataCloudToMobileScreenState
                 margin: EdgeInsets.symmetric(horizontal: 17),
                 child: Column(
                   children: [
-                    SizedBox(
-                      height: displayHeight(context) * 0.09,
-                    ),
-                    Image.asset(
-                      'assets/images/cloud.png',
+                    // SizedBox(
+                    //   height: displayHeight(context) * 0.09,
+                    // ),
+                    Container(
+                     // width: displayWidth(context) * 0.36,
                       height: displayHeight(context) * 0.3,
+                      child: Image.asset(
+                        'assets/images/sync_cloud.png',
+                      ),
+                    ),
+                    Container(
+                      width: displayWidth(context) * 0.36,
+                      height: displayHeight(context) * 0.14,
+                      child: Image.asset(
+                        'assets/images/performarine_logo.png',
+                      ),
                     ),
                     SizedBox(
                       height: displayHeight(context) * 0.03,

@@ -68,7 +68,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     textSize = displayWidth(context) * 0.038;
 
     return Drawer(
-      backgroundColor: commonBackgroundColor,
+      backgroundColor: backgroundColor,
       child: Container(
         margin: const EdgeInsets.only(left: 30, right: 10.0, top: 10.0),
         child: Column(
@@ -95,7 +95,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           children: [
                             commonText(
                                 context: context,
-                                text: 'Username',
+                                text: 'Hey!',
                                 fontWeight: FontWeight.w700,
                                 textSize: textSize,
                                 textAlign: TextAlign.start),
