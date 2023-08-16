@@ -142,7 +142,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
             text: 'Trip ID #${widget.tripId}',
             fontWeight: FontWeight.w600,
             textColor: Colors.black87,
-            textSize: displayWidth(context) * 0.032,
+            textSize: displayWidth(context) * 0.03,
           ),
           actions: [
 
