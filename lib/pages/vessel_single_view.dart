@@ -330,758 +330,794 @@ class VesselSingleViewState extends State<VesselSingleView> {
             ],
           ),
           drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
-          body: Container(
-            color: Colors.white,
-            //margin: EdgeInsets.only(bottom: 4),
-            child: Stack(
-              children: [
-                SizedBox(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        ExpansionCard(
-                            scaffoldKey,
-                            widget.vessel,
-                                (value) async {
-                              var result = await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => AddNewVesselPage(
-                                    isEdit: true,
-                                    createVessel: widget.vessel,
-                                  ),
-                                  fullscreenDialog: true,
+          body: Stack(
+            children: [
+              SizedBox(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      ExpansionCard(
+                          scaffoldKey,
+                          widget.vessel,
+                              (value) async {
+                            var result = await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => AddNewVesselPage(
+                                  isEdit: true,
+                                  createVessel: widget.vessel,
                                 ),
-                              );
+                                fullscreenDialog: true,
+                              ),
+                            );
 
-                              if (result != null) {
-                                Utils.customPrint('RESULT 1 ${result[0]}');
-                                Utils.customPrint(
-                                    'RESULT 1 ${result[1] as CreateVessel}');
-                                setState(() {
-                                  widget.vessel = result[1] as CreateVessel?;
-                                  isDataUpdated = result[0];
-                                });
-                              }
-                            },
-                                (value) {},
-                                (value) {
-                              _onDeleteTripsByVesselID(value.id!);
-                              _onVesselDelete(value);
-                            },
-                            false,
-                        isCalledFromVesselSingleView: true,),
-                        SizedBox(
-                          height: 10,
+                            if (result != null) {
+                              Utils.customPrint('RESULT 1 ${result[0]}');
+                              Utils.customPrint(
+                                  'RESULT 1 ${result[1] as CreateVessel}');
+                              setState(() {
+                                widget.vessel = result[1] as CreateVessel?;
+                                isDataUpdated = result[0];
+                              });
+                            }
+                          },
+                              (value) {},
+                              (value) {
+                            _onDeleteTripsByVesselID(value.id!);
+                            _onVesselDelete(value);
+                          },
+                          false,
+                      isCalledFromVesselSingleView: true,),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: Color(0xffECF3F9),
+                          borderRadius: BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15))
                         ),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            color: Color(0xffECF3F9),
-                            borderRadius: BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15))
-                          ),
-                          child: Column(
-                            children: [
-                              Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 0.0, left: 17, right: 17),
-                                  child: Column(
-                                    children: [
+                        child: Column(
+                          children: [
+                            Container(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 0.0, left: 17, right: 17),
+                                child: Column(
+                                  children: [
 
-                                      Theme(
-                                        data: Theme.of(context).copyWith(
-                                            colorScheme: ColorScheme.light(
-                                              primary: Colors.black,
-                                            ),
-                                            dividerColor: Colors.transparent),
+                                    Theme(
+                                      data: Theme.of(context).copyWith(
+                                          colorScheme: ColorScheme.light(
+                                            primary: Colors.black,
+                                          ),
+                                          dividerColor: Colors.transparent),
+                                      child: ExpansionTile(
+                                        initiallyExpanded: true,
+                                        onExpansionChanged: ((newState) {}),
+                                        tilePadding: EdgeInsets.zero,
+                                        childrenPadding: EdgeInsets.zero,
+                                        title: commonText(
+                                            context: context,
+                                            text: 'Vessel Dimensions',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize: displayWidth(context) * 0.036,
+                                            textAlign: TextAlign.start),
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Image.asset('assets/images/length.png',
+                                                            width: displayWidth(context) * 0.045,
+                                                            color: Colors.black),
+                                                        SizedBox(
+                                                            width: displayWidth(context) * 0.016),
+                                                        Flexible(
+                                                          child: commonText(
+                                                            context: context,
+                                                            text:
+                                                            '${widget.vessel!.lengthOverall} ft',
+                                                            fontWeight: FontWeight.w500,
+                                                            textColor: Colors.black,
+                                                            textSize:
+                                                            displayWidth(context) * 0.034,
+                                                            textAlign: TextAlign.start,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                        height: displayHeight(context) * 0.006),
+
+                                                    commonText(
+                                                        context: context,
+                                                        text: 'Length(LOA)',
+                                                        fontWeight: FontWeight.w500,
+                                                        textColor: Colors.grey,
+                                                        textSize: displayWidth(context) * 0.024,
+                                                        textAlign: TextAlign.start),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(width: displayWidth(context) * 0.015),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Image.asset(
+                                                            'assets/images/free_board.png',
+                                                            width: displayWidth(context) * 0.045,
+                                                            color: Colors.black),
+                                                        SizedBox(
+                                                            width: displayWidth(context) * 0.016),
+                                                        Flexible(
+                                                          child: commonText(
+                                                              context: context,
+                                                              text:
+                                                              '${widget.vessel!.freeBoard} ft',
+                                                              fontWeight: FontWeight.w500,
+                                                              textColor: Colors.black,
+                                                              textSize:
+                                                              displayWidth(context) * 0.034,
+                                                              textAlign: TextAlign.start),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                        height: displayHeight(context) * 0.006),
+                                                    commonText(
+                                                        context: context,
+                                                        text: 'Freeboard',
+                                                        fontWeight: FontWeight.w500,
+                                                        textColor: Colors.grey,
+                                                        textSize: displayWidth(context) * 0.024,
+                                                        textAlign: TextAlign.start),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(width: displayWidth(context) * 0.015),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Image.asset(
+                                                            'assets/icons/beam.png',
+                                                            width: displayWidth(context) * 0.048,
+                                                            color: Colors.black),
+                                                        SizedBox(
+                                                            width: displayWidth(context) * 0.016),
+                                                        Flexible(
+                                                          child: commonText(
+                                                              context: context,
+                                                              text: '${widget.vessel!.beam} ft',
+                                                              fontWeight: FontWeight.w500,
+                                                              textColor: Colors.black,
+                                                              textSize:
+                                                              displayWidth(context) * 0.034,
+                                                              textAlign: TextAlign.start),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                        height: displayHeight(context) * 0.006),
+                                                    commonText(
+                                                        context: context,
+                                                        text: 'Beam',
+                                                        fontWeight: FontWeight.w500,
+                                                        textColor: Colors.grey,
+                                                        textSize: displayWidth(context) * 0.024,
+                                                        textAlign: TextAlign.start),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(width: displayWidth(context) * 0.015),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        RotatedBox(
+                                                          quarterTurns: 2,
+                                                          child: Image.asset(
+                                                              'assets/images/free_board.png',
+                                                              width: displayWidth(context) * 0.045,
+                                                              color: Colors.black),
+                                                        ),
+                                                        SizedBox(
+                                                            width: displayWidth(context) * 0.016),
+                                                        Flexible(
+                                                          child: commonText(
+                                                              context: context,
+                                                              text: '${widget.vessel!.draft} ft',
+                                                              fontWeight: FontWeight.w500,
+                                                              textColor: Colors.black,
+                                                              textSize:
+                                                              displayWidth(context) * 0.034,
+                                                              textAlign: TextAlign.start),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                        height: displayHeight(context) * 0.006),
+                                                    commonText(
+                                                        context: context,
+                                                        text: 'Draft',
+                                                        fontWeight: FontWeight.w500,
+                                                        textColor: Colors.grey,
+                                                        textSize: displayWidth(context) * 0.024,
+                                                        textAlign: TextAlign.start),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: displayHeight(context) * 0.01,
+                                    ),
+                                    Theme(
+                                      data: Theme.of(context).copyWith(
+                                          colorScheme: ColorScheme.light(
+                                            primary: Colors.black,
+                                          ),
+                                          dividerColor: Colors.transparent),
+                                      child: Container(
                                         child: ExpansionTile(
                                           initiallyExpanded: true,
-                                          onExpansionChanged: ((newState) {}),
+                                          onExpansionChanged: ((newState) {
+                                            setState(() {
+                                              isVesselParticularExpanded = newState;
+                                            });
+
+                                            Utils.customPrint(
+                                                'EXPANSION CHANGE $isVesselParticularExpanded');
+                                            CustomLogger().logWithFile(Level.info, "EXPANSION CHANGE $isVesselParticularExpanded -> $page");
+                                          }),
                                           tilePadding: EdgeInsets.zero,
                                           childrenPadding: EdgeInsets.zero,
                                           title: commonText(
                                               context: context,
-                                              text: 'Vessel Dimensions',
+                                              text: 'Propulsion Details',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
                                               textSize: displayWidth(context) * 0.036,
                                               textAlign: TextAlign.start),
                                           children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            Column(
                                               children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      Row(
+                                                Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
                                                         children: [
-                                                          Image.asset('assets/images/length.png',
-                                                              width: displayWidth(context) * 0.045,
-                                                              color: Colors.black),
-                                                          SizedBox(
-                                                              width: displayWidth(context) * 0.016),
-                                                          Flexible(
-                                                            child: commonText(
+                                                          commonText(
                                                               context: context,
                                                               text:
-                                                              '${widget.vessel!.lengthOverall} ft',
-                                                              fontWeight: FontWeight.w500,
+                                                              '${widget.vessel!.capacity}cc',
+                                                              fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
-                                                              displayWidth(context) * 0.034,
-                                                              textAlign: TextAlign.start,
-                                                            ),
-                                                          ),
+                                                              displayWidth(context) * 0.04,
+                                                              textAlign: TextAlign.start),
+                                                          commonText(
+                                                              context: context,
+                                                              text: 'Capacity' ,
+                                                              fontWeight: FontWeight.w500,
+                                                              textColor: Colors.grey,
+                                                              textSize:
+                                                              displayWidth(context) * 0.024,
+                                                              textAlign: TextAlign.start),
                                                         ],
                                                       ),
-                                                      SizedBox(
-                                                          height: displayHeight(context) * 0.006),
-
-                                                      commonText(
-                                                          context: context,
-                                                          text: 'Length(LOA)',
-                                                          fontWeight: FontWeight.w500,
-                                                          textColor: Colors.grey,
-                                                          textSize: displayWidth(context) * 0.024,
-                                                          textAlign: TextAlign.start),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(width: displayWidth(context) * 0.015),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      Row(
+                                                    ),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
                                                         children: [
-                                                          Image.asset(
-                                                              'assets/images/free_board.png',
-                                                              width: displayWidth(context) * 0.045,
-                                                              color: Colors.black),
-                                                          SizedBox(
-                                                              width: displayWidth(context) * 0.016),
-                                                          Flexible(
-                                                            child: commonText(
-                                                                context: context,
-                                                                text:
-                                                                '${widget.vessel!.freeBoard} ft',
-                                                                fontWeight: FontWeight.w500,
-                                                                textColor: Colors.black,
-                                                                textSize:
-                                                                displayWidth(context) * 0.034,
-                                                                textAlign: TextAlign.start),
-                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text: widget.vessel!.builtYear
+                                                                  .toString(),
+                                                              fontWeight: FontWeight.w700,
+                                                              textColor: Colors.black,
+                                                              textSize:
+                                                              displayWidth(context) * 0.04,
+                                                              textAlign: TextAlign.start),
+                                                          commonText(
+                                                              context: context,
+                                                              text: 'Built',
+                                                              fontWeight: FontWeight.w500,
+                                                              textColor: Colors.grey,
+                                                              textSize:
+                                                              displayWidth(context) * 0.024,
+                                                              textAlign: TextAlign.start),
                                                         ],
                                                       ),
-                                                      SizedBox(
-                                                          height: displayHeight(context) * 0.006),
-                                                      commonText(
-                                                          context: context,
-                                                          text: 'Freeboard',
-                                                          fontWeight: FontWeight.w500,
-                                                          textColor: Colors.grey,
-                                                          textSize: displayWidth(context) * 0.024,
-                                                          textAlign: TextAlign.start),
-                                                    ],
-                                                  ),
-                                                ),
-                                                SizedBox(width: displayWidth(context) * 0.015),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      Row(
+                                                    ),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
                                                         children: [
-                                                          Image.asset(
-                                                              'assets/icons/beam.png',
-                                                              width: displayWidth(context) * 0.048,
-                                                              color: Colors.black),
-                                                          SizedBox(
-                                                              width: displayWidth(context) * 0.016),
-                                                          Flexible(
-                                                            child: commonText(
-                                                                context: context,
-                                                                text: '${widget.vessel!.beam} ft',
-                                                                fontWeight: FontWeight.w500,
-                                                                textColor: Colors.black,
-                                                                textSize:
-                                                                displayWidth(context) * 0.034,
-                                                                textAlign: TextAlign.start),
-                                                          ),
+                                                          widget.vessel!.regNumber! == ""
+                                                              ? commonText(
+                                                              context: context,
+                                                              text: '-',
+                                                              fontWeight: FontWeight.w700,
+                                                              textColor: Colors.black,
+                                                              textSize:
+                                                              displayWidth(context) *
+                                                                  0.04,
+                                                              textAlign: TextAlign.start)
+                                                              : commonText(
+                                                              context: context,
+                                                              text: widget.vessel!.regNumber,
+                                                              fontWeight: FontWeight.w700,
+                                                              textColor: Colors.black,
+                                                              textSize:
+                                                              displayWidth(context) *
+                                                                  0.048,
+                                                              textAlign: TextAlign.start),
+                                                          commonText(
+                                                              context: context,
+                                                              text: 'Registration Number',
+                                                              fontWeight: FontWeight.w500,
+                                                              textColor: Colors.grey,
+                                                              textSize:
+                                                              displayWidth(context) * 0.024,
+                                                              textAlign: TextAlign.start),
                                                         ],
                                                       ),
-                                                      SizedBox(
-                                                          height: displayHeight(context) * 0.006),
-                                                      commonText(
-                                                          context: context,
-                                                          text: 'Beam',
-                                                          fontWeight: FontWeight.w500,
-                                                          textColor: Colors.grey,
-                                                          textSize: displayWidth(context) * 0.024,
-                                                          textAlign: TextAlign.start),
-                                                    ],
+                                                    )
+                                                  ],
+                                                ),
+                                                Container(
+                                                  margin: const EdgeInsets.symmetric(vertical: 8),
+                                                  child: const Divider(
+                                                    color: Colors.grey,
+                                                    thickness: 1,
+                                                    indent: 1,
+                                                    endIndent: 2,
                                                   ),
                                                 ),
-                                                SizedBox(width: displayWidth(context) * 0.015),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      Row(
+                                                Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
                                                         children: [
-                                                          RotatedBox(
-                                                            quarterTurns: 2,
-                                                            child: Image.asset(
-                                                                'assets/images/free_board.png',
-                                                                width: displayWidth(context) * 0.045,
-                                                                color: Colors.black),
-                                                          ),
-                                                          SizedBox(
-                                                              width: displayWidth(context) * 0.016),
-                                                          Flexible(
-                                                            child: commonText(
-                                                                context: context,
-                                                                text: '${widget.vessel!.draft} ft',
-                                                                fontWeight: FontWeight.w500,
-                                                                textColor: Colors.black,
-                                                                textSize:
-                                                                displayWidth(context) * 0.034,
-                                                                textAlign: TextAlign.start),
-                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text:
+                                                              '${widget.vessel!.weight} Lbs',
+                                                              fontWeight: FontWeight.w700,
+                                                              textColor: Colors.black,
+                                                              textSize:
+                                                              displayWidth(context) * 0.04,
+                                                              textAlign: TextAlign.start),
+                                                          commonText(
+                                                              context: context,
+                                                              text: 'Weight',
+                                                              fontWeight: FontWeight.w500,
+                                                              textColor: Colors.grey,
+                                                              textSize:
+                                                              displayWidth(context) * 0.024,
+                                                              textAlign: TextAlign.start),
                                                         ],
                                                       ),
-                                                      SizedBox(
-                                                          height: displayHeight(context) * 0.006),
-                                                      commonText(
-                                                          context: context,
-                                                          text: 'Draft',
-                                                          fontWeight: FontWeight.w500,
-                                                          textColor: Colors.grey,
-                                                          textSize: displayWidth(context) * 0.024,
-                                                          textAlign: TextAlign.start),
-                                                    ],
-                                                  ),
-                                                ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                        children: [
+                                                          commonText(
+                                                              context: context,
+                                                              text:
+                                                              '${widget.vessel!.vesselSize} hp',
+                                                              fontWeight: FontWeight.w600,
+                                                              textColor: Colors.black,
+                                                              textSize:
+                                                              displayWidth(context) * 0.042,
+                                                              textAlign: TextAlign.start),
+                                                          commonText(
+                                                              context: context,
+                                                              text: 'Size (hp)',
+                                                              fontWeight: FontWeight.w500,
+                                                              textColor: Colors.grey,
+                                                              textSize:
+                                                              displayWidth(context) * 0.024,
+                                                              textAlign: TextAlign.start),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                        children: [
+                                                          widget.vessel!.mMSI! == ""
+                                                              ? commonText(
+                                                              context: context,
+                                                              text: '-',
+                                                              fontWeight: FontWeight.w700,
+                                                              textColor: Colors.black,
+                                                              textSize:
+                                                              displayWidth(context) *
+                                                                  0.04,
+                                                              textAlign: TextAlign.start)
+                                                              : commonText(
+                                                              context: context,
+                                                              text: widget.vessel!.mMSI,
+                                                              fontWeight: FontWeight.w700,
+                                                              textColor: Colors.black,
+                                                              textSize:
+                                                              displayWidth(context) *
+                                                                  0.04,
+                                                              textAlign: TextAlign.start),
+                                                          commonText(
+                                                              context: context,
+                                                              text: 'MMSI',
+                                                              fontWeight: FontWeight.w500,
+                                                              textColor: Colors.grey,
+                                                              textSize:
+                                                              displayWidth(context) * 0.024,
+                                                              textAlign: TextAlign.start),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                )
                                               ],
-                                            ),
+                                            )
                                           ],
                                         ),
                                       ),
-                                      SizedBox(
-                                        height: displayHeight(context) * 0.01,
-                                      ),
-                                      Theme(
-                                        data: Theme.of(context).copyWith(
-                                            colorScheme: ColorScheme.light(
-                                              primary: Colors.black,
-                                            ),
-                                            dividerColor: Colors.transparent),
-                                        child: Container(
-                                          child: ExpansionTile(
-                                            initiallyExpanded: true,
-                                            onExpansionChanged: ((newState) {
-                                              setState(() {
-                                                isVesselParticularExpanded = newState;
-                                              });
-
-                                              Utils.customPrint(
-                                                  'EXPANSION CHANGE $isVesselParticularExpanded');
-                                              CustomLogger().logWithFile(Level.info, "EXPANSION CHANGE $isVesselParticularExpanded -> $page");
-                                            }),
-                                            tilePadding: EdgeInsets.zero,
-                                            childrenPadding: EdgeInsets.zero,
-                                            title: commonText(
-                                                context: context,
-                                                text: 'Propulsion Details',
-                                                fontWeight: FontWeight.w500,
-                                                textColor: Colors.black,
-                                                textSize: displayWidth(context) * 0.036,
-                                                textAlign: TextAlign.start),
-                                            children: [
-                                              Column(
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
-                                                          children: [
-                                                            commonText(
-                                                                context: context,
-                                                                text:
-                                                                '${widget.vessel!.capacity}cc',
-                                                                fontWeight: FontWeight.w700,
-                                                                textColor: Colors.black,
-                                                                textSize:
-                                                                displayWidth(context) * 0.04,
-                                                                textAlign: TextAlign.start),
-                                                            commonText(
-                                                                context: context,
-                                                                text: 'Capacity' ,
-                                                                fontWeight: FontWeight.w500,
-                                                                textColor: Colors.grey,
-                                                                textSize:
-                                                                displayWidth(context) * 0.024,
-                                                                textAlign: TextAlign.start),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
-                                                          children: [
-                                                            commonText(
-                                                                context: context,
-                                                                text: widget.vessel!.builtYear
-                                                                    .toString(),
-                                                                fontWeight: FontWeight.w700,
-                                                                textColor: Colors.black,
-                                                                textSize:
-                                                                displayWidth(context) * 0.04,
-                                                                textAlign: TextAlign.start),
-                                                            commonText(
-                                                                context: context,
-                                                                text: 'Built',
-                                                                fontWeight: FontWeight.w500,
-                                                                textColor: Colors.grey,
-                                                                textSize:
-                                                                displayWidth(context) * 0.024,
-                                                                textAlign: TextAlign.start),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
-                                                          children: [
-                                                            widget.vessel!.regNumber! == ""
-                                                                ? commonText(
-                                                                context: context,
-                                                                text: '-',
-                                                                fontWeight: FontWeight.w700,
-                                                                textColor: Colors.black,
-                                                                textSize:
-                                                                displayWidth(context) *
-                                                                    0.04,
-                                                                textAlign: TextAlign.start)
-                                                                : commonText(
-                                                                context: context,
-                                                                text: widget.vessel!.regNumber,
-                                                                fontWeight: FontWeight.w700,
-                                                                textColor: Colors.black,
-                                                                textSize:
-                                                                displayWidth(context) *
-                                                                    0.048,
-                                                                textAlign: TextAlign.start),
-                                                            commonText(
-                                                                context: context,
-                                                                text: 'Registration Number',
-                                                                fontWeight: FontWeight.w500,
-                                                                textColor: Colors.grey,
-                                                                textSize:
-                                                                displayWidth(context) * 0.024,
-                                                                textAlign: TextAlign.start),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Container(
-                                                    margin: const EdgeInsets.symmetric(vertical: 8),
-                                                    child: const Divider(
-                                                      color: Colors.grey,
-                                                      thickness: 1,
-                                                      indent: 1,
-                                                      endIndent: 2,
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
-                                                          children: [
-                                                            commonText(
-                                                                context: context,
-                                                                text:
-                                                                '${widget.vessel!.weight} Lbs',
-                                                                fontWeight: FontWeight.w700,
-                                                                textColor: Colors.black,
-                                                                textSize:
-                                                                displayWidth(context) * 0.04,
-                                                                textAlign: TextAlign.start),
-                                                            commonText(
-                                                                context: context,
-                                                                text: 'Weight',
-                                                                fontWeight: FontWeight.w500,
-                                                                textColor: Colors.grey,
-                                                                textSize:
-                                                                displayWidth(context) * 0.024,
-                                                                textAlign: TextAlign.start),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
-                                                          children: [
-                                                            commonText(
-                                                                context: context,
-                                                                text:
-                                                                '${widget.vessel!.vesselSize} hp',
-                                                                fontWeight: FontWeight.w600,
-                                                                textColor: Colors.black,
-                                                                textSize:
-                                                                displayWidth(context) * 0.042,
-                                                                textAlign: TextAlign.start),
-                                                            commonText(
-                                                                context: context,
-                                                                text: 'Size (hp)',
-                                                                fontWeight: FontWeight.w500,
-                                                                textColor: Colors.grey,
-                                                                textSize:
-                                                                displayWidth(context) * 0.024,
-                                                                textAlign: TextAlign.start),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
-                                                          children: [
-                                                            widget.vessel!.mMSI! == ""
-                                                                ? commonText(
-                                                                context: context,
-                                                                text: '-',
-                                                                fontWeight: FontWeight.w700,
-                                                                textColor: Colors.black,
-                                                                textSize:
-                                                                displayWidth(context) *
-                                                                    0.04,
-                                                                textAlign: TextAlign.start)
-                                                                : commonText(
-                                                                context: context,
-                                                                text: widget.vessel!.mMSI,
-                                                                fontWeight: FontWeight.w700,
-                                                                textColor: Colors.black,
-                                                                textSize:
-                                                                displayWidth(context) *
-                                                                    0.04,
-                                                                textAlign: TextAlign.start),
-                                                            commonText(
-                                                                context: context,
-                                                                text: 'MMSI',
-                                                                fontWeight: FontWeight.w500,
-                                                                textColor: Colors.grey,
-                                                                textSize:
-                                                                displayWidth(context) * 0.024,
-                                                                textAlign: TextAlign.start),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  )
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: displayHeight(context) * 0.01,
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    SizedBox(
+                                      height: displayHeight(context) * 0.01,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Theme(
-                                data: Theme.of(context).copyWith(
-                                    colorScheme: ColorScheme.light(
-                                      primary: Colors.black,
-                                    ),
-                                    dividerColor: Colors.transparent),
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 15),
-                                  child: ExpansionTile(
-                                    initiallyExpanded: true,
-                                    onExpansionChanged: ((newState) {
-                                      setState(() {
-                                        isVesselParticularExpanded = newState;
-                                      });
-
-                                      Utils.customPrint(
-                                          'EXPANSION CHANGE $isVesselParticularExpanded');
-                                    }),
-                                    tilePadding: EdgeInsets.zero,
-                                    childrenPadding: EdgeInsets.zero,
-                                    title: commonText(
-                                        context: context,
-                                        text: 'VESSEL ANALYTICS',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.038,
-                                        textAlign: TextAlign.start,
-                                        fontFamily: poppins),
-                                    children: [
-                                      vesselAnalytics
-                                          ? Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: CircularProgressIndicator(),
-                                      )
-                                          : vesselSingleViewVesselAnalytics(
-                                          context,
-                                          totalDuration,
-                                          totalDistance,
-                                          tripsCount,
-                                          avgSpeed),
-                                    ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                  colorScheme: ColorScheme.light(
+                                    primary: Colors.black,
                                   ),
-                                ),
-                              ),
-
-                              Theme(
-                                data: Theme.of(context).copyWith(
-                                    colorScheme: ColorScheme.light(
-                                      primary: Colors.black,
-                                    ),
-                                    dividerColor: Colors.transparent),
+                                  dividerColor: Colors.transparent),
+                              child: Container(
+                                margin: EdgeInsets.symmetric(horizontal: 15),
                                 child: ExpansionTile(
                                   initiallyExpanded: true,
                                   onExpansionChanged: ((newState) {
-                                    Utils.customPrint('CURRENT STAT $newState');
+                                    setState(() {
+                                      isVesselParticularExpanded = newState;
+                                    });
+
+                                    Utils.customPrint(
+                                        'EXPANSION CHANGE $isVesselParticularExpanded');
                                   }),
-                                  textColor: Colors.black,
-                                  iconColor: Colors.black,
+                                  tilePadding: EdgeInsets.zero,
+                                  childrenPadding: EdgeInsets.zero,
                                   title: commonText(
                                       context: context,
-                                      text: 'Trip History',
+                                      text: 'VESSEL ANALYTICS',
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.black,
                                       textSize: displayWidth(context) * 0.038,
                                       textAlign: TextAlign.start,
                                       fontFamily: poppins),
                                   children: [
-                                    TripViewListing(
-                                      scaffoldKey: scaffoldKey,
-                                      vesselId: widget.vessel!.id,
-                                      calledFrom: 'VesselSingleView',
-                                      isTripDeleted: ()async{
-                                        setState(() {
-                                          getVesselAnalytics(widget.vessel!.id!);
-                                        });
-                                      },
-                                      onTripEnded: () async {
-                                        Utils.customPrint('SINGLE VIEW TRIP END');
-                                        await tripIsRunningOrNot();
-                                        setState(() {
-                                          tripIsEnded = true;
-                                        });
-                                        commonProvider.getTripsByVesselId(widget.vessel!.id!);
-                                        getVesselAnalytics(widget.vessel!.id!);
-                                      },
-                                    ),
-                                    SizedBox(height: displayHeight(context) * 0.02,),
-                                    /*Padding(
-                                      padding: EdgeInsets.only(
-                                        top : displayWidth(context) * 0.01,
-                                        bottom : displayWidth(context) * 0.01,
-                                      ),
-                                      child: GestureDetector(
-                                          onTap: ()async{
-                                            final image = await controller.capture();
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                              imagePath: image.toString(),
-                                              uIntList: image,)));
-                                          },
-                                          child: UserFeedback().getUserFeedback(context)
-                                      ),
-                                    ),*/
+                                    vesselAnalytics
+                                        ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: CircularProgressIndicator(),
+                                    )
+                                        : vesselSingleViewVesselAnalytics(
+                                        context,
+                                        totalDuration,
+                                        totalDistance,
+                                        tripsCount,
+                                        avgSpeed),
                                   ],
                                 ),
                               ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.05,
-                              ),
-                            ],
-                          ),
-                        ),
+                            ),
 
-                        SizedBox(
-                          height: displayHeight(context) * 0.08,
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                  colorScheme: ColorScheme.light(
+                                    primary: Colors.black,
+                                  ),
+                                  dividerColor: Colors.transparent),
+                              child: ExpansionTile(
+                                initiallyExpanded: true,
+                                onExpansionChanged: ((newState) {
+                                  Utils.customPrint('CURRENT STAT $newState');
+                                }),
+                                textColor: Colors.black,
+                                iconColor: Colors.black,
+                                title: commonText(
+                                    context: context,
+                                    text: 'Trip History',
+                                    fontWeight: FontWeight.w500,
+                                    textColor: Colors.black,
+                                    textSize: displayWidth(context) * 0.038,
+                                    textAlign: TextAlign.start,
+                                    fontFamily: poppins),
+                                children: [
+                                  TripViewListing(
+                                    scaffoldKey: scaffoldKey,
+                                    vesselId: widget.vessel!.id,
+                                    calledFrom: 'VesselSingleView',
+                                    isTripDeleted: ()async{
+                                      setState(() {
+                                        getVesselAnalytics(widget.vessel!.id!);
+                                      });
+                                    },
+                                    onTripEnded: () async {
+                                      Utils.customPrint('SINGLE VIEW TRIP END');
+                                      await tripIsRunningOrNot();
+                                      setState(() {
+                                        tripIsEnded = true;
+                                      });
+                                      commonProvider.getTripsByVesselId(widget.vessel!.id!);
+                                      getVesselAnalytics(widget.vessel!.id!);
+                                    },
+                                  ),
+                                  SizedBox(height: displayHeight(context) * 0.01,),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom : displayWidth(context) * 0.01,
+                                    ),
+                                    child: GestureDetector(
+                                        onTap: ()async{
+                                          final image = await controller.capture();
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                            imagePath: image.toString(),
+                                            uIntList: image,)));
+                                        },
+                                        child: UserFeedback().getUserFeedback(context)
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+
+                      /*SizedBox(
+                        height: displayHeight(context) * 0.08,
+                      ),*/
+                    ],
                   ),
                 ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
-                  child: Container(
-                    color: Color(0xffECF3F9),
-                    margin: EdgeInsets.only(left: 10, right: 10, top: 8),
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: Column(
-                        children: [
-                          tripIsRunning
-                              ? isTripEndedOrNot
-                              ? Center(
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    circularProgressColor),
-                              ))
-                              : CommonButtons.getRichTextActionButton(
-                              icon: Image.asset('assets/icons/end_btn.png',
+              ),
+              /*Positioned(
+                bottom: 0,
+                right: 0,
+                left: 0,
+                child: Container(
+                  color: Color(0xffECF3F9),
+                  margin: EdgeInsets.only(left: 10, right: 10, top: 8),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Column(
+                      children: [
+                        tripIsRunning
+                            ? isTripEndedOrNot
+                            ? Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  circularProgressColor),
+                            ))
+                            : CommonButtons.getRichTextActionButton(
+                            icon: Image.asset('assets/icons/end_btn.png',
+                              height: displayHeight(context) * 0.055,
+                              width: displayWidth(context) * 0.12,
+                            ),
+                            title: 'End Trip',
+                            context: context,
+                            fontSize: displayWidth(context) * 0.042,
+                            textColor: Colors.white,
+                            buttonPrimaryColor: endTripBtnColor,
+                            borderColor: endTripBtnColor,
+                            width: displayWidth(context),
+                            onTap: () async {
+
+                              List<String>? tripData = sharedPreferences!
+                                  .getStringList('trip_data');
+
+                              String tripId = '';
+                              if (tripData != null) {
+                                tripId = tripData[0];
+                              }
+
+                              final currentTrip =
+                              await _databaseService.getTrip(tripId);
+
+                              DateTime createdAtTime =
+                              DateTime.parse(currentTrip.createdAt!);
+
+                              var durationTime = DateTime.now()
+                                  .toUtc()
+                                  .difference(createdAtTime);
+                              String tripDuration =
+                              Utils.calculateTripDuration(
+                                  ((durationTime.inMilliseconds) / 1000)
+                                      .toInt());
+
+                              Utils.customPrint("DURATION !!!!!! $tripDuration");
+
+                              bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+
+                              if(!isSmallTrip)
+                              {
+                                Utils().showDeleteTripDialog(context,
+                                    endTripBtnClick: (){
+                                      endTripMethod();
+                                      Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
+
+                                      Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
+
+                                      Future.delayed(Duration(seconds: 1), (){
+                                        if(!isSmallTrip)
+                                        {
+                                          Utils.customPrint("SMALL TRIPP IDDD 11 ${tripId}");
+                                          DatabaseService().deleteTripFromDB(tripId);
+                                        }
+                                      });
+                                    },
+                                    onCancelClick: (){
+                                      Navigator.of(context).pop();
+                                    }
+                                );
+                              }
+                              else
+                              {
+                                Utils().showEndTripDialog(context, () async
+                                {
+                                  endTripMethod();
+                                }, () {
+                                  Navigator.of(context).pop();
+                                });
+                              }
+
+
+                            })
+                            : CommonButtons.getRichTextActionButton(
+                              icon: Image.asset('assets/icons/start_btn.png',
                                 height: displayHeight(context) * 0.055,
                                 width: displayWidth(context) * 0.12,
                               ),
-                              title: 'End Trip',
-                              context: context,
-                              fontSize: displayWidth(context) * 0.042,
-                              textColor: Colors.white,
-                              buttonPrimaryColor: endTripBtnColor,
-                              borderColor: endTripBtnColor,
-                              width: displayWidth(context),
-                              onTap: () async {
+                            title: 'Start Trip',
+                            context: context,
+                            fontSize: displayWidth(context) * 0.042,
+                            textColor: Colors.white,
+                            buttonPrimaryColor: blueColor,
+                            borderColor: blueColor,
+                            width: displayWidth(context),
+                            onTap: () async {
+                              bool? isTripStarted =
+                              sharedPreferences!.getBool('trip_started');
 
-                                List<String>? tripData = sharedPreferences!
-                                    .getStringList('trip_data');
+                              if (isTripStarted != null) {
+                                if (isTripStarted) {
+                                  List<String>? tripData = sharedPreferences!
+                                      .getStringList('trip_data');
+                                  Trip tripDetails = await _databaseService
+                                      .getTrip(tripData![0]);
 
-                                String tripId = '';
-                                if (tripData != null) {
-                                  tripId = tripData[0];
-                                }
-
-                                final currentTrip =
-                                await _databaseService.getTrip(tripId);
-
-                                DateTime createdAtTime =
-                                DateTime.parse(currentTrip.createdAt!);
-
-                                var durationTime = DateTime.now()
-                                    .toUtc()
-                                    .difference(createdAtTime);
-                                String tripDuration =
-                                Utils.calculateTripDuration(
-                                    ((durationTime.inMilliseconds) / 1000)
-                                        .toInt());
-
-                                Utils.customPrint("DURATION !!!!!! $tripDuration");
-
-                                bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
-
-                                if(!isSmallTrip)
-                                {
-                                  Utils().showDeleteTripDialog(context,
-                                      endTripBtnClick: (){
-                                        endTripMethod();
-                                        Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
-
-                                        Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
-
-                                        Future.delayed(Duration(seconds: 1), (){
-                                          if(!isSmallTrip)
-                                          {
-                                            Utils.customPrint("SMALL TRIPP IDDD 11 ${tripId}");
-                                            DatabaseService().deleteTripFromDB(tripId);
-                                          }
-                                        });
-                                      },
-                                      onCancelClick: (){
-                                        Navigator.of(context).pop();
-                                      }
-                                  );
-                                }
-                                else
-                                {
-                                  Utils().showEndTripDialog(context, () async
-                                  {
-                                    endTripMethod();
-                                  }, () {
-                                    Navigator.of(context).pop();
-                                  });
-                                }
-
-
-                              })
-                              : CommonButtons.getRichTextActionButton(
-                                icon: Image.asset('assets/icons/start_btn.png',
-                                  height: displayHeight(context) * 0.055,
-                                  width: displayWidth(context) * 0.12,
-                                ),
-                              title: 'Start Trip',
-                              context: context,
-                              fontSize: displayWidth(context) * 0.042,
-                              textColor: Colors.white,
-                              buttonPrimaryColor: blueColor,
-                              borderColor: blueColor,
-                              width: displayWidth(context),
-                              onTap: () async {
-                                bool? isTripStarted =
-                                sharedPreferences!.getBool('trip_started');
-
-                                if (isTripStarted != null) {
-                                  if (isTripStarted) {
-                                    List<String>? tripData = sharedPreferences!
-                                        .getStringList('trip_data');
-                                    Trip tripDetails = await _databaseService
-                                        .getTrip(tripData![0]);
-
-                                    if (tripDetails.vesselId != widget.vessel!.id) {
-                                      showDialogBox(context);
-                                      return;
-                                    }
+                                  if (tripDetails.vesselId != widget.vessel!.id) {
+                                    showDialogBox(context);
+                                    return;
                                   }
                                 }
+                              }
 
-                                bool isLocationPermitted =
-                                await Permission.locationAlways.isGranted;
+                              bool isLocationPermitted =
+                              await Permission.locationAlways.isGranted;
 
-                                if (isLocationPermitted) {
-                                  bool isNDPermDenied = await Permission
-                                      .bluetoothConnect.isPermanentlyDenied;
+                              if (isLocationPermitted) {
+                                bool isNDPermDenied = await Permission
+                                    .bluetoothConnect.isPermanentlyDenied;
 
-                                  if (isNDPermDenied) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return LocationPermissionCustomDialog(
-                                            isLocationDialogBox: false,
-                                            text: 'Allow nearby devices',
-                                            subText:
-                                            'Allow nearby devices to connect to the app',
-                                            buttonText: 'OK',
-                                            buttonOnTap: () async {
-                                              Get.back();
-                                            },
-                                          );
-                                        });
-                                    return;
+                                if (isNDPermDenied) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return LocationPermissionCustomDialog(
+                                          isLocationDialogBox: false,
+                                          text: 'Allow nearby devices',
+                                          subText:
+                                          'Allow nearby devices to connect to the app',
+                                          buttonText: 'OK',
+                                          buttonOnTap: () async {
+                                            Get.back();
+                                          },
+                                        );
+                                      });
+                                  return;
+                                } else {
+                                  if (Platform.isIOS) {
+                                    dynamic isBluetoothEnable =
+
+                                    Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                      showBluetoothDialog(context);
+                                    });
+
+                                    if(isBluetoothEnable != null){
+                                      if (isBluetoothEnable) {
+                                        vessel!.add(widget.vessel!);
+                                        await locationPermissions(
+                                            widget.vessel!.vesselSize!,
+                                            widget.vessel!.name!,
+                                            widget.vessel!.id!);
+                                      } else {
+                                        showBluetoothDialog(context);
+                                      }
+                                    }
+
                                   } else {
-                                    if (Platform.isIOS) {
-                                      dynamic isBluetoothEnable =
+                                    bool isNDPermittedOne = await Permission
+                                        .bluetoothConnect.isGranted;
 
+                                    if (isNDPermittedOne) {
+                                      bool isBluetoothEnable =
                                       Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
                                         showBluetoothDialog(context);
                                       });
 
-                                      if(isBluetoothEnable != null){
+                                      if (isBluetoothEnable) {
+                                        vessel!.add(widget.vessel!);
+                                        await locationPermissions(
+                                            widget.vessel!.vesselSize!,
+                                            widget.vessel!.name!,
+                                            widget.vessel!.id!);
+                                      } else {
+                                        showBluetoothDialog(context);
+                                      }
+                                    } else {
+                                      await Permission.bluetoothConnect.request();
+                                      bool isNDPermitted = await Permission
+                                          .bluetoothConnect.isGranted;
+                                      if (isNDPermitted) {
+                                        bool isBluetoothEnable =
+                                        Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                          showBluetoothDialog(context);
+                                        });
+
                                         if (isBluetoothEnable) {
                                           vessel!.add(widget.vessel!);
                                           await locationPermissions(
@@ -1091,13 +1127,123 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         } else {
                                           showBluetoothDialog(context);
                                         }
+                                      } else {
+                                        if (await Permission
+                                            .bluetoothConnect.isDenied ||
+                                            await Permission.bluetoothConnect
+                                                .isPermanentlyDenied) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return LocationPermissionCustomDialog(
+                                                  isLocationDialogBox: false,
+                                                  text: 'Allow nearby devices',
+                                                  subText:
+                                                  'Allow nearby devices to connect to the app',
+                                                  buttonText: 'OK',
+                                                  buttonOnTap: () async {
+                                                    Get.back();
+
+                                                    await openAppSettings();
+                                                  },
+                                                );
+                                              });
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                              else {
+                                /// WIU
+                                bool isWIULocationPermitted =
+                                await Permission.locationWhenInUse.isGranted;
+
+                                if (!isWIULocationPermitted) {
+                                  await Utils.getLocationPermission(
+                                      context, scaffoldKey);
+
+                                  if(Platform.isAndroid){
+                                    if (!(await Permission.locationWhenInUse
+                                        .shouldShowRequestRationale)) {
+                                      Utils.customPrint(
+                                          'XXXXX@@@ ${await Permission.locationWhenInUse.shouldShowRequestRationale}');
+
+                                      if(await Permission.locationWhenInUse
+                                          .isDenied || await Permission.locationWhenInUse
+                                          .isPermanentlyDenied){
+                                        await openAppSettings();
                                       }
 
+                                      *//*showDialog(
+                                          context: scaffoldKey.currentContext!,
+                                          builder: (BuildContext context) {
+                                            isLocationDialogBoxOpen = true;
+                                            return LocationPermissionCustomDialog(
+                                              isLocationDialogBox: true,
+                                              text:
+                                              'Always Allow Access to “Location”',
+                                              subText:
+                                              "To track your trip while you use other apps we need background access to your location",
+                                              buttonText: 'Ok',
+                                              buttonOnTap: () async {
+                                                Get.back();
+
+                                                await openAppSettings();
+                                              },
+                                            );
+                                          }).then((value) {
+                                        isLocationDialogBoxOpen = false;
+                                      });*//*
+                                    }
+                                  }
+                                  else
+                                    {
+                                      await Permission.locationAlways.request();
+
+                                      bool isGranted = await Permission.locationAlways.isGranted;
+
+                                      if(!isGranted)
+                                      {
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message:
+                                            'Location permissions are denied without permissions we are unable to start the trip');
+                                      }
+                                    }
+
+                                }
+                                else
+                                {
+                                  bool isLocationPermitted =
+                                  await Permission.locationAlways.isGranted;
+                                  if (isLocationPermitted) {
+                                    bool isNDPermDenied = await Permission
+                                        .bluetoothConnect.isPermanentlyDenied;
+
+                                    if (isNDPermDenied) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return LocationPermissionCustomDialog(
+                                              isLocationDialogBox: false,
+                                              text: 'Allow nearby devices',
+                                              subText:
+                                              'Allow nearby devices to connect to the app',
+                                              buttonText: 'OK',
+                                              buttonOnTap: () async {
+                                                Get.back();
+
+                                                await openAppSettings();
+                                              },
+                                            );
+                                          });
+                                      return;
                                     } else {
-                                      bool isNDPermittedOne = await Permission
+                                      bool isNDPermitted = await Permission
                                           .bluetoothConnect.isGranted;
 
-                                      if (isNDPermittedOne) {
+                                      if (isNDPermitted) {
                                         bool isBluetoothEnable =
                                         Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
                                           showBluetoothDialog(context);
@@ -1131,55 +1277,45 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           } else {
                                             showBluetoothDialog(context);
                                           }
-                                        } else {
-                                          if (await Permission
-                                              .bluetoothConnect.isDenied ||
-                                              await Permission.bluetoothConnect
-                                                  .isPermanentlyDenied) {
-                                            showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return LocationPermissionCustomDialog(
-                                                    isLocationDialogBox: false,
-                                                    text: 'Allow nearby devices',
-                                                    subText:
-                                                    'Allow nearby devices to connect to the app',
-                                                    buttonText: 'OK',
-                                                    buttonOnTap: () async {
-                                                      Get.back();
-
-                                                      await openAppSettings();
-                                                    },
-                                                  );
-                                                });
-                                          }
                                         }
                                       }
                                     }
                                   }
-                                }
-                                else {
-                                  /// WIU
-                                  bool isWIULocationPermitted =
-                                  await Permission.locationWhenInUse.isGranted;
+                                  else if(await Permission.locationAlways.isPermanentlyDenied)
+                                  {
+                                    if(Platform.isIOS)
+                                    {
+                                      Permission.locationAlways.request();
 
-                                  if (!isWIULocationPermitted) {
-                                    await Utils.getLocationPermission(
-                                        context, scaffoldKey);
+                                      PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message: "Location permissions are denied without permissions we are unable to start the trip");
 
-                                    if(Platform.isAndroid){
-                                      if (!(await Permission.locationWhenInUse
-                                          .shouldShowRequestRationale)) {
-                                        Utils.customPrint(
-                                            'XXXXX@@@ ${await Permission.locationWhenInUse.shouldShowRequestRationale}');
+                                        Future.delayed(Duration(seconds: 3),
+                                                () async {
+                                              await openAppSettings();
+                                            });
+                                        return PermissionStatus.denied;
+                                      });
 
-                                        if(await Permission.locationWhenInUse
-                                            .isDenied || await Permission.locationWhenInUse
-                                            .isPermanentlyDenied){
-                                          await openAppSettings();
-                                        }
+                                      if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
+                                      {
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message: "Location permissions are denied without permissions we are unable to start the trip");
 
-                                        /*showDialog(
+                                        Future.delayed(Duration(seconds: 3),
+                                                () async {
+                                              await openAppSettings();
+                                            });
+                                      }
+                                    }else
+                                    {
+                                      if (!isLocationDialogBoxOpen) {
+                                        Utils.customPrint("ELSE CONDITION");
+
+                                        showDialog(
                                             context: scaffoldKey.currentContext!,
                                             builder: (BuildContext context) {
                                               isLocationDialogBoxOpen = true;
@@ -1198,235 +1334,94 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                               );
                                             }).then((value) {
                                           isLocationDialogBoxOpen = false;
-                                        });*/
+                                        });
                                       }
                                     }
-                                    else
-                                      {
-                                        await Permission.locationAlways.request();
-
-                                        bool isGranted = await Permission.locationAlways.isGranted;
-
-                                        if(!isGranted)
-                                        {
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                              'Location permissions are denied without permissions we are unable to start the trip');
-                                        }
-                                      }
-
                                   }
-                                  else
-                                  {
-                                    bool isLocationPermitted =
-                                    await Permission.locationAlways.isGranted;
-                                    if (isLocationPermitted) {
-                                      bool isNDPermDenied = await Permission
-                                          .bluetoothConnect.isPermanentlyDenied;
+                                  else {
+                                    if (Platform.isIOS) {
+                                      await Permission.locationAlways.request();
 
-                                      if (isNDPermDenied) {
+                                      bool isLocationAlwaysPermitted =
+                                      await Permission.locationAlways.isGranted;
+
+                                      Utils.customPrint(
+                                          'IOS PERMISSION GIVEN OUTSIDE');
+
+                                      if (isLocationAlwaysPermitted) {
+                                        Utils.customPrint('IOS PERMISSION GIVEN 1');
+
+                                        vessel!.add(widget.vessel!);
+                                        await locationPermissions(
+                                            widget.vessel!.vesselSize!,
+                                            widget.vessel!.name!,
+                                            widget.vessel!.id!);
+                                      } else {
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message:
+                                            'Location permissions are denied without permissions we are unable to start the trip');
+
+                                        Future.delayed(Duration(seconds: 3),
+                                                () async {
+                                              await openAppSettings();
+                                            });
+                                      }
+                                    } else {
+                                      if (!isLocationDialogBoxOpen) {
+                                        Utils.customPrint("ELSE CONDITION");
+
                                         showDialog(
-                                            context: context,
+                                            context: scaffoldKey.currentContext!,
                                             builder: (BuildContext context) {
+                                              isLocationDialogBoxOpen = true;
                                               return LocationPermissionCustomDialog(
-                                                isLocationDialogBox: false,
-                                                text: 'Allow nearby devices',
+                                                isLocationDialogBox: true,
+                                                text:
+                                                'Always Allow Access to “Location”',
                                                 subText:
-                                                'Allow nearby devices to connect to the app',
-                                                buttonText: 'OK',
+                                                "To track your trip while you use other apps we need background access to your location",
+                                                buttonText: 'Ok',
                                                 buttonOnTap: () async {
                                                   Get.back();
 
                                                   await openAppSettings();
                                                 },
                                               );
-                                            });
-                                        return;
-                                      } else {
-                                        bool isNDPermitted = await Permission
-                                            .bluetoothConnect.isGranted;
-
-                                        if (isNDPermitted) {
-                                          bool isBluetoothEnable =
-                                          Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                                            showBluetoothDialog(context);
-                                          });
-
-                                          if (isBluetoothEnable) {
-                                            vessel!.add(widget.vessel!);
-                                            await locationPermissions(
-                                                widget.vessel!.vesselSize!,
-                                                widget.vessel!.name!,
-                                                widget.vessel!.id!);
-                                          } else {
-                                            showBluetoothDialog(context);
-                                          }
-                                        } else {
-                                          await Permission.bluetoothConnect.request();
-                                          bool isNDPermitted = await Permission
-                                              .bluetoothConnect.isGranted;
-                                          if (isNDPermitted) {
-                                            bool isBluetoothEnable =
-                                            Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                                              showBluetoothDialog(context);
-                                            });
-
-                                            if (isBluetoothEnable) {
-                                              vessel!.add(widget.vessel!);
-                                              await locationPermissions(
-                                                  widget.vessel!.vesselSize!,
-                                                  widget.vessel!.name!,
-                                                  widget.vessel!.id!);
-                                            } else {
-                                              showBluetoothDialog(context);
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                    else if(await Permission.locationAlways.isPermanentlyDenied)
-                                    {
-                                      if(Platform.isIOS)
-                                      {
-                                        Permission.locationAlways.request();
-
-                                        PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message: "Location permissions are denied without permissions we are unable to start the trip");
-
-                                          Future.delayed(Duration(seconds: 3),
-                                                  () async {
-                                                await openAppSettings();
-                                              });
-                                          return PermissionStatus.denied;
+                                            }).then((value) {
+                                          isLocationDialogBoxOpen = false;
                                         });
-
-                                        if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
-                                        {
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message: "Location permissions are denied without permissions we are unable to start the trip");
-
-                                          Future.delayed(Duration(seconds: 3),
-                                                  () async {
-                                                await openAppSettings();
-                                              });
-                                        }
-                                      }else
-                                      {
-                                        if (!isLocationDialogBoxOpen) {
-                                          Utils.customPrint("ELSE CONDITION");
-
-                                          showDialog(
-                                              context: scaffoldKey.currentContext!,
-                                              builder: (BuildContext context) {
-                                                isLocationDialogBoxOpen = true;
-                                                return LocationPermissionCustomDialog(
-                                                  isLocationDialogBox: true,
-                                                  text:
-                                                  'Always Allow Access to “Location”',
-                                                  subText:
-                                                  "To track your trip while you use other apps we need background access to your location",
-                                                  buttonText: 'Ok',
-                                                  buttonOnTap: () async {
-                                                    Get.back();
-
-                                                    await openAppSettings();
-                                                  },
-                                                );
-                                              }).then((value) {
-                                            isLocationDialogBoxOpen = false;
-                                          });
-                                        }
-                                      }
-                                    }
-                                    else {
-                                      if (Platform.isIOS) {
-                                        await Permission.locationAlways.request();
-
-                                        bool isLocationAlwaysPermitted =
-                                        await Permission.locationAlways.isGranted;
-
-                                        Utils.customPrint(
-                                            'IOS PERMISSION GIVEN OUTSIDE');
-
-                                        if (isLocationAlwaysPermitted) {
-                                          Utils.customPrint('IOS PERMISSION GIVEN 1');
-
-                                          vessel!.add(widget.vessel!);
-                                          await locationPermissions(
-                                              widget.vessel!.vesselSize!,
-                                              widget.vessel!.name!,
-                                              widget.vessel!.id!);
-                                        } else {
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                              'Location permissions are denied without permissions we are unable to start the trip');
-
-                                          Future.delayed(Duration(seconds: 3),
-                                                  () async {
-                                                await openAppSettings();
-                                              });
-                                        }
-                                      } else {
-                                        if (!isLocationDialogBoxOpen) {
-                                          Utils.customPrint("ELSE CONDITION");
-
-                                          showDialog(
-                                              context: scaffoldKey.currentContext!,
-                                              builder: (BuildContext context) {
-                                                isLocationDialogBoxOpen = true;
-                                                return LocationPermissionCustomDialog(
-                                                  isLocationDialogBox: true,
-                                                  text:
-                                                  'Always Allow Access to “Location”',
-                                                  subText:
-                                                  "To track your trip while you use other apps we need background access to your location",
-                                                  buttonText: 'Ok',
-                                                  buttonOnTap: () async {
-                                                    Get.back();
-
-                                                    await openAppSettings();
-                                                  },
-                                                );
-                                              }).then((value) {
-                                            isLocationDialogBoxOpen = false;
-                                          });
-                                        }
                                       }
                                     }
                                   }
-                                  // return;
-
-
                                 }
-                              }),
+                                // return;
 
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top : displayWidth(context) * 0.008,
-                              bottom : displayWidth(context) * 0.005,
-                            ),
-                            child: GestureDetector(
-                                onTap: ()async{
-                                  final image = await controller.capture();
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                    imagePath: image.toString(),
-                                    uIntList: image,)));
-                                },
-                                child: UserFeedback().getUserFeedback(context)
-                            ),
+
+                              }
+                            }),
+
+                       *//* Padding(
+                          padding: EdgeInsets.only(
+                            top : displayWidth(context) * 0.008,
+                            bottom : displayWidth(context) * 0.005,
                           ),
-                        ],
-                      ),
+                          child: GestureDetector(
+                              onTap: ()async{
+                                final image = await controller.capture();
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                  imagePath: image.toString(),
+                                  uIntList: image,)));
+                              },
+                              child: UserFeedback().getUserFeedback(context)
+                          ),
+                        ),*//*
+                      ],
                     ),
                   ),
-                )
-              ],
-            ),
+                ),
+              )*/
+            ],
           ),
         ),
       ),

@@ -125,232 +125,334 @@ class _MapScreenState extends State<MapScreen> {
       controller: controller,
       child: Container(
         child: Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 0),
-          child: Stack(
+          padding: const EdgeInsets.only(top: 15, bottom: 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              FlutterMap(
-                options: MapOptions(
-                  center: LatLng(56.704173, 11.543808),
-                  minZoom: 12,
-                  maxZoom: 14,
-                  bounds: LatLngBounds(
-                    LatLng(56.7378, 11.6644),
-                    LatLng(56.6877, 11.5089),
-                  )
-                ),
-                children: [
-                  TileLayer(
-                    tileProvider: AssetTileProvider(),
-                    maxZoom: 14,
-                    urlTemplate: 'assets/map/anholt_osmbright/{z}/{x}/{y}.png',
-                  ),
-                ],
-              ),
-
-              Positioned(
-                bottom: 40,
-                left: 0,
-                right: 0,
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 38),
-                  height: displayHeight(context) * 0.26,
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: BorderRadius.circular(8)
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: [
-
-                                commonText(
-                                  context: context,
-                                  text: 'Distance',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.026,
-                                ),
-
-                                SizedBox(height: displayHeight(context) * 0.002,),
-
-                                commonText(
-                                  context: context,
-                                  text: tripDistance,
-                                  fontWeight: FontWeight.w700,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.05,
-                                ),
-
-                                SizedBox(height: displayHeight(context) * 0.002,),
-
-                                commonText(
-                                  context: context,
-                                  text: 'Nautical Miles',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.024,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-
-                                commonText(
-                                  context: context,
-                                  text: 'Speed',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.026,
-                                ),
-
-                                commonText(
-                                  context: context,
-                                  text: tripSpeed,
-                                  fontWeight: FontWeight.w700,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.05,
-                                ),
-
-                                commonText(
-                                  context: context,
-                                  text: 'Kt/Hr',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.024,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-
-                                commonText(
-                                  context: context,
-                                  text: 'Time',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.026,
-                                ),
-
-                                commonText(
-                                  context: context,
-                                  text: tripDuration,
-                                  fontWeight: FontWeight.w700,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.05,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+              mapLegend(),
+              Expanded(
+                child: Stack(
+                  children: [
+                    FlutterMap(
+                      options: MapOptions(
+                        center: LatLng(56.704173, 11.543808),
+                        minZoom: 12,
+                        maxZoom: 14,
+                        bounds: LatLngBounds(
+                          LatLng(56.7378, 11.6644),
+                          LatLng(56.6877, 11.5089),
+                        )
                       ),
-                      SizedBox(height: displayHeight(context) * 0.02,),
-                      isTripEnded
-                          ? Center(
-                          child:
-                          CircularProgressIndicator(
-                            valueColor:
-                            AlwaysStoppedAnimation<
-                                Color>(
-                                circularProgressColor),
-                          ))
-                          : Container(
-                            margin: EdgeInsets.symmetric(horizontal: 12),
-                            child: CommonButtons.getRichTextActionButton(
-                            icon: Image.asset('assets/icons/end_btn.png',
-                              height: displayHeight(context) * 0.055,
-                              width: displayWidth(context) * 0.12,
+                      children: [
+                        TileLayer(
+                          tileProvider: AssetTileProvider(),
+                          maxZoom: 14,
+                          urlTemplate: 'assets/map/anholt_osmbright/{z}/{x}/{y}.png',
+                        ),
+                      ],
+                    ),
+
+                    Positioned(
+                      bottom: 16,
+                      left: 0,
+                      right: 0,
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 38),
+                            height: displayHeight(context) * 0.12,
+                            decoration: BoxDecoration(
+                              color: backgroundColor,
+                              borderRadius: BorderRadius.circular(15)
                             ),
-                            title: 'Stop Trip',
-                            context: context,
-                            fontSize: displayWidth(context) * 0.042,
-                            textColor: Colors.white,
-                            buttonPrimaryColor: endTripBtnColor,
-                            borderColor: endTripBtnColor,
-                            width: displayWidth(context),
-                            onTap: () async
-                            {
-                              Utils.customPrint(
-                                  "END TRIP CURRENT TIME ${DateTime.now()}");
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
 
-                              bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+                                      commonText(
+                                        context: context,
+                                        text: 'Distance',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.026,
+                                      ),
 
-                              Utils.customPrint("SMALL TRIPP IDDD bool$isSmallTrip");
+                                      SizedBox(height: displayHeight(context) * 0.002,),
 
-                              if(!isSmallTrip)
-                              {
-                                Utils().showDeleteTripDialog(context,
-                                    endTripBtnClick: (){
+                                      commonText(
+                                        context: context,
+                                        text: tripDistance,
+                                        fontWeight: FontWeight.w700,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.05,
+                                      ),
 
-                                      endTrip(isTripDeleted: true);
+                                      SizedBox(height: displayHeight(context) * 0.002,),
 
-                                      Utils.customPrint("SMALL TRIPP IDDD ${tripData!
-                                          .id!}");
+                                      commonText(
+                                        context: context,
+                                        text: 'Nautical Miles',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.024,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
 
-                                      int value = Platform.isAndroid ? 1 : 0;
+                                      commonText(
+                                        context: context,
+                                        text: 'Speed',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.026,
+                                      ),
 
-                                      Future.delayed(Duration(seconds: value), (){
-                                        if(!isSmallTrip)
-                                        {
+                                      commonText(
+                                        context: context,
+                                        text: tripSpeed,
+                                        fontWeight: FontWeight.w700,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.05,
+                                      ),
 
-                                          Utils.customPrint("SMALL TRIPP IDDD ${tripData!
-                                              .id!}");
-                                          DatabaseService().deleteTripFromDB(tripData!
-                                              .id!);
+                                      commonText(
+                                        context: context,
+                                        text: 'Kt/Hr',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.024,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
 
-                                          Navigator.pushAndRemoveUntil(
-                                              widget.context!,
-                                              MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                              ModalRoute.withName(""));
-                                        }
-                                      });
-                                    },
-                                    onCancelClick: (){
-                                      Navigator.pop(context);
-                                    }
-                                );
-                              }
-                              else
-                              {
-                                Utils().showEndTripDialog(
-                                    context, () async {
+                                      commonText(
+                                        context: context,
+                                        text: 'Time',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.026,
+                                      ),
 
-                                  endTrip();
-
-                                }, () {
-                                  Navigator.pop(context);
-                                });
-                              }
-                            }
+                                      commonText(
+                                        context: context,
+                                        text: tripDuration,
+                                        fontWeight: FontWeight.w700,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.05,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
+                          SizedBox(height: displayHeight(context) * 0.03,),
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 28),
+                            child: Column(
+                              children: [
+                                isTripEnded
+                                    ? Center(
+                                    child:
+                                    CircularProgressIndicator(
+                                      valueColor:
+                                      AlwaysStoppedAnimation<
+                                          Color>(
+                                          circularProgressColor),
+                                    ))
+                                    : Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 12),
+                                  child: CommonButtons.getRichTextActionButton(
+                                      icon: Image.asset('assets/icons/end_btn.png',
+                                        height: displayHeight(context) * 0.055,
+                                        width: displayWidth(context) * 0.12,
+                                      ),
+                                      title: 'Stop Trip',
+                                      context: context,
+                                      fontSize: displayWidth(context) * 0.042,
+                                      textColor: Colors.white,
+                                      buttonPrimaryColor: endTripBtnColor,
+                                      borderColor: endTripBtnColor,
+                                      width: displayWidth(context),
+                                      onTap: () async
+                                      {
+                                        Utils.customPrint(
+                                            "END TRIP CURRENT TIME ${DateTime.now()}");
 
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top : displayWidth(context) * 0.01,
-                          bottom : displayWidth(context) * 0.01,
-                        ),
-                        child: GestureDetector(
-                            onTap: ()async{
-                              final image = await controller.capture();
-                              Navigator.push(widget.context!, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                imagePath: image.toString(),
-                                uIntList: image,)));
-                            },
-                            child: UserFeedback().getUserFeedback(context)
-                        ),
-                      )
-                    ],
-                  ),
+                                        bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+
+                                        Utils.customPrint("SMALL TRIPP IDDD bool$isSmallTrip");
+
+                                        if(!isSmallTrip)
+                                        {
+                                          Utils().showDeleteTripDialog(context,
+                                              endTripBtnClick: (){
+
+                                                endTrip(isTripDeleted: true);
+
+                                                Utils.customPrint("SMALL TRIPP IDDD ${tripData!
+                                                    .id!}");
+
+                                                int value = Platform.isAndroid ? 1 : 0;
+
+                                                Future.delayed(Duration(seconds: value), (){
+                                                  if(!isSmallTrip)
+                                                  {
+
+                                                    Utils.customPrint("SMALL TRIPP IDDD ${tripData!
+                                                        .id!}");
+                                                    DatabaseService().deleteTripFromDB(tripData!
+                                                        .id!);
+
+                                                    Navigator.pushAndRemoveUntil(
+                                                        widget.context!,
+                                                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                                        ModalRoute.withName(""));
+                                                  }
+                                                });
+                                              },
+                                              onCancelClick: (){
+                                                Navigator.pop(context);
+                                              }
+                                          );
+                                        }
+                                        else
+                                        {
+                                          Utils().showEndTripDialog(
+                                              context, () async {
+
+                                            endTrip();
+
+                                          }, () {
+                                            Navigator.pop(context);
+                                          });
+                                        }
+                                      }
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top : displayWidth(context) * 0.01,
+                                    bottom : displayWidth(context) * 0.01,
+                                  ),
+                                  child: GestureDetector(
+                                      onTap: ()async{
+                                        final image = await controller.capture();
+                                        Navigator.push(widget.context!, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                          imagePath: image.toString(),
+                                          uIntList: image,)));
+                                      },
+                                      child: UserFeedback().getUserFeedback(context)
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
                 ),
-              )
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget mapLegend() {
+    return Padding(
+      padding: const EdgeInsets.only(right: 34, left: 34, bottom: 15),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: commonText(
+                    context: context,
+                    text: '\$0/hr',
+                    fontWeight: FontWeight.w400,
+                    textColor: Colors.black,
+                    textSize: displayWidth(context) * 0.028,
+                    textAlign: TextAlign.start),
+              ),
+              Expanded(
+                child: commonText(
+                    context: context,
+                    text: '\$0-30/hr',
+                    fontWeight: FontWeight.w400,
+                    textColor: Colors.black,
+                    textSize: displayWidth(context) * 0.028,
+                    textAlign: TextAlign.start),
+              ),
+              Expanded(
+                child: commonText(
+                    context: context,
+                    text: '\$30-40/hr',
+                    fontWeight: FontWeight.w400,
+                    textColor: Colors.black,
+                    textSize: displayWidth(context) * 0.028,
+                    textAlign: TextAlign.start),
+              ),
+              Expanded(
+                child: commonText(
+                    context: context,
+                    text: '\$50+/hr',
+                    fontWeight: FontWeight.w400,
+                    textColor: Colors.black,
+                    textSize: displayWidth(context) * 0.028,
+                    textAlign: TextAlign.start),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 4,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  width: displayWidth(context),
+                  color: Color(0xFF61E4AD),
+                  height: 8,
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  width: displayWidth(context),
+                  color: Color(0xFFF5D529),
+                  height: 8,
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  width: displayWidth(context),
+                  color: Color(0xFFFA8529),
+                  height: 8,
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  width: displayWidth(context),
+                  color: Color(0xFFFB1B5E),
+                  height: 8,
+                ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

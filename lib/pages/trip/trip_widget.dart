@@ -198,11 +198,11 @@ class _TripWidgetState extends State<TripWidget> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left:10.0),
-                      child: Flexible(
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left:10.0),
                         child: Text(
                           '${widget.tripList!.vesselName}',
                           style: TextStyle(
