@@ -178,7 +178,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
               },
               child: Image.asset(
                 'assets/images/Trash.png',
-                width: displayWidth(context) * 0.065,
+                width: Platform.isAndroid ? displayWidth(context) * 0.065 : displayWidth(context) * 0.05,
               ),
             ),
 
