@@ -133,7 +133,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                   return snapshot.data!.isNotEmpty
                                       ? Slidable(
                                     key: itemKey,
-                                    endActionPane: snapshot.data![index].tripStatus == 0 ? null : ActionPane(
+                                   /* endActionPane: snapshot.data![index].tripStatus == 0 ? null : ActionPane(
                                       extentRatio: 0.25,
                                         motion: ScrollMotion(),
                                         children: [
@@ -172,7 +172,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                             backgroundColor: Colors.transparent,
                                             label: "Delete",
                                           )
-                                        ]),
+                                        ]), */
                                     child: TripWidget(
                                         scaffoldKey: widget.scaffoldKey,
                                         tripList: snapshot.data![index],

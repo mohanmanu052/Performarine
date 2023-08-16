@@ -459,26 +459,51 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                             valueColor: AlwaysStoppedAnimation<Color>(
                                 circularProgressColor),
                           ))
-                          : SizedBox(
-                          height: displayHeight(context) * 0.038,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: CommonButtons.getTextActionButton(
-                                buttonPrimaryColor:
-                                endTripBtnColor,
-                                borderColor: endTripBtnColor,
-                                fontSize: displayWidth(context) * 0.03,
-                                onTap: () {
-                                  widget.onTap!.call();
+                          : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                              height: displayHeight(context) * 0.038,
+                              width: displayWidth(context) * .308,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: CommonButtons.getTextActionButton(
+                                    buttonPrimaryColor:
+                                    endTripBtnColor,
+                                    borderColor: endTripBtnColor,
+                                    fontSize: displayWidth(context) * 0.03,
+                                    onTap: () {
+                                      widget.onTap!.call();
 
-                                  Utils.customPrint(
-                                      'TRIP STATUS ${commonProvider.tripStatus}');
-                                  CustomLogger().logWithFile(Level.info, "TRIP STATUS ${commonProvider.tripStatus} -> $page");
-                                },
-                                context: context,
-                                width: displayWidth(context),
-                                title: 'End Trip'),
-                          ))
+                                      Utils.customPrint(
+                                          'TRIP STATUS ${commonProvider.tripStatus}');
+                                      CustomLogger().logWithFile(Level.info, "TRIP STATUS ${commonProvider.tripStatus} -> $page");
+                                    },
+                                    context: context,
+                                    width: displayWidth(context),
+                                    title: 'End Trip'),
+                              )),
+
+                              SizedBox(
+                                  height: displayHeight(context) * 0.038,
+                                  width: displayWidth(context) * .308,
+                                  child: CommonButtons.getTextActionButton(
+                                      buttonPrimaryColor: blueColor,
+                                      fontSize: displayWidth(context) * 0.026,
+                                      onTap: () async {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                            tripId: widget.tripList!.id,
+                                            vesselId: widget.tripList!.vesselId,
+                                            tripIsRunningOrNot: widget.tripList?.tripStatus == 0)));
+                                      },
+                                      context: context,
+                                      width: displayWidth(context) * 0.2,
+                                      title: 'View Trip')),
+                            ],
+                          )
                     ],
                   ),
                 ),

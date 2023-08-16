@@ -307,7 +307,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         valueField: 'value',
                         validator: (value) {
                           if (value == null) {
-                            return 'Select Country';
+                            return 'Select your Country';
                           }
                           return null;
                         },
@@ -369,7 +369,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onChanged: (String value) {},
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Enter Email';
+                            return 'Enter your Email';
                           }
                           if (!EmailValidator.validate(value)) {
                             return 'Enter Valid Email';
