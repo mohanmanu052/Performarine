@@ -956,10 +956,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                       ),
                       SizedBox(height: displayHeight(context) * 0.01,),
 
-                      InkWell(
+                      /*InkWell(
                         onTap: (){
-                          /*Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                              Trips()));*/
+                          *//*Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                              Trips()));*//*
                         },
                         child: commonText(
                           context: context,
@@ -969,7 +969,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                           textSize: displayWidth(context) * 0.03,
                         ),
                       ),
-                      SizedBox(height: displayHeight(context) * 0.04,),
+                      SizedBox(height: displayHeight(context) * 0.04,),*/
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [

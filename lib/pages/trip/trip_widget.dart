@@ -213,6 +213,26 @@ class _TripWidgetState extends State<TripWidget> {
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.016,
                             ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left:10.0),
+                        child: Text(
+                          '${widget.tripList!.vesselName}',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: displayWidth(context) * 0.034,
+                            fontFamily: poppins,
                           ),
                         ],
                       ),
