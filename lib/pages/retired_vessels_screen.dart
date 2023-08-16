@@ -42,7 +42,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
     return Screenshot(
       controller: controller,
       child: Scaffold(
-        backgroundColor: commonBackgroundColor,
+        backgroundColor: backgroundColor,
         appBar: AppBar(
           elevation: 0,
           centerTitle: true,
@@ -72,14 +72,14 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                       MaterialPageRoute(builder: (context) => BottomNavigation()),
                       ModalRoute.withName(""));
                 },
-                icon: Image.asset('assets/images/home.png'),
+                icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.white
                     : Colors.black,
               ),
             ),
           ],
-          backgroundColor: commonBackgroundColor,
+          backgroundColor: backgroundColor,
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -87,7 +87,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                color: commonBackgroundColor,
+                color: backgroundColor,
                 child: FutureBuilder<List<CreateVessel>>(
                   future: getVesselFuture,
                   builder: (context, snapshot) {
@@ -121,7 +121,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                           children: [
                             Container(
                               // height: displayHeight(context),
-                              color: commonBackgroundColor,
+                              color: backgroundColor,
                               padding: const EdgeInsets.only(
                                   left: 8.0, right: 8.0, top: 8, bottom: 10),
                               child: ListView.builder(

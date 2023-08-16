@@ -105,8 +105,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                       Container(
                                         color: Colors.white,
                                         child: Image.asset(
-                                          'assets/images/vessel_default_img.png',
-                                          height: displayHeight(context) * 0.22,
+                                          'assets/icons/default_boat.png',
+                                         // height: displayHeight(context) * 0.22,
                                           width: displayWidth(context),
                                           fit: BoxFit.contain,
                                         ),
