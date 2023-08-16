@@ -101,11 +101,36 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                 widget.vessel!.imageURLs == 'string' ||
                                 widget.vessel!.imageURLs == '[]'
                                 ? Stack(
-                              children: [
-                                Container(
-                                  color: Colors.white,
-                                  child: Image.asset(
-                                    'assets/images/vessel_default_img.png',
+                                    children: [
+                                      Container(
+                                        color: Colors.white,
+                                        child: Image.asset(
+                                          'assets/icons/default_boat.png',
+                                         // height: displayHeight(context) * 0.22,
+                                          width: displayWidth(context),
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                      Positioned(
+                                          bottom: 0,
+                                          right: 0,
+                                          left: 0,
+                                          child: Container(
+                                            height: displayHeight(context) * 0.14,
+                                            width: displayWidth(context),
+                                            padding: const EdgeInsets.only(top: 20),
+                                            decoration: BoxDecoration(boxShadow: [
+                                              BoxShadow(
+                                                  color:
+                                                      Colors.black.withOpacity(0.5),
+                                                  blurRadius: 50,
+                                                  spreadRadius: 5,
+                                                  offset: const Offset(0, 50))
+                                            ]),
+                                          ))
+                                    ],
+                                  )
+                                : Container(
                                     height: displayHeight(context) * 0.22,
                                     width: displayWidth(context),
                                     fit: BoxFit.contain,

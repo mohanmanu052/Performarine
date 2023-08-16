@@ -55,7 +55,7 @@ class _NewIntroScreenState extends State<NewIntroScreen> {
             ),
 
             Positioned(
-                top: displayHeight(context) * 0.3,
+                top: displayHeight(context) * 0.1,
                 right: 0,
                 left: 0,
                 child: Image.asset('assets/icons/app_icon.png', width: displayWidth(context) * 0.2, height: displayHeight(context) * 0.12)),

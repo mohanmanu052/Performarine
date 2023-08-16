@@ -223,7 +223,7 @@ class Utils {
   }
   // Check user is connected to internet or not
   Future<bool> check(GlobalKey<ScaffoldState> scaffoldKey,
-      {bool userConfig = false, VoidCallback? onRetryTap}) async {
+      {bool userConfig = false, VoidCallback? onRetryTap,bool isFromDelete = false}) async {
 
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -234,7 +234,7 @@ class Utils {
       Utils.customPrint('No Internet');
       CustomLogger().logWithFile(Level.error, "No Internet -> $page");
       CustomLogger().logWithFile(Level.warning, "No Internet -> $page");
-      showDialog(
+     !isFromDelete ? showDialog(
           context: scaffoldKey.currentContext!,
           builder: (BuildContext context) {
             return CustomDialog(
@@ -249,7 +249,7 @@ class Utils {
               userConfig: userConfig,
               isError: false,
             );
-          });
+          }) : Container();
       return false;
     }
     return false;

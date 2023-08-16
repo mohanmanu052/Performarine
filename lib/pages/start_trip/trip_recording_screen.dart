@@ -146,7 +146,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                     MaterialPageRoute(builder: (context) => BottomNavigation()),
                     ModalRoute.withName(""));
               },
-              icon: Image.asset('assets/images/home.png'),
+              icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
               color: Theme.of(context).brightness == Brightness.dark
                   ? Colors.white
                   : Colors.black,
