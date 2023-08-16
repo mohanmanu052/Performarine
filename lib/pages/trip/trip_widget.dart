@@ -40,14 +40,14 @@ class TripWidget extends StatefulWidget {
   VoidCallback? isTripDeleted;
   final GlobalKey<ScaffoldState>? scaffoldKey;
 
-   TripWidget(
+  TripWidget(
       {super.key,
-      this.calledFrom,
-      this.tripList,
-      this.onTap,
-      this.tripUploadedSuccessfully,
-      this.onTripEnded,
-      this.scaffoldKey,
+        this.calledFrom,
+        this.tripList,
+        this.onTap,
+        this.tripUploadedSuccessfully,
+        this.onTripEnded,
+        this.scaffoldKey,
         this.isTripDeleted
       });
 
@@ -149,10 +149,10 @@ class _TripWidgetState extends State<TripWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(
+             /* SizedBox(
                 width: displayWidth(context) * 0.03,
-              ),
-              Container(
+              ),*/
+              /*Container(
                 height: displayHeight(context) * 0.1,
                 width: displayWidth(context) * 0.2,
                 decoration: BoxDecoration(
@@ -162,10 +162,10 @@ class _TripWidgetState extends State<TripWidget> {
                         image: AssetImage("assets/icons/default_boat.png",)
                     )
                 ),
-              ),
+              ),*/
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.only(top: 12, bottom: 12, left: 8),
+                  padding: const EdgeInsets.only(top: 12, bottom: 12, left: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: backgroundColor,
@@ -180,20 +180,16 @@ class _TripWidgetState extends State<TripWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            height: 30,
-                            width: displayWidth(context) * 0.3,
-                            child: commonText(
-                                context: context,
-                                text: 'Trip ID - #${widget.tripList?.id ?? ''}',
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.black,
-                                textSize: displayWidth(context) * 0.02,
-                                textAlign: TextAlign.start),
-                          ),
+                          commonText(
+                              context: context,
+                              text: 'Trip ID - #${widget.tripList?.id ?? ''}',
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.black,
+                              textSize: displayWidth(context) * 0.02,
+                              textAlign: TextAlign.start),
                           widget.tripList?.tripStatus == 0
                               ? Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
+                            padding: const EdgeInsets.only(right: 12.0),
                             child: commonText(
                               context: context,
                               text:
@@ -204,7 +200,7 @@ class _TripWidgetState extends State<TripWidget> {
                             ),
                           )
                               : Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
+                            padding: const EdgeInsets.only(right: 12.0),
                             child: commonText(
                               context: context,
                               text:
@@ -213,26 +209,6 @@ class _TripWidgetState extends State<TripWidget> {
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.016,
                             ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left:10.0),
-                        child: Text(
-                          '${widget.tripList!.vesselName}',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: displayWidth(context) * 0.034,
-                            fontFamily: poppins,
                           ),
                         ],
                       ),
@@ -293,67 +269,71 @@ class _TripWidgetState extends State<TripWidget> {
                       widget.tripList?.tripStatus != 0
                           ? widget.tripList!.isCloud != 0
                           ? Padding(
-                        padding: const EdgeInsets.only(right: 0.0),
+                        padding: const EdgeInsets.only(right: 12.0),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
-                                height: displayHeight(context) * 0.038,
-                                width: displayWidth(context) * .28,
-                                child: CommonButtons.getTextActionButton(
-                                    buttonPrimaryColor: routeMapBtnColor,
-                                    fontSize: displayWidth(context) * 0.026,
-                                    onTap: () async {
-                                      _launchURL();
-                                    },
-                                    context: context,
-                                    width: displayWidth(context) * 0.2,
-                                    title: 'Route Map')),
+                            Expanded(
+                              child: SizedBox(
+                                  height: displayHeight(context) * 0.038,
+                                  //width: displayWidth(context) * .38,
+                                  child: CommonButtons.getTextActionButton(
+                                      buttonPrimaryColor: routeMapBtnColor,
+                                      fontSize: displayWidth(context) * 0.026,
+                                      onTap: () async {
+                                        _launchURL();
+                                      },
+                                      context: context,
+                                      width: displayWidth(context) * 0.2,
+                                      title: 'Route Map')),
+                            ),
                             SizedBox(
                               width: 5,
                             ),
-                            SizedBox(
-                                height: displayHeight(context) * 0.038,
-                                width: displayWidth(context) * .30,
-                                child: CommonButtons.getTextActionButton(
-                                    buttonPrimaryColor: blueColor,
-                                    fontSize: displayWidth(context) * 0.026,
-                                    onTap: () async {
-                                      getVesselById = await _databaseService
-                                          .getVesselNameByID(widget
-                                          .tripList!.vesselId
-                                          .toString());
+                            Expanded(
+                              child: SizedBox(
+                                  height: displayHeight(context) * 0.038,
+                                  //width: displayWidth(context) * .38,
+                                  child: CommonButtons.getTextActionButton(
+                                      buttonPrimaryColor: blueColor,
+                                      fontSize: displayWidth(context) * 0.026,
+                                      onTap: () async {
+                                        getVesselById = await _databaseService
+                                            .getVesselNameByID(widget
+                                            .tripList!.vesselId
+                                            .toString());
 
-                                      Utils.customPrint(
-                                          'VESSEL DATA ${getVesselById[0].imageURLs}');
-                                      CustomLogger().logWithFile(Level.info, "VESSEL DATA ${getVesselById[0].imageURLs} -> $page");
+                                        Utils.customPrint(
+                                            'VESSEL DATA ${getVesselById[0].imageURLs}');
+                                        CustomLogger().logWithFile(Level.info, "VESSEL DATA ${getVesselById[0].imageURLs} -> $page");
 
-                                      if (!isTripUploaded) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                NewTripAnalyticsScreen(
-                                                    tripId:
-                                                    widget.tripList!.id,
-                                                    vesselId:
-                                                    getVesselById[0].id,
-                                                    tripIsRunningOrNot: false,
-                                                    calledFrom:
-                                                    widget.calledFrom
-                                                ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    context: context,
-                                    width: displayWidth(context) * 0.27,
-                                    title: 'Trip Analytics'))
+                                        if (!isTripUploaded) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  NewTripAnalyticsScreen(
+                                                      tripId:
+                                                      widget.tripList!.id,
+                                                      vesselId:
+                                                      getVesselById[0].id,
+                                                      tripIsRunningOrNot: false,
+                                                      calledFrom:
+                                                      widget.calledFrom
+                                                  ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      context: context,
+                                      width: displayWidth(context) * 0.27,
+                                      title: 'Trip Analytics')),
+                            )
                           ],
                         ),
                       )
                           : Padding(
-                        padding: const EdgeInsets.only(right: 0.0),
+                        padding: const EdgeInsets.only(right: 12.0),
                         child: Row(
                           children: [
                             Expanded(
@@ -490,51 +470,58 @@ class _TripWidgetState extends State<TripWidget> {
                             valueColor: AlwaysStoppedAnimation<Color>(
                                 circularProgressColor),
                           ))
-                          : Row(
+                          : Padding(
+                            padding: const EdgeInsets.only(right: 12.0),
+                            child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(
-                              height: displayHeight(context) * 0.038,
-                              width: displayWidth(context) * .308,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: CommonButtons.getTextActionButton(
-                                    buttonPrimaryColor:
-                                    endTripBtnColor,
-                                    borderColor: endTripBtnColor,
-                                    fontSize: displayWidth(context) * 0.03,
-                                    onTap: () {
-                                      widget.onTap!.call();
+                            Expanded(
+                              child: SizedBox(
+                                  height: displayHeight(context) * 0.038,
+                                  //width: displayWidth(context) * .308,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: CommonButtons.getTextActionButton(
+                                        buttonPrimaryColor:
+                                        endTripBtnColor,
+                                        borderColor: endTripBtnColor,
+                                        fontSize: displayWidth(context) * 0.03,
+                                        onTap: () {
+                                          widget.onTap!.call();
 
-                                      Utils.customPrint(
-                                          'TRIP STATUS ${commonProvider.tripStatus}');
-                                      CustomLogger().logWithFile(Level.info, "TRIP STATUS ${commonProvider.tripStatus} -> $page");
-                                    },
-                                    context: context,
-                                    width: displayWidth(context),
-                                    title: 'End Trip'),
-                              )),
+                                          Utils.customPrint(
+                                              'TRIP STATUS ${commonProvider.tripStatus}');
+                                          CustomLogger().logWithFile(Level.info, "TRIP STATUS ${commonProvider.tripStatus} -> $page");
+                                        },
+                                        context: context,
+                                        width: displayWidth(context),
+                                        title: 'End Trip'),
+                                  )),
+                            ),
 
-                          SizedBox(
-                              height: displayHeight(context) * 0.038,
-                              width: displayWidth(context) * .302,
-                              child: CommonButtons.getTextActionButton(
-                                  buttonPrimaryColor: blueColor,
-                                  fontSize: displayWidth(context) * 0.026,
-                                  onTap: () async {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => TripRecordingScreen(
-                                            tripId: widget.tripList!.id,
-                                            vesselId: widget.tripList!.vesselId,
-                                            tripIsRunningOrNot: widget.tripList?.tripStatus == 0)));
-                                  },
-                                  context: context,
-                                  width: displayWidth(context) * 0.2,
-                                  title: 'View Trip')),
+                            Expanded(
+                              child: SizedBox(
+                                  height: displayHeight(context) * 0.038,
+                                  //width: displayWidth(context) * .302,
+                                  child: CommonButtons.getTextActionButton(
+                                      buttonPrimaryColor: blueColor,
+                                      fontSize: displayWidth(context) * 0.026,
+                                      onTap: () async {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                                tripId: widget.tripList!.id,
+                                                vesselId: widget.tripList!.vesselId,
+                                                tripIsRunningOrNot: widget.tripList?.tripStatus == 0)));
+                                      },
+                                      context: context,
+                                      width: displayWidth(context) * 0.2,
+                                      title: 'View Trip')),
+                            ),
                         ],
-                      )
+                      ),
+                          )
                     ],
                   ),
                 ),
@@ -562,7 +549,7 @@ class _TripWidgetState extends State<TripWidget> {
   /// TO Launch Route Map of the Trip
   _launchURL() async {
     final Uri url =
-        Uri.parse('https://${Urls.baseUrl}/goeMaps/${widget.tripList!.id}');
+    Uri.parse('https://${Urls.baseUrl}/goeMaps/${widget.tripList!.id}');
     if (!await launchUrl(url)) {
       throw Exception(
           'Could not launch https://+"${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9');
@@ -637,14 +624,14 @@ class _TripWidgetState extends State<TripWidget> {
 
     commonProvider
         .sendSensorInfo(
-            Get.context!,
-            commonProvider.loginModel!.token!,
-            File(Platform.isAndroid
-                ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'
-                : '${tripDir.path}/${tripData.id}.zip'),
-            queryParameters,
-            tripData.id!,
-            widget.scaffoldKey!)
+        Get.context!,
+        commonProvider.loginModel!.token!,
+        File(Platform.isAndroid
+            ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'
+            : '${tripDir.path}/${tripData.id}.zip'),
+        queryParameters,
+        tripData.id!,
+        widget.scaffoldKey!)
         .then((value) async {
       if (value != null) {
         commonProvider.updateTripUploadingStatus(false);
@@ -709,13 +696,13 @@ class _TripWidgetState extends State<TripWidget> {
   /// If Upload trip failed then to show the progress
   showFailedNoti(String id, [String? message]) async {
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails('progress channel', 'progress channel',
-            channelDescription: 'progress channel description',
-            channelShowBadge: false,
-            importance: Importance.max,
-            priority: Priority.high,
-            onlyAlertOnce: true,
-            showProgress: false);
+    AndroidNotificationDetails('progress channel', 'progress channel',
+        channelDescription: 'progress channel description',
+        channelShowBadge: false,
+        importance: Importance.max,
+        priority: Priority.high,
+        onlyAlertOnce: true,
+        showProgress: false);
     final NotificationDetails platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: DarwinNotificationDetails());
@@ -730,15 +717,15 @@ class _TripWidgetState extends State<TripWidget> {
   /// if trip uploaded successfully
   showSuccessNoti() async {
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails('progress channel', 'progress channel',
-            channelDescription: 'progress channel description',
-            channelShowBadge: false,
-            importance: Importance.max,
-            priority: Priority.high,
-            onlyAlertOnce: true,
-            showProgress: true,
-            progress: 100,
-            maxProgress: 100);
+    AndroidNotificationDetails('progress channel', 'progress channel',
+        channelDescription: 'progress channel description',
+        channelShowBadge: false,
+        importance: Importance.max,
+        priority: Priority.high,
+        onlyAlertOnce: true,
+        showProgress: true,
+        progress: 100,
+        maxProgress: 100);
     final NotificationDetails platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: DarwinNotificationDetails());
@@ -779,7 +766,7 @@ class _TripWidgetState extends State<TripWidget> {
                               commonText(
                                   context: context,
                                   text:
-                                      'Your carrier may charge for Data Usage to upload trip data do you want to proceed?',
+                                  'Your carrier may charge for Data Usage to upload trip data do you want to proceed?',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,
@@ -801,7 +788,7 @@ class _TripWidgetState extends State<TripWidget> {
                                     borderRadius: BorderRadius.circular(6),
                                     border: Border.all(
                                         color: Theme.of(context).brightness ==
-                                                Brightness.dark
+                                            Brightness.dark
                                             ? Colors.white
                                             : Colors.grey)),
                                 child: Center(
@@ -813,7 +800,7 @@ class _TripWidgetState extends State<TripWidget> {
                                       displayHeight(context) * 0.05,
                                       Colors.grey.shade400,
                                       Theme.of(context).brightness ==
-                                              Brightness.dark
+                                          Brightness.dark
                                           ? Colors.white
                                           : Colors.black,
                                       displayHeight(context) * 0.018,
@@ -882,7 +869,7 @@ class _TripWidgetState extends State<TripWidget> {
     progress = 0;
 
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
+    AndroidNotificationDetails(
       'progress channel',
       'progress channel',
       channelDescription: 'progress channel description',
@@ -955,16 +942,16 @@ class _TripWidgetState extends State<TripWidget> {
 
       commonProvider
           .addVessel(
-              context,
-              commonProvider.addVesselRequestModel,
-              commonProvider.loginModel!.userId!,
-              commonProvider.loginModel!.token!,
-              widget.scaffoldKey!)
+          context,
+          commonProvider.addVesselRequestModel,
+          commonProvider.loginModel!.userId!,
+          commonProvider.loginModel!.token!,
+          widget.scaffoldKey!)
           .then((value) async {
         if (value != null) {
           if (value.status!) {
 
-        Utils.customPrint("Add Vessel R ${value.status}");
+            Utils.customPrint("Add Vessel R ${value.status}");
             CustomLogger().logWithFile(Level.info, "Add Vessel R ${value.status}-> $page");
 
             _databaseService.updateIsSyncStatus(
