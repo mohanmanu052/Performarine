@@ -126,7 +126,7 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 17),
               width: MediaQuery.of(context).size.width,
-              height: displayHeight(context) * 1.25,
+              height: displayHeight(context) * 1.45,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [

@@ -126,7 +126,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                 stepperWidget(),
 
                 !finalSelectedFiles.isNotEmpty ? Container(
-                  margin: EdgeInsets.only(top: 20.0),
+                  margin: EdgeInsets.only(top: displayHeight(context) * 0.008),
+
                   child: CommonButtons.uploadVesselImage(
                       'Click here to Upload Vessel Image\n(png, jpeg files only)', context, () {
                     uploadImageFunction();
@@ -662,8 +663,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: Text(
                       "Step 1",
                       style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black
+                          fontSize: displayWidth(context) * 0.028,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: inter
                       ),
                     ),)),
               Expanded(
@@ -672,8 +675,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: Text(
                       "Step 2",
                       style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black
+                          fontSize: displayWidth(context) * 0.028,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: inter
                       ),
                     ),)),
             ],
