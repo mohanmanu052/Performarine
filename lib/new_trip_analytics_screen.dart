@@ -1255,7 +1255,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                             });
                                         internalStateSetter = stateSetter;
                                         bool internet =
-                                        await Utils().check(scaffoldKey,isFromDelete: true);
+                                        await Utils().check(scaffoldKey);
 
                                         if(internet){
                                           stateSetter(() {

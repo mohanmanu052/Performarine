@@ -518,7 +518,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                   '${vesselData.fuelCapacity!}gal'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black87,
+                                  textColor: backgroundColor,
                                   textSize:
                                   displayWidth(context) *
                                       0.03,
@@ -547,7 +547,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                   context: context,
                                   text: vesselData.engineType!,
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black87,
+                                  textColor: backgroundColor,
                                   textSize:
                                   displayWidth(context) *
                                       0.03,
