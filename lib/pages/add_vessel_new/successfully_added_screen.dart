@@ -188,7 +188,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            /* Positioned(
+                             Positioned(
                                       bottom: 0,
                                       right: 0,
                                       left: 0,
@@ -204,21 +204,41 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                               spreadRadius: 5,
                                               offset: const Offset(0, 50))
                                         ]),
-                                      ))*/
+                                      ))
                           ],
                         )
-                            : Container(
+                            : Stack(
+                              children: [
+                                Container(
                           height: displayHeight(context) * 0.22,
                           width: displayWidth(context),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: FileImage(
-                                  File(widget.data!.imageURLs!)),
-                              fit: BoxFit.cover,
-                            ),
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                  image: FileImage(
+                                      File(widget.data!.imageURLs!)),
+                                  fit: BoxFit.cover,
+                                ),
                           ),
                         ),
+                                Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    left: 0,
+                                    child: Container(
+                                      height: displayHeight(context) * 0.14,
+                                      width: displayWidth(context),
+                                      padding: const EdgeInsets.only(top: 20),
+                                      decoration: BoxDecoration(boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black.withOpacity(0.5),
+                                            blurRadius: 50,
+                                            spreadRadius: 5,
+                                            offset: const Offset(0, 50))
+                                      ]),
+                                    ))
+                              ],
+                            ),
                       ),
                     ),
 

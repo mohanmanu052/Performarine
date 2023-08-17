@@ -121,6 +121,10 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
         batteryCapacityController.text =
             widget.addVesselData!.batteryCapacity!.toString();
         weightController.text = widget.addVesselData!.weight!.toString();
+        if(widget.addVesselData!.imageURLs != null)
+          {
+            finalSelectedFiles.add(File(widget.addVesselData!.imageURLs!));
+          }
       }
     }
   }
@@ -137,10 +141,12 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 stepperWidget(),
 
-                !isImageSelected ? Container(
+                !finalSelectedFiles.isNotEmpty ? Container(
                   margin: EdgeInsets.only(top: displayHeight(context) * 0.008),
+
                   child: CommonButtons.uploadVesselImage(
                       'Click here to Upload Vessel Image\n(png, jpeg files only)', context, () {
                     uploadImageFunction();

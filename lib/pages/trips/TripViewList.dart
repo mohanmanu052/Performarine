@@ -130,7 +130,7 @@ class _TripViewListState extends State<TripViewList> {
                           itemBuilder: (context, index) {
                             final itemKey = ValueKey(index);
                             return snapshot.data!.isNotEmpty
-                                ? TripWidgetNew(
+                                ? TripWidget(
                                 scaffoldKey: widget.scaffoldKey,
                                 tripList: snapshot.data![index],
                                 calledFrom: widget.calledFrom,
@@ -314,9 +314,9 @@ class _TripViewListState extends State<TripViewList> {
                                         context: context,
                                         text:
                                         'Do you want to delete the Trip?',
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w500,
                                         textColor: Colors.black,
-                                        textSize: displayWidth(ctx) * 0.04,
+                                        textSize: displayWidth(ctx) * 0.045,
                                         textAlign: TextAlign.center),
                                   ),
 
@@ -330,7 +330,7 @@ class _TripViewListState extends State<TripViewList> {
                                       'This action is irreversible. do you want to delete it?',
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.grey,
-                                      textSize: displayWidth(ctx) * 0.035,
+                                      textSize: displayWidth(ctx) * 0.036,
                                       textAlign: TextAlign.center),
 
                                 ],
@@ -352,7 +352,7 @@ class _TripViewListState extends State<TripViewList> {
                                     ),
                                   )
                                       :  CommonButtons.getAcceptButton(
-                                      'Delete Trip', context, endTripBtnColor,
+                                      'Confirm & Delete', context, endTripBtnColor,
                                           () async {
                                         internalStateSetter = stateSetter;
                                         bool internet =
@@ -406,7 +406,7 @@ class _TripViewListState extends State<TripViewList> {
                                       displayHeight(ctx) * 0.018,
                                       buttonBGColor,
                                       '',
-                                      fontWeight: FontWeight.w500),
+                                      fontWeight: FontWeight.w600),
 
                                   CommonButtons.getAcceptButton(
                                       'Cancel',
@@ -425,7 +425,7 @@ class _TripViewListState extends State<TripViewList> {
                                       displayHeight(ctx) * 0.015,
                                       Colors.transparent,
                                       '',
-                                      fontWeight: FontWeight.w500),
+                                      fontWeight: FontWeight.w600),
                                 ],
                               ),
                             ),

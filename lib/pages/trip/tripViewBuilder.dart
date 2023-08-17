@@ -12,6 +12,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/trip.dart';
+import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
@@ -52,6 +53,7 @@ class _TripViewListingState extends State<TripViewListing> {
 
   final controller = ScreenshotController();
   File? imageFile;
+  String? vesselImageUrl = '';
 
   late Future<List<Trip>> future;
   late Future<List<Trip>> getTripsByIdFuture;
@@ -354,9 +356,9 @@ class _TripViewListingState extends State<TripViewListing> {
                                         context: context,
                                         text:
                                         'Do you want to delete the Trip? ',
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w500,
                                         textColor: Colors.black,
-                                        textSize: displayWidth(ctx) * 0.04,
+                                        textSize: displayWidth(ctx) * 0.045,
                                         textAlign: TextAlign.center),
                                   ),
                                   SizedBox(
@@ -368,7 +370,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                       'This action is irreversible. do you want to delete it?',
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.grey,
-                                      textSize: displayWidth(ctx) * 0.035,
+                                      textSize: displayWidth(ctx) * 0.036,
                                       textAlign: TextAlign.center),
                                 ],
                               ),
@@ -387,7 +389,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                       child: Center(child: CircularProgressIndicator()),
                                     ),
                                   ) :  CommonButtons.getAcceptButton(
-                                      'Delete Trip', context, endTripBtnColor,
+                                      'Confirm & Delete', context, endTripBtnColor,
                                           () async {
                                         internalStateSetter = stateSetter;
                                         bool internet =
@@ -441,7 +443,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                       displayHeight(ctx) * 0.02,
                                       buttonBGColor,
                                       '',
-                                      fontWeight: FontWeight.w700),
+                                      fontWeight: FontWeight.w600),
 
                                   CommonButtons.getAcceptButton(
                                       'Cancel',
@@ -460,7 +462,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                       displayHeight(ctx) * 0.02,
                                       Colors.transparent,
                                       '',
-                                      fontWeight: FontWeight.w700),
+                                      fontWeight: FontWeight.w600),
                                 ],
                               ),
                             ),

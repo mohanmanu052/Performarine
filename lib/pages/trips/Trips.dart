@@ -38,7 +38,7 @@ class _TripsState extends State<Trips> {
           key: scaffoldKey,
           body: Column(
             children: [
-              Padding(
+             /* Padding(
                 padding: EdgeInsets.only(left: displayWidth(context) * 0.03,right: displayWidth(context) * 0.03),
                 child: SearchTextField(
                     'Search by vessel, trip id, date',
@@ -51,22 +51,21 @@ class _TripsState extends State<Trips> {
                     //     value, context, scaffoldKey);
                   }
                 }, (value) {
-                  /*if (value.length > 3) {
+                  *//*if (value.length > 3) {
                             future = commonProvider.getSearchData(
                                 value, context, scaffoldKey);
-                          }*/
+                          }*//*
                 }, TextInputType.text,
                     textInputAction: TextInputAction.search,
                     enabled: true,
                     isForTwoDecimal: false),
-              ),
+              ),*/
 
               Expanded(
                 child: TripViewList(
                   scaffoldKey: scaffoldKey,
                   calledFrom: 'HomePage',
                   isTripDeleted: ()async{
-
                   },
                   onTripEnded: (){
                     commonProvider.getTripsByVesselId('');

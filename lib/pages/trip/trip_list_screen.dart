@@ -16,6 +16,7 @@ import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
+import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -62,7 +63,7 @@ class _TripListScreenState extends State<TripListScreen> {
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
 
   Timer? timer;
-  String fileName = '';
+  String fileName = '',vesselImageUrl = '';
   int fileIndex = 1;
   String? latitude, longitude;
   String getTripId = '';

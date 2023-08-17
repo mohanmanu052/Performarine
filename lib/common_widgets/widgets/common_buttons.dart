@@ -232,10 +232,10 @@ class CommonButtons {
         double? fontSize,
         Function()? onTap,
         double? width,
-        Color? buttonPrimaryColor,
-      }) {
+        Color? buttonPrimaryColor, String? fontFamily}) {
     width ??= displayWidth(context!);
     borderColor ??= buttonPrimaryColor;
+    fontFamily ??= poppins;
 
     return ElevatedButton(
         onPressed: onTap,
@@ -245,14 +245,15 @@ class CommonButtons {
                 Size(width, displayHeight(context!) * 0.065)),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
                 side: BorderSide(color: borderColor!),
-                borderRadius: BorderRadius.circular(13.0)))),
+                ))),
         child: Center(
           child: commonText(
               text: title,
               context: context,
               textSize: fontSize,
               textColor: textColor,
-              fontWeight: FontWeight.w500),
+              fontWeight: FontWeight.w500, fontFamily: fontFamily),
+
         ));
   }
 }
