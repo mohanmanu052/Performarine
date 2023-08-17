@@ -222,6 +222,16 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                     SizedBox(height: displayHeight(context) * 0.02),
+                    commonText(
+                        context: context,
+                        text: '- - - - - - - - - - - - - - - -   Or   - - - - - - - - - - - - - - - -',
+                        fontWeight: FontWeight.w500,
+                        textColor: blueColor,
+                        textSize: displayWidth(context) * 0.035,
+                        textAlign: TextAlign.start,
+                        fontFamily: outfit
+                    ),
+                    SizedBox(height: displayHeight(context) * 0.02),
                     CommonTextField(
                       //key: emailFormFieldKey,
                         controller: emailController,
@@ -373,7 +383,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ],
                     ),
 
-                    SizedBox(height: displayHeight(context) * 0.28),
+                    SizedBox(height: displayHeight(context) * 0.23),
                     Center(
                       child: RichText(
                         text: TextSpan(
@@ -388,12 +398,11 @@ class _SignInScreenState extends State<SignInScreen> {
                               TextSpan(
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () async {
-                                      Navigator.pushAndRemoveUntil(
+                                      Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => SignUpScreen(),
-                                          ),
-                                          ModalRoute.withName(""));
+                                          ));
                                     },
                                   text: ' Sign Up',
                                   style: TextStyle(
@@ -404,6 +413,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                       fontSize: displayWidth(context) * 0.035)),
                             ]),
                       ),
+                    ),
+                    SizedBox(
+                      height: displayHeight(context) * 0.03,
                     ),
                   ],
                 ),

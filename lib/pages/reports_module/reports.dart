@@ -1405,7 +1405,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                                           tripDurationButtonColor!
                                                               ? Colors.white
                                                               : Colors.black,
-                                                      fontSize: 11,
+                                                      fontSize: displayWidth(context) * 0.025,
                                                       fontWeight:
                                                           FontWeight.w400),
                                                 ),
@@ -1443,7 +1443,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                                           avgSpeedButtonColor!
                                                               ? Colors.white
                                                               : Colors.black,
-                                                      fontSize: 11,
+                                                      fontSize: displayWidth(context) * 0.025,
                                                       fontWeight:
                                                           FontWeight.w400),
                                                 ),
@@ -1481,7 +1481,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                                           fuelUsageButtonColor!
                                                               ? Colors.white
                                                               : Colors.black,
-                                                      fontSize: 11,
+                                                      fontSize: displayWidth(context) * 0.025,
                                                       fontWeight:
                                                           FontWeight.w400),
                                                 ),
@@ -1519,7 +1519,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                                           powerUsageButtonColor!
                                                               ? Colors.white
                                                               : Colors.black,
-                                                      fontSize: 11,
+                                                      fontSize: displayWidth(context) * 0.025,
                                                       fontWeight:
                                                           FontWeight.w400),
                                                 ),

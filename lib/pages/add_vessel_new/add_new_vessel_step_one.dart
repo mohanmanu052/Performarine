@@ -2,6 +2,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -139,7 +140,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 stepperWidget(),
 
                 !isImageSelected ? Container(
-                  margin: EdgeInsets.only(top: 20.0),
+                  margin: EdgeInsets.only(top: displayHeight(context) * 0.008),
                   child: CommonButtons.uploadVesselImage(
                       'Click here to Upload Vessel Image\n(png, jpeg files only)', context, () {
                     uploadImageFunction();
@@ -339,16 +340,16 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
 
                       if (selectedEngineType!.toLowerCase() == 'hybrid' ||
                           selectedEngineType!.toLowerCase() == 'combustion') {
-                        setState(() {
-                          FocusScope.of(context)
-                              .requestFocus(fuelCapacityFocusNode);
-                        });
+                        // setState(() {
+                        //   FocusScope.of(context)
+                        //       .requestFocus(fuelCapacityFocusNode);
+                        // });
                       } else if (selectedEngineType!.toLowerCase() ==
                           'electric') {
-                        setState(() {
-                          FocusScope.of(context)
-                              .requestFocus(batteryCapacityFocusNode);
-                        });
+                        // setState(() {
+                        //   FocusScope.of(context)
+                        //       .requestFocus(batteryCapacityFocusNode);
+                        // });
                       }
                     },
                     dataSource: ['Hybrid', 'Combustion', 'Electric'],
@@ -441,7 +442,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
 
                 Container(
                   margin: EdgeInsets.only(
-                      bottom: displayHeight(context) * 0.02,
+                     // bottom: displayHeight(context) * 0.02,
                       top: displayHeight(context) * 0.02),
                   child: Column(
                     children: [
@@ -695,8 +696,10 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     child: Text(
                       "Step 1",
                       style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black
+                          fontSize: displayWidth(context) * 0.028,
+                          color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: inter
                       ),
                     ),)),
               Expanded(
@@ -705,8 +708,10 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     child: Text(
                       "Step 2",
                       style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black
+                          fontSize: displayWidth(context) * 0.028,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: inter
                       ),
                     ),)),
             ],

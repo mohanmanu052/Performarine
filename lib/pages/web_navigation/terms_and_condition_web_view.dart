@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -17,7 +18,7 @@ class _TermsAndConditionsWebViewState extends State<TermsAndConditionsWebView> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Color(0xfff2fffb),
+        backgroundColor: backgroundColor,
         centerTitle: true,
         title: Text(
           "Terms and Conditions",
