@@ -66,13 +66,13 @@ class _NewIntroScreenState extends State<NewIntroScreen> {
                 bottom: displayHeight(context) * 0.03,
                 child:Container(
                   margin: EdgeInsets.symmetric(horizontal: displayWidth(context)* 0.1),
-                  height: displayHeight(context) * 0.37,
+                  height: displayHeight(context) < 700 ? displayHeight(context) * 0.38 : displayHeight(context) * 0.34,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 17),
+                    padding: EdgeInsets.symmetric(horizontal: displayWidth(context) * 0.07, vertical: displayHeight(context) * 0.018),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -95,7 +95,7 @@ class _NewIntroScreenState extends State<NewIntroScreen> {
                                 textSize:
                                 displayWidth(context) * 0.034,
                                 textAlign: TextAlign.start),
-                            SizedBox(height: displayHeight(context) * 0.02,),
+                            SizedBox(height: displayHeight(context) * 0.01,),
                             CommonButtons.getActionButton(
                               title: 'Sign Up as New User',
                               context: context,
@@ -112,7 +112,7 @@ class _NewIntroScreenState extends State<NewIntroScreen> {
                                       builder: (context) =>  SignUpScreen()),
                                 );
                               },),
-                            SizedBox(height: displayHeight(context) * 0.01,),
+                           // SizedBox(height: displayHeight(context) * 0.01,),
                           ],
                         ),
 

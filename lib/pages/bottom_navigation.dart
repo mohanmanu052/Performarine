@@ -154,7 +154,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     var screensList = [
       Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: widget.isComingFromReset,isAppKilled: widget.isAppKilled,token: widget.token),
       ReportsModule(),
-      StartTripRecordingScreen(),
+      StartTripRecordingScreen(isBluetoothConnected: isBluetoothConnected,),
       Trips(),
       ComingSoonScreen()
     ];

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -19,6 +20,7 @@ class _CustomWebViewState extends State<CustomWebView> {
   Widget build(BuildContext context) {
     return widget.isPaccore!
     ? Scaffold(
+      backgroundColor: backgroundColor,
       body: Stack(
         children: [
           WebView(
@@ -39,7 +41,7 @@ class _CustomWebViewState extends State<CustomWebView> {
     : Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Color(0xfff2fffb),
+        backgroundColor: backgroundColor,
         centerTitle: true,
         leading: IconButton(
           onPressed: () async {

@@ -280,6 +280,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     SizedBox(height: displayHeight(context) * 0.012),
+                    commonText(
+                        context: context,
+                        text: '- - - - - - - - - - - - - - - -   Or   - - - - - - - - - - - - - - - -',
+                        fontWeight: FontWeight.w500,
+                        textColor: blueColor,
+                        textSize: displayWidth(context) * 0.035,
+                        textAlign: TextAlign.start,
+                        fontFamily: outfit
+                    ),
+                    SizedBox(height: displayHeight(context) * 0.01),
                     Container(
                       margin: EdgeInsets.only(top: 8.0),
                     //  height: displayHeight(context) * 0.06,
@@ -337,9 +347,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             if (selectedCountry == 'USA') {
-                              return 'Enter Zip Code';
+                              return 'Enter Code';
                             } else {
-                              return 'Enter Postal Code';
+                              return 'Enter Code';
                             }
                           }
                           return null;
@@ -639,12 +649,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               TextSpan(
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () async {
-                                      Navigator.pushAndRemoveUntil(
+                                      Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => SignInScreen(),
-                                          ),
-                                          ModalRoute.withName(""));
+                                          ),);
                                     },
                                   text: ' Sign In',
                                   style: TextStyle(
