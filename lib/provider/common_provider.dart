@@ -59,6 +59,7 @@ class CommonProvider with ChangeNotifier {
   bool isBluetoothEnabled = false;
   UserFeedbackModel? userFeedbackModel;
   DeleteTripModel? deleteTripModel;
+  int bottomNavIndex = 0;
 
 
   init() {
@@ -415,4 +416,5 @@ class CommonProvider with ChangeNotifier {
 
     return deleteTripModel!;
   }
+
 }

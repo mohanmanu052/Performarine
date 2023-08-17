@@ -192,7 +192,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         child: commonText(
                             context: context,
                             text: 'My Vessels',
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w400,
                             textColor: Colors.black54,
                             textSize: textSize,
                             textAlign: TextAlign.start),
@@ -215,7 +215,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         child: commonText(
                             context: context,
                             text: 'Create Vessels',
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w400,
                             textColor: Colors.black54,
                             textSize: textSize,
                             textAlign: TextAlign.start),
@@ -238,7 +238,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         child: commonText(
                             context: context,
                             text: 'Retired Vessels',
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w400,
                             textColor: Colors.black54,
                             textSize: textSize,
                             textAlign: TextAlign.start),
@@ -317,7 +317,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         child: commonText(
                             context: context,
                             text: 'Sync from Cloud',
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w400,
                             textColor: Colors.black54,
                             textSize: textSize,
                             textAlign: TextAlign.start),
@@ -436,8 +436,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     child: commonText(
                         context: context,
                         text: 'Change Password',
-                        fontWeight: FontWeight.w500,
-                        textColor: blueColor,
+                        fontWeight: FontWeight.w400,
+                        textColor: Colors.black54,
                         textSize: textSize,
                         textAlign: TextAlign.start),
                   ) : Container(),
@@ -458,7 +458,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     child: commonText(
                         context: context,
                         text: 'Terms & Conditions',
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w400,
                         textColor: Colors.black54,
                         textSize: textSize,
                         textAlign: TextAlign.start),
@@ -479,7 +479,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     child: commonText(
                         context: context,
                         text: 'Privacy Policy',
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w400,
                         textColor: Colors.black54,
                         textSize: textSize,
                         textAlign: TextAlign.start),
@@ -529,9 +529,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         commonText(
                             context: context,
                             text: 'Sign Out',
-                            fontWeight: FontWeight.w500,
-                            textColor: floatingBtnColor,
-                            textSize: displayWidth(context) * 0.05,
+                            fontWeight: FontWeight.w400,
+                            textColor: Colors.black54,
+                            textSize: displayWidth(context) * 0.04,
                             textAlign: TextAlign.start),
                         //Icon(Icons.logout, color: Colors.black54),
                       ],

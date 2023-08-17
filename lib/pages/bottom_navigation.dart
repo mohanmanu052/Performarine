@@ -90,12 +90,14 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
   void initState() {
     // TODO: implement initState
     super.initState();
-    _tabController = TabController(vsync: this, length: 5);
+    _tabController = TabController(vsync: this, length: 5, initialIndex: widget.tabIndex);
+    _bottomNavIndex = widget.tabIndex;
     commonProvider = context.read<CommonProvider>();
   }
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     List<Widget> _icons = [
       Image.asset(
         iconList[0],
@@ -589,6 +591,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                     else{
                       setState(() {
                         _bottomNavIndex = index;
+                        commonProvider.bottomNavIndex = index;
                       });
                     }
                   },
@@ -1302,7 +1305,8 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
             isLocationPermitted: isLocationPermitted,
-            isBluetoothConnected: isBluetoothConnected,)));
+            isBluetoothConnected: isBluetoothConnected,
+            calledFrom: 'bottom_nav',)));
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
@@ -1348,7 +1352,8 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
           });
           Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
               isLocationPermitted: isLocationPermitted,
-              isBluetoothConnected: isBluetoothConnected,)));
+              isBluetoothConnected: isBluetoothConnected,
+              calledFrom: 'bottom_nav')));
         }
       }
     } else {
@@ -1397,7 +1402,8 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
         });
         Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
             isLocationPermitted: isLocationPermitted,
-            isBluetoothConnected: isBluetoothConnected,)));
+            isBluetoothConnected: isBluetoothConnected,
+            calledFrom: 'bottom_nav')));
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
@@ -1444,6 +1450,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
           Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
               isLocationPermitted: isLocationPermitted,
               isBluetoothConnected: isBluetoothConnected,
+              calledFrom: 'bottom_nav'
           )));
         }
       }

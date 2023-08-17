@@ -27,6 +27,7 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/location_permission_dialog.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/main.dart';
+import 'package:performarine/models/get_user_config_model.dart' as vs;
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/custom_drawer.dart';
@@ -52,7 +53,8 @@ import '../trip_analytics.dart';
 class StartTripRecordingScreen extends StatefulWidget {
   final bool? isLocationPermitted;
   final bool? isBluetoothConnected;
-  const StartTripRecordingScreen({super.key, this.isLocationPermitted = false, this.isBluetoothConnected = false,});
+  final String calledFrom;
+  const StartTripRecordingScreen({super.key, this.isLocationPermitted = false, this.isBluetoothConnected = false,this.calledFrom = ''});
 
   @override
   State<StartTripRecordingScreen> createState() => _StartTripRecordingScreenState();
@@ -79,8 +81,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
 
   late CommonProvider commonProvider;
 
-  late Future<List<CreateVessel>> vesselList;
-
   String? selectedVesselName, vesselId;
 
   Timer? notiTimer;
@@ -89,6 +89,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
   AndroidDeviceInfo? androidDeviceInfo;
 
   DeviceInfo? deviceDetails;
+  late Future<List<CreateVessel>> vesselList;
 
   @override
   void initState() {
@@ -96,7 +97,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
     super.initState();
 
     commonProvider = context.read<CommonProvider>();
-
     getVesselAndTripsData();
   }
 
@@ -186,7 +186,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                     ),
                   ),
 
-                  !isVesselDataLoading ? Container(
+                  isVesselDataLoading ? Container(
                     height: displayHeight(context) * 0.1,
                     child: Center(
                       child: CircularProgressIndicator(
@@ -220,7 +220,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                 textSize: displayWidth(context) * 0.038,
                               ),
 
-                              SizedBox(height: displayHeight(context) * 0.005,),
+                              SizedBox(height: displayHeight(context) * 0.008,),
 
                               DropdownButtonHideUnderline(
                                 child: DropdownButtonFormField<
@@ -1379,7 +1379,27 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
 
   //To get all vessels
   getVesselAndTripsData() async {
-    try {
+
+
+    setState(() {
+      isVesselDataLoading = true;
+    });
+
+    List<CreateVessel> localVesselList =
+    await _databaseService.vessels().catchError((onError) {
+      setState(() {
+        isVesselDataLoading = false;
+      });
+    });
+    vesselData = List<VesselDropdownItem>.from(localVesselList
+        .map((vessel) => VesselDropdownItem(id: vessel.id, name: vessel.name)));
+    setState(() {
+      isVesselDataLoading = false;
+    });
+    return;
+
+
+    /*try {
       bool check = await Utils().check(scaffoldKey);
       if (check) {
         setState(() {
@@ -1402,7 +1422,12 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
             Utils.customPrint("value of get user config by id: ${value.vessels}");
             CustomLogger().logWithFile(Level.info, "value of get user config by id: ${value.vessels} -> $page");
 
-            vesselData = List<VesselDropdownItem>.from(value.vessels!.map(
+
+            Utils.customPrint("UNRETIRE VESSEL LEGNTH ${vesselData.length}");
+
+            List<vs.Vessels> vesselListData = value.vessels!.where((element) => element.vesselStatus == 1).toList();
+
+            vesselData = List<VesselDropdownItem>.from(vesselListData.map(
                     (vessel) => VesselDropdownItem(id: vessel.id, name: vessel.name)));
 
             Utils.customPrint("vesselData: ${vesselData.length}");
@@ -1431,7 +1456,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
       Utils.customPrint("Error while fetching data from getUserConfigById: $e");
       CustomLogger().logWithFile(Level.error, "Error while fetching data from getUserConfigById: $e -> $page");
 
-    }
+    }*/
   }
 
   Future<bool> blueIsOn() async
@@ -1574,7 +1599,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
             builder: (context) => TripRecordingScreen(
               tripId: tripDetails.id,
                 vesselId: tripData[1],
-                tripIsRunningOrNot: runningTrip
+                tripIsRunningOrNot: runningTrip,
+                calledFrom: widget.calledFrom
             )),
       );
 

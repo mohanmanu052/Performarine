@@ -15,7 +15,8 @@ class TripRecordingScreen extends StatefulWidget {
   final String? vesselId, tripId;
   final bool? tripIsRunningOrNot;
   final bool isAppKilled;
-  const TripRecordingScreen({super.key, this.tripId, this.vesselId, this.tripIsRunningOrNot, this.isAppKilled = false,});
+  final String? calledFrom;
+  const TripRecordingScreen({super.key, this.tripId, this.vesselId, this.tripIsRunningOrNot, this.isAppKilled = false,this.calledFrom});
 
   @override
   State<TripRecordingScreen> createState() => _TripRecordingScreenState();
@@ -52,125 +53,171 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    return Scaffold(
-      key: scaffoldKey,
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
+    return WillPopScope(
+      onWillPop: ()async {
+        if(widget.calledFrom != null)
+        {
+          if(widget.calledFrom!.isNotEmpty)
+          {
+            if(widget.calledFrom == 'bottom_nav')
+            {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => BottomNavigation(
+                    tabIndex: commonProvider.bottomNavIndex,
+                  )),
+                  ModalRoute.withName(""));
+            }
+          }
+          return false;
+        }
+        else
+        {
+          Navigator.of(context).pop(true);
+          return false;
+        }
+      },
+      child: Scaffold(
+        key: scaffoldKey,
         backgroundColor: backgroundColor,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () async {
-            Navigator.of(context).pop(true);
-          },
-          icon: const Icon(Icons.arrow_back),
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white
-              : Colors.black,
-        ),
-        title: Container(
-          child: commonText(
-            context: context,
-            text: 'Trip Recording',
-            fontWeight: FontWeight.w600,
-            textColor: Colors.black87,
-            textSize: displayWidth(context) * 0.045,
+        appBar: AppBar(
+          backgroundColor: backgroundColor,
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () async {
+
+              if(widget.calledFrom != null)
+                {
+                  if(widget.calledFrom!.isNotEmpty)
+                    {
+                      if(widget.calledFrom == 'bottom_nav')
+                      {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => BottomNavigation(
+                              tabIndex: commonProvider.bottomNavIndex,
+                            )),
+                            ModalRoute.withName(""));
+                      }
+                    }
+                }
+              else
+                {
+                  Navigator.of(context).pop(true);
+                }
+
+              //Navigator.of(context).pop(true);
+            },
+            icon: const Icon(Icons.arrow_back),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
           ),
-        ),
-        bottom: TabBar(
-          controller: tabController,
-          padding: EdgeInsets.all(0),
-          labelPadding: EdgeInsets.zero,
-          isScrollable: true,
-          indicatorColor: Colors.white,
-          onTap: (int value) {
-            setState(() {
-              currentTabIndex = value;
-            });
-          },
-          tabs: [
-            Container(
-              margin: EdgeInsets.only(right: 2),
-              width: displayWidth(context) * 0.35,
-              decoration: BoxDecoration(
-                  color: currentTabIndex == 0
-                      ? Color(0xff2663DB)
-                      : backgroundColor,
-                  border: Border.all(color: Color(0xff2663DB)),
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(10))),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 9.0),
-                child: commonText(
-                  context: context,
-                  text: 'Map View',
-                  fontWeight: FontWeight.w400,
-                  textColor:
-                  currentTabIndex == 0 ? Colors.white : Colors.black,
-                  textSize: displayWidth(context) * 0.034,
-                ),
-                // Text('Vessels'),
-              ),
+          title: Container(
+            child: commonText(
+              context: context,
+              text: 'Trip Recording',
+              fontWeight: FontWeight.w600,
+              textColor: Colors.black87,
+              textSize: displayWidth(context) * 0.045,
             ),
-            Container(
-              margin: EdgeInsets.only(left: 12),
-              width: displayWidth(context) * 0.35,
-              decoration: BoxDecoration(
-                  color: currentTabIndex == 1
-                      ? Color(0xff2663DB)
-                      : backgroundColor,
-                  border: Border.all(color: Color(0xff2663DB)),
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(10))),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 9.0),
-                child: commonText(
-                  context: context,
-                  text:
-                  'Analytics',
-                  fontWeight: FontWeight.w400,
-                  textColor:
-                  currentTabIndex == 1 ? Colors.white : Colors.black,
-                  textSize: displayWidth(context) * 0.034,
+          ),
+          bottom: TabBar(
+            controller: tabController,
+            padding: EdgeInsets.all(0),
+            labelPadding: EdgeInsets.zero,
+            isScrollable: true,
+            indicatorColor: Colors.white,
+            onTap: (int value) {
+              setState(() {
+                currentTabIndex = value;
+              });
+            },
+            tabs: [
+              Container(
+                margin: EdgeInsets.only(right: 2),
+                width: displayWidth(context) * 0.35,
+                decoration: BoxDecoration(
+                    color: currentTabIndex == 0
+                        ? Color(0xff2663DB)
+                        : backgroundColor,
+                    border: Border.all(color: Color(0xff2663DB)),
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(10))),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 9.0),
+                  child: commonText(
+                    context: context,
+                    text: 'Map View',
+                    fontWeight: FontWeight.w400,
+                    textColor:
+                    currentTabIndex == 0 ? Colors.white : Colors.black,
+                    textSize: displayWidth(context) * 0.034,
+                  ),
+                  // Text('Vessels'),
                 ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 12),
+                width: displayWidth(context) * 0.35,
+                decoration: BoxDecoration(
+                    color: currentTabIndex == 1
+                        ? Color(0xff2663DB)
+                        : backgroundColor,
+                    border: Border.all(color: Color(0xff2663DB)),
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(10))),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 9.0),
+                  child: commonText(
+                    context: context,
+                    text:
+                    'Analytics',
+                    fontWeight: FontWeight.w400,
+                    textColor:
+                    currentTabIndex == 1 ? Colors.white : Colors.black,
+                    textSize: displayWidth(context) * 0.034,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            Container(
+              margin: EdgeInsets.only(right: 8),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => BottomNavigation()),
+                      ModalRoute.withName(""));
+                },
+                icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
               ),
             ),
           ],
         ),
-        actions: [
-          Container(
-            margin: EdgeInsets.only(right: 8),
-            child: IconButton(
-              onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => BottomNavigation()),
-                    ModalRoute.withName(""));
-              },
-              icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-            ),
-          ),
-        ],
-      ),
-      body: TabBarView(
-        controller: tabController,
-        children: [
-          MapScreen(
-            scaffoldKey: scaffoldKey,
-            tripId: widget.tripId,
-            vesselId: widget.vesselId,
-            tripIsRunningOrNot: widget.tripIsRunningOrNot,
-            context: context, isAppKilled: widget.isAppKilled),
-          TripRecordingAnalyticsScreen(
+        body: TabBarView(
+          controller: tabController,
+          children: [
+            MapScreen(
               scaffoldKey: scaffoldKey,
               tripId: widget.tripId,
               vesselId: widget.vesselId,
               tripIsRunningOrNot: widget.tripIsRunningOrNot,
-              context: context,
-              isAppKilled: widget.isAppKilled),
-        ],
+              context: context, isAppKilled: widget.isAppKilled),
+            TripRecordingAnalyticsScreen(
+                scaffoldKey: scaffoldKey,
+                tripId: widget.tripId,
+                vesselId: widget.vesselId,
+                tripIsRunningOrNot: widget.tripIsRunningOrNot,
+                context: context,
+                isAppKilled: widget.isAppKilled),
+          ],
+        ),
       ),
     );
   }

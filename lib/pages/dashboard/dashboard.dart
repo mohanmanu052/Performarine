@@ -211,7 +211,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
               body: Column(
                 //mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
+                /*  Padding(
                     padding: EdgeInsets.only(left: displayWidth(context) * 0.05,right: displayWidth(context) * 0.05, ),
                     child: SearchTextField(
                         'Search by vessel, trip id, date',
@@ -224,15 +224,15 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                         //     value, context, scaffoldKey);
                       }
                     }, (value) {
-                      /*if (value.length > 3) {
+                      *//*if (value.length > 3) {
                           future = commonProvider.getSearchData(
                               value, context, scaffoldKey);
-                        }*/
+                        }*//*
                     }, TextInputType.text,
                         textInputAction: TextInputAction.search,
                         enabled: true,
                         isForTwoDecimal: false),
-                  ),
+                  ),*/
                   Expanded(
                     child: VesselBuilder(
                       future: getVesselFuture,

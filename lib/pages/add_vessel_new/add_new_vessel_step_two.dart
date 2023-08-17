@@ -89,6 +89,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     commonProvider = context.read<CommonProvider>();
 
     if (widget.isEdit!) {
+      //debugPrint("IMAGE 1212 ${widget.addVesselData!.imageURLs!}");
       if (widget.addVesselData != null) {
         freeBoardController.text = widget.addVesselData!.freeBoard!.toString();
         lengthOverallController.text =
@@ -98,8 +99,14 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
         capacityController.text = widget.addVesselData!.capacity!.toString();
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
+
       }
     }
+
+    if(commonProvider.addVesselRequestModel!.selectedImages != null)
+      {
+        finalSelectedFiles = commonProvider.addVesselRequestModel!.selectedImages!;
+      }
   }
 
   @override
@@ -118,7 +125,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
               children: [
                 stepperWidget(),
 
-                !isImageSelected! ? Container(
+                !finalSelectedFiles.isNotEmpty ? Container(
                   margin: EdgeInsets.only(top: 20.0),
                   child: CommonButtons.uploadVesselImage(
                       'Click here to Upload Vessel Image\n(png, jpeg files only)', context, () {
@@ -150,7 +157,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                 SizedBox(height: displayHeight(context) * 0.03),
                 commonText(
                     context: context,
-                    text: 'Size of the boat',
+                    text: 'Size of the boat ',
                     fontWeight: FontWeight.w500,
                     textColor: blutoothDialogTxtColor,
                     textSize: displayWidth(context) * 0.035,

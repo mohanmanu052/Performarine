@@ -42,7 +42,7 @@ class TripWidget extends StatefulWidget {
 
   TripWidget(
       {super.key,
-        this.calledFrom,
+        this.calledFrom = '',
         this.tripList,
         this.onTap,
         this.tripUploadedSuccessfully,
@@ -76,7 +76,10 @@ class _TripWidgetState extends State<TripWidget> {
 
   List<CreateVessel> getVesselById = [];
 
-  String page = "Trip_widget";
+  String page = "Trip_widget", vesselImageUrl = '';
+
+  double paddingValue = 0.0;
+
 
   @override
   void initState() {
@@ -86,10 +89,31 @@ class _TripWidgetState extends State<TripWidget> {
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
 
-    Utils.customPrint("###### DATA ###### ${widget.tripList!.id}");
-    CustomLogger().logWithFile(Level.info, "###### DATA ###### ${widget.tripList!.id} -> $page");
+    CustomLogger().logWithFile(Level.info, "###### DATA ###### ${widget.tripList!.vesselId} -> $page");
 
     tripIsRunningOrNot();
+
+    if(widget.calledFrom != 'VesselSingleView')
+      {
+        setState(() {
+          paddingValue = 12;
+        });
+      }
+    else
+      {
+        setState(() {
+          paddingValue = 12;
+        });
+      }
+    getVesselDetails();
+  }
+
+  getVesselDetails() async{
+    CreateVessel? vesselData = await _databaseService
+        .getVesselFromVesselID(widget.tripList!.vesselId!);
+
+    vesselImageUrl = vesselData!.imageURLs ?? '';
+
   }
 
   @override
@@ -139,40 +163,64 @@ class _TripWidgetState extends State<TripWidget> {
         }
       },
       child: Container(
-        margin: EdgeInsets.only(left: 0, right: 5, top: 6),
+        //margin: EdgeInsets.only(left: 0, right: 5, top: 6),
         child: Card(
           elevation: 0,
-          color: backgroundColor,
+          color: widget.calledFrom == 'VesselSingleView' ? backgroundColor : dropDownBackgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-             /* SizedBox(
-                width: displayWidth(context) * 0.03,
-              ),*/
-              /*Container(
-                height: displayHeight(context) * 0.1,
-                width: displayWidth(context) * 0.2,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
+              widget.calledFrom != 'VesselSingleView'
+                  ? SizedBox(
+                width: 8,
+              ): SizedBox(),
+              widget.calledFrom != 'VesselSingleView'
+              ? Expanded(
+                flex: 0,
+                child: vesselImageUrl == null ||
+                    vesselImageUrl.isEmpty ||
+                    vesselImageUrl == 'string' ||
+                    vesselImageUrl == '[]' || vesselImageUrl == ''
+                ? Container(
+                  padding: const EdgeInsets.only(left: 12,),
+                  height: displayHeight(context) * 0.08,
+                  width: displayWidth(context) * 0.18,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage("assets/icons/default_boat.png",)
+                      )
+                  ),
+                )
+                : Container(
+                  height: displayHeight(context) * 0.08,
+                  width: displayWidth(context) * 0.18,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage("assets/icons/default_boat.png",)
-                    )
+                      image: FileImage(
+                          File(vesselImageUrl)),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),*/
+              )
+              : SizedBox(),
+
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.only(top: 12, bottom: 12, left: 12),
-                  decoration: BoxDecoration(
+                  padding: EdgeInsets.only(top: 12, bottom: 12, left: paddingValue),
+                  /*decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: backgroundColor,
                     // boxShadow: [
                     //   BoxShadow(color: Colors.black.withOpacity(0.09), blurRadius: 2)
                     // ]
-                  ),
+                  ),*/
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -189,7 +237,7 @@ class _TripWidgetState extends State<TripWidget> {
                               textAlign: TextAlign.start),
                           widget.tripList?.tripStatus == 0
                               ? Padding(
-                            padding: const EdgeInsets.only(right: 12.0),
+                            padding: EdgeInsets.only(right: paddingValue),
                             child: commonText(
                               context: context,
                               text:
@@ -200,7 +248,7 @@ class _TripWidgetState extends State<TripWidget> {
                             ),
                           )
                               : Padding(
-                            padding: const EdgeInsets.only(right: 12.0),
+                            padding: EdgeInsets.only(right: paddingValue),
                             child: commonText(
                               context: context,
                               text:
@@ -213,11 +261,11 @@ class _TripWidgetState extends State<TripWidget> {
                         ],
                       ),
                       const SizedBox(
-                        height: 2,
+                        height: 8,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Flexible(
                             child: Text(
@@ -241,8 +289,8 @@ class _TripWidgetState extends State<TripWidget> {
                                     ? routeMapBtnColor
                                     : inProgressTrip),
                             child: Container(
-                              margin:
-                              EdgeInsets.only(left: displayWidth(context) * 0.05),
+                              width: displayWidth(context) * 0.26,
+                              margin: EdgeInsets.only(left: displayWidth(context) * 0.05),
                               child: Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(4.0),
@@ -264,12 +312,12 @@ class _TripWidgetState extends State<TripWidget> {
                         ],
                       ),
                       const SizedBox(
-                        height: 12,
+                        height: 8,
                       ),
                       widget.tripList?.tripStatus != 0
                           ? widget.tripList!.isCloud != 0
                           ? Padding(
-                        padding: const EdgeInsets.only(right: 12.0),
+                        padding: EdgeInsets.only(right: paddingValue),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -277,7 +325,7 @@ class _TripWidgetState extends State<TripWidget> {
                               child: SizedBox(
                                   height: displayHeight(context) * 0.038,
                                   //width: displayWidth(context) * .38,
-                                  child: CommonButtons.getTextActionButton(
+                                  child: CommonButtons.getTripButton(
                                       buttonPrimaryColor: routeMapBtnColor,
                                       fontSize: displayWidth(context) * 0.026,
                                       onTap: () async {
@@ -294,7 +342,7 @@ class _TripWidgetState extends State<TripWidget> {
                               child: SizedBox(
                                   height: displayHeight(context) * 0.038,
                                   //width: displayWidth(context) * .38,
-                                  child: CommonButtons.getTextActionButton(
+                                  child: CommonButtons.getTripButton(
                                       buttonPrimaryColor: blueColor,
                                       fontSize: displayWidth(context) * 0.026,
                                       onTap: () async {
@@ -333,7 +381,7 @@ class _TripWidgetState extends State<TripWidget> {
                         ),
                       )
                           : Padding(
-                        padding: const EdgeInsets.only(right: 12.0),
+                        padding: EdgeInsets.only(right: paddingValue),
                         child: Row(
                           children: [
                             Expanded(
@@ -341,7 +389,7 @@ class _TripWidgetState extends State<TripWidget> {
                                   ? SizedBox(
                                   height: displayHeight(context) * 0.038,
                                   child: CommonButtons
-                                      .getTextActionButton(
+                                      .getTripButton(
                                       buttonPrimaryColor:
                                       blueColor,
                                       borderColor: buttonBGColor
@@ -374,7 +422,7 @@ class _TripWidgetState extends State<TripWidget> {
                                                 circularProgressColor),
                                           )))
                                       : CommonButtons
-                                      .getTextActionButton(
+                                      .getTripButton(
                                     buttonPrimaryColor:
                                     uploadTripBtnColor,
                                     fontSize:
@@ -421,7 +469,7 @@ class _TripWidgetState extends State<TripWidget> {
                               child: SizedBox(
                                   height: displayHeight(context) * 0.038,
                                   child:
-                                  CommonButtons.getTextActionButton(
+                                  CommonButtons.getTripButton(
                                       buttonPrimaryColor: blueColor,
                                       fontSize:
                                       displayWidth(context) * 0.026,
@@ -471,7 +519,7 @@ class _TripWidgetState extends State<TripWidget> {
                                 circularProgressColor),
                           ))
                           : Padding(
-                            padding: const EdgeInsets.only(right: 12.0),
+                            padding: EdgeInsets.only(right: paddingValue),
                             child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -482,7 +530,7 @@ class _TripWidgetState extends State<TripWidget> {
                                   //width: displayWidth(context) * .308,
                                   child: Padding(
                                     padding: const EdgeInsets.only(right: 8.0),
-                                    child: CommonButtons.getTextActionButton(
+                                    child: CommonButtons.getTripButton(
                                         buttonPrimaryColor:
                                         endTripBtnColor,
                                         borderColor: endTripBtnColor,
@@ -504,7 +552,7 @@ class _TripWidgetState extends State<TripWidget> {
                               child: SizedBox(
                                   height: displayHeight(context) * 0.038,
                                   //width: displayWidth(context) * .302,
-                                  child: CommonButtons.getTextActionButton(
+                                  child: CommonButtons.getTripButton(
                                       buttonPrimaryColor: blueColor,
                                       fontSize: displayWidth(context) * 0.026,
                                       onTap: () async {

@@ -432,32 +432,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
               mainAxisSize: MainAxisSize.min,
               children: [
 
-                vesselData.vesselStatus == 0
-                    ? Container(
-                      margin: EdgeInsets.only(
-                        top: 8.0,
-                      ),
-                      child: Card(
-                        color: primaryColor,
-                        elevation: 6,
-                        shadowColor: Colors.black,
-                        child: Center(
-                          child: CommonButtons.getAcceptButton(
-                              'Unretire', context, buttonBGColor, () async {
-                            showDialogBox(context, vesselData, scaffoldKey);
-                          },
-                              displayWidth(context) * 0.18,
-                              displayHeight(context) * 0.04,
-                              primaryColor,
-                              Colors.white,
-                              displayHeight(context) * 0.014,
-                              buttonBGColor,
-                              '',
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    )
-                    : isTripIsRunning
+                 isTripIsRunning
                         ? CustomPaint(
                           painter: StatusTag(color: Color(0XFF41C1C8)),
                           child: Container(
@@ -663,7 +638,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                       : '${vesselData.fuelCapacity!}gal'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black87,
+                                  textColor: backgroundColor,
                                   textSize:
                                   displayWidth(context) *
                                       0.03,
@@ -699,7 +674,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                   ' ${vesselData.batteryCapacity!} kw'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black87,
+                                  textColor: backgroundColor,
                                   textSize:
                                   displayWidth(context) *
                                       0.03,
@@ -729,7 +704,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                   context: context,
                                   text: vesselData.engineType!,
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black87,
+                                  textColor: backgroundColor,
                                   textSize:
                                   displayWidth(context) *
                                       0.03,
@@ -785,7 +760,32 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                   SizedBox(
                     width: displayWidth(context) * 0.04,
                   ),
-                  CommonButtons.getActionButton(
+                  vesselData.vesselStatus == 0
+                      ? Container(
+                    margin: EdgeInsets.only(
+                      top: 8.0,
+                    ),
+                    child: Card(
+                      color: primaryColor,
+                      elevation: 6,
+                      shadowColor: Colors.black,
+                      child: Center(
+                        child: CommonButtons.getAcceptButton(
+                            'Unretire', context, endTripBtnColor, () async {
+                          showDialogBox(context, vesselData, scaffoldKey);
+                        },
+                            displayWidth(context) * 0.18,
+                            displayHeight(context) * 0.04,
+                            primaryColor,
+                            Colors.white,
+                            displayHeight(context) * 0.014,
+                            endTripBtnColor,
+                            '',
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  )
+                      : CommonButtons.getActionButton(
                       title: 'View Details',
                       context: context,
                       fontSize: displayWidth(context) * 0.03,

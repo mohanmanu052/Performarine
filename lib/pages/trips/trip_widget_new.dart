@@ -567,9 +567,9 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                                         context: context,
                                         text:
                                         'Do you want to delete the Trip?',
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w500,
                                         textColor: Colors.black,
-                                        textSize: displayWidth(ctx) * 0.04,
+                                        textSize: displayWidth(ctx) * 0.045,
                                         textAlign: TextAlign.center),
                                   ),
 
@@ -583,7 +583,7 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                                     'This action is irreversible. do you want to delete it?',
                                     fontWeight: FontWeight.w500,
                                     textColor: Colors.grey,
-                                    textSize: displayWidth(ctx) * 0.035,
+                                    textSize: displayWidth(ctx) * 0.036,
                                     textAlign: TextAlign.center),
 
                                 ],
@@ -660,7 +660,7 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                                       displayHeight(ctx) * 0.02,
                                       endTripBtnColor,
                                       '',
-                                      fontWeight: FontWeight.w700),
+                                      fontWeight: FontWeight.w600),
 
                                   SizedBox(height: displayHeight(context) * 0.01,),
 
@@ -681,7 +681,7 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                                       displayHeight(ctx) * 0.02,
                                       Colors.transparent,
                                       '',
-                                      fontWeight: FontWeight.w700),
+                                      fontWeight: FontWeight.w600),
                                 ],
                               ),
                             ),

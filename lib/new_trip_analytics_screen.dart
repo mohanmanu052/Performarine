@@ -233,7 +233,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                       fit: BoxFit.cover,
                                     ),
                                   ),
-                                 /* Positioned(
+                                  Positioned(
                                       bottom: 0,
                                       right: 0,
                                       left: 0,
@@ -249,21 +249,41 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                               spreadRadius: 5,
                                               offset: const Offset(0, 50))
                                         ]),
-                                      ))*/
+                                      ))
                                 ],
                               )
-                                  : Container(
+                                  : Stack(
+                                    children: [
+                                      Container(
                                 height: displayHeight(context) * 0.22,
                                 width: displayWidth(context),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                    image: FileImage(
-                                        File(vesselData!.imageURLs!)),
-                                    fit: BoxFit.cover,
-                                  ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: FileImage(
+                                            File(vesselData!.imageURLs!)),
+                                        fit: BoxFit.cover,
+                                      ),
                                 ),
                               ),
+                                      Positioned(
+                                          bottom: 0,
+                                          right: 0,
+                                          left: 0,
+                                          child: Container(
+                                            height: displayHeight(context) * 0.14,
+                                            width: displayWidth(context),
+                                            padding: const EdgeInsets.only(top: 20),
+                                            decoration: BoxDecoration(boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.black.withOpacity(0.5),
+                                                  blurRadius: 50,
+                                                  spreadRadius: 5,
+                                                  offset: const Offset(0, 50))
+                                            ]),
+                                          ))
+                                    ],
+                                  ),
                             ),
                           ),
 
@@ -1215,9 +1235,9 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                         context: context,
                                         text:
                                         'Do you want to delete the Trip? ',
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w500,
                                         textColor: Colors.black,
-                                        textSize: displayWidth(ctx) * 0.04,
+                                        textSize: displayWidth(ctx) * 0.045,
                                         textAlign: TextAlign.center),
                                   ),
                                   SizedBox(
@@ -1229,7 +1249,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                       'This action is irreversible. do you want to delete it?',
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.grey,
-                                      textSize: displayWidth(ctx) * 0.035,
+                                      textSize: displayWidth(ctx) * 0.036,
                                       textAlign: TextAlign.center),
                                 ],
                               ),
@@ -1314,7 +1334,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                       displayHeight(ctx) * 0.02,
                                       deleteTripBtnColor,
                                       '',
-                                      fontWeight: FontWeight.w700),
+                                      fontWeight: FontWeight.w600),
 
                                   CommonButtons.getAcceptButton(
                                       'Cancel',
@@ -1333,7 +1353,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                       displayHeight(ctx) * 0.02,
                                       Colors.transparent,
                                       '',
-                                      fontWeight: FontWeight.w700),
+                                      fontWeight: FontWeight.w600),
                                 ],
                               ),
                             ),
