@@ -790,27 +790,32 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                     },
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 0, vertical: 4),
+                                          horizontal: 0, vertical: displayHeight(context) * 0.01),
                                       decoration:
                                       BoxDecoration(color: Colors.transparent),
                                       child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          Icon(
-                                            Icons.delete,
-                                            size: 15,
-                                            color: Colors.red,
+                                          Container(
+                                            height: displayHeight(context) * 0.02,
+                                            child: Image.asset(
+                                              'assets/images/Trash.png',
+                                            ),
                                           ),
                                           SizedBox(
-                                            width: 4,
+                                            width: 2,
                                           ),
                                           commonText(
                                               context: context,
                                               text: 'Delete',
                                               fontWeight: FontWeight.w500,
-                                              textColor: Colors.red,
+                                              textColor: userFeedbackBtnColor,
                                               textSize:
                                               displayWidth(context) * 0.034,
-                                              textAlign: TextAlign.center),
+                                              textAlign: TextAlign.center,
+                                              fontFamily: poppins
+                                          ),
                                         ],
                                       ),
                                     ),
