@@ -27,7 +27,7 @@ class GetOrCreateFolder {
     if ((await directory.exists())) {
       return directory.path;
     } else {
-      directory.create();
+      await directory.create();
       return directory.path;
     }
   }

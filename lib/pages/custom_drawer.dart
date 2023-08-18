@@ -452,7 +452,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CustomWebView(url:'https://${Urls.terms}')),
+                            builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: true)),
                       );
                     },
                     child: commonText(
@@ -473,7 +473,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',)),
+                            builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: true)),
                       );
                     },
                     child: commonText(

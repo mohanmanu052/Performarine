@@ -166,6 +166,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
         return Utils.onAppExitCallBack(context, scaffoldKey);
       },
       child: Scaffold(
+        backgroundColor: backgroundColor,
         key: scaffoldKey,
         resizeToAvoidBottomInset: false,
         drawer: CustomDrawer(scaffoldKey: scaffoldKey,),

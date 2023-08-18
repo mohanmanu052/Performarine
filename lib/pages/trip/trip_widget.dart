@@ -114,6 +114,8 @@ class _TripWidgetState extends State<TripWidget> {
 
     vesselImageUrl = vesselData!.imageURLs ?? '';
 
+    setState(() {});
+
   }
 
   @override
