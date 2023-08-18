@@ -44,6 +44,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
       child: Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
+          backgroundColor: backgroundColor,
           elevation: 0,
           centerTitle: true,
           leading: IconButton(
@@ -79,7 +80,6 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
               ),
             ),
           ],
-          backgroundColor: backgroundColor,
         ),
         body: SingleChildScrollView(
           child: Column(

@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/models/vessel.dart';
+import 'package:performarine/old_ui/old_vessel_single_view.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/start_trip/map_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_analytics_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
+import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 
 import '../bottom_navigation.dart';
@@ -16,7 +19,7 @@ class TripRecordingScreen extends StatefulWidget {
   final bool? tripIsRunningOrNot;
   final bool isAppKilled;
   final String? calledFrom;
-  const TripRecordingScreen({super.key, this.tripId, this.vesselId, this.tripIsRunningOrNot, this.isAppKilled = false,this.calledFrom});
+  const TripRecordingScreen({super.key, this.tripId, this.vesselId, this.tripIsRunningOrNot, this.isAppKilled = false, this.calledFrom = ''});
 
   @override
   State<TripRecordingScreen> createState() => _TripRecordingScreenState();
@@ -47,13 +50,12 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
 
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
     return WillPopScope(
       onWillPop: ()async {
+        print('XXXXXX: ${widget.calledFrom}');
         if(widget.calledFrom != null)
         {
           if(widget.calledFrom!.isNotEmpty)
@@ -67,6 +69,22 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                   )),
                   ModalRoute.withName(""));
             }
+            else if(widget.calledFrom == 'VesselSingleView')
+              {
+                CreateVessel? vesselData = await DatabaseService()
+                    .getVesselFromVesselID(widget.vesselId!);
+
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => OldVesselSingleView(
+                      vessel: vesselData,
+                      isCalledFromSuccessScreen: true,
+                    )),);
+              }
+          }
+          else
+          {
+            Navigator.of(context).pop(true);
           }
           return false;
         }
@@ -85,6 +103,8 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
           leading: IconButton(
             onPressed: () async {
 
+              debugPrint('CALLED FROM ${widget.calledFrom}');
+
               if(widget.calledFrom != null)
                 {
                   if(widget.calledFrom!.isNotEmpty)
@@ -98,6 +118,22 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                             )),
                             ModalRoute.withName(""));
                       }
+                      else if(widget.calledFrom == 'VesselSingleView')
+                      {
+                        CreateVessel? vesselData = await DatabaseService()
+                            .getVesselFromVesselID(widget.vesselId!);
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => OldVesselSingleView(
+                            vessel: vesselData,
+                            isCalledFromSuccessScreen: true,
+                          )),);
+                      }
+                    }
+                  else
+                    {
+                      Navigator.of(context).pop(true);
                     }
                 }
               else

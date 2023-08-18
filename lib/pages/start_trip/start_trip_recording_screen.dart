@@ -1593,6 +1593,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
       final tripDetails = await _databaseService.getTrip(tripData![0]);
 
+      print('CALLED FROM: ${widget.calledFrom}');
+
       var result = Navigator.pushReplacement(
         scaffoldKey.currentContext!,
         MaterialPageRoute(

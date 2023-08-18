@@ -20,6 +20,7 @@ import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import '../../models/reports_model.dart';
 import '../../provider/common_provider.dart';
+import '../bottom_navigation.dart';
 import '../feedback_report.dart';
 import '../home_page.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -27,7 +28,8 @@ import 'package:table_calendar/table_calendar.dart';
 import '../trip_analytics.dart';
 
 class SearchAndFilters extends StatefulWidget {
-  const SearchAndFilters({Key? key}) : super(key: key);
+  final String? calledFrom;
+  const SearchAndFilters({Key? key, this.calledFrom =''}) : super(key: key);
 
   @override
   State<SearchAndFilters> createState() => _SearchAndFiltersState();
@@ -764,10 +766,11 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       controller: controller,
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: commonBackgroundColor,
-        appBar: AppBar(
+        backgroundColor: backgroundColor,
+        appBar: widget.calledFrom != 'HOME'
+        ? AppBar(
           elevation: 0.0,
-          backgroundColor: Color(0xfff2fffb),
+          backgroundColor: backgroundColor,
           centerTitle: true,
           title: Text(
             "Reports",
@@ -789,7 +792,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => BottomNavigation()),
                       ModalRoute.withName(""));
                 },
                 icon: Image.asset('assets/images/home.png'),
@@ -799,7 +802,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               ),
             ),
           ],
-        ),
+        ) : null,
         body: !isVesselsFound ? SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

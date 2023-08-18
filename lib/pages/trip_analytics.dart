@@ -252,15 +252,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                         context,
                         MaterialPageRoute(builder: (context) => BottomNavigation()),
                         ModalRoute.withName(""));
-                  } else if (widget.calledFrom! == 'HomePage') {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BottomNavigation(
-                              tabIndex: 1,
-                            )),
-                        ModalRoute.withName(""));
-                  } else if (widget.calledFrom! == 'HomePage') {
+                  }  else if (widget.calledFrom! == 'HomePage') {
                     if (isDataUpdated) {
                       Navigator.pushAndRemoveUntil(
                           context,

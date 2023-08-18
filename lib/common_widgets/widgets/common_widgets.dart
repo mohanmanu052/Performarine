@@ -1298,3 +1298,161 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
     ),
   );
 }
+
+Widget oldVesselSingleViewVesselAnalytics(BuildContext context, String duration,
+    String distance, String totalCount, String avgSpeed) {
+  double finalAvgSpeed = double.parse(avgSpeed);
+  return Container(
+    margin: EdgeInsets.symmetric(horizontal: 10,),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: selectDayBackgroundColor),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: duration,
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.044,
+                          textAlign: TextAlign.start),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'Total Trips Duration',
+                          fontWeight: FontWeight.w400,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start,
+                          fontFamily: poppins),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: selectDayBackgroundColor),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: '$distance $nauticalMile',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.044,
+                          textAlign: TextAlign.start),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'Total Distance',
+                          fontWeight: FontWeight.w400,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start,
+                          fontFamily: poppins),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: selectDayBackgroundColor),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: '$totalCount',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.044,
+                          textAlign: TextAlign.start),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'Total no of Trips',
+                          fontWeight: FontWeight.w400,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start,
+                          fontFamily: poppins),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: selectDayBackgroundColor),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: finalAvgSpeed.isNaN
+                              ? '0'
+                              : '$finalAvgSpeed $knot',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.044,
+                          textAlign: TextAlign.start),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'Avg. Speed',
+                          fontWeight: FontWeight.w400,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start,fontFamily: poppins),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}

@@ -13,8 +13,8 @@ import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/common_text_feild.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
 import '../../provider/common_provider.dart';
-import 'package:performarine/pages/auth_new/sign_up_screen.dart';
-import 'package:performarine/pages/auth_new/forgot_password.dart';
+import 'package:performarine/pages/auth/sign_up_screen.dart';
+import 'package:performarine/pages/auth/forgot_password.dart';
 
 import '../sync_data_cloud_to_mobile_screen.dart';
 

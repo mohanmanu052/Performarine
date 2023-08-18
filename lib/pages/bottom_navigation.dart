@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/old_ui/old_custom_drawer.dart';
 import 'package:performarine/pages/coming_soon_screen.dart';
 import 'package:performarine/pages/dashboard/dashboard.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lpr_bluetooth_list.dart';
+import 'package:performarine/pages/reports/search_and_filters.dart';
 import 'package:performarine/pages/reports_module/reports.dart';
 import 'package:performarine/pages/start_trip/start_trip_recording_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
@@ -155,7 +157,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     commonProvider = context.watch<CommonProvider>();
     var screensList = [
       Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: widget.isComingFromReset,isAppKilled: widget.isAppKilled,token: widget.token),
-      ReportsModule(),
+      SearchAndFilters(calledFrom:'HOME'),
       StartTripRecordingScreen(isBluetoothConnected: isBluetoothConnected,),
       Trips(),
       ComingSoonScreen()
@@ -169,7 +171,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
         backgroundColor: backgroundColor,
         key: scaffoldKey,
         resizeToAvoidBottomInset: false,
-        drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
+        drawer: OldCustomDrawer(scaffoldKey: scaffoldKey,),
         appBar: AppBar(
           backgroundColor: backgroundColor,
           elevation: 0,

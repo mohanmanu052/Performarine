@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:performarine/old_ui/old_vessel_single_view.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -252,7 +253,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                         {
                           var result = await Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => VesselSingleView(
+                              builder: (_) => OldVesselSingleView(
                                 vessel: value,
                               ),
                               fullscreenDialog: true,
