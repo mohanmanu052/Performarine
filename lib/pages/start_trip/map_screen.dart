@@ -153,7 +153,7 @@ class _MapScreenState extends State<MapScreen> {
                     ),
 
                     Positioned(
-                      bottom: 16,
+                      bottom: 0,
                       left: 0,
                       right: 0,
                       child: Column(
@@ -254,9 +254,9 @@ class _MapScreenState extends State<MapScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: displayHeight(context) * 0.03,),
+                          SizedBox(height: displayHeight(context) * 0.002,),
                           Container(
-                            margin: EdgeInsets.symmetric(horizontal: 28),
+                            color: backgroundColor,
                             child: Column(
                               children: [
                                 isTripEnded
@@ -268,76 +268,79 @@ class _MapScreenState extends State<MapScreen> {
                                           Color>(
                                           circularProgressColor),
                                     ))
-                                    : Container(
+                                    : Padding(
+                                      padding: EdgeInsets.only(top: displayHeight(context) * 0.03),
+                                      child: Container(
                                   margin: EdgeInsets.symmetric(horizontal: 12),
                                   child: CommonButtons.getRichTextActionButton(
-                                      icon: Image.asset('assets/icons/end_btn.png',
-                                        height: displayHeight(context) * 0.055,
-                                        width: displayWidth(context) * 0.12,
-                                      ),
-                                      title: 'Stop Trip',
-                                      context: context,
-                                      fontSize: displayWidth(context) * 0.042,
-                                      textColor: Colors.white,
-                                      buttonPrimaryColor: endTripBtnColor,
-                                      borderColor: endTripBtnColor,
-                                      width: displayWidth(context),
-                                      onTap: () async
-                                      {
-                                        Utils.customPrint(
-                                            "END TRIP CURRENT TIME ${DateTime.now()}");
-
-                                        bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
-
-                                        Utils.customPrint("SMALL TRIPP IDDD bool$isSmallTrip");
-
-                                        if(!isSmallTrip)
+                                        icon: Image.asset('assets/icons/end_btn.png',
+                                          height: displayHeight(context) * 0.055,
+                                          width: displayWidth(context) * 0.12,
+                                        ),
+                                        title: 'Stop Trip',
+                                        context: context,
+                                        fontSize: displayWidth(context) * 0.042,
+                                        textColor: Colors.white,
+                                        buttonPrimaryColor: endTripBtnColor,
+                                        borderColor: endTripBtnColor,
+                                        width: displayWidth(context) * 0.75,
+                                        onTap: () async
                                         {
-                                          Utils().showDeleteTripDialog(context,
-                                              endTripBtnClick: (){
+                                          Utils.customPrint(
+                                              "END TRIP CURRENT TIME ${DateTime.now()}");
 
-                                                endTrip(isTripDeleted: true);
+                                          bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
 
-                                                Utils.customPrint("SMALL TRIPP IDDD ${tripData!
-                                                    .id!}");
+                                          Utils.customPrint("SMALL TRIPP IDDD bool$isSmallTrip");
 
-                                                int value = Platform.isAndroid ? 1 : 0;
+                                          if(!isSmallTrip)
+                                          {
+                                            Utils().showDeleteTripDialog(context,
+                                                endTripBtnClick: (){
 
-                                                Future.delayed(Duration(seconds: value), (){
-                                                  if(!isSmallTrip)
-                                                  {
+                                                  endTrip(isTripDeleted: true);
 
-                                                    Utils.customPrint("SMALL TRIPP IDDD ${tripData!
-                                                        .id!}");
-                                                    DatabaseService().deleteTripFromDB(tripData!
-                                                        .id!);
+                                                  Utils.customPrint("SMALL TRIPP IDDD ${tripData!
+                                                      .id!}");
 
-                                                    Navigator.pushAndRemoveUntil(
-                                                        widget.context!,
-                                                        MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                        ModalRoute.withName(""));
-                                                  }
-                                                });
-                                              },
-                                              onCancelClick: (){
-                                                Navigator.pop(context);
-                                              }
-                                          );
+                                                  int value = Platform.isAndroid ? 1 : 0;
+
+                                                  Future.delayed(Duration(seconds: value), (){
+                                                    if(!isSmallTrip)
+                                                    {
+
+                                                      Utils.customPrint("SMALL TRIPP IDDD ${tripData!
+                                                          .id!}");
+                                                      DatabaseService().deleteTripFromDB(tripData!
+                                                          .id!);
+
+                                                      Navigator.pushAndRemoveUntil(
+                                                          widget.context!,
+                                                          MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                                          ModalRoute.withName(""));
+                                                    }
+                                                  });
+                                                },
+                                                onCancelClick: (){
+                                                  Navigator.pop(context);
+                                                }
+                                            );
+                                          }
+                                          else
+                                          {
+                                            Utils().showEndTripDialog(
+                                                context, () async {
+
+                                              endTrip();
+
+                                            }, () {
+                                              Navigator.pop(context);
+                                            });
+                                          }
                                         }
-                                        else
-                                        {
-                                          Utils().showEndTripDialog(
-                                              context, () async {
-
-                                            endTrip();
-
-                                          }, () {
-                                            Navigator.pop(context);
-                                          });
-                                        }
-                                      }
                                   ),
                                 ),
+                                    ),
 
                                 Padding(
                                   padding: EdgeInsets.only(

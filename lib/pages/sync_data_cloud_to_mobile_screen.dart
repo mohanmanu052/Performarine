@@ -72,7 +72,7 @@ class _SyncDataCloudToMobileScreenState
   /// To get user data from api if internet connection is on
   getUserData() async {
     var bool = await Utils()
-        .check(scaffoldKey, userConfig: true, onRetryTap: () => getUserData());
+        .check(scaffoldKey, userConfig: false, onRetryTap: () => getUserData());
 
     Utils.customPrint("INTERNET $bool");
     CustomLogger().logWithFile(Level.info, "Internet: $bool-> $page");

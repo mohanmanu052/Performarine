@@ -78,13 +78,13 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                             VesselSingleView(vessel: widget.data!)),
                   );
                 } else {
-                  CustomLogger().logWithFile(Level.info, "User Navigating to AddNewVesselScreen -> $page");
-               /*   Navigator.pushReplacement(
+                  CustomLogger().logWithFile(Level.info, "User Navigating to VesselSingleView -> $page");
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AddNewVesselScreen(
-                            calledFrom: 'SuccessFullScreen')),
-                  ); */
+                        builder: (context) =>
+                            VesselSingleView(vessel: widget.data!)),
+                  );
                 }
               }),
         ),
@@ -129,6 +129,23 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
               textColor: Colors.black,
               textSize: displayWidth(context) * 0.05,
               textAlign: TextAlign.start),
+          actions: [
+            Container(
+              margin: EdgeInsets.only(right: 8),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => BottomNavigation()),
+                      ModalRoute.withName(""));
+                },
+                icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+            ),
+          ],
         ),
         body: Container(
           margin: EdgeInsets.symmetric(horizontal: 17),
