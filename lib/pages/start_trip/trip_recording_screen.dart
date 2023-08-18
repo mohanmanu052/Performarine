@@ -45,7 +45,6 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
       });
     });
 
-
   }
 
 
@@ -208,7 +207,9 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
               tripId: widget.tripId,
               vesselId: widget.vesselId,
               tripIsRunningOrNot: widget.tripIsRunningOrNot,
-              context: context, isAppKilled: widget.isAppKilled),
+              context: context,
+              isAppKilled: widget.isAppKilled
+            ),
             TripRecordingAnalyticsScreen(
                 scaffoldKey: scaffoldKey,
                 tripId: widget.tripId,

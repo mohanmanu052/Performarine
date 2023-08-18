@@ -122,83 +122,76 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
               ),
             ],
           ),
-          body: SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 17),
-              width: MediaQuery.of(context).size.width,
-              height: displayHeight(context) * 1.45,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Flexible(
-                    child: PageView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      controller: pageController,
-                      onPageChanged: (value) {
-                        setState(() {
-                          pageIndex = value;
-                        });
-                        Utils.customPrint('PAGEVIEW INDEX $pageIndex');
-                        CustomLogger().logWithFile(Level.info, "PAGEVIEW INDEX $pageIndex -> $page");
-                      },
-                      children: [
-                        Column(
-                          children: [
-                            AddNewVesselStepOne(
-                              pageController: pageController,
-                              scaffoldKey: scaffoldKey,
-                              addVesselData:
-                              widget.isEdit! ? widget.createVessel : null,
-                              isEdit: widget.isEdit,
-                            ),
-
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom : 0,
-                              ),
-                              child: GestureDetector(
-                                  onTap: ()async{
-                                    final image = await controller.capture();
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                      imagePath: image.toString(),
-                                      uIntList: image,)));
-                                  },
-                                  child: UserFeedback().getUserFeedback(context)
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            AddNewVesselStepTwo(
-                              pageController: pageController,
-                              scaffoldKey: scaffoldKey,
-                              addVesselData:
-                              widget.isEdit! ? widget.createVessel : null,
-                              isEdit: widget.isEdit,
-                            ),
-
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom : 0,
-                              ),
-                              child: GestureDetector(
-                                  onTap: ()async{
-                                    final image = await controller.capture();
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                      imagePath: image.toString(),
-                                      uIntList: image,)));
-                                  },
-                                  child: UserFeedback().getUserFeedback(context)
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+          body: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 17),
+            width: MediaQuery.of(context).size.width,
+            //height: displayHeight(context) * 1.15,
+            child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: pageController,
+              onPageChanged: (value) {
+                setState(() {
+                  pageIndex = value;
+                });
+                Utils.customPrint('PAGEVIEW INDEX $pageIndex');
+                CustomLogger().logWithFile(Level.info, "PAGEVIEW INDEX $pageIndex -> $page");
+              },
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AddNewVesselStepOne(
+                      pageController: pageController,
+                      scaffoldKey: scaffoldKey,
+                      addVesselData:
+                      widget.isEdit! ? widget.createVessel : null,
+                      isEdit: widget.isEdit,
                     ),
-                  ),
-                ],
-              ),
+
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom : 0,
+                      ),
+                      child: GestureDetector(
+                          onTap: ()async{
+                            final image = await controller.capture();
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                              imagePath: image.toString(),
+                              uIntList: image,)));
+                          },
+                          child: UserFeedback().getUserFeedback(context)
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AddNewVesselStepTwo(
+                      pageController: pageController,
+                      scaffoldKey: scaffoldKey,
+                      addVesselData:
+                      widget.isEdit! ? widget.createVessel : null,
+                      isEdit: widget.isEdit,
+                    ),
+
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom : 0,
+                      ),
+                      child: GestureDetector(
+                          onTap: ()async{
+                            final image = await controller.capture();
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                              imagePath: image.toString(),
+                              uIntList: image,)));
+                          },
+                          child: UserFeedback().getUserFeedback(context)
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
