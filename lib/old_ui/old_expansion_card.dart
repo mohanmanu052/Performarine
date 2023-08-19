@@ -547,8 +547,8 @@ class _OldExpansionCardState extends State<OldExpansionCard> {
                                       Row(
                                         children: [
                                           Image.asset(
-                                              'assets/images/free_board.png',
-                                              width: displayWidth(context) * 0.06,
+                                              'assets/icons/beam.png',
+                                              width: displayWidth(context) * 0.048,
                                               color: Colors.black),
                                           SizedBox(
                                               width: displayWidth(context) * 0.02),

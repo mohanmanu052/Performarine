@@ -25,7 +25,7 @@ import '../../main.dart';
 import '../../models/vessel.dart';
 import '../../provider/common_provider.dart';
 import '../../services/database_service.dart';
-import 'package:performarine/pages/auth_new/reset_password.dart';
+import 'package:performarine/pages/auth/reset_password.dart';
 import '../vessel_form.dart';
 import '../vessel_single_view.dart';
 
@@ -70,7 +70,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
 
 
       Utils.customPrint("isComingFromReset: ${isComingFrom}");
-      if(mounted){
+    /*  if(mounted){
         if(isComingFrom != null && isComingFrom )
         {
 
@@ -81,7 +81,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
             {
               WidgetsBinding.instance.addPostFrameCallback((duration)
               {
-                showResetPasswordDialogBox(context,updatedToken);
+                 showResetPasswordDialogBox(context,updatedToken);
               });
             }
 
@@ -89,7 +89,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
 
 
         }
-      }
+      } */
       Utils.customPrint('HomeScreen did update');
     }
   }

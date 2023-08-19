@@ -147,16 +147,12 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
         width: displayWidth(context) * 0.06,
         height: displayHeight(context) * 0.035,
       ),
-      Image.asset(
-        selectList[3],
-        width: displayWidth(context) * 0.06,
-        height: displayHeight(context) * 0.035,
-      ),
+      Icon(Icons.person,size: displayWidth(context) * 0.07,),
 
     ];
     commonProvider = context.watch<CommonProvider>();
     var screensList = [
-      Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: widget.isComingFromReset,isAppKilled: widget.isAppKilled,token: widget.token),
+      Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: false,isAppKilled: widget.isAppKilled,token: widget.token),
       SearchAndFilters(calledFrom:'HOME'),
       StartTripRecordingScreen(isBluetoothConnected: isBluetoothConnected,),
       Trips(),

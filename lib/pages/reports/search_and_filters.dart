@@ -1095,7 +1095,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 : Column(
                                   children: [
                                     CommonButtons.getAcceptButton(
-                                        "Search", context, primaryColor, () {
+                                        "Search", context, buttonBGColor, () {
                                         if (_formKey.currentState!.validate()) {
                                           setState(() {
                                             isSHowGraph = false;
