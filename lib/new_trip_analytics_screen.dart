@@ -1498,7 +1498,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
       });
     }
 
-    dateOfJourney = DateFormat('dd').format(DateTime.parse(vesselData!.createdAt!));
+    dateOfJourney = DateFormat('dd-MM').format(DateTime.parse(vesselData!.createdAt!));
     yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(vesselData!.createdAt!));
 
   }

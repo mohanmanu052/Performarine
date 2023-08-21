@@ -486,7 +486,7 @@ class OldVesselSingleViewState extends State<OldVesselSingleView> {
                     ),
                   ),
                 ),
-                Positioned(
+               /* Positioned(
                   bottom: 0,
                   right: 0,
                   left: 0,
@@ -950,7 +950,7 @@ class OldVesselSingleViewState extends State<OldVesselSingleView> {
                           }
                         }),
                   ),
-                )
+                )*/
               ],
             ),
           ),

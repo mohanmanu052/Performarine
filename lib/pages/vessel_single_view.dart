@@ -2990,6 +2990,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           MaterialPageRoute(builder: (context) => TripRecordingScreen(
                                               tripId: tripId,
                                               vesselId: tripData![1],
+                                              vesselName: tripData[2],
                                               tripIsRunningOrNot: runningTrip)),
                                         );
 

@@ -30,6 +30,7 @@ import '../models/trip.dart';
 import '../new_trip_analytics_screen.dart';
 import '../provider/common_provider.dart';
 import '../services/database_service.dart';
+import 'Vessels_screen.dart';
 import 'add_vessel_new/add_new_vessel_screen.dart';
 import 'custom_drawer.dart';
 import 'package:performarine/pages/trips/Trips.dart';
@@ -60,14 +61,14 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     "assets/icons/Home.png",
     "assets/icons/reports.png",
     "assets/icons/trips.png",
-    "assets/icons/profile.png",
+    "assets/icons/vessels.png",
   ];
 
   final selectList = [
     "assets/icons/Home_select.png",
     "assets/icons/reports_select.png",
     "assets/icons/trips_select.png",
-    "assets/icons/profile_select.png",
+    "assets/icons/vessel_select.png",
   ];
 
   final bottomTabNames = [
@@ -82,7 +83,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     "Reports",
     "Start Trip",
     "Trips",
-    "Profile"
+    "Vessels"
   ];
 
 
@@ -156,7 +157,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
       SearchAndFilters(calledFrom:'HOME'),
       StartTripRecordingScreen(isBluetoothConnected: isBluetoothConnected,),
       Trips(),
-      ComingSoonScreen()
+      VesselsScreen()
     ];
 
     return WillPopScope(
@@ -188,7 +189,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
             text: _bottomNavIndex == 0 ? 'Dashboard'
                 : _bottomNavIndex == 1
                 ? 'Reports'
-                : _bottomNavIndex == 3 ? 'Trips' : 'Profile' ,
+                : _bottomNavIndex == 3 ? 'Trips' : 'Vessels' ,
             fontWeight: FontWeight.w700,
             textColor: Colors.black87,
             textSize: displayWidth(context) * 0.05,
@@ -1201,6 +1202,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                                           MaterialPageRoute(builder: (context) => TripRecordingScreen(
                                               tripId: tripId,
                                               vesselId: tripData![1],
+                                              vesselName: tripData[2],
                                               tripIsRunningOrNot: runningTrip)),
                                         );
 

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -100,125 +101,119 @@ class _SignInScreenState extends State<SignInScreen> {
                       fontFamily: outfit
                     ),
                     SizedBox(height: displayHeight(context) * 0.02),
-                    Container(
-                      height: displayHeight(context) * 0.067,
-                      width: displayWidth(context) * 0.9,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        color: authBtnColors
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          commonText(
-                              context: context,
-                              text: 'Sign In with',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.034,
-                              textAlign: TextAlign.start,
-                              fontFamily: outfit
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              isGoogleSignInBtnClicked!
-                                  ? Center(
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        circularProgressColor),
-                                  ))
-                                  : InkWell(
-                                onTap: () async {
-                                  bool check =
-                                  await Utils().check(scaffoldKey);
-                                  if (check) {
-                                    GoogleSignInAccount?
-                                    googleSignInAccount;
+                    isGoogleSignInBtnClicked!
+                        ? Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              circularProgressColor),
+                        )) :
+                    GestureDetector(
+                      onTap: () async {
+                        bool check =
+                        await Utils().check(scaffoldKey);
+                        if (check) {
+                          GoogleSignInAccount?
+                          googleSignInAccount;
 
-                                    if (await googleSignIn.isSignedIn()) {
-                                      googleSignIn.signOut();
-                                      googleSignInAccount =
-                                      await googleSignIn.signIn();
-                                    } else {
-                                      googleSignInAccount =
-                                      await googleSignIn.signIn();
-                                    }
+                          if (await googleSignIn.isSignedIn()) {
+                            googleSignIn.signOut();
+                            googleSignInAccount =
+                            await googleSignIn.signIn();
+                          } else {
+                            googleSignInAccount =
+                            await googleSignIn.signIn();
+                          }
 
-                                    if (googleSignInAccount == null) {
-                                      // TODO handle
-                                      setState(() {
-                                        isGoogleSignInBtnClicked = false;
-                                      });
-                                    } else {
-                                      try {
-                                        setState(() {
-                                          isGoogleSignInBtnClicked = true;
-                                        });
+                          if (googleSignInAccount == null) {
+                            // TODO handle
+                            setState(() {
+                              isGoogleSignInBtnClicked = false;
+                            });
+                          } else {
+                            try {
+                              setState(() {
+                                isGoogleSignInBtnClicked = true;
+                              });
 
-                                        commonProvider
-                                            .login(
-                                            context,
-                                            googleSignInAccount.email,
-                                            //'paccoretesting@gmail.com',
-                                            "",
-                                            true,
-                                            googleSignInAccount.id,
-                                            //'114993051138200889304',
-                                            scaffoldKey)
-                                            .then((value) async {
-                                          setState(() {
-                                            isGoogleSignInBtnClicked =
-                                            false;
-                                          });
+                              commonProvider
+                                  .login(
+                                  context,
+                                  googleSignInAccount.email,
+                                  //'paccoretesting@gmail.com',
+                                  "",
+                                  true,
+                                  googleSignInAccount.id,
+                                  //'114993051138200889304',
+                                  scaffoldKey)
+                                  .then((value) async {
+                                setState(() {
+                                  isGoogleSignInBtnClicked =
+                                  false;
+                                });
 
-                                          if (value != null) {
-                                            if (value.status!) {
-                                              setState(() {
-                                                isGoogleSignInBtnClicked =
-                                                false;
-                                              });
-                                              var bool = await Utils()
-                                                  .check(scaffoldKey);
+                                if (value != null) {
+                                  if (value.status!) {
+                                    setState(() {
+                                      isGoogleSignInBtnClicked =
+                                      false;
+                                    });
+                                    var bool = await Utils()
+                                        .check(scaffoldKey);
 
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SyncDataCloudToMobileScreen(),
-                                                  ),
-                                                  ModalRoute.withName(""));
-                                            }
-                                          }
-                                        }).catchError((e) {
-                                          setState(() {
-                                            isGoogleSignInBtnClicked =
-                                            false;
-                                          });
-                                        });
-                                      } catch (e) {
-                                        Utils.customPrint('EXE: $e');
-                                        // TODO handle
-                                      }
-                                    }
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              SyncDataCloudToMobileScreen(),
+                                        ),
+                                        ModalRoute.withName(""));
                                   }
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.asset(
-                                    'assets/images/google_logo.png',
-                                    height: displayHeight(context) * 0.035,
-                                  ),
-                                ),
+                                }
+                              }).catchError((e) {
+                                setState(() {
+                                  isGoogleSignInBtnClicked =
+                                  false;
+                                });
+                              });
+                            } catch (e) {
+                              Utils.customPrint('EXE: $e');
+                              // TODO handle
+                            }
+                          }
+                        }
+                      },
+                      child: Container(
+                        height: displayHeight(context) * 0.067,
+                        width: displayWidth(context) * 0.9,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          color: authBtnColors
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            commonText(
+                                context: context,
+                                text: 'Sign In with',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.034,
+                                textAlign: TextAlign.start,
+                                fontFamily: outfit
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset(
+                                'assets/images/google_logo.png',
+                                height: displayHeight(context) * 0.035,
                               ),
-                            ],
-                          ),
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(height: displayHeight(context) * 0.02),
@@ -253,7 +248,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           if (value!.isEmpty) {
                             return 'Enter your Email';
                           } else if (!EmailValidator.validate(value)) {
-                            return 'Enter valid email';
+                            return 'Enter valid Email';
                           }
                           return null;
                         },
@@ -266,7 +261,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     CommonTextField(
                         controller: passwordController,
                         focusNode: passwordFocusNode,
-                        labelText: 'Confirm Password',
+                        labelText: 'Password',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.done,
@@ -281,7 +276,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         onChanged: (String value) {},
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Enter Confirm Password';
+                            return 'Enter Password';
                           } else if (!RegExp(
                               r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
                               .hasMatch(value)) {
@@ -414,6 +409,13 @@ class _SignInScreenState extends State<SignInScreen> {
                             ]),
                       ),
                     ),
+                    SizedBox(height: displayHeight(context) * 0.01),
+                    commonText(
+                        text: Platform.isAndroid ? 'Version  0.0.1+1' : 'Version  0.0.10',
+                        context: context,
+                        textSize: displayWidth(context) * 0.03,
+                        textColor: Colors.black54,
+                        fontWeight: FontWeight.w400),
                     SizedBox(
                       height: displayHeight(context) * 0.03,
                     ),

@@ -72,7 +72,7 @@ class _MapScreenState extends State<MapScreen> {
 
       if(widget.isAppKilled){
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          Future.delayed(Duration(seconds: 1), (){
+          Future.delayed(Duration(milliseconds: 100), (){
             showEndTripDialogBox(context);
           });
         });
@@ -97,7 +97,7 @@ class _MapScreenState extends State<MapScreen> {
 
     await sharedPreferences!.reload();
 
-    durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+    durationTimer = Timer.periodic(Duration(milliseconds: 100), (timer) {
       Utils.customPrint('##TDATA updated time delay from 1 sec to 400 MS by abhi');
       tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
       tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";

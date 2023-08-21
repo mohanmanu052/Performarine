@@ -303,6 +303,7 @@ Future<void> initializeService() async {
 
           Get.to(TripRecordingScreen(
               tripId: tripData![0],
+              vesselName: tripData[2],
               vesselId: tripData[1],
               isAppKilled: false,
               tripIsRunningOrNot: isTripStarted));
@@ -323,6 +324,7 @@ Future<void> initializeService() async {
 
           Get.to(TripRecordingScreen(
               tripId: tripData![0],
+              vesselName: tripData[2],
               vesselId: tripData[1],
               isAppKilled: true,
               tripIsRunningOrNot: isTripStarted));
@@ -558,6 +560,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
                       Get.to(TripRecordingScreen(
                           tripId: tripData![0],
+                          vesselName: tripData[2],
                           vesselId: tripData[1],
                           isAppKilled: false,
                           tripIsRunningOrNot: isTripStarted));
@@ -574,6 +577,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
                       Get.to(TripRecordingScreen(
                           tripId: tripData![0],
+                          vesselName: tripData[2],
                           vesselId: tripData[1],
                           isAppKilled: true,
                           tripIsRunningOrNot: isTripStarted));

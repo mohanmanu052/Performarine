@@ -70,7 +70,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
 
   String selectedVesselWeight = 'Select Current Load', getTripId = '';
 
-  int valueHolder = 1;
+  int valueHolder = 1,value = 5;
 
   bool? isGpsOn, isLPRConnected, isBleOn;
   bool addingDataToDB = false, isServiceRunning = false, isLocationDialogBoxOpen = false, isStartButton = false, isVesselDataLoading = false;
@@ -492,9 +492,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                   Container(
                                     padding: EdgeInsets.symmetric(vertical: 12),
                                     child: Container(
-                                      height: 30,
+                                      height: displayHeight(context) * 0.06,
                                       child: FlutterSlider(
-                                        values: [5],
+                                        values: [value.toDouble()],
                                         max: 10,
                                         min: 0,
                                         trackBar: FlutterSliderTrackBar(
@@ -508,7 +508,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                               value.toInt().toString();
                                               return Container(
                                                 padding: EdgeInsets.symmetric(
-                                                    horizontal: 6, vertical: 2),
+                                                    horizontal: 6, vertical: displayHeight(context) * 0.02),
                                                 child: commonText(
                                                   context: context,
                                                   text: '$data',
@@ -539,7 +539,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                   ),
                                   Container(
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: 6, vertical: 0),
+                                        horizontal: 5, vertical: 5),
                                     child: commonText(
                                       context: context,
                                       text: '0',
@@ -1600,6 +1600,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
         MaterialPageRoute(
             builder: (context) => TripRecordingScreen(
               tripId: tripDetails.id,
+                vesselName: tripDetails.vesselName,
                 vesselId: tripData[1],
                 tripIsRunningOrNot: runningTrip,
                 calledFrom: widget.calledFrom
@@ -1760,6 +1761,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                           MaterialPageRoute(builder: (context) => TripRecordingScreen(
                                               tripId: tripId,
                                               vesselId: tripData![1],
+                                              vesselName: tripData[2],
                                               tripIsRunningOrNot: runningTrip)),
                                         );
 

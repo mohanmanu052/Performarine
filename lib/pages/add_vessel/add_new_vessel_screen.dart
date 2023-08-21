@@ -116,7 +116,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 17),
               width: MediaQuery.of(context).size.width,
-             // height: displayHeight(context) * 1.25,
+              height: displayHeight(context) * 1.25,
               child: Column(
                // mainAxisSize: MainAxisSize.max,
                 children: [

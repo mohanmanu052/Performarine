@@ -49,7 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late FocusNode createPasswordFocusNode = FocusNode();
   late FocusNode confirmPasswordFocusNode = FocusNode();
 
-  String? selectedCountryCode, selectedCountry, latitude, longitude;
+  String? selectedCountryCode, selectedCountry, latitude, longitude,countryErrorText;
 
   bool validateCountryCodeWidget = false,
       isConfirmPasswordValid = false,
@@ -296,7 +296,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onChanged: (String value) {
                           setState(() {
                             selectedCountry = value;
-
+                            if(value == "USA"){
+                              setState(() {
+                                countryErrorText = "Enter Zip Code";
+                              });
+                            } else{
+                              setState(() {
+                                countryErrorText = "Enter Postal Code";
+                              });
+                            }
                             Utils.customPrint('country $selectedCountry');
                             CustomLogger().logWithFile(Level.info, "country $selectedCountry -> $page");
                           });
@@ -330,7 +338,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         textInputAction: TextInputAction.next,
                         textInputType: selectedCountry == 'USA'
                             ? TextInputType.number
-                            : TextInputType.text,
+                            : TextInputType.number,
                         textCapitalization: TextCapitalization.characters,
                         maxLength: null, //selectedCountry == 'USA' ? 5 : 7,
                         prefixIcon: null,
@@ -342,9 +350,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             if (selectedCountry == 'USA') {
-                              return 'Enter Zip Code';
+                              return countryErrorText;
                             } else {
-                              return 'Enter Postal Code';
+                              return countryErrorText;
                             }
                           }
                           return null;
