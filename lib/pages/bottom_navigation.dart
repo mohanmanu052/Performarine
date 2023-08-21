@@ -148,7 +148,11 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
         width: displayWidth(context) * 0.06,
         height: displayHeight(context) * 0.035,
       ),
-      Icon(Icons.person,size: displayWidth(context) * 0.07,),
+      Image.asset(
+        selectList[3],
+        width: displayWidth(context) * 0.06,
+        height: displayHeight(context) * 0.035,
+      ),
 
     ];
     commonProvider = context.watch<CommonProvider>();
