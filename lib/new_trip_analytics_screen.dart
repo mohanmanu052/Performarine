@@ -62,7 +62,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
   CreateVessel? vesselData;
   Trip? tripData;
 
-  String tripDistance = '0.00', tripDuration = '00:00:00', dateOfJourney = '', yearOfTheJourney = '';
+  String tripDistance = '0.00', tripDuration = '00:00:00', dateOfJourney = '', yearOfTheJourney = '', peopleOnBoard = '';
 
   String? finalTripDuration, finalTripDistance, finalAvgSpeed;
 
@@ -841,7 +841,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
                                      commonText(
                                        context: context,
-                                       text: '3',
+                                       text: peopleOnBoard,
                                        fontWeight: FontWeight.w700,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.044,
@@ -1500,6 +1500,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
     dateOfJourney = DateFormat('dd-MM').format(DateTime.parse(vesselData!.createdAt!));
     yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(vesselData!.createdAt!));
+    peopleOnBoard = tripData!.numberOfPassengers.toString();
 
   }
 

@@ -1073,6 +1073,7 @@ class _TripListScreenState extends State<TripListScreen> {
         vesselId: widget.vesselId,
         vesselName: vesselName,
         currentLoad: currentLoad,
+        numberOfPassengers: 0,
         filePath: file.path,
         isSync: 0,
         tripStatus: 0,

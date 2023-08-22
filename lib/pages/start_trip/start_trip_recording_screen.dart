@@ -51,16 +51,16 @@ import '../trip_analytics.dart';
 
 
 class StartTripRecordingScreen extends StatefulWidget {
-  final bool? isLocationPermitted;
-  final bool? isBluetoothConnected;
+  //final bool? isLocationPermitted;
+  //final bool? isBluetoothConnected;
   final String calledFrom;
-  const StartTripRecordingScreen({super.key, this.isLocationPermitted = false, this.isBluetoothConnected = false,this.calledFrom = ''});
+  const StartTripRecordingScreen({super.key, /*this.isLocationPermitted = false, this.isBluetoothConnected = false,*/this.calledFrom = ''});
 
   @override
   State<StartTripRecordingScreen> createState() => _StartTripRecordingScreenState();
 }
 
-class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
+class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> with WidgetsBindingObserver {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
@@ -68,12 +68,12 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
 
   VesselDropdownItem? selectedValue;
 
-  String selectedVesselWeight = 'Select Current Load', getTripId = '';
+  String selectedVesselWeight = 'Select Current Load', getTripId = '', bluetoothName = '';
 
-  int valueHolder = 1,value = 5;
+  int valueHolder = 1,numberOfPassengers = 0;
 
   bool? isGpsOn, isLPRConnected, isBleOn;
-  bool addingDataToDB = false, isServiceRunning = false, isLocationDialogBoxOpen = false, isStartButton = false, isVesselDataLoading = false;
+  bool addingDataToDB = false, isServiceRunning = false, isLocationDialogBoxOpen = false, isStartButton = false, isVesselDataLoading = false, isBluetoothPermitted = false, isLocationPermitted = false;
 
   final controller = ScreenshotController();
 
@@ -91,14 +91,44 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
   DeviceInfo? deviceDetails;
   late Future<List<CreateVessel>> vesselList;
 
+  double progress = 0.9, lprSensorProgress = 1.0;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
+    WidgetsBinding.instance.addObserver(this);
+
+    //checkAllPermission(false);
+
     commonProvider = context.read<CommonProvider>();
     getVesselAndTripsData();
+
+    checkTempPermissions();
   }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        checkTempPermissions();
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        break;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -270,8 +300,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                             ? Colors.black54
                                             : Colors.white
                                             : Colors.black54,
-                                        fontSize:
-                                        displayWidth(context) *
+                                        fontSize: displayWidth(context) *
                                             0.032,
                                         fontFamily: outfit,
                                         fontWeight: FontWeight.w400),
@@ -332,149 +361,149 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                 ),
                               ),
 
-                              SizedBox(height: displayHeight(context) * 0.012,),
-
-                              DropdownButtonHideUnderline(
-                                child: DropdownButtonFormField<dynamic>(
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide:
-                                        BorderSide(width: 1.5, color: Colors.transparent),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide:
-                                        BorderSide(width: 1.5, color: Colors.transparent),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.red.shade300.withOpacity(0.7)),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    errorStyle: TextStyle(
-                                        fontFamily: inter,
-                                        fontSize: displayWidth(context) * 0.025),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.red.shade300.withOpacity(0.7)),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    fillColor: Color(0xffE6E9F0),
-                                    filled: true,
-                                  ),
-                                  value: null,
-                                  isDense: true,
-                                  icon: Icon(
-                                      Icons.keyboard_arrow_down,
-                                      color: Theme.of(context)
-                                          .brightness ==
-                                          Brightness.dark
-                                          ? "Select Current Load" ==
-                                          'User SubRole'
-                                          ? Colors.black
-                                          : Colors.white
-                                          : Colors.black),
-                                  hint: commonText(
-                                      context: context,
-                                      text:
-                                      selectedVesselWeight,
-                                      fontWeight:
-                                      FontWeight.w400,
-                                      textColor: Colors.black54,
-                                      textSize: displayWidth(
-                                          context) *
-                                          0.03,
-                                      textAlign:
-                                      TextAlign.start,
-                                    fontFamily: outfit
-                                  ),
-                                  //  Text(
-                                  //     '${selectedVesselWeight}'),
-                                  isExpanded: true,
-                                  items: [
-                                    DropdownMenuItem(
-                                        value: '1',
-                                        child: commonText(
-                                            context: context,
-                                            text:
-                                            'Empty',
-                                            fontWeight:
-                                            FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize: displayWidth(
-                                                context) *
-                                                0.032,
-                                            textAlign:
-                                            TextAlign.start)),
-                                    DropdownMenuItem(
-                                        value: '2',
-                                        child: commonText(
-                                        context: context,
-                                        text:
-                                        'Half',
-                                        fontWeight:
-                                        FontWeight.w500,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(
-                                            context) *
-                                            0.032,
-                                        textAlign:
-                                        TextAlign.start)),
-                                    DropdownMenuItem(
-                                        value: '3',
-                                        child: commonText(
-                                            context: context,
-                                            text:
-                                            'Full',
-                                            fontWeight:
-                                            FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize: displayWidth(
-                                                context) *
-                                                0.032,
-                                            textAlign:
-                                            TextAlign.start)),
-                                    DropdownMenuItem(
-                                        value: '4',
-                                        child: commonText(
-                                            context: context,
-                                            text:
-                                            'Variable',
-                                            fontWeight:
-                                            FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize: displayWidth(
-                                                context) *
-                                                0.032,
-                                            textAlign:
-                                            TextAlign.start)
-                                        ),
-                                  ],
-                                  onChanged: (weightValue) {
-                                    setState(() {
-                                      if (int.parse(
-                                          weightValue) ==
-                                          1) {
-                                        selectedVesselWeight =
-                                        'Empty';
-                                      } else if (int.parse(
-                                          weightValue) ==
-                                          2) {
-                                        selectedVesselWeight =
-                                        'Half';
-                                      } else if (int.parse(
-                                          weightValue) ==
-                                          3) {
-                                        selectedVesselWeight =
-                                        'Full';
-                                      } else {
-                                        selectedVesselWeight =
-                                        'Variable';
-                                      }
-                                    });
-                                  },
-                                ),
-                              ),
+                              // SizedBox(height: displayHeight(context) * 0.012,),
+                              //
+                              // DropdownButtonHideUnderline(
+                              //   child: DropdownButtonFormField<dynamic>(
+                              //     decoration: InputDecoration(
+                              //       contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                              //       focusedBorder: OutlineInputBorder(
+                              //           borderSide:
+                              //           BorderSide(width: 1.5, color: Colors.transparent),
+                              //           borderRadius: BorderRadius.all(Radius.circular(8))),
+                              //       enabledBorder: OutlineInputBorder(
+                              //           borderSide:
+                              //           BorderSide(width: 1.5, color: Colors.transparent),
+                              //           borderRadius: BorderRadius.all(Radius.circular(8))),
+                              //       errorBorder: OutlineInputBorder(
+                              //           borderSide: BorderSide(
+                              //               width: 1.5,
+                              //               color: Colors.red.shade300.withOpacity(0.7)),
+                              //           borderRadius: BorderRadius.all(Radius.circular(8))),
+                              //       errorStyle: TextStyle(
+                              //           fontFamily: inter,
+                              //           fontSize: displayWidth(context) * 0.025),
+                              //       focusedErrorBorder: OutlineInputBorder(
+                              //           borderSide: BorderSide(
+                              //               width: 1.5,
+                              //               color: Colors.red.shade300.withOpacity(0.7)),
+                              //           borderRadius: BorderRadius.all(Radius.circular(8))),
+                              //       fillColor: Color(0xffE6E9F0),
+                              //       filled: true,
+                              //     ),
+                              //     value: null,
+                              //     isDense: true,
+                              //     icon: Icon(
+                              //         Icons.keyboard_arrow_down,
+                              //         color: Theme.of(context)
+                              //             .brightness ==
+                              //             Brightness.dark
+                              //             ? "Select Current Load" ==
+                              //             'User SubRole'
+                              //             ? Colors.black
+                              //             : Colors.white
+                              //             : Colors.black),
+                              //     hint: commonText(
+                              //         context: context,
+                              //         text:
+                              //         selectedVesselWeight,
+                              //         fontWeight:
+                              //         FontWeight.w400,
+                              //         textColor: Colors.black54,
+                              //         textSize: displayWidth(
+                              //             context) *
+                              //             0.03,
+                              //         textAlign:
+                              //         TextAlign.start,
+                              //       fontFamily: outfit
+                              //     ),
+                              //     //  Text(
+                              //     //     '${selectedVesselWeight}'),
+                              //     isExpanded: true,
+                              //     items: [
+                              //       DropdownMenuItem(
+                              //           value: '1',
+                              //           child: commonText(
+                              //               context: context,
+                              //               text:
+                              //               'Empty',
+                              //               fontWeight:
+                              //               FontWeight.w500,
+                              //               textColor: Colors.black,
+                              //               textSize: displayWidth(
+                              //                   context) *
+                              //                   0.032,
+                              //               textAlign:
+                              //               TextAlign.start)),
+                              //       DropdownMenuItem(
+                              //           value: '2',
+                              //           child: commonText(
+                              //           context: context,
+                              //           text:
+                              //           'Half',
+                              //           fontWeight:
+                              //           FontWeight.w500,
+                              //           textColor: Colors.black,
+                              //           textSize: displayWidth(
+                              //               context) *
+                              //               0.032,
+                              //           textAlign:
+                              //           TextAlign.start)),
+                              //       DropdownMenuItem(
+                              //           value: '3',
+                              //           child: commonText(
+                              //               context: context,
+                              //               text:
+                              //               'Full',
+                              //               fontWeight:
+                              //               FontWeight.w500,
+                              //               textColor: Colors.black,
+                              //               textSize: displayWidth(
+                              //                   context) *
+                              //                   0.032,
+                              //               textAlign:
+                              //               TextAlign.start)),
+                              //       DropdownMenuItem(
+                              //           value: '4',
+                              //           child: commonText(
+                              //               context: context,
+                              //               text:
+                              //               'Variable',
+                              //               fontWeight:
+                              //               FontWeight.w500,
+                              //               textColor: Colors.black,
+                              //               textSize: displayWidth(
+                              //                   context) *
+                              //                   0.032,
+                              //               textAlign:
+                              //               TextAlign.start)
+                              //           ),
+                              //     ],
+                              //     onChanged: (weightValue) {
+                              //       setState(() {
+                              //         if (int.parse(
+                              //             weightValue) ==
+                              //             1) {
+                              //           selectedVesselWeight =
+                              //           'Empty';
+                              //         } else if (int.parse(
+                              //             weightValue) ==
+                              //             2) {
+                              //           selectedVesselWeight =
+                              //           'Half';
+                              //         } else if (int.parse(
+                              //             weightValue) ==
+                              //             3) {
+                              //           selectedVesselWeight =
+                              //           'Full';
+                              //         } else {
+                              //           selectedVesselWeight =
+                              //           'Variable';
+                              //         }
+                              //       });
+                              //     },
+                              //   ),
+                              // ),
 
                               SizedBox(height: displayHeight(context) * 0.02,),
 
@@ -494,7 +523,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                     child: Container(
                                       height: displayHeight(context) * 0.06,
                                       child: FlutterSlider(
-                                        values: [value.toDouble()],
+                                        values: [numberOfPassengers.toDouble()],
                                         max: 10,
                                         min: 0,
                                         trackBar: FlutterSliderTrackBar(
@@ -504,14 +533,18 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                                 color: Color(0xff2663DB))),
                                         tooltip: FlutterSliderTooltip(
                                             custom: (value) {
-                                              String data =
-                                              value.toInt().toString();
+
+                                              debugPrint("NUMBER OF PASS 1 $value");
+                                              String data = value.toInt().toString();
+
+                                              numberOfPassengers = value.toInt();
+
                                               return Container(
                                                 padding: EdgeInsets.symmetric(
                                                     horizontal: 6, vertical: displayHeight(context) * 0.02),
                                                 child: commonText(
                                                   context: context,
-                                                  text: '$data',
+                                                  text: numberOfPassengers == 0 || numberOfPassengers == 10 ? '' : '$data',
                                                   fontWeight: FontWeight.w500,
                                                   textColor: Colors.black,
                                                   textSize:
@@ -523,7 +556,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                             alwaysShowTooltip: true,
                                             positionOffset:
                                             FlutterSliderTooltipPositionOffset(
-                                                top: -14)),
+                                                top: -24)),
                                         handlerWidth: 15,
                                         handlerHeight: 15,
                                         handler: FlutterSliderHandler(
@@ -537,30 +570,32 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                       ),
                                     ),
                                   ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 5),
-                                    child: commonText(
-                                      context: context,
-                                      text: '0',
-                                      fontWeight: FontWeight.w500,
-                                      textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.028,
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 0,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 0),
-                                      child: commonText(
-                                        context: context,
-                                        text: '10+',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.028,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 4, vertical: 5),
+                                        child: commonText(
+                                          context: context,
+                                          text: '0',
+                                          fontWeight: FontWeight.w500,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(context) * 0.028,
+                                        ),
                                       ),
-                                    ),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 4, vertical: 0),
+                                        child: commonText(
+                                          context: context,
+                                          text: '10+',
+                                          fontWeight: FontWeight.w500,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(context) * 0.028,
+                                        ),
+                                      ),
+                                    ],
                                   )
                                 ],
                               ),
@@ -606,9 +641,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                               ),
                                               commonText(
                                                 context: context,
-                                                text: widget.isLocationPermitted! ? 'OK' : 'No Connected',
+                                                text: isLocationPermitted ? 'OK' : 'No Connected',
                                                 fontWeight: FontWeight.w500,
-                                                textColor: widget.isLocationPermitted! ? Colors.green : Colors.grey,
+                                                textColor: isLocationPermitted ? Colors.green : Colors.grey,
                                                 textSize: displayWidth(context) * 0.03,
                                               ),
                                             ],
@@ -637,9 +672,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
 
                                               commonText(
                                                 context: context,
-                                                text: widget.isBluetoothConnected! ? 'Connected' : 'Disconnected',
+                                                text: isBluetoothPermitted ? 'Connected' : 'Disconnected',
                                                 fontWeight: FontWeight.w500,
-                                                textColor: widget.isBluetoothConnected! ? Colors.green : Colors.red,
+                                                textColor: isBluetoothPermitted ? Colors.green : Colors.red,
                                                 textSize: displayWidth(context) * 0.03,
                                               ),
                                             ],
@@ -741,7 +776,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                         return;
                                       }
 
-                                      bool isLocationPermitted =
+                                      checkAllPermission(true);
+
+                                      /*bool isLocationPermitted =
                                       await Permission
                                           .location.isGranted;
 
@@ -1004,11 +1041,10 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                             }
                                           }
                                         }
-                                      }
+                                      }*/
                                     },
                                     ),
                                   ),
-
                              /* addingDataToDB
                                   ? Center(
                                   child: CircularProgressIndicator(
@@ -1377,6 +1413,367 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
     );
   }
 
+  checkAllPermission(bool tripRecordingStarted)async
+  {
+    if(mounted) {
+      bool? isTripStarted =
+      sharedPreferences!.getBool('trip_started');
+
+      if (isTripStarted != null) {
+        if (isTripStarted) {
+          List<String>? tripData = sharedPreferences!
+              .getStringList('trip_data');
+          Trip tripDetails = await _databaseService
+              .getTrip(tripData![0]);
+
+          if (isTripStarted) {
+            showDialogBox(context);
+            return;
+          }
+        }
+      }
+
+      bool isLocationPermitted =
+      await Permission.locationAlways.isGranted;
+
+      if (isLocationPermitted) {
+        bool isNDPermDenied = await Permission
+            .bluetoothConnect.isPermanentlyDenied;
+
+        if (isNDPermDenied) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return LocationPermissionCustomDialog(
+                  isLocationDialogBox: false,
+                  text: 'Allow nearby devices',
+                  subText:
+                  'Allow nearby devices to connect to the app',
+                  buttonText: 'OK',
+                  buttonOnTap: () async {
+                    Get.back();
+                  },
+                );
+              });
+          return;
+        } else {
+          if (Platform.isIOS) {
+            dynamic isBluetoothEnable =
+
+            Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+              showBluetoothDialog(context);
+            });
+
+            if(isBluetoothEnable != null){
+              if (isBluetoothEnable) {
+                // vessel!.add(widget.vessel!);
+                await locationPermissions(tripRecordingStarted);
+              } else {
+                showBluetoothDialog(context);
+              }
+            }
+
+          } else {
+            bool isNDPermittedOne = await Permission
+                .bluetoothConnect.isGranted;
+
+            if (isNDPermittedOne) {
+              bool isBluetoothEnable =
+              Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                showBluetoothDialog(context);
+              });
+
+              if (isBluetoothEnable) {
+                // vessel!.add(widget.vessel!);
+                await locationPermissions(tripRecordingStarted);
+              } else {
+                showBluetoothDialog(context);
+              }
+            } else {
+              await Permission.bluetoothConnect.request();
+              bool isNDPermitted = await Permission
+                  .bluetoothConnect.isGranted;
+              if (isNDPermitted) {
+                bool isBluetoothEnable =
+                Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                  showBluetoothDialog(context);
+                });
+
+                if (isBluetoothEnable) {
+                  // vessel!.add(widget.vessel!);
+                  await locationPermissions(tripRecordingStarted);
+                } else {
+                  showBluetoothDialog(context);
+                }
+              } else {
+                if (await Permission
+                    .bluetoothConnect.isDenied ||
+                    await Permission.bluetoothConnect
+                        .isPermanentlyDenied) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return LocationPermissionCustomDialog(
+                          isLocationDialogBox: false,
+                          text: 'Allow nearby devices',
+                          subText:
+                          'Allow nearby devices to connect to the app',
+                          buttonText: 'OK',
+                          buttonOnTap: () async {
+                            Get.back();
+
+                            await openAppSettings();
+                          },
+                        );
+                      });
+                }
+              }
+            }
+          }
+        }
+      }
+      else {
+        /// WIU
+        bool isWIULocationPermitted =
+        await Permission.locationWhenInUse.isGranted;
+
+        if (!isWIULocationPermitted) {
+          await Utils.getLocationPermission(
+              context, scaffoldKey);
+
+          if(Platform.isAndroid){
+            if (!(await Permission.locationWhenInUse
+                .shouldShowRequestRationale)) {
+              Utils.customPrint(
+                  'XXXXX@@@ ${await Permission.locationWhenInUse.shouldShowRequestRationale}');
+
+              if(await Permission.locationWhenInUse
+                  .isDenied || await Permission.locationWhenInUse
+                  .isPermanentlyDenied){
+                await openAppSettings();
+              }
+
+              showDialog(
+                      context: scaffoldKey.currentContext!,
+                      builder: (BuildContext context) {
+                        isLocationDialogBoxOpen = true;
+                        return LocationPermissionCustomDialog(
+                          isLocationDialogBox: true,
+                          text:
+                          'Always Allow Access to “Location”',
+                          subText:
+                          "To track your trip while you use other apps we need background access to your location",
+                          buttonText: 'Ok',
+                          buttonOnTap: () async {
+                            Get.back();
+
+                            await openAppSettings();
+                          },
+                        );
+                      }).then((value) {
+                    isLocationDialogBoxOpen = false;
+                  });
+            }
+          }
+          else
+          {
+            await Permission.locationAlways.request();
+
+            bool isGranted = await Permission.locationAlways.isGranted;
+
+            if(!isGranted)
+            {
+              Utils.showSnackBar(context,
+                  scaffoldKey: scaffoldKey,
+                  message:
+                  'Location permissions are denied without permissions we are unable to start the trip');
+            }
+          }
+        }
+        else
+        {
+          bool isLocationPermitted =
+          await Permission.locationAlways.isGranted;
+          if (isLocationPermitted) {
+            bool isNDPermDenied = await Permission
+                .bluetoothConnect.isPermanentlyDenied;
+
+            if (isNDPermDenied) {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return LocationPermissionCustomDialog(
+                      isLocationDialogBox: false,
+                      text: 'Allow nearby devices',
+                      subText:
+                      'Allow nearby devices to connect to the app',
+                      buttonText: 'OK',
+                      buttonOnTap: () async {
+                        Get.back();
+
+                        await openAppSettings();
+                      },
+                    );
+                  });
+              return;
+            } else {
+              bool isNDPermitted = await Permission
+                  .bluetoothConnect.isGranted;
+
+              if (isNDPermitted) {
+                bool isBluetoothEnable =
+                Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                  showBluetoothDialog(context);
+                });
+
+                if (isBluetoothEnable) {
+                  // vessel!.add(widget.vessel!);
+                  await locationPermissions(tripRecordingStarted);
+                } else {
+                  showBluetoothDialog(context);
+                }
+              } else {
+                await Permission.bluetoothConnect.request();
+                bool isNDPermitted = await Permission
+                    .bluetoothConnect.isGranted;
+                if (isNDPermitted) {
+                  bool isBluetoothEnable =
+                  Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                    showBluetoothDialog(context);
+                  });
+
+                  if (isBluetoothEnable) {
+                    // vessel!.add(widget.vessel!);
+                    await locationPermissions(tripRecordingStarted);
+                  } else {
+                    showBluetoothDialog(context);
+                  }
+                }
+              }
+            }
+          }
+          else if(await Permission.locationAlways.isPermanentlyDenied)
+          {
+            if(Platform.isIOS)
+            {
+              Permission.locationAlways.request();
+
+              PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
+                Utils.showSnackBar(context,
+                    scaffoldKey: scaffoldKey,
+                    message: "Location permissions are denied without permissions we are unable to start the trip");
+
+                Future.delayed(Duration(seconds: 3),
+                        () async {
+                      await openAppSettings();
+                    });
+                return PermissionStatus.denied;
+              });
+
+              if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
+              {
+                Utils.showSnackBar(context,
+                    scaffoldKey: scaffoldKey,
+                    message: "Location permissions are denied without permissions we are unable to start the trip");
+
+                Future.delayed(Duration(seconds: 3),
+                        () async {
+                      await openAppSettings();
+                    });
+              }
+            }else
+            {
+              if (!isLocationDialogBoxOpen) {
+                Utils.customPrint("ELSE CONDITION");
+
+                showDialog(
+                    context: scaffoldKey.currentContext!,
+                    builder: (BuildContext context) {
+                      isLocationDialogBoxOpen = true;
+                      return LocationPermissionCustomDialog(
+                        isLocationDialogBox: true,
+                        text:
+                        'Always Allow Access to “Location”',
+                        subText:
+                        "To track your trip while you use other apps we need background access to your location",
+                        buttonText: 'Ok',
+                        buttonOnTap: () async {
+                          Get.back();
+
+                          await openAppSettings();
+                        },
+                      );
+                    }).then((value) {
+                  isLocationDialogBoxOpen = false;
+                });
+              }
+            }
+          }
+          else {
+            if (Platform.isIOS) {
+              await Permission.locationAlways.request();
+
+              bool isLocationAlwaysPermitted =
+              await Permission.locationAlways.isGranted;
+
+              Utils.customPrint(
+                  'IOS PERMISSION GIVEN OUTSIDE');
+
+              if (isLocationAlwaysPermitted) {
+                Utils.customPrint('IOS PERMISSION GIVEN 1');
+
+                // vessel!.add(widget.vessel!);
+                await locationPermissions(tripRecordingStarted);
+              } else {
+                Utils.showSnackBar(context,
+                    scaffoldKey: scaffoldKey,
+                    message:
+                    'Location permissions are denied without permissions we are unable to start the trip');
+
+                Future.delayed(Duration(seconds: 3),
+                        () async {
+                      await openAppSettings();
+                    });
+              }
+            } else {
+              if (!isLocationDialogBoxOpen) {
+                Utils.customPrint("ELSE CONDITION");
+
+                showDialog(
+                    context: scaffoldKey.currentContext!,
+                    builder: (BuildContext context) {
+                      isLocationDialogBoxOpen = true;
+                      return LocationPermissionCustomDialog(
+                        isLocationDialogBox: true,
+                        text:
+                        'Always Allow Access to “Location”',
+                        subText:
+                        "To track your trip while you use other apps we need background access to your location",
+                        buttonText: 'Ok',
+                        buttonOnTap: () async {
+                          Get.back();
+
+                          await openAppSettings();
+                        },
+                      );
+                    }).then((value) {
+                  isLocationDialogBoxOpen = false;
+                });
+              }
+            }
+          }
+        }
+        // return;
+
+      }
+    }
+  }
+
+  checkTempPermissions() async{
+    this.isLocationPermitted = await Permission.locationAlways.isGranted;
+    setState(() {});
+  }
+
   //To get all vessels
   getVesselAndTripsData() async {
 
@@ -1513,12 +1910,15 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
     });
     await fetchDeviceData();
 
+    debugPrint("NUMBER OF PASS 4 $numberOfPassengers");
+
     try {
       await _databaseService.insertTrip(Trip(
           id: getTripId,
           vesselId: vesselId,
           vesselName: selectedVesselName,
           currentLoad: currentLoad,
+          numberOfPassengers: numberOfPassengers,
           filePath: file,
           isSync: 0,
           tripStatus: 0,
@@ -1960,6 +2360,1298 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
         model: iosDeviceInfo?.model,
         version: iosDeviceInfo?.utsname.release);
     Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
+  }
+
+  /// Check location permission
+  locationPermissions(bool isTripRecordingStarted) async {
+    if (Platform.isAndroid) {
+      bool isLocationPermitted = await Permission.locationAlways.isGranted;
+      if (isLocationPermitted) {
+        FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+        FlutterBluePlus.instance.scanResults.listen((results) async {
+          for (ScanResult r in results) {
+            if (r.device.name.toLowerCase().contains("lpr")) {
+              Utils.customPrint('FOUND DEVICE AGAIN');
+
+              r.device.connect().catchError((e) {
+                r.device.state.listen((event) {
+                  if (event == BluetoothDeviceState.connected) {
+                    r.device.disconnect().then((value) {
+                      r.device.connect().catchError((e) {
+                        if (mounted) {
+                          setState(() {
+                            isBluetoothPermitted = true;
+                            progress = 1.0;
+                            lprSensorProgress = 1.0;
+                            isStartButton = true;
+                          });
+                        }
+                      });
+                    });
+                  }
+                });
+              });
+
+              bluetoothName = r.device.name;
+              setState(() {
+                isBluetoothPermitted = true;
+                progress = 1.0;
+                lprSensorProgress = 1.0;
+                isStartButton = true;
+              });
+              FlutterBluePlus.instance.stopScan();
+              break;
+            } else {
+              r.device
+                  .disconnect()
+                  .then((value) => Utils.customPrint("is device disconnected:"));
+            }
+          }
+        });
+
+        setState(() {
+          this.isLocationPermitted = isLocationPermitted;
+        });
+
+        if(isTripRecordingStarted)
+          {
+            bool isLocationPermitted =
+            await Permission
+                .location.isGranted;
+
+            if (isLocationPermitted) {
+
+              if (Platform.isAndroid) {
+                final androidInfo =
+                await DeviceInfoPlugin()
+                    .androidInfo;
+
+                if (androidInfo.version.sdkInt <
+                    29) {
+                  var isStoragePermitted =
+                  await Permission
+                      .storage.status;
+                  if (isStoragePermitted
+                      .isGranted) {
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    } else {
+                      await Utils
+                          .getNotificationPermission(
+                          context);
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      }
+                    }
+                  } else {
+                    await Utils
+                        .getStoragePermission(
+                        context);
+                    final androidInfo =
+                    await DeviceInfoPlugin()
+                        .androidInfo;
+
+                    var isStoragePermitted =
+                    await Permission
+                        .storage.status;
+
+                    if (isStoragePermitted
+                        .isGranted) {
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      } else {
+                        await Utils
+                            .getNotificationPermission(
+                            context);
+                        bool
+                        isNotificationPermitted =
+                        await Permission
+                            .notification
+                            .isGranted;
+                        if (isNotificationPermitted) {
+                          startWritingDataToDB(
+                              context);
+                        }
+                      }
+                    }
+                  }
+                } else {
+                  bool isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  } else {
+                    await Utils
+                        .getNotificationPermission(
+                        context);
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    }
+                  }
+                }
+              }
+              else {
+                bool isNotificationPermitted =
+                await Permission
+                    .notification.isGranted;
+
+                if (isNotificationPermitted) {
+                  startWritingDataToDB(
+                      context);
+                } else {
+                  await Utils
+                      .getNotificationPermission(
+                      context);
+                  bool isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  }
+                }
+              }
+            }
+            else {
+              await Utils.getLocationPermission(
+                  context, scaffoldKey);
+              bool isLocationPermitted =
+              await Permission
+                  .location.isGranted;
+
+              if (isLocationPermitted) {
+                // service.startService();
+
+                if (Platform.isAndroid) {
+                  final androidInfo =
+                  await DeviceInfoPlugin()
+                      .androidInfo;
+
+                  if (androidInfo
+                      .version.sdkInt <
+                      29) {
+                    var isStoragePermitted =
+                    await Permission
+                        .storage.status;
+                    if (isStoragePermitted
+                        .isGranted) {
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      } else {
+                        await Utils
+                            .getNotificationPermission(
+                            context);
+                        bool
+                        isNotificationPermitted =
+                        await Permission
+                            .notification
+                            .isGranted;
+                        if (isNotificationPermitted) {
+                          startWritingDataToDB(
+                              context);
+                        }
+                      }
+                    } else {
+                      await Utils
+                          .getStoragePermission(
+                          context);
+                      final androidInfo =
+                      await DeviceInfoPlugin()
+                          .androidInfo;
+
+                      var isStoragePermitted =
+                      await Permission
+                          .storage.status;
+
+                      if (isStoragePermitted
+                          .isGranted) {
+                        bool
+                        isNotificationPermitted =
+                        await Permission
+                            .notification
+                            .isGranted;
+
+                        if (isNotificationPermitted) {
+                          startWritingDataToDB(
+                              context);
+                        } else {
+                          await Utils
+                              .getNotificationPermission(
+                              context);
+                          bool
+                          isNotificationPermitted =
+                          await Permission
+                              .notification
+                              .isGranted;
+                          if (isNotificationPermitted) {
+                            startWritingDataToDB(
+                                context);
+                          }
+                        }
+                      }
+                    }
+                  } else {
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    } else {
+                      await Utils
+                          .getNotificationPermission(
+                          context);
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      }
+                    }
+                  }
+                } else {
+                  bool isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  } else {
+                    await Utils
+                        .getNotificationPermission(
+                        context);
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                        context,);
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+       /* Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+          isLocationPermitted: isLocationPermitted,
+          isBluetoothConnected: isBluetoothConnected,
+          calledFrom: 'bottom_nav',)));*/
+      } else {
+        await Utils.getLocationPermissions(context, scaffoldKey);
+        bool isLocationPermitted = await Permission.locationAlways.isGranted;
+        if (isLocationPermitted) {
+          FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+          FlutterBluePlus.instance.scanResults.listen((results) async {
+            for (ScanResult r in results) {
+              if (r.device.name.toLowerCase().contains("lpr")) {
+                r.device.connect().catchError((e) {
+                  r.device.state.listen((event) {
+                    if (event == BluetoothDeviceState.connected) {
+                      r.device.disconnect().then((value) {
+                        r.device.connect().catchError((e) {
+                          if (mounted) {
+                            setState(() {
+                              isBluetoothPermitted = true;
+                              progress = 1.0;
+                              lprSensorProgress = 1.0;
+                              isStartButton = true;
+                            });
+                          }
+                        });
+                      });
+                    }
+                  });
+                });
+
+                bluetoothName = r.device.name;
+                setState(() {
+                  isBluetoothPermitted = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                });
+                FlutterBluePlus.instance.stopScan();
+                break;
+              } else {
+                r.device
+                    .disconnect()
+                    .then((value) => Utils.customPrint("is device disconnected: "));
+              }
+            }
+          });
+
+          setState(() {
+            this.isLocationPermitted = isLocationPermitted;
+          });
+
+          if(isTripRecordingStarted)
+          {
+            bool isLocationPermitted =
+            await Permission
+                .location.isGranted;
+
+            if (isLocationPermitted) {
+
+              if (Platform.isAndroid) {
+                final androidInfo =
+                await DeviceInfoPlugin()
+                    .androidInfo;
+
+                if (androidInfo.version.sdkInt <
+                    29) {
+                  var isStoragePermitted =
+                  await Permission
+                      .storage.status;
+                  if (isStoragePermitted
+                      .isGranted) {
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    } else {
+                      await Utils
+                          .getNotificationPermission(
+                          context);
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      }
+                    }
+                  } else {
+                    await Utils
+                        .getStoragePermission(
+                        context);
+                    final androidInfo =
+                    await DeviceInfoPlugin()
+                        .androidInfo;
+
+                    var isStoragePermitted =
+                    await Permission
+                        .storage.status;
+
+                    if (isStoragePermitted
+                        .isGranted) {
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      } else {
+                        await Utils
+                            .getNotificationPermission(
+                            context);
+                        bool
+                        isNotificationPermitted =
+                        await Permission
+                            .notification
+                            .isGranted;
+                        if (isNotificationPermitted) {
+                          startWritingDataToDB(
+                              context);
+                        }
+                      }
+                    }
+                  }
+                } else {
+                  bool isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  } else {
+                    await Utils
+                        .getNotificationPermission(
+                        context);
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    }
+                  }
+                }
+              }
+              else {
+                bool isNotificationPermitted =
+                await Permission
+                    .notification.isGranted;
+
+                if (isNotificationPermitted) {
+                  startWritingDataToDB(
+                      context);
+                } else {
+                  await Utils
+                      .getNotificationPermission(
+                      context);
+                  bool isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  }
+                }
+              }
+            }
+            else {
+              await Utils.getLocationPermission(
+                  context, scaffoldKey);
+              bool isLocationPermitted =
+              await Permission
+                  .location.isGranted;
+
+              if (isLocationPermitted) {
+                // service.startService();
+
+                if (Platform.isAndroid) {
+                  final androidInfo =
+                  await DeviceInfoPlugin()
+                      .androidInfo;
+
+                  if (androidInfo
+                      .version.sdkInt <
+                      29) {
+                    var isStoragePermitted =
+                    await Permission
+                        .storage.status;
+                    if (isStoragePermitted
+                        .isGranted) {
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      } else {
+                        await Utils
+                            .getNotificationPermission(
+                            context);
+                        bool
+                        isNotificationPermitted =
+                        await Permission
+                            .notification
+                            .isGranted;
+                        if (isNotificationPermitted) {
+                          startWritingDataToDB(
+                              context);
+                        }
+                      }
+                    } else {
+                      await Utils
+                          .getStoragePermission(
+                          context);
+                      final androidInfo =
+                      await DeviceInfoPlugin()
+                          .androidInfo;
+
+                      var isStoragePermitted =
+                      await Permission
+                          .storage.status;
+
+                      if (isStoragePermitted
+                          .isGranted) {
+                        bool
+                        isNotificationPermitted =
+                        await Permission
+                            .notification
+                            .isGranted;
+
+                        if (isNotificationPermitted) {
+                          startWritingDataToDB(
+                              context);
+                        } else {
+                          await Utils
+                              .getNotificationPermission(
+                              context);
+                          bool
+                          isNotificationPermitted =
+                          await Permission
+                              .notification
+                              .isGranted;
+                          if (isNotificationPermitted) {
+                            startWritingDataToDB(
+                                context);
+                          }
+                        }
+                      }
+                    }
+                  } else {
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    } else {
+                      await Utils
+                          .getNotificationPermission(
+                          context);
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      }
+                    }
+                  }
+                } else {
+                  bool isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  } else {
+                    await Utils
+                        .getNotificationPermission(
+                        context);
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                        context,);
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          /*Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+              isLocationPermitted: isLocationPermitted,
+              isBluetoothConnected: isBluetoothConnected,
+              calledFrom: 'bottom_nav')));*/
+        }
+      }
+    } else {
+      bool isLocationPermitted = await Permission.locationAlways.isGranted;
+      if (isLocationPermitted) {
+        FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+        FlutterBluePlus.instance.scanResults.listen((results) async {
+          for (ScanResult r in results) {
+            if (r.device.name.toLowerCase().contains("lpr")) {
+              Utils.customPrint('FOUND DEVICE AGAIN');
+
+              r.device.connect().catchError((e) {
+                r.device.state.listen((event) {
+                  if (event == BluetoothDeviceState.connected) {
+                    r.device.disconnect().then((value) {
+                      r.device.connect().catchError((e) {
+                        if (mounted) {
+                          setState(() {
+                            isBluetoothPermitted = true;
+                            progress = 1.0;
+                            lprSensorProgress = 1.0;
+                            isStartButton = true;
+                          });
+                        }
+                      });
+                    });
+                  }
+                });
+              });
+
+              bluetoothName = r.device.name;
+              setState(() {
+                isBluetoothPermitted = true;
+                progress = 1.0;
+                lprSensorProgress = 1.0;
+                isStartButton = true;
+              });
+              FlutterBluePlus.instance.stopScan();
+              break;
+            } else {
+              r.device
+                  .disconnect()
+                  .then((value) => Utils.customPrint("is device disconnected: "));
+            }
+          }
+        });
+
+        setState(() {
+          this.isLocationPermitted = isLocationPermitted;
+        });
+
+        if(isTripRecordingStarted)
+        {
+          bool isLocationPermitted =
+          await Permission
+              .location.isGranted;
+
+          if (isLocationPermitted) {
+
+            if (Platform.isAndroid) {
+              final androidInfo =
+              await DeviceInfoPlugin()
+                  .androidInfo;
+
+              if (androidInfo.version.sdkInt <
+                  29) {
+                var isStoragePermitted =
+                await Permission
+                    .storage.status;
+                if (isStoragePermitted
+                    .isGranted) {
+                  bool
+                  isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  } else {
+                    await Utils
+                        .getNotificationPermission(
+                        context);
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    }
+                  }
+                } else {
+                  await Utils
+                      .getStoragePermission(
+                      context);
+                  final androidInfo =
+                  await DeviceInfoPlugin()
+                      .androidInfo;
+
+                  var isStoragePermitted =
+                  await Permission
+                      .storage.status;
+
+                  if (isStoragePermitted
+                      .isGranted) {
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    } else {
+                      await Utils
+                          .getNotificationPermission(
+                          context);
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      }
+                    }
+                  }
+                }
+              } else {
+                bool isNotificationPermitted =
+                await Permission
+                    .notification
+                    .isGranted;
+
+                if (isNotificationPermitted) {
+                  startWritingDataToDB(
+                      context);
+                } else {
+                  await Utils
+                      .getNotificationPermission(
+                      context);
+                  bool
+                  isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  }
+                }
+              }
+            }
+            else {
+              bool isNotificationPermitted =
+              await Permission
+                  .notification.isGranted;
+
+              if (isNotificationPermitted) {
+                startWritingDataToDB(
+                    context);
+              } else {
+                await Utils
+                    .getNotificationPermission(
+                    context);
+                bool isNotificationPermitted =
+                await Permission
+                    .notification
+                    .isGranted;
+                if (isNotificationPermitted) {
+                  startWritingDataToDB(
+                      context);
+                }
+              }
+            }
+          }
+          else {
+            await Utils.getLocationPermission(
+                context, scaffoldKey);
+            bool isLocationPermitted =
+            await Permission
+                .location.isGranted;
+
+            if (isLocationPermitted) {
+              // service.startService();
+
+              if (Platform.isAndroid) {
+                final androidInfo =
+                await DeviceInfoPlugin()
+                    .androidInfo;
+
+                if (androidInfo
+                    .version.sdkInt <
+                    29) {
+                  var isStoragePermitted =
+                  await Permission
+                      .storage.status;
+                  if (isStoragePermitted
+                      .isGranted) {
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    } else {
+                      await Utils
+                          .getNotificationPermission(
+                          context);
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      }
+                    }
+                  } else {
+                    await Utils
+                        .getStoragePermission(
+                        context);
+                    final androidInfo =
+                    await DeviceInfoPlugin()
+                        .androidInfo;
+
+                    var isStoragePermitted =
+                    await Permission
+                        .storage.status;
+
+                    if (isStoragePermitted
+                        .isGranted) {
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      } else {
+                        await Utils
+                            .getNotificationPermission(
+                            context);
+                        bool
+                        isNotificationPermitted =
+                        await Permission
+                            .notification
+                            .isGranted;
+                        if (isNotificationPermitted) {
+                          startWritingDataToDB(
+                              context);
+                        }
+                      }
+                    }
+                  }
+                } else {
+                  bool
+                  isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  } else {
+                    await Utils
+                        .getNotificationPermission(
+                        context);
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    }
+                  }
+                }
+              } else {
+                bool isNotificationPermitted =
+                await Permission
+                    .notification
+                    .isGranted;
+
+                if (isNotificationPermitted) {
+                  startWritingDataToDB(
+                      context);
+                } else {
+                  await Utils
+                      .getNotificationPermission(
+                      context);
+                  bool
+                  isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                      context,);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        /*Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+            isLocationPermitted: isLocationPermitted,
+            isBluetoothConnected: isBluetoothConnected,
+            calledFrom: 'bottom_nav')));*/
+      } else {
+        await Utils.getLocationPermissions(context, scaffoldKey);
+        bool isLocationPermitted = await Permission.locationAlways.isGranted;
+        if (isLocationPermitted) {
+          FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
+          FlutterBluePlus.instance.scanResults.listen((results) async {
+            for (ScanResult r in results) {
+              if (r.device.name.toLowerCase().contains("lpr")) {
+                r.device.connect().catchError((e) {
+                  r.device.state.listen((event) {
+                    if (event == BluetoothDeviceState.connected) {
+                      r.device.disconnect().then((value) {
+                        r.device.connect().catchError((e) {
+                          if (mounted) {
+                            setState(() {
+                              isBluetoothPermitted = true;
+                              progress = 1.0;
+                              lprSensorProgress = 1.0;
+                              isStartButton = true;
+                            });
+                          }
+                        });
+                      });
+                    }
+                  });
+                });
+
+                bluetoothName = r.device.name;
+                setState(() {
+                  isBluetoothPermitted = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                });
+                FlutterBluePlus.instance.stopScan();
+                break;
+              } else {
+                r.device
+                    .disconnect()
+                    .then((value) => Utils.customPrint("is device disconnected: "));
+              }
+            }
+          });
+
+          setState(() {
+            this.isLocationPermitted = isLocationPermitted;
+          });
+
+          if(isTripRecordingStarted)
+          {
+            bool isLocationPermitted =
+            await Permission
+                .location.isGranted;
+
+            if (isLocationPermitted) {
+
+              if (Platform.isAndroid) {
+                final androidInfo =
+                await DeviceInfoPlugin()
+                    .androidInfo;
+
+                if (androidInfo.version.sdkInt <
+                    29) {
+                  var isStoragePermitted =
+                  await Permission
+                      .storage.status;
+                  if (isStoragePermitted
+                      .isGranted) {
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    } else {
+                      await Utils
+                          .getNotificationPermission(
+                          context);
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      }
+                    }
+                  } else {
+                    await Utils
+                        .getStoragePermission(
+                        context);
+                    final androidInfo =
+                    await DeviceInfoPlugin()
+                        .androidInfo;
+
+                    var isStoragePermitted =
+                    await Permission
+                        .storage.status;
+
+                    if (isStoragePermitted
+                        .isGranted) {
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      } else {
+                        await Utils
+                            .getNotificationPermission(
+                            context);
+                        bool
+                        isNotificationPermitted =
+                        await Permission
+                            .notification
+                            .isGranted;
+                        if (isNotificationPermitted) {
+                          startWritingDataToDB(
+                              context);
+                        }
+                      }
+                    }
+                  }
+                } else {
+                  bool isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  } else {
+                    await Utils
+                        .getNotificationPermission(
+                        context);
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    }
+                  }
+                }
+              }
+              else {
+                bool isNotificationPermitted =
+                await Permission
+                    .notification.isGranted;
+
+                if (isNotificationPermitted) {
+                  startWritingDataToDB(
+                      context);
+                } else {
+                  await Utils
+                      .getNotificationPermission(
+                      context);
+                  bool isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  }
+                }
+              }
+            }
+            else {
+              await Utils.getLocationPermission(
+                  context, scaffoldKey);
+              bool isLocationPermitted =
+              await Permission
+                  .location.isGranted;
+
+              if (isLocationPermitted) {
+                // service.startService();
+
+                if (Platform.isAndroid) {
+                  final androidInfo =
+                  await DeviceInfoPlugin()
+                      .androidInfo;
+
+                  if (androidInfo
+                      .version.sdkInt <
+                      29) {
+                    var isStoragePermitted =
+                    await Permission
+                        .storage.status;
+                    if (isStoragePermitted
+                        .isGranted) {
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      } else {
+                        await Utils
+                            .getNotificationPermission(
+                            context);
+                        bool
+                        isNotificationPermitted =
+                        await Permission
+                            .notification
+                            .isGranted;
+                        if (isNotificationPermitted) {
+                          startWritingDataToDB(
+                              context);
+                        }
+                      }
+                    } else {
+                      await Utils
+                          .getStoragePermission(
+                          context);
+                      final androidInfo =
+                      await DeviceInfoPlugin()
+                          .androidInfo;
+
+                      var isStoragePermitted =
+                      await Permission
+                          .storage.status;
+
+                      if (isStoragePermitted
+                          .isGranted) {
+                        bool
+                        isNotificationPermitted =
+                        await Permission
+                            .notification
+                            .isGranted;
+
+                        if (isNotificationPermitted) {
+                          startWritingDataToDB(
+                              context);
+                        } else {
+                          await Utils
+                              .getNotificationPermission(
+                              context);
+                          bool
+                          isNotificationPermitted =
+                          await Permission
+                              .notification
+                              .isGranted;
+                          if (isNotificationPermitted) {
+                            startWritingDataToDB(
+                                context);
+                          }
+                        }
+                      }
+                    }
+                  } else {
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                          context);
+                    } else {
+                      await Utils
+                          .getNotificationPermission(
+                          context);
+                      bool
+                      isNotificationPermitted =
+                      await Permission
+                          .notification
+                          .isGranted;
+                      if (isNotificationPermitted) {
+                        startWritingDataToDB(
+                            context);
+                      }
+                    }
+                  }
+                } else {
+                  bool isNotificationPermitted =
+                  await Permission
+                      .notification
+                      .isGranted;
+
+                  if (isNotificationPermitted) {
+                    startWritingDataToDB(
+                        context);
+                  } else {
+                    await Utils
+                        .getNotificationPermission(
+                        context);
+                    bool
+                    isNotificationPermitted =
+                    await Permission
+                        .notification
+                        .isGranted;
+                    if (isNotificationPermitted) {
+                      startWritingDataToDB(
+                        context,);
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          /*Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+              isLocationPermitted: isLocationPermitted,
+              isBluetoothConnected: isBluetoothConnected,
+              calledFrom: 'bottom_nav'
+          )));*/
+        }
+      }
+    }
   }
 
 

@@ -1826,6 +1826,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       },
       "startPosition": startPosition,
       "endPosition": endPosition,
+      "number_of_passengers": tripData.numberOfPassengers,
       "vesselId": tripData.vesselId,
       "filePath": Platform.isAndroid
           ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'

@@ -1016,7 +1016,7 @@ class OldVesselSingleViewState extends State<OldVesselSingleView> {
           }
         });
 
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected, calledFrom: 'VesselSingleView')));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(calledFrom: 'VesselSingleView')));
         //getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
@@ -1061,7 +1061,7 @@ class OldVesselSingleViewState extends State<OldVesselSingleView> {
               }
             }
           });
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected,  calledFrom: 'VesselSingleView')));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(calledFrom: 'VesselSingleView')));
           /*getBottomSheet(
               context, size, vesselName, weight, isLocationPermitted);*/
         }
@@ -1110,7 +1110,7 @@ class OldVesselSingleViewState extends State<OldVesselSingleView> {
             }
           }
         });
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected,  calledFrom: 'VesselSingleView')));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(calledFrom: 'VesselSingleView')));
        // getBottomSheet(context, size, vesselName, weight, isLocationPermitted);
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
@@ -1155,7 +1155,7 @@ class OldVesselSingleViewState extends State<OldVesselSingleView> {
               }
             }
           });
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(isLocationPermitted: isLocationPermitted, isBluetoothConnected: isBluetoothConnected, calledFrom: 'VesselSingleView')));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(calledFrom: 'VesselSingleView')));
           /*getBottomSheet(
               context, size, vesselName, weight, isLocationPermitted);*/
         }
@@ -2266,7 +2266,6 @@ class OldVesselSingleViewState extends State<OldVesselSingleView> {
       Utils.customPrint("ENABLE BT$e");
     });
   }
-
   buildProgress(double progress, double size) {
     return commonText(
         context: context,
@@ -2312,6 +2311,7 @@ class OldVesselSingleViewState extends State<OldVesselSingleView> {
           vesselId: widget.vessel!.id,
           vesselName: vesselName,
           currentLoad: currentLoad,
+          numberOfPassengers: 0,
           filePath: file,
           isSync: 0,
           tripStatus: 0,
