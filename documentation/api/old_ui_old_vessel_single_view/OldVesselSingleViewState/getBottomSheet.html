@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the getBottomSheet method from the OldVesselSingleViewState class, for the Dart programming language.">
+  <title>getBottomSheet method - OldVesselSingleViewState class - old_vessel_single_view library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">performarine</a></li>
+    <li><a href="../../old_ui_old_vessel_single_view/old_ui_old_vessel_single_view-library.html">old_vessel_single_view</a></li>
+    <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState-class.html">OldVesselSingleViewState</a></li>
+    <li class="self-crumb">getBottomSheet method</li>
+  </ol>
+  <div class="self-name">getBottomSheet</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">getBottomSheet</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype">dynamic</span>
+<span class="name ">getBottomSheet</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="getBottomSheet-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span>, </span></li>
+<li><span class="parameter" id="getBottomSheet-param-size"><span class="type-annotation">dynamic</span> <span class="parameter-name">size</span>, </span></li>
+<li><span class="parameter" id="getBottomSheet-param-vesselName"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">vesselName</span>, </span></li>
+<li><span class="parameter" id="getBottomSheet-param-weight"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">weight</span>, </span></li>
+<li><span class="parameter" id="getBottomSheet-param-isLocationPermission"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">isLocationPermission</span></span></li>
+</ol>)
+
+      
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">getBottomSheet(BuildContext context, dynamic size, String vesselName,
+    String weight, bool isLocationPermission) async {
+  isStartButton = false;
+  isEndTripButton = false;
+  isSensorDataUploaded = false;
+  isZipFileCreate = false;
+  addingDataToDB = false;
+  selectedVesselWeight = &#39;Select Current Load&#39;;
+  isBottomSheetOpened = true;
+  isBluetoothConnected = false;
+  progress = 0.9;
+
+  final appDirectory = await getApplicationDocumentsDirectory();
+  ourDirectory = Directory(&#39;${appDirectory.path}&#39;);
+
+  showModalBottomSheet(
+    isDismissible: false,
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (BuildContext context) {
+      return WillPopScope(
+        onWillPop: () async {
+          if (!addingDataToDB) {
+            Navigator.pop(context);
+            return false;
+          } else {
+            return false;
+          }
+        },
+        child: Screenshot(
+          controller: controller1,
+          child: Scaffold(
+            backgroundColor: Colors.transparent.withOpacity(0.0),
+            extendBody: false,
+            key: _modelScaffoldKey,
+            resizeToAvoidBottomInset: true,
+            body: Align(
+              alignment: Alignment.bottomCenter,
+              child: StatefulBuilder(builder:
+                  (BuildContext bottomSheetContext, StateSetter stateSetter) {
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        new BoxShadow(
+                          color: Colors.black,
+                          blurRadius: 20.0,
+                        ),
+                      ],
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40),
+                          topRight: Radius.circular(40))),
+                  child: Stack(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: displayWidth(context) * 0.01,
+                                ),
+                                TweenAnimationBuilder(
+                                  duration: const Duration(seconds: 3),
+                                  tween: Tween(
+                                      begin: progressBegin, end: progress),
+                                  builder: (context, double value, _) {
+                                    return SizedBox(
+                                      height: 80,
+                                      width: 80,
+                                      child: Stack(
+                                        fit: StackFit.expand,
+                                        children: [
+                                          CircularProgressIndicator(
+                                            value: value,
+                                            backgroundColor:
+                                            Colors.grey.shade200,
+                                            strokeWidth: 3,
+                                            color: Colors.green,
+                                          ),
+                                          Center(
+                                            child: buildProgress(value, 60),
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  onEnd: () {
+                                    Utils.customPrint(&#39;END&#39;);
+                                    stateSetter(() {
+                                      isStartButton = true;
+                                    });
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 40,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: displayWidth(context) * 0.08),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      commonText(
+                                          context: context,
+                                          text: &#39;Fetching your device details&#39;,
+                                          fontWeight: FontWeight.w500,
+                                          textColor: Colors.black,
+                                          textSize:
+                                          displayWidth(context) * 0.032,
+                                          textAlign: TextAlign.start),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      TweenAnimationBuilder(
+                                          duration: const Duration(seconds: 3),
+                                          tween: Tween(
+                                              begin: deviceProgressBegin,
+                                              end: deviceProgress),
+                                          builder: (context, double value, _) {
+                                            return SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: Stack(
+                                                fit: StackFit.expand,
+                                                children: [
+                                                  CircularProgressIndicator(
+                                                    color:
+                                                    circularProgressColor,
+                                                    value: value,
+                                                    backgroundColor:
+                                                    Colors.grey.shade200,
+                                                    strokeWidth: 2,
+                                                    valueColor:
+                                                    const AlwaysStoppedAnimation(
+                                                        Colors.green),
+                                                  ),
+                                                  Center(
+                                                    child: subTitleProgress(
+                                                        value,
+                                                        displayWidth(context) *
+                                                            0.035),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: displayWidth(context) * 0.08),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          commonText(
+                                              context: context,
+                                              text: isLocationPermission
+                                                  ? &#39;Location permission granted&#39;
+                                                  : &#39;Location permission is required&#39;,
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize:
+                                              displayWidth(context) * 0.032,
+                                              textAlign: TextAlign.start),
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+                                          !isLocationPermission
+                                              ? SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: Colors.red,
+                                                      width: 2),
+                                                  shape: BoxShape.circle),
+                                              child: Center(
+                                                child: Icon(
+                                                  Icons.close,
+                                                  color: Colors.red,
+                                                  size: 14,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                              : TweenAnimationBuilder(
+                                              duration: const Duration(
+                                                  seconds: 3),
+                                              tween: Tween(
+                                                  begin:
+                                                  sensorProgressBegin,
+                                                  end: sensorProgress),
+                                              builder: (context,
+                                                  double value, _) {
+                                                return SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: Stack(
+                                                    fit: StackFit.expand,
+                                                    children: [
+                                                      CircularProgressIndicator(
+                                                        color:
+                                                        circularProgressColor,
+                                                        value: value,
+                                                        backgroundColor:
+                                                        Colors.grey
+                                                            .shade200,
+                                                        strokeWidth: 2,
+                                                        valueColor:
+                                                        const AlwaysStoppedAnimation(
+                                                            Colors
+                                                                .green),
+                                                      ),
+                                                      Center(
+                                                        child: subTitleProgress(
+                                                            value,
+                                                            displayWidth(
+                                                                context) *
+                                                                0.035),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
+                                        ],
+                                      ),
+                                      isLocationPermission
+                                          ? SizedBox()
+                                          : commonText(
+                                          context: context,
+                                          text: &#39;Permission Denied!&#39;,
+                                          fontWeight: FontWeight.w400,
+                                          textColor: Colors.red,
+                                          textSize:
+                                          displayWidth(context) * 0.028,
+                                          textAlign: TextAlign.start),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: displayWidth(context) * 0.08),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          commonText(
+                                              context: context,
+                                              text: &#39;Connecting with LPR&#39;,
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize:
+                                              displayWidth(context) * 0.032,
+                                              textAlign: TextAlign.start),
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+                                          TweenAnimationBuilder(
+                                              duration:
+                                              const Duration(seconds: 3),
+                                              tween: Tween(
+                                                  begin: lprSensorProgressBegin,
+                                                  end: lprSensorProgress),
+                                              builder:
+                                                  (context, double value, _) {
+                                                return isBluetoothConnected
+                                                    ? SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: Stack(
+                                                    fit: StackFit.expand,
+                                                    children: [
+                                                      CircularProgressIndicator(
+                                                        color:
+                                                        circularProgressColor,
+                                                        value: value,
+                                                        backgroundColor:
+                                                        Colors.grey
+                                                            .shade200,
+                                                        strokeWidth: 2,
+                                                        valueColor:
+                                                        const AlwaysStoppedAnimation(
+                                                            Colors
+                                                                .green),
+                                                      ),
+                                                      Center(
+                                                        child: subTitleProgress(
+                                                            value,
+                                                            displayWidth(
+                                                                context) *
+                                                                0.035),
+                                                      )
+                                                    ],
+                                                  ),
+                                                )
+                                                    : SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: Container(
+                                                    alignment:
+                                                    Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Colors
+                                                                .red,
+                                                            width: 2),
+                                                        shape: BoxShape
+                                                            .circle),
+                                                    child: Center(
+                                                      child: Icon(
+                                                        Icons.close,
+                                                        color: Colors.red,
+                                                        size: 14,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                        ],
+                                      ),
+                                      isBluetoothConnected
+                                          ? Row(
+                                        children: [
+                                          commonText(
+                                              context: context,
+                                              text: &#39;Connected with &#39;,
+                                              fontWeight: FontWeight.w400,
+                                              textColor: Colors.green,
+                                              textSize:
+                                              displayWidth(context) *
+                                                  0.028,
+                                              textAlign: TextAlign.start),
+                                          SizedBox(
+                                            width: 2,
+                                          ),
+                                          commonText(
+                                              context: context,
+                                              text: bluetoothName,
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.green,
+                                              textSize:
+                                              displayWidth(context) *
+                                                  0.028,
+                                              textAlign: TextAlign.start),
+                                        ],
+                                      )
+                                          : InkWell(
+                                        onTap: () async {
+                                          showBluetoothListDialog(
+                                              context, stateSetter);
+                                        },
+                                        child: commonText(
+                                            context: context,
+                                            text:
+                                            &#39;Tap to connect LPR manually&#39;,
+                                            fontWeight: FontWeight.w400,
+                                            textColor: Colors.red,
+                                            textSize:
+                                            displayWidth(context) *
+                                                0.028,
+                                            textAlign: TextAlign.start),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: displayWidth(context) * 0.08),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      commonText(
+                                          context: context,
+                                          text: &#39;Connecting with sensors&#39;,
+                                          fontWeight: FontWeight.w500,
+                                          textColor: Colors.black,
+                                          textSize:
+                                          displayWidth(context) * 0.032,
+                                          textAlign: TextAlign.start),
+                                      const SizedBox(
+                                        width: 20,
+                                      ),
+                                      TweenAnimationBuilder(
+                                          duration: const Duration(seconds: 3),
+                                          tween: Tween(
+                                              begin: accSensorProgressBegin,
+                                              end: accSensorProgress),
+                                          builder: (context, double value, _) {
+                                            return SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: Stack(
+                                                fit: StackFit.expand,
+                                                children: [
+                                                  CircularProgressIndicator(
+                                                    color:
+                                                    circularProgressColor,
+                                                    value: value,
+                                                    backgroundColor:
+                                                    Colors.grey.shade200,
+                                                    strokeWidth: 2,
+                                                    valueColor:
+                                                    const AlwaysStoppedAnimation(
+                                                        Colors.green),
+                                                  ),
+                                                  Center(
+                                                    child: subTitleProgress(
+                                                        value,
+                                                        displayWidth(context) *
+                                                            0.035),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 15,
+                                ),
+                                isZipFileCreate
+                                    ? InkWell(
+                                  onTap: () async {
+                                    File copiedFile =
+                                    File(&#39;${ourDirectory!.path}.zip&#39;);
+
+                                    Directory directory;
+
+                                    if (Platform.isAndroid) {
+                                      directory = Directory(
+                                          &quot;storage&#47;emulated&#47;0&#47;Download&#47;${widget.vessel!.id}.zip&quot;);
+                                    } else {
+                                      directory =
+                                      await getApplicationDocumentsDirectory();
+                                    }
+
+                                    copiedFile.copy(directory.path);
+
+                                    Utils.customPrint(
+                                        &#39;DOES FILE EXIST: ${copiedFile.existsSync()}&#39;);
+                                    if (copiedFile.existsSync()) {
+                                      Utils.showSnackBar(context,
+                                          scaffoldKey: scaffoldKey,
+                                          message:
+                                          &#39;File downloaded successfully&#39;);
+                                    }
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.center,
+                                    children: [
+                                      commonText(
+                                          context: context,
+                                          text: &#39;Download File&#39;,
+                                          fontWeight: FontWeight.w500,
+                                          textColor: Colors.black,
+                                          textSize:
+                                          displayWidth(context) *
+                                              0.038,
+                                          textAlign: TextAlign.start),
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.all(8.0),
+                                        child: Icon(
+                                            Icons.file_download_outlined),
+                                      )
+                                    ],
+                                  ),
+                                )
+                                    : SizedBox(),
+                                SizedBox(
+                                  height: displayWidth(context) * 0.03,
+                                ),
+                                StatefulBuilder(
+                                  builder: (context, StateSetter stateSetter) {
+                                    return Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 20, right: 20),
+                                          child: Container(
+                                            height: displayHeight(context) &gt;=
+                                                680
+                                                ? displayHeight(context) * 0.056
+                                                : displayHeight(context) * 0.07,
+                                            alignment: Alignment.centerLeft,
+                                            color: Color(0xFFECF3F9),
+                                            child: InputDecorator(
+                                              decoration: const InputDecoration(
+                                                enabledBorder: InputBorder.none,
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(
+                                                        Radius.circular(
+                                                            0.0))),
+                                                contentPadding: EdgeInsets.only(
+                                                    left: 20,
+                                                    right: 20,
+                                                    top: 5,
+                                                    bottom: 5),
+                                              ),
+                                              child: commonText(
+                                                  context: context,
+                                                  text: vesselName,
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.black54,
+                                                  textSize:
+                                                  displayWidth(context) *
+                                                      0.032,
+                                                  textAlign: TextAlign.start),
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 20, right: 20, top: 10),
+                                          child: Container(
+                                            alignment: Alignment.centerLeft,
+                                            height: displayHeight(context) &gt;=
+                                                680
+                                                ? displayHeight(context) * 0.056
+                                                : displayHeight(context) * 0.07,
+                                            color: Color(0xFFECF3F9),
+                                            child: InputDecorator(
+                                              decoration: const InputDecoration(
+                                                enabledBorder: InputBorder.none,
+                                                border: OutlineInputBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(
+                                                        Radius.circular(
+                                                            0.0))),
+                                                contentPadding: EdgeInsets.only(
+                                                    left: 20,
+                                                    right: 20,
+                                                    top: 10,
+                                                    bottom: 10),
+                                              ),
+                                              child:
+                                              DropdownButtonHideUnderline(
+                                                child: DropdownButton&lt;dynamic&gt;(
+                                                  value: null,
+                                                  isDense: true,
+                                                  hint: commonText(
+                                                      context: context,
+                                                      text:
+                                                      selectedVesselWeight,
+                                                      fontWeight:
+                                                      FontWeight.w500,
+                                                      textColor: Colors.black54,
+                                                      textSize: displayWidth(
+                                                          context) *
+                                                          0.032,
+                                                      textAlign:
+                                                      TextAlign.start),
+                                                  &#47;&#47;  Text(
+                                                  &#47;&#47;     &#39;${selectedVesselWeight}&#39;),
+                                                  isExpanded: true,
+                                                  items: [
+                                                    DropdownMenuItem(
+                                                        value: &#39;1&#39;,
+                                                        child: Text(&#39;Empty&#39;)),
+                                                    DropdownMenuItem(
+                                                        value: &#39;2&#39;,
+                                                        child: Text(&#39;Half&#39;)),
+                                                    DropdownMenuItem(
+                                                        value: &#39;3&#39;,
+                                                        child: Text(&#39;Full&#39;)),
+                                                    DropdownMenuItem(
+                                                        value: &#39;4&#39;,
+                                                        child:
+                                                        Text(&#39;Variable&#39;)),
+                                                  ],
+                                                  onChanged: (weightValue) {
+                                                    stateSetter(() {
+                                                      if (int.parse(
+                                                          weightValue) ==
+                                                          1) {
+                                                        selectedVesselWeight =
+                                                        &#39;Empty&#39;;
+                                                      } else if (int.parse(
+                                                          weightValue) ==
+                                                          2) {
+                                                        selectedVesselWeight =
+                                                        &#39;Half&#39;;
+                                                      } else if (int.parse(
+                                                          weightValue) ==
+                                                          3) {
+                                                        selectedVesselWeight =
+                                                        &#39;Full&#39;;
+                                                      } else {
+                                                        selectedVesselWeight =
+                                                        &#39;Variable&#39;;
+                                                      }
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            &#47;&#47;height: 50,
+                            width: displayWidth(context),
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                  left: 17,
+                                  right: 17,
+                                  bottom:
+                                  isStartButton || isEndTripButton ? 0 : 2),
+                              child: isStartButton
+                                  ? addingDataToDB
+                                  ? Center(
+                                  child: CircularProgressIndicator(
+                                      valueColor:
+                                      AlwaysStoppedAnimation&lt;Color&gt;(
+                                          circularProgressColor)))
+                                  : CommonButtons.getActionButton(
+                                  title: &#39;Start&#39;,
+                                  context: context,
+                                  fontSize:
+                                  displayWidth(context) * 0.042,
+                                  textColor: Colors.white,
+                                  buttonPrimaryColor: buttonBGColor,
+                                  borderColor: buttonBGColor,
+                                  width: displayWidth(context),
+                                  onTap: () async {
+                                    Utils.customPrint(
+                                        &#39;SELECTED VESSEL WEIGHT $selectedVesselWeight&#39;);
+                                    if (selectedVesselWeight ==
+                                        &#39;Select Current Load&#39;) {
+                                      Utils.customPrint(
+                                          &#39;SELECTED VESSEL WEIGHT 12 $selectedVesselWeight&#39;);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        behavior:
+                                        SnackBarBehavior.floating,
+                                        content: Text(
+                                            &quot;Please select current load&quot;),
+                                        duration: Duration(seconds: 1),
+                                        backgroundColor: Colors.blue,
+                                      ));
+                                      return;
+                                    }
+
+                                    bool isLocationPermitted =
+                                    await Permission
+                                        .location.isGranted;
+
+                                    if (isLocationPermitted) {
+                                      stateSetter(() {
+                                        isLocationPermission = true;
+                                      });
+
+                                      if (Platform.isAndroid) {
+                                        final androidInfo =
+                                        await DeviceInfoPlugin()
+                                            .androidInfo;
+
+                                        if (androidInfo.version.sdkInt &lt;
+                                            29) {
+                                          var isStoragePermitted =
+                                          await Permission
+                                              .storage.status;
+                                          if (isStoragePermitted
+                                              .isGranted) {
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  bottomSheetContext,
+                                                  stateSetter);
+                                            } else {
+                                              await Utils
+                                                  .getNotificationPermission(
+                                                  context);
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    bottomSheetContext,
+                                                    stateSetter);
+                                              }
+                                            }
+                                          } else {
+                                            await Utils
+                                                .getStoragePermission(
+                                                context);
+                                            final androidInfo =
+                                            await DeviceInfoPlugin()
+                                                .androidInfo;
+
+                                            var isStoragePermitted =
+                                            await Permission
+                                                .storage.status;
+
+                                            if (isStoragePermitted
+                                                .isGranted) {
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    bottomSheetContext,
+                                                    stateSetter);
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                    context);
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
+                                                }
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          bool isNotificationPermitted =
+                                          await Permission
+                                              .notification
+                                              .isGranted;
+
+                                          if (isNotificationPermitted) {
+                                            startWritingDataToDB(
+                                                bottomSheetContext,
+                                                stateSetter);
+                                          } else {
+                                            await Utils
+                                                .getNotificationPermission(
+                                                context);
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  bottomSheetContext,
+                                                  stateSetter);
+                                            }
+                                          }
+                                        }
+                                      } else {
+                                        bool isNotificationPermitted =
+                                        await Permission
+                                            .notification.isGranted;
+
+                                        if (isNotificationPermitted) {
+                                          startWritingDataToDB(
+                                              bottomSheetContext,
+                                              stateSetter);
+                                        } else {
+                                          await Utils
+                                              .getNotificationPermission(
+                                              context);
+                                          bool isNotificationPermitted =
+                                          await Permission
+                                              .notification
+                                              .isGranted;
+                                          if (isNotificationPermitted) {
+                                            startWritingDataToDB(
+                                                bottomSheetContext,
+                                                stateSetter);
+                                          }
+                                        }
+                                      }
+                                    } else {
+                                      await Utils.getLocationPermission(
+                                          context, scaffoldKey);
+                                      bool isLocationPermitted =
+                                      await Permission
+                                          .location.isGranted;
+
+                                      if (isLocationPermitted) {
+                                        stateSetter(() {
+                                          isLocationPermission = true;
+                                        });
+                                        &#47;&#47; service.startService();
+
+                                        if (Platform.isAndroid) {
+                                          final androidInfo =
+                                          await DeviceInfoPlugin()
+                                              .androidInfo;
+
+                                          if (androidInfo
+                                              .version.sdkInt &lt;
+                                              29) {
+                                            var isStoragePermitted =
+                                            await Permission
+                                                .storage.status;
+                                            if (isStoragePermitted
+                                                .isGranted) {
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    bottomSheetContext,
+                                                    stateSetter);
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                    context);
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
+                                                }
+                                              }
+                                            } else {
+                                              await Utils
+                                                  .getStoragePermission(
+                                                  context);
+                                              final androidInfo =
+                                              await DeviceInfoPlugin()
+                                                  .androidInfo;
+
+                                              var isStoragePermitted =
+                                              await Permission
+                                                  .storage.status;
+
+                                              if (isStoragePermitted
+                                                  .isGranted) {
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      bottomSheetContext,
+                                                      stateSetter);
+                                                } else {
+                                                  await Utils
+                                                      .getNotificationPermission(
+                                                      context);
+                                                  bool
+                                                  isNotificationPermitted =
+                                                  await Permission
+                                                      .notification
+                                                      .isGranted;
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        bottomSheetContext,
+                                                        stateSetter);
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  bottomSheetContext,
+                                                  stateSetter);
+                                            } else {
+                                              await Utils
+                                                  .getNotificationPermission(
+                                                  context);
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    bottomSheetContext,
+                                                    stateSetter);
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          bool isNotificationPermitted =
+                                          await Permission
+                                              .notification
+                                              .isGranted;
+
+                                          if (isNotificationPermitted) {
+                                            startWritingDataToDB(
+                                                bottomSheetContext,
+                                                stateSetter);
+                                          } else {
+                                            await Utils
+                                                .getNotificationPermission(
+                                                context);
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  bottomSheetContext,
+                                                  stateSetter);
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  })
+                                  : Container(
+                                margin: EdgeInsets.only(bottom: 8),
+                                child: CommonButtons.getActionButton(
+                                    title: &#39;Cancel&#39;,
+                                    context: context,
+                                    fontSize:
+                                    displayWidth(context) * 0.042,
+                                    textColor: Colors.white,
+                                    buttonPrimaryColor: buttonBGColor,
+                                    borderColor: buttonBGColor,
+                                    width: displayWidth(context),
+                                    onTap: () {
+                                      Get.back();
+                                    }),
+                              ),
+                            ),
+                          ),
+
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top : displayWidth(context) * 0.01,
+                            ),
+                            child: GestureDetector(
+                                onTap: ()async{
+                                  final image = await controller1.capture();
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) =&gt; FeedbackReport(
+                                    imagePath: image.toString(),
+                                    uIntList: image,)));
+                                },
+                                child: UserFeedback().getUserFeedback(context)
+                            ),
+                          ),
+
+                          SizedBox(
+                            height: displayWidth(context) * 0.02,
+                          )
+
+                        ],
+                      ),
+                      Positioned(
+                        right: 10,
+                        top: 10,
+                        child: addingDataToDB
+                            ? SizedBox()
+                            : Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: backgroundColor),
+                          child: IconButton(
+                              onPressed: () async {
+                                isBottomSheetOpened = false;
+                                await tripIsRunningOrNot();
+                                setState(() {
+                                  widget.vessel!.id = widget.vessel!.id;
+                                });
+
+                                stateSetter(() {
+                                  addingDataToDB = false;
+                                });
+
+                                Navigator.of(bottomSheetContext).pop();
+                              },
+                              icon: Icon(Icons.close_rounded,
+                                  color: buttonBGColor)),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ),
+        ),
+      );
+    },
+    elevation: 4,
+    enableDrag: false,
+  ).then((value) async {
+    await tripIsRunningOrNot();
+    Utils.customPrint(&#39;BACK PRESSED&#39;);
+    isBottomSheetOpened = false;
+
+    addingDataToDB = false;
+    isStartButton = false;
+    isEndTripButton = true;
+
+    if (tripIsRunning) {
+      List&lt;String&gt;? tripData = sharedPreferences!.getStringList(&#39;trip_data&#39;);
+      final tripDetails = await _databaseService.getTrip(tripData![0]);
+
+      var result = Navigator.pushReplacement(
+        scaffoldKey.currentContext!,
+        MaterialPageRoute(
+            builder: (context) =&gt; TripAnalyticsScreen(
+              tripId: tripDetails.id,
+              vesselId: widget.vessel!.id,
+              tripIsRunningOrNot: tripIsRunning,
+            )),
+      );
+
+      if (result != null) {
+        Utils.customPrint(&#39;VESSEL SINGLE VIEW RESULT $result&#39;);
+      }
+    }
+  });
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">performarine</a></li>
+  <li><a href="../../old_ui_old_vessel_single_view/old_ui_old_vessel_single_view-library.html">old_vessel_single_view</a></li>
+  <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState-class.html">OldVesselSingleViewState</a></li>
+  <li class="self-crumb">getBottomSheet method</li>
+</ol>
+
+
+    <h5>OldVesselSingleViewState class</h5>
+    <ol>
+
+        <li class="section-title"><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState-class.html#constructors">Constructors</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/OldVesselSingleViewState.html">OldVesselSingleViewState</a></li>
+
+
+        <li class="section-title">
+          <a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState-class.html#instance-properties">Properties</a>
+        </li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/accelerometerAvailable.html">accelerometerAvailable</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/accSensorProgress.html">accSensorProgress</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/accSensorProgressBegin.html">accSensorProgressBegin</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/addingDataToDB.html">addingDataToDB</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/androidDeviceInfo.html">androidDeviceInfo</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/anotherVesselEndTrip.html">anotherVesselEndTrip</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/avgSpeed.html">avgSpeed</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/bluetoothName.html">bluetoothName</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/commonProvider.html">commonProvider</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/context.html">context</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/controller.html">controller</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/controller1.html">controller1</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/deviceDetails.html">deviceDetails</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/deviceProgress.html">deviceProgress</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/deviceProgressBegin.html">deviceProgressBegin</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/fileIndex.html">fileIndex</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/fileName.html">fileName</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/getTripId.html">getTripId</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/gyroscopeAvailable.html">gyroscopeAvailable</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/gyroSensorProgress.html">gyroSensorProgress</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/gyroSensorProgressBegin.html">gyroSensorProgressBegin</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/iosDeviceInfo.html">iosDeviceInfo</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isBluetoothConnected.html">isBluetoothConnected</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isBluetoothDialog.html">isBluetoothDialog</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isBottomSheetOpened.html">isBottomSheetOpened</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isCheckingPermission.html">isCheckingPermission</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isDataUpdated.html">isDataUpdated</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isEndTripButton.html">isEndTripButton</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isLocationDialogBoxOpen.html">isLocationDialogBoxOpen</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isRefreshList.html">isRefreshList</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isScanningBluetooth.html">isScanningBluetooth</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isSensorDataUploaded.html">isSensorDataUploaded</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isServiceRunning.html">isServiceRunning</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isStartButton.html">isStartButton</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isTripEndedOrNot.html">isTripEndedOrNot</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isVesselParticularExpanded.html">isVesselParticularExpanded</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/isZipFileCreate.html">isZipFileCreate</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/latitude.html">latitude</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/locationTimer.html">locationTimer</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/longitude.html">longitude</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/lprSensorProgress.html">lprSensorProgress</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/lprSensorProgressBegin.html">lprSensorProgressBegin</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/magnetometerAvailable.html">magnetometerAvailable</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/magnSensorProgress.html">magnSensorProgress</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/magnSensorProgressBegin.html">magnSensorProgressBegin</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/mounted.html">mounted</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/notiTimer.html">notiTimer</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/pref.html">pref</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/progress.html">progress</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/progressBegin.html">progressBegin</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/scaffoldKey.html">scaffoldKey</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/selectedVesselWeight.html">selectedVesselWeight</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/sensorDataTable.html">sensorDataTable</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/sensorProgress.html">sensorProgress</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/sensorProgressBegin.html">sensorProgressBegin</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/startDateTime.html">startDateTime</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/totalDistance.html">totalDistance</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/totalDuration.html">totalDuration</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/tripIsEnded.html">tripIsEnded</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/tripIsRunning.html">tripIsRunning</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/tripsCount.html">tripsCount</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/uaccSensorProgress.html">uaccSensorProgress</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/uaccSensorProgressBegin.html">uaccSensorProgressBegin</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/userAccelerometerAvailable.html">userAccelerometerAvailable</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/uuid.html">uuid</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/vessel.html">vessel</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/vesselAnalytics.html">vesselAnalytics</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/widget.html">widget</a></li>
+
+        <li class="section-title"><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState-class.html#instance-methods">Methods</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/activate.html">activate</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/blueIsOn.html">blueIsOn</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/build.html">build</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/buildProgress.html">buildProgress</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/checkSensorAvailabelOrNot.html">checkSensorAvailabelOrNot</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/deactivate.html">deactivate</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/debugFillProperties.html">debugFillProperties</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/didChangeDependencies.html">didChangeDependencies</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/didUpdateWidget.html">didUpdateWidget</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/dispose.html">dispose</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/enableBT.html">enableBT</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/endTripMethod.html">endTripMethod</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/fetchDeviceData.html">fetchDeviceData</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/fetchDeviceInfo.html">fetchDeviceInfo</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/getBottomSheet.html">getBottomSheet</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/getRunningTripDetails.html">getRunningTripDetails</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/getVesselAnalytics.html">getVesselAnalytics</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/initPlatformStateBGL.html">initPlatformStateBGL</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/initState.html">initState</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/locationPermissions.html">locationPermissions</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/onSave.html">onSave</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/reassemble.html">reassemble</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/setState.html">setState</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/showBluetoothDialog.html">showBluetoothDialog</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/showBluetoothListDialog.html">showBluetoothListDialog</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/showDialogBox.html">showDialogBox</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/startWritingDataToDB.html">startWritingDataToDB</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/subTitleProgress.html">subTitleProgress</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/Diagnosticable/toDiagnosticsNode.html">toDiagnosticsNode</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/Diagnosticable/toString.html">toString</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/Diagnosticable/toStringShort.html">toStringShort</a></li>
+          <li><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState/tripIsRunningOrNot.html">tripIsRunningOrNot</a></li>
+
+        <li class="section-title inherited"><a href="../../old_ui_old_vessel_single_view/OldVesselSingleViewState-class.html#operators">Operators</a></li>
+          <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    performarine
+      1.0.0+1
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
