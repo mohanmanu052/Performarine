@@ -92,6 +92,7 @@ dependencies:
   latlong2: ^0.8.2
   flutter_xlider: ^3.5.0
   animated_bottom_navigation_bar: ^1.2.0
+  dropdown_button2: ^2.3.8
 
 
 dependency_overrides:

@@ -740,7 +740,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                     children: [
                                       CommonButtons.getActionButton(
                                           title:
-                                          'Download Trip Data',
+                                          'Download Trip',
                                           context: context,
                                           fontSize: displayWidth(
                                               context) *
@@ -1480,7 +1480,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                       CommonButtons
                                           .getActionButton(
                                           title:
-                                          'Download Trip Data',
+                                          'Download Trip',
                                           context:
                                           context,
                                           fontSize:

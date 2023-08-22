@@ -394,7 +394,7 @@ class _TripWidgetState extends State<TripWidget> {
                                       .getTripButton(
                                       buttonPrimaryColor:
                                       blueColor,
-                                      borderColor: buttonBGColor
+                                      borderColor: blueColor
                                           .withOpacity(.5),
                                       fontSize:
                                       displayWidth(context) *
@@ -408,7 +408,7 @@ class _TripWidgetState extends State<TripWidget> {
                                       context: context,
                                       width: displayWidth(context) *
                                           0.27,
-                                      title: 'Download Trip Data'))
+                                      title: 'Download Trip'))
                                   : SizedBox(
                                   height: displayHeight(context) * 0.038,
                                   child: isTripUploaded
@@ -421,7 +421,7 @@ class _TripWidgetState extends State<TripWidget> {
                                             valueColor:
                                             AlwaysStoppedAnimation<
                                                 Color>(
-                                                circularProgressColor),
+                                                Colors.blue),
                                           )))
                                       : CommonButtons
                                       .getTripButton(
@@ -462,7 +462,7 @@ class _TripWidgetState extends State<TripWidget> {
                                     width:
                                     displayWidth(context) *
                                         0.28,
-                                    title: 'Upload trip Data ',)),
+                                    title: 'Upload trip',)),
                             ),
                             SizedBox(
                               width: 10,
