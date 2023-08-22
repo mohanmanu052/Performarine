@@ -229,6 +229,7 @@ class _IntroScreenState extends State<IntroScreen> {
                     builder: (context) => TripRecordingScreen(
                         tripId: tripData![0],
                         vesselId: tripData[1],
+                        vesselName: tripData[2],
                         isAppKilled: true,
                         tripIsRunningOrNot: isTripStarted)),
                 ModalRoute.withName(""));
@@ -330,6 +331,7 @@ class _IntroScreenState extends State<IntroScreen> {
                   builder: (context) => TripRecordingScreen(
                       tripId: tripData![0],
                       vesselId: tripData[1],
+                      vesselName: tripData[2],
                       tripIsRunningOrNot: isTripStarted)),
               ModalRoute.withName(""));
         }

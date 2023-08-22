@@ -12,6 +12,7 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 
 import '../../common_widgets/widgets/log_level.dart';
+import '../../old_ui/old_vessel_single_view.dart';
 import '../bottom_navigation.dart';
 
 //Successfully added screen
@@ -141,13 +142,13 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     decoration:
                         BoxDecoration(borderRadius: BorderRadius.circular(10)),
                     child: Lottie.asset('assets/lottie/done.json')),
-                vesselSingleViewCard(context, widget.data!,
+                OldVesselSingleViewCard(context, widget.data!,
                     (CreateVessel value) {
                       CustomLogger().logWithFile(Level.info, "User Navigating to Vessel Single View -> $page");
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => VesselSingleView(
+                        builder: (context) => OldVesselSingleView(
                               vessel: value,
                               isCalledFromSuccessScreen: true,
                             )),

@@ -28,6 +28,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../common_widgets/utils/urls.dart';
 import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/status_tage.dart';
+import '../new_trip_analytics_screen.dart';
 
 class OldTripWidget extends StatefulWidget {
   final String? calledFrom;
@@ -100,7 +101,7 @@ class _OldTripWidgetState extends State<OldTripWidget> {
           var result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TripAnalyticsScreen(
+              builder: (context) => NewTripAnalyticsScreen(
                 tripId: widget.tripList!.id,
                 vesselId: getVesselById[0].id,
                 tripIsRunningOrNot:
@@ -271,7 +272,7 @@ class _OldTripWidgetState extends State<OldTripWidget> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        TripAnalyticsScreen(
+                                        NewTripAnalyticsScreen(
                                             tripId:
                                             widget.tripList!.id,
                                             vesselId:
@@ -323,7 +324,7 @@ class _OldTripWidgetState extends State<OldTripWidget> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          TripAnalyticsScreen(
+                                          NewTripAnalyticsScreen(
                                               tripId: widget
                                                   .tripList!.id,
                                               vesselId:

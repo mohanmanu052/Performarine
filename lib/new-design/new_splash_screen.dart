@@ -188,6 +188,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                 MaterialPageRoute(
                     builder: (context) => TripRecordingScreen(
                         tripId: tripData![0],
+                        vesselName: tripData[2],
                         vesselId: tripData[1],
                         isAppKilled: true,
                         tripIsRunningOrNot: isTripStarted)),
@@ -289,6 +290,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
               MaterialPageRoute(
                   builder: (context) => TripRecordingScreen(
                       tripId: tripData![0],
+                      vesselName: tripData[2],
                       vesselId: tripData[1],
                       tripIsRunningOrNot: isTripStarted)),
               ModalRoute.withName(""));

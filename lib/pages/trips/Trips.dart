@@ -8,6 +8,7 @@ import '../../common_widgets/utils/common_size_helper.dart';
 import '../../common_widgets/widgets/common_text_search_field.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
+import '../../old_ui/old_trip_view_list_screen.dart';
 import '../../provider/common_provider.dart';
 import '../feedback_report.dart';
 import 'TripViewList.dart';
@@ -36,33 +37,11 @@ class _TripsState extends State<Trips> {
         child: Scaffold(
           backgroundColor: backgroundColor,
           key: scaffoldKey,
-          body: Column(
-            children: [
-             /* Padding(
-                padding: EdgeInsets.only(left: displayWidth(context) * 0.03,right: displayWidth(context) * 0.03),
-                child: SearchTextField(
-                    'Search by vessel, trip id, date',
-                    searchController,
-                    searchFocusNode,
-                    false,
-                    false, (value) {
-                  if (value.length > 3) {
-                    // future = commonProvider.getSearchData(
-                    //     value, context, scaffoldKey);
-                  }
-                }, (value) {
-                  *//*if (value.length > 3) {
-                            future = commonProvider.getSearchData(
-                                value, context, scaffoldKey);
-                          }*//*
-                }, TextInputType.text,
-                    textInputAction: TextInputAction.search,
-                    enabled: true,
-                    isForTwoDecimal: false),
-              ),*/
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
 
-              Expanded(
-                child: TripViewList(
+                OldTripViewListing(
                   scaffoldKey: scaffoldKey,
                   calledFrom: 'HomePage',
                   isTripDeleted: ()async{
@@ -71,8 +50,8 @@ class _TripsState extends State<Trips> {
                     commonProvider.getTripsByVesselId('');
                   },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
         ),

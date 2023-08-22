@@ -15,11 +15,11 @@ import '../bottom_navigation.dart';
 
 
 class TripRecordingScreen extends StatefulWidget {
-  final String? vesselId, tripId;
+  final String? vesselId, tripId,vesselName;
   final bool? tripIsRunningOrNot;
   final bool isAppKilled;
   final String? calledFrom;
-  const TripRecordingScreen({super.key, this.tripId, this.vesselId, this.tripIsRunningOrNot, this.isAppKilled = false, this.calledFrom = ''});
+  const TripRecordingScreen({super.key, this.tripId, this.vesselId, this.tripIsRunningOrNot, this.isAppKilled = false, this.calledFrom = '',this.vesselName});
 
   @override
   State<TripRecordingScreen> createState() => _TripRecordingScreenState();
@@ -151,7 +151,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
           title: Container(
             child: commonText(
               context: context,
-              text: 'Trip Recording',
+              text: widget.vesselName != null ? widget.vesselName :'Trip Recording',
               fontWeight: FontWeight.w600,
               textColor: Colors.black87,
               textSize: displayWidth(context) * 0.045,

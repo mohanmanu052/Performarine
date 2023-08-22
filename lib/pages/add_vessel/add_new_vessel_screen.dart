@@ -118,7 +118,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
               width: MediaQuery.of(context).size.width,
               height: displayHeight(context) * 1.25,
               child: Column(
-                mainAxisSize: MainAxisSize.max,
+               // mainAxisSize: MainAxisSize.max,
                 children: [
                   Flexible(
                     child: PageView(
@@ -133,6 +133,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                       },
                       children: [
                         Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             AddVesselStepOne(
                               pageController: pageController,

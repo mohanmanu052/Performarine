@@ -22,7 +22,7 @@ import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/new-design/new_splash_screen.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
-import 'package:performarine/pages/auth_new/reset_password.dart';
+import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/intro_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
@@ -303,6 +303,7 @@ Future<void> initializeService() async {
 
           Get.to(TripRecordingScreen(
               tripId: tripData![0],
+              vesselName: tripData[2],
               vesselId: tripData[1],
               isAppKilled: false,
               tripIsRunningOrNot: isTripStarted));
@@ -323,6 +324,7 @@ Future<void> initializeService() async {
 
           Get.to(TripRecordingScreen(
               tripId: tripData![0],
+              vesselName: tripData[2],
               vesselId: tripData[1],
               isAppKilled: true,
               tripIsRunningOrNot: isTripStarted));
@@ -558,6 +560,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
                       Get.to(TripRecordingScreen(
                           tripId: tripData![0],
+                          vesselName: tripData[2],
                           vesselId: tripData[1],
                           isAppKilled: false,
                           tripIsRunningOrNot: isTripStarted));
@@ -574,6 +577,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
                       Get.to(TripRecordingScreen(
                           tripId: tripData![0],
+                          vesselName: tripData[2],
                           vesselId: tripData[1],
                           isAppKilled: true,
                           tripIsRunningOrNot: isTripStarted));

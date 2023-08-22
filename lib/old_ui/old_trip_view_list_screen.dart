@@ -124,6 +124,7 @@ class _OldTripViewListingState extends State<OldTripViewListing> {
                               child: ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
+                                primary: false,
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) {
                                   final itemKey = ValueKey(index);

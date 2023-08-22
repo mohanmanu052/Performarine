@@ -1260,6 +1260,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                               MaterialPageRoute(builder: (context) => TripRecordingScreen(
                                                   tripId: tripId,
                                                   vesselId: tripData![1],
+                                                  vesselName: tripData[2],
                                                   tripIsRunningOrNot: runningTrip)),
                                             );
 

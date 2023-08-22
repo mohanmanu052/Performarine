@@ -496,6 +496,7 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                                             context,
                                             MaterialPageRoute(builder: (context) => TripRecordingScreen(
                                             tripId: widget.tripList!.id,
+                                            vesselName: widget.tripList!.vesselName,
                                             vesselId: widget.tripList!.vesselId,
                                             tripIsRunningOrNot: widget.tripList?.tripStatus == 0)));
                                       },

@@ -84,7 +84,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
     await sharedPreferences!.reload();
 
-    durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+    durationTimer = Timer.periodic(Duration(milliseconds: 100), (timer) {
       Utils.customPrint('##TDATA updated time delay from 1 sec to 400 MS by abhi');
       tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
       tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
@@ -351,7 +351,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
                           commonText(
                             context: context,
-                            text: 'Nautical Miles',
+                            text: 'hh:mm:ss',
                             fontWeight: FontWeight.w400,
                             textColor: Colors.black,
                             textSize: displayWidth(context) * 0.03,
