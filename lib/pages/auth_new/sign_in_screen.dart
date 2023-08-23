@@ -231,7 +231,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       //key: emailFormFieldKey,
                         controller: emailController,
                         focusNode: emailFocusNode,
-                        labelText: 'Enter your Email',
+                        labelText: 'Enter Your Email',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -246,7 +246,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         onChanged: (value) {},
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Enter your Email';
+                            return 'Enter Your Email';
                           } else if (!EmailValidator.validate(value)) {
                             return 'Enter valid Email';
                           }

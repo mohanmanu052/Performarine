@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -807,206 +808,16 @@ class _ReportsModuleState extends State<ReportsModule> {
                               isVesselDataLoading!
                                   ? Container(
                                       width: displayWidth(context) * 0.8,
-                                      //height: displayHeight(context) * 0.05,
-                                      child: DropdownButtonHideUnderline(
-                                        child: DropdownButtonFormField<
-                                            DropdownItem>(
-                                          autovalidateMode: AutovalidateMode
-                                              .onUserInteraction,
-                                          dropdownColor:
-                                              Theme.of(context).brightness ==
-                                                      Brightness.dark
-                                                  ? "Select Vessel" ==
-                                                          'User SubRole'
-                                                      ? Colors.white
-                                                      : Colors.transparent
-                                                  : Colors.white,
-                                          decoration: InputDecoration(
-                                            prefixIcon: Transform.scale(
-                                              scale: 0.5,
-                                              child: Image.asset('assets/icons/vessels.png', height: displayHeight(context) * 0.02),
-                                            ),
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 10),
-                                            focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    width: 1.5,
-                                                    color: Colors.transparent),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8))),
-                                            enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    width: 1.5,
-                                                    color: Colors.transparent),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8))),
-                                            errorBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    width: 1.5,
-                                                    color: Colors.red.shade300
-                                                        .withOpacity(0.7)),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(8))),
-                                            errorStyle: TextStyle(
-                                                fontFamily: inter,
-                                                fontSize:
-                                                    displayWidth(context) *
-                                                        0.025),
-                                            focusedErrorBorder:
-                                                OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        width: 1.5,
-                                                        color: Colors
-                                                            .red.shade300
-                                                            .withOpacity(0.7)),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                8))),
-                                            fillColor: reportDropdownColor,
-                                            filled: true,
-                                            hintText: "Select vessel",
-                                            hintStyle: TextStyle(
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.dark
-                                                    ? "Select Vessel" ==
-                                                            'User SubRole'
-                                                        ? Colors.black54
-                                                        : Colors.white
-                                                    : Colors.black,
-                                                fontSize:
-                                                    displayWidth(context) *
-                                                        0.034,
-                                                fontFamily: outfit,
-                                                fontWeight: FontWeight.w300),
-                                          ),
-                                          isExpanded: true,
-                                          isDense: true,
-                                          validator: (value) {
-                                            if (value == null) {
-                                              return 'Select Vessel';
-                                            }
-                                            return null;
-                                          },
-                                          icon: Icon(Icons.keyboard_arrow_down,
-                                              size:
-                                                  displayWidth(context) * 0.08,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? "Select Vessel" ==
-                                                          'User SubRole'
-                                                      ? Colors.black
-                                                      : Colors.white
-                                                  : Colors.black),
-                                          value: selectedValue,
-                                          items: vesselData.map((item) {
-                                            return DropdownMenuItem<
-                                                DropdownItem>(
-                                              value: item,
-                                              child: Text(
-                                                item.name!,
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        displayWidth(context) *
-                                                            0.0346,
-                                                    color: Theme.of(context)
-                                                                .brightness ==
-                                                            Brightness.dark
-                                                        ? "Select Vessel" ==
-                                                                'User SubRole'
-                                                            ? Colors.black
-                                                            : Colors.white
-                                                        : Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            );
-                                          }).toList(),
-                                          onChanged: (item) {
-                                            Utils.customPrint(
-                                                "id is: ${item?.id} ");
-                                            CustomLogger().logWithFile(
-                                                Level.info,
-                                                "id is: ${item?.id}-> $page");
-
-                                            parentValue = false;
-                                            selectedVessel = item!.id;
-                                            selectedVesselName = item.name;
-                                            if (mounted) {
-                                              setState(() {
-                                                isTripIdListLoading = false;
-                                                isSHowGraph = false;
-                                                avgSpeed = null;
-                                                avgDuration = null;
-                                                avgFuelConsumption = null;
-                                                avgPower = null;
-                                                triSpeedList.clear();
-                                                tripList.clear();
-                                                duration1 = null;
-                                                avgSpeed1 = null;
-                                                fuelUsage = null;
-                                                powerUsage = null;
-                                                finalData.clear();
-                                                durationGraphData.clear();
-
-                                                durationColumnSeriesData
-                                                    .clear();
-                                                avgSpeedColumnSeriesData
-                                                    .clear();
-                                                fuelUsageColumnSeriesData
-                                                    .clear();
-                                                powerUsageColumnSeriesData
-                                                    .clear();
-                                                selectedTripIdList!.clear();
-                                                selectedTripLabelList!.clear();
-                                              });
-                                            }
-
-                                            dateTimeList!.clear();
-                                            children!.clear();
-                                            getTripListData(item.id!);
-                                          },
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      height: displayHeight(context) * 0.1,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  circularProgressColor),
-                                        ),
-                                      ),
-                                    ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.018,
-                              ),
-                              Container(
-                                width: displayWidth(context) * 0.8,
-                                //height: displayHeight(context) * 0.05,
                                 child: DropdownButtonHideUnderline(
-                                  child: DropdownButtonFormField<String>(
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                    dropdownColor:
-                                        Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? "Filter By" == 'User SubRole'
-                                                ? Colors.white
-                                                : Colors.transparent
-                                            : Colors.white,
+                                  child: DropdownButtonFormField2<DropdownItem>(
+                                    isExpanded: true,
                                     decoration: InputDecoration(
                                       prefixIcon: Transform.scale(
                                         scale: 0.5,
-                                        child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
+                                        child: Image.asset('assets/icons/vessels.png', height: displayHeight(context) * 0.02,),
                                       ),
                                       contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 10),
+                                      EdgeInsets.symmetric(horizontal: 10),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
@@ -1029,7 +840,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                       errorStyle: TextStyle(
                                           fontFamily: inter,
                                           fontSize:
-                                              displayWidth(context) * 0.025),
+                                          displayWidth(context) * 0.025),
                                       focusedErrorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
@@ -1042,32 +853,227 @@ class _ReportsModuleState extends State<ReportsModule> {
                                       hintText: "Filter By",
                                       hintStyle: TextStyle(
                                           color: Theme.of(context).brightness ==
-                                                  Brightness.dark
+                                              Brightness.dark
                                               ? "Filter By" == 'User SubRole'
-                                                  ? Colors.black54
-                                                  : Colors.white
+                                              ? Colors.black54
+                                              : Colors.white
                                               : Colors.black,
                                           fontSize:
-                                              displayWidth(context) * 0.034,
+                                          displayWidth(context) * 0.034,
                                           fontFamily: outfit,
                                           fontWeight: FontWeight.w300),
                                     ),
-                                    isExpanded: true,
-                                    isDense: true,
+                                    hint: Text(
+                                      'Select Vessel',
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .brightness ==
+                                              Brightness.dark
+                                              ? "Select Vessel" ==
+                                              'User SubRole'
+                                              ? Colors.black54
+                                              : Colors.white
+                                              : Colors.black54,
+                                          fontSize:
+                                          displayWidth(context) *
+                                              0.032,
+                                          fontFamily: outfit,
+                                          fontWeight: FontWeight.w400),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    value: selectedValue,
+                                    items: vesselData.map((item) {
+                                      return DropdownMenuItem<
+                                          DropdownItem>(
+                                        value: item,
+                                        child: Text(
+                                          item.name!,
+                                          style: TextStyle(
+                                              fontSize: displayWidth(
+                                                  context) *
+                                                  0.032,
+                                              color: Theme.of(context)
+                                                  .brightness ==
+                                                  Brightness.dark
+                                                  ? "Select Vessel" ==
+                                                  'User SubRole'
+                                                  ? Colors.black
+                                                  : Colors.white
+                                                  : Colors.black,
+                                              fontWeight:
+                                              FontWeight.w500),
+                                          overflow:
+                                          TextOverflow.ellipsis,
+                                        ),
+                                      );
+                                    }).toList(),
                                     validator: (value) {
                                       if (value == null) {
-                                        return 'Select Filters';
+                                        return 'Select Vessel';
                                       }
                                       return null;
                                     },
-                                    icon: Icon(Icons.keyboard_arrow_down,
-                                        size: displayWidth(context) * 0.08,
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? "Filter by" == 'User SubRole'
-                                                ? Colors.black
-                                                : Colors.white
-                                            : Colors.black),
+                                    onChanged: (item) {
+                                      Utils.customPrint(
+                                          "id is: ${item?.id} ");
+                                      CustomLogger().logWithFile(
+                                          Level.info,
+                                          "id is: ${item?.id}-> $page");
+
+                                      parentValue = false;
+                                      selectedVessel = item!.id;
+                                      selectedVesselName = item.name;
+                                      if (mounted) {
+                                        setState(() {
+                                          isTripIdListLoading = false;
+                                          isSHowGraph = false;
+                                          avgSpeed = null;
+                                          avgDuration = null;
+                                          avgFuelConsumption = null;
+                                          avgPower = null;
+                                          triSpeedList.clear();
+                                          tripList.clear();
+                                          duration1 = null;
+                                          avgSpeed1 = null;
+                                          fuelUsage = null;
+                                          powerUsage = null;
+                                          finalData.clear();
+                                          durationGraphData.clear();
+
+                                          durationColumnSeriesData
+                                              .clear();
+                                          avgSpeedColumnSeriesData
+                                              .clear();
+                                          fuelUsageColumnSeriesData
+                                              .clear();
+                                          powerUsageColumnSeriesData
+                                              .clear();
+                                          selectedTripIdList!.clear();
+                                          selectedTripLabelList!.clear();
+                                        });
+                                      }
+
+                                      dateTimeList!.clear();
+                                      children!.clear();
+                                      getTripListData(item.id!);
+                                    },
+                                    buttonStyleData:  ButtonStyleData(
+                                      padding: EdgeInsets.only(right: 0),
+                                    ),
+                                    iconStyleData:  IconStyleData(
+                                      icon: Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        color: Colors.black,
+                                      ),
+                                      iconSize: displayHeight(context) * 0.035,
+                                    ),
+                                    dropdownStyleData: DropdownStyleData(
+                                      maxHeight: displayHeight(context) * 0.25,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        // color: backgroundColor,
+                                      ),
+                                      offset: const Offset(0, 0),
+                                      scrollbarTheme: ScrollbarThemeData(
+                                        radius: const Radius.circular(20),
+                                        thickness: MaterialStateProperty.all<double>(6),
+                                        thumbVisibility: MaterialStateProperty.all<bool>(true),
+                                      ),
+                                    ),
+                                    menuItemStyleData: MenuItemStyleData(
+                                      padding: EdgeInsets.symmetric(horizontal: 0),
+                                    ),
+                                  ),
+                                ),
+                                    )
+                                  : Container(
+                                      height: displayHeight(context) * 0.1,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  circularProgressColor),
+                                        ),
+                                      ),
+                                    ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.018,
+                              ),
+                              Container(
+                                width: displayWidth(context) * 0.8,
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButtonFormField2<String>(
+                                    isExpanded: true,
+                                    decoration: InputDecoration(
+                                      prefixIcon: Transform.scale(
+                                        scale: 0.5,
+                                        child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
+                                      ),
+                                      contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 10),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.transparent),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.transparent),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8))),
+                                      errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.red.shade300
+                                                  .withOpacity(0.7)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8))),
+                                      errorStyle: TextStyle(
+                                          fontFamily: inter,
+                                          fontSize:
+                                          displayWidth(context) * 0.025),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.red.shade300
+                                                  .withOpacity(0.7)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8))),
+                                      fillColor: reportDropdownColor,
+                                      filled: true,
+                                      hintText: "Filter By",
+                                      hintStyle: TextStyle(
+                                          color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                              ? "Filter By" == 'User SubRole'
+                                              ? Colors.black54
+                                              : Colors.white
+                                              : Colors.black,
+                                          fontSize:
+                                          displayWidth(context) * 0.034,
+                                          fontFamily: outfit,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                    hint: Text(
+                                      'Filter By',
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .brightness ==
+                                              Brightness.dark
+                                              ? "Filter By" ==
+                                              'User SubRole'
+                                              ? Colors.black54
+                                              : Colors.white
+                                              : Colors.black54,
+                                          fontSize:
+                                          displayWidth(context) *
+                                              0.032,
+                                          fontFamily: outfit,
+                                          fontWeight: FontWeight.w400),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                     value: selectedFilter,
                                     items: filters.map((item) {
                                       return DropdownMenuItem<String>(
@@ -1078,18 +1084,24 @@ class _ReportsModuleState extends State<ReportsModule> {
                                               fontSize: displayWidth(context) *
                                                   0.0346,
                                               color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
+                                                  .brightness ==
+                                                  Brightness.dark
                                                   ? "Filter by" ==
-                                                          'User SubRole'
-                                                      ? Colors.black
-                                                      : Colors.white
+                                                  'User SubRole'
+                                                  ? Colors.black
+                                                  : Colors.white
                                                   : Colors.black,
                                               fontWeight: FontWeight.w500),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       );
                                     }).toList(),
+                                    validator: (value) {
+                                      if (value == null) {
+                                        return 'Select Filters';
+                                      }
+                                      return null;
+                                    },
                                     onChanged: (item) {
                                       if (item == "Filter by Date") {
                                         setState(() {
@@ -1100,7 +1112,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           CustomLogger().logWithFile(Level.info,
                                               "selectedCaseType: $selectedCaseType-> $page");
                                           selectedTripsAndDateString =
-                                              "Date Range";
+                                          "Date Range";
                                         });
                                       } else if (item == "Filter by Trips") {
                                         setState(() {
@@ -1112,10 +1124,36 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           CustomLogger().logWithFile(Level.info,
                                               "selectedCaseType: $selectedCaseType-> $page");
                                           selectedTripsAndDateString =
-                                              "Selected Trips";
+                                          "Selected Trips";
                                         });
                                       }
                                     },
+                                    buttonStyleData:  ButtonStyleData(
+                                      padding: EdgeInsets.only(right: 0),
+                                    ),
+                                    iconStyleData:  IconStyleData(
+                                      icon: Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        color: Colors.black,
+                                      ),
+                                      iconSize: displayHeight(context) * 0.035,
+                                    ),
+                                    dropdownStyleData: DropdownStyleData(
+                                      maxHeight: displayHeight(context) * 0.25,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        // color: backgroundColor,
+                                      ),
+                                      offset: const Offset(0, 0),
+                                      scrollbarTheme: ScrollbarThemeData(
+                                        radius: const Radius.circular(20),
+                                        thickness: MaterialStateProperty.all<double>(6),
+                                        thumbVisibility: MaterialStateProperty.all<bool>(true),
+                                      ),
+                                    ),
+                                    menuItemStyleData: MenuItemStyleData(
+                                      padding: EdgeInsets.symmetric(horizontal: 0),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -1553,7 +1591,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                 width: displayWidth(context) * 0.8,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Color(0xff2663DB)),
+                                    color: Colors.grey),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [

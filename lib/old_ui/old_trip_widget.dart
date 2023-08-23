@@ -94,7 +94,7 @@ class _OldTripWidgetState extends State<OldTripWidget> {
     Size size = MediaQuery.of(context).size;
     return InkWell(
       onTap: () async {
-        getVesselById = await _databaseService
+       /* getVesselById = await _databaseService
             .getVesselNameByID(widget.tripList!.vesselId.toString());
 
         if (!isTripUploaded) {
@@ -119,7 +119,7 @@ class _OldTripWidgetState extends State<OldTripWidget> {
               }
             }
           }
-        }
+        } */
       },
       child: Container(
         margin: EdgeInsets.only(left: 10, right: 10, top: 6),

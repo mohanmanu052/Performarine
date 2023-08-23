@@ -403,7 +403,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     CommonTextField(
                         controller: phoneController,
                         focusNode: phoneFocusNode,
-                        labelText: 'Enter Phone Number\*',
+                        labelText: 'Enter Mobile Number\*',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -449,7 +449,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onChanged: (String value) {},
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Enter Password';
+                            return 'Enter Create Password';
                           } else if (!RegExp(
                                   r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
                               .hasMatch(value)) {

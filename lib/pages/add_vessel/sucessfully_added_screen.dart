@@ -39,7 +39,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => VesselSingleView(
+                builder: (context) => OldVesselSingleView(
                       vessel: widget.data,
                       isCalledFromSuccessScreen: true,
                     )),
@@ -77,7 +77,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            VesselSingleView(vessel: widget.data!)),
+                            OldVesselSingleView(vessel: widget.data!)),
                   );
                 } else {
                   CustomLogger().logWithFile(Level.info, "User Navigating to AddNewVesselScreen -> $page");
@@ -101,7 +101,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => VesselSingleView(
+                      builder: (context) => OldVesselSingleView(
                             vessel: widget.data,
                             isCalledFromSuccessScreen: true,
                           )),
