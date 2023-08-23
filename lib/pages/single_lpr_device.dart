@@ -42,6 +42,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
       onTap: () async {
         widget.setSetter!(() {
           isConnect = true;

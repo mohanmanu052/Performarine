@@ -15,6 +15,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
+import 'package:geolocator/geolocator.dart' as geo;
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:logger/logger.dart';
@@ -48,6 +49,7 @@ import '../../common_widgets/widgets/user_feed_back.dart';
 import '../../models/device_model.dart';
 import '../bottom_navigation.dart';
 import '../lpr_bluetooth_list.dart';
+import 'package:app_settings/app_settings.dart';
 import '../trip_analytics.dart';
 
 
@@ -74,7 +76,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
   int valueHolder = 1,numberOfPassengers = 0;
 
   bool? isGpsOn, isLPRConnected, isBleOn;
-  bool addingDataToDB = false, isServiceRunning = false, isLocationDialogBoxOpen = false, isStartButton = false, isVesselDataLoading = false, isBluetoothPermitted = false, isLocationPermitted = false;
+  bool addingDataToDB = false, isServiceRunning = false, isLocationDialogBoxOpen = false, isStartButton = false, isVesselDataLoading = false,
+      isBluetoothPermitted = false, isLocationPermitted = false, isRefreshList = false,
+      isScanningBluetooth = false;
 
   final controller = ScreenshotController();
 
@@ -502,12 +506,18 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
 
                                                   SizedBox(width: displayWidth(context) * 0.04,),
 
-                                                  commonText(
-                                                    context: context,
-                                                    text: 'LPR',
-                                                    fontWeight: FontWeight.w400,
-                                                    textColor: Colors.black45,
-                                                    textSize: displayWidth(context) * 0.034,
+                                                  InkWell(
+                                                    onTap: (){
+                                                      showBluetoothListDialog(
+                                                          context);
+                                                    },
+                                                    child: commonText(
+                                                      context: context,
+                                                      text: 'LPR',
+                                                      fontWeight: FontWeight.w400,
+                                                      textColor: Colors.black45,
+                                                      textSize: displayWidth(context) * 0.034,
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -1780,6 +1790,27 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
       BuildContext bottomSheetContext) async {
     Utils.customPrint('ISSSSS XXXXXXX: $isServiceRunning');
 
+    if(!await geo.Geolocator.isLocationServiceEnabled()){
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return LocationPermissionCustomDialog(
+              isLocationDialogBox: false,
+              text: 'Require GPS',
+              subText:
+              'Please enable GPS.',
+              buttonText: 'OK',
+              buttonOnTap: () async {
+                Get.back();
+
+                AppSettings.openAppSettings(type: AppSettingsType.location);
+              },
+            );
+          });
+      return;
+    }
+
     setState(() {
       addingDataToDB = true;
     });
@@ -1821,6 +1852,28 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
       selectedVesselName!,
       selectedVesselWeight
     ]);
+
+
+    // if(!await loc.Location().serviceEnabled()){
+    //   loc.Location().requestService();
+    //
+    //   // StreamSubscription<geo.ServiceStatus> serviceStatusStream = geo.Geolocator.getServiceStatusStream().listen(
+    //   //         (geo.ServiceStatus status) {
+    //   //       print(status);
+    //   //       if(status == geo.ServiceStatus.disabled){
+    //   //         loc.Location().requestService();
+    //   //       }
+    //   //     });
+    // }
+    // else{
+    //   // StreamSubscription<geo.ServiceStatus> serviceStatusStream = geo.Geolocator.getServiceStatusStream().listen(
+    //   //         (geo.ServiceStatus status) {
+    //   //       print(status);
+    //   //       if(status == geo.ServiceStatus.disabled){
+    //   //         loc.Location().requestService();
+    //   //       }
+    //   //     });
+    // }
 
     await initPlatformStateBGL();
 
@@ -3496,6 +3549,225 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
     }
   }
 
+  showBluetoothListDialog(BuildContext context) {
+    setState(() {
+      progress = 0.9;
+      lprSensorProgress = 0.0;
+      isStartButton = false;
+    });
+
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: StatefulBuilder(builder: (ctx, setDialogState) {
+                return Container(
+                  width: displayWidth(context),
+                  height: displayHeight(context) * 0.5,
+                  decoration: new BoxDecoration(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : Colors.white,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 30),
+                        child: Text(
+                          "Available Devices",
+                          style: TextStyle(
+                              color: blutoothDialogTitleColor,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Tap to connect with LPR Devices to\n track Trip details",
+                          style: TextStyle(
+                              color: blutoothDialogTxtColor,
+                              fontSize: 13.0,
+                              fontWeight: FontWeight.w400),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+
+                      // Implement listView for bluetooth devices
+                      Expanded(
+                        child: isRefreshList == true
+                            ? Container(
+                            width: displayWidth(context),
+                            height: displayHeight(context) * 0.28,
+                            child: LPRBluetoothList(
+                              dialogContext: dialogContext,
+                              setDialogSet: setDialogState,
+                              onSelected: (value) {
+                                if (mounted) {
+                                  setState(() {
+                                    bluetoothName = value;
+                                  });
+                                }
+                              },
+                              onBluetoothConnection: (value) {
+                                if (mounted) {
+                                  setState(() {
+                                    isBluetoothPermitted = value;
+                                  });
+                                }
+                              },
+                            ))
+                            : Container(
+                            width: displayWidth(context),
+                            height: displayHeight(context) * 0.28,
+                            child: LPRBluetoothList(
+                              dialogContext: dialogContext,
+                              setDialogSet: setDialogState,
+                              onSelected: (value) {
+                                if (mounted) {
+                                  setState(() {
+                                    bluetoothName = value;
+                                  });
+                                }
+                              },
+                              onBluetoothConnection: (value) {
+                                if (mounted) {
+                                  setState(() {
+                                    isBluetoothPermitted = value;
+                                  });
+                                }
+                              },
+                            )),
+                      ),
+
+                      Container(
+                        width: displayWidth(context),
+                        margin: EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                // FlutterBluePlus.instance.
+
+                                Navigator.pop(context);
+                                setState(() {
+                                  progress = 0.9;
+                                  lprSensorProgress = 0.0;
+                                  isStartButton = true;
+                                  bluetoothName = '';
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: bluetoothCancelBtnBackColor,
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                                ),
+                                height: displayWidth(context) * 0.12,
+                                width: displayWidth(context) * 0.34,
+                                // color: HexColor(AppColors.introButtonColor),
+                                child: Center(
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: bluetoothCancelBtnTxtColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Utils.customPrint("Tapped on scan button");
+
+                                if (mounted) {
+                                  setState(() {
+                                    isScanningBluetooth = true;
+                                  });
+                                }
+
+                                FlutterBluePlus.instance.startScan(
+                                    timeout: const Duration(seconds: 2));
+
+                                if (mounted) {
+                                  Future.delayed(Duration(seconds: 2), () {
+                                    setState(() {
+                                      isScanningBluetooth = false;
+                                    });
+                                  });
+                                }
+
+                                if (mounted) {
+                                  setState(() {
+                                    isRefreshList = true;
+                                    progress = 0.9;
+                                    lprSensorProgress = 0.0;
+                                    isStartButton = false;
+                                    bluetoothName = '';
+                                  });
+                                }
+                              },
+                              child: isScanningBluetooth
+                                  ? Center(
+                                child: Container(
+                                    width: displayWidth(context) * 0.34,
+                                    child: Center(
+                                        child:
+                                        CircularProgressIndicator())),
+                              )
+                                  : Container(
+                                decoration: BoxDecoration(
+                                  color: bluetoothConnectBtnBackColor,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(10)),
+                                ),
+                                height: displayWidth(context) * 0.12,
+                                width: displayWidth(context) * 0.34,
+                                // color: HexColor(AppColors.introButtonColor),
+                                child: Center(
+                                  child: Text(
+                                    "Scan",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: bluetoothConnectBtncolor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }));
+        }).then((value) {
+      Utils.customPrint('DIALOG VALUE $value');
+
+      if (bluetoothName != '') {
+        setState(() {
+          progress = 1.0;
+          lprSensorProgress = 1.0;
+          isStartButton = true;
+          isBluetoothPermitted = true;
+        });
+      } else {
+        setState(() {
+          isBluetoothPermitted = false;
+        });
+      }
+    });
+  }
 
   /*showBluetoothListDialog(BuildContext context, StateSetter stateSetter) {
     stateSetter(() {

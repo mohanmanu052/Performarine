@@ -878,7 +878,7 @@ class _OldExpansionCardState extends State<OldExpansionCard> {
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.28,
+                  height: displayHeight(context) * 0.45,
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -894,12 +894,31 @@ class _OldExpansionCardState extends State<OldExpansionCard> {
                           padding: const EdgeInsets.only(left: 8.0, right: 8),
                           child: Column(
                             children: [
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    //color: Color(0xfff2fffb),
+                                    child: Image.asset(
+                                      'assets/images/boat.gif',
+                                      height: displayHeight(context) * 0.1,
+                                      width: displayWidth(context),
+                                      fit: BoxFit.contain,
+                                    ),
+                                  )),
+
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+
                               commonText(
                                   context: context,
                                   text: 'Do you want to retire the vessel?',
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.042,
+                                  textSize: displayWidth(context) * 0.044,
                                   textAlign: TextAlign.center),
                               SizedBox(
                                 height: displayHeight(context) * 0.015,
@@ -909,88 +928,78 @@ class _OldExpansionCardState extends State<OldExpansionCard> {
                                   text:
                                   'This will archive the vessel and removed it from your My Vessel list. You can always unretire a vessel',
                                   fontWeight: FontWeight.w400,
-                                  textColor: Colors.grey,
-                                  textSize: displayWidth(context) * 0.036,
+                                  textColor: Colors.black54,
+                                  textSize: displayWidth(context) * 0.038,
                                   textAlign: TextAlign.center),
                             ],
                           ),
                         ),
                         SizedBox(
-                          height: displayHeight(context) * 0.02,
+                          height: displayHeight(context) * 0.01,
                         ),
-                        Row(
+                        Column(
                           children: [
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
+                            Container(
+                              margin: EdgeInsets.only(
                                   top: 8.0,
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                        color: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                            ? Colors.white
-                                            : Colors.grey)),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Cancel', context, Colors.grey.shade400, () {
-                                    Navigator.of(context).pop();
-                                  },
-                                      displayWidth(context) * 0.4,
-                                      displayHeight(context) * 0.05,
-                                      Colors.grey.shade400,
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                      displayHeight(context) * 0.018,
-                                      Colors.grey.shade400,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                                  left: 10, right: 10
+                              ),
+                              child: Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Confirm Retire', context, endTripBtnColor, () {
+                                  _databaseService.updateVesselStatus(
+                                      0, widget.vessel!.id!);
+
+                                  _databaseService.updateIsSyncStatus(
+                                      0, widget.vessel!.id!);
+
+                                  Utils.showSnackBar(context,
+                                      scaffoldKey: widget.scaffoldKey,
+                                      message:
+                                      'Vessel retired successfully.');
+
+                                  Navigator.of(dialogContext).pop();
+
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => BottomNavigation(),
+                                      fullscreenDialog: true,
+                                    ),
+                                  );
+                                },
+                                    displayWidth(context) ,
+                                    displayHeight(context) * 0.05,
+                                    primaryColor,
+                                    Colors.white,
+                                    displayHeight(context) * 0.02,
+                                    endTripBtnColor,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                             SizedBox(
-                              width: 15.0,
+                              height: 8.0,
                             ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'OK', context, buttonBGColor, () {
-                                    _databaseService.updateVesselStatus(
-                                        0, widget.vessel!.id!);
-
-                                    _databaseService.updateIsSyncStatus(
-                                        0, widget.vessel!.id!);
-
-                                    Utils.showSnackBar(context,
-                                        scaffoldKey: widget.scaffoldKey,
-                                        message:
-                                        'Vessel retired successfully.');
-
-                                    Navigator.of(dialogContext).pop();
-
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => BottomNavigation(),
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
-                                  },
-                                      displayWidth(context) * 0.4,
-                                      displayHeight(context) * 0.05,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.018,
-                                      buttonBGColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: 10, right: 10
+                              ),
+                              child: Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Cancel', context, Colors.transparent, () {
+                                  Navigator.of(context).pop();
+                                },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                        ? Colors.white
+                                        : blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.white,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                           ],

@@ -62,7 +62,7 @@ dependencies:
   flutter_phoenix: ^1.1.0
   connectivity_plus: ^2.3.9
   #timezone: ^0.9.1
-  #app_settings: ^4.2.0
+  app_settings: ^5.0.0
   http_parser: ^4.0.2
   flutter_sensors: ^1.0.1
   status_stepper: ^1.0.0
@@ -93,6 +93,7 @@ dependencies:
   flutter_xlider: ^3.5.0
   animated_bottom_navigation_bar: ^1.2.0
   dropdown_button2: ^2.0.0
+  fluttertoast: ^8.2.2
 
 
 dependency_overrides:

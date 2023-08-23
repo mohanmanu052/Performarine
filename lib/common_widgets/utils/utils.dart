@@ -347,14 +347,14 @@ class Utils {
                                 child: CommonButtons.getAcceptButton(
                                     'End Trip',
                                     context,
-                                    blueColor,
+                                    endTripBtnColor,
                                     endTripBtnClick,
                                     displayWidth(context) ,
                                     displayHeight(context) * 0.05,
                                     primaryColor,
                                     Colors.white,
                                     displayHeight(context) * 0.018,
-                                    blueColor,
+                                    endTripBtnColor,
                                     '',
                                     fontWeight: FontWeight.w500),
                               ),
@@ -447,8 +447,9 @@ class Utils {
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.24,
+                  height: displayHeight(context) * 0.42,
                   width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 15, bottom: 15),
@@ -456,6 +457,20 @@ class Utils {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(ctx) * 0.1,
+                                width: displayWidth(ctx),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
                         SizedBox(
                           height: displayHeight(context) * 0.02,
                         ),
@@ -470,66 +485,48 @@ class Utils {
                               textAlign: TextAlign.center),
                         ),
                         SizedBox(
-                          height: displayHeight(context) * 0.02,
+                          height: displayHeight(context) * 0.01,
                         ),
-                        Row(
+                        Column(
                           children: [
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                        color: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                            ? Colors.white
-                                            : Colors.grey)),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Continue',
-                                      context,
-                                      Colors.transparent,
-                                      onCancelClick,
-                                      displayWidth(context) * 0.5,
-                                      displayHeight(context) * 0.05,
-                                      primaryColor,
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      displayHeight(context) * 0.015,
-                                      Colors.transparent,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
+                            Center(
+                              child: CommonButtons.getAcceptButton(
+                                  'End Trip',
+                                  context,
+                                  endTripBtnColor,
+                                  endTripBtnClick,
+                                  displayWidth(context) / 1.5,
+                                  displayHeight(context) * 0.055,
+                                  primaryColor,
+                                  Colors.white,
+                                  displayWidth(context) * 0.036,
+                                  endTripBtnColor,
+                                  '',
+                                  fontWeight: FontWeight.w500),
                             ),
                             SizedBox(
-                              width: 15.0,
+                              height: 10.0,
                             ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'End Trip',
-                                      context,
-                                      buttonBGColor,
-                                      endTripBtnClick,
-                                      displayWidth(context) * 0.5,
-                                      displayHeight(context) * 0.05,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.015,
-                                      buttonBGColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
+                            Center(
+                              child: CommonButtons.getAcceptButton(
+                                  'Continue',
+                                  context,
+                                  Colors.transparent,
+                                  onCancelClick,
+                                  displayWidth(context) * 0.5,
+                                  displayHeight(context) * 0.05,
+                                  Colors.transparent,
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                      ? Colors.white
+                                      : blueColor,
+                                  displayHeight(context) * 0.018,
+                                  Colors.transparent,
+                                  '',
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(
+                              height: 10.0,
                             ),
                           ],
                         ),

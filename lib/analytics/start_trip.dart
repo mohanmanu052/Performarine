@@ -2,10 +2,13 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:app_settings/app_settings.dart';
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/location_dto.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/analytics/calculation.dart';
@@ -42,6 +45,8 @@ class StartTrip {
   /// In this function we start to listen to the data coming from background locator port
   /// From sensor we are getting values of x,y & z in double format
   Future<void> startBGLocatorTrip(String tripId, DateTime dateTime, [bool isReinitialize = false]) async {
+
+    // checkGPS();
 
     ReceivePort port = ReceivePort();
 
@@ -426,4 +431,36 @@ class StartTrip {
 
         });
   }
+
+  checkGPS()
+  {
+    StreamSubscription<ServiceStatus> serviceStatusStream = Geolocator.getServiceStatusStream().listen(
+            (ServiceStatus status) {
+          print(status);
+
+          if(status == ServiceStatus.disabled){
+
+            Fluttertoast.showToast(
+                msg: "Please enable GPS",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
+
+            Future.delayed(Duration(seconds: 1), ()async{
+              AppSettings.openAppSettings(type: AppSettingsType.location);
+
+              if(!(await Geolocator.isLocationServiceEnabled()))
+                {
+                  checkGPS();
+                }
+            });
+          }
+
+        });
+  }
+
 }

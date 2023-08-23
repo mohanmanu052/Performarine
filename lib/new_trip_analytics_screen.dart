@@ -935,7 +935,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                     text: 'Past 5 Trips',
                                     fontWeight: FontWeight.w500,
                                     textColor: Colors.black,
-                                    textSize: displayWidth(context) * 0.028,
+                                    textSize: displayWidth(context) * 0.03,
                                   ),
                                 )),
                             SfCartesianChart(
@@ -947,6 +947,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 enableSideBySideSeriesPlacement: true,
 
                                 legend: Legend(
+                                  offset: Offset(90, -30),
                                     isVisible: true,
                                     position: LegendPosition.top,
                                     alignment: ChartAlignment.far),
