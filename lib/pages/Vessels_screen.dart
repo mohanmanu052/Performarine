@@ -51,7 +51,7 @@ class _VesselsScreenState extends State<VesselsScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
+          /*Padding(
             padding: EdgeInsets.only(
               left: displayWidth(context) * 0.06,
               top: displayHeight(context) * 0.01,
@@ -70,7 +70,7 @@ class _VesselsScreenState extends State<VesselsScreen> {
                 fontFamily: outfit
               ),
             ),
-          ),
+          ),*/
           Expanded(
             child: VesselBuilder(
               future: getVesselFuture,

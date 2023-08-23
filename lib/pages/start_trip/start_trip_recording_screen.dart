@@ -1759,7 +1759,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
           id: getTripId,
           vesselId: vesselId,
           vesselName: selectedVesselName,
-          currentLoad: currentLoad,
+          currentLoad: 'Empty',
           numberOfPassengers: numberOfPassengers,
           filePath: file,
           isSync: 0,
