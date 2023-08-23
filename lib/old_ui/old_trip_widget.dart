@@ -529,7 +529,7 @@ class _OldTripWidgetState extends State<OldTripWidget> {
 
     var startPosition = tripData.startPosition!.split(",");
     var endPosition = tripData.endPosition!.split(",");
-    Utils.customPrint('START POSITION R ${tripData.distance}');
+    Utils.customPrint('START POSITION R ${tripData.numberOfPassengers}');
     CustomLogger().logWithFile(Level.info, "START POSITION R ${tripData.distance} -> $page");
 
     Directory tripDir = await getApplicationDocumentsDirectory();
@@ -559,6 +559,7 @@ class _OldTripWidgetState extends State<OldTripWidget> {
       },
       "startPosition": startPosition,
       "endPosition": endPosition,
+      "number_of_passengers": tripData.numberOfPassengers,
       "vesselId": tripData.vesselId,
       "filePath": Platform.isAndroid
           ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'

@@ -537,6 +537,7 @@ class _SyncDataCloudToMobileScreenState
           for (int i = 0; i < value.trips!.length; i++) {
             Utils.customPrint("TRIPS DATA ${value.trips!.length}");
             Utils.customPrint("TRIPS VESSEL ID ${value.trips![i].vesselId}");
+            Utils.customPrint("TRIPS VESSEL ID ${value.trips![i].toJson()}");
 
             CustomLogger().logWithFile(Level.info, "TRIPS DATA ${value.trips!.length} -> $page");
             CustomLogger().logWithFile(Level.info, "TRIPS VESSEL ID ${value.trips![i].vesselId} -> $page");
@@ -550,6 +551,7 @@ class _SyncDataCloudToMobileScreenState
                   vesselId: value.trips![i].vesselId,
                   vesselName: vesselData.name,
                   currentLoad: value.trips![i].load,
+                  numberOfPassengers: value.trips![i].numberOfPassengers ?? 0,
                   filePath: value.trips![i].cloudFilePath,
                   isSync: 1,
                   tripStatus: value.trips![i].tripStatus,

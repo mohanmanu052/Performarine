@@ -182,6 +182,7 @@ class Trips {
   String? vesselId;
   int? tripStatus;
   int? dataExtStatus;
+  int? numberOfPassengers;
   String? createdBy;
   String? createdAt;
   String? updatedBy;
@@ -206,6 +207,7 @@ class Trips {
       this.vesselId,
       this.tripStatus,
       this.dataExtStatus,
+      this.numberOfPassengers,
       this.createdBy,
       this.createdAt,
       this.updatedBy,
@@ -237,6 +239,7 @@ class Trips {
     vesselId = json['vesselId'];
     tripStatus = json['tripStatus'];
     dataExtStatus = json['dataExtStatus'];
+    numberOfPassengers = json['numberOfPassengers'] ?? json['number_of_passengers'];
     createdBy = json['createdBy'];
     createdAt = json['createdAt'];
     updatedBy = json['updatedBy'];
@@ -267,6 +270,7 @@ class Trips {
     data['vesselId'] = this.vesselId;
     data['tripStatus'] = this.tripStatus;
     data['dataExtStatus'] = this.dataExtStatus;
+    data['numberOfPassengers'] = this.numberOfPassengers;
     data['createdBy'] = this.createdBy;
     data['createdAt'] = this.createdAt;
     data['updatedBy'] = this.updatedBy;

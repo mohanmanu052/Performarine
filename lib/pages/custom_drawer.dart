@@ -1061,6 +1061,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             },
             "startPosition": getTrip[i].startPosition!.split(','),
             "endPosition": getTrip[i].endPosition!.split(','),
+            "number_of_passengers": getTrip[i].numberOfPassengers,
             /*json.decode(tripData.endPosition!.toString()).cast<String>().toList()*/
             "vesselId": getTrip[i].vesselId,
             "filePath": Platform.isAndroid

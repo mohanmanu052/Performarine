@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -54,6 +55,7 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
       if (response.statusCode == HttpStatus.ok) {
         Utils.customPrint('Register Response : ' + response.body);
+       log('Register Response : ' + response.body);
 
         CustomLogger().logWithFile(Level.info, "Register Response : ' + ${response.body}-> $page");
         CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.getUserConfig}  is: ${response.statusCode}-> $page");

@@ -8,6 +8,7 @@ class Trip {
   final String? vesselId;
   final String? vesselName;
   final String? currentLoad;
+  int? numberOfPassengers;
   final String? filePath;
   final String? startPosition;
   final String? endPosition;
@@ -28,6 +29,7 @@ class Trip {
       this.vesselId,
       this.vesselName,
       required this.currentLoad,
+      this.numberOfPassengers,
       this.filePath,
       this.isSync,
       this.tripStatus,
@@ -51,6 +53,7 @@ class Trip {
       'vesselId': vesselId,
       'vesselName': vesselName,
       'currentLoad': currentLoad,
+      'numberOfPassengers': numberOfPassengers,
       'filePath': filePath,
       'isSync': isSync,
       'tripStatus': tripStatus,
@@ -73,6 +76,7 @@ class Trip {
       vesselId: map['vesselId'] ?? '',
       vesselName: map['vesselName'] ?? '',
       currentLoad: map['currentLoad'] ?? '',
+      numberOfPassengers: map['numberOfPassengers'] ?? map['number_of_passengers'] ?? '',
       filePath: map['filePath'] ?? '',
       isSync: map['isSync']?.toInt() ?? 0,
       tripStatus: map['tripStatus']?.toInt() ?? 0,

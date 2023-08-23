@@ -1,19 +1,12 @@
 import 'dart:io';
-
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/old_ui/old_custom_drawer.dart';
-import 'package:performarine/pages/coming_soon_screen.dart';
 import 'package:performarine/pages/dashboard/dashboard.dart';
-import 'package:performarine/pages/home_page.dart';
-import 'package:performarine/pages/lpr_bluetooth_list.dart';
 import 'package:performarine/pages/reports/search_and_filters.dart';
-import 'package:performarine/pages/reports_module/reports.dart';
 import 'package:performarine/pages/start_trip/start_trip_recording_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -24,15 +17,10 @@ import '../common_widgets/utils/common_size_helper.dart';
 import '../common_widgets/utils/utils.dart';
 import '../common_widgets/widgets/common_buttons.dart';
 import '../common_widgets/widgets/common_widgets.dart';
-import '../common_widgets/widgets/location_permission_dialog.dart';
 import '../main.dart';
-import '../models/trip.dart';
-import '../new_trip_analytics_screen.dart';
 import '../provider/common_provider.dart';
 import '../services/database_service.dart';
 import 'Vessels_screen.dart';
-import 'add_vessel_new/add_new_vessel_screen.dart';
-import 'custom_drawer.dart';
 import 'package:performarine/pages/trips/Trips.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -159,7 +147,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     var screensList = [
       Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: false,isAppKilled: widget.isAppKilled,token: widget.token),
       SearchAndFilters(calledFrom:'HOME'),
-      StartTripRecordingScreen(isBluetoothConnected: isBluetoothConnected,),
+      StartTripRecordingScreen(),
       Trips(),
       VesselsScreen()
     ];
@@ -231,7 +219,13 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
 
 
                     if(index == 2){
-                      if(mounted) {
+
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+                       // isLocationPermitted: isLocationPermitted,
+                       // isBluetoothConnected: isBluetoothConnected,
+                        calledFrom: 'bottom_nav',)));
+
+                      /*if(mounted) {
                         bool? isTripStarted =
                         sharedPreferences!.getBool('trip_started');
 
@@ -369,7 +363,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                                   await openAppSettings();
                                 }
 
-                                /*showDialog(
+                                *//*showDialog(
                                         context: scaffoldKey.currentContext!,
                                         builder: (BuildContext context) {
                                           isLocationDialogBoxOpen = true;
@@ -388,7 +382,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                                           );
                                         }).then((value) {
                                       isLocationDialogBoxOpen = false;
-                                    });*/
+                                    });*//*
                               }
                             }
                             else
@@ -590,7 +584,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                           //_bottomNavIndex = 4;
 
                         });
-                      }
+                      }*/
                     }
                     else{
                       setState(() {
@@ -1309,8 +1303,6 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
         });
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
-            isLocationPermitted: isLocationPermitted,
-            isBluetoothConnected: isBluetoothConnected,
             calledFrom: 'bottom_nav',)));
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
@@ -1356,8 +1348,6 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
             }
           });
           Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
-              isLocationPermitted: isLocationPermitted,
-              isBluetoothConnected: isBluetoothConnected,
               calledFrom: 'bottom_nav')));
         }
       }
@@ -1406,8 +1396,6 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
           }
         });
         Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
-            isLocationPermitted: isLocationPermitted,
-            isBluetoothConnected: isBluetoothConnected,
             calledFrom: 'bottom_nav')));
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
@@ -1453,8 +1441,6 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
             }
           });
           Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
-              isLocationPermitted: isLocationPermitted,
-              isBluetoothConnected: isBluetoothConnected,
               calledFrom: 'bottom_nav'
           )));
         }
