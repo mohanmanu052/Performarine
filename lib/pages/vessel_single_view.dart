@@ -2776,7 +2776,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
           id: getTripId,
           vesselId: widget.vessel!.id,
           vesselName: vesselName,
-          currentLoad: currentLoad,
+          currentLoad: 'Empty',
           numberOfPassengers: 0,
           filePath: file,
           isSync: 0,
