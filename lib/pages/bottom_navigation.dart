@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/old_ui/old_custom_drawer.dart';
@@ -84,6 +85,9 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     _tabController = TabController(vsync: this, length: 5, initialIndex: widget.tabIndex);
     _bottomNavIndex = widget.tabIndex;
     commonProvider = context.read<CommonProvider>();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
   }
 
   @override
@@ -188,7 +192,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
             fontFamily: outfit
           ),
           actions: [
-            Container(
+            _bottomNavIndex != 0 ?  Container(
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
                 onPressed: () {
@@ -202,7 +206,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                     ? Colors.white
                     : Colors.black,
               ),
-            ),
+            ) : Container(width: 0,height: 0,),
           ],
         ),
         bottomNavigationBar: Container(
@@ -217,6 +221,17 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                   labelPadding: EdgeInsets.zero,
                   onTap: (index) async{
 
+                  if(index == 1){
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                      DeviceOrientation.landscapeLeft,
+                      DeviceOrientation.landscapeRight,
+                    ]);
+                  } else{
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                    ]);
+                  }
 
                     if(index == 2){
 

@@ -434,7 +434,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
 
                  isTripIsRunning
                         ? CustomPaint(
-                          painter: StatusTag(color: Color(0XFF41C1C8)),
+                          painter: StatusTag(color: Color(0XFFFDBF21)),
                           child: Container(
                             margin: EdgeInsets.only(
                                 left: displayWidth(context) * 0.05),
