@@ -9,6 +9,7 @@ import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -223,45 +224,11 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                               SizedBox(height: displayHeight(context) * 0.008,),
 
                               DropdownButtonHideUnderline(
-                                child: DropdownButtonFormField<
-                                    VesselDropdownItem>(
-                                  autovalidateMode: AutovalidateMode
-                                      .onUserInteraction,
-                                  dropdownColor:
-                                  Theme.of(context).brightness ==
-                                      Brightness.dark
-                                      ? "Select Vessel" ==
-                                      'User SubRole'
-                                      ? Colors.white
-                                      : Colors.transparent
-                                      : Colors.white,
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide:
-                                        BorderSide(width: 1.5, color: Colors.transparent),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide:
-                                        BorderSide(width: 1.5, color: Colors.transparent),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.red.shade300.withOpacity(0.7)),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    errorStyle: TextStyle(
-                                        fontFamily: inter,
-                                        fontSize: displayWidth(context) * 0.025),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.red.shade300.withOpacity(0.7)),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    fillColor: Color(0xffE6E9F0),
-                                    filled: true,
-                                    hintText: "Select your vessel",
-                                    hintStyle: TextStyle(
+                                child: DropdownButton2<VesselDropdownItem>(
+                                  isExpanded: true,
+                                  hint: Text(
+                                    'Select Vessel',
+                                    style: TextStyle(
                                         color: Theme.of(context)
                                             .brightness ==
                                             Brightness.dark
@@ -275,25 +242,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                             0.032,
                                         fontFamily: outfit,
                                         fontWeight: FontWeight.w400),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  isExpanded: true,
-                                  isDense: true,
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return 'Select Vessel';
-                                    }
-                                    return null;
-                                  },
-                                  icon: Icon(
-                                      Icons.keyboard_arrow_down,
-                                      color: Theme.of(context)
-                                          .brightness ==
-                                          Brightness.dark
-                                          ? "Select Vessel" ==
-                                          'User SubRole'
-                                          ? Colors.black
-                                          : Colors.white
-                                          : Colors.black),
                                   value: selectedValue,
                                   items: vesselData.map((item) {
                                     return DropdownMenuItem<
@@ -323,156 +273,48 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                   onChanged: (item) {
                                     Utils.customPrint("id is: ${item?.id} ");
                                     CustomLogger().logWithFile(Level.info, "id is: ${item?.id}-> $page");
-
-                                    selectedValue = item;
-                                    vesselId = item!.id;
-                                    selectedVesselName = item.name;
-
-                                  },
-                                ),
-                              ),
-
-                              SizedBox(height: displayHeight(context) * 0.012,),
-
-                              DropdownButtonHideUnderline(
-                                child: DropdownButtonFormField<dynamic>(
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide:
-                                        BorderSide(width: 1.5, color: Colors.transparent),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide:
-                                        BorderSide(width: 1.5, color: Colors.transparent),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.red.shade300.withOpacity(0.7)),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    errorStyle: TextStyle(
-                                        fontFamily: inter,
-                                        fontSize: displayWidth(context) * 0.025),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.red.shade300.withOpacity(0.7)),
-                                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                                    fillColor: Color(0xffE6E9F0),
-                                    filled: true,
-                                  ),
-                                  value: null,
-                                  isDense: true,
-                                  icon: Icon(
-                                      Icons.keyboard_arrow_down,
-                                      color: Theme.of(context)
-                                          .brightness ==
-                                          Brightness.dark
-                                          ? "Select Current Load" ==
-                                          'User SubRole'
-                                          ? Colors.black
-                                          : Colors.white
-                                          : Colors.black),
-                                  hint: commonText(
-                                      context: context,
-                                      text:
-                                      selectedVesselWeight,
-                                      fontWeight:
-                                      FontWeight.w400,
-                                      textColor: Colors.black54,
-                                      textSize: displayWidth(
-                                          context) *
-                                          0.03,
-                                      textAlign:
-                                      TextAlign.start,
-                                    fontFamily: outfit
-                                  ),
-                                  //  Text(
-                                  //     '${selectedVesselWeight}'),
-                                  isExpanded: true,
-                                  items: [
-                                    DropdownMenuItem(
-                                        value: '1',
-                                        child: commonText(
-                                            context: context,
-                                            text:
-                                            'Empty',
-                                            fontWeight:
-                                            FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize: displayWidth(
-                                                context) *
-                                                0.032,
-                                            textAlign:
-                                            TextAlign.start)),
-                                    DropdownMenuItem(
-                                        value: '2',
-                                        child: commonText(
-                                        context: context,
-                                        text:
-                                        'Half',
-                                        fontWeight:
-                                        FontWeight.w500,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(
-                                            context) *
-                                            0.032,
-                                        textAlign:
-                                        TextAlign.start)),
-                                    DropdownMenuItem(
-                                        value: '3',
-                                        child: commonText(
-                                            context: context,
-                                            text:
-                                            'Full',
-                                            fontWeight:
-                                            FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize: displayWidth(
-                                                context) *
-                                                0.032,
-                                            textAlign:
-                                            TextAlign.start)),
-                                    DropdownMenuItem(
-                                        value: '4',
-                                        child: commonText(
-                                            context: context,
-                                            text:
-                                            'Variable',
-                                            fontWeight:
-                                            FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize: displayWidth(
-                                                context) *
-                                                0.032,
-                                            textAlign:
-                                            TextAlign.start)
-                                        ),
-                                  ],
-                                  onChanged: (weightValue) {
                                     setState(() {
-                                      if (int.parse(
-                                          weightValue) ==
-                                          1) {
-                                        selectedVesselWeight =
-                                        'Empty';
-                                      } else if (int.parse(
-                                          weightValue) ==
-                                          2) {
-                                        selectedVesselWeight =
-                                        'Half';
-                                      } else if (int.parse(
-                                          weightValue) ==
-                                          3) {
-                                        selectedVesselWeight =
-                                        'Full';
-                                      } else {
-                                        selectedVesselWeight =
-                                        'Variable';
-                                      }
+                                      selectedValue = item;
+                                      vesselId = item!.id;
+                                      selectedVesselName = item.name;
                                     });
                                   },
+                                  buttonStyleData: ButtonStyleData(
+                                    height: displayHeight(context) * 0.06,
+                                    width: displayWidth(context) * 0.9,
+                                    padding: EdgeInsets.only(left: 14, right: 14),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      border: Border.all(
+                                        color: Colors.transparent,
+                                      ),
+                                      color: Color(0xffE6E9F0),
+                                    ),
+                                  ),
+                                  iconStyleData:  IconStyleData(
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_down,
+                                    ),
+                                    iconSize: displayHeight(context) * 0.03,
+                                    iconEnabledColor: Colors.black,
+                                    iconDisabledColor: Colors.grey,
+                                  ),
+                                  dropdownStyleData: DropdownStyleData(
+                                    maxHeight: displayHeight(context) * 0.25,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                     // color: backgroundColor,
+                                    ),
+                                    offset: const Offset(0, 0),
+                                    scrollbarTheme: ScrollbarThemeData(
+                                      radius: const Radius.circular(20),
+                                      thickness: MaterialStateProperty.all<double>(6),
+                                      thumbVisibility: MaterialStateProperty.all<bool>(true),
+                                    ),
+                                  ),
+                                  menuItemStyleData: const MenuItemStyleData(
+                                    padding: EdgeInsets.only(left: 14, right: 14),
+                                  ),
                                 ),
                               ),
 
@@ -725,7 +567,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
 
                                       Utils.customPrint(
                                           'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                      if (selectedVesselWeight ==
+                                    /*  if (selectedVesselWeight ==
                                           'Select Current Load') {
                                         Utils.customPrint(
                                             'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
@@ -739,7 +581,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> {
                                           backgroundColor: Colors.blue,
                                         ));
                                         return;
-                                      }
+                                      } */
 
                                       bool isLocationPermitted =
                                       await Permission

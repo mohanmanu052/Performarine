@@ -347,7 +347,7 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                                       context: context,
                                       width: displayWidth(context) *
                                           0.27,
-                                      title: 'Download Trip Data'))
+                                      title: 'Download Trip'))
                                   : SizedBox(
                                   height: displayHeight(context) * 0.038,
                                   child: isTripUploaded
@@ -401,7 +401,7 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                                     width:
                                     displayWidth(context) *
                                         0.28,
-                                    title: 'Upload trip Data ',)),
+                                    title: 'Upload trip',)),
                             ),
                             SizedBox(
                               width: 10,
