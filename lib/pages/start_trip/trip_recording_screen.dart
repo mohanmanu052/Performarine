@@ -133,7 +133,16 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                     }
                   else
                     {
-                      Navigator.of(context).pop(true);
+                      if(mounted){
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => BottomNavigation(
+                              tabIndex: 0,
+                            )),
+                            ModalRoute.withName(""));
+                      }
+
+                      //Navigator.of(context).pop(true);
                     }
                 }
               else

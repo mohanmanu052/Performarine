@@ -188,7 +188,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => BottomNavigation()),
                       ModalRoute.withName(""));
                 },
                 icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
@@ -1135,7 +1135,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                         width: displayWidth(context),
                         height: displayHeight(context) * 0.055,
                         decoration: BoxDecoration(
-                          color: blueColor,
+                          color: Colors.grey,
                           borderRadius: BorderRadius.circular(8)
                         ),
                         child: Center(

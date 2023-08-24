@@ -62,6 +62,10 @@ String page = "main";
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   flutterBluePlus = FlutterBluePlus.instance;
 
   configEasyLoading();

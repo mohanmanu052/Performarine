@@ -10,7 +10,9 @@ import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -63,7 +65,7 @@ class StartTripRecordingScreen extends StatefulWidget {
   State<StartTripRecordingScreen> createState() => _StartTripRecordingScreenState();
 }
 
-class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> with WidgetsBindingObserver {
+class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> with WidgetsBindingObserver, TickerProviderStateMixin {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
@@ -73,12 +75,13 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
 
   String selectedVesselWeight = 'Select Current Load', getTripId = '', bluetoothName = '';
 
-  int valueHolder = 1,numberOfPassengers = 0;
+  int valueHolder = 1,numberOfPassengers = 0,passengerValue = 0;
 
   bool? isGpsOn, isLPRConnected, isBleOn;
   bool addingDataToDB = false, isServiceRunning = false, isLocationDialogBoxOpen = false, isStartButton = false, isVesselDataLoading = false,
       isBluetoothPermitted = false, isLocationPermitted = false, isRefreshList = false,
       isScanningBluetooth = false;
+
 
   final controller = ScreenshotController();
 
@@ -98,6 +101,10 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
 
   double progress = 0.9, lprSensorProgress = 1.0;
 
+  late AnimationController popupAnimationController;
+  late TextEditingController textEditingController;
+  FocusNode _focusNode = FocusNode();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -111,13 +118,25 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
     getVesselAndTripsData();
 
     checkTempPermissions();
+    textEditingController = TextEditingController();
+
+    popupAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        textEditingController.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: textEditingController.value.text.length);
+      }
+    });
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-
+    popupAnimationController.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
 
@@ -362,87 +381,119 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                               ),
                               SizedBox(height: displayHeight(context) * 0.008,),
 
-                              Stack(
+                              Row(
+                               // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(vertical: 12),
-                                    child: Container(
-                                      height: displayHeight(context) * 0.06,
-                                      child: FlutterSlider(
-                                        values: [numberOfPassengers.toDouble()],
-                                        max: 10,
-                                        min: 0,
-                                        trackBar: FlutterSliderTrackBar(
-                                            activeTrackBarHeight: 4.5,
-                                            inactiveTrackBarHeight: 4.5,
-                                            activeTrackBar: BoxDecoration(
-                                                color: Color(0xff2663DB))),
-                                        tooltip: FlutterSliderTooltip(
-                                            custom: (value) {
-
-                                              debugPrint("NUMBER OF PASS 1 $value");
-                                              String data = value.toInt().toString();
-
-                                              numberOfPassengers = value.toInt();
-
-                                              return Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 6, vertical: displayHeight(context) * 0.02),
-                                                child: commonText(
-                                                  context: context,
-                                                  text: numberOfPassengers == 0 || numberOfPassengers == 10 ? '' : '$data',
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.black,
-                                                  textSize:
-                                                  displayWidth(context) *
-                                                      0.028,
-                                                ),
-                                              );
-                                            },
-                                            alwaysShowTooltip: true,
-                                            positionOffset:
-                                            FlutterSliderTooltipPositionOffset(
-                                                top: -24)),
-                                        handlerWidth: 15,
-                                        handlerHeight: 15,
-                                        handler: FlutterSliderHandler(
-                                            child: Container(
-                                              height: 15,
-                                              width: 15,
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Color(0xff2663DB)),
-                                            )),
-                                      ),
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  Stack(
                                     children: [
                                       Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 4, vertical: 5),
-                                        child: commonText(
-                                          context: context,
-                                          text: '0',
-                                          fontWeight: FontWeight.w500,
-                                          textColor: Colors.black,
-                                          textSize: displayWidth(context) * 0.028,
+                                        padding: EdgeInsets.symmetric(vertical: 12),
+                                        child: Container(
+                                          height: displayHeight(context) * 0.06,
+                                          width: !isSliderDisable ? displayWidth(context) * 0.8 : displayWidth(context) * 0.5,
+                                          child: FlutterSlider(
+                                            values: [passengerValue.toDouble()],
+                                            max: 11,
+                                            min: 0,
+                                            trackBar: FlutterSliderTrackBar(
+                                                activeTrackBarHeight: 4.5,
+                                                inactiveTrackBarHeight: 4.5,
+                                                activeTrackBar: BoxDecoration(
+                                                    color: Color(0xff2663DB))),
+                                            tooltip: FlutterSliderTooltip(
+                                                custom: (value) {
+
+                                                  debugPrint("NUMBER OF PASS 1 $value");
+                                                  String data = value.toInt().toString();
+                                                  passengerValue = value.toInt();
+                                                  if(textEditingController.text.isEmpty) {
+                                                    numberOfPassengers = value.toInt();
+                                                  } else{
+                                                    numberOfPassengers = int.parse(textEditingController.text);
+                                                  }
+
+                                                  return Container(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: 6, vertical: displayHeight(context) * 0.02),
+                                                    child: commonText(
+                                                      context: context,
+                                                      text: numberOfPassengers == 0 || numberOfPassengers == 10 ? '' : '$data',
+                                                      fontWeight: FontWeight.w500,
+                                                      textColor: Colors.black,
+                                                      textSize:
+                                                      displayWidth(context) *
+                                                          0.028,
+                                                    ),
+                                                  );
+                                                },
+                                                alwaysShowTooltip: true,
+                                                positionOffset:
+                                                FlutterSliderTooltipPositionOffset(
+                                                    top: -24)),
+                                            handlerWidth: 15,
+                                            handlerHeight: 15,
+                                            onDragging: (int value,dynamic val,dynamic val1){
+                                              print("On dragging: value: $value, val: $val, val1: $val1");
+                                              if(val == 11){
+                                                if(mounted){
+                                                  setState(() {
+                                                    isSliderDisable = true;
+                                                    // if (popupAnimationController.isDismissed) {
+                                                    //   // popupAnimationController.forward().then(
+                                                    //   //         (value) => _focusNode.requestFocus());
+                                                    //   popupAnimationController.reverse();
+                                                    // } else{
+                                                      popupAnimationController.forward().then(
+                                                              (value) => _focusNode.requestFocus());
+                                                    //}
+                                                  });
+                                                }
+                                              }
+                                            },
+                                            handler: FlutterSliderHandler(
+                                                child: Container(
+                                                  height: 15,
+                                                  width: 15,
+                                                  decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Color(0xff2663DB)),
+                                                )),
+                                          ),
                                         ),
                                       ),
                                       Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 4, vertical: 0),
-                                        child: commonText(
-                                          context: context,
-                                          text: '10+',
-                                          fontWeight: FontWeight.w500,
-                                          textColor: Colors.black,
-                                          textSize: displayWidth(context) * 0.028,
+                                        width: isSliderDisable ? displayWidth(context) * 0.5 :  displayWidth(context) * 0.8,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 4, vertical: 5),
+                                              child: commonText(
+                                                context: context,
+                                                text: '0',
+                                                fontWeight: FontWeight.w500,
+                                                textColor: Colors.black,
+                                                textSize: displayWidth(context) * 0.028,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 4, vertical: 0),
+                                              child: commonText(
+                                                context: context,
+                                                text: '10+',
+                                                fontWeight: FontWeight.w500,
+                                                textColor: Colors.black,
+                                                textSize: displayWidth(context) * 0.028,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
-                                  )
+                                  ),
+                                 isSliderDisable ?  textFieldPopUp() : Container(width: 0,height: 0,)
                                 ],
                               ),
 
@@ -1259,6 +1310,108 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget textFieldPopUp(){
+    return ScaleTransition(
+      scale: CurvedAnimation(
+          parent: popupAnimationController,
+          curve: Interval(0.0, 1.0, curve: Curves.elasticOut)),
+      child: Center(
+        child: Container(
+          width: displayWidth(context) * 0.25,
+          padding: EdgeInsets.all(4),
+          decoration: BoxDecoration(
+              color: Color(0xffE6E9F0),
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ]),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Expanded(
+                child: TextFormField(
+                  focusNode: _focusNode,
+                  inputFormatters: [LengthLimitingTextInputFormatter(3)],
+                  textAlignVertical: TextAlignVertical.center,
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: MediaQuery.of(context).size.width * 0.035),
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(bottom: 12),
+                      border: InputBorder.none),
+                  controller: textEditingController,
+                  onFieldSubmitted: (String value) {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    int value = int.parse(textEditingController.text);
+
+                    kReleaseMode ? null : debugPrint('Value $value');
+
+                   // popupAnimationController.reset();
+                  },
+                  onEditingComplete: (){
+                    setState(() {
+                      numberOfPassengers = int.parse(textEditingController.text);
+                    });
+                  },
+                  onChanged: (String value) {
+                    numberOfPassengers = int.parse(textEditingController.text);
+                    if(value.length == 3) {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                    }
+                  },
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  //width: displayWidth(context) * 0.01,
+                  height: displayHeight(context) * 0.03,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(null),
+                      padding: MaterialStateProperty.all(EdgeInsets.all(0)),
+                      backgroundColor:
+                      MaterialStateProperty.all(blueColor),
+                      textStyle: MaterialStateProperty.all(
+                          TextStyle(color: Colors.blue)),
+                      shape: MaterialStateProperty.all(
+                          new RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if(textEditingController.text.isNotEmpty){
+                          isSliderDisable = false;
+                          numberOfPassengers = int.parse(textEditingController.text);
+                        }
+                      });
+                      FocusScope.of(context).requestFocus(new FocusNode());
+
+                      kReleaseMode
+                          ? null
+                          : debugPrint('Number of passengers $numberOfPassengers');
+
+                     // popupAnimationController.reset();
+                    },
+                    child: Icon(
+                      Icons.check,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
         ),
       ),

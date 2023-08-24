@@ -56,6 +56,7 @@ class _CustomWebViewState extends State<CustomWebView> {
       body: Stack(
         children: [
           WebView(
+            javascriptMode: JavascriptMode.unrestricted,
             initialUrl:
             widget.url, // Replace with your desired URL
             onPageFinished: (finish) {
