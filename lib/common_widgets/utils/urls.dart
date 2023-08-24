@@ -1,10 +1,10 @@
 class Urls {
 
 
-  //static String baseUrl =  baseUrlVersion;
+  static String baseUrl =  baseUrlVersion;
 
   //dev
-   static const String baseUrl = 'goeapidev.azurewebsites.net';
+   //static const String baseUrl = 'goeapidev.azurewebsites.net';
 
   //UAT
   //static const String baseUrl = 'goeapiuat.azurewebsites.net';

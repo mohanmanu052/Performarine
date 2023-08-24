@@ -174,8 +174,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     durationTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       Utils.customPrint('##TDATA updated time delay from 1 sec to 400 MS by abhi');
       tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
-      tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
-      tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
+      tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.0";
+      tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.0";
 
       Utils.customPrint("TRIP ANALYTICS SPEED $tripSpeed");
       Utils.customPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");

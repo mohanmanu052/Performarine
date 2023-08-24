@@ -371,6 +371,9 @@ class StartTrip {
           Utils.customPrint('GPS $gps');
         }
       }
+    }).
+    onError((err) {
+      Utils.customPrint("PORT LISTEN ON ERROR ");
     });
 
     if (tripDurationTimer != null) {
