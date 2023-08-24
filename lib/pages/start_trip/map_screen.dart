@@ -181,7 +181,7 @@ class _MapScreenState extends State<MapScreen> {
                                         textSize: displayWidth(context) * 0.026,
                                       ),
 
-                                      SizedBox(height: displayHeight(context) * 0.002,),
+                                      SizedBox(height: displayHeight(context) * 0.003,),
 
                                       commonText(
                                         context: context,
@@ -191,7 +191,7 @@ class _MapScreenState extends State<MapScreen> {
                                         textSize: displayWidth(context) * 0.05,
                                       ),
 
-                                      SizedBox(height: displayHeight(context) * 0.002,),
+                                      SizedBox(height: displayHeight(context) * 0.003,),
 
                                       commonText(
                                         context: context,
@@ -213,6 +213,8 @@ class _MapScreenState extends State<MapScreen> {
                                         textSize: displayWidth(context) * 0.026,
                                       ),
 
+                                      SizedBox(height: displayHeight(context) * 0.003,),
+
                                       commonText(
                                         context: context,
                                         text: tripSpeed,
@@ -221,9 +223,11 @@ class _MapScreenState extends State<MapScreen> {
                                         textSize: displayWidth(context) * 0.05,
                                       ),
 
+                                      SizedBox(height: displayHeight(context) * 0.003,),
+
                                       commonText(
                                         context: context,
-                                        text: 'Kt/Hr',
+                                        text: 'KT/Hr',
                                         fontWeight: FontWeight.w400,
                                         textColor: Colors.black,
                                         textSize: displayWidth(context) * 0.024,
@@ -241,12 +245,24 @@ class _MapScreenState extends State<MapScreen> {
                                         textSize: displayWidth(context) * 0.026,
                                       ),
 
+                                      SizedBox(height: displayHeight(context) * 0.003,),
+
                                       commonText(
                                         context: context,
                                         text: tripDuration,
                                         fontWeight: FontWeight.w700,
                                         textColor: Colors.black,
                                         textSize: displayWidth(context) * 0.05,
+                                      ),
+
+                                      SizedBox(height: displayHeight(context) * 0.003,),
+
+                                      commonText(
+                                        context: context,
+                                        text: 'hh:mm:ss',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.024,
                                       ),
                                     ],
                                   ),

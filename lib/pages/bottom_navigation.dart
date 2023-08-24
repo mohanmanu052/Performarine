@@ -19,6 +19,7 @@ import '../common_widgets/utils/utils.dart';
 import '../common_widgets/widgets/common_buttons.dart';
 import '../common_widgets/widgets/common_widgets.dart';
 import '../main.dart';
+import '../models/trip.dart';
 import '../provider/common_provider.dart';
 import '../services/database_service.dart';
 import 'Vessels_screen.dart';
@@ -235,10 +236,40 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
 
                     if(index == 2){
 
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
-                       // isLocationPermitted: isLocationPermitted,
-                       // isBluetoothConnected: isBluetoothConnected,
-                        calledFrom: 'bottom_nav',)));
+                      if(mounted)
+                        {
+                          bool? isTripStarted =
+                          sharedPreferences!.getBool('trip_started');
+
+                          if (isTripStarted != null) {
+                            if (isTripStarted) {
+                              List<String>? tripData = sharedPreferences!
+                                  .getStringList('trip_data');
+                              Trip tripDetails = await _databaseService
+                                  .getTrip(tripData![0]);
+
+                              if (isTripStarted) {
+                                showDialogBox(context);
+                                return;
+                              }
+                              else
+                                {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+                                    // isLocationPermitted: isLocationPermitted,
+                                    // isBluetoothConnected: isBluetoothConnected,
+                                    calledFrom: 'bottom_nav',)));
+                                }
+
+                            }
+                            }
+                          else
+                            {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+                                // isLocationPermitted: isLocationPermitted,
+                                // isBluetoothConnected: isBluetoothConnected,
+                                calledFrom: 'bottom_nav',)));
+                            }
+                          }
 
                       /*if(mounted) {
                         bool? isTripStarted =

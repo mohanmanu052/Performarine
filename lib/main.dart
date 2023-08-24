@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:app_settings/app_settings.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -12,6 +13,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 import 'package:logger/logger.dart';
@@ -422,6 +425,34 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     initDeepLinkListener();
     Utils.customPrint('APP IN BG INIT');
     CustomLogger().logWithFile(Level.info, "APP IN BG INIT -> -> $page ");
+
+    checkGPS();
+  }
+
+  checkGPS()
+  {
+    StreamSubscription<ServiceStatus> serviceStatusStream = Geolocator.getServiceStatusStream().listen(
+            (ServiceStatus status) {
+          print(status);
+
+          if(status == ServiceStatus.disabled){
+
+            Fluttertoast.showToast(
+                msg: "Please enable GPS",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
+
+            Future.delayed(Duration(seconds: 1), ()async{
+              AppSettings.openAppSettings(type: AppSettingsType.location, asAnotherTask: true);
+            });
+          }
+
+        });
   }
 
   readData()async{
@@ -496,6 +527,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     switch (state) {
       case AppLifecycleState.resumed:
+        if(!(await Geolocator.isLocationServiceEnabled()))
+        {
+          checkGPS();
+        }
         Utils.customPrint('\n\n**********resumed');
         // var pref = await SharedPreferences.getInstance();
 
