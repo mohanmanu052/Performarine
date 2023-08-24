@@ -29,6 +29,7 @@ import '../../common_widgets/utils/urls.dart';
 import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/status_tage.dart';
 import '../new_trip_analytics_screen.dart';
+import '../pages/web_navigation/privacy_and_policy_web_view.dart';
 
 class OldTripWidget extends StatefulWidget {
   final String? calledFrom;
@@ -235,7 +236,12 @@ class _OldTripWidgetState extends State<OldTripWidget> {
                             buttonPrimaryColor: buttonBGColor,
                             fontSize: displayWidth(context) * 0.026,
                             onTap: () async {
-                              _launchURL();
+                            //  _launchURL();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CustomWebView(url: 'https://${Urls.baseUrl}/goeMaps/${widget.tripList!.id}')),
+                              );
                             },
                             icon: Padding(
                               padding:

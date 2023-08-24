@@ -2,7 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:performarine/pages/authentication/sign_in_screen.dart';
+import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 
 import 'package:provider/provider.dart';
 

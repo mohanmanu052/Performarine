@@ -248,7 +248,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           if (value!.isEmpty) {
                             return 'Enter Your Email';
                           } else if (!EmailValidator.validate(value)) {
-                            return 'Enter valid Email';
+                            return 'Enter Valid Email';
                           }
                           return null;
                         },
@@ -261,7 +261,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     CommonTextField(
                         controller: passwordController,
                         focusNode: passwordFocusNode,
-                        labelText: 'Password',
+                        labelText: 'Enter Password',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.done,
