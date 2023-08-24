@@ -570,125 +570,146 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.32,
+                  height: displayHeight(context) * 0.34,
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 15, bottom: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                        left: 8.0, right: 8.0, top: 0, bottom: 0),
+                    child: Stack(
                       children: [
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: Column(
-                            children: [
-                              commonText(
-                                  context: context,
-                                  text:
-                                  'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
-                                  fontWeight: FontWeight.w600,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.038,
-                                  textAlign: TextAlign.center),
-                              SizedBox(
-                                height: displayHeight(context) * 0.015,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text:
-                                  'If you click on SignOut, you are going to loose entire local data which is not uploaded',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.grey,
-                                  textSize: displayWidth(context) * 0.032,
-                                  textAlign: TextAlign.center),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        Row(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                        color: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                            ? Colors.white
-                                            : Colors.grey)),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Sign Out', context,  Colors.grey.shade400,
-                                          () async {
-                                        Navigator.of(context).pop();
-
-                                        signOut();
-                                      },
-                                      displayWidth(context) * 0.4,
-                                      displayHeight(context) * 0.05,
-                                      Colors.grey.shade400,
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                      displayHeight(context) * 0.015,
-                                      Colors.grey.shade400,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              child: Column(
+                                children: [
+                                  commonText(
+                                      context: context,
+                                      text:
+                                      'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
+                                      fontWeight: FontWeight.w600,
+                                      textColor: Colors.black,
+                                      textSize: displayWidth(context) * 0.038,
+                                      textAlign: TextAlign.center),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.015,
+                                  ),
+                                  commonText(
+                                      context: context,
+                                      text:
+                                      'If you click on SignOut, you are going to loose entire local data which is not uploaded',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.grey,
+                                      textSize: displayWidth(context) * 0.032,
+                                      textAlign: TextAlign.center),
+                                ],
                               ),
+                            ),
+                            // SizedBox(
+                            //   height: displayHeight(context) * 0.01,
+                            // ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                      top: 8.0,
+                                    ),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(
+                                            color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                                ? Colors.white
+                                                : Colors.grey)),
+                                    child: Center(
+                                      child: CommonButtons.getAcceptButton(
+                                          'Sign Out', context,  Colors.grey.shade400,
+                                              () async {
+                                            Navigator.of(context).pop();
+
+                                            signOut();
+                                          },
+                                          displayWidth(context) * 0.4,
+                                          displayHeight(context) * 0.05,
+                                          Colors.grey.shade400,
+                                          Theme.of(context).brightness ==
+                                              Brightness.dark
+                                              ? Colors.white
+                                              : Colors.black,
+                                          displayHeight(context) * 0.015,
+                                          Colors.grey.shade400,
+                                          '',
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 15.0,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                      top: 8.0,
+                                    ),
+                                    child: isSigningOut
+                                        ? Center(child: CircularProgressIndicator())
+                                        : Center(
+                                      child: CommonButtons.getAcceptButton(
+                                          'Sync and Sign Out',
+                                          context,
+                                          blueColor, () async {
+                                        bool internet =
+                                        await Utils().check(scaffoldKey);
+
+                                        if (internet) {
+                                          setDialogState(() {
+                                            isSigningOut = true;
+                                          });
+
+                                          syncAndSignOut(false, context);
+                                        }
+                                      },
+                                          displayWidth(context) * 0.4,
+                                          displayHeight(context) * 0.05,
+                                          primaryColor,
+                                          Colors.white,
+                                          displayHeight(context) * 0.015,
+                                          blueColor,
+                                          '',
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             SizedBox(
-                              width: 15.0,
-                            ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: isSigningOut
-                                    ? Center(child: CircularProgressIndicator())
-                                    : Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Sync and Sign Out',
-                                      context,
-                                      buttonBGColor, () async {
-                                    bool internet =
-                                    await Utils().check(scaffoldKey);
-
-                                    if (internet) {
-                                      setDialogState(() {
-                                        isSigningOut = true;
-                                      });
-
-                                      syncAndSignOut(false, context);
-                                    }
-                                  },
-                                      displayWidth(context) * 0.4,
-                                      displayHeight(context) * 0.05,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.015,
-                                      buttonBGColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
+                              height: displayHeight(context) * 0.01,
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
+                        Positioned(
+                          right: 10,
+                          top: 2,
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,),
+                            child: Center(
+                              child: IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(ctx);
+                                  },
+                                  icon: Icon(Icons.close_rounded, color: buttonBGColor)),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -843,7 +864,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                               ? 'Upload And Change'
                                               : 'Upload And Sync',
                                           context,
-                                          buttonBGColor, () async {
+                                          blueColor, () async {
                                         //  Navigator.of(context).pop();
 
                                         bool internet =
@@ -865,7 +886,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                           primaryColor,
                                           Colors.white,
                                           displayHeight(context) * 0.014,
-                                          buttonBGColor,
+                                          blueColor,
                                           '',
                                           fontWeight: FontWeight.w500),
                                     ),

@@ -1486,6 +1486,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         tripData = tripDetails;
         vesselData = vesselDetails[0];
       });
+      dateOfJourney = DateFormat('dd-MM').format(DateTime.parse(tripData!.createdAt!));
+      yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(tripData!.createdAt!));
     } else {
       final DatabaseService _databaseService = DatabaseService();
       final tripDetails = await _databaseService.getTrip(widget.tripId!);
@@ -1497,10 +1499,9 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         tripData = tripDetails;
         vesselData = vesselDetails[0];
       });
+      dateOfJourney = DateFormat('dd-MM').format(DateTime.parse(vesselData!.createdAt!));
+      yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(vesselData!.createdAt!));
     }
-
-    dateOfJourney = DateFormat('dd-MM').format(DateTime.parse(vesselData!.createdAt!));
-    yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(vesselData!.createdAt!));
     peopleOnBoard = tripData!.numberOfPassengers.toString();
 
   }

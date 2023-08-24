@@ -350,7 +350,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                           ),
                           child: Center(
                             child: CommonButtons.getAcceptButton(
-                                'OK', context, buttonBGColor,
+                                'OK', context, blueColor,
                                     () async {
                                   Navigator.pop(dialogContext);
 
@@ -363,7 +363,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                                 primaryColor,
                                 Colors.white,
                                 displayHeight(context) * 0.015,
-                                buttonBGColor,
+                                blueColor,
                                 '',
                                 fontWeight: FontWeight.w500),
                           ),
