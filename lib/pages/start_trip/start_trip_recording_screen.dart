@@ -406,7 +406,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                                                   debugPrint("NUMBER OF PASS 1 $value");
                                                   String data = value.toInt().toString();
                                                   numberOfPassengers = value.toInt();
-
                                                   return Container(
                                                     padding: EdgeInsets.symmetric(
                                                         horizontal: 6, vertical: displayHeight(context) * 0.02),
@@ -428,8 +427,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                                             handlerWidth: 15,
                                             handlerHeight: 15,
                                             onDragging: (int value,dynamic val,dynamic val1){
+                                             val != 11 ? passengerValue = val.toInt() : val;
                                               print("On dragging: value: $value, val: $val, val1: $val1");
-                                              if(val == 11){
+                                              if(val == 11 && sliderMinVal == 11){
                                                 if(mounted){
                                                   setState(() {
                                                     isCheck = true;
@@ -1369,22 +1369,27 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                   controller: textEditingController,
                   onFieldSubmitted: (String value) {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    int value = int.parse(textEditingController.text);
-
-                    kReleaseMode ? null : debugPrint('Value $value');
 
                    // popupAnimationController.reset();
                   },
                   onEditingComplete: (){
-                    setState(() {
-                      numberOfPassengers = int.parse(textEditingController.text);
-                      if(int.parse(textEditingController.text) < 11){
+                   // setState(() {
+                      //textEditingController.text.isNotEmpty ? numberOfPassengers = int.parse(textEditingController.text) : numberOfPassengers = passengerValue;
+                    if(textEditingController.text.isEmpty){
+                      setState(() {
+                        numberOfPassengers = passengerValue;
                         sliderMinVal = 11;
-                      } if(int.parse(textEditingController.text) < 1000){
+                        sliderCount = '10+';
+                      });
+                    }else if(int.parse(textEditingController.text) < 11){
+                        numberOfPassengers = int.parse(textEditingController.text);
+                        sliderMinVal = 11;
+                      }else if(int.parse(textEditingController.text) < 1000){
+                        numberOfPassengers = int.parse(textEditingController.text);
                         sliderMinVal = 999;
                         sliderCount = '';
                       }
-                    });
+                    //});
                   },
                   onChanged: (String value) {
                     print("value is: $value");
@@ -1395,12 +1400,20 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                         sliderCount = '';
                       });
                       FocusScope.of(context).requestFocus(new FocusNode());
-                    } else if(value.length == 2){
+                    }
+                  /*  else if(value.length == 2){
                          setState(() {
                            numberOfPassengers = int.parse(textEditingController.text);
-                           sliderMinVal = 999;
-                           sliderCount = '';
+                           sliderMinVal = 11;
+                           sliderCount = '1';
                          });
+                    }  */
+                    else if(value.length == 0){
+                      setState(() {
+                         numberOfPassengers = passengerValue;
+                       //sliderMinVal = 11;
+                        sliderCount = '10+';
+                      });
                     }
                   },
                 ),
@@ -1425,8 +1438,10 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                       setState(() {
                         if(textEditingController.text.isEmpty){
                           sliderMinVal = 11;
+                          numberOfPassengers = passengerValue;
                           sliderCount = '10+';
                           isSliderDisable = false;
+                          isCheck = false;
                         } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
                           sliderMinVal = 999;
                           sliderCount = '';

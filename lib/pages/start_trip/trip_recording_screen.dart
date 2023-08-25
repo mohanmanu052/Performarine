@@ -10,6 +10,7 @@ import 'package:performarine/pages/start_trip/trip_recording_analytics_screen.da
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../bottom_navigation.dart';
 
@@ -39,7 +40,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
     super.initState();
 
     commonProvider = context.read<CommonProvider>();
-
+    Wakelock.enable();
     tabController =
         TabController(initialIndex: 0, length: 2, vsync: this);
     tabController.addListener(() {
@@ -56,51 +57,54 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
     return WillPopScope(
       onWillPop: ()async {
         print('XXXXXX: ${widget.calledFrom}');
-        if(widget.calledFrom != null)
-        {
-          if(widget.calledFrom!.isNotEmpty)
+        Wakelock.disable().then((value) async{
+          if(widget.calledFrom != null)
           {
-            if(widget.calledFrom == 'bottom_nav')
+            if(widget.calledFrom!.isNotEmpty)
             {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => BottomNavigation(
-                    tabIndex: commonProvider.bottomNavIndex,
-                  )),
-                  ModalRoute.withName(""));
-            }
-            else if(widget.calledFrom == 'VesselSingleView')
+              if(widget.calledFrom == 'bottom_nav')
+              {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => BottomNavigation(
+                      tabIndex: commonProvider.bottomNavIndex,
+                    )),
+                    ModalRoute.withName(""));
+              }
+              else if(widget.calledFrom == 'VesselSingleView')
               {
                 CreateVessel? vesselData = await DatabaseService()
                     .getVesselFromVesselID(widget.vesselId!);
 
                 Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => OldVesselSingleView(
-                      vessel: vesselData,
-                      isCalledFromSuccessScreen: true,
-                    )),);
+                  context,
+                  MaterialPageRoute(builder: (context) => OldVesselSingleView(
+                    vessel: vesselData,
+                    isCalledFromSuccessScreen: true,
+                  )),);
               }
+            }
+            else
+            {
+              if(mounted){
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => BottomNavigation(
+                      tabIndex: 0,
+                    )),
+                    ModalRoute.withName(""));
+              }
+              // Navigator.of(context).pop(true);
+            }
+            return false;
           }
           else
           {
-            if(mounted){
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => BottomNavigation(
-                    tabIndex: 0,
-                  )),
-                  ModalRoute.withName(""));
-            }
-           // Navigator.of(context).pop(true);
+            Navigator.of(context).pop(true);
+            return false;
           }
-          return false;
-        }
-        else
-        {
-          Navigator.of(context).pop(true);
-          return false;
-        }
+        });
+        return false;
       },
       child: Scaffold(
         key: scaffoldKey,
@@ -112,51 +116,52 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
             onPressed: () async {
 
               debugPrint('CALLED FROM ${widget.calledFrom}');
-
-              if(widget.calledFrom != null)
+              Wakelock.disable().then((value) async{
+                if(widget.calledFrom != null)
                 {
                   if(widget.calledFrom!.isNotEmpty)
+                  {
+                    if(widget.calledFrom == 'bottom_nav')
                     {
-                      if(widget.calledFrom == 'bottom_nav')
-                      {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => BottomNavigation(
-                              tabIndex: commonProvider.bottomNavIndex,
-                            )),
-                            ModalRoute.withName(""));
-                      }
-                      else if(widget.calledFrom == 'VesselSingleView')
-                      {
-                        CreateVessel? vesselData = await DatabaseService()
-                            .getVesselFromVesselID(widget.vesselId!);
-
-                        Navigator.pushReplacement(
+                      Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => OldVesselSingleView(
-                            vessel: vesselData,
-                            isCalledFromSuccessScreen: true,
-                          )),);
-                      }
+                          MaterialPageRoute(builder: (context) => BottomNavigation(
+                            tabIndex: commonProvider.bottomNavIndex,
+                          )),
+                          ModalRoute.withName(""));
                     }
-                  else
+                    else if(widget.calledFrom == 'VesselSingleView')
                     {
-                      if(mounted){
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => BottomNavigation(
-                              tabIndex: 0,
-                            )),
-                            ModalRoute.withName(""));
-                      }
+                      CreateVessel? vesselData = await DatabaseService()
+                          .getVesselFromVesselID(widget.vesselId!);
 
-                      //Navigator.of(context).pop(true);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => OldVesselSingleView(
+                          vessel: vesselData,
+                          isCalledFromSuccessScreen: true,
+                        )),);
                     }
+                  }
+                  else
+                  {
+                    if(mounted){
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => BottomNavigation(
+                            tabIndex: 0,
+                          )),
+                          ModalRoute.withName(""));
+                    }
+
+                    //Navigator.of(context).pop(true);
+                  }
                 }
-              else
+                else
                 {
                   Navigator.of(context).pop(true);
                 }
+              });
 
               //Navigator.of(context).pop(true);
             },
