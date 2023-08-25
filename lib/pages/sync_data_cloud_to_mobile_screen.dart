@@ -170,8 +170,8 @@ class _SyncDataCloudToMobileScreenState
                                 context: context,
                                 fontSize: displayWidth(context) * 0.038,
                                 textColor: Colors.white,
-                                buttonPrimaryColor: buttonBGColor,
-                                borderColor: buttonBGColor,
+                                buttonPrimaryColor: blueColor,
+                                borderColor: blueColor,
                                 width: displayWidth(context),
                                 onTap: () {
                                   FocusScope.of(context)
@@ -230,8 +230,8 @@ class _SyncDataCloudToMobileScreenState
                                       context: context,
                                       fontSize: displayWidth(context) * 0.038,
                                       textColor: Colors.white,
-                                      buttonPrimaryColor: buttonBGColor,
-                                      borderColor: buttonBGColor,
+                                      buttonPrimaryColor: blueColor,
+                                      borderColor: blueColor,
                                       width: displayWidth(context),
                                       onTap: () {
                                         FocusScope.of(context)

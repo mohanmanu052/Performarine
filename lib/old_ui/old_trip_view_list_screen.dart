@@ -115,8 +115,6 @@ class _OldTripViewListingState extends State<OldTripViewListing> {
                       ? StatefulBuilder(
                       builder: (BuildContext context, StateSetter setter) {
                         Utils.customPrint("TRIP DETAILS ${snapshot.data!.length}");
-                        Utils.customPrint(
-                            "TRIP DETAILS 1 ${snapshot.data![1].numberOfPassengers}");
                         return Padding(
                             padding: const EdgeInsets.only(
                                 left: 8.0, right: 8.0, top: 8.0),
