@@ -114,7 +114,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
 
     Utils.customPrint("IS APP KILLED FROM BG 1212 $isTripStarted");
 
-    if(widget.isAppKilled!)
+    /*if(widget.isAppKilled!)
     {
       if(isTripStarted != null)
       {
@@ -127,9 +127,9 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
         }
       }
 
-    }
+    }*/
 
-    if(widget.isComingFromReset != null)
+    /*if(widget.isComingFromReset != null)
     {
       if(widget.isComingFromReset!)
       {
@@ -138,10 +138,10 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
         });
       }
     }
-
+*/
   }
 
-  @override
+  /*@override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
@@ -196,7 +196,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
         break;
     }
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();

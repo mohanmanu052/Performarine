@@ -227,10 +227,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                   Container(
                                     color: Colors.white,
                                     child: Image.asset(
-                                      'assets/icons/default_boat.png',
-                                      height: displayHeight(context) * 0.22,
+                                      'assets/images/vessel_default_img.png',
+                                      height: displayHeight(context) * 0.24,
                                       width: displayWidth(context),
-                                      fit: BoxFit.cover,
+                                      fit: BoxFit.contain,
                                     ),
                                   ),
                                   Positioned(

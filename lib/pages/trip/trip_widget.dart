@@ -194,7 +194,7 @@ class _TripWidgetState extends State<TripWidget> {
                       borderRadius: BorderRadius.circular(15),
                       image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage("assets/icons/default_boat.png",)
+                          image: AssetImage("assets/images/vessel_default_img.png",)
                       )
                   ),
                 )

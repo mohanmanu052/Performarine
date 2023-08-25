@@ -247,7 +247,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) => SignInScreen(),
+                                                      builder: (context) => SignInScreen(calledFrom: 'SignUp'),
                                                     ),
                                                     ModalRoute.withName(""));
                                               });
@@ -613,7 +613,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 Navigator.pushAndRemoveUntil(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) => SignInScreen(),
+                                                      builder: (context) => SignInScreen(calledFrom: 'SignUp'),
                                                     ),
                                                     ModalRoute.withName(""));
                                               });
@@ -652,7 +652,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => SignInScreen(),
+                                            builder: (context) => SignInScreen(calledFrom: 'SignUp'),
                                           ),
                                           ModalRoute.withName(""));
                                     },

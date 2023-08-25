@@ -199,8 +199,8 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                             Container(
                               color: Colors.white,
                               child: Image.asset(
-                                'assets/icons/default_boat.png',
-                                height: displayHeight(context) * 0.22,
+                                'assets/images/vessel_default_img.png',
+                                height: displayHeight(context) * 0.24,
                                 width: displayWidth(context),
                                 fit: BoxFit.cover,
                               ),
@@ -227,7 +227,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                             : Stack(
                               children: [
                                 Container(
-                          height: displayHeight(context) * 0.22,
+                          height: displayHeight(context) * 0.24,
                           width: displayWidth(context),
                           decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),

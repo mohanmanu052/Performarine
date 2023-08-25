@@ -366,16 +366,19 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                             // height: displayHeight(context) * 0.22,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                //color: Colors.white,
-                              ),
-                              child: Image.asset(
-                                'assets/icons/default_boat.png',
-                              //  width: displayWidth(context) * 0.65,
-                                fit: BoxFit.cover,
+                            child: Center(
+                              child: Container(
+                               // height: displayHeight(context) * 0.22,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  //color: Colors.white,
+                                ),
+                                child: Image.asset(
+                                  'assets/images/vessel_default_img.png',
+                                  width: displayWidth(context) * 0.65,
+                                  height: displayHeight(context) * 0.24,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
@@ -403,7 +406,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                           Image.file(
                             File(vesselData.imageURLs!),
                             fit: BoxFit.cover,
-                            height: displayHeight(context) * 0.22,
+                            height: displayHeight(context) * 0.24,
                             width: displayWidth(context),
                           ),
                           Positioned(
@@ -840,7 +843,7 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Container(
-                        height: displayHeight(context) * 0.22,
+                        //height: displayHeight(context) * 0.22,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           //color: Colors.white,
@@ -848,6 +851,7 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                         child: Center(
                           child: Image.asset(
                             'assets/images/vessel_default_img.png',
+                            height: displayHeight(context) * 0.24,
                             width: displayWidth(context) * 0.65,
                             fit: BoxFit.cover,
                           ),
@@ -878,7 +882,7 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                     Image.file(
                       File(vesselData.imageURLs!),
                       fit: BoxFit.cover,
-                      height: displayHeight(context) * 0.22,
+                      height: displayHeight(context) * 0.24,
                       width: displayWidth(context),
                     ),
                     Positioned(
@@ -1379,7 +1383,7 @@ showDialogBox(BuildContext context, CreateVessel vesselData,
                                   Theme.of(context).brightness ==
                                           Brightness.dark
                                       ? Colors.white
-                                      : Colors.black,
+                                      : blueColor,
                                   displayHeight(context) * 0.018,
                                   Colors.transparent,
                                   '',

@@ -1,11 +1,18 @@
 import 'dart:io';
+import 'package:background_locator_2/background_locator.dart';
+import 'package:background_locator_2/settings/android_settings.dart';
+import 'package:background_locator_2/settings/ios_settings.dart';
+import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/old_ui/old_custom_drawer.dart';
+import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/dashboard/dashboard.dart';
 import 'package:performarine/pages/reports/search_and_filters.dart';
 import 'package:performarine/pages/start_trip/start_trip_recording_screen.dart';
@@ -13,6 +20,8 @@ import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
+import '../analytics/location_callback_handler.dart';
+import '../analytics/start_trip.dart';
 import '../common_widgets/utils/colors.dart';
 import '../common_widgets/utils/common_size_helper.dart';
 import '../common_widgets/utils/utils.dart';
@@ -20,6 +29,7 @@ import '../common_widgets/widgets/common_buttons.dart';
 import '../common_widgets/widgets/common_widgets.dart';
 import '../main.dart';
 import '../models/trip.dart';
+import '../models/vessel.dart';
 import '../provider/common_provider.dart';
 import '../services/database_service.dart';
 import 'Vessels_screen.dart';
@@ -41,11 +51,13 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
   final DatabaseService _databaseService = DatabaseService();
 
   var _bottomNavIndex = 0;
-  bool isFloatBtnSelect = false, isBluetoothConnected = false, isStartButton = false, isLocationDialogBoxOpen = false;
+  bool isFloatBtnSelect = false, isBluetoothConnected = false, isStartButton = false, isLocationDialogBoxOpen = false, isEndTripBtnClicked = false;
   double progress = 0.9, lprSensorProgress = 1.0;
   String bluetoothName = '';
 
   late CommonProvider commonProvider;
+  late Future<List<CreateVessel>> getVesselFuture;
+
 
   final iconList = [
     "assets/icons/Home.png",
@@ -89,6 +101,33 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+
+    bool? isTripStarted = sharedPreferences!.getBool('trip_started');
+
+    if(widget.isAppKilled!)
+    {
+      if(isTripStarted != null)
+      {
+        if(isTripStarted)
+        {
+          Future.delayed(Duration(microseconds: 500), (){
+            showEndTripDialogBox(context);
+          });
+
+        }
+      }
+
+    }
+
+    if(widget.isComingFromReset != null)
+    {
+      if(widget.isComingFromReset!)
+      {
+        Future.delayed(Duration(microseconds: 500), (){
+          showResetPasswordDialogBox(context, widget.token);
+        });
+      }
+    }
   }
 
   @override
@@ -1121,7 +1160,6 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     );
   }
 
-
   Widget _tabItem(Widget child, String label, {bool isSelected = false}) {
     return Padding(
       padding: EdgeInsets.only(top: 13),
@@ -1202,7 +1240,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                               commonText(
                                   context: context,
                                   text:
-                                  'There is a trip in progress from another Vessel. Please end the trip and come back here',
+                                  'There is a trip in progress. Please end the trip and come back here',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black87,
                                   textSize: displayWidth(context) * 0.038,
@@ -1641,5 +1679,377 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     });
   }
 
+  showResetPasswordDialogBox(BuildContext context,String token) {
+    if(sharedPreferences != null){
+      sharedPreferences!.setBool('reset_dialog_opened', true);
+    }
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.45,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
 
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(context) * 0.1,
+                                width: displayWidth(context),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                  'You are already logged in, Click OK to reset password.',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.04,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.012,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 8.0,
+                          ),
+                          child: Center(
+                            child: CommonButtons.getAcceptButton(
+                                'OK', context, blueColor,
+                                    () async {
+                                  Navigator.pop(dialogContext);
+
+                                  var result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ResetPassword(token: token,isCalledFrom:  "HomePage",)),);
+                                },
+                                displayWidth(context) * 0.65,
+                                displayHeight(context) * 0.054,
+                                primaryColor,
+                                Colors.white,
+                                displayHeight(context) * 0.015,
+                                blueColor,
+                                '',
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }).then((value) {
+
+    });
+  }
+
+  showEndTripDialogBox(BuildContext context) {
+    if(sharedPreferences != null){
+      sharedPreferences!.setBool('reset_dialog_opened', true);
+    }
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.45,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(context) * 0.1,
+                                width: displayWidth(context),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: Column(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text:
+                                  'Last time you used performarine. there was a trip in progress. do you want to end the trip or continue?',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.04,
+                                  textAlign: TextAlign.center),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.012,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 8.0,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: isEndTripBtnClicked
+                                    ? CircularProgressIndicator()
+                                    : CommonButtons.getAcceptButton(
+                                    'End Trip', context, Colors.transparent,
+                                        () async {
+                                      setDialogState(() {
+                                        isEndTripBtnClicked = true;
+                                      });
+                                      List<String>? tripData = sharedPreferences!
+                                          .getStringList('trip_data');
+
+                                      String tripId = '';
+                                      if (tripData != null) {
+                                        tripId = tripData[0];
+                                      }
+
+                                      final currentTrip =
+                                      await _databaseService.getTrip(tripId);
+
+                                      DateTime createdAtTime =
+                                      DateTime.parse(currentTrip.createdAt!);
+
+                                      var durationTime = DateTime.now()
+                                          .toUtc()
+                                          .difference(createdAtTime);
+                                      String tripDuration =
+                                      Utils.calculateTripDuration(
+                                          ((durationTime.inMilliseconds) / 1000)
+                                              .toInt());
+
+                                      Utils.customPrint("DURATION !!!!!! $tripDuration");
+
+                                      bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+
+                                      if(!isSmallTrip)
+                                      {
+                                        Navigator.pop(context);
+
+                                        Utils().showDeleteTripDialog(context, endTripBtnClick: (){
+                                          EasyLoading.show(
+                                              status: 'Please wait...',
+                                              maskType: EasyLoadingMaskType.black);
+                                          endTripMethod(setDialogState);
+                                          Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
+
+                                          Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
+
+                                          Future.delayed(Duration(seconds: 1), (){
+                                            if(!isSmallTrip)
+                                            {
+                                              Utils.customPrint("SMALL TRIPP IDDD 11 ${tripId}");
+                                              DatabaseService().deleteTripFromDB(tripId);
+                                            }
+                                          });
+                                        }, onCancelClick: (){
+                                          endTripMethod(setDialogState);
+                                        }
+                                        );
+                                      }
+                                      else
+                                      {
+                                        endTripMethod(setDialogState);
+                                      }
+
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Colors.white,
+                                    displayHeight(context) * 0.02,
+                                    endTripBtnColor,
+                                    '',
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              SizedBox(height: 10,),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Continue Trip', context, Colors.transparent,
+                                        () async {
+                                      final _isRunning = await BackgroundLocator();
+
+                                      Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
+
+                                      List<String>? tripData = sharedPreferences!.getStringList('trip_data');
+
+                                      reInitializeService();
+
+                                      StartTrip().startBGLocatorTrip(tripData![0], DateTime.now(), true);
+
+
+                                      final isRunning2 = await BackgroundLocator.isServiceRunning();
+
+                                      Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                      Navigator.of(context).pop();
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    Colors.transparent,
+                                    blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.transparent,
+                                    '',
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }).then((value) {
+
+    });
+  }
+
+  /// Reinitialized service after user killed app while trip is running
+  reInitializeService() async {
+
+    await BackgroundLocator.initialize();
+
+    Map<String, dynamic> data = {'countInit': 1};
+    return await BackgroundLocator.registerLocationUpdate(
+        LocationCallbackHandler.callback,
+        initCallback: LocationCallbackHandler.initCallback,
+        initDataCallback: data,
+        disposeCallback: LocationCallbackHandler.disposeCallback,
+        iosSettings: IOSSettings(
+            accuracy: LocationAccuracy.NAVIGATION,
+            distanceFilter: 0,
+            stopWithTerminate: true),
+        autoStop: false,
+        androidSettings: AndroidSettings(
+            accuracy: LocationAccuracy.NAVIGATION,
+            interval: 1,
+            distanceFilter: 0,
+            androidNotificationSettings: AndroidNotificationSettings(
+                notificationChannelName: 'Location tracking',
+                notificationTitle: 'Trip is in progress',
+                notificationMsg: '',
+                notificationBigMsg: '',
+                notificationIconColor: Colors.grey,
+                notificationIcon: '@drawable/noti_logo',
+                notificationTapCallback:
+                LocationCallbackHandler.notificationCallback)));
+  }
+
+  endTripMethod(StateSetter setDialogState)async
+  {
+
+    Utils.customPrint("Set Dialog set ${setDialogState == null}");
+    List<String>? tripData = sharedPreferences!
+        .getStringList('trip_data');
+
+    String tripId = '';
+    if (tripData != null) {
+      tripId = tripData[0];
+    }
+
+    final currentTrip =
+    await _databaseService.getTrip(tripId);
+
+    DateTime createdAtTime =
+    DateTime.parse(currentTrip.createdAt!);
+
+    var durationTime = DateTime.now()
+        .toUtc()
+        .difference(createdAtTime);
+    String tripDuration =
+    Utils.calculateTripDuration(
+        ((durationTime.inMilliseconds) / 1000)
+            .toInt());
+
+    Utils.customPrint(
+        'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
+
+    EndTrip().endTrip(
+        context: context,
+        scaffoldKey: scaffoldKey,
+        duration: tripDuration,
+        onEnded: () async {
+
+          Future.delayed(Duration(seconds: 1), (){
+
+            EasyLoading.dismiss();
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => BottomNavigation()),
+                ModalRoute.withName(""));
+            //Navigator.of(context).pop();
+          });
+
+          Utils.customPrint('TRIPPPPPP ENDEDDD:');
+          setState(() {
+            getVesselFuture = _databaseService.vessels();
+          });
+        });
+  }
 }

@@ -157,7 +157,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                 Column(
                   children: [
                     SizedBox(
-                      height: displayHeight(context) * 0.03,
+                      height: displayHeight(context) * 0.015,
                     ),
                     InkWell(
                       onTap: () {
