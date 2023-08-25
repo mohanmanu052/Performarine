@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
@@ -8,6 +9,7 @@ import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -244,12 +246,16 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
                           SizedBox(height: displayHeight(context) * 0.005,),
 
-                          commonText(
-                            context: context,
-                            text: tripDistance,
-                            fontWeight: FontWeight.w700,
-                            textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.06,
+
+                          Text(
+                            tripDistance,
+                            style: TextStyle(
+                              fontSize: displayWidth(context) * 0.06,
+                              fontFamily: outfit,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
+                              fontFeatures: [FontFeature.tabularFigures()],
+                            ),
                           ),
 
                           SizedBox(height: displayHeight(context) * 0.005,),
@@ -289,13 +295,24 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
                           SizedBox(height: displayHeight(context) * 0.005,),
 
-                          commonText(
+                          Text(
+                            tripSpeed,
+                            style: TextStyle(
+                              fontSize: displayWidth(context) * 0.06,
+                              fontFamily: outfit,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
+                              fontFeatures: [FontFeature.tabularFigures()],
+                            ),
+                          ),
+
+                          /*commonText(
                             context: context,
                             text: tripSpeed,
                             fontWeight: FontWeight.w700,
                             textColor: Colors.black,
                             textSize: displayWidth(context) * 0.06,
-                          ),
+                          ),*/
 
                           SizedBox(height: displayHeight(context) * 0.005,),
 
@@ -339,13 +356,24 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
                           SizedBox(height: displayHeight(context) * 0.005,),
 
-                          commonText(
+                         Text(
+                           tripDuration,
+                           style: TextStyle(
+                             fontSize: displayWidth(context) * 0.06,
+                             fontFamily: outfit,
+                             fontWeight: FontWeight.w700,
+                             color: Colors.black,
+                             fontFeatures: [FontFeature.tabularFigures()],
+                           ),
+                         ),
+
+                         /* commonText(
                             context: context,
                             text: tripDuration,
                             fontWeight: FontWeight.w700,
                             textColor: Colors.black,
                             textSize: displayWidth(context) * 0.06,
-                          ),
+                          ),*/
 
                           SizedBox(height: displayHeight(context) * 0.005,),
 

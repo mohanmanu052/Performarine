@@ -613,7 +613,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const SignInScreen()),
+        MaterialPageRoute(builder: (context) => const SignInScreen(calledFrom: 'sideMenu',)),
         ModalRoute.withName(""));
   }
 
@@ -660,7 +660,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               commonText(
                                   context: context,
                                   text:
-                                      'If you click on SignOut, you are going to loose entire local data which is not uploaded',
+                                      'If you click on SignOut, you may loose local data which is not uploaded',
                                   fontWeight: FontWeight.w400,
                                   textColor: Colors.grey,
                                   textSize: displayWidth(context) * 0.032,
@@ -804,7 +804,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               ? commonText(
                                   context: context,
                                   text:
-                                  'If you click on change password, you are going to loose entire local data which is not uploaded',
+                                  'If you click on change password, you may loose local data which is not uploaded',
                                   fontWeight: FontWeight.w400,
                                   textColor: Colors.grey,
                                   textSize: displayWidth(context) * 0.032,
@@ -812,7 +812,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               : commonText(
                                   context: context,
                                   text:
-                                      'If you click on sync, you are going to loose entire local data which is not uploaded',
+                                      'If you click on sync, you may loose local data which is not uploaded',
                                   fontWeight: FontWeight.w400,
                                   textColor: Colors.grey,
                                   textSize: displayWidth(context) * 0.032,

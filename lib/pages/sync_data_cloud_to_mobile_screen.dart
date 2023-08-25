@@ -299,7 +299,7 @@ class _SyncDataCloudToMobileScreenState
           StatusStepper(
             connectorCurve: Curves.easeIn,
             itemCurve: Curves.easeOut,
-            activeColor: Colors.black,
+            activeColor: blueColor,
             disabledColor: Colors.grey,
             animationDuration: const Duration(milliseconds: 500),
             children: statuses,
