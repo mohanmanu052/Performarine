@@ -105,7 +105,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                     Container(
                                       color: Colors.white,
                                       child: Image.asset(
-                                        'assets/icons/default_boat.png',
+                                        'assets/images/vessel_default_img.png',
                                         // height: displayHeight(context) * 0.22,
                                         width: displayWidth(context),
                                         fit: BoxFit.contain,
@@ -959,7 +959,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                               ),
                               child: Center(
                                 child: CommonButtons.getAcceptButton(
-                                    'Cancel', context, Colors.transparent, () {
+                                    'Cancel go Back', context, Colors.transparent, () {
                                   Navigator.of(context).pop();
                                 },
                                     displayWidth(context) * 0.65,

@@ -986,7 +986,7 @@ class _OldExpansionCardState extends State<OldExpansionCard> {
                               ),
                               child: Center(
                                 child: CommonButtons.getAcceptButton(
-                                    'Cancel', context, Colors.transparent, () {
+                                    'Cancel go Back', context, Colors.transparent, () {
                                   Navigator.of(context).pop();
                                 },
                                     displayWidth(context) * 0.65,

@@ -16,6 +16,7 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 import 'package:performarine/pages/auth/change_password.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
@@ -23,6 +24,7 @@ import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/reports/search_and_filters.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
+import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
 import 'package:performarine/pages/web_navigation/privacy_and_policy_web_view.dart';
@@ -602,7 +604,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                   commonText(
                                       context: context,
                                       text:
-                                      'If you click on SignOut, you are going to loose entire local data which is not uploaded',
+                                      'If you click on SignOut, you may loose local data which is not uploaded',
                                       fontWeight: FontWeight.w400,
                                       textColor: Colors.grey,
                                       textSize: displayWidth(context) * 0.032,
@@ -767,7 +769,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                       ? commonText(
                                       context: context,
                                       text:
-                                      'If you click on change password, you are going to loose entire local data which is not uploaded',
+                                      'If you click on change password, you may loose local data which is not uploaded',
                                       fontWeight: FontWeight.w400,
                                       textColor: Colors.grey,
                                       textSize: displayWidth(context) * 0.032,
@@ -775,7 +777,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                       : commonText(
                                       context: context,
                                       text:
-                                      'If you click on sync, you are going to loose entire local data which is not uploaded',
+                                      'If you click on sync, you may loose local data which is not uploaded',
                                       fontWeight: FontWeight.w400,
                                       textColor: Colors.grey,
                                       textSize: displayWidth(context) * 0.032,
@@ -1209,7 +1211,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                 ),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Go to trip', context, buttonBGColor,
+                                      'Go to trip', context, blueColor,
                                           () async {
 
                                         Utils.customPrint("Click on GO TO TRIP 1");
@@ -1234,10 +1236,10 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
 
                                         Navigator.push(
                                           dialogContext,
-                                          MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
+                                          MaterialPageRoute(builder: (context) => TripRecordingScreen(
                                               tripId: tripId,
                                               vesselId: tripData![1],
-                                              tripIsRunningOrNot: runningTrip)),
+                                              tripIsRunningOrNot: runningTrip,)),
                                         );
 
                                         Utils.customPrint("Click on GO TO TRIP 3");
@@ -1248,8 +1250,8 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                       displayHeight(context) * 0.054,
                                       primaryColor,
                                       Colors.white,
-                                      displayHeight(context) * 0.015,
-                                      buttonBGColor,
+                                      displayHeight(context) * 0.02,
+                                      blueColor,
                                       '',
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -1257,27 +1259,22 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                               SizedBox(
                                 height: 15.0,
                               ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Cancel', context, buttonBGColor, () {
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                      displayWidth(context) * 0.65,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      displayHeight(context) * 0.015,
-                                      Colors.white,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Cancel', context, Colors.transparent, () {
+                                  Navigator.of(dialogContext).pop();
+                                },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                        ? Colors.white
+                                        : blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.white,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
 
                             ],
