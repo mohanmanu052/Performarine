@@ -83,13 +83,14 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
       isScanningBluetooth = false, isSliderDisable = false;
 
 
+
   final controller = ScreenshotController();
 
   final DatabaseService _databaseService = DatabaseService();
 
   late CommonProvider commonProvider;
 
-  String? selectedVesselName, vesselId;
+  String? selectedVesselName, vesselId,sliderCount = '10+';
 
   Timer? notiTimer;
 
@@ -99,7 +100,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
   DeviceInfo? deviceDetails;
   late Future<List<CreateVessel>> vesselList;
 
-  double progress = 0.9, lprSensorProgress = 1.0;
+  double progress = 0.9, lprSensorProgress = 1.0, sliderMinVal = 11;
 
   late AnimationController popupAnimationController;
   late TextEditingController textEditingController;
@@ -382,7 +383,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                               SizedBox(height: displayHeight(context) * 0.008,),
 
                               Row(
-                               // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Stack(
                                     children: [
@@ -392,8 +393,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                                           height: displayHeight(context) * 0.06,
                                           width: !isSliderDisable ? displayWidth(context) * 0.8 : displayWidth(context) * 0.5,
                                           child: FlutterSlider(
-                                            values: [passengerValue.toDouble()],
-                                            max: 11,
+                                            values: [numberOfPassengers.toDouble()],
+                                            max: sliderMinVal,
                                             min: 0,
                                             trackBar: FlutterSliderTrackBar(
                                                 activeTrackBarHeight: 4.5,
@@ -482,7 +483,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                                                   horizontal: 4, vertical: 0),
                                               child: commonText(
                                                 context: context,
-                                                text: '10+',
+                                                text: sliderCount,
                                                 fontWeight: FontWeight.w500,
                                                 textColor: Colors.black,
                                                 textSize: displayWidth(context) * 0.028,
@@ -1363,12 +1364,25 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                   onEditingComplete: (){
                     setState(() {
                       numberOfPassengers = int.parse(textEditingController.text);
+                      if(int.parse(textEditingController.text) < 11){
+                        sliderMinVal = 11;
+                      }
                     });
                   },
                   onChanged: (String value) {
                     numberOfPassengers = int.parse(textEditingController.text);
                     if(value.length == 3) {
+                      setState(() {
+                        sliderMinVal = 999;
+                        sliderCount = '';
+                      });
                       FocusScope.of(context).requestFocus(new FocusNode());
+                    }else if(value.length == 1){
+                      setState(() {
+                        sliderMinVal = 11;
+                        sliderCount = '10+';
+                      });
+                   //   FocusScope.of(context).requestFocus(new FocusNode());
                     }
                   },
                 ),
@@ -1391,7 +1405,14 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                     ),
                     onPressed: () {
                       setState(() {
-                        if(textEditingController.text.isNotEmpty){
+                        if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
+                          sliderMinVal = 999;
+                          sliderCount = '';
+                          isSliderDisable = false;
+                          numberOfPassengers = int.parse(textEditingController.text);
+                        } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) < 11){
+                          sliderMinVal = 11;
+                          sliderCount = '10+';
                           isSliderDisable = false;
                           numberOfPassengers = int.parse(textEditingController.text);
                         }
@@ -3880,7 +3901,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
                               )
                                   : Container(
                                 decoration: BoxDecoration(
-                                  color: bluetoothConnectBtnBackColor,
+                                  color: blueColor,
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(10)),
                                 ),
