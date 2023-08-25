@@ -80,7 +80,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen> wit
   bool? isGpsOn, isLPRConnected, isBleOn;
   bool addingDataToDB = false, isServiceRunning = false, isLocationDialogBoxOpen = false, isStartButton = false, isVesselDataLoading = false,
       isBluetoothPermitted = false, isLocationPermitted = false, isRefreshList = false,
-      isScanningBluetooth = false,isSliderDisable = false;
+      isScanningBluetooth = false, isSliderDisable = false;
+
 
 
   final controller = ScreenshotController();

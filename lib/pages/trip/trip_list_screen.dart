@@ -260,8 +260,8 @@ class _TripListScreenState extends State<TripListScreen> {
                                             .toInt());
 
                                 String? tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
-                                String? tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
-                                String? tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
+                                String? tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.0";
+                                String? tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.0";
 
                                 Utils.customPrint("ERROR ERROR $tripDistance\n$tripSpeed\ntripAvgSpeed");
                                 CustomLogger().logWithFile(Level.error, "ERROR ERROR $tripDistance\n$tripSpeed\ntripAvgSpeed-> $page");

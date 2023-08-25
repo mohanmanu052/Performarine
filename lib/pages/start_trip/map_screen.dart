@@ -43,7 +43,7 @@ class _MapScreenState extends State<MapScreen> {
 
   final controller = ScreenshotController();
 
-  String tripDistance = '0.00', tripDuration = '00:00:00', tripSpeed = '0.1', tripAvgSpeed = '0.1';
+  String tripDistance = '0.00', tripDuration = '00:00:00', tripSpeed = '0.0', tripAvgSpeed = '0.0';
 
   Timer? durationTimer;
 
@@ -100,8 +100,8 @@ class _MapScreenState extends State<MapScreen> {
     durationTimer = Timer.periodic(Duration(milliseconds: 100), (timer) {
       Utils.customPrint('##TDATA updated time delay from 1 sec to 400 MS by abhi');
       tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
-      tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.1";
-      tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.1";
+      tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.0";
+      tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.0";
 
       Utils.customPrint("TRIP ANALYTICS SPEED $tripSpeed");
       Utils.customPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");

@@ -102,15 +102,17 @@ class _SyncDataCloudToMobileScreenState
                 margin: EdgeInsets.symmetric(horizontal: 17),
                 child: Column(
                   children: [
-                    // SizedBox(
-                    //   height: displayHeight(context) * 0.09,
-                    // ),
+                    SizedBox(
+                      height: displayHeight(context) * 0.045,
+                    ),
                     Container(
-                     // width: displayWidth(context) * 0.36,
-                      height: displayHeight(context) * 0.3,
+                      width: displayWidth(context) * 0.7,
                       child: Image.asset(
                         'assets/images/sync_cloud.png',
                       ),
+                    ),
+                    SizedBox(
+                      height: displayHeight(context) * 0.04,
                     ),
                     Container(
                       width: displayWidth(context) * 0.36,
@@ -120,128 +122,143 @@ class _SyncDataCloudToMobileScreenState
                       ),
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.03,
+                      height: displayHeight(context) * 0.04,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: commonText(
-                        text: 'Restoring your data from cloud',
-                        context: context,
-                        textSize: displayWidth(context) * 0.055,
-                        textColor: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        textAlign: TextAlign.center,
+                    
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: reportTripsListColor
                       ),
-                    ),
-                    SizedBox(
-                      height: displayHeight(context) * 0.07,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Container(
-                        child: stepperWidget(),
-                      ),
-                    ),
-                    SizedBox(
-                      height: displayHeight(context) * 0.06,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: commonText(
-                        text:
-                            'Don’t click back button while restoring data until its fully completed ',
-                        context: context,
-                        textSize: displayWidth(context) * 0.03,
-                        textColor: Colors.black,
-                        fontWeight: FontWeight.w500,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    SizedBox(
-                      height: displayHeight(context) * 0.01,
-                    ),
-                    !commonProvider.exceptionOccurred
-                        ? Container(
-                            margin: EdgeInsets.only(
-                                bottom: displayHeight(context) * 0.005,
-                                top: displayHeight(context) * 0.02),
-                            child: CommonButtons.getActionButton(
-                                title: 'Skip & Continue',
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 25),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 50),
+                              child: commonText(
+                                text: 'Restoring your data from cloud',
                                 context: context,
-                                fontSize: displayWidth(context) * 0.038,
-                                textColor: Colors.white,
-                                buttonPrimaryColor: blueColor,
-                                borderColor: blueColor,
-                                width: displayWidth(context),
-                                onTap: () {
-                                  FocusScope.of(context)
-                                      .requestFocus(new FocusNode());
+                                textSize: displayWidth(context) * 0.055,
+                                textColor: Colors.black,
+                                fontWeight: FontWeight.w500,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.04,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Container(
+                                child: stepperWidget(),
+                              ),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.06,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                              child: commonText(
+                                text:
+                                'Don’t click back button while restoring data until its fully completed ',
+                                context: context,
+                                textSize: displayWidth(context) * 0.03,
+                                textColor: Colors.black87,
+                                fontWeight: FontWeight.w400,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                            !commonProvider.exceptionOccurred
+                                ? Container(
+                              margin: EdgeInsets.only(
+                                  bottom: displayHeight(context) * 0.005,
+                                  top: displayHeight(context) * 0.02),
+                              child: CommonButtons.getActionButton(
+                                  title: 'Skip & Continue',
+                                  context: context,
+                                  fontSize: displayWidth(context) * 0.038,
+                                  textColor: blueColor,
+                                  buttonPrimaryColor: skipAndContinueBtnColor,
+                                  borderColor: skipAndContinueBtnColor,
+                                  width: displayWidth(context) / 1.28,
+                                  onTap: () {
+                                    FocusScope.of(context)
+                                        .requestFocus(new FocusNode());
 
-                                  sharedPreferences!
-                                      .setBool('isFirstTimeUser', true);
+                                    sharedPreferences!
+                                        .setBool('isFirstTimeUser', true);
 
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => BottomNavigation()),
-                                      ModalRoute.withName(""));
-                                }),
-                          )
-                        : Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                      bottom: displayHeight(context) * 0.005,
-                                      top: displayHeight(context) * 0.02),
-                                  child: CommonButtons.getActionButton(
-                                      title: 'Skip & Continue',
-                                      context: context,
-                                      fontSize: displayWidth(context) * 0.038,
-                                      textColor: Colors.white,
-                                      buttonPrimaryColor: Color(0xff889BAB),
-                                      borderColor: Color(0xff889BAB),
-                                      width: displayWidth(context),
-                                      onTap: () {
-                                        FocusScope.of(context)
-                                            .requestFocus(new FocusNode());
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => BottomNavigation()),
+                                        ModalRoute.withName(""));
+                                  }),
+                            )
+                                : Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                        bottom: displayHeight(context) * 0.005,
+                                        top: displayHeight(context) * 0.02),
+                                    child: CommonButtons.getActionButton(
+                                        title: 'Skip & Continue',
+                                        context: context,
+                                        fontSize: displayWidth(context) * 0.038,
+                                        textColor: Colors.white,
+                                        buttonPrimaryColor: Color(0xff889BAB),
+                                        borderColor: Color(0xff889BAB),
+                                        width: displayWidth(context),
+                                        onTap: () {
+                                          FocusScope.of(context)
+                                              .requestFocus(new FocusNode());
 
-                                        sharedPreferences!
-                                            .setBool('isFirstTimeUser', true);
+                                          sharedPreferences!
+                                              .setBool('isFirstTimeUser', true);
 
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => BottomNavigation()),
-                                            ModalRoute.withName(""));
-                                      }),
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => BottomNavigation()),
+                                              ModalRoute.withName(""));
+                                        }),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                      bottom: displayHeight(context) * 0.005,
-                                      top: displayHeight(context) * 0.02),
-                                  child: CommonButtons.getActionButton(
-                                      title: 'Retry',
-                                      context: context,
-                                      fontSize: displayWidth(context) * 0.038,
-                                      textColor: Colors.white,
-                                      buttonPrimaryColor: blueColor,
-                                      borderColor: blueColor,
-                                      width: displayWidth(context),
-                                      onTap: () {
-                                        FocusScope.of(context)
-                                            .requestFocus(new FocusNode());
-                                        getUserConfigData();
-                                      }),
+
+                                SizedBox(
+                                  width: 10,
                                 ),
-                              ),
-                            ],
-                          ),
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                        bottom: displayHeight(context) * 0.005,
+                                        top: displayHeight(context) * 0.02),
+                                    child: CommonButtons.getActionButton(
+                                        title: 'Retry',
+                                        context: context,
+                                        fontSize: displayWidth(context) * 0.038,
+                                        textColor: Colors.white,
+                                        buttonPrimaryColor: blueColor,
+                                        borderColor: blueColor,
+                                        width: displayWidth(context),
+                                        onTap: () {
+                                          FocusScope.of(context)
+                                              .requestFocus(new FocusNode());
+                                          getUserConfigData();
+                                        }),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
                     commonProvider.exceptionOccurred
                     ? Padding(
