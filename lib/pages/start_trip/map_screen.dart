@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
@@ -18,6 +19,7 @@ import 'package:wakelock/wakelock.dart';
 
 import '../../analytics/location_callback_handler.dart';
 import '../../analytics/start_trip.dart';
+import '../../common_widgets/utils/constants.dart';
 import '../../common_widgets/utils/utils.dart';
 import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
@@ -170,101 +172,140 @@ class _MapScreenState extends State<MapScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Column(
-                                    children: [
+                                  Expanded(
+                                    child: Column(
+                                      children: [
 
-                                      commonText(
-                                        context: context,
-                                        text: 'Distance',
-                                        fontWeight: FontWeight.w400,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.026,
-                                      ),
+                                        commonText(
+                                          context: context,
+                                          text: 'Distance',
+                                          fontWeight: FontWeight.w400,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(context) * 0.026,
+                                        ),
 
-                                      SizedBox(height: displayHeight(context) * 0.003,),
+                                        SizedBox(height: displayHeight(context) * 0.003,),
 
-                                      commonText(
-                                        context: context,
-                                        text: tripDistance,
-                                        fontWeight: FontWeight.w700,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.05,
-                                      ),
+                                        Text(
+                                          tripDistance,
+                                          style: TextStyle(
+                                            fontSize: displayWidth(context) * 0.05,
+                                            fontFamily: outfit,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black,
+                                            fontFeatures: [FontFeature.tabularFigures()],
+                                          ),
+                                        ),
 
-                                      SizedBox(height: displayHeight(context) * 0.003,),
+                                        /*commonText(
+                                          context: context,
+                                          text: tripDistance,
+                                          fontWeight: FontWeight.w700,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(context) * 0.05,
+                                        ),
+*/
+                                        SizedBox(height: displayHeight(context) * 0.003,),
 
-                                      commonText(
-                                        context: context,
-                                        text: 'Nautical Miles',
-                                        fontWeight: FontWeight.w400,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.024,
-                                      ),
-                                    ],
+                                        commonText(
+                                          context: context,
+                                          text: 'Nautical Miles',
+                                          fontWeight: FontWeight.w400,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(context) * 0.024,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Column(
-                                    children: [
+                                  Expanded(
+                                    child: Column(
+                                      children: [
 
-                                      commonText(
-                                        context: context,
-                                        text: 'Speed',
-                                        fontWeight: FontWeight.w400,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.026,
-                                      ),
+                                        commonText(
+                                          context: context,
+                                          text: 'Speed',
+                                          fontWeight: FontWeight.w400,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(context) * 0.026,
+                                        ),
 
-                                      SizedBox(height: displayHeight(context) * 0.003,),
+                                        SizedBox(height: displayHeight(context) * 0.003,),
 
-                                      commonText(
-                                        context: context,
-                                        text: tripSpeed,
-                                        fontWeight: FontWeight.w700,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.05,
-                                      ),
+                                        Text(
+                                          tripSpeed,
+                                          style: TextStyle(
+                                            fontSize: displayWidth(context) * 0.05,
+                                            fontFamily: outfit,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black,
+                                            fontFeatures: [FontFeature.tabularFigures()],
+                                          ),
+                                        ),
 
-                                      SizedBox(height: displayHeight(context) * 0.003,),
+                                        /*commonText(
+                                          context: context,
+                                          text: tripSpeed,
+                                          fontWeight: FontWeight.w700,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(context) * 0.05,
+                                        ),*/
 
-                                      commonText(
-                                        context: context,
-                                        text: 'KT/Hr',
-                                        fontWeight: FontWeight.w400,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.024,
-                                      ),
-                                    ],
+                                        SizedBox(height: displayHeight(context) * 0.003,),
+
+                                        commonText(
+                                          context: context,
+                                          text: 'KT/Hr',
+                                          fontWeight: FontWeight.w400,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(context) * 0.024,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Column(
-                                    children: [
+                                  Expanded(
+                                    child: Column(
+                                      children: [
 
-                                      commonText(
-                                        context: context,
-                                        text: 'Time',
-                                        fontWeight: FontWeight.w400,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.026,
-                                      ),
+                                        commonText(
+                                          context: context,
+                                          text: 'Time',
+                                          fontWeight: FontWeight.w400,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(context) * 0.026,
+                                        ),
 
-                                      SizedBox(height: displayHeight(context) * 0.003,),
+                                        SizedBox(height: displayHeight(context) * 0.003,),
 
-                                      commonText(
-                                        context: context,
-                                        text: tripDuration,
-                                        fontWeight: FontWeight.w700,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.05,
-                                      ),
+                                        Text(
+                                          tripDuration,
+                                          style: TextStyle(
+                                            fontSize: displayWidth(context) * 0.05,
+                                            fontFamily: outfit,
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.black,
+                                            fontFeatures: [FontFeature.tabularFigures()],
+                                          ),
+                                        ),
 
-                                      SizedBox(height: displayHeight(context) * 0.003,),
+                                       /* commonText(
+                                          context: context,
+                                          text: tripDuration,
+                                          fontWeight: FontWeight.w700,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(context) * 0.05,
+                                        ),*/
 
-                                      commonText(
-                                        context: context,
-                                        text: 'hh:mm:ss',
-                                        fontWeight: FontWeight.w400,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.024,
-                                      ),
-                                    ],
+                                        SizedBox(height: displayHeight(context) * 0.003,),
+
+                                        commonText(
+                                          context: context,
+                                          text: 'hh:mm:ss',
+                                          fontWeight: FontWeight.w400,
+                                          textColor: Colors.black,
+                                          textSize: displayWidth(context) * 0.024,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -276,19 +317,22 @@ class _MapScreenState extends State<MapScreen> {
                             child: Column(
                               children: [
                                 isTripEnded
-                                    ? Center(
-                                    child:
-                                    CircularProgressIndicator(
-                                      valueColor:
-                                      AlwaysStoppedAnimation<
-                                          Color>(
-                                          circularProgressColor),
-                                    ))
+                                    ? Padding(
+                                  padding: EdgeInsets.only(top: displayHeight(context) * 0.03, bottom: displayHeight(context) * 0.02),
+                                      child: Center(
+                                      child:
+                                      CircularProgressIndicator(
+                                        valueColor:
+                                        AlwaysStoppedAnimation<
+                                            Color>(
+                                            circularProgressColor),
+                                      )),
+                                    )
                                     : Padding(
                                       padding: EdgeInsets.only(top: displayHeight(context) * 0.03),
                                       child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 12),
-                                  child: CommonButtons.getRichTextActionButton(
+                                        margin: EdgeInsets.symmetric(horizontal: 12),
+                                        child: CommonButtons.getRichTextActionButton(
                                         icon: Image.asset('assets/icons/end_btn.png',
                                           height: displayHeight(context) * 0.055,
                                           width: displayWidth(context) * 0.12,
@@ -302,6 +346,7 @@ class _MapScreenState extends State<MapScreen> {
                                         width: displayWidth(context) * 0.75,
                                         onTap: () async
                                         {
+
                                           Utils.customPrint(
                                               "END TRIP CURRENT TIME ${DateTime.now()}");
 

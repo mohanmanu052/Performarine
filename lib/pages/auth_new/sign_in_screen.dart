@@ -76,24 +76,82 @@ class _SignInScreenState extends State<SignInScreen> {
     return WillPopScope(
       onWillPop: ()async
       {
-        if (widget.calledFrom == 'SignUp') {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    NewIntroScreen(),
-              ),
-              ModalRoute.withName(""));
-
-        return false;
-        } else {
-          Navigator.of(context).pop(true);
+        if(widget.calledFrom != null)
+        {
+          if(widget.calledFrom.isNotEmpty || widget.calledFrom == '')
+          {
+            if(widget.calledFrom == 'SignUp' || widget.calledFrom == 'sideMenu')
+            {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => NewIntroScreen()),
+                  ModalRoute.withName(""));
+            }
+            else
+            {
+              Navigator.of(context).pop();
+            }
+          }
+          else
+          {
+             Navigator.of(context).pop();
+          }
+          return false;
+        }
+        else
+        {
+          Navigator.of(context).pop();
           return false;
         }
       },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: RichText(
+                text: TextSpan(
+                    text: 'New User?',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: outfit,
+                        fontStyle: FontStyle.normal,
+                        fontSize: displayWidth(context) * 0.034),
+                    children: [
+                      TextSpan(
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SignUpScreen(),
+                                  ));
+                            },
+                          text: ' Sign Up',
+                          style: TextStyle(
+                              color: blueColor,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: outfit,
+                              fontStyle: FontStyle.normal,
+                              fontSize: displayWidth(context) * 0.035)),
+                    ]),
+              ),
+            ),
+            SizedBox(height: displayHeight(context) * 0.007),
+            commonText(
+                text: Platform.isAndroid ? 'Version  0.0.1+1' : 'Version  0.0.10',
+                context: context,
+                textSize: displayWidth(context) * 0.03,
+                textColor: Colors.black54,
+                fontWeight: FontWeight.w400),
+            SizedBox(
+              height: displayHeight(context) * 0.03,
+            ),
+          ],
+        ),
         body: Center(
           child: Form(
             key: formKey,
@@ -399,47 +457,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         ],
                       ),
 
-                      SizedBox(height: displayHeight(context) * 0.23),
-                      Center(
-                        child: RichText(
-                          text: TextSpan(
-                              text: 'New User?',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: outfit,
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: displayWidth(context) * 0.034),
-                              children: [
-                                TextSpan(
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () async {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => SignUpScreen(),
-                                            ));
-                                      },
-                                    text: ' Sign Up',
-                                    style: TextStyle(
-                                        color: blueColor,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: outfit,
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: displayWidth(context) * 0.035)),
-                              ]),
-                        ),
-                      ),
-                      SizedBox(height: displayHeight(context) * 0.01),
-                      commonText(
-                          text: Platform.isAndroid ? 'Version  0.0.1+1' : 'Version  0.0.10',
-                          context: context,
-                          textSize: displayWidth(context) * 0.03,
-                          textColor: Colors.black54,
-                          fontWeight: FontWeight.w400),
-                      SizedBox(
-                        height: displayHeight(context) * 0.03,
-                      ),
+                      SizedBox(height: displayHeight(context) * 0.02),
+
                     ],
                   ),
                 ),

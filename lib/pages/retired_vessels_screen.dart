@@ -81,6 +81,29 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
             ),
           ],
         ),
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                //top: displayWidth(context) * 0.01,
+              ),
+              child: GestureDetector(
+                  onTap: ()async{
+                    final image = await controller.capture();
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                      imagePath: image.toString(),
+                      uIntList: image,)));
+                  },
+                  child: UserFeedback().getUserFeedback(context)
+              ),
+            ),
+
+            SizedBox(
+              height: displayWidth(context) * 0.03,
+            )
+          ],
+        ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -138,24 +161,6 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
                                 },
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                //top: displayWidth(context) * 0.01,
-                              ),
-                              child: GestureDetector(
-                                  onTap: ()async{
-                                    final image = await controller.capture();
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                      imagePath: image.toString(),
-                                      uIntList: image,)));
-                                  },
-                                  child: UserFeedback().getUserFeedback(context)
-                              ),
-                            ),
-
-                            SizedBox(
-                              height: displayWidth(context) * 0.03,
-                            )
                           ],
                         );
                       }
