@@ -188,7 +188,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                             textSize: textSize,
                             textAlign: TextAlign.start),
                       ),
-                      SizedBox(
+                    /*  SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
                       InkWell(
@@ -209,7 +209,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                             textColor: Colors.black54,
                             textSize: textSize,
                             textAlign: TextAlign.start),
-                      ),
+                      ), */
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
