@@ -250,7 +250,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
           ],
         ),
         bottomNavigationBar: Container(
-          height: displayHeight(context) * 0.112,
+          height: displayHeight(context) * 0.105,
           child: ClipRRect(
            // borderRadius: BorderRadius.circular(10.0),
             child: Container(

@@ -2601,6 +2601,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                               if (value) {
                                 Utils.customPrint("select all status: $value");
                                 selectedTripIdList!.addAll(tripIdList!);
+                                isSHowGraph = false;
                                 selectedTripLabelList!.clear();
                                 selectedTripLabelList!.addAll(children!);
                                 Utils.customPrint(
@@ -2635,7 +2636,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 tripId: tripIdList![index],
                                 dateTime: dateTimeList![index],
                                 onChanged: (value) {
-
+                                  isSHowGraph = false;
                                   Utils.customPrint("trip list id: ${tripIdList![index]}");
                                   CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
 
