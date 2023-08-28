@@ -44,12 +44,13 @@ class ReportModuleProvider with ChangeNotifier {
           .format(DateTime.parse(endDate + " 23:11:59.000").toUtc());
       Utils.customPrint("filter by date:$tempStartDate, $tempEndDate");
     }
+
     if (caseType == 1) {
       queryParameters = {
         "case": caseType,
         "vesselID": vesselID,
-        "startDate": tempStartDate,
-        "endDate": tempEndDate
+        "startDate": startDate,
+        "endDate": endDate
       };
     } else {
       queryParameters = {"case": caseType, "tripIds": selectedTripId};
@@ -59,6 +60,7 @@ class ReportModuleProvider with ChangeNotifier {
     CustomLogger().logWithFile(Level.info, "Report module REQ $queryParameters\ntoken:$token -> $page");
 
     try {
+
       final response = await http.post(uri,
           body: jsonEncode(queryParameters), headers: headers);
 

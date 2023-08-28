@@ -1165,6 +1165,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                         }
                                         if ((isSelectedStartDay! &&
                                             isSelectedEndDay!)) {
+
                                           getReportsData(selectedCaseType!,
                                               startDate: startDate,
                                               endDate: endDate,
@@ -1198,6 +1199,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 int.parse(b.split(" ")[1]);
                                             return numberA.compareTo(numberB);
                                           });
+
                                           getReportsData(selectedCaseType!,
                                               selectedTripListID:
                                                   selectedTripIdList);

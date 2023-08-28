@@ -2865,7 +2865,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                   dateTime: dateTimeList![index],
                                   distance: distanceList![index],
                                   time: timeList![index],
-                                  onChanged: (value) {
+                                  onChanged: (value) async{
                                     Utils.customPrint(
                                         "trip list id: ${tripIdList![index]}");
                                     CustomLogger().logWithFile(Level.info,
@@ -2882,10 +2882,10 @@ class _ReportsModuleState extends State<ReportsModule> {
                                       CustomLogger().logWithFile(Level.info,
                                           "trip list id: ${tripIdList![index]} -> $page");
                                     } else {
-                                      selectedTripIdList!
+                                     await selectedTripIdList!
                                           .remove(tripIdList![index]);
                                       // tripIdList!.removeAt(index);
-                                      selectedTripLabelList!
+                                     await selectedTripLabelList!
                                           .remove(children![index]);
                                       Utils.customPrint(
                                           "selected trip label list: ${selectedTripLabelList}");

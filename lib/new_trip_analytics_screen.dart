@@ -1347,7 +1347,18 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                         context,
                                         Colors.transparent,
                                         (){
+                                          if(isBtnClick){
+                                               Navigator.pop(dialogContext);
+                                                    Navigator.pushAndRemoveUntil(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) => BottomNavigation()),
+                                                        ModalRoute.withName(""));
+
+                                          }else{
                                           Navigator.pop(dialogContext);
+
+                                          }
                                         },
                                         displayWidth(ctx) ,
                                         displayHeight(ctx) * 0.05,
@@ -1445,6 +1456,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         {
           if(value.status!)
           {
+
+
             isDeletedSuccessfully = value.status!;
             DatabaseService().deleteTripFromDB(tripId).then((value)
             {
@@ -1463,6 +1476,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
               isDeleteTripBtnClicked = false;
             });
           }
+
         } else{
           setState(() {
             isBtnClick = false;
@@ -1470,11 +1484,13 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         }
       }).catchError((e){
         internalStateSetter!(() {
+
           isBtnClick = false;
         });
       });
     } catch(e){
       internalStateSetter!(() {
+
         isBtnClick = false;
       });
     }
