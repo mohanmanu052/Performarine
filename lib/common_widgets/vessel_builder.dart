@@ -11,8 +11,9 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/single_vessel_card.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 
-import '../pages/add_vessel_new/add_new_vessel_screen.dart';
+// import '../pages/add_vessel_new/add_new_vessel_screen.dart';
 
 //To show all vessels in home page
 class VesselBuilder extends StatefulWidget {
@@ -78,6 +79,66 @@ class _VesselBuilderState extends State<VesselBuilder> {
                             textColor: Colors.black,
                             textSize: displayWidth(context) * 0.04,
                             textAlign: TextAlign.start),
+                        SizedBox(height: displayHeight(context)*.18,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            commonText(
+                                context: context,
+                                text: 'Do you want to add vessel ?  '.toString(),
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.04,
+                                textAlign: TextAlign.start),
+                            InkWell(
+                              onTap: () {
+                                CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
+                                // Navigator.of(context).pop();
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddNewVesselScreen()),
+                                );
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'Create Vessels',
+                                  fontWeight: FontWeight.bold,
+                                  textColor: blueColor,
+                                  textDecoration: TextDecoration.underline,
+                                  textSize: displayWidth(context) * 0.038,
+                                  textAlign: TextAlign.start),
+                            ),
+                          ],
+                        ),
+
+                        // CommonButtons.getAcceptButton(
+                        //     'Create Vessels',
+                        //     context,
+                        //     Colors.transparent,
+                        //         (){
+                        //           Navigator.of(context).pop();
+                        //
+                        //           Navigator.push(
+                        //             context,
+                        //             MaterialPageRoute(
+                        //                 builder: (context) =>
+                        //                     AddNewVesselPage()),
+                        //           );
+                        //     },
+                        //     displayWidth(context)*.8 ,
+                        //     displayHeight(context) * 0.05,
+                        //     primaryColor,
+                        //     Theme.of(context).brightness ==
+                        //         Brightness.dark
+                        //         ? Colors.white
+                        //         : Colors.white,
+                        //     displayHeight(context) * 0.02,
+                        //     blueColor,
+                        //     '',
+                        //     fontWeight: FontWeight.w600),
                       ],
                     ),
                   );
