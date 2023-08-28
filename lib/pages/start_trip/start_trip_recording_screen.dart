@@ -846,7 +846,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                               .text) >
                                           11) {
                                         sliderMinVal = 999;
-                                        sliderCount = '';
+                                        sliderCount = '999';
                                         isSliderDisable = false;
                                       } else {
                                         sliderMinVal = 11;
@@ -1575,7 +1575,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         numberOfPassengers = int.parse(textEditingController.text);
 
                         sliderMinVal = 999;
-                        sliderCount = '';
+                        sliderCount = '999';
                       }
                     //});
                   },
@@ -1586,7 +1586,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         numberOfPassengers =
                             int.parse(textEditingController.text);
                         sliderMinVal = 999;
-                        sliderCount = '';
+                        sliderCount = '999';
                       });
                       FocusScope.of(context).requestFocus(new FocusNode());
                     }

@@ -1346,7 +1346,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                         'Cancel',
                                         context,
                                         Colors.transparent,
-                                            (){
+                                        (){
                                           Navigator.pop(dialogContext);
                                         },
                                         displayWidth(ctx) ,
