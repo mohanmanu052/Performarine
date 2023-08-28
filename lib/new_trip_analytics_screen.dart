@@ -65,6 +65,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
   String tripDistance = '0.00', tripDuration = '00:00:00', dateOfJourney = '', yearOfTheJourney = '', peopleOnBoard = '';
 
   String? finalTripDuration, finalTripDistance, finalAvgSpeed;
+  bool cancelVisible=true;
 
   final List<NewChartData> chartData = [
     NewChartData(2010, 35),
@@ -1277,6 +1278,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                         'Confirm & Delete', context, deleteTripBtnColor,
                                             () async {
                                               stateSetter(() {
+                                                cancelVisible=false;
                                                 isBtnClick = true;
                                               });
                                           internalStateSetter = stateSetter;
@@ -1346,19 +1348,16 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                         'Cancel',
                                         context,
                                         Colors.transparent,
-                                        (){
-                                          if(isBtnClick){
-                                               Navigator.pop(dialogContext);
-                                                    Navigator.pushAndRemoveUntil(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) => BottomNavigation()),
-                                                        ModalRoute.withName(""));
 
+                                        (){
+
+                                          if(!cancelVisible){
                                           }else{
                                           Navigator.pop(dialogContext);
 
                                           }
+                                    
+                                          
                                         },
                                         displayWidth(ctx) ,
                                         displayHeight(ctx) * 0.05,
