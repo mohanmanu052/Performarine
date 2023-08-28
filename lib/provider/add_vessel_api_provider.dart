@@ -47,25 +47,25 @@ class AddVesselApiProvider with ChangeNotifier {
         });
       }
 
-      Utils.customPrint('NAME ${addVesselRequestModel.name!}');
-      Utils.customPrint('Model ${addVesselRequestModel.model!}');
-      Utils.customPrint('Builder Name ${addVesselRequestModel.builderName!}');
-      Utils.customPrint('regNumber ${addVesselRequestModel.regNumber!}');
-      Utils.customPrint('mmsi ${addVesselRequestModel.mMSI!}');
-      Utils.customPrint('Engine Type ${addVesselRequestModel.engineType!}');
-      Utils.customPrint('Fuel Capacity ${addVesselRequestModel.fuelCapacity!}');
-      Utils.customPrint('weight ${addVesselRequestModel.weight!}');
-      Utils.customPrint('freeBoard ${addVesselRequestModel.freeBoard!}');
-      Utils.customPrint(
-          'length Overall ${addVesselRequestModel.lengthOverall!}');
-      Utils.customPrint('beam ${addVesselRequestModel.beam!}');
-      Utils.customPrint('depth ${addVesselRequestModel.draft!}');
-      Utils.customPrint('vesselSize ${addVesselRequestModel.vesselSize!}');
-      Utils.customPrint('capacity ${addVesselRequestModel.capacity!}');
-      Utils.customPrint('built Year ${addVesselRequestModel.builtYear!}');
-      Utils.customPrint('user Id ${userId}');
-      Utils.customPrint('user Id ${userId}');
-      Utils.customPrint('VESSEL STATUS ${addVesselRequestModel.vesselStatus}');
+      // Utils.customPrint('NAME ${addVesselRequestModel.name!}');
+      // Utils.customPrint('Model ${addVesselRequestModel.model!}');
+      // Utils.customPrint('Builder Name ${addVesselRequestModel.builderName!}');
+      // Utils.customPrint('regNumber ${addVesselRequestModel.regNumber!}');
+      // Utils.customPrint('mmsi ${addVesselRequestModel.mMSI!}');
+      // Utils.customPrint('Engine Type ${addVesselRequestModel.engineType!}');
+      // Utils.customPrint('Fuel Capacity ${addVesselRequestModel.fuelCapacity!}');
+      // Utils.customPrint('weight ${addVesselRequestModel.weight!}');
+      // Utils.customPrint('freeBoard ${addVesselRequestModel.freeBoard!}');
+      // Utils.customPrint(
+      //     'length Overall ${addVesselRequestModel.lengthOverall!}');
+      // Utils.customPrint('beam ${addVesselRequestModel.beam!}');
+      // Utils.customPrint('depth ${addVesselRequestModel.draft!}');
+      // Utils.customPrint('vesselSize ${addVesselRequestModel.vesselSize!}');
+      // Utils.customPrint('capacity ${addVesselRequestModel.capacity!}');
+      // Utils.customPrint('built Year ${addVesselRequestModel.builtYear!}');
+      // Utils.customPrint('user Id ${userId}');
+      // Utils.customPrint('user Id ${userId}');
+      // Utils.customPrint('VESSEL STATUS ${addVesselRequestModel.vesselStatus}');
 
       request.headers.addAll(headers);
       request.fields['id'] = addVesselRequestModel.id!;
@@ -136,9 +136,9 @@ class AddVesselApiProvider with ChangeNotifier {
                 scaffoldKey: scaffoldKey, message: decodedData['message']);
           }
         }
-
-        Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
-        Utils.customPrint('EXE RESP: $responseValue');
+        //
+        // Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
+        // Utils.customPrint('EXE RESP: $responseValue');
 
         CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page");
         CustomLogger().logWithFile(Level.info, "EXE RESP: $responseValue -> $page");
