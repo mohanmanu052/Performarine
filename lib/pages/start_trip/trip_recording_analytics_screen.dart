@@ -515,20 +515,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                     },
                 ),
 
-                Padding(
-                  padding: EdgeInsets.only(
-                    top : displayWidth(context) * 0.005,
-                  ),
-                  child: GestureDetector(
-                      onTap: ()async{
-                        final image = await controller.capture();
-                        Navigator.push(widget.context!, MaterialPageRoute(builder: (context) => FeedbackReport(
-                          imagePath: image.toString(),
-                          uIntList: image,)));
-                      },
-                      child: UserFeedback().getUserFeedback(context)
-                  ),
-                )
+              SizedBox(height: displayHeight(context) * 0.03,)
               ],
             )
           ],
