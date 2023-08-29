@@ -420,7 +420,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     date: tripData.date, tripsByDate: tripData.tripsByDate)));
 
             durationGraphData = triSpeedList;
-            print('the trip speed data length was-------'+durationGraphData.length.toString());
 
             if (triSpeedList.length <= 1) {
               chartWidth = displayWidth(context) * 1;
@@ -991,7 +990,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                     isSHowGraph = false;
                                                     avgSpeed = null;
                                                      tripList.clear();
-print('the trip list  was-------2'+tripList.length.toString());
 
                                                     avgDuration = null;
                                                     avgFuelConsumption = null;
