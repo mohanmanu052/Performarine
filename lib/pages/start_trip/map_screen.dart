@@ -254,7 +254,7 @@ class _MapScreenState extends State<MapScreen> {
 
                                         commonText(
                                           context: context,
-                                          text: 'Kt/h',
+                                          text: speedKnot,
                                           fontWeight: FontWeight.w400,
                                           textColor: Colors.black,
                                           textSize: displayWidth(context) * 0.024,

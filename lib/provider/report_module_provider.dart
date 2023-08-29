@@ -48,8 +48,8 @@ class ReportModuleProvider with ChangeNotifier {
       queryParameters = {
         "case": caseType,
         "vesselID": vesselID,
-        "startDate": tempStartDate,
-        "endDate": tempEndDate
+        "startDate": startDate,
+        "endDate": endDate
       };
     } else {
       queryParameters = {"case": caseType, "tripIds": selectedTripId};
