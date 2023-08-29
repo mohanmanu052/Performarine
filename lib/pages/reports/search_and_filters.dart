@@ -217,6 +217,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           .tripListData(
               vesselID, context, commonProvider.loginModel!.token!, scaffoldKey)
           .then((value) {
+            
         if (value != null) {
           setState(() {
             isTripIdListLoading = true;
@@ -357,6 +358,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               context,
               scaffoldKey)
           .then((value) {
+         print('the trip list  was------- value was'+value!.data!.trips!.length.toString());   
         if (value != null) {
           if (value.message == "Internal Server Error") {
             setState(() {
@@ -371,14 +373,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               setState(() {
                 isReportDataLoading = true;
                 isBtnClick = false;
-                triSpeedList.clear();
-
                 avgSpeed = null;
                 avgDuration = null;
                 avgFuelConsumption = null;
                 avgPower = null;
                 triSpeedList.clear();
                 tripList.clear();
+
                 duration1 = null;
                 avgSpeed1 = null;
                 fuelUsage = null;
@@ -407,7 +408,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
         Utils.customPrint("NEW AVG DATA ${value.data?.avgInfo?.avgDuration}");
             CustomLogger().logWithFile(Level.info, "NEW AVG DATA ${value.data?.avgInfo?.avgDuration} -> $page");
 
-
             avgDuration = myAvgDuration ?? 0;
 
             avgFuelConsumption = value.data?.avgInfo?.avgFuelConsumption;
@@ -420,6 +420,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     date: tripData.date, tripsByDate: tripData.tripsByDate)));
 
             durationGraphData = triSpeedList;
+            print('the trip speed data length was-------'+durationGraphData.length.toString());
+
             if (triSpeedList.length <= 1) {
               chartWidth = displayWidth(context) * 1;
             } else if (triSpeedList.length <= 2) {
@@ -564,7 +566,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
               }
             }
             tripList.clear();
-
+            
             for (int i = 0; i < triSpeedList.length; i++) {
               for (int j = 0; j < triSpeedList[i].tripsByDate!.length; j++) {
                 Map<String, dynamic> data = {
@@ -577,9 +579,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                   'powerUsage': triSpeedList[i].tripsByDate![j].avgPower ?? 0.0
                 };
                 tripList.add(data);
+
               }
             }
-
+    
         Utils.customPrint("length: ${tripList.length}, tripList: $tripList");
             CustomLogger().logWithFile(Level.info, "length: ${tripList.length}, tripList: $tripList -> $page");
 
@@ -975,6 +978,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                 );
                                               }).toList(),
                                               onChanged: (item) {
+                                                
                                                 Utils.customPrint("id is: ${item?.id} ");
                                                 CustomLogger().logWithFile(Level.info, "id is: ${item?.id}-> $page");
 
@@ -986,11 +990,13 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                                     isTripIdListLoading = false;
                                                     isSHowGraph = false;
                                                     avgSpeed = null;
+                                                     tripList.clear();
+print('the trip list  was-------2'+tripList.length.toString());
+
                                                     avgDuration = null;
                                                     avgFuelConsumption = null;
                                                     avgPower = null;
                                                     triSpeedList.clear();
-                                                    tripList.clear();
                                                     duration1 = null;
                                                     avgSpeed1 = null;
                                                     fuelUsage = null;
@@ -1107,7 +1113,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                             avgFuelConsumption = null;
                                             avgPower = null;
                                             triSpeedList.clear();
-                                            tripList.clear();
                                             duration1 = null;
                                             avgSpeed1 = null;
                                             fuelUsage = null;
@@ -1592,7 +1597,8 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             )),
           ],
           rows: [
-            ...tripList.map((person) => DataRow(cells: [
+            ...tripList.map((person) {
+            return DataRow(cells: [
                   DataCell(
                     Align(
                         alignment: Alignment.center,
@@ -1615,7 +1621,10 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       alignment: Alignment.center,
                       child: Text('${person['powerUsage']}',
                           textAlign: TextAlign.center))),
-                ])),
+                ]);
+            }
+                
+                ),
             ...finalData.map((e) => DataRow(cells: [
                   DataCell(
                     Text(
@@ -2600,6 +2609,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                             onChanged: (value) {
                               if (value) {
                                 Utils.customPrint("select all status: $value");
+                                selectedTripIdList!.clear();
                                 selectedTripIdList!.addAll(tripIdList!);
                                 isSHowGraph = false;
                                 selectedTripLabelList!.clear();
@@ -2610,6 +2620,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 _checkAll(value);
                               } else if (!value) {
                                 // Tristate
+
                                 selectedTripIdList!.clear();
                                 selectedTripLabelList!.clear();
                                 _checkAll(false);
@@ -2635,29 +2646,60 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                 value: childrenValue![index],
                                 tripId: tripIdList![index],
                                 dateTime: dateTimeList![index],
-                                onChanged: (value) {
+                                onChanged: (value) async{
                                   isSHowGraph = false;
                                   Utils.customPrint("trip list id: ${tripIdList![index]}");
                                   CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
 
-                                  if (!selectedTripIdList!
-                                      .contains(tripIdList![index])) {
-                                    selectedTripIdList!.add(tripIdList![index]);
-                                    selectedTripLabelList!
-                                        .add(children![index]);
-                                    Utils.customPrint(
-                                        "selected trip label list: ${selectedTripLabelList}");
-                                    CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
-                                  } else {
-                                    selectedTripIdList!
+
+if(selectedTripIdList!.contains(tripIdList![index])){
+
+selectedTripIdList!
                                         .remove(tripIdList![index]);
-                                    // tripIdList!.removeAt(index);
+                                     //tripIdList!.remove(index);
                                     selectedTripLabelList!
                                         .remove(children![index]);
                                     Utils.customPrint(
                                         "selected trip label list: ${selectedTripLabelList}");
                                     CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
-                                  }
+setState(() {
+  
+});
+
+}else{
+
+  selectedTripIdList!
+                                        .add(tripIdList![index]);
+                                    // tripIdList!.add(index);
+                                    selectedTripLabelList!
+                                        .add(children![index]);
+                                        setState(() {
+  
+});
+
+
+}
+
+                                  // if (!selectedTripIdList!
+                                  //     .contains(tripIdList![index])) {
+                                  //       print('removed select id list--- coming to add');
+                                  //   selectedTripIdList!.add(tripIdList![index]);
+                                  //   selectedTripLabelList!
+                                  //       .add(children![index]);
+                                  //   Utils.customPrint(
+                                  //       "selected trip label list: ${selectedTripLabelList}");
+                                  //   CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
+                                  // } else {
+                                  //   print('removed select id list---'+tripIdList![index]);
+                                  //   selectedTripIdList!
+                                  //       .remove(tripIdList![index]);
+                                  //   // tripIdList!.removeAt(index);
+                                  //   selectedTripLabelList!
+                                  //       .remove(children![index]);
+                                  //   Utils.customPrint(
+                                  //       "selected trip label list: ${selectedTripLabelList}");
+                                  //   CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
+                                  // }
                                   manageTristate(index, value);
                                 },
                                 checkboxType: CheckboxType.Child,

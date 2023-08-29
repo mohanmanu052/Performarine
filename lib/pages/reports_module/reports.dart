@@ -345,6 +345,8 @@ class _ReportsModuleState extends State<ReportsModule> {
               Level.info, "value of trip list: ${value.data} -> $page");
           tripIdList!.clear();
           dateTimeList!.clear();
+
+
           for (int i = 0; i < value.data!.length; i++) {
             isTripsAreAvailable = false;
             tripIdList!.add(value.data![i].id!);
@@ -356,7 +358,6 @@ class _ReportsModuleState extends State<ReportsModule> {
             children!.add("Trip ${i.toString()}");
           }
           childrenValue = List.generate(children!.length, (index) => false);
-
           Utils.customPrint("trip id list: $tripIdList");
           Utils.customPrint("children: ${children}");
           Utils.customPrint("dateTimeList: $dateTimeList");
@@ -1772,6 +1773,7 @@ class _ReportsModuleState extends State<ReportsModule> {
 
   //Table which we are showing in reports page
   Widget? table(BuildContext context) {
+    
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
@@ -1824,7 +1826,10 @@ class _ReportsModuleState extends State<ReportsModule> {
             )),
           ],
           rows: [
-            ...tripList.map((person) => DataRow(cells: [
+            ...tripList.map((person) {
+              print('the trips list was-----'+person.length.toString());
+
+            return DataRow(cells: [
                   DataCell(
                     Align(
                         alignment: Alignment.center,
@@ -1847,8 +1852,11 @@ class _ReportsModuleState extends State<ReportsModule> {
                       alignment: Alignment.center,
                       child: Text('${person['powerUsage']}',
                           textAlign: TextAlign.center))),
-                ])),
-            ...finalData.map((e) => DataRow(cells: [
+                ]);}
+                
+                ),
+            ...finalData.map((e) {
+              return DataRow(cells: [
                   DataCell(
                     Text(
                       e['date']!,
@@ -1886,8 +1894,13 @@ class _ReportsModuleState extends State<ReportsModule> {
                         style: TextStyle(
                             color: circularProgressColor,
                             fontWeight: FontWeight.w800)),
-                  )),
-                ]))
+                  ))
+
+            
+                ]);
+            }
+                
+                )
           ],
         ),
       ),
@@ -2854,7 +2867,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                             itemCount: children?.length ?? 0,
                             shrinkWrap: true,
                             physics: ClampingScrollPhysics(),
-                            itemBuilder: (context, index) => Column(
+                            itemBuilder: (context, index) {
+                              return Column(
                               children: [
                                 SizedBox(
                                   height: displayHeight(context) * 0.01,
@@ -2898,7 +2912,9 @@ class _ReportsModuleState extends State<ReportsModule> {
                                   activeColor: Colors.indigo,
                                 ),
                               ],
-                            ),
+                            
+                            );
+                            }
                           ),
                         ],
                       )
