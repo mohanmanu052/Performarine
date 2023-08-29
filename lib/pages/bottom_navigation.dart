@@ -260,7 +260,6 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                 indicatorWeight: 16,
                   labelPadding: EdgeInsets.zero,
                   onTap: (index) async{
-
                   if(index == 1){
                     SystemChrome.setPreferredOrientations([
                       DeviceOrientation.portraitUp,
@@ -448,7 +447,8 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                                   await openAppSettings();
                                 }
 
-                                *//*showDialog(
+                                */
+                      /*showDialog(
                                         context: scaffoldKey.currentContext!,
                                         builder: (BuildContext context) {
                                           isLocationDialogBoxOpen = true;

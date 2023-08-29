@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';
@@ -46,7 +47,7 @@ class NewTripAnalyticsScreen extends StatefulWidget {
     this.isAppKilled = false,
     this.calledFrom,
      this.tripData,
-     this.isTripDeleted
+     this.isTripDeleted,
    });
 
   @override
@@ -95,15 +96,14 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
       isDeletedSuccessfully = false;
   StateSetter? internalStateSetter;
 
+  int? tripIsSyncOrNot;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
     commonProvider = context.read<CommonProvider>();
-
-    Utils.customPrint("DATE DATE ${dateOfJourney}");
-    Utils.customPrint("DATE DATE ${yearOfTheJourney}");
 
     sharedPreferences!.remove('sp_key_called_from_noti');
 
@@ -138,13 +138,13 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                 ? Colors.white
                 : Colors.black,
           ),
-          title: commonText(
+         /* title: commonText(
             context: context,
             text: 'Trip ID #${widget.tripId}',
             fontWeight: FontWeight.w600,
             textColor: Colors.black87,
             textSize: displayWidth(context) * 0.03,
-          ),
+          ),*/
           actions: [
 
             InkWell(
@@ -1131,35 +1131,55 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                   color: backgroundColor,
                   child: Column(
                     children: [
-                      Container(
+                      tripIsSyncOrNot == 0
+                      ? Container(
                         margin: EdgeInsets.only(top: 10, left: 17, right: 17),
                         width: displayWidth(context),
                         height: displayHeight(context) * 0.055,
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: blueColor,
                           borderRadius: BorderRadius.circular(8)
                         ),
                         child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset('assets/icons/download.png',),
-                                SizedBox(width: 10,),
-                                commonText(
-                                  context: context,
-                                  text: 'Export Complete Report',
-                                  fontWeight: FontWeight.w600,
-                                  textColor: Colors.white,
-                                  textSize: displayWidth(context) * 0.036,
+                          child: ElevatedButton(
+                              onPressed: (){
+
+                                debugPrint("DOWNLOAD TRIP ID ${widget.tripId!}");
+                                DownloadTrip().downloadTrip(
+                                    context,
+                                    scaffoldKey,
+                                    widget.tripId!);
+
+                              },
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(blueColor),
+                                  fixedSize: MaterialStateProperty.all(
+                                      Size(displayWidth(context), displayHeight(context) * 0.065)),
+                                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: BorderSide(color: blueColor),
+                                  ))),
+                              child: Center(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset('assets/icons/download.png',),
+                                    SizedBox(width: 10,),
+                                    commonText(
+                                      context: context,
+                                      text: 'Download Trip Data',
+                                      fontWeight: FontWeight.w600,
+                                      textColor: Colors.white,
+                                      textSize: displayWidth(context) * 0.036,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
+
+                              ))
                         ),
-                      ),
+                      )
+                      : SizedBox(),
                       Padding(
                         padding: EdgeInsets.only(bottom: 8
                         ),
@@ -1509,6 +1529,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         tripData = tripDetails;
         vesselData = vesselDetails[0];
       });
+      tripIsSyncOrNot = tripData!.isSync;
       dateOfJourney = DateFormat('dd-MM').format(DateTime.parse(tripData!.createdAt!));
       yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(tripData!.createdAt!));
     } else {
@@ -1522,11 +1543,14 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         tripData = tripDetails;
         vesselData = vesselDetails[0];
       });
-      dateOfJourney = DateFormat('dd-MM').format(DateTime.parse(vesselData!.createdAt!));
-      yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(vesselData!.createdAt!));
+      tripIsSyncOrNot = tripData!.isSync;
+      dateOfJourney = DateFormat('dd-MM').format(DateTime.parse(tripData!.createdAt!));
+      yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(tripData!.createdAt!));
     }
     peopleOnBoard = tripData!.numberOfPassengers.toString();
 
+    Utils.customPrint("DATE DATE ${dateOfJourney}");
+    Utils.customPrint("DATE DATE ${tripData!.isSync}");
   }
 
 }

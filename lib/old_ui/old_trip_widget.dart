@@ -285,7 +285,7 @@ class _OldTripWidgetState extends State<OldTripWidget> {
                                             getVesselById[0].id,
                                             tripIsRunningOrNot: false,
                                             calledFrom:
-                                            widget.calledFrom
+                                            widget.calledFrom,
                                         ),
                                   ),
                                 );

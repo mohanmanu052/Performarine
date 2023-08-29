@@ -41,7 +41,6 @@ class DownloadTrip {
           } else {
             directory = await getApplicationDocumentsDirectory();
           }
-
           copiedFile.copy(directory.path);
           downloadedZipPath = "storage/emulated/0/Download/${tripId}.zip";
 
