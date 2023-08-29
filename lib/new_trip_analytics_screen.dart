@@ -66,6 +66,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
   String tripDistance = '0.00', tripDuration = '00:00:00', dateOfJourney = '', yearOfTheJourney = '', peopleOnBoard = '';
 
   String? finalTripDuration, finalTripDistance, finalAvgSpeed;
+  bool cancelVisible=true;
 
   final List<NewChartData> chartData = [
     NewChartData(2010, 35),
@@ -1297,6 +1298,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                         'Confirm & Delete', context, deleteTripBtnColor,
                                             () async {
                                               stateSetter(() {
+                                                cancelVisible=false;
                                                 isBtnClick = true;
                                               });
                                           internalStateSetter = stateSetter;
@@ -1366,8 +1368,16 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                         'Cancel',
                                         context,
                                         Colors.transparent,
+
                                         (){
+
+                                          if(!cancelVisible){
+                                          }else{
                                           Navigator.pop(dialogContext);
+
+                                          }
+                                    
+                                          
                                         },
                                         displayWidth(ctx) ,
                                         displayHeight(ctx) * 0.05,
@@ -1465,6 +1475,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         {
           if(value.status!)
           {
+
+
             isDeletedSuccessfully = value.status!;
             DatabaseService().deleteTripFromDB(tripId).then((value)
             {
@@ -1483,6 +1495,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
               isDeleteTripBtnClicked = false;
             });
           }
+
         } else{
           setState(() {
             isBtnClick = false;
@@ -1490,11 +1503,13 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         }
       }).catchError((e){
         internalStateSetter!(() {
+
           isBtnClick = false;
         });
       });
     } catch(e){
       internalStateSetter!(() {
+
         isBtnClick = false;
       });
     }

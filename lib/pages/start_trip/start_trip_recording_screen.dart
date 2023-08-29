@@ -110,7 +110,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   DeviceInfo? deviceDetails;
   late Future<List<CreateVessel>> vesselList;
 
-  double progress = 0.9, lprSensorProgress = 1.0, sliderMinVal = 11;
+  double progress = 0.9, lprSensorProgress = 1.0, 
+  sliderMinVal = 11;
 
   late AnimationController popupAnimationController;
   late TextEditingController textEditingController;
@@ -420,6 +421,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                               0.5,
                                           child: FlutterSlider(
                                             values: [
+                                             // 10
                                               numberOfPassengers
                                                   .toDouble()
                                             ],
@@ -438,8 +440,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                   debugPrint("NUMBER OF PASS 1 $value");
                                                   String data = value.toInt().toString();
                                                   numberOfPassengers = value.toInt();
-
-                                                  return Container(
+                                          return Container(
                                                     padding: EdgeInsets.symmetric(
                                                         horizontal: 6,
                                                         vertical:
@@ -1828,11 +1829,16 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     onPressed: () {
                       setState(() {
                         if (textEditingController.text.isEmpty) {
-                          sliderMinVal = 11;
-                        //  numberOfPassengers = passengerValue;
-                          sliderCount = '10';
+                          
+                            sliderMinVal = 999;
+;
+
+                          numberOfPassengers = passengerValue;
+                          
+                          sliderCount = '10+';
                           isSliderDisable = false;
                           isCheck = false;
+
                         } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
 
                           sliderMinVal = 999;
@@ -1842,6 +1848,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                               int.parse(textEditingController.text);
                         } else if (textEditingController.text.isNotEmpty &&
                             int.parse(textEditingController.text) < 11) {
+
                           sliderMinVal = 11;
                           sliderCount = '10+';
                           isSliderDisable = false;
