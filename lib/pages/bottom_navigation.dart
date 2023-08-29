@@ -47,7 +47,7 @@ class BottomNavigation extends StatefulWidget {
   State<BottomNavigation> createState() => _BottomNavigationState();
 }
 
-class _BottomNavigationState extends State<BottomNavigation> with TickerProviderStateMixin, WidgetsBindingObserver{
+class _BottomNavigationState extends State<BottomNavigation> with SingleTickerProviderStateMixin, WidgetsBindingObserver{
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
 
@@ -139,6 +139,9 @@ class _BottomNavigationState extends State<BottomNavigation> with TickerProvider
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+
     _tabController = TabController(vsync: this, length: 5, initialIndex: widget.tabIndex);
     _bottomNavIndex = widget.tabIndex;
     commonProvider = context.read<CommonProvider>();
@@ -163,6 +166,8 @@ class _BottomNavigationState extends State<BottomNavigation> with TickerProvider
 
     }
 
+    Utils.customPrint("RESET PASSWORD 4 ${widget.isComingFromReset}");
+
     if(widget.isComingFromReset != null)
     {
       Utils.customPrint("RESET PASSWORD 3");
@@ -174,6 +179,14 @@ class _BottomNavigationState extends State<BottomNavigation> with TickerProvider
         });
       }
     }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override
@@ -1854,6 +1867,10 @@ class _BottomNavigationState extends State<BottomNavigation> with TickerProvider
                                     () async {
                                   Navigator.pop(dialogContext);
 
+                                  if(sharedPreferences != null){
+                                    sharedPreferences!.setBool('reset_dialog_opened', false);
+                                  }
+
                                   var result = await Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => ResetPassword(token: token,isCalledFrom:  "HomePage",)),);
@@ -1879,7 +1896,9 @@ class _BottomNavigationState extends State<BottomNavigation> with TickerProvider
             ),
           );
         }).then((value) {
-
+      if(sharedPreferences != null){
+        sharedPreferences!.setBool('reset_dialog_opened', false);
+      }
     });
   }
 
