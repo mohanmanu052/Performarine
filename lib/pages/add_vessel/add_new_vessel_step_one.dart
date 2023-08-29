@@ -92,7 +92,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
 
   bool? isBatteryCapacityEnable = false;
 
-  String page = "Add_new_vessel_step_one";
+  String page = "Add_new_vessel_step_one", vesselImage = '';
 
 
   @override
@@ -121,6 +121,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
         batteryCapacityController.text =
             widget.addVesselData!.batteryCapacity!.toString();
         weightController.text = widget.addVesselData!.weight!.toString();
+        vesselImage =  widget.addVesselData!.imageURLs!;
       }
     }
   }
@@ -432,9 +433,9 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                   finalSelectedFiles.isEmpty
                       ? widget.addVesselData == null
                           ? SizedBox()
-                          : widget.addVesselData!.imageURLs == null
+                          : vesselImage == null
                               ? SizedBox()
-                              : widget.addVesselData!.imageURLs!.isEmpty
+                              : vesselImage.isEmpty
                                   ? SizedBox()
                                   : Container(
                                       margin: const EdgeInsets.only(top: 15.0),
@@ -443,7 +444,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                         width: displayHeight(context) * 0.085,
                                         child: Stack(
                                           children: [
-                                            widget.addVesselData!.imageURLs!
+                                            vesselImage
                                                     .startsWith("https")
                                                 ? SizedBox(
                                                     child: CachedNetworkImage(
@@ -516,8 +517,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                               child: InkWell(
                                                 onTap: () async {
                                                   setState(() {
-                                                    widget.addVesselData!
-                                                        .imageURLs = '';
+                                                    vesselImage = '';
                                                   });
                                                 },
                                                 child: Icon(
@@ -576,8 +576,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                                   'FIIALLL: ${finalSelectedFiles.length}');
                                               CustomLogger().logWithFile(Level.info, "FIIALLL: ${finalSelectedFiles.length} -> $page");
                                               setState(() {
-                                                finalSelectedFiles
-                                                    .removeAt(index);
+                                                finalSelectedFiles.removeAt(index);
                                               });
                                               Utils.customPrint(
                                                   'FIIALLL: ${finalSelectedFiles.length}');
@@ -656,10 +655,10 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                             commonProvider.addVesselRequestModel!.imageURLs =
                                 widget.addVesselData == null
                                     ? ''
-                                    : widget.addVesselData!.imageURLs == null ||
-                                            widget.addVesselData!.imageURLs!.isEmpty
+                                    : vesselImage == null ||
+                                    vesselImage.isEmpty
                                         ? ''
-                                        : widget.addVesselData!.imageURLs;
+                                        : vesselImage;
 
                             Utils.customPrint(
                                 'Step ONE VESSEL NAME: ${nameController.text}');
