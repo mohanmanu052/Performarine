@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/old_ui/old_custom_drawer.dart';
@@ -92,6 +93,45 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
   late TabController _tabController;
 
   @override
+  void didUpdateWidget(covariant BottomNavigation oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    dynamic arg = Get.arguments;
+    if(arg !=  null)
+    {
+      Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
+      bool isComingFrom = arguments?['isComingFromReset'] ?? false;
+      String updatedToken = arguments?['token'] ?? "";
+
+      setState(() {});
+
+
+      Utils.customPrint("isComingFromReset: ${isComingFrom}");
+      if(mounted){
+        if(isComingFrom != null && isComingFrom )
+        {
+
+          Future.delayed(Duration(microseconds: 500), (){
+            Utils.customPrint("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+
+            if(!_isThereCurrentDialogShowing(context))
+            {
+              WidgetsBinding.instance.addPostFrameCallback((duration)
+              {
+                showResetPasswordDialogBox(context,updatedToken);
+              });
+            }
+
+          });
+
+
+        }
+      }
+      Utils.customPrint('HomeScreen did update');
+    }
+  }
+
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -129,6 +169,63 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
       }
     }
   }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        Utils.customPrint("APP STATE - app in resumed");
+        dynamic arg = Get.arguments;
+        if(arg !=  null)
+        {
+          Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
+          bool isComingFrom = arguments?['isComingFromReset'] ?? false;
+          String updatedToken = arguments?['token'] ?? "";
+
+          if(mounted){
+            setState(() {});
+          }
+          Utils.customPrint("isComingFromReset: ${isComingFrom}");
+          if(mounted){
+            if(isComingFrom != null && isComingFrom )
+            {
+              Future.delayed(Duration(microseconds: 500), (){
+                Utils.customPrint("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+                bool? result;
+                if(sharedPreferences != null){
+                  result = sharedPreferences!.getBool('reset_dialog_opened');
+                }
+
+                if(!_isThereCurrentDialogShowing(context))
+                {
+                  WidgetsBinding.instance.addPostFrameCallback((duration)
+                  {
+                    if(result != null){
+                      if(!result){
+                        showResetPasswordDialogBox(context,updatedToken);
+                      }
+                    }
+                  });
+                  setState(() {});
+                }
+              });
+            }
+          }
+          Utils.customPrint('HomeScreen did update');
+        }
+        break;
+      case AppLifecycleState.inactive:
+        Utils.customPrint("APP STATE - app in inactive");
+        break;
+      case AppLifecycleState.paused:
+        Utils.customPrint("APP STATE - app in paused");
+        break;
+      case AppLifecycleState.detached:
+        Utils.customPrint("APP STATE - app in detached");
+        break;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -1778,6 +1875,8 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
 
     });
   }
+
+  _isThereCurrentDialogShowing(BuildContext context) => ModalRoute.of(context)?.isCurrent != true;
 
   showEndTripDialogBox(BuildContext context) {
     if(sharedPreferences != null){
