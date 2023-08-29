@@ -17,6 +17,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'common_widgets/utils/common_size_helper.dart';
+import 'common_widgets/utils/constants.dart';
 import 'common_widgets/utils/utils.dart';
 import 'common_widgets/widgets/common_buttons.dart';
 import 'common_widgets/widgets/common_widgets.dart';
@@ -138,13 +139,14 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                 ? Colors.white
                 : Colors.black,
           ),
-         /* title: commonText(
-            context: context,
-            text: 'Trip ID #${widget.tripId}',
-            fontWeight: FontWeight.w600,
-            textColor: Colors.black87,
-            textSize: displayWidth(context) * 0.03,
-          ),*/
+          title: commonText(
+              context: context,
+              text: 'Trip Analytics',
+              fontWeight: FontWeight.w600,
+              textColor: Colors.black87,
+              textSize: displayWidth(context) * 0.042,
+              fontFamily: outfit
+          ),
           actions: [
 
             InkWell(
