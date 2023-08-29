@@ -6,7 +6,7 @@ const outfit = "Outfit";
 
 const nauticalMile = 'NM';
 const knot = 'KT';
-const speedKnot = 'KT/h';
+const speedKnot = 'Kt/h';
 
 String logLevel = "info";
 

@@ -314,11 +314,13 @@ class _MapScreenState extends State<MapScreen> {
                           SizedBox(height: displayHeight(context) * 0.002,),
                           Container(
                             color: backgroundColor,
+                            width: displayWidth(context),
                             child: Column(
                               children: [
                                 isTripEnded
                                     ? Padding(
-                                  padding: EdgeInsets.only(top: displayHeight(context) * 0.03, bottom: displayHeight(context) * 0.02),
+                                      padding: EdgeInsets.only(top: displayHeight(context) * 0.03,
+                                          bottom: displayHeight(context) * 0.02),
                                       child: Center(
                                       child:
                                       CircularProgressIndicator(

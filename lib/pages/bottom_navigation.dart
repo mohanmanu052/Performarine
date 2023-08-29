@@ -47,7 +47,7 @@ class BottomNavigation extends StatefulWidget {
   State<BottomNavigation> createState() => _BottomNavigationState();
 }
 
-class _BottomNavigationState extends State<BottomNavigation> with SingleTickerProviderStateMixin{
+class _BottomNavigationState extends State<BottomNavigation> with TickerProviderStateMixin, WidgetsBindingObserver{
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
 
@@ -111,12 +111,16 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
         {
 
           Future.delayed(Duration(microseconds: 500), (){
+
+
+
             Utils.customPrint("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
 
             if(!_isThereCurrentDialogShowing(context))
             {
               WidgetsBinding.instance.addPostFrameCallback((duration)
               {
+                Utils.customPrint("RESET PASSWORD 1");
                 showResetPasswordDialogBox(context,updatedToken);
               });
             }
@@ -161,9 +165,11 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
 
     if(widget.isComingFromReset != null)
     {
+      Utils.customPrint("RESET PASSWORD 3");
       if(widget.isComingFromReset!)
       {
         Future.delayed(Duration(microseconds: 500), (){
+          Utils.customPrint("RESET PASSWORD 2");
           showResetPasswordDialogBox(context, widget.token);
         });
       }
@@ -202,6 +208,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                   {
                     if(result != null){
                       if(!result){
+                        Utils.customPrint("RESET PASSWORD 3");
                         showResetPasswordDialogBox(context,updatedToken);
                       }
                     }
