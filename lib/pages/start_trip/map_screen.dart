@@ -329,7 +329,10 @@ class _MapScreenState extends State<MapScreen> {
                                       )),
                                     )
                                     : Padding(
-                                      padding: EdgeInsets.only(top: displayHeight(context) * 0.03),
+                                      padding: EdgeInsets.only(
+                                          top: displayHeight(context) * 0.03,
+                                          bottom: displayHeight(context) * 0.04,
+                                      ),
                                       child: Container(
                                         margin: EdgeInsets.symmetric(horizontal: 12),
                                         child: CommonButtons.getRichTextActionButton(
@@ -402,22 +405,6 @@ class _MapScreenState extends State<MapScreen> {
                                   ),
                                 ),
                                     ),
-
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top : displayWidth(context) * 0.01,
-                                    bottom : displayWidth(context) * 0.01,
-                                  ),
-                                  child: GestureDetector(
-                                      onTap: ()async{
-                                        final image = await controller.capture();
-                                        Navigator.push(widget.context!, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                          imagePath: image.toString(),
-                                          uIntList: image,)));
-                                      },
-                                      child: UserFeedback().getUserFeedback(context)
-                                  ),
-                                )
                               ],
                             ),
                           )
