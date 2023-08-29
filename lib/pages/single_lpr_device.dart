@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 
+import '../common_widgets/utils/common_size_helper.dart';
 import '../common_widgets/widgets/log_level.dart';
 
 import '../common_widgets/utils/utils.dart';
@@ -42,7 +44,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+      //visualDensity: VisualDensity(horizontal: 0, vertical: -4),
       onTap: () async {
         widget.setSetter!(() {
           isConnect = true;
@@ -125,13 +127,15 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                   child: CircularProgressIndicator(
                     strokeWidth: 3,
                   ))
-              : IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.link_outlined,
-                    size: 20,
-                    color: Colors.grey,
-                  ));
+              : Container(
+                child: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.link_outlined,
+                      size: 20,
+                      color: Colors.grey,
+                    )),
+              );
         },
       ),
     );

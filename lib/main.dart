@@ -264,15 +264,18 @@ Future<void> initializeService() async {
     importance: Importance.low, // importance must be at low or higher level
   );
 
-  await flutterLocalNotificationsPlugin
+  /*await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin>()
-      ?.requestPermissions(sound: true, alert: true, badge: true);
+      ?.requestPermissions(sound: true, alert: true, badge: true);*/
 
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('noti_logo');
   final DarwinInitializationSettings initializationSettingsDarwin =
       DarwinInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
           onDidReceiveLocalNotification: onDidReceiveLocalNotification);
   final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,

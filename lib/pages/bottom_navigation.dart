@@ -250,17 +250,16 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
           ],
         ),
         bottomNavigationBar: Container(
-          height: displayHeight(context) * 0.105,
+          height: Platform.isAndroid ? displayHeight(context) * 0.098 : displayHeight(context) * 0.105,
           child: ClipRRect(
            // borderRadius: BorderRadius.circular(10.0),
             child: Container(
               color: bottomNavColor,
               child: TabBar(
                 padding: EdgeInsets.zero,
-                indicatorWeight: 18,
+                indicatorWeight: 16,
                   labelPadding: EdgeInsets.zero,
                   onTap: (index) async{
-
                   if(index == 1){
                     SystemChrome.setPreferredOrientations([
                       DeviceOrientation.portraitUp,
@@ -448,7 +447,8 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                                   await openAppSettings();
                                 }
 
-                                *//*showDialog(
+                                */
+                      /*showDialog(
                                         context: scaffoldKey.currentContext!,
                                         builder: (BuildContext context) {
                                           isLocationDialogBoxOpen = true;

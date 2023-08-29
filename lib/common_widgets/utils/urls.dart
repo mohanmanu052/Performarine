@@ -1,15 +1,7 @@
 class Urls {
-
-
-  //static String baseUrl =  baseUrlVersion;
-
-  //dev
-   static const String baseUrl = 'goeapidev.azurewebsites.net';
-
-  //UAT
-  //static const String baseUrl = 'goeapiuat.azurewebsites.net';
   //Client Environment
-    //static const String baseUrl = 'performarineuat.azurewebsites.net';
+  // static const String baseUrl = 'performarineuat.azurewebsites.net';
+  static String baseUrl =  baseUrlVersion;
 
   // Auth
   static const String registrationUrl = '/api/auth/signup';
@@ -22,7 +14,7 @@ class Urls {
   static const String createVessel = '/api/createVessel';
   static const String editVessel = '/api/editVessel';
 
-// Trip
+ // Trip
   static const String GetTripList = '/api/listTrips';
   static const String SendSensorData = '/api/sendSensorInfo';
 

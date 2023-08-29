@@ -318,7 +318,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
                           commonText(
                             context: context,
-                            text: 'KT/Hr',
+                            text: speedKnot,
                             fontWeight: FontWeight.w400,
                             textColor: Colors.black,
                             textSize: displayWidth(context) * 0.03,
