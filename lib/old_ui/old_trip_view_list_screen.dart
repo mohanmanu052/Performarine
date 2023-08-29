@@ -29,6 +29,7 @@ class OldTripViewListing extends StatefulWidget {
   VoidCallback? onTripEnded;
   VoidCallback? isTripDeleted;
   final GlobalKey<ScaffoldState>? scaffoldKey;
+
   OldTripViewListing(
       {this.vesselId, this.calledFrom, this.onTripEnded, this.scaffoldKey,this.isTripDeleted});
 
@@ -44,6 +45,7 @@ class _OldTripViewListingState extends State<OldTripViewListing> {
       isDeleteTripBtnClicked = false,
       isDeletedSuccessfully = false,
       isTripUploaded = false;
+    bool cancelVisible=true;
 
   bool isBtnClick = false;
 
@@ -391,9 +393,13 @@ class _OldTripViewListingState extends State<OldTripViewListing> {
                                             await Utils().check(scaffoldKey);
                                             stateSetter(() {
                                               isBtnClick = true;
+                                                                                            cancelVisible=false;
+
                                             });
                                             if(internet){
                                               stateSetter(() {
+                                              cancelVisible=false;
+
                                                 isBtnClick = true;
                                               });
                                               Utils.customPrint("Ok button action : $isBtnClick");
@@ -445,7 +451,17 @@ class _OldTripViewListingState extends State<OldTripViewListing> {
                                       context,
                                       Colors.transparent,
                                           (){
-                                        Navigator.pop(dialogContext);
+                                          if(!cancelVisible){
+                                          }else{
+                                          Navigator.pop(dialogContext);
+
+                                          }
+                                    
+
+
+
+
+
                                       },
                                       displayWidth(ctx) ,
                                       displayHeight(ctx) * 0.05,
@@ -586,6 +602,7 @@ class _OldTripViewListingState extends State<OldTripViewListing> {
               deleteFolder('${ourDirectory!.path}/${tripId}');
               setState(() {
                 isDeleteTripBtnClicked = false;
+                cancelVisible=true;
               });
             });
             onDeleteCallBack.call();
