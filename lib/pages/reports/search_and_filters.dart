@@ -86,7 +86,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   dynamic totalFuelConsumption;
   dynamic totalAvgPower;
 
-  bool? tripDurationButtonColor = false,isSearchClick = false;
+  bool? tripDurationButtonColor = false;
   bool? avgSpeedButtonColor = false;
   bool? fuelUsageButtonColor = false;
   bool? powerUsageButtonColor = false;
@@ -371,7 +371,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           } else if (!isCheckInternalServer! && value.statusCode == 200) {
             if (mounted) {
               setState(() {
-                isSearchClick = false;
                 isReportDataLoading = true;
                 isBtnClick = false;
                 avgSpeed = null;
@@ -607,7 +606,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
             ];
           } else {
             setState(() {
-              isSearchClick = false;
               isBtnClick = false;
               isCheckInternalServer = false;
               isReportDataLoading = false;
@@ -615,7 +613,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           }
         } else {
           setState(() {
-            isSearchClick = false;
             isBtnClick = false;
             isReportDataLoading = false;
           });
@@ -623,7 +620,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
       });
     } catch (e, s) {
       setState(() {
-        isSearchClick = false;
         isBtnClick = false;
       });
 
@@ -1106,7 +1102,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                                     "Search", context, buttonBGColor, () {
                                   if (_formKey.currentState!.validate()) {
                                     setState(() {
-                                      isSearchClick = true;
                                       isSHowGraph = false;
                                       isBtnClick = true;
                                       isExpansionCollapse = false;
@@ -2610,7 +2605,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 label: 'Select All',
                 value: parentValue != null ? parentValue! : false,
                 onChanged: (value) {
-                  if(!isSearchClick!){
                     if (value) {
                       Utils.customPrint("select all status: $value");
                       selectedTripIdList!.clear();
@@ -2629,7 +2623,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                       selectedTripLabelList!.clear();
                       _checkAll(false);
                     }
-                  }
                 },
                 checkboxType: CheckboxType.Parent,
                 activeColor: Colors.indigo,
@@ -2652,7 +2645,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     tripId: tripIdList![index],
                     dateTime: dateTimeList![index],
                     onChanged: (value) async{
-                      if(!isSearchClick!){
                         isSHowGraph = false;
                         Utils.customPrint("trip list id: ${tripIdList![index]}");
                         CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
@@ -2707,7 +2699,6 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                         //   CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
                         // }
                         manageTristate(index, value);
-                      }
 
                     },
                     checkboxType: CheckboxType.Child,
