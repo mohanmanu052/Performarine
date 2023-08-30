@@ -204,7 +204,7 @@ class _SyncDataCloudToMobileScreenState
                               Expanded(
                                 child: Container(
                                   margin: EdgeInsets.only(
-                                      bottom: displayHeight(context) * 0.004,
+                                      bottom: displayHeight(context) * 0.005,
                                       top: displayHeight(context) * 0.02),
                                   child: CommonButtons.getActionButton(
                                       title: 'Skip & Continue',
@@ -237,7 +237,7 @@ class _SyncDataCloudToMobileScreenState
                                 child: Container(
                                   margin: EdgeInsets.only(
                                       bottom: displayHeight(context) * 0.005,
-                                      top: displayHeight(context) * 0.01),
+                                      top: displayHeight(context) * 0.02),
                                   child: CommonButtons.getActionButton(
                                       title: 'Retry',
                                       context: context,
@@ -263,7 +263,7 @@ class _SyncDataCloudToMobileScreenState
                   commonProvider.exceptionOccurred
                   ? Padding(
                     padding: EdgeInsets.only(
-                      //top: displayWidth(context) * 0.01,
+                      top: displayWidth(context) * 0.03,
                     ),
                     child: GestureDetector(
                         onTap: ()async{
