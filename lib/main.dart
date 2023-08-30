@@ -371,10 +371,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
          isComingFromUnilink = true;
        });
 
-       Utils.customPrint("URI: ${uri}");
+       Utils.customPrint("URI 2: ${uri}");
        CustomLogger().logWithFile(Level.info, "URI: ${uri} -> $page");
         if (uri != null) {
-          Utils.customPrint('Deep link received: $uri');
+          Utils.customPrint('Deep link received 2: $uri');
           CustomLogger().logWithFile(Level.info, "Deep link received -> $page ");
 
           if(uri.queryParameters['verify'] != null){

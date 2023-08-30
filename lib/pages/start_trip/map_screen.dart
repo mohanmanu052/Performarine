@@ -320,7 +320,7 @@ class _MapScreenState extends State<MapScreen> {
                                 isTripEnded
                                     ? Padding(
                                       padding: EdgeInsets.only(top: displayHeight(context) * 0.03,
-                                          bottom: displayHeight(context) * 0.02),
+                                          bottom: displayHeight(context) * 0.04),
                                       child: Center(
                                       child:
                                       CircularProgressIndicator(

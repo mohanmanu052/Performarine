@@ -109,10 +109,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
       if(mounted){
         if(isComingFrom != null && isComingFrom )
         {
-
           Future.delayed(Duration(microseconds: 500), (){
-
-
 
             Utils.customPrint("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
 
@@ -124,10 +121,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                 showResetPasswordDialogBox(context,updatedToken);
               });
             }
-
           });
-
-
         }
       }
       Utils.customPrint('HomeScreen did update');
@@ -232,6 +226,9 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
             }
           }
           Utils.customPrint('HomeScreen did update');
+        }
+        else{
+          print('NULLLLL');
         }
         break;
       case AppLifecycleState.inactive:
@@ -1870,10 +1867,12 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                                   if(sharedPreferences != null){
                                     sharedPreferences!.setBool('reset_dialog_opened', false);
                                   }
+                                  // Get.reset();
+                                  // Get.resetRootNavigator();
 
                                   var result = await Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => ResetPassword(token: token,isCalledFrom:  "HomePage",)),);
+                                    MaterialPageRoute(builder: (context) => ResetPassword(token: token, isCalledFrom:  "HomePage",)),);
                                 },
                                 displayWidth(context) * 0.65,
                                 displayHeight(context) * 0.054,
