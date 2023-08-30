@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/analytics/download_trip.dart';
@@ -103,6 +104,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     commonProvider = context.read<CommonProvider>();
 
@@ -116,6 +118,22 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     //Utils.customPrint('CURRENT TIME TIME ${tripData!.time}');
 
   }
+
+
+@override
+  void dispose() {
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+
+    ]);
+
+    // TODO: implement dispose
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +166,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
               fontFamily: outfit
           ),
           actions: [
-
+    
             InkWell(
               onTap: ()async{
                 Utils.customPrint("Trip id is: ${tripData!.id}");
@@ -169,7 +187,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                         Utils.customPrint("call back for delete trip in list");
                         //snapshot.data!.removeAt(index);
                         // Navigator.pop(context);
-
+    
                       },scaffoldKey,
                       tripUploadedStatus
                   );
@@ -184,7 +202,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                 width: Platform.isAndroid ? displayWidth(context) * 0.065 : displayWidth(context) * 0.05,
               ),
             ),
-
+    
             Container(
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
@@ -289,7 +307,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                   ),
                             ),
                           ),
-
+    
                           Positioned(
                             top: 0,
                             left: 0,
@@ -414,10 +432,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-
+    
                                         if(vesselData!.engineType!.isEmpty)
                                           SizedBox(),
-
+    
                                         if(vesselData!.engineType!.toLowerCase() ==
                                             'combustion' && vesselData!.fuelCapacity != null)
                                           Row(
@@ -480,7 +498,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                               )
                                             ],
                                           ),
-
+    
                                         if(vesselData!.engineType!.toLowerCase() ==
                                             'electric' && vesselData!.batteryCapacity != null)
                                           Row(
@@ -558,7 +576,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                               )
                                             ],
                                           ),
-
+    
                                         if(vesselData!.engineType!.toLowerCase() ==
                                             'hybrid')
                                           Row(
@@ -665,11 +683,11 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                               ),
                             ),
                           ),
-
+    
                         ],
                       ),
                       SizedBox(height: displayHeight(context) * 0.03,),
-
+    
                       Column(
                        children: [
                          Container(
@@ -687,7 +705,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: dateOfJourney,
@@ -695,7 +713,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.044,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: yearOfTheJourney,
@@ -716,7 +734,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: '${tripData!.time} ',
@@ -724,7 +742,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.044,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: 'hh:mm:ss',
@@ -745,7 +763,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: '37 \$',
@@ -753,7 +771,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.044,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: 'CAD',
@@ -774,7 +792,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: '18.25',
@@ -782,7 +800,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.044,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: 'Ltr',
@@ -812,7 +830,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: '${tripData!.distance} ',
@@ -820,7 +838,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.044,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: 'Nautical Miles',
@@ -841,7 +859,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: peopleOnBoard,
@@ -849,7 +867,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.044,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: 'People',
@@ -870,7 +888,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: '6.23',
@@ -878,7 +896,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.044,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: 'kg',
@@ -899,7 +917,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: '27\$',
@@ -907,7 +925,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.044,
                                      ),
-
+    
                                      commonText(
                                        context: context,
                                        text: 'CAD',
@@ -923,7 +941,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                          )
                        ],
                      ),
-
+    
                       SizedBox(height: displayHeight(context) * 0.01,),
                       Container(
                         height: displayHeight(context) * 0.3,
@@ -948,7 +966,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 primaryYAxis: NumericAxis(
                                     isVisible: false, majorGridLines: MajorGridLines(width: 0)),
                                 enableSideBySideSeriesPlacement: true,
-
+    
                                 legend: Legend(
                                   offset: Offset(90, -30),
                                     isVisible: true,
@@ -979,7 +997,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                         ),
                       ),
                       SizedBox(height: displayHeight(context) * 0.01,),
-
+    
                       /*InkWell(
                         onTap: (){
                           *//*Navigator.push(context, MaterialPageRoute(builder: (context) =>
@@ -1006,7 +1024,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.024,
                               ),
-
+    
                               commonText(
                                 context: context,
                                 text: '2.34',
@@ -1014,7 +1032,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.044,
                               ),
-
+    
                               commonText(
                                 context: context,
                                 text: 'meters',
@@ -1033,7 +1051,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.024,
                               ),
-
+    
                               commonText(
                                 context: context,
                                 text: '3:56',
@@ -1041,7 +1059,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.044,
                               ),
-
+    
                               commonText(
                                 context: context,
                                 text: 'Minutes',
@@ -1060,7 +1078,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.024,
                               ),
-
+    
                               commonText(
                                 context: context,
                                 text: '23.06',
@@ -1068,7 +1086,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.044,
                               ),
-
+    
                               commonText(
                                 context: context,
                                 text: 'kt',
@@ -1087,7 +1105,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.024,
                               ),
-
+    
                               commonText(
                                 context: context,
                                 text: '330o',
@@ -1095,7 +1113,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.044,
                               ),
-
+    
                               commonText(
                                 context: context,
                                 text: 'T',
@@ -1124,7 +1142,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                   ),
                 ),
               ),
-
+    
               Positioned(
                 bottom: 0,
                 right: 0,
@@ -1145,13 +1163,13 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                         child: Center(
                           child: ElevatedButton(
                               onPressed: (){
-
+    
                                 debugPrint("DOWNLOAD TRIP ID ${widget.tripId!}");
                                 DownloadTrip().downloadTrip(
                                     context,
                                     scaffoldKey,
                                     widget.tripId!);
-
+    
                               },
                               style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(blueColor),
@@ -1177,7 +1195,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                     ),
                                   ],
                                 ),
-
+    
                               ))
                         ),
                       )
