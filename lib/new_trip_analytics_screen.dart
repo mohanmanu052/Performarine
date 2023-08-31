@@ -705,18 +705,21 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
     
                                      commonText(
                                        context: context,
                                        text: dateOfJourney,
                                        fontWeight: FontWeight.w700,
                                        textColor: Colors.black,
-                                       textSize: displayWidth(context) * 0.044,
+                                       textSize: displayWidth(context) * 0.048,
                                      ),
+                                     SizedBox(height: displayHeight(context) * 0.005,),
     
                                      commonText(
                                        context: context,
-                                       text: yearOfTheJourney,
+                                       text: 'YYYY-MM-DD',
                                        fontWeight: FontWeight.w400,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.022,
@@ -734,14 +737,18 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
     
                                      commonText(
                                        context: context,
                                        text: '${tripData!.time} ',
                                        fontWeight: FontWeight.w700,
                                        textColor: Colors.black,
-                                       textSize: displayWidth(context) * 0.044,
+                                       textSize: displayWidth(context) * 0.048,
                                      ),
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
     
                                      commonText(
                                        context: context,
@@ -763,15 +770,17 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-    
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
                                      commonText(
                                        context: context,
                                        text: '37 \$',
                                        fontWeight: FontWeight.w700,
                                        textColor: Colors.black,
-                                       textSize: displayWidth(context) * 0.044,
+                                       textSize: displayWidth(context) * 0.048,
                                      ),
-    
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
                                      commonText(
                                        context: context,
                                        text: 'CAD',
@@ -782,35 +791,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                    ],
                                  ),
                                ),
-                               Expanded(
-                                 child: Column(
-                                   children: [
-                                     commonText(
-                                       context: context,
-                                       text: 'Total Fuel Used',
-                                       fontWeight: FontWeight.w400,
-                                       textColor: Colors.black,
-                                       textSize: displayWidth(context) * 0.024,
-                                     ),
-    
-                                     commonText(
-                                       context: context,
-                                       text: '18.25',
-                                       fontWeight: FontWeight.w700,
-                                       textColor: Colors.black,
-                                       textSize: displayWidth(context) * 0.044,
-                                     ),
-    
-                                     commonText(
-                                       context: context,
-                                       text: 'Ltr',
-                                       fontWeight: FontWeight.w400,
-                                       textColor: Colors.black,
-                                       textSize: displayWidth(context) * 0.022,
-                                     ),
-                                   ],
-                                 ),
-                               )
                              ],
                            ),
                          ),
@@ -825,19 +805,56 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                    children: [
                                      commonText(
                                        context: context,
+                                       text: 'Total Fuel Used',
+                                       fontWeight: FontWeight.w400,
+                                       textColor: Colors.black,
+                                       textSize: displayWidth(context) * 0.024,
+                                     ),
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
+                                     commonText(
+                                       context: context,
+                                       text: '18.25',
+                                       fontWeight: FontWeight.w700,
+                                       textColor: Colors.black,
+                                       textSize: displayWidth(context) * 0.048,
+                                     ),
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
+                                     commonText(
+                                       context: context,
+                                       text: 'Ltr',
+                                       fontWeight: FontWeight.w400,
+                                       textColor: Colors.black,
+                                       textSize: displayWidth(context) * 0.022,
+                                     ),
+                                   ],
+                                 ),
+                               ),
+                               Expanded(
+                                 child: Column(
+                                   children: [
+                                     commonText(
+                                       context: context,
                                        text: 'Distance',
                                        fontWeight: FontWeight.w400,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-    
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
                                      commonText(
                                        context: context,
                                        text: '${tripData!.distance} ',
                                        fontWeight: FontWeight.w700,
                                        textColor: Colors.black,
-                                       textSize: displayWidth(context) * 0.044,
+                                       textSize: displayWidth(context) * 0.048,
                                      ),
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
     
                                      commonText(
                                        context: context,
@@ -854,20 +871,67 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                    children: [
                                      commonText(
                                        context: context,
+                                       text: 'Avg Speed',
+                                       fontWeight: FontWeight.w400,
+                                       textColor: Colors.black,
+                                       textSize: displayWidth(context) * 0.024,
+                                     ),
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
+                                     commonText(
+                                       context: context,
+                                       text: '${tripData!.avgSpeed}',
+                                       fontWeight: FontWeight.w700,
+                                       textColor: Colors.black,
+                                       textSize: displayWidth(context) * 0.048,
+                                     ),
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
+                                     commonText(
+                                       context: context,
+                                       text: speedKnot,
+                                       fontWeight: FontWeight.w400,
+                                       textColor: Colors.black,
+                                       textSize: displayWidth(context) * 0.022,
+                                     ),
+                                   ],
+                                 ),
+                               ),
+                             ],
+                           ),
+                         ),
+
+                         SizedBox(height: displayHeight(context) * 0.02,),
+                         Container(
+                           width: displayWidth(context),
+                           child: Row(
+                             mainAxisAlignment: MainAxisAlignment.spaceAround,
+                             children: [
+                               Expanded(
+                                 child: Column(
+                                   children: [
+                                     commonText(
+                                       context: context,
                                        text: 'People On Board',
                                        fontWeight: FontWeight.w400,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-    
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
                                      commonText(
                                        context: context,
                                        text: peopleOnBoard,
                                        fontWeight: FontWeight.w700,
                                        textColor: Colors.black,
-                                       textSize: displayWidth(context) * 0.044,
+                                       textSize: displayWidth(context) * 0.048,
                                      ),
-    
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
                                      commonText(
                                        context: context,
                                        text: 'People',
@@ -888,15 +952,19 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-    
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
                                      commonText(
                                        context: context,
                                        text: '6.23',
                                        fontWeight: FontWeight.w700,
                                        textColor: Colors.black,
-                                       textSize: displayWidth(context) * 0.044,
+                                       textSize: displayWidth(context) * 0.048,
                                      ),
-    
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
                                      commonText(
                                        context: context,
                                        text: 'kg',
@@ -917,15 +985,19 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
                                      ),
-    
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
                                      commonText(
                                        context: context,
                                        text: '27\$',
                                        fontWeight: FontWeight.w700,
                                        textColor: Colors.black,
-                                       textSize: displayWidth(context) * 0.044,
+                                       textSize: displayWidth(context) * 0.048,
                                      ),
-    
+
+                                     SizedBox(height: displayHeight(context) * 0.005,),
+
                                      commonText(
                                        context: context,
                                        text: 'CAD',
@@ -1550,8 +1622,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         vesselData = vesselDetails[0];
       });
       tripIsSyncOrNot = tripData!.isSync;
-      dateOfJourney = DateFormat('dd-MM').format(DateTime.parse(tripData!.createdAt!));
-      yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(tripData!.createdAt!));
+      dateOfJourney = DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.createdAt!));
+     // yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(tripData!.createdAt!));
     } else {
       final DatabaseService _databaseService = DatabaseService();
       final tripDetails = await _databaseService.getTrip(widget.tripId!);
@@ -1564,8 +1636,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         vesselData = vesselDetails[0];
       });
       tripIsSyncOrNot = tripData!.isSync;
-      dateOfJourney = DateFormat('dd-MM').format(DateTime.parse(tripData!.createdAt!));
-      yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(tripData!.createdAt!));
+      dateOfJourney = DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.createdAt!));
+      //yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(tripData!.createdAt!));
     }
     peopleOnBoard = tripData!.numberOfPassengers.toString();
 
