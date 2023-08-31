@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/pages/vessel_form.dart';
+import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:provider/provider.dart';
 
 import '../common_widgets/utils/colors.dart';
@@ -90,7 +91,7 @@ class _VesselsScreenState extends State<VesselsScreen> {
                 {
                   var result = await Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => OldVesselSingleView(
+                      builder: (_) => VesselSingleView(
                         vessel: value,
                       ),
                       fullscreenDialog: true,
