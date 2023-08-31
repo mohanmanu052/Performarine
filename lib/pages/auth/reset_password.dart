@@ -63,7 +63,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       onWillPop: () async {
         if(widget.isCalledFrom == "Main")
           {
-            Get.offAll(SignInScreen());
+            Get.offAll(SignInScreen(calledFrom:'ResetPassword'));
             return false;
           }
         else if(widget.isCalledFrom == 'HomePage'){
@@ -86,7 +86,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             onPressed: () {
               if(widget.isCalledFrom == "Main")
               {
-                Get.offAll(SignInScreen());
+                Get.offAll(SignInScreen(calledFrom:'ResetPassword'));
               }
               else if(widget.isCalledFrom == 'HomePage'){
                 Get.offAll(BottomNavigation());
