@@ -102,7 +102,7 @@ class _SyncDataCloudToMobileScreenState
               child: Column(
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).size.height/27,
+                    height:Platform.isAndroid? MediaQuery.of(context).size.height/27:MediaQuery.of(context).size.height/30,
                   ),
                   Container(
                     width: displayWidth(context) * 0.7,
@@ -122,7 +122,7 @@ class _SyncDataCloudToMobileScreenState
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height/24,
+                    height:Platform.isAndroid? MediaQuery.of(context).size.height/24:MediaQuery.of(context).size.height/28,
                    // height: displayHeight(context) * 0.04,
                   ),
                   
@@ -157,7 +157,7 @@ class _SyncDataCloudToMobileScreenState
                             ),
                           ),
                           SizedBox(
-                            height: displayHeight(context) * 0.03
+                            height:Platform.isAndroid? displayHeight(context) * 0.03:displayHeight(context) * 0.02
                             ,
                           ),
                           Padding(
