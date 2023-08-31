@@ -587,7 +587,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
-      currentVersion = packageInfo.version;
+      currentVersion = Platform.isAndroid ? packageInfo.version : '${packageInfo.version} (${packageInfo.buildNumber})';
     });
   }
 

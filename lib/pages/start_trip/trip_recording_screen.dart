@@ -1,7 +1,19 @@
+import 'dart:async';
+
+import 'package:background_locator_2/background_locator.dart';
+import 'package:background_locator_2/settings/android_settings.dart';
+import 'package:background_locator_2/settings/ios_settings.dart';
+import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:performarine/analytics/location_callback_handler.dart';
+import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/main.dart';
+import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/old_ui/old_vessel_single_view.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -13,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../../analytics/end_trip.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import '../bottom_navigation.dart';
 import '../feedback_report.dart';
@@ -36,6 +49,13 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
   int currentTabIndex = 0;
   late CommonProvider commonProvider;
   final controller = ScreenshotController();
+  bool isEndTripBtnClicked = false, tripIsRunning = false, isTripEnded = false,isDataUpdated = false;
+  String tripDistance = '0.00', tripDuration = '00:00:00', tripSpeed = '0.0', tripAvgSpeed = '0.0';
+  Timer? durationTimer;
+  final DatabaseService _databaseService = DatabaseService();
+
+  Trip? tripData;
+  CreateVessel? vesselData;
 
 
   @override
@@ -52,6 +72,8 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
         currentTabIndex = tabController.index;
       });
     });
+
+    tripIsRunning = widget.tripIsRunningOrNot ?? false;
 
   }
 

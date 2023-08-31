@@ -332,6 +332,7 @@ Future<void> initializeService() async {
               isAppKilled: true,
               tripIsRunningOrNot: isTripStarted));*/
 
+          sharedPreferences!.setBool('key_lat_time_dialog_open', false);
           Get.to(TripRecordingScreen(
               tripId: tripData![0],
               vesselName: tripData[2],
@@ -371,10 +372,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
          isComingFromUnilink = true;
        });
 
-       Utils.customPrint("URI: ${uri}");
+       Utils.customPrint("URI 2: ${uri}");
        CustomLogger().logWithFile(Level.info, "URI: ${uri} -> $page");
         if (uri != null) {
-          Utils.customPrint('Deep link received: $uri');
+          Utils.customPrint('Deep link received 2: $uri');
           CustomLogger().logWithFile(Level.info, "Deep link received -> $page ");
 
           if(uri.queryParameters['verify'] != null){
@@ -617,6 +618,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                           isAppKilled: true,
                           tripIsRunningOrNot: isTripStarted));*/
 
+                      sharedPreferences!.setBool('key_lat_time_dialog_open', false);
                       Get.to(TripRecordingScreen(
                           tripId: tripData![0],
                           vesselName: tripData[2],

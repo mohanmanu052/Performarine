@@ -92,7 +92,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       isRefreshList = false,
       isScanningBluetooth = false,
       isSliderDisable = false,
-      isCheck = false;
+      isCheck = false,isOKClick = false;
 
   final controller = ScreenshotController();
 
@@ -1029,14 +1029,14 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                     }
                                     if (isCheck) {
                                       if (textEditingController
-                                          .text.isEmpty) {
+                                          .text.isEmpty || !isOKClick) {
                                         ScaffoldMessenger.of(
                                             context)
                                             .showSnackBar(SnackBar(
                                           behavior: SnackBarBehavior
                                               .floating,
                                           content: Text(
-                                              "Please enter Number of Passengers"),
+                                              isOKClick ? "Please Enter Number of Passengers and Submit" : "Please Submit Number of Passengers"),
                                           duration:
                                           Duration(seconds: 1),
                                           backgroundColor:
@@ -1828,6 +1828,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     ),
                     onPressed: () {
                       setState(() {
+                        isOKClick = true;
                         if (textEditingController.text.isEmpty) {
                           
 ;
@@ -1850,7 +1851,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
 
                           sliderMinVal = 999;
-                          sliderCount = '';
+                          sliderCount = '999';
                           isSliderDisable = false;
                           numberOfPassengers =
                               int.parse(textEditingController.text);

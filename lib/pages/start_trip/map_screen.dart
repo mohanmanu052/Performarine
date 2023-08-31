@@ -71,11 +71,14 @@ class _MapScreenState extends State<MapScreen> {
     if (tripIsRunning) {
       getRealTimeTripDetails();
       Wakelock.enable();
-
       if(widget.isAppKilled){
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           Future.delayed(Duration(milliseconds: 100), (){
-            showEndTripDialogBox(context);
+            bool isOpened = sharedPreferences!.getBool("key_lat_time_dialog_open") ?? false;
+            if(!isOpened)
+              {
+                showEndTripDialogBox(context);
+              }
           });
         });
 
@@ -320,7 +323,7 @@ class _MapScreenState extends State<MapScreen> {
                                 isTripEnded
                                     ? Padding(
                                       padding: EdgeInsets.only(top: displayHeight(context) * 0.03,
-                                          bottom: displayHeight(context) * 0.02),
+                                          bottom: displayHeight(context) * 0.04),
                                       child: Center(
                                       child:
                                       CircularProgressIndicator(
@@ -605,6 +608,7 @@ class _MapScreenState extends State<MapScreen> {
   showEndTripDialogBox(BuildContext context) {
     if(sharedPreferences != null){
       sharedPreferences!.setBool('reset_dialog_opened', true);
+      sharedPreferences!.setBool('key_lat_time_dialog_open', true);
     }
     return showDialog(
         barrierDismissible: false,

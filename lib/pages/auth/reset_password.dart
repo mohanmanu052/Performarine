@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
+import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/utils/colors.dart';
@@ -62,9 +63,13 @@ class _ResetPasswordState extends State<ResetPassword> {
       onWillPop: () async {
         if(widget.isCalledFrom == "Main")
           {
-            Get.offAll(SignInScreen());
+            Get.offAll(SignInScreen(calledFrom:'ResetPassword'));
             return false;
           }
+        else if(widget.isCalledFrom == 'HomePage'){
+          Get.offAll(BottomNavigation());
+          return false;
+        }
         else
           {
             Navigator.of(context).pop();
@@ -81,7 +86,10 @@ class _ResetPasswordState extends State<ResetPassword> {
             onPressed: () {
               if(widget.isCalledFrom == "Main")
               {
-                Get.offAll(SignInScreen());
+                Get.offAll(SignInScreen(calledFrom:'ResetPassword'));
+              }
+              else if(widget.isCalledFrom == 'HomePage'){
+                Get.offAll(BottomNavigation());
               }
               else
               {

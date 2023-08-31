@@ -511,7 +511,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                     ],
                   ),
                   commonText(
-                      text: Platform.isAndroid ? 'Version  0.0.1+1' : 'Version  0.0.10',
+                      text: 'Version $currentVersion',
                       context: context,
                       textSize: displayWidth(context) * 0.03,
                       textColor: Colors.black54,
@@ -529,7 +529,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
   getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     setState(() {
-      currentVersion = packageInfo.version;
+      currentVersion = Platform.isAndroid ? packageInfo.version : '${packageInfo.version} (${packageInfo.buildNumber})';
     });
   }
 

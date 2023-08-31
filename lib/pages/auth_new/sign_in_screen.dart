@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:performarine/new-design/new_intro_screen.dart';
 import 'package:performarine/pages/intro_screen.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,8 @@ class _SignInScreenState extends State<SignInScreen> {
   FocusNode emailFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
 
+  String? currentVersion;
+
   bool? isLoginBtnClicked = false,
       isGoogleSignInBtnClicked = false,
       isChecked = false,
@@ -57,7 +60,7 @@ class _SignInScreenState extends State<SignInScreen> {
   void initState() {
     commonProvider = context.read<CommonProvider>();
 
-  //  getVersion();
+    getVersion();
     // commonProvider.checkIfBluetoothIsEnabled(scaffoldKey);
 
     emailController.addListener(() {
@@ -70,6 +73,14 @@ class _SignInScreenState extends State<SignInScreen> {
     super.initState();
   }
 
+  getVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      currentVersion = Platform.isAndroid ? packageInfo.version : '${packageInfo.version} (${packageInfo.buildNumber})';
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
@@ -80,7 +91,7 @@ class _SignInScreenState extends State<SignInScreen> {
         {
           if(widget.calledFrom.isNotEmpty || widget.calledFrom == '')
           {
-            if(widget.calledFrom == 'SignUp' || widget.calledFrom == 'sideMenu')
+            if(widget.calledFrom == 'SignUp' || widget.calledFrom == 'sideMenu' || widget.calledFrom == 'HomePage' || widget.calledFrom == 'ResetPassword')
             {
               Navigator.pushAndRemoveUntil(
                   context,
@@ -142,7 +153,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             SizedBox(height: displayHeight(context) * 0.007),
             commonText(
-                text: Platform.isAndroid ? 'Version  0.0.1+1' : 'Version  0.0.10',
+                text: currentVersion,
                 context: context,
                 textSize: displayWidth(context) * 0.03,
                 textColor: Colors.black54,
