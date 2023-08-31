@@ -1831,10 +1831,18 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         isOKClick = true;
                         if (textEditingController.text.isEmpty) {
                           
-                            sliderMinVal = 11;
 ;
 
                           numberOfPassengers = passengerValue;
+
+                          if(numberOfPassengers>11){
+                                                      sliderMinVal = numberOfPassengers.toDouble();
+
+                          }
+                          else{
+                            sliderMinVal=11;
+                          }
+
                           
                           sliderCount = '10+';
                           isSliderDisable = false;
