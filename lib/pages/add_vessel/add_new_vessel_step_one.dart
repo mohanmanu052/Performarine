@@ -121,7 +121,7 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
         batteryCapacityController.text =
             widget.addVesselData!.batteryCapacity!.toString();
         weightController.text = widget.addVesselData!.weight!.toString();
-        vesselImage =  widget.addVesselData!.imageURLs!;
+        vesselImage =  widget.addVesselData!.imageURLs ?? '';
       }
     }
   }

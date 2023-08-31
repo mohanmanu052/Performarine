@@ -91,7 +91,7 @@ class _SignInScreenState extends State<SignInScreen> {
         {
           if(widget.calledFrom.isNotEmpty || widget.calledFrom == '')
           {
-            if(widget.calledFrom == 'SignUp' || widget.calledFrom == 'sideMenu' || widget.calledFrom == 'HomePage')
+            if(widget.calledFrom == 'SignUp' || widget.calledFrom == 'sideMenu' || widget.calledFrom == 'HomePage' || widget.calledFrom == 'ResetPassword')
             {
               Navigator.pushAndRemoveUntil(
                   context,
