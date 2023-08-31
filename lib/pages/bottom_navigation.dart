@@ -16,6 +16,7 @@ import 'package:performarine/old_ui/old_custom_drawer.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/dashboard/dashboard.dart';
 import 'package:performarine/pages/reports/search_and_filters.dart';
+import 'package:performarine/pages/reports_module/reports.dart';
 import 'package:performarine/pages/start_trip/start_trip_recording_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -304,7 +305,9 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     commonProvider = context.watch<CommonProvider>();
     var screensList = [
       Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: false,isAppKilled: widget.isAppKilled,token: widget.token),
-      SearchAndFilters(calledFrom:'HOME'),
+     ReportsModule(),
+     // SearchAndFilters(calledFrom:'HOME'),
+     
       StartTripRecordingScreen(),
       Trips(),
       VesselsScreen()
