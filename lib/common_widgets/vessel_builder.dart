@@ -13,6 +13,8 @@ import 'package:performarine/pages/single_vessel_card.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 
+import '../pages/add_vessel_new/add_new_vessel_screen.dart';
+
 // import '../pages/add_vessel_new/add_new_vessel_screen.dart';
 
 //To show all vessels in home page
@@ -99,7 +101,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          AddNewVesselScreen()),
+                                          AddNewVesselPage()),
                                 );
                               },
                               child: commonText(

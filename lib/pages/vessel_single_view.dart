@@ -301,16 +301,25 @@ class VesselSingleViewState extends State<VesselSingleView> {
               textSize: displayWidth(context) * 0.045,
               fontFamily: outfit
             ),
-            leading: InkWell(
-              onTap: () {
-                scaffoldKey.currentState!.openDrawer();
+            leading: IconButton(
+              onPressed: () async {
+                await tripIsRunningOrNot();
+
+                if (widget.isCalledFromSuccessScreen! || tripIsEnded) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BottomNavigation(),
+                      ),
+                      ModalRoute.withName(""));
+                } else {
+                  Navigator.of(context).pop(true);
+                }
               },
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Image.asset(
-                  'assets/icons/menu.png',
-                ),
-              ),
+              icon: const Icon(Icons.arrow_back),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
             ),
             actions: [
               Container(

@@ -11,6 +11,7 @@ import '../../common_widgets/widgets/user_feed_back.dart';
 import '../../old_ui/old_trip_view_list_screen.dart';
 import '../../provider/common_provider.dart';
 import '../feedback_report.dart';
+import '../trip/tripViewBuilder.dart';
 import 'TripViewList.dart';
 
 class Trips extends StatefulWidget {
@@ -41,7 +42,7 @@ class _TripsState extends State<Trips> {
             child: Column(
               children: [
 
-                OldTripViewListing(
+                TripViewListing(
                   scaffoldKey: scaffoldKey,
                   calledFrom: 'HomePage',
                   isTripDeleted: ()async{

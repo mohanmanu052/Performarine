@@ -253,7 +253,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                         {
                           var result = await Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => OldVesselSingleView(
+                              builder: (_) => VesselSingleView(
                                 vessel: value,
                               ),
                               fullscreenDialog: true,

@@ -332,6 +332,7 @@ Future<void> initializeService() async {
               isAppKilled: true,
               tripIsRunningOrNot: isTripStarted));*/
 
+          sharedPreferences!.setBool('key_lat_time_dialog_open', false);
           Get.to(TripRecordingScreen(
               tripId: tripData![0],
               vesselName: tripData[2],
@@ -617,6 +618,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                           isAppKilled: true,
                           tripIsRunningOrNot: isTripStarted));*/
 
+                      sharedPreferences!.setBool('key_lat_time_dialog_open', false);
                       Get.to(TripRecordingScreen(
                           tripId: tripData![0],
                           vesselName: tripData[2],

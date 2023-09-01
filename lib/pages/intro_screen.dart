@@ -223,6 +223,7 @@ class _IntroScreenState extends State<IntroScreen> {
                         tripIsRunningOrNot: isTripStarted)),
                 ModalRoute.withName(""));*/
 
+            sharedPreferences!.setBool('key_lat_time_dialog_open', false);
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
