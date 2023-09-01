@@ -221,8 +221,8 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
              ),
              Image.asset(
                "assets/images/reports-boat.png",
-               height: displayHeight(context) * 0.06,
-               width: displayWidth(context) * 0.13,
+               height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.10,
+               width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.15,
              ),
 
              SizedBox(
@@ -238,7 +238,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.bold,
                        fontFamily: outfit,
-                       fontSize: displayWidth(context) * 0.032,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
                        color: blutoothDialogTxtColor),
                  ),
 
@@ -251,7 +251,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.w400,
                        fontFamily: poppins,
-                       fontSize: displayWidth(context) * 0.026,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
                        color: filterByTripTxtColor),
                  ),
                ],
@@ -281,7 +281,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.bold,
                        fontFamily: outfit,
-                       fontSize: displayWidth(context) * 0.032,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
                        color: blutoothDialogTxtColor),
                  ),
 
@@ -294,7 +294,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.w400,
                        fontFamily: poppins,
-                       fontSize: displayWidth(context) * 0.026,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
                        color: filterByTripTxtColor),
                  ),
                ],
@@ -324,7 +324,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.bold,
                        fontFamily: outfit,
-                       fontSize: displayWidth(context) * 0.032,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
                        color: blutoothDialogTxtColor),
                  ),
 
@@ -337,7 +337,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.w400,
                        fontFamily: poppins,
-                       fontSize: displayWidth(context) * 0.026,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
                        color: filterByTripTxtColor),
                  ),
                ],

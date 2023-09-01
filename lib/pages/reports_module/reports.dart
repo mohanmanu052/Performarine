@@ -795,7 +795,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w400,
-                            fontSize: displayWidth(context) * 0.043,
+                            fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.043:displayWidth(context) * 0.022,
                             fontFamily: outfit),
                       ),
                       trailing: isExpandedTile
@@ -1215,8 +1215,10 @@ class _ReportsModuleState extends State<ReportsModule> {
                                 children: [
                                   CommonButtons.getAcceptButton(
                                     "Generate Report",
+                                    
                                     context,
                                     blueColor,
+
                                     () {
                                       if (_formKey.currentState!.validate()) {
                                         setState(() {
@@ -1339,8 +1341,9 @@ class _ReportsModuleState extends State<ReportsModule> {
                                         }
                                       }
                                     },
-                                    displayWidth(context) * 0.8,
-                                    displayHeight(context) * 0.065,
+
+                                 orientation==Orientation.portrait?   displayWidth(context) * 0.8:displayWidth(context) * 0.4,
+                                   orientation==Orientation.portrait? displayHeight(context) * 0.065:displayHeight(context) * 0.090,
                                     Colors.grey.shade400,
                                     Theme.of(context).brightness ==
                                             Brightness.dark
@@ -1405,7 +1408,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                     SizedBox(
                                       height: displayWidth(context) * 0.055,
                                     ),
-                                    vesselDetails(context),
+                                    vesselDetails(context,orientation),
                                     SizedBox(
                                       height: displayWidth(context) * 0.04,
                                     ),
@@ -1681,10 +1684,10 @@ class _ReportsModuleState extends State<ReportsModule> {
   }
 
   //Vessel Details in report screen
-  Widget vesselDetails(BuildContext context) {
+  Widget vesselDetails(BuildContext context,Orientation orentation) {
     return Container(
       width: displayWidth(context) * 0.9,
-      height: displayHeight(context) * 0.14,
+    height:orentation==Orientation.portrait? displayHeight(context) * 0.14:displayHeight(context) * 0.30,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
           color: reportsNewTabColor),
@@ -1692,7 +1695,7 @@ class _ReportsModuleState extends State<ReportsModule> {
         children: [
           Image.asset(
             "assets/images/reports-boat.png",
-            height: displayHeight(context) * 0.1,
+            height: orentation==Orientation.portrait?displayHeight(context) * 0.1:displayHeight(context) * 0.2,
             width: displayWidth(context) * 0.25,
           ),
           SizedBox(
@@ -1724,7 +1727,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.035,
+                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
                             color: blutoothDialogTxtColor),
                       ),
                       SizedBox(
@@ -1735,7 +1738,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.026,
+                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
                             color: blutoothDialogTxtColor),
                       ),
                     ],
@@ -1752,7 +1755,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.035,
+                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
                             color: blutoothDialogTxtColor),
                       ),
                       SizedBox(
@@ -1760,10 +1763,11 @@ class _ReportsModuleState extends State<ReportsModule> {
                       ),
                       Text(
                         "Built",
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.026,
+                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
                             color: blutoothDialogTxtColor),
                       ),
                     ],
@@ -1780,7 +1784,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.035,
+                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
                             color: blutoothDialogTxtColor),
                       ),
                       SizedBox(
@@ -1791,7 +1795,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.026,
+                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
                             color: blutoothDialogTxtColor),
                       ),
                     ],
@@ -2865,26 +2869,28 @@ class _ReportsModuleState extends State<ReportsModule> {
                             padding: EdgeInsets.only(
                                 left: displayWidth(context) * 0.046),
                             child: CustomLabeledCheckbox(
+
                               label: 'Select All',
                               value: parentValue != null ? parentValue! : false,
                               onChanged: (value) {
-                                if (value) {
-                                  Utils.customPrint(
-                                      "select all status: $value");
-                                  selectedTripIdList!.addAll(tripIdList!);
-                                  selectedTripLabelList!.clear();
-                                  selectedTripLabelList!.addAll(children!);
-                                  Utils.customPrint(
-                                      "selected trip label list: ${selectedTripLabelList}");
-                                  CustomLogger().logWithFile(Level.info,
-                                      "selected trip label list: ${selectedTripLabelList} -> $page");
-                                  _checkAll(value);
-                                } else if (!value) {
-                                  // Tristate
-                                  selectedTripIdList!.clear();
-                                  selectedTripLabelList!.clear();
-                                  _checkAll(false);
-                                }
+                    if (value) {
+                      Utils.customPrint("select all status: $value");
+                      selectedTripIdList!.clear();
+                      selectedTripIdList!.addAll(tripIdList!);
+                      isSHowGraph = false;
+                      selectedTripLabelList!.clear();
+                      selectedTripLabelList!.addAll(children!);
+                      Utils.customPrint(
+                          "selected trip label list: ${selectedTripLabelList}");
+                      CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
+                      _checkAll(value);
+                    } else if (!value) {
+                      // Tristate
+
+                      selectedTripIdList!.clear();
+                      selectedTripLabelList!.clear();
+                      _checkAll(false);
+                    }
                               },
                               checkboxType: CheckboxType.Parent,
                               activeColor: Colors.indigo,
@@ -2907,33 +2913,40 @@ class _ReportsModuleState extends State<ReportsModule> {
                                   distance: distanceList![index],
                                   time: timeList![index],
                                   onChanged: (value) {
-                                    Utils.customPrint(
-                                        "trip list id: ${tripIdList![index]}");
-                                    CustomLogger().logWithFile(Level.info,
-                                        "trip list id: ${tripIdList![index]} -> $page");
+                        isSHowGraph = false;
+                        Utils.customPrint("trip list id: ${tripIdList![index]}");
+                        CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
 
-                                    if (!selectedTripIdList!
-                                        .contains(tripIdList![index])) {
-                                      selectedTripIdList!
-                                          .add(tripIdList![index]);
-                                      selectedTripLabelList!
-                                          .add(children![index]);
-                                      Utils.customPrint(
-                                          "selected trip label list: ${selectedTripLabelList}");
-                                      CustomLogger().logWithFile(Level.info,
-                                          "trip list id: ${tripIdList![index]} -> $page");
-                                    } else {
-                                      selectedTripIdList!
-                                          .remove(tripIdList![index]);
-                                      // tripIdList!.removeAt(index);
-                                      selectedTripLabelList!
-                                          .remove(children![index]);
-                                      Utils.customPrint(
-                                          "selected trip label list: ${selectedTripLabelList}");
-                                      CustomLogger().logWithFile(Level.info,
-                                          "selected trip label list: ${selectedTripLabelList} -> $page");
-                                    }
-                                    manageTristate(index, value);
+
+                        if(selectedTripIdList!.contains(tripIdList![index])){
+
+                          selectedTripIdList!
+                              .remove(tripIdList![index]);
+                          //tripIdList!.remove(index);
+                          selectedTripLabelList!
+                              .remove(children![index]);
+                          Utils.customPrint(
+                              "selected trip label list: ${selectedTripLabelList}");
+                          CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
+                          setState(() {
+
+                          });
+
+                        }else{
+
+                          selectedTripIdList!
+                              .add(tripIdList![index]);
+                          // tripIdList!.add(index);
+                          selectedTripLabelList!
+                              .add(children![index]);
+                          setState(() {
+
+                          });
+
+
+                        }
+
+                        manageTristate(index, value);
                                   },
                                   checkboxType: CheckboxType.Child,
                                   activeColor: Colors.indigo,
