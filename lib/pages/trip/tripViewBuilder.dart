@@ -177,7 +177,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                           )
                                         ]), */
                                     child: widget.calledFrom == 'VesselSingleView'
-                                      ? OldTripWidget(
+                                      ? TripWidget(
                                         scaffoldKey: widget.scaffoldKey,
                                         tripList: snapshot.data![index],
                                         calledFrom: widget.calledFrom,

@@ -19,6 +19,7 @@ import 'package:performarine/old_ui/old_vessel_single_view.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/start_trip/map_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_analytics_screen.dart';
+import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
@@ -106,7 +107,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
 
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => OldVesselSingleView(
+                    MaterialPageRoute(builder: (context) => VesselSingleView(
                       vessel: vesselData,
                       isCalledFromSuccessScreen: true,
                     )),);
@@ -165,7 +166,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
 
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => OldVesselSingleView(
+                          MaterialPageRoute(builder: (context) => VesselSingleView(
                             vessel: vesselData,
                             isCalledFromSuccessScreen: true,
                           )),);
