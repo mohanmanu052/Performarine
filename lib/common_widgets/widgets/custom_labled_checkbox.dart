@@ -164,6 +164,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
         required this.activeColor,
         this.dateTime,
         this.distance,
+        this.orientation,
         this.time
       })
       : assert(label != null),
@@ -183,6 +184,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
   String? dateTime;
   String? distance;
   String? time;
+  Orientation? orientation;
 
   void _onChanged() {
     if (value != null) {
@@ -200,7 +202,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
       onTap: _onChanged,
       child: Container(
         width: displayWidth(context) * 0.8,
-        height: displayHeight(context) * 0.09,
+        height:orientation==Orientation.portrait? displayHeight(context) * 0.09:displayHeight(context) * 0.15,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
           color: reportTripsListColor

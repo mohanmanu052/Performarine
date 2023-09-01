@@ -755,7 +755,14 @@ class _ReportsModuleState extends State<ReportsModule> {
       child: Scaffold(
         backgroundColor: backgroundColor,
         key: scaffoldKey,
-        body: SingleChildScrollView(
+        body:         OrientationBuilder(
+  builder: (context, orientation) {
+    return 
+        
+
+        
+        
+         SingleChildScrollView(
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
             child: Column(
@@ -817,7 +824,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                         child: Image.asset('assets/icons/vessels.png', height: displayHeight(context) * 0.02,),
                                       ),
                                       contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10,vertical: 8),
+                                      EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
@@ -875,8 +882,12 @@ class _ReportsModuleState extends State<ReportsModule> {
                                               : Colors.white
                                               : Colors.black54,
                                           fontSize:
+
+                                          orientation==Orientation.portrait?
                                           displayWidth(context) *
-                                              0.032,
+                                              0.032:displayWidth(context) *
+                                              0.022
+                                          ,
                                           fontFamily: outfit,
                                           fontWeight: FontWeight.w400),
                                       overflow: TextOverflow.ellipsis,
@@ -891,9 +902,12 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           child: Text(
                                             item.name!,
                                             style: TextStyle(
-                                                fontSize: displayWidth(
-                                                    context) *
-                                                    0.032,
+
+                                           fontSize:   orientation==Orientation.portrait?
+                                          displayWidth(context) *
+                                              0.032:displayWidth(context) *
+                                              0.022,
+                                                 
                                                 color: Theme.of(context)
                                                     .brightness ==
                                                     Brightness.dark
@@ -1000,7 +1014,9 @@ class _ReportsModuleState extends State<ReportsModule> {
                                       ),
                                     ),
                               SizedBox(
-                                height: displayHeight(context) * 0.018,
+                                height:orientation==Orientation.portrait?
+                                
+                                 displayHeight(context) * 0.018:displayHeight(context) * 0.050,
                               ),
                               Container(
                                 width: displayWidth(context) * 0.8,
@@ -1015,7 +1031,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                         child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
                                       ),
                                       contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                                      EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
@@ -1056,8 +1072,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                                               ? Colors.black54
                                               : Colors.white
                                               : Colors.black,
-                                          fontSize:
-                                          displayWidth(context) * 0.034,
+                                          fontSize:orientation==
+                                      Orientation.portrait?    displayWidth(context) * 0.034:displayWidth(context) * 0.034,
                                           fontFamily: outfit,
                                           fontWeight: FontWeight.w300),
                                     ),
@@ -1074,9 +1090,10 @@ class _ReportsModuleState extends State<ReportsModule> {
                                               ? Colors.black54
                                               : Colors.white
                                               : Colors.black54,
-                                          fontSize:
+                                          fontSize:orientation==Orientation.portrait?
                                           displayWidth(context) *
-                                              0.032,
+                                              0.032:displayWidth(context) *
+                                              0.022,
                                           fontFamily: outfit,
                                           fontWeight: FontWeight.w400),
                                       overflow: TextOverflow.ellipsis,
@@ -1090,8 +1107,13 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           child: Text(
                                             item,
                                             style: TextStyle(
-                                                fontSize: displayWidth(context) *
-                                                    0.0346,
+                                                                                         fontSize:   orientation==Orientation.portrait?
+                                          displayWidth(context) *
+                                              0.032:displayWidth(context) *
+                                              0.022,
+
+                                                // fontSize: displayWidth(context) *
+                                                //     0.0346,
                                                 color: Theme.of(context)
                                                     .brightness ==
                                                     Brightness.dark
@@ -1177,7 +1199,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                             ? Container()
                             : selectedCaseType == 1
                                 ? filterByDate(context)!
-                                : filterByTrip(context)!,
+                                : filterByTrip(context,orientation)!,
                         SizedBox(
                           height: displayWidth(context) * 0.04,
                         ),
@@ -1651,7 +1673,9 @@ class _ReportsModuleState extends State<ReportsModule> {
               ],
             ),
           ),
-        ),
+  
+        );
+  })
       ),
     );
   }
@@ -2817,7 +2841,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   }
 
   //Filter by trip in reports
-  Widget? filterByTrip(BuildContext context) {
+  Widget? filterByTrip(BuildContext context,Orientation orientation) {
     return isTripIdListLoading!
         ? Container(
             decoration: BoxDecoration(
@@ -2876,6 +2900,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                   height: displayHeight(context) * 0.01,
                                 ),
                                 CustomLabeledCheckboxNew(
+                                  orientation:orientation,
                                   label: children![index],
                                   value: childrenValue![index],
                                   dateTime: dateTimeList![index],
