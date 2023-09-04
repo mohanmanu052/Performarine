@@ -472,6 +472,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                             handlerWidth: 15,
                                             handlerHeight: 15,
                                             onDragging: (int value,dynamic val,dynamic val1){
+                                              // setState(() {
+                                              //   isSliderDisable = false;
+                                              // });
                                              val != 11 ? passengerValue = val.toInt() : val;
                                               print("On dragging: value: $value, val: $val, val1: $val1");
                                               if(val == sliderMinVal){
@@ -1766,7 +1769,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       //textEditingController.text.isNotEmpty ? numberOfPassengers = int.parse(textEditingController.text) : numberOfPassengers = passengerValue;
                     if(textEditingController.text.isEmpty){
                       setState(() {
-                        numberOfPassengers = 0;
+                        numberOfPassengers = passengerValue;
                         sliderMinVal = 11;
                         sliderCount = '10+';
                       });
@@ -1819,7 +1822,17 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     }  */
                     else if(value.length == 0){
                       setState(() {
-                         numberOfPassengers = 0;
+                         numberOfPassengers = passengerValue;
+                         /*if(numberOfPassengers.toString().length == 3)
+                         {
+                           sliderMinVal = numberOfPassengers.toDouble() + 20;
+                         }
+                         else
+                         {
+                           sliderMinVal = numberOfPassengers.toDouble() + 4;
+                         }
+                         //sliderMinVal = 999;
+                         sliderCount = '$numberOfPassengers+';*/
                        sliderMinVal = 11;
                         sliderCount = '10+';
                       });
@@ -1848,10 +1861,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         if (textEditingController.text.isEmpty) {
                           
                             sliderMinVal = 11;
-;
 
-                          numberOfPassengers = 0;
-                          
+                          numberOfPassengers = passengerValue;
+
                           sliderCount = '10+';
                           isSliderDisable = false;
                           isCheck = false;

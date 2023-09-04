@@ -258,7 +258,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                           context,
                           Theme.of(context).brightness == Brightness.dark
                               ? Colors.white
-                              : Colors.grey,
+                              : blueColor,
                           buttonOnTap!,
                           displayWidth(context) * 0.5,
                           displayHeight(context) * 0.06,
@@ -269,7 +269,7 @@ class LocationPermissionCustomDialog extends StatelessWidget {
                               ? Colors.white
                               : Colors.white,
                           displayHeight(context) * 0.018,
-                          buttonBGColor,
+                          blueColor,
                           ''),
                     ],
                   ),
@@ -279,7 +279,8 @@ class LocationPermissionCustomDialog extends StatelessWidget {
           ),
         ),
         Positioned(
-          right: 0.0,
+          top: 12,
+          right: 12.0,
           child: GestureDetector(
             onTap: () {
               Navigator.of(context).pop();
