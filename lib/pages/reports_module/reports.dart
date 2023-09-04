@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -5,7 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/models/get_user_config_model.dart';
+import 'package:performarine/models/vessel.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
+import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -95,7 +99,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   List<Map<String, dynamic>> totalData = [];
   List<TripModel> durationGraphData = [];
   double chartWidth = 0.0;
-
+String? imageUrl;
   bool? isExpansionCollapse = false;
   bool isExpandedTile = false;
   bool? isStartDate = false;
@@ -117,10 +121,15 @@ class _ReportsModuleState extends State<ReportsModule> {
   bool? powerUsageButtonColor = false;
   bool? isCheckInternalServer = false;
   bool? isTripsAreAvailable = false;
+  String? capacity;
+  String? builtYear;
+  String? registerNumber;
+List<Vessels>? vesselList;
+  final DatabaseService _databaseService = DatabaseService();
 
   //Convertion of date time into month/day/year format
   String convertIntoMonthDayYear(DateTime date) {
-    String dateString = DateFormat('MM/dd/yyyy').format(date);
+    String dateString = DateFormat('yyyy/MM/dd').format(date);
 
     Utils.customPrint(dateString);
     CustomLogger().logWithFile(
@@ -128,6 +137,34 @@ class _ReportsModuleState extends State<ReportsModule> {
 
     return dateString;
   }
+
+
+
+
+
+  void getVesselDetails(String id)async {
+    if(vesselList!=null&&vesselList!.isNotEmpty){
+    Vessels? vessel = vesselList!.firstWhere((vessel) => vessel.id == id, orElse: () => Vessels());
+   
+      CreateVessel? vesselData = await _databaseService
+        .getVesselFromVesselID(id);
+
+    imageUrl = vesselData!.imageURLs ?? '';
+
+
+  setState(() {
+       builtYear=vessel.builtYear.toString()??'';
+  capacity=vessel.capacity??'';
+  registerNumber=vessel.regNumber??'';
+
+  });
+
+    }else{
+
+    }
+
+  }
+
 
   //Convertion of date time into year-month-day format
   String convertIntoYearMonthDay(DateTime date) {
@@ -286,6 +323,7 @@ class _ReportsModuleState extends State<ReportsModule> {
             Utils.customPrint("value 1 is: ${value.status}");
             setState(() {
               isVesselDataLoading = true;
+              vesselList=value.vessels??[];
             });
 
             Utils.customPrint(
@@ -298,6 +336,8 @@ class _ReportsModuleState extends State<ReportsModule> {
             }
             vesselData = List<DropdownItem>.from(value.vessels!.map(
                 (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
+
+                
 
             Utils.customPrint("vesselData: ${vesselData.length}");
             CustomLogger().logWithFile(
@@ -345,6 +385,10 @@ class _ReportsModuleState extends State<ReportsModule> {
               Level.info, "value of trip list: ${value.data} -> $page");
           tripIdList!.clear();
           dateTimeList!.clear();
+          distanceList!.clear();
+timeList!.clear();
+children!.clear();
+childrenValue!.clear();
           for (int i = 0; i < value.data!.length; i++) {
             isTripsAreAvailable = false;
             tripIdList!.add(value.data![i].id!);
@@ -821,10 +865,12 @@ class _ReportsModuleState extends State<ReportsModule> {
                                     decoration: InputDecoration(
                                       prefixIcon: Transform.scale(
                                         scale: 0.5,
-                                        child: Image.asset('assets/icons/vessels.png', height: displayHeight(context) * 0.02,),
+                                        child: Image.asset('assets/icons/vessels.png',
+                                         height: displayHeight(context) * 0.02,),
                                       ),
                                       contentPadding:
                                       EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
+
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
@@ -870,27 +916,32 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           fontFamily: outfit,
                                           fontWeight: FontWeight.w300),
                                     ),
-                                    hint: Text(
-                                      'Select Vessel',
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .brightness ==
-                                              Brightness.dark
-                                              ? "Select Vessel" ==
-                                              'User SubRole'
-                                              ? Colors.black54
-                                              : Colors.white
-                                              : Colors.black54,
-                                          fontSize:
+                                    hint: Container(
+                                      alignment: Alignment.centerLeft,
+                                                                                                                      padding: const EdgeInsets.symmetric(horizontal: 8),
 
-                                          orientation==Orientation.portrait?
-                                          displayWidth(context) *
-                                              0.032:displayWidth(context) *
-                                              0.022
-                                          ,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w400),
-                                      overflow: TextOverflow.ellipsis,
+                                      child: Text(
+                                        'Select Vessel',
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .brightness ==
+                                                Brightness.dark
+                                                ? "Select Vessel" ==
+                                                'User SubRole'
+                                                ? Colors.black54
+                                                : Colors.white
+                                                : Colors.black54,
+                                            fontSize:
+                                    
+                                            orientation==Orientation.portrait?
+                                            displayWidth(context) *
+                                                0.032:displayWidth(context) *
+                                                0.022
+                                            ,
+                                            fontFamily: outfit,
+                                            fontWeight: FontWeight.w400),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                     value: selectedValue,
                                     items: vesselData.map((item) {
@@ -931,6 +982,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                       return null;
                                     },
                                     onChanged: (item) {
+                                      getVesselDetails(item?.id??"");
                                       Utils.customPrint(
                                           "id is: ${item?.id} ");
                                       CustomLogger().logWithFile(
@@ -1077,33 +1129,39 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           fontFamily: outfit,
                                           fontWeight: FontWeight.w300),
                                     ),
-                                    hint: Text(
-                                      'Filter By',
-                                         textAlign: TextAlign.center,
+                                    hint: Container(
+                                      alignment: Alignment.centerLeft,
+                                          padding: const EdgeInsets.symmetric(horizontal: 11),
+
+                                      child: Text(
+                                        
+                                        'Filter By',
+                                      
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .brightness ==
+                                                Brightness.dark
+                                                ? "Filter By" ==
+                                                'User SubRole'
+                                                ? Colors.black54
+                                                : Colors.white
+                                                : Colors.black54,
+                                            fontSize:orientation==Orientation.portrait?
+                                            displayWidth(context) *
+                                                0.032:displayWidth(context) *
+                                                0.022,
                                     
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .brightness ==
-                                              Brightness.dark
-                                              ? "Filter By" ==
-                                              'User SubRole'
-                                              ? Colors.black54
-                                              : Colors.white
-                                              : Colors.black54,
-                                          fontSize:orientation==Orientation.portrait?
-                                          displayWidth(context) *
-                                              0.032:displayWidth(context) *
-                                              0.022,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w400),
-                                      overflow: TextOverflow.ellipsis,
+                                            fontFamily: outfit,
+                                            fontWeight: FontWeight.w400),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                     value: selectedFilter,
                                     items: filters.map((item) {
                                       return DropdownMenuItem<String>(
                                         value: item,
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                                          padding: const EdgeInsets.symmetric(horizontal: 11),
                                           child: Text(
                                             item,
                                             style: TextStyle(
@@ -1198,7 +1256,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         selectedCaseType == 0
                             ? Container()
                             : selectedCaseType == 1
-                                ? filterByDate(context)!
+                                ? filterByDate(context,orientation)!
                                 : filterByTrip(context,orientation)!,
                         SizedBox(
                           height: displayWidth(context) * 0.04,
@@ -1399,8 +1457,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                             children: [
                               Container(
                                 margin: EdgeInsets.only(
-                                  left: displayWidth(context) * 0.05,
-                                  right: displayWidth(context) * 0.05,
+                                  left: displayWidth(context) * 0.03,
+                                  right: displayWidth(context) * 0.03,
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1460,8 +1518,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           },
                                           child: Container(
                                             width: displayWidth(context) * 0.20,
-                                            height:
-                                                displayHeight(context) * 0.041,
+                                            height:orientation==Orientation.portrait?
+                                                displayHeight(context) * 0.041:displayHeight(context) * 0.099,
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(20),
@@ -1499,8 +1557,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           },
                                           child: Container(
                                             width: displayWidth(context) * 0.18,
-                                            height:
-                                                displayHeight(context) * 0.041,
+                                            height:orientation==Orientation.portrait?
+                                                displayHeight(context) * 0.041:displayHeight(context) * 0.099,
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(20),
@@ -1537,8 +1595,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           },
                                           child: Container(
                                             width: displayWidth(context) * 0.20,
-                                            height:
-                                                displayHeight(context) * 0.042,
+                                            height:orientation==Orientation.portrait?
+                                                displayHeight(context) * 0.042:displayHeight(context) * 0.099,
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(20),
@@ -1575,8 +1633,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           },
                                           child: Container(
                                             width: displayWidth(context) * 0.22,
-                                            height:
-                                                displayHeight(context) * 0.042,
+                                            height:orientation==Orientation.portrait?
+                                                displayHeight(context) * 0.042:displayHeight(context) * 0.099,
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(20),
@@ -1610,7 +1668,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                 ),
                               ),
                               isReportDataLoading!
-                                  ? buildGraph(context)
+                                  ? buildGraph(context,orientation)
                                   : Center(
                                       child: CircularProgressIndicator(
                                         valueColor:
@@ -1623,7 +1681,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                 height: displayWidth(context) * 0.03,
                               ),
                               Container(
-                                height: displayHeight(context) * 0.06,
+                                height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
                                 width: displayWidth(context) * 0.8,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
@@ -1686,18 +1744,49 @@ class _ReportsModuleState extends State<ReportsModule> {
   //Vessel Details in report screen
   Widget vesselDetails(BuildContext context,Orientation orentation) {
     return Container(
-      width: displayWidth(context) * 0.9,
+      //width: displayWidth(context) * 0.99,
     height:orentation==Orientation.portrait? displayHeight(context) * 0.14:displayHeight(context) * 0.30,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
           color: reportsNewTabColor),
       child: Row(
         children: [
-          Image.asset(
-            "assets/images/reports-boat.png",
+
+
+          Container(
+            margin: EdgeInsets.only(left: 4),
             height: orentation==Orientation.portrait?displayHeight(context) * 0.1:displayHeight(context) * 0.2,
             width: displayWidth(context) * 0.25,
-          ),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      image: imageUrl!=null&&imageUrl!.isNotEmpty?
+                      DecorationImage(  
+                        fit: BoxFit.cover,
+                      
+                          image:
+                          FileImage(
+                          File(imageUrl??''))):                     
+                            DecorationImage(
+                            fit: BoxFit.cover,
+                            image:AssetImage("assets/images/reports-boat.png",)
+
+
+                      
+                      
+                      
+                  ),
+                )),
+          
+          
+        //   Image.asset(
+        //  imageUrl??   "assets/images/reports-boat.png",
+        //     height: orentation==Orientation.portrait?displayHeight(context) * 0.1:displayHeight(context) * 0.2,
+        //     width: displayWidth(context) * 0.25,
+        //   ),
+
+
+
+
           SizedBox(
             width: displayWidth(context) * 0.04,
           ),
@@ -1717,70 +1806,76 @@ class _ReportsModuleState extends State<ReportsModule> {
                 height: displayWidth(context) * 0.013,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "750cc",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontFamily: inter,
-                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
-                            color: blutoothDialogTxtColor),
-                      ),
-                      SizedBox(
-                        height: displayHeight(context) * 0.008,
-                      ),
-                      Text(
-                        "Capacity",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontFamily: inter,
-                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
-                            color: blutoothDialogTxtColor),
-                      ),
-                    ],
+                  Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          capacity??'',
+
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontFamily: inter,
+                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
+                              color: blutoothDialogTxtColor),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.008,
+                        ),
+                        Text(
+                          "Capacity",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontFamily: inter,
+                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
+                              color: blutoothDialogTxtColor),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
-                    width: displayWidth(context) * 0.02,
+                    width: displayWidth(context) * 0.03,
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "1992",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontFamily: inter,
-                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
-                            color: blutoothDialogTxtColor),
-                      ),
-                      SizedBox(
-                        height: displayHeight(context) * 0.008,
-                      ),
-                      Text(
-                        "Built",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontFamily: inter,
-                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
-                            color: blutoothDialogTxtColor),
-                      ),
-                    ],
+                  Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          builtYear??'',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontFamily: inter,
+                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
+                              color: blutoothDialogTxtColor),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.008,
+                        ),
+                        Text(
+                          "Built",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontFamily: inter,
+                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
+                              color: blutoothDialogTxtColor),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
-                    width: displayWidth(context) * 0.02,
+                    width: displayWidth(context) * 0.03,
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "CA14755",
+                        registerNumber??"",
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontFamily: inter,
@@ -1840,7 +1935,7 @@ class _ReportsModuleState extends State<ReportsModule> {
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Avg Speed (KT)',
+                child: Text('Avg Speed',
                     style: TextStyle(color: tableHeaderColor),
                     textAlign: TextAlign.center),
               ),
@@ -1848,7 +1943,7 @@ class _ReportsModuleState extends State<ReportsModule> {
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Fuel Usage (gal)',
+                child: Text('Fuel Usage',
                     style: TextStyle(color: tableHeaderColor),
                     textAlign: TextAlign.center),
               ),
@@ -1856,7 +1951,7 @@ class _ReportsModuleState extends State<ReportsModule> {
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Power Usage (W)',
+                child: Text('Power Usage',
                     style: TextStyle(color: tableHeaderColor),
                     textAlign: TextAlign.center),
               ),
@@ -1881,15 +1976,15 @@ class _ReportsModuleState extends State<ReportsModule> {
                           textAlign: TextAlign.center))),
                   DataCell(Align(
                       alignment: Alignment.center,
-                      child: Text('${person['avgSpeed']!}',
+                      child: Text('${person['avgSpeed']!} kt/h',
                           textAlign: TextAlign.center))),
                   DataCell(Align(
                       alignment: Alignment.center,
-                      child: Text('${person['fuelUsage']}',
+                      child: Text('${person['fuelUsage']} ltr',
                           textAlign: TextAlign.center))),
                   DataCell(Align(
                       alignment: Alignment.center,
-                      child: Text('${person['powerUsage']}',
+                      child: Text('${person['powerUsage']} w',
                           textAlign: TextAlign.center))),
                 ])),
             ...finalData.map((e) => DataRow(cells: [
@@ -1939,27 +2034,29 @@ class _ReportsModuleState extends State<ReportsModule> {
   }
 
   //Custom selection graph
-  buildGraph(BuildContext context) {
+  buildGraph(BuildContext context,Orientation orientation) {
+    double graph_height=orientation==Orientation.portrait? displayHeight(context) * 0.4: displayHeight(context) * 0.95;
+
     Utils.customPrint('SELECTED BUTTON Text $selectedButton');
     CustomLogger().logWithFile(
         Level.info, "SELECTED BUTTON Text $selectedButton -> $page");
 
     switch (selectedButton.toLowerCase()) {
       case 'trip duration':
-        return tripDurationGraph(context);
+        return tripDurationGraph(context,graph_height);
       case 'avg speed':
-        return avgSpeedGraph(context);
+        return avgSpeedGraph(context,graph_height);
       case 'fuel usage':
-        return fuelUsageGraph(context);
+        return fuelUsageGraph(context,graph_height);
       case 'power usage':
-        return powerUsageGraph(context);
+        return powerUsageGraph(context,graph_height);
       default:
         return Container();
     }
   }
 
   //Trip duration graph
-  Widget tripDurationGraph(BuildContext context) {
+  Widget tripDurationGraph(BuildContext context, double graph_height) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       color: commonBackgroundColor,
@@ -2047,7 +2144,7 @@ class _ReportsModuleState extends State<ReportsModule> {
         width: durationColumnSeriesData.length > 3
             ? (1.5 * 100 * durationColumnSeriesData.length)
             : displayWidth(context),
-        height: displayHeight(context) * 0.4,
+        height: graph_height,
         child: SfCartesianChart(
           tooltipBehavior: tooltipBehavior,
           enableSideBySideSeriesPlacement: true,
@@ -2105,7 +2202,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   }
 
   // Average speed graph in reports
-  Widget avgSpeedGraph(BuildContext context) {
+  Widget avgSpeedGraph(BuildContext context, double graph_height) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       color: commonBackgroundColor,
@@ -2190,7 +2287,7 @@ class _ReportsModuleState extends State<ReportsModule> {
         width: avgSpeedColumnSeriesData.length > 3
             ? (1.5 * 100 * avgSpeedColumnSeriesData.length)
             : displayWidth(context),
-        height: displayHeight(context) * 0.4,
+        height: graph_height,
         child: SfCartesianChart(
           // palette: barsColor,
           tooltipBehavior: tooltipBehavior,
@@ -2245,7 +2342,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   }
 
   // Fuel usage graph on reports
-  Widget fuelUsageGraph(BuildContext context) {
+  Widget fuelUsageGraph(BuildContext context, double graph_height) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       color: commonBackgroundColor,
@@ -2382,7 +2479,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   }
 
   // Power usage graph on reports
-  Widget powerUsageGraph(BuildContext context) {
+  Widget powerUsageGraph(BuildContext context, double graph_height) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       color: commonBackgroundColor,
@@ -2396,7 +2493,7 @@ class _ReportsModuleState extends State<ReportsModule> {
             .logWithFile(Level.info, "power y data is: ${yValue} -> $page");
 
         return Container(
-          width: displayWidth(context) * 0.4,
+          width:displayWidth(context) * 0.4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -2466,7 +2563,7 @@ class _ReportsModuleState extends State<ReportsModule> {
         width: powerUsageColumnSeriesData.length > 3
             ? (1.5 * 100 * powerUsageColumnSeriesData.length)
             : displayWidth(context),
-        height: displayHeight(context) * 0.4,
+        height: graph_height,
         child: SfCartesianChart(
           tooltipBehavior: tooltipBehavior,
           primaryXAxis: CategoryAxis(
@@ -2518,7 +2615,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   }
 
   // Widget for filter by date in reports
-  Widget? filterByDate(BuildContext context) {
+  Widget? filterByDate(BuildContext context,Orientation orientation) {
     return Column(
       children: [
         Column(
@@ -2546,12 +2643,16 @@ class _ReportsModuleState extends State<ReportsModule> {
                           right: displayWidth(context) * 0.04),
                       child: Row(
                         children: [
-                          Text(
-                            pickStartDate!,
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: inter),
+                          SizedBox(
+                            width:displayWidth(context) * 0.22 ,
+
+                            child: Text(
+                              pickStartDate!,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: inter),
+                            ),
                           ),
                           SizedBox(
                             width: displayWidth(context) * 0.02,
@@ -2589,12 +2690,15 @@ class _ReportsModuleState extends State<ReportsModule> {
                           right: displayWidth(context) * 0.05),
                       child: Row(
                         children: [
-                          Text(
-                            pickEndDate!,
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: inter),
+                          SizedBox(
+                            width:displayWidth(context) * 0.22 ,
+                            child: Text(
+                              pickEndDate!,
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: inter),
+                            ),
                           ),
                           SizedBox(
                             width: displayWidth(context) * 0.02,
@@ -2627,7 +2731,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                       width: displayWidth(context),
                       height: 50,
                       decoration: BoxDecoration(
-                          color: selectDayBackgroundColor,
+                          color: calenderHeaderBackgroundColor,
                           borderRadius: BorderRadius.only(
                             topRight: Radius.circular(
                               30,
@@ -2639,7 +2743,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                       child: Padding(
                         padding: EdgeInsets.only(
                             left: displayWidth(context) * 0.03,
-                            top: displayWidth(context) * 0.05),
+                           top:orientation==Orientation.portrait? displayWidth(context) * 0.05:displayWidth(context) * 0.01
+                            ),
                         child: Text(
                           "Select Start Date",
                           style: TextStyle(
@@ -2736,7 +2841,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                           width: displayWidth(context),
                           height: 50,
                           decoration: BoxDecoration(
-                              color: selectDayBackgroundColor,
+                              color: calenderHeaderBackgroundColor,
                               borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(
                                   30,
@@ -2748,7 +2853,9 @@ class _ReportsModuleState extends State<ReportsModule> {
                           child: Padding(
                             padding: EdgeInsets.only(
                                 left: displayWidth(context) * 0.03,
-                                top: displayWidth(context) * 0.05),
+                           top:orientation==Orientation.portrait? displayWidth(context) * 0.05:displayWidth(context) * 0.01
+                                
+                                ),
                             child: Text(
                               "Select End Date",
                               style: TextStyle(
@@ -2903,14 +3010,15 @@ class _ReportsModuleState extends State<ReportsModule> {
                             itemBuilder: (context, index) => Column(
                               children: [
                                 SizedBox(
-                                  height: displayHeight(context) * 0.01,
+                                  height:orientation==Orientation.portrait? displayHeight(context) * 0.01:displayHeight(context) * 0.03,
                                 ),
                                 CustomLabeledCheckboxNew(
                                   orientation:orientation,
                                   label: children![index],
                                   value: childrenValue![index],
+                                  imageUrl: imageUrl,
                                   dateTime: dateTimeList![index],
-                                  distance: distanceList![index],
+                                  distance: '${distanceList![index]} nm',
                                   time: timeList![index],
                                   onChanged: (value) {
                         isSHowGraph = false;

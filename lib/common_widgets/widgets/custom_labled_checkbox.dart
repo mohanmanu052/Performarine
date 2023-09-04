@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -165,6 +167,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
         this.dateTime,
         this.distance,
         this.orientation,
+        this.imageUrl,
         this.time
       })
       : assert(label != null),
@@ -178,6 +181,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
   String label;
   bool value;
   bool tristate;
+  String? imageUrl;
   ValueChanged<bool> onChanged;
   CheckboxType checkboxType;
   Color activeColor;
@@ -202,7 +206,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
       onTap: _onChanged,
       child: Container(
         width: displayWidth(context) * 0.8,
-        height:orientation==Orientation.portrait? displayHeight(context) * 0.09:displayHeight(context) * 0.15,
+        height:orientation==Orientation.portrait? displayHeight(context) * 0.09:displayHeight(context) * 0.19,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
           color: reportTripsListColor
@@ -219,11 +223,36 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                },
                activeColor: activeColor,
              ),
-             Image.asset(
-               "assets/images/reports-boat.png",
-               height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.10,
-               width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.15,
-             ),
+
+Container(
+                 height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.11,
+               width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.12,
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(15),
+                      image: imageUrl!=null&&imageUrl!.isNotEmpty?
+                      DecorationImage(  
+                        fit: BoxFit.cover,
+                      
+                          image:
+                          FileImage(
+                          File(imageUrl??''))):                     
+                            DecorationImage(
+                            fit: BoxFit.cover,
+                            image:AssetImage("assets/images/reports-boat.png",)
+
+
+                      
+                      
+                      
+                  ),
+                )),
+
+
+            //  Image.asset(
+            //    "assets/images/reports-boat.png",
+            //    height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.10,
+            //    width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.15,
+            //  ),
 
              SizedBox(
                width: displayWidth(context) * 0.015,

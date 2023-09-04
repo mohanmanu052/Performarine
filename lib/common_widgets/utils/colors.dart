@@ -16,6 +16,7 @@ const bluetoothConnectBtncolor = Color(0xFFFFFFFF);
 const bluetoothDeviceInActiveColor = Color(0xFF797979);
 const dateBackgroundColor = Color(0xFFECF3F8);
 const selectDayBackgroundColor = Color(0xFFE4F5F5);
+const calenderHeaderBackgroundColor=Color(0xffECF3F9);
 const reportBackgroundColor = Color(0xFFF5F5F5);
 const reportTabColor = Color(0xFFC5FFBF);
 const tripColumnBarColor = Color(0xFFF9AF75);

@@ -249,60 +249,6 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    List<Widget> _icons = [
-      Image.asset(
-        iconList[0],
-        width: displayWidth(context) * 0.06,
-        height: displayHeight(context) * 0.035,
-      ),
-      Image.asset(
-        iconList[1],
-        width: displayWidth(context) * 0.06,
-        height: displayHeight(context) * 0.035,
-      ),
-      Image.asset('assets/icons/start_trip_icon.png',
-        height: displayHeight(context) * 0.035,
-        width: displayWidth(context) * 0.12,
-      ),
-      Image.asset(
-        iconList[2],
-        width: displayWidth(context) * 0.06,
-        height: displayHeight(context) * 0.035,
-      ),
-      Image.asset(
-        iconList[3],
-        width: displayWidth(context) * 0.06,
-        height: displayHeight(context) * 0.035,
-      ),
-
-    ];
-    List<Widget> selectedIcons = [
-      Image.asset(
-        selectList[0],
-        width: displayWidth(context) * 0.06,
-        height: displayHeight(context) * 0.035,
-      ),
-      Image.asset(
-        selectList[1],
-        width: displayWidth(context) * 0.06,
-        height: displayHeight(context) * 0.035,
-      ),
-      Image.asset('assets/icons/start_trip_icon.png',
-        height: displayHeight(context) * 0.035,
-        width: displayWidth(context) * 0.12,
-      ),
-      Image.asset(
-        selectList[2],
-        width: displayWidth(context) * 0.06,
-        height: displayHeight(context) * 0.035,
-      ),
-      Image.asset(
-        selectList[3],
-        width: displayWidth(context) * 0.06,
-        height: displayHeight(context) * 0.035,
-      ),
-
-    ];
     commonProvider = context.watch<CommonProvider>();
     var screensList = [
       Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: false,isAppKilled: widget.isAppKilled,token: widget.token),
@@ -318,7 +264,70 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
       onWillPop: () async {
         return Utils.onAppExitCallBack(context, scaffoldKey);
       },
-      child: Scaffold(
+      child:
+      
+      OrientationBuilder(
+        builder: (context, orientation) {
+                double iconHeight=        orientation==Orientation.portrait? displayHeight(context) * 0.035:displayHeight(context) * 0.060;
+                              List<Widget> _icons = [
+      Image.asset(
+        iconList[0],
+        width: displayWidth(context) * 0.06,
+        height: iconHeight,
+      ),
+      Image.asset(
+        iconList[1],
+        width: displayWidth(context) * 0.06,
+        height: iconHeight,
+      ),
+      Image.asset('assets/icons/start_trip_icon.png',
+        height: iconHeight,
+        width: displayWidth(context) * 0.12,
+      ),
+      Image.asset(
+        iconList[2],
+        width: displayWidth(context) * 0.06,
+        height: iconHeight,
+      ),
+      Image.asset(
+        iconList[3],
+        width: displayWidth(context) * 0.06,
+        height: iconHeight,
+      ),
+
+    ];
+    List<Widget> selectedIcons = [
+      Image.asset(
+        selectList[0],
+        width: displayWidth(context) * 0.06,
+        height: iconHeight,
+      ),
+      Image.asset(
+        selectList[1],
+        width: displayWidth(context) * 0.06,
+        height: iconHeight,
+      ),
+      Image.asset('assets/icons/start_trip_icon.png',
+        height: iconHeight,
+        width: displayWidth(context) * 0.12,
+      ),
+      Image.asset(
+        selectList[2],
+        width: displayWidth(context) * 0.06,
+        height: iconHeight,
+      ),
+      Image.asset(
+        selectList[3],
+        width: displayWidth(context) * 0.06,
+        height: iconHeight,
+      ),
+
+    ];
+
+
+
+return
+       Scaffold(
         backgroundColor: backgroundColor,
         key: scaffoldKey,
         resizeToAvoidBottomInset: false,
@@ -368,7 +377,14 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
           ],
         ),
         bottomNavigationBar: Container(
-          height: Platform.isAndroid ? displayHeight(context) * 0.098 : displayHeight(context) * 0.109,
+                   height:
+                   
+                   orientation==Orientation.portrait? displayHeight(context) * 0.1:displayHeight(context) * 0.2,
+
+          // height: Platform.isAndroid ? displayHeight(context) * 0.098 ?         orientation==Orientation.portrait? displayHeight(context) * 0.1:displayHeight(context) * 0.2,
+
+          
+          //  displayHeight(context) * 0.109,
           child: ClipRRect(
            // borderRadius: BorderRadius.circular(10.0),
             child: Container(
@@ -805,7 +821,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
                     for (int i = 0; i <= iconList.length; i++)
                       _tabItem(
                         i == _bottomNavIndex ? selectedIcons[i] : _icons[i],
-                        _labels[i],
+                        _labels[i],orientation,
                         isSelected: i == _bottomNavIndex,
                       ),
                   ],
@@ -1274,16 +1290,18 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked, */
         body: screensList[_bottomNavIndex],
-      ),
+        
+      );
+        })
     );
   }
 
-  Widget _tabItem(Widget child, String label, {bool isSelected = false}) {
+  Widget _tabItem(Widget child, String label,Orientation orientation, {bool isSelected = false}) {
     return Padding(
-      padding: EdgeInsets.only(top: 13),
+      padding: EdgeInsets.only(top:orientation==Orientation.portrait? 13:0),
       child: AnimatedContainer(
         width: displayWidth(context) * 0.13,
-          height: displayHeight(context) * 0.1,
+          height:orientation==Orientation.portrait? displayHeight(context) * 0.1:displayHeight(context) * 0.2,
           alignment: Alignment.center,
           duration: Duration(milliseconds: 0),
           decoration: !isSelected
