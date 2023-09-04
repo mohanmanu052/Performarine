@@ -164,6 +164,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
         required this.activeColor,
         this.dateTime,
         this.distance,
+        this.orientation,
         this.time
       })
       : assert(label != null),
@@ -183,6 +184,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
   String? dateTime;
   String? distance;
   String? time;
+  Orientation? orientation;
 
   void _onChanged() {
     if (value != null) {
@@ -200,7 +202,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
       onTap: _onChanged,
       child: Container(
         width: displayWidth(context) * 0.8,
-        height: displayHeight(context) * 0.09,
+        height:orientation==Orientation.portrait? displayHeight(context) * 0.09:displayHeight(context) * 0.15,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
           color: reportTripsListColor
@@ -219,8 +221,8 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
              ),
              Image.asset(
                "assets/images/reports-boat.png",
-               height: displayHeight(context) * 0.06,
-               width: displayWidth(context) * 0.13,
+               height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.10,
+               width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.15,
              ),
 
              SizedBox(
@@ -236,7 +238,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.bold,
                        fontFamily: outfit,
-                       fontSize: displayWidth(context) * 0.032,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
                        color: blutoothDialogTxtColor),
                  ),
 
@@ -249,7 +251,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.w400,
                        fontFamily: poppins,
-                       fontSize: displayWidth(context) * 0.026,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
                        color: filterByTripTxtColor),
                  ),
                ],
@@ -279,7 +281,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.bold,
                        fontFamily: outfit,
-                       fontSize: displayWidth(context) * 0.032,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
                        color: blutoothDialogTxtColor),
                  ),
 
@@ -292,7 +294,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.w400,
                        fontFamily: poppins,
-                       fontSize: displayWidth(context) * 0.026,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
                        color: filterByTripTxtColor),
                  ),
                ],
@@ -322,7 +324,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.bold,
                        fontFamily: outfit,
-                       fontSize: displayWidth(context) * 0.032,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
                        color: blutoothDialogTxtColor),
                  ),
 
@@ -335,7 +337,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.w400,
                        fontFamily: poppins,
-                       fontSize: displayWidth(context) * 0.026,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
                        color: filterByTripTxtColor),
                  ),
                ],
