@@ -81,6 +81,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   bool? isBatteryCapacityEnable = false;
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
+  double sliderValue = 0.0;
 
   final statuses = List.generate(
     2,
@@ -99,7 +100,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    widget.isEdit! ? sliderValue = 0.35 : sliderValue = 0.05;
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
     });
@@ -159,7 +160,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
               ) : Stack(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 20.0),
+                    margin: EdgeInsets.only(top: displayHeight(context) * 0.008),
                     child: CommonButtons.uploadVesselImage(
                         'Click here to Upload Vessel Image\n(png, jpeg files only)', context, () {
                       uploadImageFunction();
@@ -169,7 +170,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     }, blueColor),
                   ),
                   Positioned(
-                    top: displayHeight(context) * 0.033,
+                    top: displayHeight(context) * 0.016,
                       left: displayWidth(context) * 0.045,
                       child: uploadingImage(context)
                   )
@@ -190,7 +191,11 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   requestFocusNode: modelFocusNode,
                   obscureText: false,
                   onTap: () {},
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    setState(() {
+                      sliderValue = 0.10;
+                    });
+                  },
                   validator: (value) {
                     if (value!.trim().isEmpty) {
                       return 'Enter Vessel Name';
@@ -216,7 +221,11 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   requestFocusNode: builderNameFocusNode,
                   obscureText: false,
                   onTap: () {},
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    setState(() {
+                      sliderValue = 0.15;
+                    });
+                  },
                   validator: (value) {
                     if (value!.trim().isEmpty) {
                       return 'Enter Vessel Model';
@@ -242,7 +251,11 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   requestFocusNode: registrationNumberFocusNode,
                   obscureText: false,
                   onTap: () {},
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    setState(() {
+                      sliderValue = 0.20;
+                    });
+                  },
                   validator: (value) {
                     if (value!.trim().isEmpty) {
                       return 'Enter Vessel Builder Name';
@@ -309,7 +322,11 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   requestFocusNode: null,
                   obscureText: false,
                   onTap: () {},
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    setState(() {
+                      sliderValue = 0.25;
+                    });
+                  },
                   validator: (value) {
                     if (value!.trim().isEmpty) {
                       return 'Enter Vessel Weight';
@@ -382,7 +399,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   CommonTextField(
                       controller: fuelCapacityController,
                       focusNode: fuelCapacityFocusNode,
-                      labelText: 'Fuel Capacity(gal/kw)',
+                      labelText: 'Fuel Capacity(l/kw)',
                       hintText: '',
                       suffixText: null,
                       textInputAction: selectedEngineType == 'Hybrid'
@@ -397,7 +414,11 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                           : null,
                       obscureText: false,
                       onTap: () {},
-                      onChanged: (String value) {},
+                      onChanged: (String value) {
+                        setState(() {
+                          sliderValue = 0.30;
+                        });
+                      },
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return 'Enter Fuel Capacity';
@@ -432,7 +453,11 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                       requestFocusNode: null,
                       obscureText: false,
                       onTap: () {},
-                      onChanged: (String value) {},
+                      onChanged: (String value) {
+                        setState(() {
+                          sliderValue = 0.35;
+                        });
+                      },
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return 'Enter Battery Capacity';
@@ -572,11 +597,10 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 CustomLogger().logWithFile(Level.info, "FIIALLL: ${finalSelectedFiles} -> $page");
                 setState(() {
                   isImageSelected = false;
-                  widget.addVesselData!.imageURLs = '';
                   if(finalSelectedFiles.isNotEmpty){
+                    widget.addVesselData!.imageURLs = '';
                     finalSelectedFiles.clear();
                   }
-
                 });
                 Utils.customPrint(
                     'FIIALLL: ${finalSelectedFiles}');
@@ -697,7 +721,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
             currentIndex: curIndex,
             connectorThickness: 5,
             children: statuses,
-            value: 0.35,
+            value: sliderValue,
           ),
           SizedBox(
             height: 14,
