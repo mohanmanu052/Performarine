@@ -385,6 +385,10 @@ List<Vessels>? vesselList;
               Level.info, "value of trip list: ${value.data} -> $page");
           tripIdList!.clear();
           dateTimeList!.clear();
+          distanceList!.clear();
+timeList!.clear();
+children!.clear();
+childrenValue!.clear();
           for (int i = 0; i < value.data!.length; i++) {
             isTripsAreAvailable = false;
             tripIdList!.add(value.data![i].id!);
