@@ -474,7 +474,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                             onDragging: (int value,dynamic val,dynamic val1){
                                              val != 11 ? passengerValue = val.toInt() : val;
                                               print("On dragging: value: $value, val: $val, val1: $val1");
-                                              if(val == 11 && sliderMinVal == 11){
+                                              if(val == sliderMinVal){
                                                 if(mounted){
 
                                                   setState(() {
@@ -761,6 +761,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                                     showBluetoothListDialog(context);
                                                                   }
                                                                   else{
+
                                                                     if (await Permission
                                                                         .location
                                                                         .isPermanentlyDenied) {
@@ -774,12 +775,39 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                                             await openAppSettings();
                                                                           });
                                                                     } else {
+                                                                      print('kkkkkkk: ${await Permission
+                                                                          .location
+                                                                          .isGranted}');
+                                                                      print('kkkkkkk: ${await Permission
+                                                                          .location
+                                                                          .isDenied}');
+                                                                      print('kkkkkkk: ${await Permission
+                                                                          .location
+                                                                          .shouldShowRequestRationale}');
                                                                       if (await Permission
                                                                           .location
                                                                           .isGranted) {
                                                                         showBluetoothListDialog(context);
                                                                       } else {
-                                                                        await Permission.location.request();
+                                                                        if(!(await Permission
+                                                                            .location
+                                                                            .shouldShowRequestRationale))
+                                                                          {
+                                                                            Utils.showSnackBar(
+                                                                                context,
+                                                                                scaffoldKey: scaffoldKey,
+                                                                                message: 'Location permissions are denied without permissions we are unable to start the trip');
+                                                                            Future.delayed(
+                                                                                Duration(seconds: 2),
+                                                                                    () async {
+                                                                                  await openAppSettings();
+                                                                                });
+                                                                          }
+                                                                        else
+                                                                          {
+                                                                            await Permission.location.request();
+                                                                          }
+
                                                                       }
                                                                     }
                                                                   }
@@ -857,36 +885,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                               }
                                                             }
                                                           }
-
-                                                          /*bool
-                                                          isNDPermittedOne =
-                                                          await Permission
-                                                              .bluetoothConnect
-                                                              .isGranted;
-
-                                                          if (isNDPermittedOne) {
-                                                            dynamic isBluetoothEnable = Platform
-                                                                .isAndroid
-                                                                ? await blueIsOn()
-                                                                : await commonProvider
-                                                                .checkIfBluetoothIsEnabled(
-                                                                scaffoldKey,
-                                                                    () {
-                                                                  showBluetoothDialog(
-                                                                      context);
-                                                                });
-
-                                                            if (isBluetoothEnable) {
-                                                              showBluetoothListDialog(
-                                                                  context);
-                                                            }
-                                                            else{
-                                                              Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Bluetooth is disabled. Please enable.');
-                                                            }
-                                                          }
-                                                          else{
-                                                            Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Bluetooth permission is needed.');
-                                                          }*/
                                                         },
                                                         child: Text(
                                                           'LPR',
@@ -1049,8 +1047,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                           textEditingController
                                               .text) >
                                           11) {
-                                        sliderMinVal = 999;
-                                        sliderCount = '999';
+                                        sliderMinVal = numberOfPassengers.toDouble();
+                                        sliderCount = '$numberOfPassengers+';
                                         isSliderDisable = false;
                                       } else {
                                         sliderMinVal = 11;
@@ -1768,7 +1766,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       //textEditingController.text.isNotEmpty ? numberOfPassengers = int.parse(textEditingController.text) : numberOfPassengers = passengerValue;
                     if(textEditingController.text.isEmpty){
                       setState(() {
-                        numberOfPassengers = passengerValue;
+                        numberOfPassengers = 0;
                         sliderMinVal = 11;
                         sliderCount = '10+';
                       });
@@ -1778,8 +1776,17 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       }else if(int.parse(textEditingController.text) < 1000){
                         numberOfPassengers = int.parse(textEditingController.text);
 
-                        sliderMinVal = 999;
-                        sliderCount = '999';
+                        if(numberOfPassengers.toString().length == 3)
+                          {
+                            sliderMinVal = numberOfPassengers.toDouble() + 20;
+                          }
+                        else
+                          {
+                            sliderMinVal = numberOfPassengers.toDouble() + 4;
+                          }
+
+                        //sliderMinVal = 999;
+                        sliderCount = '$numberOfPassengers+';
                       }
                     //});
                   },
@@ -1789,8 +1796,17 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       setState(() {
                         numberOfPassengers =
                             int.parse(textEditingController.text);
-                        sliderMinVal = 999;
-                        sliderCount = '999';
+
+                        if(numberOfPassengers.toString().length == 3)
+                        {
+                          sliderMinVal = numberOfPassengers.toDouble() + 20;
+                        }
+                        else
+                        {
+                          sliderMinVal = numberOfPassengers.toDouble() + 4;
+                        }
+                        //sliderMinVal = 999;
+                        sliderCount = '$numberOfPassengers+';
                       });
                       FocusScope.of(context).requestFocus(new FocusNode());
                     }
@@ -1803,8 +1819,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     }  */
                     else if(value.length == 0){
                       setState(() {
-                         numberOfPassengers = passengerValue;
-                       //sliderMinVal = 11;
+                         numberOfPassengers = 0;
+                       sliderMinVal = 11;
                         sliderCount = '10+';
                       });
                     }
@@ -1834,7 +1850,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                             sliderMinVal = 11;
 ;
 
-                          numberOfPassengers = passengerValue;
+                          numberOfPassengers = 0;
                           
                           sliderCount = '10+';
                           isSliderDisable = false;
@@ -1842,11 +1858,18 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
                         } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
 
-                          sliderMinVal = 999;
-                          sliderCount = '999';
-                          isSliderDisable = false;
                           numberOfPassengers =
                               int.parse(textEditingController.text);
+
+                          if (numberOfPassengers.toString().length == 3) {
+                            sliderMinVal = numberOfPassengers.toDouble() + 20;
+                          } else {
+                            sliderMinVal = numberOfPassengers.toDouble() + 4;
+                          }
+                          //sliderMinVal = numberOfPassengers.toDouble();
+                          sliderCount = '$numberOfPassengers+';
+                          isSliderDisable = false;
+
                         } else if (textEditingController.text.isNotEmpty &&
                             int.parse(textEditingController.text) < 11) {
 
@@ -2010,10 +2033,10 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               Utils.customPrint(
                   'XXXXX@@@ ${await Permission.locationWhenInUse.shouldShowRequestRationale}');
 
-              if (await Permission.locationWhenInUse.isDenied ||
-                  await Permission.locationWhenInUse.isPermanentlyDenied) {
-                await openAppSettings();
-              }
+              // if (await Permission.locationWhenInUse.isDenied ||
+              //     await Permission.locationWhenInUse.isPermanentlyDenied) {
+              //   await openAppSettings();
+              // }
 
               showDialog(
                   context: scaffoldKey.currentContext!,
@@ -3770,7 +3793,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               child: StatefulBuilder(builder: (ctx, setDialogState) {
                 return Container(
                   width: displayWidth(context),
-                  height: displayHeight(context) * 0.5,
+                  height: displayHeight(context) * 0.6,
                   decoration: new BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.dark
                         ? Colors.black
@@ -3782,8 +3805,17 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
+
+                      SizedBox(
+                        height: displayHeight(context) * 0.03,
+                      ),
+
+                      Image.asset('assets/icons/web.png',
+                        width: displayWidth(context) * 0.2,
+                      ),
+
                       Padding(
-                        padding: EdgeInsets.only(top: 30),
+                        padding: EdgeInsets.only(top: 10),
                         child: Text(
                           "Available Devices",
                           style: TextStyle(
@@ -3858,46 +3890,15 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         width: displayWidth(context),
                         margin:
                         EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
+                          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                // FlutterBluePlus.instance.
-
-                                Navigator.pop(context);
-                                /*setState(() {
-                                  progress = 0.9;
-                                  lprSensorProgress = 0.0;
-                                  isStartButton = true;
-                                  bluetoothName = '';
-                                });*/
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: bluetoothCancelBtnBackColor,
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                                ),
-                                height: displayWidth(context) * 0.12,
-                                width: displayWidth(context) * 0.34,
-                                // color: HexColor(AppColors.introButtonColor),
-                                child: Center(
-                                  child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: bluetoothCancelBtnTxtColor),
-                                  ),
-                                ),
-                              ),
-                            ),
                             GestureDetector(
                               onTap: () {
                                 Utils.customPrint("Tapped on scan button");
 
                                 if (mounted) {
-                                  setState(() {
+                                  setDialogState(() {
                                     isScanningBluetooth = true;
                                   });
                                 }
@@ -3907,7 +3908,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
                                 if (mounted) {
                                   Future.delayed(Duration(seconds: 2), () {
-                                    setState(() {
+                                    setDialogState(() {
                                       isScanningBluetooth = false;
                                     });
                                   });
@@ -3935,17 +3936,48 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                 decoration: BoxDecoration(
                                   color: blueColor,
                                   borderRadius: BorderRadius.all(
-                                      Radius.circular(10)),
+                                      Radius.circular(8)),
                                 ),
-                                height: displayWidth(context) * 0.12,
-                                width: displayWidth(context) * 0.34,
+                                height: displayHeight(context) * 0.055,
+                                width : displayWidth(context) / 1.6,
                                 // color: HexColor(AppColors.introButtonColor),
                                 child: Center(
                                   child: Text(
-                                    "Scan",
+                                    "Scan for Devices",
                                     style: TextStyle(
                                         fontSize: 15,
                                         color: bluetoothConnectBtncolor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                // FlutterBluePlus.instance.
+
+                                FlutterBluePlus.instance.stopScan();
+
+                                setDialogState(() {
+                                  isScanningBluetooth = false;
+                                });
+                                Navigator.pop(context);
+
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                                ),
+                                height: displayHeight(context) * 0.055,
+                                width : displayWidth(context) / 1.6,
+                                // color: HexColor(AppColors.introButtonColor),
+                                child: Center(
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: blueColor),
                                   ),
                                 ),
                               ),

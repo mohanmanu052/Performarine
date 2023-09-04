@@ -630,7 +630,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.32,
+                  height: displayHeight(context) * 0.42,
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -641,6 +641,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       children: [
                         SizedBox(
                           height: displayHeight(context) * 0.02,
+                        ),
+                        Center(
+                          child: Image.asset('assets/icons/export_img.png',
+                          //height: displayHeight(context) * 0.2,
+                          width: displayWidth(context) * 0.18,),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 8),
@@ -653,95 +661,92 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   fontWeight: FontWeight.w600,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.038,
-                                  textAlign: TextAlign.center),
+                                  textAlign: TextAlign.center,
+                              fontFamily: inter),
                               SizedBox(
                                 height: displayHeight(context) * 0.015,
                               ),
-                              commonText(
-                                  context: context,
-                                  text:
-                                      'If you click on SignOut, you may loose local data which is not uploaded',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.grey,
-                                  textSize: displayWidth(context) * 0.032,
-                                  textAlign: TextAlign.center),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                child: commonText(
+                                    context: context,
+                                    text:
+                                        'Click Sync & Sign Out for not loosing local data which is not uploaded',
+                                    fontWeight: FontWeight.w400,
+                                    textColor: Colors.grey,
+                                    textSize: displayWidth(context) * 0.032,
+                                    textAlign: TextAlign.center,
+                                    fontFamily: inter),
+                              ),
                             ],
                           ),
                         ),
                         SizedBox(
-                          height: displayHeight(context) * 0.02,
+                          height: displayHeight(context) * 0.01,
                         ),
-                        Row(
+                        Column(
                           children: [
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.white
-                                            : Colors.grey)),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Sign Out', context,  Colors.grey.shade400,
-                                      () async {
-                                    Navigator.of(context).pop();
+                            Container(
+                              margin: EdgeInsets.only(
+                                top: 8.0,
+                              ),
+                              child: isSigningOut
+                                  ? Center(child: CircularProgressIndicator())
+                                  : Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Sync and Sign Out',
+                                    context,
+                                    blueColor, () async {
+                                  bool internet =
+                                  await Utils().check(scaffoldKey);
 
-                                    signOut();
-                                  },
-                                      displayWidth(context) * 0.4,
-                                      displayHeight(context) * 0.05,
-                                      Colors.grey.shade400,
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                      displayHeight(context) * 0.015,
-                                      Colors.grey.shade400,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                                  if (internet) {
+                                    setDialogState(() {
+                                      isSigningOut = true;
+                                    });
+
+                                    syncAndSignOut(false, context);
+                                  }
+                                },
+                                    displayWidth(context) / 1.6,
+                                    displayHeight(context) * 0.055,
+                                    primaryColor,
+                                    Colors.white,
+                                    displayHeight(context) * 0.018,
+                                    blueColor,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                             SizedBox(
                               width: 15.0,
                             ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: isSigningOut
-                                    ? Center(child: CircularProgressIndicator())
-                                    : Center(
-                                        child: CommonButtons.getAcceptButton(
-                                            'Sync and Sign Out',
-                                            context,
-                                            buttonBGColor, () async {
-                                          bool internet =
-                                              await Utils().check(scaffoldKey);
+                            Container(
+                              margin: EdgeInsets.only(
+                                top: 8.0,
+                              ),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  ),
+                              child: Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Sign Out', context,  Colors.transparent,
+                                    () async {
+                                  Navigator.of(context).pop();
 
-                                          if (internet) {
-                                            setDialogState(() {
-                                              isSigningOut = true;
-                                            });
-
-                                            syncAndSignOut(false, context);
-                                          }
-                                        },
-                                            displayWidth(context) * 0.4,
-                                            displayHeight(context) * 0.05,
-                                            primaryColor,
-                                            Colors.white,
-                                            displayHeight(context) * 0.015,
-                                            buttonBGColor,
-                                            '',
-                                            fontWeight: FontWeight.w500),
-                                      ),
+                                  signOut();
+                                },
+                                    displayWidth(context) / 1.6,
+                                    displayHeight(context) * 0.055,
+                                    primaryColor,
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.transparent,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                           ],
@@ -773,7 +778,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.32,
+                  height: displayHeight(context) * 0.42,
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -784,6 +789,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       children: [
                         SizedBox(
                           height: displayHeight(context) * 0.02,
+                        ),
+                        Center(
+                          child: Image.asset('assets/icons/export_img.png',
+                            //height: displayHeight(context) * 0.2,
+                            width: displayWidth(context) * 0.18,),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 8),
@@ -796,7 +809,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   fontWeight: FontWeight.w600,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.038,
-                                  textAlign: TextAlign.center),
+                                  textAlign: TextAlign.center,
+                                  fontFamily: inter),
                               SizedBox(
                                 height: displayHeight(context) * 0.015,
                               ),
@@ -812,7 +826,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               : commonText(
                                   context: context,
                                   text:
-                                      'If you click on sync, you may loose local data which is not uploaded',
+                                      'Click Upload & Sync for not loosing local data which is not uploaded',
                                   fontWeight: FontWeight.w400,
                                   textColor: Colors.grey,
                                   textSize: displayWidth(context) * 0.032,
@@ -821,112 +835,104 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                         ),
                         SizedBox(
-                          height: displayHeight(context) * 0.02,
+                          height: displayHeight(context) * 0.01,
                         ),
-                        Row(
+                        Column(
                           children: [
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.white
-                                            : Colors.grey)),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      isChangePassword
-                                          ? 'Change Password'
-                                      : 'Skip And Sync', context, Colors.grey.shade400,
-                                      () {
-                                        if(isChangePassword)
-                                          {
-                                            Navigator.of(context).pop();
-                                            Navigator.of(context).pop();
+                            Container(
+                              margin: EdgeInsets.only(
+                                top: 8.0,
+                              ),
+                              child: Center(
+                                child: isUploadStarted
+                                    ? Center(
+                                  child: Container(
+                                    // width: displayWidth(context) * 0.34,
+                                      child: Center(
+                                          child:
+                                          CircularProgressIndicator())),
+                                )
+                                    : CommonButtons.getAcceptButton(
+                                    isChangePassword
+                                        ? 'Upload & Change Password'
+                                        : 'Upload & Sync',
+                                    context,
+                                    blueColor, () async {
+                                  //  Navigator.of(context).pop();
 
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => ChangePassword(isChange: true,)),
-                                            );
-
-                                          }else
-                                            {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                    const SyncDataCloudToMobileScreen()),
-                                              );
-                                            }
-
-                                  },
-                                      displayWidth(context) * 0.4,
-                                      displayHeight(context) * 0.05,
-                                      Colors.grey.shade400,
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                      displayHeight(context) * 0.014,
-                                      Colors.grey.shade400,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                                  bool internet =
+                                  await Utils().check(scaffoldKey);
+                                  setState(() {
+                                    isSync = true;
+                                  });
+                                  if (internet) {
+                                    if (mounted) {
+                                      setDialogState(() {
+                                        isUploadStarted = true;
+                                      });
+                                    }
+                                    syncAndSignOut(isChangePassword, context);
+                                  }
+                                },
+                                    displayWidth(context) / 1.6,
+                                    displayHeight(context) * 0.055,
+                                    primaryColor,
+                                    Colors.white,
+                                    displayHeight(context) * 0.018,
+                                    blueColor,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                             SizedBox(
                               width: 15.0,
                             ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: isUploadStarted
-                                      ? Center(
-                                          child: Container(
-                                              // width: displayWidth(context) * 0.34,
-                                              child: Center(
-                                                  child:
-                                                      CircularProgressIndicator())),
-                                        )
-                                      : CommonButtons.getAcceptButton(
-                                      isChangePassword
-                                          ? 'Upload And Change'
-                                      : 'Upload And Sync',
-                                          context,
-                                      buttonBGColor, () async {
-                                          //  Navigator.of(context).pop();
+                            Container(
+                              margin: EdgeInsets.only(
+                                top: 8.0,
+                              ),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Center(
+                                child: CommonButtons.getAcceptButton(
+                                    isChangePassword
+                                        ? 'Skip & Change Password'
+                                    : 'Skip & Sync', context, Colors.transparent,
+                                    () {
+                                      if(isChangePassword)
+                                        {
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pop();
 
-                                          bool internet =
-                                              await Utils().check(scaffoldKey);
-                                          setState(() {
-                                            isSync = true;
-                                          });
-                                          if (internet) {
-                                            if (mounted) {
-                                              setDialogState(() {
-                                                isUploadStarted = true;
-                                              });
-                                            }
-                                            syncAndSignOut(isChangePassword, context);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => ChangePassword(isChange: true,)),
+                                          );
+
+                                        }else
+                                          {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                  const SyncDataCloudToMobileScreen()),
+                                            );
                                           }
-                                        },
-                                          displayWidth(context) * 0.4,
-                                          displayHeight(context) * 0.05,
-                                          primaryColor,
-                                          Colors.white,
-                                          displayHeight(context) * 0.014,
-                                          buttonBGColor,
-                                          '',
-                                          fontWeight: FontWeight.w500),
-                                ),
+
+                                },
+                                    displayWidth(context) / 1.6,
+                                    displayHeight(context) * 0.055,
+                                    Colors.transparent,
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.transparent,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                           ],
