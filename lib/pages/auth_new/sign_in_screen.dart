@@ -192,11 +192,16 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       SizedBox(height: displayHeight(context) * 0.02),
                       isGoogleSignInBtnClicked!
-                          ? Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                circularProgressColor),
-                          )) :
+                          ? Container(
+                            height: displayHeight(context) * 0.067,
+                            width: displayWidth(context) * 0.1,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    circularProgressColor),
+                              ),
+                            ),
+                          ) :
                       GestureDetector(
                         onTap: () async {
                           bool check =

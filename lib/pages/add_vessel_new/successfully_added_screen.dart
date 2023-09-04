@@ -75,7 +75,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            VesselSingleView(vessel: widget.data!)),
+                            VesselSingleView(vessel: widget.data!,isCalledFromSuccessScreen: true,)),
                   );
                 } else {
                   CustomLogger().logWithFile(Level.info, "User Navigating to VesselSingleView -> $page");
@@ -83,7 +83,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            VesselSingleView(vessel: widget.data!)),
+                            VesselSingleView(vessel: widget.data!,isCalledFromSuccessScreen: true,)),
                   );
                 }
               }),
@@ -123,7 +123,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
           title: commonText(
               context: context,
               text: widget.isEdit!
-                  ? 'Successfully Updated'
+                  ? 'Vessel Updated'
                   : 'Vessel Added',
               fontWeight: FontWeight.w700,
               textColor: Colors.black,

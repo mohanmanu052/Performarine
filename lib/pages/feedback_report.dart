@@ -308,8 +308,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
             context: context,
             fontSize: displayWidth(context) * 0.044,
             textColor: Colors.white,
-            buttonPrimaryColor: buttonBGColor,
-            borderColor: buttonBGColor,
+            buttonPrimaryColor: blueColor,
+            borderColor: blueColor,
             width: displayWidth(context),
             onTap: () async {
               if(formKey.currentState!.validate()){
