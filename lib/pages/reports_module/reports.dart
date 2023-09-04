@@ -2649,7 +2649,7 @@ childrenValue!.clear();
                             child: Text(
                               pickStartDate!,
                               style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                   fontFamily: inter),
                             ),
@@ -2695,7 +2695,7 @@ childrenValue!.clear();
                             child: Text(
                               pickEndDate!,
                               style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w400,
                                   fontFamily: inter),
                             ),
