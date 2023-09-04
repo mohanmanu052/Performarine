@@ -339,7 +339,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               ),
             ],
           ),
-          drawer: OldCustomDrawer(scaffoldKey: scaffoldKey,),
+          drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
           body: Stack(
             children: [
               SizedBox(
@@ -876,7 +876,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 iconColor: Colors.black,
                                 title: commonText(
                                     context: context,
-                                    text: 'Trip History',
+                                    text: 'TRIP HISTORY',
                                     fontWeight: FontWeight.w500,
                                     textColor: Colors.black,
                                     textSize: displayWidth(context) * 0.038,

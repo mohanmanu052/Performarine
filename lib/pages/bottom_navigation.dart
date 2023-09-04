@@ -14,6 +14,7 @@ import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/old_ui/old_custom_drawer.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
+import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/dashboard/dashboard.dart';
 import 'package:performarine/pages/reports/search_and_filters.dart';
 import 'package:performarine/pages/reports_module/reports.dart';
@@ -321,7 +322,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
         backgroundColor: backgroundColor,
         key: scaffoldKey,
         resizeToAvoidBottomInset: false,
-        drawer: OldCustomDrawer(scaffoldKey: scaffoldKey,),
+        drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
         appBar: AppBar(
           backgroundColor: backgroundColor,
           elevation: 0,

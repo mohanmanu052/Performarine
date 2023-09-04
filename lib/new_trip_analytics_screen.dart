@@ -700,7 +700,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                    children: [
                                      commonText(
                                        context: context,
-                                       text: 'Date of journey',
+                                       text: 'Date',
                                        fontWeight: FontWeight.w400,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.024,
