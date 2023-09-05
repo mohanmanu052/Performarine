@@ -598,7 +598,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 setState(() {
                   isImageSelected = false;
                   if(finalSelectedFiles.isNotEmpty){
-                    widget.addVesselData!.imageURLs = '';
+                    widget.addVesselData?.imageURLs = '';
                     finalSelectedFiles.clear();
                   }
                 });
