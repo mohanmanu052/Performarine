@@ -153,9 +153,9 @@ List<Vessels>? vesselList;
 
 
   setState(() {
-       builtYear=vessel.builtYear.toString()??'';
-  capacity=vessel.capacity??'';
-  registerNumber=vessel.regNumber??'';
+       builtYear=vessel.builtYear.toString()??'-';
+  capacity=vessel.capacity??'-';
+  registerNumber=vessel.regNumber??'-';
 
   });
 
@@ -178,7 +178,7 @@ List<Vessels>? vesselList;
 
   //Convertion of date time into year-month-day format
   String convertIntoYearMonthDayToShow(DateTime date) {
-    String dateString = DateFormat('MM-dd-yyyy').format(date);
+    String dateString = DateFormat('yyyy-MM-dd').format(date);
 
     Utils.customPrint(dateString);
     CustomLogger().logWithFile(
@@ -230,7 +230,7 @@ List<Vessels>? vesselList;
   String tripDate(String date) {
     String inputDate = date;
     DateTime dateTime = DateTime.parse(inputDate);
-    String formattedDate = DateFormat('MM-dd-yyyy').format(dateTime);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
     return formattedDate;
   }
 
@@ -770,7 +770,7 @@ childrenValue!.clear();
     String day = dateParts[0].padLeft(2, '0'); // '03'
     String month = dateParts[1].padLeft(2, '0'); // '03'
     String year = dateParts[2]; // '2023'
-    String formattedDate = '$day-$month-$year'; // '2023-03-03'
+    String formattedDate = '$year-$day-$month'; // '2023-03-03'
     return formattedDate;
   }
 
@@ -863,11 +863,14 @@ childrenValue!.clear();
                                   child: DropdownButtonFormField2<DropdownItem>(
                                     isExpanded: true,
                                     decoration: InputDecoration(
-                                      prefixIcon: Transform.scale(
+                                      prefixIcon: Container(
+width: 50,
+                                        height:displayHeight(context) * 0.02 ,
+                                     child: Transform.scale(
                                         scale: 0.5,
                                         child: Image.asset('assets/icons/vessels.png',
                                          height: displayHeight(context) * 0.02,),
-                                      ),
+                                      )),
                                       contentPadding:
                                       EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
 
@@ -918,7 +921,8 @@ childrenValue!.clear();
                                     ),
                                     hint: Container(
                                       alignment: Alignment.centerLeft,
-                                                                                                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      padding:EdgeInsets.only(left: 8),
+                                                                                                                     
 
                                       child: Text(
                                         'Select Vessel',
@@ -949,7 +953,7 @@ childrenValue!.clear();
                                           DropdownItem>(
                                         value: item,
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      padding:EdgeInsets.only(left: 8),
                                           child: Text(
                                             item.name!,
                                             style: TextStyle(
@@ -1078,10 +1082,14 @@ childrenValue!.clear();
                                     
                                     isExpanded: true,
                                     decoration: InputDecoration(
-                                      prefixIcon: Transform.scale(
+                                      prefixIcon: Container(
+                                        height:displayHeight(context) * 0.02 ,
+                                         width:50 ,
+
+                                    child:  Transform.scale(
                                         scale: 0.5,
                                         child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
-                                      ),
+                                      )),
                                       contentPadding:
                                       EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
                                       focusedBorder: OutlineInputBorder(
@@ -1106,7 +1114,10 @@ childrenValue!.clear();
                                       errorStyle: TextStyle(
                                           fontFamily: inter,
                                           fontSize:
-                                          displayWidth(context) * 0.025),
+                                          displayWidth(context) * 0.034,
+                                          
+                                          
+                                          ),
                                       focusedErrorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
@@ -1131,7 +1142,7 @@ childrenValue!.clear();
                                     ),
                                     hint: Container(
                                       alignment: Alignment.centerLeft,
-                                          padding: const EdgeInsets.symmetric(horizontal: 11),
+                                      padding:EdgeInsets.only(left: 8),
 
                                       child: Text(
                                         
@@ -1146,10 +1157,13 @@ childrenValue!.clear();
                                                 ? Colors.black54
                                                 : Colors.white
                                                 : Colors.black54,
-                                            fontSize:orientation==Orientation.portrait?
+                                            fontSize:
+                                    
+                                            orientation==Orientation.portrait?
                                             displayWidth(context) *
                                                 0.032:displayWidth(context) *
-                                                0.022,
+                                                0.022
+                                            ,
                                     
                                             fontFamily: outfit,
                                             fontWeight: FontWeight.w400),
@@ -1161,7 +1175,7 @@ childrenValue!.clear();
                                       return DropdownMenuItem<String>(
                                         value: item,
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 11),
+                                      padding:EdgeInsets.only(left: 8),
                                           child: Text(
                                             item,
                                             style: TextStyle(
@@ -1754,11 +1768,11 @@ childrenValue!.clear();
 
 
           Container(
-            margin: EdgeInsets.only(left: 4),
+            margin: EdgeInsets.only(left: 8),
             height: orentation==Orientation.portrait?displayHeight(context) * 0.1:displayHeight(context) * 0.2,
             width: displayWidth(context) * 0.25,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(25),
                       image: imageUrl!=null&&imageUrl!.isNotEmpty?
                       DecorationImage(  
                         fit: BoxFit.cover,
@@ -1768,7 +1782,7 @@ childrenValue!.clear();
                           File(imageUrl??''))):                     
                             DecorationImage(
                             fit: BoxFit.cover,
-                            image:AssetImage("assets/images/reports-boat.png",)
+                            image:AssetImage("assets/images/vessel_default_img.png",)
 
 
                       
@@ -1794,13 +1808,19 @@ childrenValue!.clear();
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                "$selectedVesselName",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: poppins),
+              Container(
+                width: displayWidth(context)/2,
+                child: Text(
+                                    "$selectedVesselName",
+
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: poppins),
+                ),
               ),
               SizedBox(
                 height: displayWidth(context) * 0.013,
@@ -1809,12 +1829,13 @@ childrenValue!.clear();
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
+                    margin: EdgeInsets.only(left: 4),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          capacity??'',
+                          capacity??'-',
 
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
@@ -1845,7 +1866,7 @@ childrenValue!.clear();
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          builtYear??'',
+                          builtYear??'-',
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontFamily: inter,
@@ -1875,7 +1896,7 @@ childrenValue!.clear();
                       crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        registerNumber??"",
+                      registerNumber!.isEmpty?'-' : registerNumber!,
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontFamily: inter,
@@ -1935,7 +1956,7 @@ childrenValue!.clear();
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Avg Speed',
+                child: Text('Avg Speed (KT/h)',
                     style: TextStyle(color: tableHeaderColor),
                     textAlign: TextAlign.center),
               ),
@@ -1943,7 +1964,7 @@ childrenValue!.clear();
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Fuel Usage',
+                child: Text('Fuel Usage (L)',
                     style: TextStyle(color: tableHeaderColor),
                     textAlign: TextAlign.center),
               ),
@@ -1951,7 +1972,7 @@ childrenValue!.clear();
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Power Usage',
+                child: Text('Power Usage (W)',
                     style: TextStyle(color: tableHeaderColor),
                     textAlign: TextAlign.center),
               ),
@@ -1976,15 +1997,15 @@ childrenValue!.clear();
                           textAlign: TextAlign.center))),
                   DataCell(Align(
                       alignment: Alignment.center,
-                      child: Text('${person['avgSpeed']!} kt/h',
+                      child: Text('${person['avgSpeed']!}',
                           textAlign: TextAlign.center))),
                   DataCell(Align(
                       alignment: Alignment.center,
-                      child: Text('${person['fuelUsage']} ltr',
+                      child: Text('${person['fuelUsage']}',
                           textAlign: TextAlign.center))),
                   DataCell(Align(
                       alignment: Alignment.center,
-                      child: Text('${person['powerUsage']} w',
+                      child: Text('${person['powerUsage']}',
                           textAlign: TextAlign.center))),
                 ])),
             ...finalData.map((e) => DataRow(cells: [
@@ -2244,7 +2265,7 @@ childrenValue!.clear();
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('KT',
+                  Text('KT/h',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2319,7 +2340,7 @@ childrenValue!.clear();
               ),
               plotBands: <PlotBand>[
                 PlotBand(
-                  text: 'avg ${avgSpeed}KT',
+                  text: 'avg ${avgSpeed}KT/h',
                   isVisible: true,
                   start: avgSpeed,
                   end: avgSpeed,
@@ -2384,7 +2405,7 @@ childrenValue!.clear();
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('Gal',
+                  Text('L',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2439,10 +2460,10 @@ childrenValue!.clear();
                 fontFamily: poppins,
               )),
           primaryYAxis: NumericAxis(
-              labelFormat: '{value} gal',
+              labelFormat: '{value} L',
               axisLine: AxisLine(width: 2),
               title: AxisTitle(
-                  text: 'Galance',
+                  text: 'Liters',
                   textStyle: TextStyle(
                     color: Colors.black,
                     fontSize: displayWidth(context) * 0.028,
@@ -2457,7 +2478,7 @@ childrenValue!.clear();
               ),
               plotBands: [
                 PlotBand(
-                    text: 'avg ${avgFuelConsumption}gal',
+                    text: 'avg ${avgFuelConsumption}L',
                     isVisible: true,
                     start: avgFuelConsumption,
                     end: avgFuelConsumption,
@@ -3018,7 +3039,7 @@ childrenValue!.clear();
                                   value: childrenValue![index],
                                   imageUrl: imageUrl,
                                   dateTime: dateTimeList![index],
-                                  distance: '${distanceList![index]} nm',
+                                  distance: '${distanceList![index]} NM',
                                   time: timeList![index],
                                   onChanged: (value) {
                         isSHowGraph = false;
