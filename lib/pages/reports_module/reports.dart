@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'dart:typed_data';
 
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/common_size_helper.dart';
@@ -32,7 +33,8 @@ import '../home_page.dart';
 import '../trip_analytics.dart';
 
 class ReportsModule extends StatefulWidget {
-  const ReportsModule({super.key});
+   ReportsModule({super.key,this.onScreenShotCaptureCallback});
+  VoidCallback? onScreenShotCaptureCallback;
 
   @override
   State<ReportsModule> createState() => _ReportsModuleState();
@@ -794,964 +796,930 @@ childrenValue!.clear();
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
 
-    return Screenshot(
-      controller: controller,
-      child: Scaffold(
-        backgroundColor: backgroundColor,
-        key: scaffoldKey,
-        body:         OrientationBuilder(
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      key: scaffoldKey,
+      body:         OrientationBuilder(
   builder: (context, orientation) {
     return 
-        
+      
 
-        
-        
-         SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: reportFilterBackColor),
-                  child: Theme(
-                    data: Theme.of(context)
-                        .copyWith(dividerColor: Colors.transparent),
-                    child: ExpansionTile(
-                      key: new Key(_key.toString()),
-                      maintainState: true,
-                      initiallyExpanded: isExpansionCollapse!,
-                      onExpansionChanged: (isExpanded) {
-                        setState(() {
-                          Utils.customPrint(
-                              "isExpansionCollapse : $isExpanded");
-                          CustomLogger().logWithFile(Level.info,
-                              "isExpansionCollapse : $isExpanded -> $page");
+      
+      
+       SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: reportFilterBackColor),
+                child: Theme(
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                    key: new Key(_key.toString()),
+                    maintainState: true,
+                    initiallyExpanded: isExpansionCollapse!,
+                    onExpansionChanged: (isExpanded) {
+                      setState(() {
+                        Utils.customPrint(
+                            "isExpansionCollapse : $isExpanded");
+                        CustomLogger().logWithFile(Level.info,
+                            "isExpansionCollapse : $isExpanded -> $page");
 
-                          isExpansionCollapse = !isExpansionCollapse!;
-                          isExpandedTile = !isExpandedTile;
-                        });
-                      },
-                      collapsedBackgroundColor: dateBackgroundColor,
-                      title: Text(
-                        "Search & Filters",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.043:displayWidth(context) * 0.022,
-                            fontFamily: outfit),
-                      ),
-                      trailing: isExpandedTile
-                          ? Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.black,
-                            )
-                          : Icon(
-                              Icons.keyboard_arrow_up,
-                              color: Colors.black,
-                            ),
-                      children: [
-                        Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              isVesselDataLoading!
-                                  ? Container(
-                                      width: displayWidth(context) * 0.8,
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButtonFormField2<DropdownItem>(
-                                    isExpanded: true,
-                                    decoration: InputDecoration(
-                                      prefixIcon: Container(
-width: 50,
-                                        height:displayHeight(context) * 0.02 ,
-                                     child: Transform.scale(
-                                        scale: 0.5,
-                                        child: Image.asset('assets/icons/vessels.png',
-                                         height: displayHeight(context) * 0.02,),
-                                      )),
-                                      contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
-
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      errorStyle: TextStyle(
-                                          fontFamily: inter,
-                                          fontSize:
-                                          displayWidth(context) * 0.025),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      fillColor: reportDropdownColor,
-                                      filled: true,
-                                      hintText: "Filter By",
-                                      hintStyle: TextStyle(
-                                          color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                              ? "Filter By" == 'User SubRole'
-                                              ? Colors.black54
-                                              : Colors.white
-                                              : Colors.black,
-                                          fontSize:
-                                          displayWidth(context) * 0.034,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w300),
-                                    ),
-                                    hint: Container(
-                                      alignment: Alignment.centerLeft,
-                                      padding:EdgeInsets.only(left: 8),
-                                                                                                                     
-
-                                      child: Text(
-                                        'Select Vessel',
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .brightness ==
-                                                Brightness.dark
-                                                ? "Select Vessel" ==
-                                                'User SubRole'
-                                                ? Colors.black54
-                                                : Colors.white
-                                                : Colors.black54,
-                                            fontSize:
-                                    
-                                            orientation==Orientation.portrait?
-                                            displayWidth(context) *
-                                                0.032:displayWidth(context) *
-                                                0.022
-                                            ,
-                                            fontFamily: outfit,
-                                            fontWeight: FontWeight.w400),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    value: selectedValue,
-                                    items: vesselData.map((item) {
-                                      return DropdownMenuItem<
-                                          DropdownItem>(
-                                        value: item,
-                                        child: Padding(
-                                      padding:EdgeInsets.only(left: 8),
-                                          child: Text(
-                                            item.name!,
-                                            style: TextStyle(
-
-                                           fontSize:   orientation==Orientation.portrait?
-                                          displayWidth(context) *
-                                              0.032:displayWidth(context) *
-                                              0.022,
-                                                 
-                                                color: Theme.of(context)
-                                                    .brightness ==
-                                                    Brightness.dark
-                                                    ? "Select Vessel" ==
-                                                    'User SubRole'
-                                                    ? Colors.black
-                                                    : Colors.white
-                                                    : Colors.black,
-                                                fontWeight:
-                                                FontWeight.w500),
-                                            overflow:
-                                            TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return 'Select Vessel';
-                                      }
-                                      return null;
-                                    },
-                                    onChanged: (item) {
-                                      getVesselDetails(item?.id??"");
-                                      Utils.customPrint(
-                                          "id is: ${item?.id} ");
-                                      CustomLogger().logWithFile(
-                                          Level.info,
-                                          "id is: ${item?.id}-> $page");
-
-                                      parentValue = false;
-                                      selectedVessel = item!.id;
-                                      selectedVesselName = item.name;
-                                      if (mounted) {
-                                        setState(() {
-                                          isTripIdListLoading = false;
-                                          isSHowGraph = false;
-                                          avgSpeed = null;
-                                          avgDuration = null;
-                                          avgFuelConsumption = null;
-                                          avgPower = null;
-                                          triSpeedList.clear();
-                                          tripList.clear();
-                                          duration1 = null;
-                                          avgSpeed1 = null;
-                                          fuelUsage = null;
-                                          powerUsage = null;
-                                          finalData.clear();
-                                          durationGraphData.clear();
-
-                                          durationColumnSeriesData
-                                              .clear();
-                                          avgSpeedColumnSeriesData
-                                              .clear();
-                                          fuelUsageColumnSeriesData
-                                              .clear();
-                                          powerUsageColumnSeriesData
-                                              .clear();
-                                          selectedTripIdList!.clear();
-                                          selectedTripLabelList!.clear();
-                                        });
-                                      }
-
-                                      dateTimeList!.clear();
-                                      children!.clear();
-                                      getTripListData(item.id!);
-                                    },
-                                    buttonStyleData:  ButtonStyleData(
-                                      padding: EdgeInsets.only(right: 0),
-                                    ),
-                                    iconStyleData:  IconStyleData(
-                                      icon: Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        color: Colors.black,
-                                      ),
-                                      iconSize: displayHeight(context) * 0.035,
-                                    ),
-                                    dropdownStyleData: DropdownStyleData(
-                                      maxHeight: displayHeight(context) * 0.25,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(14),
-                                        // color: backgroundColor,
-                                      ),
-                                      offset: const Offset(0, 0),
-                                      scrollbarTheme: ScrollbarThemeData(
-                                        radius: const Radius.circular(20),
-                                        thickness: MaterialStateProperty.all<double>(6),
-                                        thumbVisibility: MaterialStateProperty.all<bool>(true),
-                                      ),
-                                    ),
-                                    menuItemStyleData: MenuItemStyleData(
-                                      padding: EdgeInsets.symmetric(horizontal: 0),
-                                    ),
-                                  ),
-                                ),
-                                    )
-                                  : Container(
-                                      height: displayHeight(context) * 0.1,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  circularProgressColor),
-                                        ),
-                                      ),
-                                    ),
-                              SizedBox(
-                                height:orientation==Orientation.portrait?
-                                
-                                 displayHeight(context) * 0.018:displayHeight(context) * 0.050,
-                              ),
-                              Container(
-                                width: displayWidth(context) * 0.8,
-                                child: DropdownButtonHideUnderline(
-                                  
-                                  child: DropdownButtonFormField2<String>(
-                                    
-                                    isExpanded: true,
-                                    decoration: InputDecoration(
-                                      prefixIcon: Container(
-                                        height:displayHeight(context) * 0.02 ,
-                                         width:50 ,
-
-                                    child:  Transform.scale(
-                                        scale: 0.5,
-                                        child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
-                                      )),
-                                      contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      errorStyle: TextStyle(
-                                          fontFamily: inter,
-                                          fontSize:
-                                          displayWidth(context) * 0.034,
-                                          
-                                          
-                                          ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      fillColor: reportDropdownColor,
-                                      filled: true,
-                                      //hintText: "Filter By",
-                                      hintStyle: TextStyle(
-                                          color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                              ? "Filter By" == 'User SubRole'
-                                              ? Colors.black54
-                                              : Colors.white
-                                              : Colors.black,
-                                          fontSize:orientation==
-                                      Orientation.portrait?    displayWidth(context) * 0.034:displayWidth(context) * 0.034,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w300),
-                                    ),
-                                    hint: Container(
-                                      alignment: Alignment.centerLeft,
-                                      padding:EdgeInsets.only(left: 8),
-
-                                      child: Text(
-                                        
-                                        'Filter By',
-                                      
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .brightness ==
-                                                Brightness.dark
-                                                ? "Filter By" ==
-                                                'User SubRole'
-                                                ? Colors.black54
-                                                : Colors.white
-                                                : Colors.black54,
-                                            fontSize:
-                                    
-                                            orientation==Orientation.portrait?
-                                            displayWidth(context) *
-                                                0.032:displayWidth(context) *
-                                                0.022
-                                            ,
-                                    
-                                            fontFamily: outfit,
-                                            fontWeight: FontWeight.w400),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    value: selectedFilter,
-                                    items: filters.map((item) {
-                                      return DropdownMenuItem<String>(
-                                        value: item,
-                                        child: Padding(
-                                      padding:EdgeInsets.only(left: 8),
-                                          child: Text(
-                                            item,
-                                            style: TextStyle(
-                                                                                         fontSize:   orientation==Orientation.portrait?
-                                          displayWidth(context) *
-                                              0.032:displayWidth(context) *
-                                              0.022,
-
-                                                // fontSize: displayWidth(context) *
-                                                //     0.0346,
-                                                color: Theme.of(context)
-                                                    .brightness ==
-                                                    Brightness.dark
-                                                    ? "Filter by" ==
-                                                    'User SubRole'
-                                                    ? Colors.black
-                                                    : Colors.white
-                                                    : Colors.black,
-                                                fontWeight: FontWeight.w500),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return 'Select Filters';
-                                      }
-                                      return null;
-                                    },
-                                    onChanged: (item) {
-                                      if (item == "Filter by Date") {
-                                        setState(() {
-                                          selectedCaseType = 1;
-                                          isSHowGraph = false;
-                                          Utils.customPrint(
-                                              "selectedCaseType: $selectedCaseType ");
-                                          CustomLogger().logWithFile(Level.info,
-                                              "selectedCaseType: $selectedCaseType-> $page");
-                                          selectedTripsAndDateString =
-                                          "Date Range";
-                                        });
-                                      } else if (item == "Filter by Trips") {
-                                        setState(() {
-                                          selectedCaseType = 2;
-                                          selectedTripsAndDateDetails = "";
-                                          isSHowGraph = false;
-                                          Utils.customPrint(
-                                              "selectedCaseType: $selectedCaseType ");
-                                          CustomLogger().logWithFile(Level.info,
-                                              "selectedCaseType: $selectedCaseType-> $page");
-                                          selectedTripsAndDateString =
-                                          "Selected Trips";
-                                        });
-                                      }
-                                    },
-                                    buttonStyleData:  ButtonStyleData(
-                                      padding: EdgeInsets.only(right: 0),
-                                    ),
-                                    iconStyleData:  IconStyleData(
-                                      icon: Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        color: Colors.black,
-                                      ),
-                                      iconSize: displayHeight(context) * 0.035,
-                                    ),
-                                    dropdownStyleData: DropdownStyleData(
-                                      maxHeight: displayHeight(context) * 0.25,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(14),
-                                        // color: backgroundColor,
-                                      ),
-                                      offset: const Offset(0, 0),
-                                      scrollbarTheme: ScrollbarThemeData(
-                                        radius: const Radius.circular(20),
-                                        thickness: MaterialStateProperty.all<double>(6),
-                                        thumbVisibility: MaterialStateProperty.all<bool>(true),
-                                      ),
-                                    ),
-                                    menuItemStyleData: MenuItemStyleData(
-                                      padding: EdgeInsets.symmetric(horizontal: 0),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: displayWidth(context) * 0.04,
-                        ),
-                        selectedCaseType == 0
-                            ? Container()
-                            : selectedCaseType == 1
-                                ? filterByDate(context,orientation)!
-                                : filterByTrip(context,orientation)!,
-                        SizedBox(
-                          height: displayWidth(context) * 0.04,
-                        ),
-                        isBtnClick ?? false
-                            ? Container(
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color: circularProgressColor,
-                                  ),
-                                ),
-                              )
-                            : Column(
-                                children: [
-                                  CommonButtons.getAcceptButton(
-                                    "Generate Report",
-                                    
-                                    context,
-                                    blueColor,
-
-                                    () {
-                                      if (_formKey.currentState!.validate()) {
-                                        setState(() {
-                                          isSHowGraph = false;
-                                          isBtnClick = true;
-                                          isExpansionCollapse = false;
-                                          isExpandedTile = true;
-                                          avgSpeed = null;
-                                          avgDuration = null;
-                                          avgFuelConsumption = null;
-                                          avgPower = null;
-                                          triSpeedList.clear();
-                                          tripList.clear();
-                                          duration1 = null;
-                                          avgSpeed1 = null;
-                                          fuelUsage = null;
-                                          powerUsage = null;
-                                          finalData.clear();
-                                          durationGraphData.clear();
-
-                                          durationColumnSeriesData.clear();
-                                          avgSpeedColumnSeriesData.clear();
-                                          fuelUsageColumnSeriesData.clear();
-                                          powerUsageColumnSeriesData.clear();
-                                        });
-
-                                        // _collapseExpansionTile();
-                                        String? startDate = "";
-                                        String? endDate = "";
-                                        String? startDateToDispaly = "";
-                                        String? endDateToDispaly = "";
-                                        totalDuration = 0;
-                                        totalSpeed = 0;
-                                        totalFuelConsumption = 0;
-                                        totalAvgPower = 0;
-
-                                        if (selectedCaseType == 1) {
-                                          if (focusedDayString!.isNotEmpty ||
-                                              lastFocusedDayString!
-                                                  .isNotEmpty) {
-                                            startDate = convertIntoYearMonthDay(
-                                                selectedDateForStartDate);
-                                            endDate = convertIntoYearMonthDay(
-                                                selectedDateForEndDate);
-                                            startDateToDispaly =
-                                                convertIntoYearMonthDayToShow(
-                                                    selectedDateForStartDate);
-                                            endDateToDispaly =
-                                                convertIntoYearMonthDayToShow(
-                                                    selectedDateForEndDate);
-                                            selectedTripsAndDateDetails =
-                                                "$startDateToDispaly to $endDateToDispaly";
-                                          }
-
-                                          if ((selectedStartDateFromCal !=
-                                                      null &&
-                                                  selectedEndDateFromCal !=
-                                                      null) &&
-                                              selectedDateForEndDate!.isBefore(
-                                                  selectedDateForStartDate)) {
-                                            isBtnClick = false;
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                    'End date ($endDate) should be greater than start date($startDate)',
-                                                duration: 2);
-                                            return;
-                                          }
-                                          if ((isSelectedStartDay! &&
-                                              isSelectedEndDay!)) {
-                                            getReportsData(selectedCaseType!,
-                                                startDate: startDate,
-                                                endDate: endDate,
-                                                vesselID: selectedVessel);
-                                          } else if (!isSelectedStartDay!) {
-                                            setState(() {
-                                              isBtnClick = false;
-                                            });
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                    'Please select the start date',
-                                                duration: 2);
-                                          } else if (!isSelectedEndDay!) {
-                                            setState(() {
-                                              isBtnClick = false;
-                                            });
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                    'Please select the end date',
-                                                duration: 2);
-                                          }
-                                        } else if (selectedCaseType == 2) {
-                                          if (selectedTripIdList?.isNotEmpty ??
-                                              false) {
-                                            selectedTripLabelList!.sort((a, b) {
-                                              int numberA =
-                                                  int.parse(a.split(" ")[1]);
-                                              int numberB =
-                                                  int.parse(b.split(" ")[1]);
-                                              return numberA.compareTo(numberB);
-                                            });
-                                            getReportsData(selectedCaseType!,
-                                                selectedTripListID:
-                                                    selectedTripIdList);
-                                          } else {
-                                            setState(() {
-                                              isBtnClick = false;
-                                            });
-                                            if (selectedTripIdList?.isEmpty ??
-                                                false) {
-                                              Utils.showSnackBar(context,
-                                                  scaffoldKey: scaffoldKey,
-                                                  message:
-                                                      'Please select the Trip Id',
-                                                  duration: 2);
-                                            }
-                                          }
-                                        }
-                                      }
-                                    },
-
-                                 orientation==Orientation.portrait?   displayWidth(context) * 0.8:displayWidth(context) * 0.4,
-                                   orientation==Orientation.portrait? displayHeight(context) * 0.065:displayHeight(context) * 0.090,
-                                    Colors.grey.shade400,
-                                    Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.white,
-                                    displayHeight(context) * 0.021,
-                                    blueColor,
-                                    '',
-                                  ),
-                                  !isSHowGraph!
-                                      ? Padding(
-                                          padding: EdgeInsets.only(
-                                            top: displayWidth(context) * 0.01,
-                                          ),
-                                          child: GestureDetector(
-                                              onTap: () async {
-                                                final image =
-                                                    await controller.capture();
-
-                                                Utils.customPrint(
-                                                    "Image is: ${image.toString()}");
-                                                CustomLogger().logWithFile(
-                                                    Level.info,
-                                                    "User navigating to user feedback screen -> $page");
-
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            FeedbackReport(
-                                                              imagePath: image
-                                                                  .toString(),
-                                                              uIntList: image,
-                                                            )));
-                                              },
-                                              child: UserFeedback()
-                                                  .getUserFeedback(context)),
-                                        )
-                                      : Container(),
-                                ],
-                              ),
-                        SizedBox(
-                          height: displayWidth(context) * 0.04,
-                        )
-                      ],
+                        isExpansionCollapse = !isExpansionCollapse!;
+                        isExpandedTile = !isExpandedTile;
+                      });
+                    },
+                    collapsedBackgroundColor: dateBackgroundColor,
+                    title: Text(
+                      "Search & Filters",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.043:displayWidth(context) * 0.022,
+                          fontFamily: outfit),
                     ),
-                  ),
-                ),
-                !isSHowGraph!
-                    ? Container()
-                    : isReportDataLoading!
-                        ? Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(
-                                  left: displayWidth(context) * 0.03,
-                                  right: displayWidth(context) * 0.03,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      height: displayWidth(context) * 0.055,
+                    trailing: isExpandedTile
+                        ? Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Colors.black,
+                          )
+                        : Icon(
+                            Icons.keyboard_arrow_up,
+                            color: Colors.black,
+                          ),
+                    children: [
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            isVesselDataLoading!
+                                ? Container(
+                                    width: displayWidth(context) * 0.8,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButtonFormField2<DropdownItem>(
+                                  isExpanded: true,
+                                  decoration: InputDecoration(
+                                    prefixIcon: Container(
+width: 50,
+                                      height:displayHeight(context) * 0.02 ,
+                                   child: Transform.scale(
+                                      scale: 0.5,
+                                      child: Image.asset('assets/icons/vessels.png',
+                                       height: displayHeight(context) * 0.02,),
+                                    )),
+                                    contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
+
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.red.shade300
+                                                .withOpacity(0.7)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    errorStyle: TextStyle(
+                                        fontFamily: inter,
+                                        fontSize:
+                                        displayWidth(context) * 0.025),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.red.shade300
+                                                .withOpacity(0.7)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    fillColor: reportDropdownColor,
+                                    filled: true,
+                                    hintText: "Filter By",
+                                    hintStyle: TextStyle(
+                                        color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                            ? "Filter By" == 'User SubRole'
+                                            ? Colors.black54
+                                            : Colors.white
+                                            : Colors.black,
+                                        fontSize:
+                                        displayWidth(context) * 0.034,
+                                        fontFamily: outfit,
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                  hint: Container(
+                                    alignment: Alignment.centerLeft,
+                                    padding:EdgeInsets.only(left: 8),
+                                                                                                                   
+
+                                    child: Text(
+                                      'Select Vessel',
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .brightness ==
+                                              Brightness.dark
+                                              ? "Select Vessel" ==
+                                              'User SubRole'
+                                              ? Colors.black54
+                                              : Colors.white
+                                              : Colors.black54,
+                                          fontSize:
+                                  
+                                          orientation==Orientation.portrait?
+                                          displayWidth(context) *
+                                              0.032:displayWidth(context) *
+                                              0.022
+                                          ,
+                                          fontFamily: outfit,
+                                          fontWeight: FontWeight.w400),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    vesselDetails(context,orientation),
-                                    SizedBox(
-                                      height: displayWidth(context) * 0.04,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "$selectedTripsAndDateString",
+                                  ),
+                                  value: selectedValue,
+                                  items: vesselData.map((item) {
+                                    return DropdownMenuItem<
+                                        DropdownItem>(
+                                      value: item,
+                                      child: Padding(
+                                    padding:EdgeInsets.only(left: 8),
+                                        child: Text(
+                                          item.name!,
                                           style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: outfit),
+
+                                         fontSize:   orientation==Orientation.portrait?
+                                        displayWidth(context) *
+                                            0.032:displayWidth(context) *
+                                            0.022,
+                                               
+                                              color: Theme.of(context)
+                                                  .brightness ==
+                                                  Brightness.dark
+                                                  ? "Select Vessel" ==
+                                                  'User SubRole'
+                                                  ? Colors.black
+                                                  : Colors.white
+                                                  : Colors.black,
+                                              fontWeight:
+                                              FontWeight.w500),
+                                          overflow:
+                                          TextOverflow.ellipsis,
                                         ),
-                                        SizedBox(
-                                          width: displayWidth(context) * 0.05,
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            selectedCaseType == 1
-                                                ? ": ${selectedTripsAndDateDetails}"
-                                                : ":  ${selectedTripLabelList!.join(', ')}",
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                                fontFamily: inter),
-                                          ),
-                                        ),
-                                      ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Select Vessel';
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (item) {
+                                    getVesselDetails(item?.id??"");
+                                    Utils.customPrint(
+                                        "id is: ${item?.id} ");
+                                    CustomLogger().logWithFile(
+                                        Level.info,
+                                        "id is: ${item?.id}-> $page");
+
+                                    parentValue = false;
+                                    selectedVessel = item!.id;
+                                    selectedVesselName = item.name;
+                                    if (mounted) {
+                                      setState(() {
+                                        isTripIdListLoading = false;
+                                        isSHowGraph = false;
+                                        avgSpeed = null;
+                                        avgDuration = null;
+                                        avgFuelConsumption = null;
+                                        avgPower = null;
+                                        triSpeedList.clear();
+                                        tripList.clear();
+                                        duration1 = null;
+                                        avgSpeed1 = null;
+                                        fuelUsage = null;
+                                        powerUsage = null;
+                                        finalData.clear();
+                                        durationGraphData.clear();
+
+                                        durationColumnSeriesData
+                                            .clear();
+                                        avgSpeedColumnSeriesData
+                                            .clear();
+                                        fuelUsageColumnSeriesData
+                                            .clear();
+                                        powerUsageColumnSeriesData
+                                            .clear();
+                                        selectedTripIdList!.clear();
+                                        selectedTripLabelList!.clear();
+                                      });
+                                    }
+
+                                    dateTimeList!.clear();
+                                    children!.clear();
+                                    getTripListData(item.id!);
+                                  },
+                                  buttonStyleData:  ButtonStyleData(
+                                    padding: EdgeInsets.only(right: 0),
+                                  ),
+                                  iconStyleData:  IconStyleData(
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      color: Colors.black,
                                     ),
-                                    SizedBox(
-                                      height: displayWidth(context) * 0.06,
+                                    iconSize: displayHeight(context) * 0.035,
+                                  ),
+                                  dropdownStyleData: DropdownStyleData(
+                                    maxHeight: displayHeight(context) * 0.25,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      // color: backgroundColor,
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              selectedButton = 'trip duration';
-                                              tripDurationButtonColor = true;
-                                              avgSpeedButtonColor = false;
-                                              fuelUsageButtonColor = false;
-                                              powerUsageButtonColor = false;
-                                            });
-                                          },
-                                          child: Container(
-                                            width: displayWidth(context) * 0.20,
-                                            height:orientation==Orientation.portrait?
-                                                displayHeight(context) * 0.041:displayHeight(context) * 0.099,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: !tripDurationButtonColor!
-                                                    ? reportsNewTabColor
-                                                    : Color(0xff2663DB)),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(6.0),
-                                              child: Center(
-                                                child: Text(
-                                                  "Trip Duration",
-                                                  style: TextStyle(
-                                                      color:
-                                                          tripDurationButtonColor!
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                              //fontSize: 11,
-                                                      fontSize: displayWidth(context) * 0.025,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              selectedButton = 'avg speed';
-                                              tripDurationButtonColor = false;
-                                              avgSpeedButtonColor = true;
-                                              fuelUsageButtonColor = false;
-                                              powerUsageButtonColor = false;
-                                            });
-                                          },
-                                          child: Container(
-                                            width: displayWidth(context) * 0.18,
-                                            height:orientation==Orientation.portrait?
-                                                displayHeight(context) * 0.041:displayHeight(context) * 0.099,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: !avgSpeedButtonColor!
-                                                    ? reportsNewTabColor
-                                                    : Color(0xff2663DB)),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(6.0),
-                                              child: Center(
-                                                child: Text(
-                                                  "Avg Speed",
-                                                  style: TextStyle(
-                                                      color:
-                                                          avgSpeedButtonColor!
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                      fontSize: displayWidth(context) * 0.025,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              selectedButton = 'fuel usage';
-                                              tripDurationButtonColor = false;
-                                              avgSpeedButtonColor = false;
-                                              fuelUsageButtonColor = true;
-                                              powerUsageButtonColor = false;
-                                            });
-                                          },
-                                          child: Container(
-                                            width: displayWidth(context) * 0.20,
-                                            height:orientation==Orientation.portrait?
-                                                displayHeight(context) * 0.042:displayHeight(context) * 0.099,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: !fuelUsageButtonColor!
-                                                    ? reportsNewTabColor
-                                                    : Color(0xff2663DB)),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(6.0),
-                                              child: Center(
-                                                child: Text(
-                                                  "Fuel Usage",
-                                                  style: TextStyle(
-                                                      color:
-                                                          fuelUsageButtonColor!
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                      fontSize: displayWidth(context) * 0.025,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              selectedButton = 'power usage';
-                                              tripDurationButtonColor = false;
-                                              avgSpeedButtonColor = false;
-                                              fuelUsageButtonColor = false;
-                                              powerUsageButtonColor = true;
-                                            });
-                                          },
-                                          child: Container(
-                                            width: displayWidth(context) * 0.22,
-                                            height:orientation==Orientation.portrait?
-                                                displayHeight(context) * 0.042:displayHeight(context) * 0.099,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: !powerUsageButtonColor!
-                                                    ? reportsNewTabColor
-                                                    : Color(0xff2663DB)),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(6.0),
-                                              child: Center(
-                                                child: Text(
-                                                  "Power Usage",
-                                                  style: TextStyle(
-                                                      color:
-                                                          powerUsageButtonColor!
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                      fontSize: displayWidth(context) * 0.025,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                    offset: const Offset(0, 0),
+                                    scrollbarTheme: ScrollbarThemeData(
+                                      radius: const Radius.circular(20),
+                                      thickness: MaterialStateProperty.all<double>(6),
+                                      thumbVisibility: MaterialStateProperty.all<bool>(true),
                                     ),
-                                    SizedBox(
-                                      height: displayWidth(context) * 0.02,
-                                    ),
-                                  ],
+                                  ),
+                                  menuItemStyleData: MenuItemStyleData(
+                                    padding: EdgeInsets.symmetric(horizontal: 0),
+                                  ),
                                 ),
                               ),
-                              isReportDataLoading!
-                                  ? buildGraph(context,orientation)
-                                  : Center(
+                                  )
+                                : Container(
+                                    height: displayHeight(context) * 0.1,
+                                    child: Center(
                                       child: CircularProgressIndicator(
                                         valueColor:
                                             AlwaysStoppedAnimation<Color>(
                                                 circularProgressColor),
                                       ),
                                     ),
-                              table(context)!,
-                              SizedBox(
-                                height: displayWidth(context) * 0.03,
-                              ),
-                              Container(
-                                height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
-                                width: displayWidth(context) * 0.8,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.grey),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.file_download_outlined,
-                                      color: Colors.white,
-                                      size: 25,
+                                  ),
+                            SizedBox(
+                              height:orientation==Orientation.portrait?
+                              
+                               displayHeight(context) * 0.018:displayHeight(context) * 0.050,
+                            ),
+                            Container(
+                              width: displayWidth(context) * 0.8,
+                              child: DropdownButtonHideUnderline(
+                                
+                                child: DropdownButtonFormField2<String>(
+                                  
+                                  isExpanded: true,
+                                  decoration: InputDecoration(
+                                    prefixIcon: Container(
+                                      height:displayHeight(context) * 0.02 ,
+                                       width:50 ,
+
+                                  child:  Transform.scale(
+                                      scale: 0.5,
+                                      child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
+                                    )),
+                                    contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.red.shade300
+                                                .withOpacity(0.7)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    errorStyle: TextStyle(
+                                        fontFamily: inter,
+                                        fontSize:
+                                        displayWidth(context) * 0.034,
+                                        
+                                        
+                                        ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1.5,
+                                            color: Colors.red.shade300
+                                                .withOpacity(0.7)),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    fillColor: reportDropdownColor,
+                                    filled: true,
+                                    //hintText: "Filter By",
+                                    hintStyle: TextStyle(
+                                        color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                            ? "Filter By" == 'User SubRole'
+                                            ? Colors.black54
+                                            : Colors.white
+                                            : Colors.black,
+                                        fontSize:orientation==
+                                    Orientation.portrait?    displayWidth(context) * 0.034:displayWidth(context) * 0.034,
+                                        fontFamily: outfit,
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                  hint: Container(
+                                    alignment: Alignment.centerLeft,
+                                    padding:EdgeInsets.only(left: 8),
+
+                                    child: Text(
+                                      
+                                      'Filter By',
+                                    
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .brightness ==
+                                              Brightness.dark
+                                              ? "Filter By" ==
+                                              'User SubRole'
+                                              ? Colors.black54
+                                              : Colors.white
+                                              : Colors.black54,
+                                          fontSize:
+                                  
+                                          orientation==Orientation.portrait?
+                                          displayWidth(context) *
+                                              0.032:displayWidth(context) *
+                                              0.022
+                                          ,
+                                  
+                                          fontFamily: outfit,
+                                          fontWeight: FontWeight.w400),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    SizedBox(
-                                      width: displayWidth(context) * 0.01,
+                                  ),
+                                  value: selectedFilter,
+                                  items: filters.map((item) {
+                                    return DropdownMenuItem<String>(
+                                      value: item,
+                                      child: Padding(
+                                    padding:EdgeInsets.only(left: 8),
+                                        child: Text(
+                                          item,
+                                          style: TextStyle(
+                                                                                       fontSize:   orientation==Orientation.portrait?
+                                        displayWidth(context) *
+                                            0.032:displayWidth(context) *
+                                            0.022,
+
+                                              // fontSize: displayWidth(context) *
+                                              //     0.0346,
+                                              color: Theme.of(context)
+                                                  .brightness ==
+                                                  Brightness.dark
+                                                  ? "Filter by" ==
+                                                  'User SubRole'
+                                                  ? Colors.black
+                                                  : Colors.white
+                                                  : Colors.black,
+                                              fontWeight: FontWeight.w500),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Select Filters';
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (item) {
+                                    if (item == "Filter by Date") {
+                                      setState(() {
+                                        selectedCaseType = 1;
+                                        isSHowGraph = false;
+                                        Utils.customPrint(
+                                            "selectedCaseType: $selectedCaseType ");
+                                        CustomLogger().logWithFile(Level.info,
+                                            "selectedCaseType: $selectedCaseType-> $page");
+                                        selectedTripsAndDateString =
+                                        "Date Range";
+                                      });
+                                    } else if (item == "Filter by Trips") {
+                                      setState(() {
+                                        selectedCaseType = 2;
+                                        selectedTripsAndDateDetails = "";
+                                        isSHowGraph = false;
+                                        Utils.customPrint(
+                                            "selectedCaseType: $selectedCaseType ");
+                                        CustomLogger().logWithFile(Level.info,
+                                            "selectedCaseType: $selectedCaseType-> $page");
+                                        selectedTripsAndDateString =
+                                        "Selected Trips";
+                                      });
+                                    }
+                                  },
+                                  buttonStyleData:  ButtonStyleData(
+                                    padding: EdgeInsets.only(right: 0),
+                                  ),
+                                  iconStyleData:  IconStyleData(
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      color: Colors.black,
                                     ),
-                                    commonText(
-                                      context: context,
-                                      text: 'Export Complete Report',
-                                      fontWeight: FontWeight.w600,
-                                      textColor: Colors.white,
-                                      textSize: displayWidth(context) * 0.041,
+                                    iconSize: displayHeight(context) * 0.035,
+                                  ),
+                                  dropdownStyleData: DropdownStyleData(
+                                    maxHeight: displayHeight(context) * 0.25,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      // color: backgroundColor,
                                     ),
-                                  ],
+                                    offset: const Offset(0, 0),
+                                    scrollbarTheme: ScrollbarThemeData(
+                                      radius: const Radius.circular(20),
+                                      thickness: MaterialStateProperty.all<double>(6),
+                                      thumbVisibility: MaterialStateProperty.all<bool>(true),
+                                    ),
+                                  ),
+                                  menuItemStyleData: MenuItemStyleData(
+                                    padding: EdgeInsets.symmetric(horizontal: 0),
+                                  ),
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: displayWidth(context) * 0.025,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: displayWidth(context) * 0.04,
+                      ),
+                      selectedCaseType == 0
+                          ? Container()
+                          : selectedCaseType == 1
+                              ? filterByDate(context,orientation)!
+                              : filterByTrip(context,orientation)!,
+                      SizedBox(
+                        height: displayWidth(context) * 0.04,
+                      ),
+                      isBtnClick ?? false
+                          ? Container(
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: circularProgressColor,
                                 ),
-                                child: GestureDetector(
-                                    onTap: () async {
-                                      final image = await controller.capture();
-                                      Utils.customPrint(
-                                          "Image is: ${image.toString()}");
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  FeedbackReport(
-                                                    imagePath: image.toString(),
-                                                    uIntList: image,
-                                                  )));
-                                    },
-                                    child: UserFeedback()
-                                        .getUserFeedback(context)),
                               ),
-                            ],
-                          )
-                        : Container(),
-              ],
-            ),
+                            )
+                          : Column(
+                              children: [
+                                CommonButtons.getAcceptButton(
+                                  "Generate Report",
+                                  
+                                  context,
+                                  blueColor,
+
+                                  () {
+                                    if (_formKey.currentState!.validate()) {
+                                      setState(() {
+                                        isSHowGraph = false;
+                                        isBtnClick = true;
+                                        isExpansionCollapse = false;
+                                        isExpandedTile = true;
+                                        avgSpeed = null;
+                                        avgDuration = null;
+                                        avgFuelConsumption = null;
+                                        avgPower = null;
+                                        triSpeedList.clear();
+                                        tripList.clear();
+                                        duration1 = null;
+                                        avgSpeed1 = null;
+                                        fuelUsage = null;
+                                        powerUsage = null;
+                                        finalData.clear();
+                                        durationGraphData.clear();
+
+                                        durationColumnSeriesData.clear();
+                                        avgSpeedColumnSeriesData.clear();
+                                        fuelUsageColumnSeriesData.clear();
+                                        powerUsageColumnSeriesData.clear();
+                                      });
+
+                                      // _collapseExpansionTile();
+                                      String? startDate = "";
+                                      String? endDate = "";
+                                      String? startDateToDispaly = "";
+                                      String? endDateToDispaly = "";
+                                      totalDuration = 0;
+                                      totalSpeed = 0;
+                                      totalFuelConsumption = 0;
+                                      totalAvgPower = 0;
+
+                                      if (selectedCaseType == 1) {
+                                        if (focusedDayString!.isNotEmpty ||
+                                            lastFocusedDayString!
+                                                .isNotEmpty) {
+                                          startDate = convertIntoYearMonthDay(
+                                              selectedDateForStartDate);
+                                          endDate = convertIntoYearMonthDay(
+                                              selectedDateForEndDate);
+                                          startDateToDispaly =
+                                              convertIntoYearMonthDayToShow(
+                                                  selectedDateForStartDate);
+                                          endDateToDispaly =
+                                              convertIntoYearMonthDayToShow(
+                                                  selectedDateForEndDate);
+                                          selectedTripsAndDateDetails =
+                                              "$startDateToDispaly to $endDateToDispaly";
+                                        }
+
+                                        if ((selectedStartDateFromCal !=
+                                                    null &&
+                                                selectedEndDateFromCal !=
+                                                    null) &&
+                                            selectedDateForEndDate!.isBefore(
+                                                selectedDateForStartDate)) {
+                                          isBtnClick = false;
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'End date ($endDate) should be greater than start date($startDate)',
+                                              duration: 2);
+                                          return;
+                                        }
+                                        if ((isSelectedStartDay! &&
+                                            isSelectedEndDay!)) {
+                                          getReportsData(selectedCaseType!,
+                                              startDate: startDate,
+                                              endDate: endDate,
+                                              vesselID: selectedVessel);
+                                        } else if (!isSelectedStartDay!) {
+                                          setState(() {
+                                            isBtnClick = false;
+                                          });
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'Please select the start date',
+                                              duration: 2);
+                                        } else if (!isSelectedEndDay!) {
+                                          setState(() {
+                                            isBtnClick = false;
+                                          });
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'Please select the end date',
+                                              duration: 2);
+                                        }
+                                      } else if (selectedCaseType == 2) {
+                                        if (selectedTripIdList?.isNotEmpty ??
+                                            false) {
+                                          selectedTripLabelList!.sort((a, b) {
+                                            int numberA =
+                                                int.parse(a.split(" ")[1]);
+                                            int numberB =
+                                                int.parse(b.split(" ")[1]);
+                                            return numberA.compareTo(numberB);
+                                          });
+                                          getReportsData(selectedCaseType!,
+                                              selectedTripListID:
+                                                  selectedTripIdList);
+                                        } else {
+                                          setState(() {
+                                            isBtnClick = false;
+                                          });
+                                          if (selectedTripIdList?.isEmpty ??
+                                              false) {
+                                            Utils.showSnackBar(context,
+                                                scaffoldKey: scaffoldKey,
+                                                message:
+                                                    'Please select the Trip Id',
+                                                duration: 2);
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+
+                               orientation==Orientation.portrait?   displayWidth(context) * 0.8:displayWidth(context) * 0.4,
+                                 orientation==Orientation.portrait? displayHeight(context) * 0.065:displayHeight(context) * 0.090,
+                                  Colors.grey.shade400,
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Colors.white,
+                                  displayHeight(context) * 0.021,
+                                  blueColor,
+                                  '',
+                                ),
+                                !isSHowGraph!
+                                    ? Padding(
+                                        padding: EdgeInsets.only(
+                                          top: displayWidth(context) * 0.01,
+                                        ),
+                                        child: GestureDetector(
+                                            onTap:  widget.onScreenShotCaptureCallback,
+                                            child: UserFeedback()
+                                                .getUserFeedback(context)),
+                                      )
+                                    : Container(),
+                              ],
+                            ),
+                      SizedBox(
+                        height: displayWidth(context) * 0.04,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              !isSHowGraph!
+                  ? Container()
+                  : isReportDataLoading!
+                      ? Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(
+                                left: displayWidth(context) * 0.03,
+                                right: displayWidth(context) * 0.03,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: displayWidth(context) * 0.055,
+                                  ),
+                                  vesselDetails(context,orientation),
+                                  SizedBox(
+                                    height: displayWidth(context) * 0.04,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "$selectedTripsAndDateString",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: outfit),
+                                      ),
+                                      SizedBox(
+                                        width: displayWidth(context) * 0.05,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          selectedCaseType == 1
+                                              ? ": ${selectedTripsAndDateDetails}"
+                                              : ":  ${selectedTripLabelList!.join(', ')}",
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              fontFamily: inter),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: displayWidth(context) * 0.06,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedButton = 'trip duration';
+                                            tripDurationButtonColor = true;
+                                            avgSpeedButtonColor = false;
+                                            fuelUsageButtonColor = false;
+                                            powerUsageButtonColor = false;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: displayWidth(context) * 0.20,
+                                          height:orientation==Orientation.portrait?
+                                              displayHeight(context) * 0.041:displayHeight(context) * 0.099,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              color: !tripDurationButtonColor!
+                                                  ? reportsNewTabColor
+                                                  : Color(0xff2663DB)),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(6.0),
+                                            child: Center(
+                                              child: Text(
+                                                "Trip Duration",
+                                                style: TextStyle(
+                                                    color:
+                                                        tripDurationButtonColor!
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                            //fontSize: 11,
+                                                    fontSize: displayWidth(context) * 0.025,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedButton = 'avg speed';
+                                            tripDurationButtonColor = false;
+                                            avgSpeedButtonColor = true;
+                                            fuelUsageButtonColor = false;
+                                            powerUsageButtonColor = false;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: displayWidth(context) * 0.18,
+                                          height:orientation==Orientation.portrait?
+                                              displayHeight(context) * 0.041:displayHeight(context) * 0.099,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              color: !avgSpeedButtonColor!
+                                                  ? reportsNewTabColor
+                                                  : Color(0xff2663DB)),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(6.0),
+                                            child: Center(
+                                              child: Text(
+                                                "Avg Speed",
+                                                style: TextStyle(
+                                                    color:
+                                                        avgSpeedButtonColor!
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                    fontSize: displayWidth(context) * 0.025,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedButton = 'fuel usage';
+                                            tripDurationButtonColor = false;
+                                            avgSpeedButtonColor = false;
+                                            fuelUsageButtonColor = true;
+                                            powerUsageButtonColor = false;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: displayWidth(context) * 0.20,
+                                          height:orientation==Orientation.portrait?
+                                              displayHeight(context) * 0.042:displayHeight(context) * 0.099,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              color: !fuelUsageButtonColor!
+                                                  ? reportsNewTabColor
+                                                  : Color(0xff2663DB)),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(6.0),
+                                            child: Center(
+                                              child: Text(
+                                                "Fuel Usage",
+                                                style: TextStyle(
+                                                    color:
+                                                        fuelUsageButtonColor!
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                    fontSize: displayWidth(context) * 0.025,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedButton = 'power usage';
+                                            tripDurationButtonColor = false;
+                                            avgSpeedButtonColor = false;
+                                            fuelUsageButtonColor = false;
+                                            powerUsageButtonColor = true;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: displayWidth(context) * 0.22,
+                                          height:orientation==Orientation.portrait?
+                                              displayHeight(context) * 0.042:displayHeight(context) * 0.099,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              color: !powerUsageButtonColor!
+                                                  ? reportsNewTabColor
+                                                  : Color(0xff2663DB)),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(6.0),
+                                            child: Center(
+                                              child: Text(
+                                                "Power Usage",
+                                                style: TextStyle(
+                                                    color:
+                                                        powerUsageButtonColor!
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                    fontSize: displayWidth(context) * 0.025,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: displayWidth(context) * 0.02,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            isReportDataLoading!
+                                ? buildGraph(context,orientation)
+                                : Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor:
+                                          AlwaysStoppedAnimation<Color>(
+                                              circularProgressColor),
+                                    ),
+                                  ),
+                            table(context)!,
+                            SizedBox(
+                              height: displayWidth(context) * 0.03,
+                            ),
+                            Container(
+                              height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
+                              width: displayWidth(context) * 0.8,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.grey),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.file_download_outlined,
+                                    color: Colors.white,
+                                    size: 25,
+                                  ),
+                                  SizedBox(
+                                    width: displayWidth(context) * 0.01,
+                                  ),
+                                  commonText(
+                                    context: context,
+                                    text: 'Export Complete Report',
+                                    fontWeight: FontWeight.w600,
+                                    textColor: Colors.white,
+                                    textSize: displayWidth(context) * 0.041,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: displayWidth(context) * 0.025,
+                              ),
+                              child: GestureDetector(
+                                  onTap:widget.onScreenShotCaptureCallback,
+                                  child: UserFeedback()
+                                      .getUserFeedback(context)),
+                            ),
+                          ],
+                        )
+                      : Container(),
+            ],
           ),
+        ),
   
-        );
+      );
   })
-      ),
     );
   }
 

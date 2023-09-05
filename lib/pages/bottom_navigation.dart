@@ -16,12 +16,14 @@ import 'package:performarine/old_ui/old_custom_drawer.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/dashboard/dashboard.dart';
+import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/reports/search_and_filters.dart';
 import 'package:performarine/pages/reports_module/reports.dart';
 import 'package:performarine/pages/start_trip/start_trip_recording_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 
 import '../analytics/location_callback_handler.dart';
 import '../analytics/start_trip.dart';
@@ -52,6 +54,7 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> with SingleTickerProviderStateMixin, WidgetsBindingObserver{
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
+ScreenshotController screen_shot_controller=ScreenshotController();
 
   var _bottomNavIndex = 0;
   bool isFloatBtnSelect = false, isBluetoothConnected = false, isStartButton = false, isLocationDialogBoxOpen = false, isEndTripBtnClicked = false;
@@ -177,6 +180,23 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     }
   }
 
+void captureScreenShot()async{
+                                      final image = await screen_shot_controller.capture();
+                                    Utils.customPrint(
+                                        "Image is: ${image.toString()}");
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                FeedbackReport(
+                                                  imagePath: image.toString(),
+                                                  uIntList: image,
+                                                )));
+
+
+}
+
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -252,7 +272,9 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
     commonProvider = context.watch<CommonProvider>();
     var screensList = [
       Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: false,isAppKilled: widget.isAppKilled,token: widget.token),
-     ReportsModule(),
+     ReportsModule(onScreenShotCaptureCallback: (){
+      captureScreenShot();
+     },),
      // SearchAndFilters(calledFrom:'HOME'),
      
       StartTripRecordingScreen(),
@@ -327,335 +349,192 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
 
 
 return
-       Scaffold(
-        backgroundColor: backgroundColor,
-        key: scaffoldKey,
-        resizeToAvoidBottomInset: false,
-        drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
-        appBar: AppBar(
+       Screenshot(
+        controller: screen_shot_controller,
+         child: Scaffold(
           backgroundColor: backgroundColor,
-          elevation: 0,
-          leading: InkWell(
-            onTap: () {
-              FocusScope.of(context).requestFocus(FocusNode());
-              scaffoldKey.currentState!.openDrawer();
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Image.asset(
-                'assets/icons/menu.png',
+          key: scaffoldKey,
+          resizeToAvoidBottomInset: false,
+          drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
+          appBar: AppBar(
+            backgroundColor: backgroundColor,
+            elevation: 0,
+            leading: InkWell(
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+                scaffoldKey.currentState!.openDrawer();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Image.asset(
+                  'assets/icons/menu.png',
+                ),
               ),
             ),
+            title: commonText(
+              context: context,
+              text: _bottomNavIndex == 0 ? 'Dashboard'
+                  : _bottomNavIndex == 1
+                  ? 'Reports'
+                  : _bottomNavIndex == 3 ? 'Trips' : 'Vessels' ,
+              fontWeight: FontWeight.w700,
+              textColor: Colors.black87,
+              textSize: displayWidth(context) * 0.05,
+              fontFamily: outfit
+            ),
+            actions: [
+              _bottomNavIndex != 0 ?  Container(
+                margin: EdgeInsets.only(right: 8),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                        ModalRoute.withName(""));
+                  },
+                  icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              ) : Container(width: 0,height: 0,),
+            ],
           ),
-          title: commonText(
-            context: context,
-            text: _bottomNavIndex == 0 ? 'Dashboard'
-                : _bottomNavIndex == 1
-                ? 'Reports'
-                : _bottomNavIndex == 3 ? 'Trips' : 'Vessels' ,
-            fontWeight: FontWeight.w700,
-            textColor: Colors.black87,
-            textSize: displayWidth(context) * 0.05,
-            fontFamily: outfit
-          ),
-          actions: [
-            _bottomNavIndex != 0 ?  Container(
-              margin: EdgeInsets.only(right: 8),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => BottomNavigation()),
-                      ModalRoute.withName(""));
-                },
-                icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
-              ),
-            ) : Container(width: 0,height: 0,),
-          ],
-        ),
-        bottomNavigationBar: Container(
-                   height:
-                   
-                   orientation==Orientation.portrait? displayHeight(context) * 0.1:displayHeight(context) * 0.2,
-
-          // height: Platform.isAndroid ? displayHeight(context) * 0.098 ?         orientation==Orientation.portrait? displayHeight(context) * 0.1:displayHeight(context) * 0.2,
-
-          
-          //  displayHeight(context) * 0.109,
-          child: ClipRRect(
-           // borderRadius: BorderRadius.circular(10.0),
-            child: Container(
-              color: bottomNavColor,
-              child: TabBar(
-                padding: EdgeInsets.zero,
-                indicatorWeight: 16,
-                  labelPadding: EdgeInsets.zero,
-                  onTap: (index) async{
-                  if(index == 1){
-                    SystemChrome.setPreferredOrientations([
-                      DeviceOrientation.portraitUp,
-                      DeviceOrientation.landscapeLeft,
-                      DeviceOrientation.landscapeRight,
-                    ]);
-                  } else{
-                    SystemChrome.setPreferredOrientations([
-                      DeviceOrientation.portraitUp,
-                    ]);
-                  }
-
-                    if(index == 2){
-
-                      if(mounted)
-                        {
+          bottomNavigationBar: Container(
+                     height:
+                     
+                     orientation==Orientation.portrait? displayHeight(context) * 0.1:displayHeight(context) * 0.2,
+       
+            // height: Platform.isAndroid ? displayHeight(context) * 0.098 ?         orientation==Orientation.portrait? displayHeight(context) * 0.1:displayHeight(context) * 0.2,
+       
+            
+            //  displayHeight(context) * 0.109,
+            child: ClipRRect(
+             // borderRadius: BorderRadius.circular(10.0),
+              child: Container(
+                color: bottomNavColor,
+                child: TabBar(
+                  padding: EdgeInsets.zero,
+                  indicatorWeight: 16,
+                    labelPadding: EdgeInsets.zero,
+                    onTap: (index) async{
+                    if(index == 1){
+                      SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,
+                        DeviceOrientation.landscapeLeft,
+                        DeviceOrientation.landscapeRight,
+                      ]);
+                    } else{
+                      SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,
+                      ]);
+                    }
+       
+                      if(index == 2){
+       
+                        if(mounted)
+                          {
+                            bool? isTripStarted =
+                            sharedPreferences!.getBool('trip_started');
+       
+                            if (isTripStarted != null) {
+                              if (isTripStarted) {
+                                List<String>? tripData = sharedPreferences!
+                                    .getStringList('trip_data');
+                                Trip tripDetails = await _databaseService
+                                    .getTrip(tripData![0]);
+       
+                                if (isTripStarted) {
+                                  showDialogBox(context);
+                                  return;
+                                }
+                                else
+                                  {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+                                      // isLocationPermitted: isLocationPermitted,
+                                      // isBluetoothConnected: isBluetoothConnected,
+                                      calledFrom: 'bottom_nav',)));
+                                  }
+       
+                              }
+                              }
+                            else
+                              {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+                                  // isLocationPermitted: isLocationPermitted,
+                                  // isBluetoothConnected: isBluetoothConnected,
+                                  calledFrom: 'bottom_nav',)));
+                              }
+                            }
+       
+                        /*if(mounted) {
                           bool? isTripStarted =
                           sharedPreferences!.getBool('trip_started');
-
+       
                           if (isTripStarted != null) {
                             if (isTripStarted) {
                               List<String>? tripData = sharedPreferences!
                                   .getStringList('trip_data');
                               Trip tripDetails = await _databaseService
                                   .getTrip(tripData![0]);
-
+       
                               if (isTripStarted) {
                                 showDialogBox(context);
                                 return;
                               }
-                              else
-                                {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
-                                    // isLocationPermitted: isLocationPermitted,
-                                    // isBluetoothConnected: isBluetoothConnected,
-                                    calledFrom: 'bottom_nav',)));
-                                }
-
-                            }
-                            }
-                          else
-                            {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
-                                // isLocationPermitted: isLocationPermitted,
-                                // isBluetoothConnected: isBluetoothConnected,
-                                calledFrom: 'bottom_nav',)));
                             }
                           }
-
-                      /*if(mounted) {
-                        bool? isTripStarted =
-                        sharedPreferences!.getBool('trip_started');
-
-                        if (isTripStarted != null) {
-                          if (isTripStarted) {
-                            List<String>? tripData = sharedPreferences!
-                                .getStringList('trip_data');
-                            Trip tripDetails = await _databaseService
-                                .getTrip(tripData![0]);
-
-                            if (isTripStarted) {
-                              showDialogBox(context);
+       
+                          bool isLocationPermitted =
+                          await Permission.locationAlways.isGranted;
+       
+                          if (isLocationPermitted) {
+                            bool isNDPermDenied = await Permission
+                                .bluetoothConnect.isPermanentlyDenied;
+       
+                            if (isNDPermDenied) {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return LocationPermissionCustomDialog(
+                                      isLocationDialogBox: false,
+                                      text: 'Allow nearby devices',
+                                      subText:
+                                      'Allow nearby devices to connect to the app',
+                                      buttonText: 'OK',
+                                      buttonOnTap: () async {
+                                        Get.back();
+                                      },
+                                    );
+                                  });
                               return;
-                            }
-                          }
-                        }
-
-                        bool isLocationPermitted =
-                        await Permission.locationAlways.isGranted;
-
-                        if (isLocationPermitted) {
-                          bool isNDPermDenied = await Permission
-                              .bluetoothConnect.isPermanentlyDenied;
-
-                          if (isNDPermDenied) {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return LocationPermissionCustomDialog(
-                                    isLocationDialogBox: false,
-                                    text: 'Allow nearby devices',
-                                    subText:
-                                    'Allow nearby devices to connect to the app',
-                                    buttonText: 'OK',
-                                    buttonOnTap: () async {
-                                      Get.back();
-                                    },
-                                  );
-                                });
-                            return;
-                          } else {
-                            if (Platform.isIOS) {
-                              dynamic isBluetoothEnable =
-
-                              Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                                showBluetoothDialog(context);
-                              });
-
-                              if(isBluetoothEnable != null){
-                                if (isBluetoothEnable) {
-                                  // vessel!.add(widget.vessel!);
-                                  await locationPermissions();
-                                } else {
-                                  showBluetoothDialog(context);
-                                }
-                              }
-
                             } else {
-                              bool isNDPermittedOne = await Permission
-                                  .bluetoothConnect.isGranted;
-
-                              if (isNDPermittedOne) {
-                                bool isBluetoothEnable =
+                              if (Platform.isIOS) {
+                                dynamic isBluetoothEnable =
+       
                                 Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
                                   showBluetoothDialog(context);
                                 });
-
-                                if (isBluetoothEnable) {
-                                  // vessel!.add(widget.vessel!);
-                                  await locationPermissions();
-                                } else {
-                                  showBluetoothDialog(context);
-                                }
-                              } else {
-                                await Permission.bluetoothConnect.request();
-                                bool isNDPermitted = await Permission
-                                    .bluetoothConnect.isGranted;
-                                if (isNDPermitted) {
-                                  bool isBluetoothEnable =
-                                  Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                                    showBluetoothDialog(context);
-                                  });
-
+       
+                                if(isBluetoothEnable != null){
                                   if (isBluetoothEnable) {
                                     // vessel!.add(widget.vessel!);
                                     await locationPermissions();
                                   } else {
                                     showBluetoothDialog(context);
                                   }
-                                } else {
-                                  if (await Permission
-                                      .bluetoothConnect.isDenied ||
-                                      await Permission.bluetoothConnect
-                                          .isPermanentlyDenied) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return LocationPermissionCustomDialog(
-                                            isLocationDialogBox: false,
-                                            text: 'Allow nearby devices',
-                                            subText:
-                                            'Allow nearby devices to connect to the app',
-                                            buttonText: 'OK',
-                                            buttonOnTap: () async {
-                                              Get.back();
-
-                                              await openAppSettings();
-                                            },
-                                          );
-                                        });
-                                  }
                                 }
-                              }
-                            }
-                          }
-                        }
-                        else {
-                          /// WIU
-                          bool isWIULocationPermitted =
-                          await Permission.locationWhenInUse.isGranted;
-
-                          if (!isWIULocationPermitted) {
-                            await Utils.getLocationPermission(
-                                context, scaffoldKey);
-
-                            if(Platform.isAndroid){
-                              if (!(await Permission.locationWhenInUse
-                                  .shouldShowRequestRationale)) {
-                                Utils.customPrint(
-                                    'XXXXX@@@ ${await Permission.locationWhenInUse.shouldShowRequestRationale}');
-
-                                if(await Permission.locationWhenInUse
-                                    .isDenied || await Permission.locationWhenInUse
-                                    .isPermanentlyDenied){
-                                  await openAppSettings();
-                                }
-
-                                */
-                      /*showDialog(
-                                        context: scaffoldKey.currentContext!,
-                                        builder: (BuildContext context) {
-                                          isLocationDialogBoxOpen = true;
-                                          return LocationPermissionCustomDialog(
-                                            isLocationDialogBox: true,
-                                            text:
-                                            'Always Allow Access to “Location”',
-                                            subText:
-                                            "To track your trip while you use other apps we need background access to your location",
-                                            buttonText: 'Ok',
-                                            buttonOnTap: () async {
-                                              Get.back();
-
-                                              await openAppSettings();
-                                            },
-                                          );
-                                        }).then((value) {
-                                      isLocationDialogBoxOpen = false;
-                                    });*//*
-                              }
-                            }
-                            else
-                            {
-                              await Permission.locationAlways.request();
-
-                              bool isGranted = await Permission.locationAlways.isGranted;
-
-                              if(!isGranted)
-                              {
-                                Utils.showSnackBar(context,
-                                    scaffoldKey: scaffoldKey,
-                                    message:
-                                    'Location permissions are denied without permissions we are unable to start the trip');
-                              }
-                            }
-
-                          }
-                          else
-                          {
-                            bool isLocationPermitted =
-                            await Permission.locationAlways.isGranted;
-                            if (isLocationPermitted) {
-                              bool isNDPermDenied = await Permission
-                                  .bluetoothConnect.isPermanentlyDenied;
-
-                              if (isNDPermDenied) {
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return LocationPermissionCustomDialog(
-                                        isLocationDialogBox: false,
-                                        text: 'Allow nearby devices',
-                                        subText:
-                                        'Allow nearby devices to connect to the app',
-                                        buttonText: 'OK',
-                                        buttonOnTap: () async {
-                                          Get.back();
-
-                                          await openAppSettings();
-                                        },
-                                      );
-                                    });
-                                return;
+       
                               } else {
-                                bool isNDPermitted = await Permission
+                                bool isNDPermittedOne = await Permission
                                     .bluetoothConnect.isGranted;
-
-                                if (isNDPermitted) {
+       
+                                if (isNDPermittedOne) {
                                   bool isBluetoothEnable =
                                   Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
                                     showBluetoothDialog(context);
                                   });
-
+       
                                   if (isBluetoothEnable) {
                                     // vessel!.add(widget.vessel!);
                                     await locationPermissions();
@@ -671,393 +550,197 @@ return
                                     Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
                                       showBluetoothDialog(context);
                                     });
-
+       
                                     if (isBluetoothEnable) {
                                       // vessel!.add(widget.vessel!);
                                       await locationPermissions();
                                     } else {
                                       showBluetoothDialog(context);
                                     }
+                                  } else {
+                                    if (await Permission
+                                        .bluetoothConnect.isDenied ||
+                                        await Permission.bluetoothConnect
+                                            .isPermanentlyDenied) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return LocationPermissionCustomDialog(
+                                              isLocationDialogBox: false,
+                                              text: 'Allow nearby devices',
+                                              subText:
+                                              'Allow nearby devices to connect to the app',
+                                              buttonText: 'OK',
+                                              buttonOnTap: () async {
+                                                Get.back();
+       
+                                                await openAppSettings();
+                                              },
+                                            );
+                                          });
+                                    }
                                   }
                                 }
                               }
                             }
-                            else if(await Permission.locationAlways.isPermanentlyDenied)
-                            {
-                              if(Platform.isIOS)
-                              {
-                                Permission.locationAlways.request();
-
-                                PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
-                                  Utils.showSnackBar(context,
-                                      scaffoldKey: scaffoldKey,
-                                      message: "Location permissions are denied without permissions we are unable to start the trip");
-
-                                  Future.delayed(Duration(seconds: 3),
-                                          () async {
-                                        await openAppSettings();
-                                      });
-                                  return PermissionStatus.denied;
-                                });
-
-                                if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
-                                {
-                                  Utils.showSnackBar(context,
-                                      scaffoldKey: scaffoldKey,
-                                      message: "Location permissions are denied without permissions we are unable to start the trip");
-
-                                  Future.delayed(Duration(seconds: 3),
-                                          () async {
-                                        await openAppSettings();
-                                      });
-                                }
-                              }else
-                              {
-                                if (!isLocationDialogBoxOpen) {
-                                  Utils.customPrint("ELSE CONDITION");
-
-                                  showDialog(
-                                      context: scaffoldKey.currentContext!,
-                                      builder: (BuildContext context) {
-                                        isLocationDialogBoxOpen = true;
-                                        return LocationPermissionCustomDialog(
-                                          isLocationDialogBox: true,
-                                          text:
-                                          'Always Allow Access to “Location”',
-                                          subText:
-                                          "To track your trip while you use other apps we need background access to your location",
-                                          buttonText: 'Ok',
-                                          buttonOnTap: () async {
-                                            Get.back();
-
-                                            await openAppSettings();
-                                          },
-                                        );
-                                      }).then((value) {
-                                    isLocationDialogBoxOpen = false;
-                                  });
+                          }
+                          else {
+                            /// WIU
+                            bool isWIULocationPermitted =
+                            await Permission.locationWhenInUse.isGranted;
+       
+                            if (!isWIULocationPermitted) {
+                              await Utils.getLocationPermission(
+                                  context, scaffoldKey);
+       
+                              if(Platform.isAndroid){
+                                if (!(await Permission.locationWhenInUse
+                                    .shouldShowRequestRationale)) {
+                                  Utils.customPrint(
+                                      'XXXXX@@@ ${await Permission.locationWhenInUse.shouldShowRequestRationale}');
+       
+                                  if(await Permission.locationWhenInUse
+                                      .isDenied || await Permission.locationWhenInUse
+                                      .isPermanentlyDenied){
+                                    await openAppSettings();
+                                  }
+       
+                                  */
+                        /*showDialog(
+                                          context: scaffoldKey.currentContext!,
+                                          builder: (BuildContext context) {
+                                            isLocationDialogBoxOpen = true;
+                                            return LocationPermissionCustomDialog(
+                                              isLocationDialogBox: true,
+                                              text:
+                                              'Always Allow Access to “Location”',
+                                              subText:
+                                              "To track your trip while you use other apps we need background access to your location",
+                                              buttonText: 'Ok',
+                                              buttonOnTap: () async {
+                                                Get.back();
+       
+                                                await openAppSettings();
+                                              },
+                                            );
+                                          }).then((value) {
+                                        isLocationDialogBoxOpen = false;
+                                      });*//*
                                 }
                               }
-                            }
-                            else {
-                              if (Platform.isIOS) {
+                              else
+                              {
                                 await Permission.locationAlways.request();
-
-                                bool isLocationAlwaysPermitted =
-                                await Permission.locationAlways.isGranted;
-
-                                Utils.customPrint(
-                                    'IOS PERMISSION GIVEN OUTSIDE');
-
-                                if (isLocationAlwaysPermitted) {
-                                  Utils.customPrint('IOS PERMISSION GIVEN 1');
-
-                                  // vessel!.add(widget.vessel!);
-                                  await locationPermissions();
-                                } else {
+       
+                                bool isGranted = await Permission.locationAlways.isGranted;
+       
+                                if(!isGranted)
+                                {
                                   Utils.showSnackBar(context,
                                       scaffoldKey: scaffoldKey,
                                       message:
                                       'Location permissions are denied without permissions we are unable to start the trip');
-
-                                  Future.delayed(Duration(seconds: 3),
-                                          () async {
-                                        await openAppSettings();
-                                      });
                                 }
-                              } else {
-                                if (!isLocationDialogBoxOpen) {
-                                  Utils.customPrint("ELSE CONDITION");
-
+                              }
+       
+                            }
+                            else
+                            {
+                              bool isLocationPermitted =
+                              await Permission.locationAlways.isGranted;
+                              if (isLocationPermitted) {
+                                bool isNDPermDenied = await Permission
+                                    .bluetoothConnect.isPermanentlyDenied;
+       
+                                if (isNDPermDenied) {
                                   showDialog(
-                                      context: scaffoldKey.currentContext!,
+                                      context: context,
                                       builder: (BuildContext context) {
-                                        isLocationDialogBoxOpen = true;
                                         return LocationPermissionCustomDialog(
-                                          isLocationDialogBox: true,
-                                          text:
-                                          'Always Allow Access to “Location”',
+                                          isLocationDialogBox: false,
+                                          text: 'Allow nearby devices',
                                           subText:
-                                          "To track your trip while you use other apps we need background access to your location",
-                                          buttonText: 'Ok',
+                                          'Allow nearby devices to connect to the app',
+                                          buttonText: 'OK',
                                           buttonOnTap: () async {
                                             Get.back();
-
+       
                                             await openAppSettings();
                                           },
                                         );
-                                      }).then((value) {
-                                    isLocationDialogBoxOpen = false;
-                                  });
+                                      });
+                                  return;
+                                } else {
+                                  bool isNDPermitted = await Permission
+                                      .bluetoothConnect.isGranted;
+       
+                                  if (isNDPermitted) {
+                                    bool isBluetoothEnable =
+                                    Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                      showBluetoothDialog(context);
+                                    });
+       
+                                    if (isBluetoothEnable) {
+                                      // vessel!.add(widget.vessel!);
+                                      await locationPermissions();
+                                    } else {
+                                      showBluetoothDialog(context);
+                                    }
+                                  } else {
+                                    await Permission.bluetoothConnect.request();
+                                    bool isNDPermitted = await Permission
+                                        .bluetoothConnect.isGranted;
+                                    if (isNDPermitted) {
+                                      bool isBluetoothEnable =
+                                      Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                                        showBluetoothDialog(context);
+                                      });
+       
+                                      if (isBluetoothEnable) {
+                                        // vessel!.add(widget.vessel!);
+                                        await locationPermissions();
+                                      } else {
+                                        showBluetoothDialog(context);
+                                      }
+                                    }
+                                  }
                                 }
                               }
-                            }
-                          }
-                          // return;
-
-                        }
-
-                        setState(() {
-                          print("START BTN CLICKED");
-                          isFloatBtnSelect = true;
-                          //_bottomNavIndex = 4;
-
-                        });
-                      }*/
-                    }
-                    else{
-                      setState(() {
-                        _bottomNavIndex = index;
-                        commonProvider.bottomNavIndex = index;
-                      });
-                    }
-                  },
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.black,
-                  indicator: const UnderlineTabIndicator(
-                    borderSide: BorderSide.none,
-                  ),
-                  tabs: [
-                    for (int i = 0; i <= iconList.length; i++)
-                      _tabItem(
-                        i == _bottomNavIndex ? selectedIcons[i] : _icons[i],
-                        _labels[i],orientation,
-                        isSelected: i == _bottomNavIndex,
-                      ),
-                  ],
-                  controller: _tabController),
-            ),
-          ),
-        ),
-     /*   bottomNavigationBar: AnimatedBottomNavigationBar.builder(
-          notchMargin: 5,
-          height: displayHeight(context) * 0.075,
-          itemCount: iconList.length,
-          tabBuilder: (int index, bool isActive) {
-            return GestureDetector(
-              onTap: (){
-                isFloatBtnSelect = false;
-                if(index == 0){
-                  setState(() {
-                    _bottomNavIndex = 0;
-                  });
-                }else if(index == 1){
-                  setState(() {
-                    _bottomNavIndex = 1;
-                  });
-                }else if(index == 2){
-                  setState(() {
-                    _bottomNavIndex = 2;
-                  });
-                }else if(index == 3){
-                  setState(() {
-                    _bottomNavIndex = 3;
-                  });
-                }
-              },
-              child:  Padding(
-                padding: EdgeInsets.only(
-                  top: displayWidth(context) * 0.021,
-                  left: 15,
-                  right: 15
-                ),
-                child: Stack(
-                  children: [
-                    index == _bottomNavIndex ? Container(
-                      width: displayWidth(context) * 0.12,
-                      height: displayHeight(context) * 0.1,
-                      decoration: BoxDecoration(
-                          color: index == _bottomNavIndex ?  Color(0xff2663DB) : Colors.transparent,
-                          borderRadius: BorderRadius.all(Radius.circular(displayWidth(context) * 0.06))
-                      ),
-                    ) : SizedBox(),
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image(
-                            image: index != _bottomNavIndex ? AssetImage(iconList[index]) as ImageProvider : AssetImage(selectList[index]) as ImageProvider,
-                            width: displayWidth(context) * 0.06,
-                            height: displayHeight(context) * 0.035,
-                          ),
-
-                          commonText(
-                            context: context,
-                            text: bottomTabNames[index],
-                            fontWeight: FontWeight.w600,
-                            textColor: index == _bottomNavIndex ? Colors.white :  Colors.black87,
-                            textSize: displayWidth(context) * 0.022,
-                            fontFamily: reemKufi
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-          backgroundColor: commonBackgroundColor,
-          activeIndex: _bottomNavIndex,
-          splashSpeedInMilliseconds: 300,
-          notchSmoothness: NotchSmoothness.defaultEdge,
-          gapLocation: GapLocation.center,
-          leftCornerRadius: displayWidth(context) * 0.09,
-          rightCornerRadius: displayWidth(context) * 0.09,
-          onTap: (index) => setState(() => _bottomNavIndex = index),
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: floatingBtnColor,
-          tooltip: "Start Trip",
-          foregroundColor: isFloatBtnSelect! ? floatingBtnColor : Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0), // Adjust the value to change the roundness
-          ),
-          onPressed: ()async {
-
-            bool? isTripStarted =
-            sharedPreferences!.getBool('trip_started');
-
-            if (isTripStarted != null) {
-              if (isTripStarted) {
-                List<String>? tripData = sharedPreferences!
-                    .getStringList('trip_data');
-                Trip tripDetails = await _databaseService
-                    .getTrip(tripData![0]);
-
-                if (isTripStarted) {
-                  showDialogBox(context);
-                  return;
-                }
-              }
-            }
-
-            bool isLocationPermitted =
-            await Permission.locationAlways.isGranted;
-
-            if (isLocationPermitted) {
-              bool isNDPermDenied = await Permission
-                  .bluetoothConnect.isPermanentlyDenied;
-
-              if (isNDPermDenied) {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return LocationPermissionCustomDialog(
-                        isLocationDialogBox: false,
-                        text: 'Allow nearby devices',
-                        subText:
-                        'Allow nearby devices to connect to the app',
-                        buttonText: 'OK',
-                        buttonOnTap: () async {
-                          Get.back();
-                        },
-                      );
-                    });
-                return;
-              } else {
-                if (Platform.isIOS) {
-                  dynamic isBluetoothEnable =
-
-                  Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                    showBluetoothDialog(context);
-                  });
-
-                  if(isBluetoothEnable != null){
-                    if (isBluetoothEnable) {
-                      // vessel!.add(widget.vessel!);
-                      await locationPermissions();
-                    } else {
-                      showBluetoothDialog(context);
-                    }
-                  }
-
-                } else {
-                  bool isNDPermittedOne = await Permission
-                      .bluetoothConnect.isGranted;
-
-                  if (isNDPermittedOne) {
-                    bool isBluetoothEnable =
-                    Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                      showBluetoothDialog(context);
-                    });
-
-                    if (isBluetoothEnable) {
-                      // vessel!.add(widget.vessel!);
-                      await locationPermissions();
-                    } else {
-                      showBluetoothDialog(context);
-                    }
-                  } else {
-                    await Permission.bluetoothConnect.request();
-                    bool isNDPermitted = await Permission
-                        .bluetoothConnect.isGranted;
-                    if (isNDPermitted) {
-                      bool isBluetoothEnable =
-                      Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
-                        showBluetoothDialog(context);
-                      });
-
-                      if (isBluetoothEnable) {
-                        // vessel!.add(widget.vessel!);
-                        await locationPermissions();
-                      } else {
-                        showBluetoothDialog(context);
-                      }
-                    } else {
-                      if (await Permission
-                          .bluetoothConnect.isDenied ||
-                          await Permission.bluetoothConnect
-                              .isPermanentlyDenied) {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return LocationPermissionCustomDialog(
-                                isLocationDialogBox: false,
-                                text: 'Allow nearby devices',
-                                subText:
-                                'Allow nearby devices to connect to the app',
-                                buttonText: 'OK',
-                                buttonOnTap: () async {
-                                  Get.back();
-
-                                  await openAppSettings();
-                                },
-                              );
-                            });
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            else {
-              /// WIU
-              bool isWIULocationPermitted =
-              await Permission.locationWhenInUse.isGranted;
-
-              if (!isWIULocationPermitted) {
-                await Utils.getLocationPermission(
-                    context, scaffoldKey);
-
-                if(Platform.isAndroid){
-                  if (!(await Permission.locationWhenInUse
-                      .shouldShowRequestRationale)) {
-                    Utils.customPrint(
-                        'XXXXX@@@ ${await Permission.locationWhenInUse.shouldShowRequestRationale}');
-
-                    if(await Permission.locationWhenInUse
-                        .isDenied || await Permission.locationWhenInUse
-                        .isPermanentlyDenied){
-                      await openAppSettings();
-                    }
-
-                    /*showDialog(
+                              else if(await Permission.locationAlways.isPermanentlyDenied)
+                              {
+                                if(Platform.isIOS)
+                                {
+                                  Permission.locationAlways.request();
+       
+                                  PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message: "Location permissions are denied without permissions we are unable to start the trip");
+       
+                                    Future.delayed(Duration(seconds: 3),
+                                            () async {
+                                          await openAppSettings();
+                                        });
+                                    return PermissionStatus.denied;
+                                  });
+       
+                                  if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
+                                  {
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message: "Location permissions are denied without permissions we are unable to start the trip");
+       
+                                    Future.delayed(Duration(seconds: 3),
+                                            () async {
+                                          await openAppSettings();
+                                        });
+                                  }
+                                }else
+                                {
+                                  if (!isLocationDialogBoxOpen) {
+                                    Utils.customPrint("ELSE CONDITION");
+       
+                                    showDialog(
                                         context: scaffoldKey.currentContext!,
                                         builder: (BuildContext context) {
                                           isLocationDialogBoxOpen = true;
@@ -1070,67 +753,264 @@ return
                                             buttonText: 'Ok',
                                             buttonOnTap: () async {
                                               Get.back();
-
+       
                                               await openAppSettings();
                                             },
                                           );
                                         }).then((value) {
                                       isLocationDialogBoxOpen = false;
-                                    });*/
-                  }
-                }
-                else
-                {
-                  await Permission.locationAlways.request();
-
-                  bool isGranted = await Permission.locationAlways.isGranted;
-
-                  if(!isGranted)
-                  {
-                    Utils.showSnackBar(context,
-                        scaffoldKey: scaffoldKey,
-                        message:
-                        'Location permissions are denied without permissions we are unable to start the trip');
-                  }
-                }
-
-              }
-              else
-              {
-                bool isLocationPermitted =
-                await Permission.locationAlways.isGranted;
-                if (isLocationPermitted) {
-                  bool isNDPermDenied = await Permission
-                      .bluetoothConnect.isPermanentlyDenied;
-
-                  if (isNDPermDenied) {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return LocationPermissionCustomDialog(
-                            isLocationDialogBox: false,
-                            text: 'Allow nearby devices',
-                            subText:
-                            'Allow nearby devices to connect to the app',
-                            buttonText: 'OK',
-                            buttonOnTap: () async {
-                              Get.back();
-
-                              await openAppSettings();
-                            },
-                          );
+                                    });
+                                  }
+                                }
+                              }
+                              else {
+                                if (Platform.isIOS) {
+                                  await Permission.locationAlways.request();
+       
+                                  bool isLocationAlwaysPermitted =
+                                  await Permission.locationAlways.isGranted;
+       
+                                  Utils.customPrint(
+                                      'IOS PERMISSION GIVEN OUTSIDE');
+       
+                                  if (isLocationAlwaysPermitted) {
+                                    Utils.customPrint('IOS PERMISSION GIVEN 1');
+       
+                                    // vessel!.add(widget.vessel!);
+                                    await locationPermissions();
+                                  } else {
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message:
+                                        'Location permissions are denied without permissions we are unable to start the trip');
+       
+                                    Future.delayed(Duration(seconds: 3),
+                                            () async {
+                                          await openAppSettings();
+                                        });
+                                  }
+                                } else {
+                                  if (!isLocationDialogBoxOpen) {
+                                    Utils.customPrint("ELSE CONDITION");
+       
+                                    showDialog(
+                                        context: scaffoldKey.currentContext!,
+                                        builder: (BuildContext context) {
+                                          isLocationDialogBoxOpen = true;
+                                          return LocationPermissionCustomDialog(
+                                            isLocationDialogBox: true,
+                                            text:
+                                            'Always Allow Access to “Location”',
+                                            subText:
+                                            "To track your trip while you use other apps we need background access to your location",
+                                            buttonText: 'Ok',
+                                            buttonOnTap: () async {
+                                              Get.back();
+       
+                                              await openAppSettings();
+                                            },
+                                          );
+                                        }).then((value) {
+                                      isLocationDialogBoxOpen = false;
+                                    });
+                                  }
+                                }
+                              }
+                            }
+                            // return;
+       
+                          }
+       
+                          setState(() {
+                            print("START BTN CLICKED");
+                            isFloatBtnSelect = true;
+                            //_bottomNavIndex = 4;
+       
+                          });
+                        }*/
+                      }
+                      else{
+                        setState(() {
+                          _bottomNavIndex = index;
+                          commonProvider.bottomNavIndex = index;
                         });
+                      }
+                    },
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.black,
+                    indicator: const UnderlineTabIndicator(
+                      borderSide: BorderSide.none,
+                    ),
+                    tabs: [
+                      for (int i = 0; i <= iconList.length; i++)
+                        _tabItem(
+                          i == _bottomNavIndex ? selectedIcons[i] : _icons[i],
+                          _labels[i],orientation,
+                          isSelected: i == _bottomNavIndex,
+                        ),
+                    ],
+                    controller: _tabController),
+              ),
+            ),
+          ),
+            /*   bottomNavigationBar: AnimatedBottomNavigationBar.builder(
+            notchMargin: 5,
+            height: displayHeight(context) * 0.075,
+            itemCount: iconList.length,
+            tabBuilder: (int index, bool isActive) {
+              return GestureDetector(
+                onTap: (){
+                  isFloatBtnSelect = false;
+                  if(index == 0){
+                    setState(() {
+                      _bottomNavIndex = 0;
+                    });
+                  }else if(index == 1){
+                    setState(() {
+                      _bottomNavIndex = 1;
+                    });
+                  }else if(index == 2){
+                    setState(() {
+                      _bottomNavIndex = 2;
+                    });
+                  }else if(index == 3){
+                    setState(() {
+                      _bottomNavIndex = 3;
+                    });
+                  }
+                },
+                child:  Padding(
+                  padding: EdgeInsets.only(
+                    top: displayWidth(context) * 0.021,
+                    left: 15,
+                    right: 15
+                  ),
+                  child: Stack(
+                    children: [
+                      index == _bottomNavIndex ? Container(
+                        width: displayWidth(context) * 0.12,
+                        height: displayHeight(context) * 0.1,
+                        decoration: BoxDecoration(
+                            color: index == _bottomNavIndex ?  Color(0xff2663DB) : Colors.transparent,
+                            borderRadius: BorderRadius.all(Radius.circular(displayWidth(context) * 0.06))
+                        ),
+                      ) : SizedBox(),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image(
+                              image: index != _bottomNavIndex ? AssetImage(iconList[index]) as ImageProvider : AssetImage(selectList[index]) as ImageProvider,
+                              width: displayWidth(context) * 0.06,
+                              height: displayHeight(context) * 0.035,
+                            ),
+       
+                            commonText(
+                              context: context,
+                              text: bottomTabNames[index],
+                              fontWeight: FontWeight.w600,
+                              textColor: index == _bottomNavIndex ? Colors.white :  Colors.black87,
+                              textSize: displayWidth(context) * 0.022,
+                              fontFamily: reemKufi
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            backgroundColor: commonBackgroundColor,
+            activeIndex: _bottomNavIndex,
+            splashSpeedInMilliseconds: 300,
+            notchSmoothness: NotchSmoothness.defaultEdge,
+            gapLocation: GapLocation.center,
+            leftCornerRadius: displayWidth(context) * 0.09,
+            rightCornerRadius: displayWidth(context) * 0.09,
+            onTap: (index) => setState(() => _bottomNavIndex = index),
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: floatingBtnColor,
+            tooltip: "Start Trip",
+            foregroundColor: isFloatBtnSelect! ? floatingBtnColor : Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0), // Adjust the value to change the roundness
+            ),
+            onPressed: ()async {
+       
+              bool? isTripStarted =
+              sharedPreferences!.getBool('trip_started');
+       
+              if (isTripStarted != null) {
+                if (isTripStarted) {
+                  List<String>? tripData = sharedPreferences!
+                      .getStringList('trip_data');
+                  Trip tripDetails = await _databaseService
+                      .getTrip(tripData![0]);
+       
+                  if (isTripStarted) {
+                    showDialogBox(context);
                     return;
+                  }
+                }
+              }
+       
+              bool isLocationPermitted =
+              await Permission.locationAlways.isGranted;
+       
+              if (isLocationPermitted) {
+                bool isNDPermDenied = await Permission
+                    .bluetoothConnect.isPermanentlyDenied;
+       
+                if (isNDPermDenied) {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return LocationPermissionCustomDialog(
+                          isLocationDialogBox: false,
+                          text: 'Allow nearby devices',
+                          subText:
+                          'Allow nearby devices to connect to the app',
+                          buttonText: 'OK',
+                          buttonOnTap: () async {
+                            Get.back();
+                          },
+                        );
+                      });
+                  return;
+                } else {
+                  if (Platform.isIOS) {
+                    dynamic isBluetoothEnable =
+       
+                    Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                      showBluetoothDialog(context);
+                    });
+       
+                    if(isBluetoothEnable != null){
+                      if (isBluetoothEnable) {
+                        // vessel!.add(widget.vessel!);
+                        await locationPermissions();
+                      } else {
+                        showBluetoothDialog(context);
+                      }
+                    }
+       
                   } else {
-                    bool isNDPermitted = await Permission
+                    bool isNDPermittedOne = await Permission
                         .bluetoothConnect.isGranted;
-
-                    if (isNDPermitted) {
+       
+                    if (isNDPermittedOne) {
                       bool isBluetoothEnable =
                       Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
                         showBluetoothDialog(context);
                       });
-
+       
                       if (isBluetoothEnable) {
                         // vessel!.add(widget.vessel!);
                         await locationPermissions();
@@ -1146,152 +1026,297 @@ return
                         Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
                           showBluetoothDialog(context);
                         });
-
+       
                         if (isBluetoothEnable) {
                           // vessel!.add(widget.vessel!);
                           await locationPermissions();
                         } else {
                           showBluetoothDialog(context);
                         }
+                      } else {
+                        if (await Permission
+                            .bluetoothConnect.isDenied ||
+                            await Permission.bluetoothConnect
+                                .isPermanentlyDenied) {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return LocationPermissionCustomDialog(
+                                  isLocationDialogBox: false,
+                                  text: 'Allow nearby devices',
+                                  subText:
+                                  'Allow nearby devices to connect to the app',
+                                  buttonText: 'OK',
+                                  buttonOnTap: () async {
+                                    Get.back();
+       
+                                    await openAppSettings();
+                                  },
+                                );
+                              });
+                        }
                       }
                     }
                   }
                 }
-                else if(await Permission.locationAlways.isPermanentlyDenied)
-                {
-                  if(Platform.isIOS)
-                  {
-                    Permission.locationAlways.request();
-
-                    PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
-                      Utils.showSnackBar(context,
-                          scaffoldKey: scaffoldKey,
-                          message: "Location permissions are denied without permissions we are unable to start the trip");
-
-                      Future.delayed(Duration(seconds: 3),
-                              () async {
-                            await openAppSettings();
-                          });
-                      return PermissionStatus.denied;
-                    });
-
-                    if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
-                    {
-                      Utils.showSnackBar(context,
-                          scaffoldKey: scaffoldKey,
-                          message: "Location permissions are denied without permissions we are unable to start the trip");
-
-                      Future.delayed(Duration(seconds: 3),
-                              () async {
-                            await openAppSettings();
-                          });
-                    }
-                  }else
-                  {
-                    if (!isLocationDialogBoxOpen) {
-                      Utils.customPrint("ELSE CONDITION");
-
-                      showDialog(
-                          context: scaffoldKey.currentContext!,
-                          builder: (BuildContext context) {
-                            isLocationDialogBoxOpen = true;
-                            return LocationPermissionCustomDialog(
-                              isLocationDialogBox: true,
-                              text:
-                              'Always Allow Access to “Location”',
-                              subText:
-                              "To track your trip while you use other apps we need background access to your location",
-                              buttonText: 'Ok',
-                              buttonOnTap: () async {
-                                Get.back();
-
-                                await openAppSettings();
-                              },
-                            );
-                          }).then((value) {
-                        isLocationDialogBoxOpen = false;
-                      });
+              }
+              else {
+                /// WIU
+                bool isWIULocationPermitted =
+                await Permission.locationWhenInUse.isGranted;
+       
+                if (!isWIULocationPermitted) {
+                  await Utils.getLocationPermission(
+                      context, scaffoldKey);
+       
+                  if(Platform.isAndroid){
+                    if (!(await Permission.locationWhenInUse
+                        .shouldShowRequestRationale)) {
+                      Utils.customPrint(
+                          'XXXXX@@@ ${await Permission.locationWhenInUse.shouldShowRequestRationale}');
+       
+                      if(await Permission.locationWhenInUse
+                          .isDenied || await Permission.locationWhenInUse
+                          .isPermanentlyDenied){
+                        await openAppSettings();
+                      }
+       
+                      /*showDialog(
+                                          context: scaffoldKey.currentContext!,
+                                          builder: (BuildContext context) {
+                                            isLocationDialogBoxOpen = true;
+                                            return LocationPermissionCustomDialog(
+                                              isLocationDialogBox: true,
+                                              text:
+                                              'Always Allow Access to “Location”',
+                                              subText:
+                                              "To track your trip while you use other apps we need background access to your location",
+                                              buttonText: 'Ok',
+                                              buttonOnTap: () async {
+                                                Get.back();
+       
+                                                await openAppSettings();
+                                              },
+                                            );
+                                          }).then((value) {
+                                        isLocationDialogBoxOpen = false;
+                                      });*/
                     }
                   }
-                }
-                else {
-                  if (Platform.isIOS) {
+                  else
+                  {
                     await Permission.locationAlways.request();
-
-                    bool isLocationAlwaysPermitted =
-                    await Permission.locationAlways.isGranted;
-
-                    Utils.customPrint(
-                        'IOS PERMISSION GIVEN OUTSIDE');
-
-                    if (isLocationAlwaysPermitted) {
-                      Utils.customPrint('IOS PERMISSION GIVEN 1');
-
-                      // vessel!.add(widget.vessel!);
-                      await locationPermissions();
-                    } else {
+       
+                    bool isGranted = await Permission.locationAlways.isGranted;
+       
+                    if(!isGranted)
+                    {
                       Utils.showSnackBar(context,
                           scaffoldKey: scaffoldKey,
                           message:
                           'Location permissions are denied without permissions we are unable to start the trip');
-
-                      Future.delayed(Duration(seconds: 3),
-                              () async {
-                            await openAppSettings();
-                          });
                     }
-                  } else {
-                    if (!isLocationDialogBoxOpen) {
-                      Utils.customPrint("ELSE CONDITION");
-
+                  }
+       
+                }
+                else
+                {
+                  bool isLocationPermitted =
+                  await Permission.locationAlways.isGranted;
+                  if (isLocationPermitted) {
+                    bool isNDPermDenied = await Permission
+                        .bluetoothConnect.isPermanentlyDenied;
+       
+                    if (isNDPermDenied) {
                       showDialog(
-                          context: scaffoldKey.currentContext!,
+                          context: context,
                           builder: (BuildContext context) {
-                            isLocationDialogBoxOpen = true;
                             return LocationPermissionCustomDialog(
-                              isLocationDialogBox: true,
-                              text:
-                              'Always Allow Access to “Location”',
+                              isLocationDialogBox: false,
+                              text: 'Allow nearby devices',
                               subText:
-                              "To track your trip while you use other apps we need background access to your location",
-                              buttonText: 'Ok',
+                              'Allow nearby devices to connect to the app',
+                              buttonText: 'OK',
                               buttonOnTap: () async {
                                 Get.back();
-
+       
                                 await openAppSettings();
                               },
                             );
-                          }).then((value) {
-                        isLocationDialogBoxOpen = false;
+                          });
+                      return;
+                    } else {
+                      bool isNDPermitted = await Permission
+                          .bluetoothConnect.isGranted;
+       
+                      if (isNDPermitted) {
+                        bool isBluetoothEnable =
+                        Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                          showBluetoothDialog(context);
+                        });
+       
+                        if (isBluetoothEnable) {
+                          // vessel!.add(widget.vessel!);
+                          await locationPermissions();
+                        } else {
+                          showBluetoothDialog(context);
+                        }
+                      } else {
+                        await Permission.bluetoothConnect.request();
+                        bool isNDPermitted = await Permission
+                            .bluetoothConnect.isGranted;
+                        if (isNDPermitted) {
+                          bool isBluetoothEnable =
+                          Platform.isAndroid ? await blueIsOn() : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey, (){
+                            showBluetoothDialog(context);
+                          });
+       
+                          if (isBluetoothEnable) {
+                            // vessel!.add(widget.vessel!);
+                            await locationPermissions();
+                          } else {
+                            showBluetoothDialog(context);
+                          }
+                        }
+                      }
+                    }
+                  }
+                  else if(await Permission.locationAlways.isPermanentlyDenied)
+                  {
+                    if(Platform.isIOS)
+                    {
+                      Permission.locationAlways.request();
+       
+                      PermissionStatus status = await Permission.locationAlways.request().catchError((onError){
+                        Utils.showSnackBar(context,
+                            scaffoldKey: scaffoldKey,
+                            message: "Location permissions are denied without permissions we are unable to start the trip");
+       
+                        Future.delayed(Duration(seconds: 3),
+                                () async {
+                              await openAppSettings();
+                            });
+                        return PermissionStatus.denied;
                       });
+       
+                      if(status == PermissionStatus.denied || status == PermissionStatus.permanentlyDenied)
+                      {
+                        Utils.showSnackBar(context,
+                            scaffoldKey: scaffoldKey,
+                            message: "Location permissions are denied without permissions we are unable to start the trip");
+       
+                        Future.delayed(Duration(seconds: 3),
+                                () async {
+                              await openAppSettings();
+                            });
+                      }
+                    }else
+                    {
+                      if (!isLocationDialogBoxOpen) {
+                        Utils.customPrint("ELSE CONDITION");
+       
+                        showDialog(
+                            context: scaffoldKey.currentContext!,
+                            builder: (BuildContext context) {
+                              isLocationDialogBoxOpen = true;
+                              return LocationPermissionCustomDialog(
+                                isLocationDialogBox: true,
+                                text:
+                                'Always Allow Access to “Location”',
+                                subText:
+                                "To track your trip while you use other apps we need background access to your location",
+                                buttonText: 'Ok',
+                                buttonOnTap: () async {
+                                  Get.back();
+       
+                                  await openAppSettings();
+                                },
+                              );
+                            }).then((value) {
+                          isLocationDialogBoxOpen = false;
+                        });
+                      }
+                    }
+                  }
+                  else {
+                    if (Platform.isIOS) {
+                      await Permission.locationAlways.request();
+       
+                      bool isLocationAlwaysPermitted =
+                      await Permission.locationAlways.isGranted;
+       
+                      Utils.customPrint(
+                          'IOS PERMISSION GIVEN OUTSIDE');
+       
+                      if (isLocationAlwaysPermitted) {
+                        Utils.customPrint('IOS PERMISSION GIVEN 1');
+       
+                        // vessel!.add(widget.vessel!);
+                        await locationPermissions();
+                      } else {
+                        Utils.showSnackBar(context,
+                            scaffoldKey: scaffoldKey,
+                            message:
+                            'Location permissions are denied without permissions we are unable to start the trip');
+       
+                        Future.delayed(Duration(seconds: 3),
+                                () async {
+                              await openAppSettings();
+                            });
+                      }
+                    } else {
+                      if (!isLocationDialogBoxOpen) {
+                        Utils.customPrint("ELSE CONDITION");
+       
+                        showDialog(
+                            context: scaffoldKey.currentContext!,
+                            builder: (BuildContext context) {
+                              isLocationDialogBoxOpen = true;
+                              return LocationPermissionCustomDialog(
+                                isLocationDialogBox: true,
+                                text:
+                                'Always Allow Access to “Location”',
+                                subText:
+                                "To track your trip while you use other apps we need background access to your location",
+                                buttonText: 'Ok',
+                                buttonOnTap: () async {
+                                  Get.back();
+       
+                                  await openAppSettings();
+                                },
+                              );
+                            }).then((value) {
+                          isLocationDialogBoxOpen = false;
+                        });
+                      }
                     }
                   }
                 }
+                // return;
+       
+       
               }
-              // return;
-
-
-            }
-
-            setState(() {
-              print("START BTN CLICKED");
-              isFloatBtnSelect = true;
-              //_bottomNavIndex = 4;
-
-            });
-
-
-          },
-        //  child: isFloatBtnSelect! ? Icon(Icons.play_circle_filled) : Icon(Icons.play_arrow),
-          child: Image.asset('assets/icons/start_btn.png',
-            height: displayHeight(context) * 0.052,
-            width: displayWidth(context) * 0.12,
+       
+              setState(() {
+                print("START BTN CLICKED");
+                isFloatBtnSelect = true;
+                //_bottomNavIndex = 4;
+       
+              });
+       
+       
+            },
+          //  child: isFloatBtnSelect! ? Icon(Icons.play_circle_filled) : Icon(Icons.play_arrow),
+            child: Image.asset('assets/icons/start_btn.png',
+              height: displayHeight(context) * 0.052,
+              width: displayWidth(context) * 0.12,
+            ),
           ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked, */
-        body: screensList[_bottomNavIndex],
-        
-      );
+          floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked, */
+          body: screensList[_bottomNavIndex],
+          
+             ),
+       );
         })
     );
   }
