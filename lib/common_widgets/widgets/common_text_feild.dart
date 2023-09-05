@@ -172,7 +172,7 @@ class _CommonTextFieldState extends State<CommonTextField> {
             focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                     width: 1, color: Colors.red.shade300.withOpacity(0.7)),
-                borderRadius: const BorderRadius.all(Radius.circular(15))),
+                borderRadius: const BorderRadius.all(Radius.circular(8))),
           ),
           onFieldSubmitted: (value) {
             /*if (widget.onFieldSubmitted != null) {
@@ -355,7 +355,7 @@ class _CommonExpandTextFieldState extends State<CommonExpandTextField> {
             focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                     width: 1, color: Colors.red.shade300.withOpacity(0.7)),
-                borderRadius: const BorderRadius.all(Radius.circular(15))),
+                borderRadius: const BorderRadius.all(Radius.circular(8))),
           ),
           onFieldSubmitted: (value) {
 

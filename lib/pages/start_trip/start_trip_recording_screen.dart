@@ -1769,7 +1769,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       //textEditingController.text.isNotEmpty ? numberOfPassengers = int.parse(textEditingController.text) : numberOfPassengers = passengerValue;
                     if(textEditingController.text.isEmpty){
                       setState(() {
-                        numberOfPassengers = passengerValue;
+                        numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
                         sliderMinVal = 11;
                         sliderCount = '10+';
                       });
@@ -1781,7 +1781,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
                         if(numberOfPassengers.toString().length == 3)
                           {
-                            sliderMinVal = numberOfPassengers.toDouble() + 20;
+                            sliderMinVal = (numberOfPassengers.toDouble() + 20) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 20;
                           }
                         else
                           {
@@ -1802,7 +1802,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
                         if(numberOfPassengers.toString().length == 3)
                         {
-                          sliderMinVal = numberOfPassengers.toDouble() + 20;
+                          sliderMinVal = (numberOfPassengers.toDouble() + 20) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 20;
                         }
                         else
                         {
@@ -1822,7 +1822,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     }  */
                     else if(value.length == 0){
                       setState(() {
-                         numberOfPassengers = passengerValue;
+                        numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
                          /*if(numberOfPassengers.toString().length == 3)
                          {
                            sliderMinVal = numberOfPassengers.toDouble() + 20;
@@ -1862,7 +1862,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                           
                             sliderMinVal = 11;
 
-                          numberOfPassengers = passengerValue;
+                          numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
 
                           sliderCount = '10+';
                           isSliderDisable = false;
@@ -1874,7 +1874,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                               int.parse(textEditingController.text);
 
                           if (numberOfPassengers.toString().length == 3) {
-                            sliderMinVal = numberOfPassengers.toDouble() + 20;
+                            sliderMinVal = (numberOfPassengers.toDouble() + 20) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 20;
                           } else {
                             sliderMinVal = numberOfPassengers.toDouble() + 4;
                           }

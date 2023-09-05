@@ -31,7 +31,13 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> countryFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> postalCodeFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> emailFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> mobileNumberFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> createPasswordFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> confirmPasswordFormKey = GlobalKey<FormState>();
+
 
   late TextEditingController countryController;
   late TextEditingController countryCodeController;
@@ -139,154 +145,155 @@ class _SignUpScreenState extends State<SignUpScreen> {
             height: displayHeight(context),
             margin: const EdgeInsets.symmetric(horizontal: 25),
             child: SingleChildScrollView(
-              child: Form(
-                key: formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: displayHeight(context) * 0.06),
-                    Row(
-                      children: [
-                        commonText(
-                            context: context,
-                            text: 'Sign Up with',
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.black,
-                            textSize: displayWidth(context) * 0.036,
-                            textAlign: TextAlign.start),
-                        SizedBox(width: displayWidth(context) * 0.04),
-                        isGoogleSignInBtnClicked
-                            ? Center(
-                                child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    circularProgressColor),
-                              ))
-                            : InkWell(
-                                onTap: () async {
-                                  bool check = await Utils().check(scaffoldKey);
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: displayHeight(context) * 0.06),
+                  Row(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: 'Sign Up with',
+                          fontWeight: FontWeight.w500,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.036,
+                          textAlign: TextAlign.start),
+                      SizedBox(width: displayWidth(context) * 0.04),
+                      isGoogleSignInBtnClicked
+                          ? Center(
+                              child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  circularProgressColor),
+                            ))
+                          : InkWell(
+                              onTap: () async {
+                                bool check = await Utils().check(scaffoldKey);
 
-                                  if (check) {
-                                    GoogleSignInAccount? googleSignInAccount;
+                                if (check) {
+                                  GoogleSignInAccount? googleSignInAccount;
 
-                                    if (await googleSignIn.isSignedIn()) {
-                                      googleSignIn.signOut();
-                                      googleSignInAccount =
-                                          await googleSignIn.signIn();
-                                    } else {
-                                      googleSignInAccount =
-                                          await googleSignIn.signIn();
-                                    }
+                                  if (await googleSignIn.isSignedIn()) {
+                                    googleSignIn.signOut();
+                                    googleSignInAccount =
+                                        await googleSignIn.signIn();
+                                  } else {
+                                    googleSignInAccount =
+                                        await googleSignIn.signIn();
+                                  }
 
-                                    if (googleSignInAccount == null) {
-                                      // TODO handle
+                                  if (googleSignInAccount == null) {
+                                    // TODO handle
+                                    setState(() {
+                                      isGoogleSignInBtnClicked = false;
+                                    });
+                                  } else {
+                                    try {
+                                      Utils.customPrint(
+                                          'NAME: ${googleSignInAccount.id}');
+                                      Utils.customPrint(
+                                          'Email: ${googleSignInAccount.email}');
+                                      Utils.customPrint(
+                                          'Display Name: ${googleSignInAccount.displayName}');
+                                      Utils.customPrint(
+                                          'PhotoURL: ${googleSignInAccount.photoUrl}');
+                                      Utils.customPrint(
+                                          'ServerAuthCode: ${googleSignInAccount.serverAuthCode}');
+                                      Utils.customPrint(
+                                          'AuthHeaders: ${googleSignInAccount.authHeaders}');
+                                      Utils.customPrint(
+                                          'Google SignIn Account: ${googleSignInAccount.toString()}');
+
+                                      CustomLogger().logWithFile(Level.info, "NAME: ${googleSignInAccount.id} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "Email: ${googleSignInAccount.email} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "Display Name: ${googleSignInAccount.displayName} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "PhotoURL: ${googleSignInAccount.photoUrl} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "ServerAuthCode: ${googleSignInAccount.serverAuthCode} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "AuthHeaders: ${googleSignInAccount.authHeaders} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "Google SignIn Account: ${googleSignInAccount.toString()} -> $page");
+
                                       setState(() {
-                                        isGoogleSignInBtnClicked = false;
+                                        isGoogleSignInBtnClicked = true;
                                       });
-                                    } else {
-                                      try {
-                                        Utils.customPrint(
-                                            'NAME: ${googleSignInAccount.id}');
-                                        Utils.customPrint(
-                                            'Email: ${googleSignInAccount.email}');
-                                        Utils.customPrint(
-                                            'Display Name: ${googleSignInAccount.displayName}');
-                                        Utils.customPrint(
-                                            'PhotoURL: ${googleSignInAccount.photoUrl}');
-                                        Utils.customPrint(
-                                            'ServerAuthCode: ${googleSignInAccount.serverAuthCode}');
-                                        Utils.customPrint(
-                                            'AuthHeaders: ${googleSignInAccount.authHeaders}');
-                                        Utils.customPrint(
-                                            'Google SignIn Account: ${googleSignInAccount.toString()}');
 
-                                        CustomLogger().logWithFile(Level.info, "NAME: ${googleSignInAccount.id} -> $page");
-                                        CustomLogger().logWithFile(Level.info, "Email: ${googleSignInAccount.email} -> $page");
-                                        CustomLogger().logWithFile(Level.info, "Display Name: ${googleSignInAccount.displayName} -> $page");
-                                        CustomLogger().logWithFile(Level.info, "PhotoURL: ${googleSignInAccount.photoUrl} -> $page");
-                                        CustomLogger().logWithFile(Level.info, "ServerAuthCode: ${googleSignInAccount.serverAuthCode} -> $page");
-                                        CustomLogger().logWithFile(Level.info, "AuthHeaders: ${googleSignInAccount.authHeaders} -> $page");
-                                        CustomLogger().logWithFile(Level.info, "Google SignIn Account: ${googleSignInAccount.toString()} -> $page");
-
+                                      commonProvider
+                                          .registerUser(
+                                              context,
+                                              googleSignInAccount.email,
+                                              '',
+                                              "",
+                                              '',
+                                              '',
+                                              '',
+                                              '',
+                                              '',
+                                              true,
+                                              googleSignInAccount.id,
+                                              googleSignInAccount.photoUrl ??
+                                                  '',
+                                              scaffoldKey)
+                                          .then((value) {
                                         setState(() {
-                                          isGoogleSignInBtnClicked = true;
+                                          isGoogleSignInBtnClicked = false;
                                         });
 
-                                        commonProvider
-                                            .registerUser(
-                                                context,
-                                                googleSignInAccount.email,
-                                                '',
-                                                "",
-                                                '',
-                                                '',
-                                                '',
-                                                '',
-                                                '',
-                                                true,
-                                                googleSignInAccount.id,
-                                                googleSignInAccount.photoUrl ??
-                                                    '',
-                                                scaffoldKey)
-                                            .then((value) {
+                                        if (value != null) {
                                           setState(() {
                                             isGoogleSignInBtnClicked = false;
                                           });
 
-                                          if (value != null) {
+                                          if (value.status!) {
                                             setState(() {
-                                              isGoogleSignInBtnClicked = false;
+                                              isGoogleSignInBtnClicked =
+                                                  false;
                                             });
-
-                                            if (value.status!) {
-                                              setState(() {
-                                                isGoogleSignInBtnClicked =
-                                                    false;
-                                              });
-                                              Future.delayed(
-                                                  Duration(seconds: 2), () {
-                                                Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => SignInScreen(calledFrom: 'SignUp'),
-                                                    ),
-                                                    ModalRoute.withName(""));
-                                              });
-                                            } else {
-                                              setState(() {
-                                                isGoogleSignInBtnClicked =
-                                                    false;
-                                              });
-                                            }
+                                            Future.delayed(
+                                                Duration(seconds: 2), () {
+                                              Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => SignInScreen(calledFrom: 'SignUp'),
+                                                  ),
+                                                  ModalRoute.withName(""));
+                                            });
                                           } else {
                                             setState(() {
-                                              isGoogleSignInBtnClicked = false;
+                                              isGoogleSignInBtnClicked =
+                                                  false;
                                             });
                                           }
-                                        }).catchError((e) {
+                                        } else {
                                           setState(() {
                                             isGoogleSignInBtnClicked = false;
                                           });
+                                        }
+                                      }).catchError((e) {
+                                        setState(() {
+                                          isGoogleSignInBtnClicked = false;
                                         });
-                                      } catch (e) {
-                                        Utils.customPrint('EXE: $e');
-                                        CustomLogger().logWithFile(Level.error, "EXE: $e -> $page");
-                                        // TODO handle
-                                      }
+                                      });
+                                    } catch (e) {
+                                      Utils.customPrint('EXE: $e');
+                                      CustomLogger().logWithFile(Level.error, "EXE: $e -> $page");
+                                      // TODO handle
                                     }
                                   }
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(0.0),
-                                  child: Image.asset(
-                                    'assets/images/google_logo.png',
-                                    height: displayHeight(context) * 0.04,
-                                  ),
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(0.0),
+                                child: Image.asset(
+                                  'assets/images/google_logo.png',
+                                  height: displayHeight(context) * 0.04,
                                 ),
                               ),
-                      ],
-                    ),
-                    SizedBox(height: displayHeight(context) * 0.035),
-                    Container(
+                            ),
+                    ],
+                  ),
+                  SizedBox(height: displayHeight(context) * 0.035),
+                  Form(
+                    key: countryFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: Container(
                       margin: EdgeInsets.only(top: 8.0),
                       child: CommonDropDownFormField(
                         context: context,
@@ -326,8 +333,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                       ),
                     ),
-                    SizedBox(height: displayHeight(context) * 0.02),
-                    CommonTextField(
+                  ),
+                  SizedBox(height: displayHeight(context) * 0.02),
+                  Form(
+                    key: postalCodeFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
                         controller: zipCodeController,
                         focusNode: zipCodeFocusNode,
                         labelText: selectedCountry == 'USA'
@@ -361,8 +372,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Utils.customPrint(value);
                           CustomLogger().logWithFile(Level.info, "Zip code or Postal Code $value -> $page");
                         }),
-                    SizedBox(height: displayHeight(context) * 0.02),
-                    CommonTextField(
+                  ),
+                  SizedBox(height: displayHeight(context) * 0.02),
+                  Form(
+                    key: emailFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
                         controller: emailController,
                         focusNode: emailFocusNode,
                         labelText: 'Email\*',
@@ -399,8 +414,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Utils.customPrint(value);
                           CustomLogger().logWithFile(Level.info, "Email $value -> $page");
                         }),
-                    SizedBox(height: displayHeight(context) * 0.02),
-                    CommonTextField(
+                  ),
+                  SizedBox(height: displayHeight(context) * 0.02),
+                  Form(
+                    key: mobileNumberFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
                         controller: phoneController,
                         focusNode: phoneFocusNode,
                         labelText: 'Enter Mobile Number\*',
@@ -430,8 +449,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Utils.customPrint(value);
                           CustomLogger().logWithFile(Level.info, "Mobile Number $value -> $page");
                         }),
-                    SizedBox(height: displayHeight(context) * 0.02),
-                    CommonTextField(
+                  ),
+                  SizedBox(height: displayHeight(context) * 0.02),
+                  Form(
+                    key: createPasswordFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
                         controller: createPasswordController,
                         focusNode: createPasswordFocusNode,
                         labelText: 'Create Password\*',
@@ -462,8 +485,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Utils.customPrint(value);
                           CustomLogger().logWithFile(Level.info, "Create Password $value -> $page");
                         }),
-                    SizedBox(height: displayHeight(context) * 0.02),
-                    CommonTextField(
+                  ),
+                  SizedBox(height: displayHeight(context) * 0.02),
+                  Form(
+                    key: confirmPasswordFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
                         controller: confirmPasswordController,
                         focusNode: confirmPasswordFocusNode,
                         labelText: 'Confirm Password\*',
@@ -497,180 +524,181 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Utils.customPrint(value);
                           CustomLogger().logWithFile(Level.info, "Confirm Password $value -> $page");
                         }),
-                    SizedBox(height: displayHeight(context) * 0.03),
-                    CircularRadioTile(
-                      isChecked: isChecked,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          isChecked = !isChecked;
-                        });},
-                      value: isChecked,
-                      title: RichText(
-                        text: TextSpan(
-                          text: 'By clicking on register you accept',
-                          style: TextStyle(
-                            fontFamily: poppins,
-                            color: Colors.black,
-                            fontSize: displayWidth(context) * 0.03,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ' T&C',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () async {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) {
-                                          return CustomWebView(url:'https://${Urls.terms}');
-                                        }));
-                                  },
-                                style: TextStyle(
-                                    fontFamily: poppins,
-                                    color: Color(0xFF42B5BF),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: displayWidth(context) * 0.032)),
-                            TextSpan(
-                                text: '\nand ',
-                                style: TextStyle(
-                                    fontFamily: poppins,
-                                    color: Colors.black,
-                                    fontSize: displayWidth(context) * 0.03)),
-                            TextSpan(
-                                text: ' Privacy Policy',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () async {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) {
-                                          return CustomWebView(url: 'https://${Urls.privacy}',);
-                                        }));
-                                  },
-                                style: TextStyle(
-                                    fontFamily: poppins,
-                                    color: Color(0xFF42B5BF),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: displayWidth(context) * 0.032)),
-                          ],
+                  ),
+                  SizedBox(height: displayHeight(context) * 0.03),
+                  CircularRadioTile(
+                    isChecked: isChecked,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isChecked = !isChecked;
+                      });},
+                    value: isChecked,
+                    title: RichText(
+                      text: TextSpan(
+                        text: 'By clicking on register you accept',
+                        style: TextStyle(
+                          fontFamily: poppins,
+                          color: Colors.black,
+                          fontSize: displayWidth(context) * 0.03,
+                          fontWeight: FontWeight.w400,
                         ),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: ' T&C',
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                        return CustomWebView(url:'https://${Urls.terms}');
+                                      }));
+                                },
+                              style: TextStyle(
+                                  fontFamily: poppins,
+                                  color: Color(0xFF42B5BF),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: displayWidth(context) * 0.032)),
+                          TextSpan(
+                              text: '\nand ',
+                              style: TextStyle(
+                                  fontFamily: poppins,
+                                  color: Colors.black,
+                                  fontSize: displayWidth(context) * 0.03)),
+                          TextSpan(
+                              text: ' Privacy Policy',
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                        return CustomWebView(url: 'https://${Urls.privacy}',);
+                                      }));
+                                },
+                              style: TextStyle(
+                                  fontFamily: poppins,
+                                  color: Color(0xFF42B5BF),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: displayWidth(context) * 0.032)),
+                        ],
                       ),
                     ),
-                    SizedBox(height: displayHeight(context) * 0.03),
-                    isRegistrationBtnClicked
-                        ? Center(
-                            child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                circularProgressColor),
-                          ))
-                        : CommonButtons.getActionButton(
-                            title: 'Register',
-                            context: context,
-                            fontSize: displayWidth(context) * 0.042,
-                            textColor: Colors.white,
-                            buttonPrimaryColor: buttonBGColor,
-                            borderColor: buttonBGColor,
-                            width: displayWidth(context),
-                            onTap: () async {
-                              if (formKey.currentState!.validate()) {
-                                if(isChecked){
-                                  bool check = await Utils().check(scaffoldKey);
+                  ),
+                  SizedBox(height: displayHeight(context) * 0.03),
+                  isRegistrationBtnClicked
+                      ? Center(
+                          child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              circularProgressColor),
+                        ))
+                      : CommonButtons.getActionButton(
+                          title: 'Register',
+                          context: context,
+                          fontSize: displayWidth(context) * 0.042,
+                          textColor: Colors.white,
+                          buttonPrimaryColor: buttonBGColor,
+                          borderColor: buttonBGColor,
+                          width: displayWidth(context),
+                          onTap: () async {
+                            if (countryFormKey.currentState!.validate() && postalCodeFormKey.currentState!.validate() && emailFormKey.currentState!.validate()
+                            && mobileNumberFormKey.currentState!.validate() && createPasswordFormKey.currentState!.validate() && confirmPasswordFormKey.currentState!.validate()) {
+                              if(isChecked){
+                                bool check = await Utils().check(scaffoldKey);
 
-                                  if (check) {
+                                if (check) {
+                                  setState(() {
+                                    isRegistrationBtnClicked = true;
+                                  });
+
+                                  commonProvider
+                                      .registerUser(
+                                      context,
+                                      emailController.text.toLowerCase().trim(),
+                                      createPasswordController.text.trim(),
+                                      "+1",
+                                      phoneController.text.trim(),
+                                      selectedCountry!,
+                                      zipCodeController.text.trim(),
+                                      "",
+                                      "",
+                                      false,
+                                      "",
+                                      "",
+                                      scaffoldKey)
+                                      .then((value) {
                                     setState(() {
-                                      isRegistrationBtnClicked = true;
+                                      isRegistrationBtnClicked = false;
                                     });
 
-                                    commonProvider
-                                        .registerUser(
-                                        context,
-                                        emailController.text.toLowerCase().trim(),
-                                        createPasswordController.text.trim(),
-                                        "+1",
-                                        phoneController.text.trim(),
-                                        selectedCountry!,
-                                        zipCodeController.text.trim(),
-                                        "",
-                                        "",
-                                        false,
-                                        "",
-                                        "",
-                                        scaffoldKey)
-                                        .then((value) {
+                                    if (value != null) {
                                       setState(() {
                                         isRegistrationBtnClicked = false;
                                       });
 
-                                      if (value != null) {
+                                      if (value.status!) {
                                         setState(() {
                                           isRegistrationBtnClicked = false;
                                         });
 
-                                        if (value.status!) {
-                                          setState(() {
-                                            isRegistrationBtnClicked = false;
-                                          });
-
-                                          Future.delayed(Duration(seconds: 2),
-                                                  () {
-                                                Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => SignInScreen(calledFrom: 'SignUp'),
-                                                    ),
-                                                    ModalRoute.withName(""));
-                                              });
-                                        }
+                                        Future.delayed(Duration(seconds: 2),
+                                                () {
+                                              Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => SignInScreen(calledFrom: 'SignUp'),
+                                                  ),
+                                                  ModalRoute.withName(""));
+                                            });
                                       }
-                                    }).catchError((e) {
-                                      setState(() {
-                                        isRegistrationBtnClicked = false;
-                                      });
+                                    }
+                                  }).catchError((e) {
+                                    setState(() {
+                                      isRegistrationBtnClicked = false;
                                     });
-                                  }
-                                } else{
-                                  Utils.showSnackBar(context,
-                                      scaffoldKey: scaffoldKey, message: "Please accept Terms and Conditions and Privacy Policy.");
+                                  });
                                 }
-
+                              } else{
+                                Utils.showSnackBar(context,
+                                    scaffoldKey: scaffoldKey, message: "Please accept Terms and Conditions and Privacy Policy.");
                               }
-                            }),
-                    SizedBox(
-                      height: displayHeight(context) * 0.02,
+
+                            }
+                          }),
+                  SizedBox(
+                    height: displayHeight(context) * 0.02,
+                  ),
+                  Center(
+                    child: RichText(
+                      text: TextSpan(
+                          text: 'Already have an account?',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: poppins,
+                              fontStyle: FontStyle.normal,
+                              fontSize: displayWidth(context) * 0.032),
+                          children: [
+                            TextSpan(
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () async {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => SignInScreen(calledFrom: 'SignUp'),
+                                        ),
+                                        ModalRoute.withName(""));
+                                  },
+                                text: ' Sign In',
+                                style: TextStyle(
+                                    color: primaryColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: poppins,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: displayWidth(context) * 0.035)),
+                          ]),
                     ),
-                    Center(
-                      child: RichText(
-                        text: TextSpan(
-                            text: 'Already have an account?',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: poppins,
-                                fontStyle: FontStyle.normal,
-                                fontSize: displayWidth(context) * 0.032),
-                            children: [
-                              TextSpan(
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () async {
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => SignInScreen(calledFrom: 'SignUp'),
-                                          ),
-                                          ModalRoute.withName(""));
-                                    },
-                                  text: ' Sign In',
-                                  style: TextStyle(
-                                      color: primaryColor,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: poppins,
-                                      fontStyle: FontStyle.normal,
-                                      fontSize: displayWidth(context) * 0.035)),
-                            ]),
-                      ),
-                    ),
-                    SizedBox(
-                      height: displayHeight(context) * 0.03,
-                    ),
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.03,
+                  ),
+                ],
               ),
             ),
           ),
