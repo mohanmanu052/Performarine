@@ -32,19 +32,19 @@ class AddNewVesselStepOne extends StatefulWidget {
       fuelCapacityFocusNode,
       batteryCapacityFocusNode,
       weightFocusNode;
-   AddNewVesselStepOne({Key? key,
-     this.pageController,
-     this.scaffoldKey,
-     this.addVesselData,
-     this.isEdit,
-     this.nameFocusNode,
-     this.modelFocusNode,
-     this.builderNameFocusNode,
-     this.registrationNumberFocusNode,
-     this.mmsiFocusNode,
-     this.fuelCapacityFocusNode,
-     this.batteryCapacityFocusNode,
-     this.weightFocusNode}) : super(key: key);
+  AddNewVesselStepOne({Key? key,
+    this.pageController,
+    this.scaffoldKey,
+    this.addVesselData,
+    this.isEdit,
+    this.nameFocusNode,
+    this.modelFocusNode,
+    this.builderNameFocusNode,
+    this.registrationNumberFocusNode,
+    this.mmsiFocusNode,
+    this.fuelCapacityFocusNode,
+    this.batteryCapacityFocusNode,
+    this.weightFocusNode}) : super(key: key);
 
   @override
   State<AddNewVesselStepOne> createState() => _AddNewVesselStepOneState();
@@ -92,7 +92,6 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   bool? isBatteryCapacityEnable = false;
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
-  double sliderValue = 0.0;
 
   final statuses = List.generate(
     2,
@@ -111,7 +110,6 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.isEdit! ? sliderValue = 0.35 : sliderValue = 0.05;
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
     });
@@ -134,13 +132,13 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
             widget.addVesselData!.batteryCapacity!.toString();
         weightController.text = widget.addVesselData!.weight!.toString();
         if(widget.addVesselData!.imageURLs != null)
+        {
+          if(widget.addVesselData!.imageURLs!.isNotEmpty)
           {
-            if(widget.addVesselData!.imageURLs!.isNotEmpty)
-              {
-                finalSelectedFiles.add(File(widget.addVesselData!.imageURLs!));
-              }
-
+            finalSelectedFiles.add(File(widget.addVesselData!.imageURLs!));
           }
+
+        }
       }
     }
   }
@@ -182,7 +180,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     }, blueColor),
                   ),
                   Positioned(
-                    top: displayHeight(context) * 0.016,
+                      top: displayHeight(context) * 0.016,
                       left: displayWidth(context) * 0.045,
                       child: uploadingImage(context)
                   )
@@ -207,9 +205,6 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     obscureText: false,
                     onTap: () {},
                     onChanged: (String value) {
-                      setState(() {
-                        sliderValue = 0.10;
-                      });
                     },
                     validator: (value) {
                       if (value!.trim().isEmpty) {
@@ -224,8 +219,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
               ),
               SizedBox(height: displayHeight(context) * 0.015),
               Form(
-                  key: modelFormKey,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                key: modelFormKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: CommonTextField(
                     controller: modelController,
                     focusNode: modelFocusNode,
@@ -241,9 +236,6 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     obscureText: false,
                     onTap: () {},
                     onChanged: (String value) {
-                      setState(() {
-                        sliderValue = 0.15;
-                      });
                     },
                     validator: (value) {
                       if (value!.trim().isEmpty) {
@@ -275,9 +267,6 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     obscureText: false,
                     onTap: () {},
                     onChanged: (String value) {
-                      setState(() {
-                        sliderValue = 0.20;
-                      });
                     },
                     validator: (value) {
                       if (value!.trim().isEmpty) {
@@ -358,9 +347,6 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     obscureText: false,
                     onTap: () {},
                     onChanged: (String value) {
-                      setState(() {
-                        sliderValue = 0.25;
-                      });
                     },
                     validator: (value) {
                       if (value!.trim().isEmpty) {
@@ -458,9 +444,6 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                         obscureText: false,
                         onTap: () {},
                         onChanged: (String value) {
-                          setState(() {
-                            sliderValue = 0.30;
-                          });
                         },
                         validator: (value) {
                           if (value!.trim().isEmpty) {
@@ -501,9 +484,6 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                         obscureText: false,
                         onTap: () {},
                         onChanged: (String value) {
-                          setState(() {
-                            sliderValue = 0.35;
-                          });
                         },
                         validator: (value) {
                           if (value!.trim().isEmpty) {
@@ -523,7 +503,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
 
               Container(
                 margin: EdgeInsets.only(
-                   // bottom: displayHeight(context) * 0.02,
+                  // bottom: displayHeight(context) * 0.02,
                     top: displayHeight(context) * 0.02),
                 child: Column(
                   children: [
@@ -539,11 +519,11 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                           FocusScope.of(context).requestFocus(new FocusNode());
 
                           if (nameFormKey.currentState!.validate() && modelFormKey.currentState!.validate() && builderNameFormKey.currentState!.validate() && regNumberFormKey.currentState!.validate()
-                          && mmsiFormKey.currentState!.validate() && weightFormKey.currentState!.validate() && selectedEngineFormKey.currentState!.validate()
+                              && mmsiFormKey.currentState!.validate() && weightFormKey.currentState!.validate() && selectedEngineFormKey.currentState!.validate()
                               && selectedEngineType!.toLowerCase() == 'hybrid' ? fuelCapacityFormKey.currentState!.validate() && batteryCapacityFormKey.currentState!.validate()
                               : selectedEngineType!.toLowerCase() == 'combustion' ? fuelCapacityFormKey.currentState!.validate() : batteryCapacityFormKey.currentState!.validate()
                           ) {
-                                /*    Utils.customPrint(
+                            /*    Utils.customPrint(
                                 'FINAL SELECTED FILES ${finalSelectedFiles.isEmpty}');
                             CustomLogger().logWithFile(Level.info, "FINAL SELECTED FILES ${finalSelectedFiles.isEmpty} -> $page");
                             // return; */
@@ -636,7 +616,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     fit: BoxFit.cover,
                     image: FileImage(
                       File(finalSelectedFiles[0]
-                          !.path),
+                      !.path),
                     ))),
           ),
           Positioned(
@@ -662,8 +642,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 width: displayWidth(context) * 0.08,
                 height: displayHeight(context) * 0.04,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(30))
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(30))
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -773,7 +753,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
             currentIndex: curIndex,
             connectorThickness: 5,
             children: statuses,
-            value: sliderValue,
+            value: 0.35,
           ),
           SizedBox(
             height: 14,
@@ -790,8 +770,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                       style: TextStyle(
                           fontSize: displayWidth(context) * 0.028,
                           color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: inter
+                          fontWeight: FontWeight.bold,
+                          fontFamily: inter
                       ),
                     ),)),
               Expanded(

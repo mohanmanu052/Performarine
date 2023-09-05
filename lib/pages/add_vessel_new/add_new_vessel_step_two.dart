@@ -30,11 +30,11 @@ class AddNewVesselStepTwo extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final CreateVessel? addVesselData;
   final bool? isEdit;
-   AddNewVesselStepTwo({Key? key,
-     this.pageController,
-     this.scaffoldKey,
-     this.addVesselData,
-     this.isEdit}) : super(key: key);
+  AddNewVesselStepTwo({Key? key,
+    this.pageController,
+    this.scaffoldKey,
+    this.addVesselData,
+    this.isEdit}) : super(key: key);
 
   @override
   State<AddNewVesselStepTwo> createState() => _AddNewVesselStepTwoState();
@@ -85,12 +85,15 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   double lastIndex = -1;
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
-  double sliderValue = 0.5;
+
+  String appendAsInt(double value) {
+    int intValue = value.toInt();
+    return intValue.toString();
+  }
 
   @override
   void initState() {
     super.initState();
-    widget.isEdit! ? sliderValue = 0.9 : sliderValue = 0.5;
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
     });
@@ -100,11 +103,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     if (widget.isEdit!) {
       //debugPrint("IMAGE 1212 ${widget.addVesselData!.imageURLs!}");
       if (widget.addVesselData != null) {
-        freeBoardController.text = widget.addVesselData!.freeBoard!.toString();
-        lengthOverallController.text =
-            widget.addVesselData!.lengthOverall!.toString();
-        moldedBeamController.text = widget.addVesselData!.beam!.toString();
-        moldedDepthController.text = widget.addVesselData!.draft!.toString();
+        freeBoardController.text = appendAsInt(widget.addVesselData!.freeBoard!);
+        lengthOverallController.text = appendAsInt(widget.addVesselData!.lengthOverall!);
+        moldedBeamController.text = appendAsInt(widget.addVesselData!.beam!);
+        moldedDepthController.text = appendAsInt(widget.addVesselData!.draft!);
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
         capacityController.text = widget.addVesselData!.capacity!.toString();
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
@@ -113,9 +115,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     }
 
     if(commonProvider.addVesselRequestModel!.selectedImages != null)
-      {
-        finalSelectedFiles = commonProvider.addVesselRequestModel!.selectedImages!;
-      }
+    {
+      finalSelectedFiles = commonProvider.addVesselRequestModel!.selectedImages!;
+    }
   }
 
   @override
@@ -174,7 +176,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       textColor: blutoothDialogTxtColor,
                       textSize: displayWidth(context) * 0.035,
                       textAlign: TextAlign.start,
-                    fontFamily: outfit
+                      fontFamily: outfit
                   ),
                   SizedBox(height: displayHeight(context) * 0.01),
                   Form(
@@ -196,9 +198,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         obscureText: false,
                         onTap: () {},
                         onChanged: (String value) {
-                          setState(() {
-                            sliderValue = 0.55;
-                          });
                         },
                         validator: (value) {
                           if (value!.trim().isEmpty) {
@@ -231,9 +230,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         obscureText: false,
                         onTap: () {},
                         onChanged: (String value) {
-                          setState(() {
-                            sliderValue = 0.60;
-                          });
                         },
                         validator: (value) {
                           if (value!.trim().isEmpty) {
@@ -265,9 +261,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         obscureText: false,
                         onTap: () {},
                         onChanged: (String value) {
-                          setState(() {
-                            sliderValue = 0.65;
-                          });
                         },
                         validator: (value) {
                           if (value!.trim().isEmpty) {
@@ -300,9 +293,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         obscureText: false,
                         onTap: () {},
                         onChanged: (String value) {
-                          setState(() {
-                            sliderValue = 0.70;
-                          });
                         },
                         validator: (value) {
                           if (value!.trim().isEmpty) {
@@ -324,7 +314,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       textColor: blutoothDialogTxtColor,
                       textSize: displayWidth(context) * 0.035,
                       textAlign: TextAlign.start,
-                    fontFamily: outfit
+                      fontFamily: outfit
                   ),
                   SizedBox(height: displayHeight(context) * 0.02),
                   Form(
@@ -345,9 +335,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         obscureText: false,
                         onTap: () {},
                         onChanged: (String value) {
-                          setState(() {
-                            sliderValue = 0.75;
-                          });
                         },
                         validator: (value) {
                           if (value!.trim().isEmpty) {
@@ -380,9 +367,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         obscureText: false,
                         onTap: () {},
                         onChanged: (String value) {
-                          setState(() {
-                            sliderValue = 0.80;
-                          });
                         },
                         validator: (value) {
                           if (value!.trim().isEmpty) {
@@ -415,9 +399,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         obscureText: false,
                         onTap: () {},
                         onChanged: (String value) {
-                          setState(() {
-                            sliderValue = 0.90;
-                          });
                         },
                         validator: (value) {
                           if (value!.trim().isEmpty) {
@@ -461,7 +442,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           width: displayWidth(context),
                           onTap: () async {
                             if (freeBoardFormKey.currentState!.validate() && lengthFormKey.currentState!.validate() && beamFormKey.currentState!.validate()
-                            && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && capacityFormKey.currentState!.validate()
+                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && capacityFormKey.currentState!.validate()
                                 && builtYearFormKey.currentState!.validate()) {
                               setState(() {
                                 isBtnClicked = true;
@@ -718,7 +699,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
             currentIndex: curIndex,
             connectorThickness: 5,
             children: statuses,
-            value: sliderValue,
+            value: 1,
           ),
           SizedBox(
             height: 14,

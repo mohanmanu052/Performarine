@@ -485,7 +485,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 'assets/images/fuel.png',
                                 width: displayWidth(context) *
                                     0.045,
-                                color: Colors.black,
+                                color: backgroundColor,
                               ),
                               SizedBox(
                                 width: displayWidth(context) *
@@ -497,7 +497,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                   '${vesselData.fuelCapacity!} L'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
+                                  textColor: backgroundColor,
                                   textSize:
                                   displayWidth(context) *
                                       0.03,
@@ -526,7 +526,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                   context: context,
                                   text: vesselData.engineType!,
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
+                                  textColor: backgroundColor,
                                   textSize:
                                   displayWidth(context) *
                                       0.03,
@@ -556,7 +556,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                     width: displayWidth(
                                         context) *
                                         0.027,
-                                    color: Colors.black,
+                                    color: backgroundColor,
                                   )),
                               SizedBox(
                                 width:
@@ -570,7 +570,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                       .toString(),
                                   fontWeight:
                                   FontWeight.w500,
-                                  textColor: Colors.black,
+                                  textColor: backgroundColor,
                                   textSize: displayWidth(
                                       context) *
                                       0.03,
@@ -591,7 +591,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 width:
                                 displayWidth(context) *
                                     0.045,
-                                color: Colors.black,
+                                color: backgroundColor,
                               ),
                               SizedBox(
                                 width:
@@ -604,7 +604,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                       .engineType!,
                                   fontWeight:
                                   FontWeight.w500,
-                                  textColor: Colors.black,
+                                  textColor: backgroundColor,
                                   textSize: displayWidth(
                                       context) *
                                       0.03,
@@ -627,7 +627,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 'assets/images/fuel.png',
                                 width: displayWidth(context) *
                                     0.045,
-                                color: Colors.black,
+                                color: backgroundColor,
                               ),
                               SizedBox(
                                 width: displayWidth(context) *
@@ -642,7 +642,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                       : '${vesselData.fuelCapacity!} L'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
+                                  textColor: backgroundColor,
                                   textSize:
                                   displayWidth(context) *
                                       0.03,
@@ -666,7 +666,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                     width:
                                     displayWidth(context) *
                                         0.027,
-                                    color: Colors.black,
+                                    color: backgroundColor,
                                   )),
                               SizedBox(
                                 width: displayWidth(context) *
@@ -678,7 +678,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                   ' ${vesselData.batteryCapacity!} kw'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
+                                  textColor: backgroundColor,
                                   textSize:
                                   displayWidth(context) *
                                       0.03,
@@ -698,7 +698,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 'assets/images/hybrid_engine.png',
                                 width: displayWidth(context) *
                                     0.045,
-                                color: Colors.black,
+                                color: backgroundColor,
                               ),
                               SizedBox(
                                 width: displayWidth(context) *
@@ -708,7 +708,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                   context: context,
                                   text: vesselData.engineType!,
                                   fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
+                                  textColor: backgroundColor,
                                   textSize:
                                   displayWidth(context) *
                                       0.03,
