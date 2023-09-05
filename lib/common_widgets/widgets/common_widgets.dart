@@ -459,7 +459,8 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                         : SizedBox(),
 
                 Container(
-                  padding: EdgeInsets.only(right: 10, top: 5),
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.only(right: 5, top: 5),
                   //width: displayWidth(context) * 0.28,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -493,7 +494,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               commonText(
                                   context: context,
                                   text:
-                                  '${vesselData.fuelCapacity!}gal'
+                                  '${vesselData.fuelCapacity!} L'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
                                   textColor: backgroundColor,
@@ -515,7 +516,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               Image.asset(
                                 'assets/images/combustion_engine.png',
                                 width: displayWidth(context) * 0.045,
-                                color: backgroundColor,
+                                color: Colors.black,
                               ),
                               SizedBox(
                                 width: displayWidth(context) *
@@ -638,7 +639,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                       .fuelCapacity ==
                                       null
                                       ? '-'
-                                      : '${vesselData.fuelCapacity!}gal'
+                                      : '${vesselData.fuelCapacity!} L'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
                                   textColor: backgroundColor,
@@ -718,7 +719,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                       ),
                     ],
                   ),
-                ),
+                )
               ],
             ),
           ),

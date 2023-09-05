@@ -30,11 +30,11 @@ class AddNewVesselStepTwo extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final CreateVessel? addVesselData;
   final bool? isEdit;
-   AddNewVesselStepTwo({Key? key,
-     this.pageController,
-     this.scaffoldKey,
-     this.addVesselData,
-     this.isEdit}) : super(key: key);
+  AddNewVesselStepTwo({Key? key,
+    this.pageController,
+    this.scaffoldKey,
+    this.addVesselData,
+    this.isEdit}) : super(key: key);
 
   @override
   State<AddNewVesselStepTwo> createState() => _AddNewVesselStepTwoState();
@@ -43,8 +43,16 @@ class AddNewVesselStepTwo extends StatefulWidget {
 class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with AutomaticKeepAliveClientMixin<AddNewVesselStepTwo>{
 
   late GlobalKey<ScaffoldState> scaffoldKey;
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> freeBoardFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> lengthFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> beamFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> draftFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> sizeFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> capacityFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> builtYearFormKey = GlobalKey<FormState>();
   final DatabaseService _databaseService = DatabaseService();
+
+  AutovalidateMode _autoValidate = AutovalidateMode.onUserInteraction;
 
   TextEditingController freeBoardController = TextEditingController();
   TextEditingController lengthOverallController = TextEditingController();
@@ -78,7 +86,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
 
-
   String appendAsInt(double value) {
     int intValue = value.toInt();
     return intValue.toString();
@@ -87,7 +94,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   @override
   void initState() {
     super.initState();
-
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
     });
@@ -109,9 +115,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     }
 
     if(commonProvider.addVesselRequestModel!.selectedImages != null)
-      {
-        finalSelectedFiles = commonProvider.addVesselRequestModel!.selectedImages!;
-      }
+    {
+      finalSelectedFiles = commonProvider.addVesselRequestModel!.selectedImages!;
+    }
   }
 
   @override
@@ -120,7 +126,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
 
     super.build(context);
     return Form(
-      key: formKey,
+      //key: formKey,
+      autovalidateMode: _autoValidate,
       child: Expanded(
         child: SingleChildScrollView(
           child: Column(
@@ -169,116 +176,136 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       textColor: blutoothDialogTxtColor,
                       textSize: displayWidth(context) * 0.035,
                       textAlign: TextAlign.start,
-                    fontFamily: outfit
+                      fontFamily: outfit
                   ),
                   SizedBox(height: displayHeight(context) * 0.01),
-                  CommonTextField(
-                      controller: freeBoardController,
-                      focusNode: freeBoardFocusNode,
-                      labelText: 'Freeboard (ft)',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: TextInputAction.next,
-                      textInputType:
-                      TextInputType.number,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 6,
-                      prefixIcon: null,
-                      requestFocusNode: lengthOverallFocusNode,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {},
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return 'Enter Vessel Freeboard';
-                        }
+                  Form(
+                    key: freeBoardFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
+                        controller: freeBoardController,
+                        focusNode: freeBoardFocusNode,
+                        labelText: 'Freeboard (ft)',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.next,
+                        textInputType:
+                        TextInputType.number,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 6,
+                        prefixIcon: null,
+                        requestFocusNode: lengthOverallFocusNode,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {
+                        },
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter Vessel Freeboard';
+                          }
 
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        Utils.customPrint(value);
-                        CustomLogger().logWithFile(Level.info, "Vessel Freeboard $value -> $page");
-                      }),
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Vessel Freeboard $value -> $page");
+                        }),
+                  ),
                   SizedBox(height: displayHeight(context) * 0.015),
-                  CommonTextField(
-                      controller: lengthOverallController,
-                      focusNode: lengthOverallFocusNode,
-                      labelText: 'Length overall (ft)',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: TextInputAction.next,
-                      textInputType: TextInputType.number,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 6,
-                      prefixIcon: null,
-                      requestFocusNode: moldedBeamFocusNode,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {},
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return 'Enter Vessel Length Overall';
-                        }
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        Utils.customPrint(value);
-                        CustomLogger().logWithFile(Level.info, "Vessel Length Overall $value -> $page");
-                      }),
+                  Form(
+                    key: lengthFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
+                        controller: lengthOverallController,
+                        focusNode: lengthOverallFocusNode,
+                        labelText: 'Length overall (ft)',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.next,
+                        textInputType: TextInputType.number,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 6,
+                        prefixIcon: null,
+                        requestFocusNode: moldedBeamFocusNode,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {
+                        },
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter Vessel Length Overall';
+                          }
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Vessel Length Overall $value -> $page");
+                        }),
+                  ),
                   SizedBox(height: displayHeight(context) * 0.015),
-                  CommonTextField(
-                      controller: moldedBeamController,
-                      focusNode: moldedBeamFocusNode,
-                      labelText: 'Beam (ft)',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: TextInputAction.next,
-                      textInputType: TextInputType.number,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 6,
-                      prefixIcon: null,
-                      requestFocusNode: moldedDepthFocusNode,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {},
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return 'Enter Vessel Beam';
-                        }
+                  Form(
+                    key: beamFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
+                        controller: moldedBeamController,
+                        focusNode: moldedBeamFocusNode,
+                        labelText: 'Beam (ft)',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.next,
+                        textInputType: TextInputType.number,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 6,
+                        prefixIcon: null,
+                        requestFocusNode: moldedDepthFocusNode,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {
+                        },
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter Vessel Beam';
+                          }
 
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        Utils.customPrint(value);
-                        CustomLogger().logWithFile(Level.info, "Vessel Beam $value -> $page");
-                      }),
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Vessel Beam $value -> $page");
+                        }),
+                  ),
                   SizedBox(height: displayHeight(context) * 0.015),
-                  CommonTextField(
-                      controller: moldedDepthController,
-                      focusNode: moldedDepthFocusNode,
-                      labelText: 'Draft (ft)',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: TextInputAction.next,
-                      textInputType: TextInputType.number,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 6,
-                      prefixIcon: null,
-                      requestFocusNode: sizeFocusNode,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {},
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return 'Enter Vessel Draft';
-                        }
+                  Form(
+                    key: draftFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
+                        controller: moldedDepthController,
+                        focusNode: moldedDepthFocusNode,
+                        labelText: 'Draft (ft)',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.next,
+                        textInputType: TextInputType.number,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 6,
+                        prefixIcon: null,
+                        requestFocusNode: sizeFocusNode,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {
+                        },
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter Vessel Draft';
+                          }
 
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        Utils.customPrint(value);
-                        CustomLogger().logWithFile(Level.info, "Vessel Draft $value -> $page");
-                      }),
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Vessel Draft $value -> $page");
+                        }),
+                  ),
                   SizedBox(height: displayHeight(context) * 0.02),
                   commonText(
                       context: context,
@@ -287,93 +314,108 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       textColor: blutoothDialogTxtColor,
                       textSize: displayWidth(context) * 0.035,
                       textAlign: TextAlign.start,
-                    fontFamily: outfit
+                      fontFamily: outfit
                   ),
                   SizedBox(height: displayHeight(context) * 0.02),
-                  CommonTextField(
-                      controller: sizeController,
-                      focusNode: sizeFocusNode,
-                      labelText: 'Size',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: TextInputAction.next,
-                      textInputType: TextInputType.number,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 6,
-                      prefixIcon: null,
-                      requestFocusNode: capacityFocusNode,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {},
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return 'Enter Vessel Size';
-                        }
+                  Form(
+                    key: sizeFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
+                        controller: sizeController,
+                        focusNode: sizeFocusNode,
+                        labelText: 'Size',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.next,
+                        textInputType: TextInputType.number,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 6,
+                        prefixIcon: null,
+                        requestFocusNode: capacityFocusNode,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {
+                        },
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter Vessel Size';
+                          }
 
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        Utils.customPrint(value);
-                        CustomLogger().logWithFile(Level.info, "Vessel Size $value -> $page");
-                      }),
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Vessel Size $value -> $page");
+                        }),
+                  ),
                   SizedBox(height: displayHeight(context) * 0.015),
-                  CommonTextField(
-                      controller: capacityController,
-                      focusNode: capacityFocusNode,
-                      labelText: 'Capacity',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: TextInputAction.next,
-                      textInputType: TextInputType.number,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 6,
-                      prefixIcon: null,
-                      requestFocusNode: builtYearFocusNode,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {},
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return 'Enter Vessel Capacity';
-                        }
+                  Form(
+                    key: capacityFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
+                        controller: capacityController,
+                        focusNode: capacityFocusNode,
+                        labelText: 'Capacity',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.next,
+                        textInputType: TextInputType.number,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 6,
+                        prefixIcon: null,
+                        requestFocusNode: builtYearFocusNode,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {
+                        },
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter Vessel Capacity';
+                          }
 
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        Utils.customPrint(value);
-                        CustomLogger().logWithFile(Level.info, "Vessel Capacity $value -> $page");
-                      }),
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Vessel Capacity $value -> $page");
+                        }),
+                  ),
                   SizedBox(height: displayHeight(context) * 0.015),
-                  CommonTextField(
-                      controller: builtYearController,
-                      focusNode: builtYearFocusNode,
-                      labelText: 'Built Year (YYYY)',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: TextInputAction.done,
-                      textInputType: TextInputType.number,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 4,
-                      prefixIcon: null,
-                      requestFocusNode: null,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {},
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return 'Enter Vessel Built Year';
-                        } else if (int.parse(value) < 1947) {
-                          return 'Please Enter Valid Year';
-                        } else if (int.parse(value) > DateTime.now().year) {
-                          return 'Please Enter Valid Year';
-                        }
+                  Form(
+                    key: builtYearFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
+                        controller: builtYearController,
+                        focusNode: builtYearFocusNode,
+                        labelText: 'Built Year (YYYY)',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.done,
+                        textInputType: TextInputType.number,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 4,
+                        prefixIcon: null,
+                        requestFocusNode: null,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {
+                        },
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter Vessel Built Year';
+                          } else if (int.parse(value) < 1947) {
+                            return 'Please Enter Valid Year';
+                          } else if (int.parse(value) > DateTime.now().year) {
+                            return 'Please Enter Valid Year';
+                          }
 
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        Utils.customPrint(value);
-                        CustomLogger().logWithFile(Level.info, "Built year: $value -> $page");
-                      }),
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Built year: $value -> $page");
+                        }),
+                  ),
                 ],
               ),
               Align(
@@ -399,7 +441,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           borderColor: blueColor,
                           width: displayWidth(context),
                           onTap: () async {
-                            if (formKey.currentState!.validate()) {
+                            if (freeBoardFormKey.currentState!.validate() && lengthFormKey.currentState!.validate() && beamFormKey.currentState!.validate()
+                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && capacityFormKey.currentState!.validate()
+                                && builtYearFormKey.currentState!.validate()) {
                               setState(() {
                                 isBtnClicked = true;
                               });

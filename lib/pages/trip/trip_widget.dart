@@ -468,7 +468,7 @@ class _TripWidgetState extends State<TripWidget> {
                                     width:
                                     displayWidth(context) *
                                         0.28,
-                                    title: 'Upload trip',)),
+                                    title: 'Upload Trip Data',)),
                             ),
                             SizedBox(
                               width: 10,
@@ -669,6 +669,7 @@ class _TripWidgetState extends State<TripWidget> {
           ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'
           : '${tripDir.path}/${tripData.id}.zip',
       "createdAt": tripData.createdAt,
+      "updatedAt": tripData.updatedAt,
       "duration": tripDuration,
       "distance": double.parse(tripDistance),
       "speed": double.parse(tripSpeed),

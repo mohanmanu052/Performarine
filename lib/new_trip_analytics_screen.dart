@@ -458,7 +458,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                   commonText(
                                                       context: context,
                                                       text:
-                                                      '${vesselData!.fuelCapacity!}gal'
+                                                      '${vesselData!.fuelCapacity!} L'
                                                           .toString(),
                                                       fontWeight: FontWeight.w400,
                                                       textColor: Colors.white,
@@ -602,7 +602,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                           .fuelCapacity ==
                                                           null
                                                           ? '-'
-                                                          : '${vesselData!.fuelCapacity!}gal'
+                                                          : '${vesselData!.fuelCapacity!} L'
                                                           .toString(),
                                                       fontWeight: FontWeight.w400,
                                                       textColor: Colors.white,
@@ -1038,9 +1038,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 primaryYAxis: NumericAxis(
                                     isVisible: false, majorGridLines: MajorGridLines(width: 0)),
                                 enableSideBySideSeriesPlacement: true,
-    
                                 legend: Legend(
-                                  offset: Offset(90, -30),
+                                  shouldAlwaysShowScrollbar: false,
+                                 overflowMode: LegendItemOverflowMode.none,
+                                  offset: Offset(80, -30),
                                     isVisible: true,
                                     position: LegendPosition.top,
                                     alignment: ChartAlignment.far),

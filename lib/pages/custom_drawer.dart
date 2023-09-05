@@ -152,7 +152,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InkWell(
+                      /*InkWell(
                         onTap: () {
                           CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
                           Navigator.of(context).pop();
@@ -175,7 +175,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
-                      ),
+                      ),*/
                       InkWell(
                         onTap: () {
                           CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
@@ -568,7 +568,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             style: TextStyle(
                                 decoration: TextDecoration.underline,
                                 fontSize: displayWidth(context) * 0.035,
-                                color: primaryColor,
+                                color: blueColor,
                                 fontWeight: FontWeight.w500)),
                       )
                     ],
@@ -691,10 +691,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 top: 8.0,
                               ),
                               child: isSigningOut
-                                  ? Center(child: CircularProgressIndicator())
+                                  ? Container(
+                                height:  displayHeight(context) * 0.055,
+                                  child: Center(child: CircularProgressIndicator()))
                                   : Center(
                                 child: CommonButtons.getAcceptButton(
-                                    'Sync and Sign Out',
+                                    'Sync & Sign Out',
                                     context,
                                     blueColor, () async {
                                   bool internet =
@@ -847,7 +849,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 child: isUploadStarted
                                     ? Center(
                                   child: Container(
-                                    // width: displayWidth(context) * 0.34,
+                                      height: displayHeight(context) * 0.055,
                                       child: Center(
                                           child:
                                           CircularProgressIndicator())),
@@ -1232,10 +1234,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Go to trip', context, buttonBGColor,
+                                      'Go to trip', context, blueColor,
                                           () async {
 
-                                            Utils.customPrint("Click on GO TO TRIP 1");
+                                        Utils.customPrint("Click on GO TO TRIP 1");
                                         CustomLogger().logWithFile(Level.info, "Click on go to trip 1-> $page");
 
 
@@ -1249,38 +1251,30 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           vesselName = tripData[1];
                                         }
 
-                                            Utils.customPrint("Click on GO TO TRIP 2");
+                                        Utils.customPrint("Click on GO TO TRIP 2");
                                         CustomLogger().logWithFile(Level.info, "Click on go to trip 2-> $page");
 
 
                                         Navigator.of(dialogContext).pop();
 
-                                        /*Navigator.push(
+                                        Navigator.push(
                                           dialogContext,
-                                          MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
-                                              tripId: tripId,
-                                              vesselId: tripData![1],
-                                              tripIsRunningOrNot: runningTrip)),
-                                        );*/
-                                            Navigator.push(
-                                              dialogContext,
-                                              MaterialPageRoute(builder: (context) => TripRecordingScreen(
-                                                  tripId: tripId,
-                                                  vesselId: tripData![1],
-                                                  vesselName: tripData[2],
-                                                  tripIsRunningOrNot: runningTrip)),
-                                            );
+                                          MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                            tripId: tripId,
+                                            vesselId: tripData![1],
+                                            tripIsRunningOrNot: runningTrip,)),
+                                        );
 
                                         Utils.customPrint("Click on GO TO TRIP 3");
-                                            CustomLogger().logWithFile(Level.info, "Click on go to trip 3-> $page");
+                                        CustomLogger().logWithFile(Level.info, "Click on go to trip 3-> $page");
 
                                       },
                                       displayWidth(context) * 0.65,
                                       displayHeight(context) * 0.054,
                                       primaryColor,
                                       Colors.white,
-                                      displayHeight(context) * 0.015,
-                                      buttonBGColor,
+                                      displayHeight(context) * 0.02,
+                                      blueColor,
                                       '',
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -1288,27 +1282,22 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               SizedBox(
                                 height: 15.0,
                               ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Cancel', context, buttonBGColor, () {
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                      displayWidth(context) * 0.65,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      displayHeight(context) * 0.015,
-                                      Colors.white,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Cancel', context, Colors.transparent, () {
+                                  Navigator.of(dialogContext).pop();
+                                },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                        ? Colors.white
+                                        : blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.white,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
 
                             ],

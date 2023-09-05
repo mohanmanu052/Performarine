@@ -621,15 +621,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           commonText(
                                                               context: context,
                                                               text:
-                                                              '${widget.vessel!.capacity}cc',
+                                                              '130 hp',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
                                                               displayWidth(context) * 0.04,
                                                               textAlign: TextAlign.start),
+                                                          SizedBox(height: 2,),
                                                           commonText(
                                                               context: context,
-                                                              text: 'Capacity' ,
+                                                              text: 'Diesel Engine\nPower' ,
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.grey,
                                                               textSize:
@@ -645,16 +646,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         children: [
                                                           commonText(
                                                               context: context,
-                                                              text: widget.vessel!.builtYear
-                                                                  .toString(),
+                                                              text: '320 kW',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
                                                               displayWidth(context) * 0.04,
                                                               textAlign: TextAlign.start),
+                                                          SizedBox(height: 2,),
                                                           commonText(
                                                               context: context,
-                                                              text: 'Built',
+                                                              text: 'Electric Engine\nPower',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.grey,
                                                               textSize:
@@ -668,28 +669,19 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         crossAxisAlignment:
                                                         CrossAxisAlignment.start,
                                                         children: [
-                                                          widget.vessel!.regNumber! == ""
-                                                              ? commonText(
+                                                          commonText(
                                                               context: context,
-                                                              text: '-',
-                                                              fontWeight: FontWeight.w700,
-                                                              textColor: Colors.black,
-                                                              textSize:
-                                                              displayWidth(context) *
-                                                                  0.04,
-                                                              textAlign: TextAlign.start)
-                                                              : commonText(
-                                                              context: context,
-                                                              text: widget.vessel!.regNumber,
+                                                              text: '4500 lb',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
                                                               displayWidth(context) *
                                                                   0.048,
                                                               textAlign: TextAlign.start),
+                                                          SizedBox(height: 2,),
                                                           commonText(
                                                               context: context,
-                                                              text: 'Registration Number',
+                                                              text: 'Displacement',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.grey,
                                                               textSize:
@@ -710,10 +702,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   ),
                                                 ),
                                                 Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Expanded(
+                                                      //flex: 01,
                                                       child: Column(
                                                         crossAxisAlignment:
                                                         CrossAxisAlignment.start,
@@ -721,15 +713,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           commonText(
                                                               context: context,
                                                               text:
-                                                              '${widget.vessel!.weight} Lbs',
+                                                              'Planning',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
                                                               displayWidth(context) * 0.04,
                                                               textAlign: TextAlign.start),
+                                                          SizedBox(height: 2,),
                                                           commonText(
                                                               context: context,
-                                                              text: 'Weight',
+                                                              text: 'Hull Type',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.grey,
                                                               textSize:
@@ -739,31 +732,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       ),
                                                     ),
                                                     Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                        children: [
-                                                          commonText(
-                                                              context: context,
-                                                              text:
-                                                              '${widget.vessel!.vesselSize} hp',
-                                                              fontWeight: FontWeight.w600,
-                                                              textColor: Colors.black,
-                                                              textSize:
-                                                              displayWidth(context) * 0.042,
-                                                              textAlign: TextAlign.start),
-                                                          commonText(
-                                                              context: context,
-                                                              text: 'Size (hp)',
-                                                              fontWeight: FontWeight.w500,
-                                                              textColor: Colors.grey,
-                                                              textSize:
-                                                              displayWidth(context) * 0.024,
-                                                              textAlign: TextAlign.start),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Expanded(
+                                                      flex: 02,
                                                       child: Column(
                                                         crossAxisAlignment:
                                                         CrossAxisAlignment.start,
@@ -787,6 +756,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                               displayWidth(context) *
                                                                   0.04,
                                                               textAlign: TextAlign.start),
+                                                          SizedBox(height: 2,),
                                                           commonText(
                                                               context: context,
                                                               text: 'MMSI',
@@ -814,7 +784,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               ),
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 8,
                             ),
                             Theme(
                               data: Theme.of(context).copyWith(

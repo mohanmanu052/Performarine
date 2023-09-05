@@ -207,7 +207,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                 commonText(
                                                     context: context,
                                                     text:
-                                                    '${widget.vessel!.fuelCapacity!}gal'
+                                                    '${widget.vessel!.fuelCapacity!} L'
                                                         .toString(),
                                                     fontWeight: FontWeight.w500,
                                                     textColor: Colors.white,
@@ -355,7 +355,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                         .fuelCapacity ==
                                                         null
                                                         ? '-'
-                                                        : '${widget.vessel!.fuelCapacity!}gal'
+                                                        : '${widget.vessel!.fuelCapacity!} L'
                                                         .toString(),
                                                     fontWeight: FontWeight.w500,
                                                     textColor: Colors.white,

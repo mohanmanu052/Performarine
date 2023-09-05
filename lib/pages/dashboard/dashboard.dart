@@ -225,10 +225,12 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                         //     value, context, scaffoldKey);
                       }
                     }, (value) {
-                      *//*if (value.length > 3) {
+                      */
+                  /*if (value.length > 3) {
                           future = commonProvider.getSearchData(
                               value, context, scaffoldKey);
-                        }*//*
+                        }*/
+                  /*
                     }, TextInputType.text,
                         textInputAction: TextInputAction.search,
                         enabled: true,

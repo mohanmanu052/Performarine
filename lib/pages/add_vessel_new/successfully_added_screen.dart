@@ -409,7 +409,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                             commonText(
                                                 context: context,
                                                 text:
-                                                '${widget.data!.fuelCapacity!}gal'
+                                                '${widget.data!.fuelCapacity!} L'
                                                     .toString(),
                                                 fontWeight: FontWeight.w400,
                                                 textColor: Colors.white,
@@ -553,7 +553,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                                     .fuelCapacity ==
                                                     null
                                                     ? '-'
-                                                    : '${widget.data!.fuelCapacity!}gal'
+                                                    : '${widget.data!.fuelCapacity!} L'
                                                     .toString(),
                                                 fontWeight: FontWeight.w400,
                                                 textColor: Colors.white,

@@ -79,6 +79,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               child: ZigZagLineWidget()),
           Form(
             key: formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Container(
               height: displayHeight(context),
               margin: const EdgeInsets.symmetric(horizontal: 25),
