@@ -17,7 +17,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
-import 'package:performarine/pages/auth_new/change_password.dart';
+import 'package:performarine/pages/auth/change_password.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
@@ -452,7 +452,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: true)),
+                            builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false)),
                       );
                     },
                     child: commonText(
@@ -473,7 +473,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: true)),
+                            builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false)),
                       );
                     },
                     child: commonText(

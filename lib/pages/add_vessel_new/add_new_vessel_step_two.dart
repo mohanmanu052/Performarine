@@ -77,12 +77,17 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   double lastIndex = -1;
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
-  double sliderValue = 0.5;
+
+
+  String appendAsInt(double value) {
+    int intValue = value.toInt();
+    return intValue.toString();
+  }
 
   @override
   void initState() {
     super.initState();
-    widget.isEdit! ? sliderValue = 0.9 : sliderValue = 0.5;
+
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
     });
@@ -92,11 +97,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     if (widget.isEdit!) {
       //debugPrint("IMAGE 1212 ${widget.addVesselData!.imageURLs!}");
       if (widget.addVesselData != null) {
-        freeBoardController.text = widget.addVesselData!.freeBoard!.toString();
-        lengthOverallController.text =
-            widget.addVesselData!.lengthOverall!.toString();
-        moldedBeamController.text = widget.addVesselData!.beam!.toString();
-        moldedDepthController.text = widget.addVesselData!.draft!.toString();
+        freeBoardController.text = appendAsInt(widget.addVesselData!.freeBoard!);
+        lengthOverallController.text = appendAsInt(widget.addVesselData!.lengthOverall!);
+        moldedBeamController.text = appendAsInt(widget.addVesselData!.beam!);
+        moldedDepthController.text = appendAsInt(widget.addVesselData!.draft!);
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
         capacityController.text = widget.addVesselData!.capacity!.toString();
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
@@ -183,11 +187,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       requestFocusNode: lengthOverallFocusNode,
                       obscureText: false,
                       onTap: () {},
-                      onChanged: (String value) {
-                        setState(() {
-                          sliderValue = 0.55;
-                        });
-                      },
+                      onChanged: (String value) {},
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return 'Enter Vessel Freeboard';
@@ -214,11 +214,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       requestFocusNode: moldedBeamFocusNode,
                       obscureText: false,
                       onTap: () {},
-                      onChanged: (String value) {
-                        setState(() {
-                          sliderValue = 0.60;
-                        });
-                      },
+                      onChanged: (String value) {},
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return 'Enter Vessel Length Overall';
@@ -244,11 +240,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       requestFocusNode: moldedDepthFocusNode,
                       obscureText: false,
                       onTap: () {},
-                      onChanged: (String value) {
-                        setState(() {
-                          sliderValue = 0.65;
-                        });
-                      },
+                      onChanged: (String value) {},
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return 'Enter Vessel Beam';
@@ -275,11 +267,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       requestFocusNode: sizeFocusNode,
                       obscureText: false,
                       onTap: () {},
-                      onChanged: (String value) {
-                        setState(() {
-                          sliderValue = 0.70;
-                        });
-                      },
+                      onChanged: (String value) {},
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return 'Enter Vessel Draft';
@@ -316,11 +304,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       requestFocusNode: capacityFocusNode,
                       obscureText: false,
                       onTap: () {},
-                      onChanged: (String value) {
-                        setState(() {
-                          sliderValue = 0.75;
-                        });
-                      },
+                      onChanged: (String value) {},
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return 'Enter Vessel Size';
@@ -347,11 +331,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       requestFocusNode: builtYearFocusNode,
                       obscureText: false,
                       onTap: () {},
-                      onChanged: (String value) {
-                        setState(() {
-                          sliderValue = 0.80;
-                        });
-                      },
+                      onChanged: (String value) {},
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return 'Enter Vessel Capacity';
@@ -378,11 +358,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       requestFocusNode: null,
                       obscureText: false,
                       onTap: () {},
-                      onChanged: (String value) {
-                        setState(() {
-                          sliderValue = 0.90;
-                        });
-                      },
+                      onChanged: (String value) {},
                       validator: (value) {
                         if (value!.trim().isEmpty) {
                           return 'Enter Vessel Built Year';
@@ -679,7 +655,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
             currentIndex: curIndex,
             connectorThickness: 5,
             children: statuses,
-            value: sliderValue,
+            value: 1,
           ),
           SizedBox(
             height: 14,
