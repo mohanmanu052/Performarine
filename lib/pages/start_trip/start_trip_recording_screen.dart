@@ -79,7 +79,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       getTripId = '',
       bluetoothName = 'LPR';
 
-  int valueHolder = 1, numberOfPassengers = 0, passengerValue = 0;
+  int valueHolder = 1, numberOfPassengers = 1, passengerValue = 0;
 
   bool? isGpsOn, isLPRConnected, isBleOn;
   bool addingDataToDB = false,
@@ -428,7 +428,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                   .toDouble()
                                             ],
                                             max: sliderMinVal,
-                                            min: 0,
+                                            min: 1,
                                             trackBar: FlutterSliderTrackBar(
                                                 activeTrackBarHeight: 4.5,
                                                 inactiveTrackBarHeight:
