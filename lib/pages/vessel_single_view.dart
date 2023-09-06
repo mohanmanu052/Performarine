@@ -701,8 +701,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             Column(
                                               children: [
                                                 Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Expanded(
                                                       child: Column(
@@ -767,7 +767,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                               textColor: Colors.black,
                                                               textSize:
                                                               displayWidth(context) *
-                                                                  0.048,
+                                                                  0.04,
                                                               textAlign: TextAlign.start),
                                                           SizedBox(height: 2,),
                                                           commonText(
@@ -783,14 +783,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     )
                                                   ],
                                                 ),
-                                                Container(
-                                                  margin: const EdgeInsets.symmetric(vertical: 8),
-                                                  child: const Divider(
-                                                    color: Colors.grey,
-                                                    thickness: 1,
-                                                    indent: 1,
-                                                    endIndent: 2,
-                                                  ),
+                                                SizedBox(
+                                                  height: displayHeight(context) * 0.012,
                                                 ),
                                                 Row(
                                                   //mainAxisAlignment: MainAxisAlignment.spaceBetween,

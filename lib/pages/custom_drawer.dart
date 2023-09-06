@@ -658,7 +658,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   context: context,
                                   text:
                                       'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.038,
                                   textAlign: TextAlign.center,
@@ -724,9 +724,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               width: 15.0,
                             ),
                             Container(
-                              margin: EdgeInsets.only(
-                                top: 8.0,
-                              ),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(6),
                                   ),
@@ -745,7 +742,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             Brightness.dark
                                         ? Colors.white
                                         : blueColor,
-                                    displayHeight(context) * 0.018,
+                                    displayHeight(context) * 0.015,
                                     Colors.transparent,
                                     '',
                                     fontWeight: FontWeight.w500),
@@ -809,7 +806,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   commonText(
                                       context: context,
                                       text:
-                                          'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
+                                      'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
                                       fontWeight: FontWeight.w600,
                                       textColor: Colors.black,
                                       textSize: displayWidth(context) * 0.038,
@@ -819,7 +816,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     height: displayHeight(context) * 0.015,
                                   ),
                                   isChangePassword
-                                  ? commonText(
+                                      ? commonText(
                                       context: context,
                                       text:
                                       'Click Upload & Change Password for not loosing local data which is not uploaded',
@@ -827,10 +824,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       textColor: Colors.grey,
                                       textSize: displayWidth(context) * 0.032,
                                       textAlign: TextAlign.center)
-                                  : commonText(
+                                      : commonText(
                                       context: context,
                                       text:
-                                          'Click Upload & Sync for not loosing local data which is not uploaded',
+                                      'Click Upload & Sync for not loosing local data which is not uploaded',
                                       fontWeight: FontWeight.w400,
                                       textColor: Colors.grey,
                                       textSize: displayWidth(context) * 0.032,
@@ -894,48 +891,45 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   width: 15.0,
                                 ),
                                 Container(
-                                  margin: EdgeInsets.only(
-                                    top: 8.0,
-                                  ),
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(6),
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Center(
                                     child: CommonButtons.getAcceptButton(
                                         isChangePassword
                                             ? 'Skip & Change Password'
-                                        : 'Skip & Sync', context, Colors.transparent,
-                                        () {
+                                            : 'Skip & Sync', context, Colors.transparent,
+                                            () {
                                           if(isChangePassword)
-                                            {
-                                              Navigator.of(context).pop();
-                                              Navigator.of(context).pop();
+                                          {
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
 
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => ChangePassword(isChange: true,)),
-                                              );
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => ChangePassword(isChange: true,)),
+                                            );
 
-                                            }else
-                                              {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                      const SyncDataCloudToMobileScreen()),
-                                                );
-                                              }
+                                          }else
+                                          {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                  const SyncDataCloudToMobileScreen()),
+                                            );
+                                          }
 
-                                    },
+                                        },
                                         displayWidth(context) / 1.6,
                                         displayHeight(context) * 0.055,
                                         Colors.transparent,
                                         Theme.of(context).brightness ==
-                                                Brightness.dark
+                                            Brightness.dark
                                             ? Colors.white
                                             : blueColor,
-                                        displayHeight(context) * 0.018,
+                                        displayHeight(context) * 0.015,
                                         Colors.transparent,
                                         '',
                                         fontWeight: FontWeight.w500),

@@ -63,7 +63,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
         bottomNavigationBar: Container(
           margin: EdgeInsets.symmetric(
               horizontal: displayHeight(context) * 0.03,
-              vertical: displayHeight(context) * 0.02),
+              vertical: displayHeight(context) * 0.01),
           child: CommonButtons.getActionButton(
               title: 'View Full Details',
               context: context,
@@ -158,16 +158,16 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
               children: [
 
                 SizedBox(
-                  height: displayHeight(context) * 0.05,
+                  height: displayHeight(context) * 0.04,
                 ),
 
                 Container(
-                    height: displayHeight(context) * 0.1,
+                    height: displayHeight(context) * 0.09,
                     decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(10)),
                     child: Image.asset(
                       'assets/images/success_image.png',
-                      height: displayHeight(context) * 0.28,
+                      height: displayHeight(context) * 0.24,
                     ),),
 
                 SizedBox(
@@ -179,13 +179,13 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     text: widget.isEdit!
                         ? 'Vessel Updated Successfully'
                         : 'Vessel Added Successfully',
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                     textColor: blueColor,
                     textSize: displayWidth(context) * 0.05,
                     textAlign: TextAlign.start),
 
                 SizedBox(
-                  height: displayHeight(context) * 0.02,
+                  height: displayHeight(context) * 0.03,
                 ),
 
                 Stack(
@@ -200,13 +200,15 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                             widget.data!.imageURLs == '[]'
                             ? Stack(
                           children: [
-                            Container(
-                              color: Colors.white,
-                              child: Image.asset(
-                                'assets/images/vessel_default_img.png',
-                                height: displayHeight(context) * 0.24,
-                                width: displayWidth(context),
-                                fit: BoxFit.cover,
+                            Center(
+                              child: Container(
+                                color: Colors.white,
+                                child: Image.asset(
+                                  'assets/images/vessel_default_img.png',
+                                  width: displayWidth(context) * 0.65,
+                                  height: displayHeight(context) * 0.22,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                              Positioned(
@@ -231,7 +233,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                             : Stack(
                               children: [
                                 Container(
-                          height: displayHeight(context) * 0.24,
+                          height: displayHeight(context) * 0.22,
                           width: displayWidth(context),
                           decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
@@ -643,7 +645,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                 ),
 
                 SizedBox(
-                  height: displayHeight(context) * 0.02,
+                  height: displayHeight(context) * 0.015,
                 ),
 
             Container(
@@ -652,7 +654,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                   borderRadius: BorderRadius.all(Radius.circular(15))
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
                 child: Column(
                   children: [
                     Theme(
@@ -885,7 +887,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.01,
+                      height: displayHeight(context) * 0.00,
                     ),
                     Theme(
                       data: Theme.of(context).copyWith(
@@ -958,6 +960,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                             Column(
                               children: [
                                 Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment:
                                   MainAxisAlignment.spaceBetween,
                                   children: [
@@ -969,15 +972,16 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                           commonText(
                                               context: context,
                                               text:
-                                              '${widget.data!.capacity}cc',
+                                              '130 hp',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:
                                               displayWidth(context) * 0.04,
                                               textAlign: TextAlign.start),
+                                          SizedBox(height: 2,),
                                           commonText(
                                               context: context,
-                                              text: 'Capacity',
+                                              text: 'Diesel Engine\nPower' ,
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.grey,
                                               textSize:
@@ -993,16 +997,16 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                         children: [
                                           commonText(
                                               context: context,
-                                              text: widget.data!.builtYear
-                                                  .toString(),
+                                              text: '320 kW',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:
                                               displayWidth(context) * 0.04,
                                               textAlign: TextAlign.start),
+                                          SizedBox(height: 2,),
                                           commonText(
                                               context: context,
-                                              text: 'Built',
+                                              text: 'Electric Engine\nPower',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.grey,
                                               textSize:
@@ -1016,28 +1020,19 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                         children: [
-                                          widget.data!.regNumber! == ""
-                                              ? commonText(
+                                          commonText(
                                               context: context,
-                                              text: '-',
+                                              text: '4500 lb',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:
                                               displayWidth(context) *
                                                   0.04,
-                                              textAlign: TextAlign.start)
-                                              : commonText(
-                                              context: context,
-                                              text: widget.data!.regNumber,
-                                              fontWeight: FontWeight.w700,
-                                              textColor: Colors.black,
-                                              textSize:
-                                              displayWidth(context) *
-                                                  0.048,
                                               textAlign: TextAlign.start),
+                                          SizedBox(height: 2,),
                                           commonText(
                                               context: context,
-                                              text: 'Registration Number',
+                                              text: 'Displacement',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.grey,
                                               textSize:
@@ -1048,20 +1043,14 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                     )
                                   ],
                                 ),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 8),
-                                  child: const Divider(
-                                    color: Colors.grey,
-                                    thickness: 1,
-                                    indent: 1,
-                                    endIndent: 2,
-                                  ),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.012,
                                 ),
                                 Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
+                                      //flex: 01,
                                       child: Column(
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -1069,15 +1058,16 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                           commonText(
                                               context: context,
                                               text:
-                                              '${widget.data!.weight} Lbs',
+                                              'Planning',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:
                                               displayWidth(context) * 0.04,
                                               textAlign: TextAlign.start),
+                                          SizedBox(height: 2,),
                                           commonText(
                                               context: context,
-                                              text: 'Weight',
+                                              text: 'Hull Type',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.grey,
                                               textSize:
@@ -1087,31 +1077,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                       ),
                                     ),
                                     Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          commonText(
-                                              context: context,
-                                              text:
-                                              '${widget.data!.vesselSize} hp',
-                                              fontWeight: FontWeight.w600,
-                                              textColor: Colors.black,
-                                              textSize:
-                                              displayWidth(context) * 0.042,
-                                              textAlign: TextAlign.start),
-                                          commonText(
-                                              context: context,
-                                              text: 'Size (hp)',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.grey,
-                                              textSize:
-                                              displayWidth(context) * 0.024,
-                                              textAlign: TextAlign.start),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
+                                      flex: 02,
                                       child: Column(
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -1135,6 +1101,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                               displayWidth(context) *
                                                   0.04,
                                               textAlign: TextAlign.start),
+                                          SizedBox(height: 2,),
                                           commonText(
                                               context: context,
                                               text: 'MMSI',
@@ -1154,10 +1121,16 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(
+                      height: displayHeight(context) * 0.022,
+                    ),
                   ],
                 ),
               ),
-            )
+            ),
+                SizedBox(
+                  height: displayHeight(context) * 0.01,
+                ),
             /*    Column(
                   children: [
                     SizedBox(
