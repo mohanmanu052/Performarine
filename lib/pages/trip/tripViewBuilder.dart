@@ -95,7 +95,7 @@ class _TripViewListingState extends State<TripViewListing> {
                   child: Center(
                     child: CircularProgressIndicator(
                       valueColor:
-                      AlwaysStoppedAnimation<Color>(circularProgressColor),
+                      AlwaysStoppedAnimation<Color>(blueColor),
                     ),
                   ),
                 );

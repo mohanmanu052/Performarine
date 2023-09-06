@@ -427,7 +427,7 @@ class _TripWidgetState extends State<TripWidget> {
                                             valueColor:
                                             AlwaysStoppedAnimation<
                                                 Color>(
-                                                Colors.blue),
+                                                blueColor),
                                           )))
                                       : CommonButtons
                                       .getTripButton(
@@ -524,7 +524,7 @@ class _TripWidgetState extends State<TripWidget> {
                           ? Center(
                           child: CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                circularProgressColor),
+                                blueColor),
                           ))
                           : Padding(
                             padding: EdgeInsets.only(right: paddingValue),

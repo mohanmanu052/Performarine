@@ -675,7 +675,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                             children: [
                               Center(
                                 child: isEndTripBtnClicked
-                                    ? CircularProgressIndicator()
+                                    ? CircularProgressIndicator(color: blueColor,)
                                     : CommonButtons.getAcceptButton(
                                     'End Trip', context, Colors.transparent,
                                         () async {
