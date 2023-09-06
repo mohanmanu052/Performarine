@@ -693,7 +693,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               child: isSigningOut
                                   ? Container(
                                 height:  displayHeight(context) * 0.055,
-                                  child: Center(child: CircularProgressIndicator()))
+                                  child: Center(child: CircularProgressIndicator(color: blueColor,)))
                                   : Center(
                                 child: CommonButtons.getAcceptButton(
                                     'Sync & Sign Out',
@@ -724,9 +724,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               width: 15.0,
                             ),
                             Container(
-                              margin: EdgeInsets.only(
-                                top: 0.0,
-                              ),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(6),
                                   ),
@@ -784,137 +781,137 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 15, bottom: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                        left: 8.0, right: 8.0, top: 5, bottom: 15),
+                    child: Stack(
                       children: [
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        Center(
-                          child: Image.asset('assets/icons/export_img.png',
-                            //height: displayHeight(context) * 0.2,
-                            width: displayWidth(context) * 0.18,),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: Column(
-                            children: [
-                              commonText(
-                                  context: context,
-                                  text:
-                                      'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
-                                  fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.036,
-                                  textAlign: TextAlign.center,
-                                  fontFamily: inter),
-                              SizedBox(
-                                height: displayHeight(context) * 0.015,
-                              ),
-                              isChangePassword
-                              ? commonText(
-                                  context: context,
-                                  text:
-                                  'Click Upload & Change Password for not loosing local data which is not uploaded',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.grey,
-                                  textSize: displayWidth(context) * 0.032,
-                                  textAlign: TextAlign.center,
-                                  fontFamily: inter)
-                              : commonText(
-                                  context: context,
-                                  text:
-                                      'Click Upload & Sync for not loosing local data which is not uploaded',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.grey,
-                                  textSize: displayWidth(context) * 0.032,
-                                  textAlign: TextAlign.center),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
                         Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              margin: EdgeInsets.only(
-                                top: 8.0,
-                              ),
-                              child: Center(
-                                child: isUploadStarted
-                                    ? Center(
-                                  child: Container(
-                                      height: displayHeight(context) * 0.055,
-                                      child: Center(
-                                          child:
-                                          CircularProgressIndicator())),
-                                )
-                                    : CommonButtons.getAcceptButton(
-                                    isChangePassword
-                                        ? 'Upload & Change Password'
-                                        : 'Upload & Sync',
-                                    context,
-                                    blueColor, () async {
-                                  //  Navigator.of(context).pop();
-
-                                  bool internet =
-                                  await Utils().check(scaffoldKey);
-                                  setState(() {
-                                    isSync = true;
-                                  });
-                                  if (internet) {
-                                    if (mounted) {
-                                      setDialogState(() {
-                                        isUploadStarted = true;
-                                      });
-                                    }
-                                    syncAndSignOut(isChangePassword, context);
-                                  }
-                                },
-                                    displayWidth(context) / 1.6,
-                                    displayHeight(context) * 0.055,
-                                    primaryColor,
-                                    Colors.white,
-                                    displayHeight(context) * 0.018,
-                                    blueColor,
-                                    '',
-                                    fontWeight: FontWeight.w500),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            Center(
+                              child: Image.asset('assets/icons/export_img.png',
+                                //height: displayHeight(context) * 0.2,
+                                width: displayWidth(context) * 0.18,),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              child: Column(
+                                children: [
+                                  commonText(
+                                      context: context,
+                                      text:
+                                      'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
+                                      fontWeight: FontWeight.w600,
+                                      textColor: Colors.black,
+                                      textSize: displayWidth(context) * 0.038,
+                                      textAlign: TextAlign.center,
+                                      fontFamily: inter),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.015,
+                                  ),
+                                  isChangePassword
+                                      ? commonText(
+                                      context: context,
+                                      text:
+                                      'Click Upload & Change Password for not loosing local data which is not uploaded',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.grey,
+                                      textSize: displayWidth(context) * 0.032,
+                                      textAlign: TextAlign.center)
+                                      : commonText(
+                                      context: context,
+                                      text:
+                                      'Click Upload & Sync for not loosing local data which is not uploaded',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.grey,
+                                      textSize: displayWidth(context) * 0.032,
+                                      textAlign: TextAlign.center),
+                                ],
                               ),
                             ),
                             SizedBox(
-                              width: 15.0,
+                              height: displayHeight(context) * 0.01,
                             ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                top: 0.0,
-                              ),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Center(
-                                child: CommonButtons.getAcceptButton(
-                                    isChangePassword
-                                        ? 'Skip & Change Password'
-                                    : 'Skip & Sync', context, Colors.transparent,
-                                    () {
-                                      if(isChangePassword)
-                                        {
-                                          Navigator.of(context).pop();
-                                          Navigator.of(context).pop();
+                            Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(
+                                    top: 8.0,
+                                  ),
+                                  child: Center(
+                                    child: isUploadStarted
+                                        ? Center(
+                                      child: Container(
+                                          height: displayHeight(context) * 0.055,
+                                          child: Center(
+                                              child:
+                                              CircularProgressIndicator(
+                                                color: blueColor,
+                                              ))),
+                                    )
+                                        : CommonButtons.getAcceptButton(
+                                        isChangePassword
+                                            ? 'Upload & Change Password'
+                                            : 'Upload & Sync',
+                                        context,
+                                        blueColor, () async {
+                                      //  Navigator.of(context).pop();
 
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => ChangePassword(isChange: true,)),
-                                          );
+                                      bool internet =
+                                      await Utils().check(scaffoldKey);
+                                      setState(() {
+                                        isSync = true;
+                                      });
+                                      if (internet) {
+                                        if (mounted) {
+                                          setDialogState(() {
+                                            isUploadStarted = true;
+                                          });
+                                        }
+                                        syncAndSignOut(isChangePassword, context);
+                                      }
+                                    },
+                                        displayWidth(context) / 1.6,
+                                        displayHeight(context) * 0.055,
+                                        primaryColor,
+                                        Colors.white,
+                                        displayHeight(context) * 0.018,
+                                        blueColor,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 15.0,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Center(
+                                    child: CommonButtons.getAcceptButton(
+                                        isChangePassword
+                                            ? 'Skip & Change Password'
+                                            : 'Skip & Sync', context, Colors.transparent,
+                                            () {
+                                          if(isChangePassword)
+                                          {
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
 
-                                        }else
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => ChangePassword(isChange: true,)),
+                                            );
+
+                                          }else
                                           {
                                             Navigator.push(
                                               context,
@@ -924,25 +921,46 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             );
                                           }
 
-                                },
-                                    displayWidth(context) / 1.6,
-                                    displayHeight(context) * 0.055,
-                                    Colors.transparent,
-                                    Theme.of(context).brightness ==
+                                        },
+                                        displayWidth(context) / 1.6,
+                                        displayHeight(context) * 0.055,
+                                        Colors.transparent,
+                                        Theme.of(context).brightness ==
                                             Brightness.dark
-                                        ? Colors.white
-                                        : blueColor,
-                                    displayHeight(context) * 0.015,
-                                    Colors.transparent,
-                                    '',
-                                    fontWeight: FontWeight.w500),
-                              ),
+                                            ? Colors.white
+                                            : blueColor,
+                                        displayHeight(context) * 0.015,
+                                        Colors.transparent,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
+                        Positioned(
+                          right: 10,
+                          top: 0,
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,),
+                            child: Center(
+                              child: isUploadStarted
+                                  ? SizedBox()
+                                  : IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(ctx);
+                                  },
+                                  icon:  Icon(Icons.close_rounded, color: buttonBGColor)),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),

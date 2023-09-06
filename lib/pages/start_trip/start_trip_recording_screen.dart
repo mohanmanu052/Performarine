@@ -994,7 +994,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                       valueColor:
                                       AlwaysStoppedAnimation<
                                           Color>(
-                                          circularProgressColor)))
+                                          blueColor)))
                                   : Container(
                                 child: CommonButtons
                                     .getRichTextActionButton(
@@ -3952,7 +3952,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                     width: displayWidth(context) * 0.34,
                                     child: Center(
                                         child:
-                                        CircularProgressIndicator())),
+                                        CircularProgressIndicator(color: blueColor,))),
                               )
                                   : Container(
                                 decoration: BoxDecoration(

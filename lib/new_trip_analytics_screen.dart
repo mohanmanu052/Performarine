@@ -1392,7 +1392,9 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                     isBtnClick ? Center(
                                       child: Container(
                                         width: displayWidth(ctx) * 0.32,
-                                        child: Center(child: CircularProgressIndicator()),
+                                        child: Center(child: CircularProgressIndicator(
+                                          color: blueColor,
+                                        )),
                                       ),
                                     ) :  CommonButtons.getAcceptButton(
                                         'Confirm & Delete', context, deleteTripBtnColor,

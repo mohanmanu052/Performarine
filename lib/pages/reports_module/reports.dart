@@ -833,7 +833,7 @@ childrenValue!.clear();
                         isExpandedTile = !isExpandedTile;
                       });
                     },
-                    collapsedBackgroundColor: dateBackgroundColor,
+                    collapsedBackgroundColor: reportDropdownColor,
                     title: Text(
                       "Search & Filters",
                       style: TextStyle(
@@ -859,202 +859,218 @@ childrenValue!.clear();
                             isVesselDataLoading!
                                 ? Container(
                                     width: displayWidth(context) * 0.8,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButtonFormField2<DropdownItem>(
-                                  isExpanded: true,
-                                  decoration: InputDecoration(
-                                    prefixIcon: Container(
-width: 50,
-                                      height:displayHeight(context) * 0.02 ,
-                                   child: Transform.scale(
-                                      scale: 0.5,
-                                      child: Image.asset('assets/icons/vessels.png',
-                                       height: displayHeight(context) * 0.02,),
-                                    )),
-                                    contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
-
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.transparent),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.transparent),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.red.shade300
-                                                .withOpacity(0.7)),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    errorStyle: TextStyle(
-                                        fontFamily: inter,
-                                        fontSize:
-                                        displayWidth(context) * 0.025),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.red.shade300
-                                                .withOpacity(0.7)),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    fillColor: reportDropdownColor,
-                                    filled: true,
-                                    hintText: "Filter By",
-                                    hintStyle: TextStyle(
-                                        color: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                            ? "Filter By" == 'User SubRole'
-                                            ? Colors.black54
-                                            : Colors.white
-                                            : Colors.black,
-                                        fontSize:
-                                        displayWidth(context) * 0.034,
-                                        fontFamily: outfit,
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                  hint: Container(
-                                    alignment: Alignment.centerLeft,
-                                    padding:EdgeInsets.only(left: 8),
-                                                                                                                   
-
-                                    child: Text(
-                                      'Select Vessel',
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .brightness ==
+                              child: IgnorePointer(
+                                ignoring: isBtnClick??false,
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButtonFormField2<DropdownItem>(
+                                    
+                                    isExpanded: true,
+                                    decoration: InputDecoration(
+                                                    //errorText: _showDropdownError1 ? 'Select Vessel' : null,
+                              
+                                      prefixIcon: Container(
+                              width: 50,
+                                        height:displayHeight(context) * 0.02 ,
+                                     child: Transform.scale(
+                                        scale: 0.5,
+                                        child: Image.asset('assets/icons/vessels.png',
+                                         height: displayHeight(context) * 0.02,),
+                                      )),
+                                      contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
+                              
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.transparent),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.transparent),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15))),
+                                      errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.red.shade300
+                                                  .withOpacity(0.7)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15))),
+                                      errorStyle: TextStyle(
+                                          fontFamily: inter,
+                                          fontSize:
+                                          displayWidth(context) * 0.025),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.red.shade300
+                                                  .withOpacity(0.7)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15))),
+                                      fillColor: reportDropdownColor,
+                                      filled: true,
+                                      hintText: "Filter By",
+                                      
+                                      hintStyle: TextStyle(
+                                          color: Theme.of(context).brightness ==
                                               Brightness.dark
-                                              ? "Select Vessel" ==
-                                              'User SubRole'
+                                              ? "Filter By" == 'User SubRole'
                                               ? Colors.black54
                                               : Colors.white
-                                              : Colors.black54,
+                                              : Colors.black,
                                           fontSize:
-                                  
-                                          orientation==Orientation.portrait?
+                                          displayWidth(context) * 0.034,
+                                          fontFamily: outfit,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                    hint: Container(
+                                      alignment: Alignment.centerLeft,
+                                      padding:EdgeInsets.only(left: 8),
+                                                                                                                     
+                              
+                                      child: Text(
+                                        'Select Vessel',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                            // color: Theme.of(context)
+                                            //     .brightness ==
+                                            //     Brightness.dark
+                                            //     ? "Select Vessel" ==
+                                            //     'User SubRole'
+                                            //     ? Colors.black54
+                                            //     : Colors.white
+                                            //     : Colors.black54,
+                                            fontSize:
+                                    
+                                            orientation==Orientation.portrait?
+                                            displayWidth(context) *
+                                                0.032:displayWidth(context) *
+                                                0.022
+                                            ,
+                                            fontFamily: outfit,
+                                            fontWeight: FontWeight.w400),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    value: selectedValue,
+                                    items: vesselData.map((item) {
+                                      return DropdownMenuItem<
+                                          DropdownItem>(
+                                        value: item,
+                                        child: Padding(
+                                      padding:EdgeInsets.only(left: 8),
+                                          child: Text(
+                                            item.name!,
+                                            style: TextStyle(
+                              
+                                           fontSize:   orientation==Orientation.portrait?
                                           displayWidth(context) *
                                               0.032:displayWidth(context) *
-                                              0.022
-                                          ,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w400),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  value: selectedValue,
-                                  items: vesselData.map((item) {
-                                    return DropdownMenuItem<
-                                        DropdownItem>(
-                                      value: item,
-                                      child: Padding(
-                                    padding:EdgeInsets.only(left: 8),
-                                        child: Text(
-                                          item.name!,
-                                          style: TextStyle(
-
-                                         fontSize:   orientation==Orientation.portrait?
-                                        displayWidth(context) *
-                                            0.032:displayWidth(context) *
-                                            0.022,
-                                               
-                                              color: Theme.of(context)
-                                                  .brightness ==
-                                                  Brightness.dark
-                                                  ? "Select Vessel" ==
-                                                  'User SubRole'
-                                                  ? Colors.black
-                                                  : Colors.white
-                                                  : Colors.black,
-                                              fontWeight:
-                                              FontWeight.w500),
-                                          overflow:
-                                          TextOverflow.ellipsis,
+                                              0.022,
+                                                 
+                                                color: Theme.of(context)
+                                                    .brightness ==
+                                                    Brightness.dark
+                                                    ? "Select Vessel" ==
+                                                    'User SubRole'
+                                                    ? Colors.black
+                                                    : Colors.white
+                                                    : Colors.black,
+                                                fontWeight:
+                                                FontWeight.w500),
+                                            overflow:
+                                            TextOverflow.ellipsis,
+                                          ),
                                         ),
+                                      );
+                                    }).toList(),
+                                    validator: (value) {
+                                      if (value == null) {
+                                        return 'Select Vessel';
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (item) {
+                              
+                                      if(item!=null){
+                                        if (item != null) {
+                                              // Remove error for the first dropdown
+                                              _formKey.currentState?.validate();
+                                            }
+                                      }
+                                      getVesselDetails(item?.id??"");
+                                      Utils.customPrint(
+                                          "id is: ${item?.id} ");
+                                      CustomLogger().logWithFile(
+                                          Level.info,
+                                          "id is: ${item?.id}-> $page");
+                              
+                                      parentValue = false;
+                                      selectedVessel = item!.id;
+                                      selectedVesselName = item.name;
+                              
+                                      if (mounted) {
+                                        setState(() {
+                                          isTripIdListLoading = false;
+                                          isSHowGraph = false;
+                                          avgSpeed = null;
+                                          avgDuration = null;
+                                          avgFuelConsumption = null;
+                                          avgPower = null;
+                                          triSpeedList.clear();
+                                          tripList.clear();
+                                          duration1 = null;
+                                          avgSpeed1 = null;
+                                          fuelUsage = null;
+                                          powerUsage = null;
+                                          finalData.clear();
+                                          durationGraphData.clear();
+                              
+                                          durationColumnSeriesData
+                                              .clear();
+                                          avgSpeedColumnSeriesData
+                                              .clear();
+                                          fuelUsageColumnSeriesData
+                                              .clear();
+                                          powerUsageColumnSeriesData
+                                              .clear();
+                                          selectedTripIdList!.clear();
+                                          selectedTripLabelList!.clear();
+                                        });
+                                      }
+                              
+                                      dateTimeList!.clear();
+                                      children!.clear();
+                                      getTripListData(item.id!);
+                                    },
+                                    buttonStyleData:  ButtonStyleData(
+                                      padding: EdgeInsets.only(right: 0),
+                                    ),
+                                    iconStyleData:  IconStyleData(
+                                      icon: Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        color: Colors.black,
                                       ),
-                                    );
-                                  }).toList(),
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return 'Select Vessel';
-                                    }
-                                    return null;
-                                  },
-                                  onChanged: (item) {
-                                    getVesselDetails(item?.id??"");
-                                    Utils.customPrint(
-                                        "id is: ${item?.id} ");
-                                    CustomLogger().logWithFile(
-                                        Level.info,
-                                        "id is: ${item?.id}-> $page");
-
-                                    parentValue = false;
-                                    selectedVessel = item!.id;
-                                    selectedVesselName = item.name;
-                                    if (mounted) {
-                                      setState(() {
-                                        isTripIdListLoading = false;
-                                        isSHowGraph = false;
-                                        avgSpeed = null;
-                                        avgDuration = null;
-                                        avgFuelConsumption = null;
-                                        avgPower = null;
-                                        triSpeedList.clear();
-                                        tripList.clear();
-                                        duration1 = null;
-                                        avgSpeed1 = null;
-                                        fuelUsage = null;
-                                        powerUsage = null;
-                                        finalData.clear();
-                                        durationGraphData.clear();
-
-                                        durationColumnSeriesData
-                                            .clear();
-                                        avgSpeedColumnSeriesData
-                                            .clear();
-                                        fuelUsageColumnSeriesData
-                                            .clear();
-                                        powerUsageColumnSeriesData
-                                            .clear();
-                                        selectedTripIdList!.clear();
-                                        selectedTripLabelList!.clear();
-                                      });
-                                    }
-
-                                    dateTimeList!.clear();
-                                    children!.clear();
-                                    getTripListData(item.id!);
-                                  },
-                                  buttonStyleData:  ButtonStyleData(
-                                    padding: EdgeInsets.only(right: 0),
-                                  ),
-                                  iconStyleData:  IconStyleData(
-                                    icon: Icon(
-                                      Icons.keyboard_arrow_down_rounded,
-                                      color: Colors.black,
+                                      iconSize: displayHeight(context) * 0.035,
                                     ),
-                                    iconSize: displayHeight(context) * 0.035,
-                                  ),
-                                  dropdownStyleData: DropdownStyleData(
-                                    maxHeight: displayHeight(context) * 0.25,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      // color: backgroundColor,
+                                    dropdownStyleData: DropdownStyleData(
+                                      maxHeight: displayHeight(context) * 0.25,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        // color: backgroundColor,
+                                      ),
+                                      offset: const Offset(0, 0),
+                                      scrollbarTheme: ScrollbarThemeData(
+                                        radius: const Radius.circular(20),
+                                        thickness: MaterialStateProperty.all<double>(6),
+                                        thumbVisibility: MaterialStateProperty.all<bool>(true),
+                                      ),
                                     ),
-                                    offset: const Offset(0, 0),
-                                    scrollbarTheme: ScrollbarThemeData(
-                                      radius: const Radius.circular(20),
-                                      thickness: MaterialStateProperty.all<double>(6),
-                                      thumbVisibility: MaterialStateProperty.all<bool>(true),
+                                    menuItemStyleData: MenuItemStyleData(
+                                      padding: EdgeInsets.symmetric(horizontal: 0),
                                     ),
-                                  ),
-                                  menuItemStyleData: MenuItemStyleData(
-                                    padding: EdgeInsets.symmetric(horizontal: 0),
                                   ),
                                 ),
                               ),
@@ -1076,187 +1092,201 @@ width: 50,
                             ),
                             Container(
                               width: displayWidth(context) * 0.8,
-                              child: DropdownButtonHideUnderline(
-                                
-                                child: DropdownButtonFormField2<String>(
+                              child: IgnorePointer(
+                                ignoring: isBtnClick??false,
+                                child: DropdownButtonHideUnderline(
                                   
-                                  isExpanded: true,
-                                  decoration: InputDecoration(
-                                    prefixIcon: Container(
-                                      height:displayHeight(context) * 0.02 ,
-                                       width:50 ,
-
-                                  child:  Transform.scale(
-                                      scale: 0.5,
-                                      child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
-                                    )),
-                                    contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.transparent),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.transparent),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.red.shade300
-                                                .withOpacity(0.7)),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    errorStyle: TextStyle(
-                                        fontFamily: inter,
-                                        fontSize:
-                                        displayWidth(context) * 0.034,
-                                        
-                                        
-                                        ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1.5,
-                                            color: Colors.red.shade300
-                                                .withOpacity(0.7)),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    fillColor: reportDropdownColor,
-                                    filled: true,
-                                    //hintText: "Filter By",
-                                    hintStyle: TextStyle(
-                                        color: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                            ? "Filter By" == 'User SubRole'
-                                            ? Colors.black54
-                                            : Colors.white
-                                            : Colors.black,
-                                        fontSize:orientation==
-                                    Orientation.portrait?    displayWidth(context) * 0.034:displayWidth(context) * 0.034,
-                                        fontFamily: outfit,
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                  hint: Container(
-                                    alignment: Alignment.centerLeft,
-                                    padding:EdgeInsets.only(left: 8),
-
-                                    child: Text(
-                                      
-                                      'Filter By',
-                                    
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .brightness ==
-                                              Brightness.dark
-                                              ? "Filter By" ==
-                                              'User SubRole'
-                                              ? Colors.black54
-                                              : Colors.white
-                                              : Colors.black54,
+                                  child: DropdownButtonFormField2<String>(
+                              
+                                    isExpanded: true,
+                                    decoration: InputDecoration(
+                                                   // errorText: _showDropdownError2 ? 'Select Filters' : null,
+                              
+                                      prefixIcon: Container(
+                                        height:displayHeight(context) * 0.02 ,
+                                         width:50 ,
+                              
+                                    child:  Transform.scale(
+                                        scale: 0.5,
+                                        child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
+                                      )),
+                                      contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.transparent),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15))),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.transparent),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15))),
+                                      errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.red.shade300
+                                                  .withOpacity(0.7)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15))),
+                                      errorStyle: TextStyle(
+                                          fontFamily: inter,
                                           fontSize:
-                                  
-                                          orientation==Orientation.portrait?
+                                          displayWidth(context) * 0.034,
+                                          
+                                          
+                                          ),
+                                      focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.red.shade300
+                                                  .withOpacity(0.7)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15))),
+                                      fillColor: reportDropdownColor,
+                                      filled: true,
+                                      //hintText: "Filter By",
+                                      hintStyle: TextStyle(
+                                        color: Colors.black,
+                                          // color: Theme.of(context).brightness ==
+                                          //     Brightness.dark
+                                          //     ? "Filter By" == 'User SubRole'
+                                          //     ? Colors.black54
+                                          //     : Colors.white
+                                          //     : Colors.black,
+                                          fontSize:orientation==
+                                      Orientation.portrait?    displayWidth(context) * 0.034:displayWidth(context) * 0.034,
+                                          fontFamily: outfit,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                    hint: Container(
+                                      alignment: Alignment.centerLeft,
+                                      padding:EdgeInsets.only(left: 8),
+                              
+                                      child: Text(
+                                        
+                                        'Filter By',
+                                      
+                                        style: TextStyle(
+                              color: Colors.black,
+                                            // color: Theme.of(context)
+                                            //     .brightness ==
+                                            //     Brightness.dark
+                                            //     ? "Filter By" ==
+                                            //     'User SubRole'
+                                            //     ? Colors.black54
+                                            //     : Colors.white
+                                            //     : Colors.black54,
+                                            fontSize:
+                                    
+                                            orientation==Orientation.portrait?
+                                            displayWidth(context) *
+                                                0.032:displayWidth(context) *
+                                                0.022
+                                            ,
+                                    
+                                            fontFamily: outfit,
+                                            fontWeight: FontWeight.w400),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    value: selectedFilter,
+                                    items: filters.map((item) {
+                                      return DropdownMenuItem<String>(
+                                        value: item,
+                              
+                                        child: Padding(
+                                      padding:EdgeInsets.only(left: 8),
+                                          child: Text(
+                                            item,
+                                            style: TextStyle(
+                                                                                         fontSize:   orientation==Orientation.portrait?
                                           displayWidth(context) *
                                               0.032:displayWidth(context) *
-                                              0.022
-                                          ,
-                                  
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w400),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  value: selectedFilter,
-                                  items: filters.map((item) {
-                                    return DropdownMenuItem<String>(
-                                      value: item,
-                                      child: Padding(
-                                    padding:EdgeInsets.only(left: 8),
-                                        child: Text(
-                                          item,
-                                          style: TextStyle(
-                                                                                       fontSize:   orientation==Orientation.portrait?
-                                        displayWidth(context) *
-                                            0.032:displayWidth(context) *
-                                            0.022,
-
-                                              // fontSize: displayWidth(context) *
-                                              //     0.0346,
-                                              color: Theme.of(context)
-                                                  .brightness ==
-                                                  Brightness.dark
-                                                  ? "Filter by" ==
-                                                  'User SubRole'
-                                                  ? Colors.black
-                                                  : Colors.white
-                                                  : Colors.black,
-                                              fontWeight: FontWeight.w500),
-                                          overflow: TextOverflow.ellipsis,
+                                              0.022,
+                              
+                                                // fontSize: displayWidth(context) *
+                                                //     0.0346,
+                                                color: Theme.of(context)
+                                                    .brightness ==
+                                                    Brightness.dark
+                                                    ? "Filter by" ==
+                                                    'User SubRole'
+                                                    ? Colors.black
+                                                    : Colors.white
+                                                    : Colors.black,
+                                                fontWeight: FontWeight.w500),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
                                         ),
+                                      );
+                                    }).toList(),
+                                    validator: (value) {
+                                      if (value == null) {
+                                        return 'Select Filters';
+                                      }
+                                      return null;
+                                    },
+                                    onChanged: (item) {
+                                            if (item != null) {
+                                              // Remove error for the second dropdown
+                                              _formKey.currentState?.validate();
+                                            }
+                              
+                                      
+                                      if (item == "Filter by Date") {
+                                        setState(() {
+                                          selectedCaseType = 1;
+                                          isSHowGraph = false;
+                                          Utils.customPrint(
+                                              "selectedCaseType: $selectedCaseType ");
+                                          CustomLogger().logWithFile(Level.info,
+                                              "selectedCaseType: $selectedCaseType-> $page");
+                                          selectedTripsAndDateString =
+                                          "Date Range";
+                                        });
+                                      } else if (item == "Filter by Trips") {
+                                        setState(() {
+                                          selectedCaseType = 2;
+                                          selectedTripsAndDateDetails = "";
+                                          isSHowGraph = false;
+                                          Utils.customPrint(
+                                              "selectedCaseType: $selectedCaseType ");
+                                          CustomLogger().logWithFile(Level.info,
+                                              "selectedCaseType: $selectedCaseType-> $page");
+                                          selectedTripsAndDateString =
+                                          "Selected Trips";
+                                        });
+                                      }
+                                    },
+                                    buttonStyleData:  ButtonStyleData(
+                                      padding: EdgeInsets.only(right: 0),
+                                    ),
+                                    iconStyleData:  IconStyleData(
+                                      icon: Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        color: Colors.black,
                                       ),
-                                    );
-                                  }).toList(),
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return 'Select Filters';
-                                    }
-                                    return null;
-                                  },
-                                  onChanged: (item) {
-                                    if (item == "Filter by Date") {
-                                      setState(() {
-                                        selectedCaseType = 1;
-                                        isSHowGraph = false;
-                                        Utils.customPrint(
-                                            "selectedCaseType: $selectedCaseType ");
-                                        CustomLogger().logWithFile(Level.info,
-                                            "selectedCaseType: $selectedCaseType-> $page");
-                                        selectedTripsAndDateString =
-                                        "Date Range";
-                                      });
-                                    } else if (item == "Filter by Trips") {
-                                      setState(() {
-                                        selectedCaseType = 2;
-                                        selectedTripsAndDateDetails = "";
-                                        isSHowGraph = false;
-                                        Utils.customPrint(
-                                            "selectedCaseType: $selectedCaseType ");
-                                        CustomLogger().logWithFile(Level.info,
-                                            "selectedCaseType: $selectedCaseType-> $page");
-                                        selectedTripsAndDateString =
-                                        "Selected Trips";
-                                      });
-                                    }
-                                  },
-                                  buttonStyleData:  ButtonStyleData(
-                                    padding: EdgeInsets.only(right: 0),
-                                  ),
-                                  iconStyleData:  IconStyleData(
-                                    icon: Icon(
-                                      Icons.keyboard_arrow_down_rounded,
-                                      color: Colors.black,
+                                      iconSize: displayHeight(context) * 0.035,
                                     ),
-                                    iconSize: displayHeight(context) * 0.035,
-                                  ),
-                                  dropdownStyleData: DropdownStyleData(
-                                    maxHeight: displayHeight(context) * 0.25,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      // color: backgroundColor,
+                                    dropdownStyleData: DropdownStyleData(
+                                      maxHeight: displayHeight(context) * 0.25,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        // color: backgroundColor,
+                                      ),
+                                      offset: const Offset(0, 0),
+                                      scrollbarTheme: ScrollbarThemeData(
+                                        radius: const Radius.circular(20),
+                                        thickness: MaterialStateProperty.all<double>(6),
+                                        thumbVisibility: MaterialStateProperty.all<bool>(true),
+                                      ),
                                     ),
-                                    offset: const Offset(0, 0),
-                                    scrollbarTheme: ScrollbarThemeData(
-                                      radius: const Radius.circular(20),
-                                      thickness: MaterialStateProperty.all<double>(6),
-                                      thumbVisibility: MaterialStateProperty.all<bool>(true),
+                                    menuItemStyleData: MenuItemStyleData(
+                                      padding: EdgeInsets.symmetric(horizontal: 0),
                                     ),
-                                  ),
-                                  menuItemStyleData: MenuItemStyleData(
-                                    padding: EdgeInsets.symmetric(horizontal: 0),
                                   ),
                                 ),
                               ),
@@ -1279,7 +1309,7 @@ width: 50,
                           ? Container(
                               child: Center(
                                 child: CircularProgressIndicator(
-                                  color: circularProgressColor,
+                                  color: blueColor,
                                 ),
                               ),
                             )
@@ -1411,6 +1441,8 @@ width: 50,
                                           }
                                         }
                                       }
+                                    }
+                                    else{
                                     }
                                   },
 
@@ -1924,7 +1956,7 @@ width: 50,
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Avg Speed (KT/h)',
+                child: Text('Avg Speed (Kt/h)',
                     style: TextStyle(color: tableHeaderColor),
                     textAlign: TextAlign.center),
               ),
@@ -2233,7 +2265,7 @@ width: 50,
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('KT/h',
+                  Text('Kt/h',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2308,7 +2340,7 @@ width: 50,
               ),
               plotBands: <PlotBand>[
                 PlotBand(
-                  text: 'avg ${avgSpeed}KT/h',
+                  text: 'avg ${avgSpeed}Kt/h',
                   isVisible: true,
                   start: avgSpeed,
                   end: avgSpeed,
@@ -2428,7 +2460,7 @@ width: 50,
                 fontFamily: poppins,
               )),
           primaryYAxis: NumericAxis(
-              labelFormat: '{value} L',
+              labelFormat: '{value}',
               axisLine: AxisLine(width: 2),
               title: AxisTitle(
                   text: 'Liters',
@@ -2625,7 +2657,7 @@ width: 50,
                     height: displayWidth(context) * 0.1,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: dateBackgroundColor),
+                        color: reportDropdownColor),
                     child: Padding(
                       padding: EdgeInsets.only(
                           left: displayWidth(context) * 0.04,
@@ -2672,7 +2704,8 @@ width: 50,
                     height: displayWidth(context) * 0.1,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: dateBackgroundColor),
+                        color: reportDropdownColor
+                        ),
                     child: Padding(
                       padding: EdgeInsets.only(
                           left: displayWidth(context) * 0.038,
@@ -2737,7 +2770,9 @@ width: 50,
                         child: Text(
                           "Select Start Date",
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
+                              fontSize: 16, fontWeight: FontWeight.w700,
+                              fontFamily: 'DM Sans'
+                              ),
                         ),
                       ),
                     ),
@@ -2746,74 +2781,102 @@ width: 50,
                     padding: EdgeInsets.only(
                         left: displayWidth(context) * 0.045,
                         right: displayWidth(context) * 0.045),
-                    child: TableCalendar(
-                      daysOfWeekVisible: true,
-                      focusedDay: selectedDateForStartDate,
-                      firstDay: firstDate,
-                      lastDay: lastDate,
-                      onFormatChanged: (CalendarFormat _format) {},
-                      calendarBuilders: CalendarBuilders(
-                        selectedBuilder: (context, date, events) => Container(
-                            margin: const EdgeInsets.all(5.0),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                shape: BoxShape.circle),
-                            child: Text(
-                              date.day.toString(),
-                              style: TextStyle(color: Colors.white),
-                            )),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)
+                        )
                       ),
-                      calendarStyle: CalendarStyle(
-                          todayDecoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.blue,
+                      child: TableCalendar(
+                        
+                        
+                        daysOfWeekVisible: true,
+                        focusedDay: selectedDateForStartDate,
+                        firstDay: firstDate,
+                        lastDay: lastDate,
+                        
+                        onFormatChanged: (CalendarFormat _format) {},
+                        calendarBuilders: CalendarBuilders(
+                          
+                          selectedBuilder: (context, date, events) => Container(
+                              margin: const EdgeInsets.all(5.0),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: blueColor,
+                                  borderRadius: BorderRadius.circular(15)
+                                  //shape: BoxShape.circle
+                                  
+                                  ),
+                              child: Text(
+                                date.day.toString(),
+                                style: TextStyle(color: Colors.white),
                               )),
-                          isTodayHighlighted: true,
-                          selectedDecoration: BoxDecoration(
-                            color: Colors.blue,
-                            shape: BoxShape.circle,
-                          ),
-                          selectedTextStyle: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22.0,
-                              color: Colors.pink),
-                          todayTextStyle: TextStyle(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 16.0,
-                              color: selectedDateForStartDate == DateTime.now()
-                                  ? Colors.white
-                                  : Colors.blue)),
-                      selectedDayPredicate: (DateTime date) {
-                        return isSameDay(selectedDateForStartDate, date);
-                      },
-                      startingDayOfWeek: StartingDayOfWeek.monday,
-                      onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
-                        setState(() {
-                          isSelectedStartDay = true;
-                          selectedDateForStartDate = selectDay!;
-                          focusedDay = focusDay!;
-                          focusedDayString = focusDay.toString();
-                          pickStartDate = convertIntoMonthDayYear(selectDay);
-                          selectedStartDateFromCal = selectDay;
-
-                          Utils.customPrint("pick start date: $pickStartDate");
-                          CustomLogger().logWithFile(Level.info,
-                              "pick start date: $pickStartDate -> $page");
-                        });
-                        Utils.customPrint("focusedDay: $focusDay");
-                        CustomLogger().logWithFile(
-                            Level.info, "focused Day: $focusedDay -> $page");
-                      },
-                      headerStyle: HeaderStyle(
-                        formatButtonVisible: false,
-                        formatButtonDecoration: BoxDecoration(
-                          color: Colors.brown,
-                          borderRadius: BorderRadius.circular(22.0),
                         ),
-                        formatButtonTextStyle: TextStyle(color: Colors.white),
-                        formatButtonShowsNext: false,
+                        calendarStyle: CalendarStyle(
+                          
+                          
+                                todayDecoration: BoxDecoration(
+borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+
+                                      color: blueColor,
+                                    )),
+                            isTodayHighlighted: true,
+                            selectedDecoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(20),
+                    
+                              // color: blueColor,
+                              // shape: BoxShape.circle,
+                            ),
+                            selectedTextStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22.0,
+                                color: Colors.pink),
+                            todayTextStyle: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16.0,
+                                color: selectedDateForStartDate == DateTime.now()
+                                    ? Colors.white
+                                    : blueColor)),
+                        selectedDayPredicate: (DateTime date) {
+                          return isSameDay(selectedDateForStartDate, date);
+                        },
+                        startingDayOfWeek: StartingDayOfWeek.monday,
+                        onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
+                          setState(() {
+                            isSelectedStartDay = true;
+                            selectedDateForStartDate = selectDay!;
+                            focusedDay = focusDay!;
+                            focusedDayString = focusDay.toString();
+                            pickStartDate = convertIntoMonthDayYear(selectDay);
+                            selectedStartDateFromCal = selectDay;
+                    
+                            Utils.customPrint("pick start date: $pickStartDate");
+                            CustomLogger().logWithFile(Level.info,
+                                "pick start date: $pickStartDate -> $page");
+                          });
+                          Utils.customPrint("focusedDay: $focusDay");
+                          CustomLogger().logWithFile(
+                              Level.info, "focused Day: $focusedDay -> $page");
+                        },
+                        headerStyle: HeaderStyle(
+                                          titleCentered: true,
+                                          
+                                          titleTextStyle: TextStyle(fontSize: 17,
+                                          fontWeight: FontWeight.w600,
+                                          color: blackcolorCalender
+                                          
+                                          ), // Center the month title
+
+                          formatButtonVisible: false,
+                          formatButtonDecoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(22.0),
+                          ),
+                          formatButtonTextStyle: TextStyle(color: Colors.white),
+                          formatButtonShowsNext: false,
+                        ),
                       ),
                     ),
                   ),
@@ -2857,79 +2920,101 @@ width: 50,
                         padding: EdgeInsets.only(
                             left: displayWidth(context) * 0.045,
                             right: displayWidth(context) * 0.045),
-                        child: TableCalendar(
-                          daysOfWeekVisible: true,
-                          focusedDay: selectedDateForEndDate,
-                          firstDay: firstDate,
-                          lastDay: lastDate,
-                          onFormatChanged: (CalendarFormat _format) {},
-                          calendarBuilders: CalendarBuilders(
-                            selectedBuilder: (context, date, events) =>
-                                Container(
-                                    margin: const EdgeInsets.all(5.0),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
-                                        shape: BoxShape.circle),
-                                    child: Text(
-                                      date.day.toString(),
-                                      style: TextStyle(color: Colors.white),
-                                    )),
-                          ),
-                          calendarStyle: CalendarStyle(
-                              todayDecoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.blue,
-                                  )),
-                              isTodayHighlighted: true,
-                              selectedDecoration: BoxDecoration(
-                                color: Colors.blue,
-                                shape: BoxShape.circle,
-                              ),
-                              selectedTextStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 22.0,
-                                  color: Colors.pink),
-                              todayTextStyle: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16.0,
-                                  color:
-                                      selectedDateForEndDate == DateTime.now()
-                                          ? Colors.white
-                                          : Colors.blue)),
-                          selectedDayPredicate: (DateTime date) {
-                            return isSameDay(selectedDateForEndDate, date);
-                          },
-                          startingDayOfWeek: StartingDayOfWeek.monday,
-                          onDaySelected:
-                              (DateTime? selectDay, DateTime? focusDay) {
-                            setState(() {
-                              isSelectedEndDay = true;
-                              selectedDateForEndDate = selectDay!;
-                              lastDayFocused = focusDay!;
-                              lastFocusedDayString = focusDay.toString();
-                              pickEndDate = convertIntoMonthDayYear(selectDay);
-                              selectedEndDateFromCal = selectDay;
-
-                              Utils.customPrint("pick end date: $pickEndDate");
-                              CustomLogger().logWithFile(Level.info,
-                                  "pick end date: $pickEndDate -> $page");
-                            });
-                            Utils.customPrint(
-                                "lastDayFocused: $lastDayFocused");
-                            CustomLogger().logWithFile(Level.info,
-                                "lastDayFocused: $lastDayFocused -> $page");
-                          },
-                          headerStyle: HeaderStyle(
-                            formatButtonVisible: false,
-                            formatButtonDecoration: BoxDecoration(
-                              color: Colors.brown,
-                              borderRadius: BorderRadius.circular(22.0),
+                        child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)
+                        )
+                      ),
+                          child: TableCalendar(
+                            
+                            daysOfWeekVisible: true,
+                            focusedDay: selectedDateForEndDate,
+                            firstDay: firstDate,
+                            lastDay: lastDate,
+                            onFormatChanged: (CalendarFormat _format) {},
+                            calendarBuilders: CalendarBuilders(
+                              selectedBuilder: (context, date, events) =>
+ Container(
+                              margin: const EdgeInsets.all(5.0),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: blueColor,
+                                  borderRadius: BorderRadius.circular(15)
+                                  //shape: BoxShape.circle
+                                  
+                                  ),
+                                      child: Text(
+                                        date.day.toString(),
+                                        style: TextStyle(color: Colors.white),
+                                      )),
                             ),
-                            formatButtonTextStyle:
-                                TextStyle(color: Colors.white),
-                            formatButtonShowsNext: false,
+                            calendarStyle: CalendarStyle(
+                                todayDecoration: BoxDecoration(
+borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+
+                                      color: blueColor,
+                                    )),
+                                isTodayHighlighted: true,
+                                selectedDecoration: BoxDecoration(
+                                  color: blueColor,
+                                  shape: BoxShape.circle,
+                                ),
+                                selectedTextStyle: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22.0,
+                                    color: Colors.pink),
+                                todayTextStyle: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16.0,
+                                    color:
+                                        selectedDateForEndDate == DateTime.now()
+                                            ? Colors.white
+                                            : blueColor)),
+                            selectedDayPredicate: (DateTime date) {
+                              return isSameDay(selectedDateForEndDate, date);
+                            },
+                            startingDayOfWeek: StartingDayOfWeek.monday,
+                            onDaySelected:
+                                (DateTime? selectDay, DateTime? focusDay) {
+                              setState(() {
+                                isSelectedEndDay = true;
+                                selectedDateForEndDate = selectDay!;
+                                lastDayFocused = focusDay!;
+                                lastFocusedDayString = focusDay.toString();
+                                pickEndDate = convertIntoMonthDayYear(selectDay);
+                                selectedEndDateFromCal = selectDay;
+                        
+                                Utils.customPrint("pick end date: $pickEndDate");
+                                CustomLogger().logWithFile(Level.info,
+                                    "pick end date: $pickEndDate -> $page");
+                              });
+                              Utils.customPrint(
+                                  "lastDayFocused: $lastDayFocused");
+                              CustomLogger().logWithFile(Level.info,
+                                  "lastDayFocused: $lastDayFocused -> $page");
+                            },
+                        headerStyle: HeaderStyle(
+                                          titleCentered: true,
+                                          
+                                          titleTextStyle: TextStyle(fontSize: 17,
+                                          fontWeight: FontWeight.w600,
+                                          color: blackcolorCalender
+                                          
+                                          ), // Center the month title
+
+
+                              formatButtonVisible: false,
+                              formatButtonDecoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(22.0),
+                              ),
+                              formatButtonTextStyle:
+                                  TextStyle(color: Colors.white),
+                              formatButtonShowsNext: false,
+                            ),
                           ),
                         ),
                       ),
@@ -2944,6 +3029,7 @@ width: 50,
   Widget? filterByTrip(BuildContext context,Orientation orientation) {
     return isTripIdListLoading!
         ? Container(
+        padding: EdgeInsets.only(bottom:tripIdList!.length != 0? 15:0),
             decoration: BoxDecoration(
                 color: reportTripsListBackColor,
                 borderRadius: BorderRadius.all(
@@ -2952,6 +3038,7 @@ width: 50,
               children: [
                 tripIdList!.length == 0
                     ? Container(
+                      padding: EdgeInsets.all(8),
                         child: commonText(
                             text: 'No Trips available',
                             textSize: displayWidth(context) * 0.030,

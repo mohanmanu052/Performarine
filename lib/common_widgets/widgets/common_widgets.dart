@@ -516,7 +516,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               Image.asset(
                                 'assets/images/combustion_engine.png',
                                 width: displayWidth(context) * 0.045,
-                                color: Colors.black,
+                                color: backgroundColor,
                               ),
                               SizedBox(
                                 width: displayWidth(context) *
