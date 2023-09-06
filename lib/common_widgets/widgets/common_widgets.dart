@@ -430,7 +430,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
           ),
           Positioned(
             top: 10,
-            right: 10,
+            right: 0,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -460,7 +460,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
 
                 Container(
                   alignment: Alignment.centerRight,
-                  padding: EdgeInsets.only(right: 5, top: 5),
+                  padding: EdgeInsets.only(right: 10, top: 5),
                   //width: displayWidth(context) * 0.28,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -724,21 +724,21 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
             ),
           ),
           Positioned(
-            bottom: 10,
+            bottom: 8,
             left: 0,
             right: 0,
             child: Container(
               width: displayWidth(context),
-              //color: Colors.red,
-              margin: const EdgeInsets.only(left: 8, right: 0, bottom: 4),
+              margin: const EdgeInsets.only(left: 8, right: 0, bottom: 0),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     flex: 2,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           vesselData.name == "" ? '-' : vesselData.name!,
@@ -764,43 +764,45 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                   SizedBox(
                     width: displayWidth(context) * 0.04,
                   ),
-                  vesselData.vesselStatus == 0
-                      ? Container(
-                    margin: EdgeInsets.only(
-                      top: 8.0,
-                    ),
-                    child: Card(
-                      color: primaryColor,
-                      elevation: 6,
-                      shadowColor: Colors.black,
-                      child: Center(
-                        child: CommonButtons.getAcceptButton(
-                            'Unretire', context, endTripBtnColor, () async {
-                          showDialogBox(context, vesselData, scaffoldKey);
-                        },
-                            displayWidth(context) * 0.18,
-                            displayHeight(context) * 0.04,
-                            primaryColor,
-                            Colors.white,
-                            displayHeight(context) * 0.014,
-                            endTripBtnColor,
-                            '',
-                            fontWeight: FontWeight.w500),
+                  Container(
+                    child: vesselData.vesselStatus == 0
+                        ? Container(
+                      margin: EdgeInsets.only(
+                        top: 8.0,
                       ),
-                    ),
-                  )
-                      : CommonButtons.getActionButton(
-                      title: 'View Details',
-                      context: context,
-                      fontSize: displayWidth(context) * 0.03,
-                      textColor: Colors.white,
-                      buttonPrimaryColor: blueColor,
-                      borderColor: blueColor,
-                      width: displayWidth(context) * 0.26,
-                      height: displayHeight(context) * 0.045,
-                      onTap: () async {
-                        onTap(vesselData);
-                      }),
+                      child: Card(
+                        color: primaryColor,
+                        elevation: 6,
+                        shadowColor: Colors.black,
+                        child: Center(
+                          child: CommonButtons.getAcceptButton(
+                              'Unretire', context, endTripBtnColor, () async {
+                            showDialogBox(context, vesselData, scaffoldKey);
+                          },
+                              displayWidth(context) * 0.18,
+                              displayHeight(context) * 0.04,
+                              primaryColor,
+                              Colors.white,
+                              displayHeight(context) * 0.014,
+                              endTripBtnColor,
+                              '',
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    )
+                        : CommonButtons.getActionButton(
+                        title: 'View Details',
+                        context: context,
+                        fontSize: displayWidth(context) * 0.03,
+                        textColor: Colors.white,
+                        buttonPrimaryColor: blueColor,
+                        borderColor: blueColor,
+                        width: displayWidth(context) * 0.26,
+                        height: displayHeight(context) * 0.045,
+                        onTap: () async {
+                          onTap(vesselData);
+                        }),
+                  ),
                   SizedBox(
                     width: displayWidth(context) * 0.02,
                   ),

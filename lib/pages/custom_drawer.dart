@@ -658,7 +658,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   context: context,
                                   text:
                                       'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.038,
                                   textAlign: TextAlign.center,
@@ -725,7 +725,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             ),
                             Container(
                               margin: EdgeInsets.only(
-                                top: 8.0,
+                                top: 0.0,
                               ),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(6),
@@ -745,7 +745,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             Brightness.dark
                                         ? Colors.white
                                         : blueColor,
-                                    displayHeight(context) * 0.018,
+                                    displayHeight(context) * 0.015,
                                     Colors.transparent,
                                     '',
                                     fontWeight: FontWeight.w500),
@@ -808,9 +808,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   context: context,
                                   text:
                                       'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.038,
+                                  textSize: displayWidth(context) * 0.036,
                                   textAlign: TextAlign.center,
                                   fontFamily: inter),
                               SizedBox(
@@ -820,11 +820,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               ? commonText(
                                   context: context,
                                   text:
-                                  'If you click on change password, you may loose local data which is not uploaded',
+                                  'Click Upload & Change Password for not loosing local data which is not uploaded',
                                   fontWeight: FontWeight.w400,
                                   textColor: Colors.grey,
                                   textSize: displayWidth(context) * 0.032,
-                                  textAlign: TextAlign.center)
+                                  textAlign: TextAlign.center,
+                                  fontFamily: inter)
                               : commonText(
                                   context: context,
                                   text:
@@ -891,7 +892,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             ),
                             Container(
                               margin: EdgeInsets.only(
-                                top: 8.0,
+                                top: 0.0,
                               ),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(6),
@@ -931,7 +932,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             Brightness.dark
                                         ? Colors.white
                                         : blueColor,
-                                    displayHeight(context) * 0.018,
+                                    displayHeight(context) * 0.015,
                                     Colors.transparent,
                                     '',
                                     fontWeight: FontWeight.w500),

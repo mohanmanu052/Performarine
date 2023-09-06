@@ -44,7 +44,7 @@ class _TripsState extends State<Trips> {
 
                 TripViewListing(
                   scaffoldKey: scaffoldKey,
-                  calledFrom: 'HomePage',
+                  calledFrom: 'tripList',
                   isTripDeleted: ()async{
                   },
                   onTripEnded: (){

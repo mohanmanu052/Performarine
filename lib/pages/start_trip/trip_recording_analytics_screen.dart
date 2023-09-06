@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -29,11 +31,11 @@ import '../feedback_report.dart';
 
 class TripRecordingAnalyticsScreen extends StatefulWidget {
   final bool? tripIsRunningOrNot;
-  final String? vesselId, tripId;
+  final String? vesselId, tripId, calledFrom;
   final bool isAppKilled;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final BuildContext? context;
-  const TripRecordingAnalyticsScreen({super.key, this.scaffoldKey, this.tripIsRunningOrNot, this.vesselId, this.tripId, this.isAppKilled = false, this.context});
+  const TripRecordingAnalyticsScreen({super.key, this.scaffoldKey, this.tripIsRunningOrNot, this.vesselId, this.tripId, this.isAppKilled = false, this.context, this.calledFrom = ''});
 
   @override
   State<TripRecordingAnalyticsScreen> createState() => _TripRecordingAnalyticsScreenState();
@@ -54,10 +56,14 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
   bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false, isEndTripBtnClicked = false, isDataUpdated = false;
 
+  late CommonProvider commonProvider;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    commonProvider = context.read<CommonProvider>();
 
     setState(() {
       tripIsRunning = widget.tripIsRunningOrNot!;
@@ -122,6 +128,9 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
   @override
   Widget build(BuildContext context) {
+
+    commonProvider = context.watch<CommonProvider>();
+
     return Screenshot(
       controller: controller,
       child: Container(
@@ -489,10 +498,34 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                                   DatabaseService().deleteTripFromDB(tripData!
                                       .id!);
 
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                      ModalRoute.withName(""));
+                                  if(widget.calledFrom == 'bottom_nav')
+                                  {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                        ModalRoute.withName(""));
+                                  }
+                                  else if(widget.calledFrom == 'VesselSingleView')
+                                  {
+                                    Navigator.of(context).pop(true);
+                                  }
+                                  else if(widget.calledFrom == 'tripList')
+                                  {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => BottomNavigation(
+                                          tabIndex: commonProvider.bottomNavIndex,
+                                        )),
+                                        ModalRoute.withName(""));
+                                  }
+                                  else
+                                  {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                        ModalRoute.withName(""));
+                                  }
+
                                 }
                               });
                             },
@@ -584,12 +617,33 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
           if(!isTripDeleted)
           {
-            Navigator.pushAndRemoveUntil(
-                widget.context!,
-                MaterialPageRoute(
-                  builder: (context) => BottomNavigation(),
-                ),
-                ModalRoute.withName(""));
+            if(widget.calledFrom == 'bottom_nav')
+            {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => BottomNavigation()),
+                  ModalRoute.withName(""));
+            }
+            else if(widget.calledFrom == 'VesselSingleView')
+            {
+              Navigator.of(context).pop(true);
+            }
+            else if(widget.calledFrom == 'tripList')
+            {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => BottomNavigation(
+                    tabIndex: commonProvider.bottomNavIndex,
+                  )),
+                  ModalRoute.withName(""));
+            }
+            else
+            {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => BottomNavigation()),
+                  ModalRoute.withName(""));
+            }
           }
 
 
@@ -750,10 +804,33 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                                                         DatabaseService().deleteTripFromDB(tripData!
                                                             .id!);
 
-                                                        Navigator.pushAndRemoveUntil(
-                                                            context,
-                                                            MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                            ModalRoute.withName(""));
+                                                        if(widget.calledFrom == 'bottom_nav')
+                                                        {
+                                                          Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                                              ModalRoute.withName(""));
+                                                        }
+                                                        else if(widget.calledFrom == 'VesselSingleView')
+                                                        {
+                                                          Navigator.of(context).pop(true);
+                                                        }
+                                                        else if(widget.calledFrom == 'tripList')
+                                                        {
+                                                          Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => BottomNavigation(
+                                                                tabIndex: commonProvider.bottomNavIndex,
+                                                              )),
+                                                              ModalRoute.withName(""));
+                                                        }
+                                                        else
+                                                        {
+                                                          Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                                              ModalRoute.withName(""));
+                                                        }
                                                       }
                                                     });
                                                   });
