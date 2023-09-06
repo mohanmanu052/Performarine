@@ -452,10 +452,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                     child: commonText(
                                                       context: context,
                                                       text:
-                                                      numberOfPassengers ==
-                                                          01
-                                                          ? ''
-                                                          : '$data',
+                                                      '$data',
                                                       fontWeight:
                                                       FontWeight.w500,
                                                       textColor:
