@@ -8,6 +8,7 @@ const backgroundColor = Color(0xFFFFFFFF);
 const buttonBGColor = Color(0xFF1A3154);
 const circularProgressColor = Color(0xFF1C75BC);
 const blutoothDialogTitleColor = Color(0xFF0F0F11);
+const blackcolorCalender=Color(0xff09101D);
 const blutoothDialogTxtColor = Color(0xFF000000);
 const bluetoothCancelBtnTxtColor = Color(0xFF090909);
 const bluetoothCancelBtnBackColor = Color(0xFFC7CACE);
