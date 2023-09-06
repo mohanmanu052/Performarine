@@ -33,7 +33,9 @@ class _CustomWebViewState extends State<CustomWebView> {
             },
           ),
 
-          isLoading ? Center( child: CircularProgressIndicator(),)
+          isLoading ? Center( child: CircularProgressIndicator(
+            color: blueColor,
+          ),)
               : Container()
         ],
       ),
@@ -65,7 +67,9 @@ class _CustomWebViewState extends State<CustomWebView> {
               });
             },
           ),
-          isLoading ? Center( child: CircularProgressIndicator(),)
+          isLoading ? Center( child: CircularProgressIndicator(
+            color: blueColor,
+          ),)
               : Container()
         ],
       ),

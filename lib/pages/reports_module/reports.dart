@@ -1279,7 +1279,7 @@ width: 50,
                           ? Container(
                               child: Center(
                                 child: CircularProgressIndicator(
-                                  color: circularProgressColor,
+                                  color: blueColor,
                                 ),
                               ),
                             )

@@ -201,7 +201,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: Center(
                               child: CircularProgressIndicator(
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                    circularProgressColor),
+                                    blueColor),
                               ),
                             ),
                           ) :
@@ -420,7 +420,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 child: Center(
                                 child: CircularProgressIndicator(
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                      circularProgressColor),
+                                      blueColor),
                                 )),
                               )
                               : CommonButtons.getActionButton(
