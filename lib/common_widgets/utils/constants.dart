@@ -3,6 +3,7 @@ const poppins = "Poppins";
 const inter = "Inter";
 const reemKufi = "ReemKufiInk";
 const outfit = "Outfit";
+const dmsans="DMSans";
 
 const nauticalMile = 'NM';
 const knot = 'KT';
