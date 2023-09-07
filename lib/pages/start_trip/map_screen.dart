@@ -337,7 +337,7 @@ class _MapScreenState extends State<MapScreen> {
                                         valueColor:
                                         AlwaysStoppedAnimation<
                                             Color>(
-                                            circularProgressColor),
+                                            blueColor),
                                       )),
                                     )
                                     : Padding(
@@ -728,7 +728,7 @@ class _MapScreenState extends State<MapScreen> {
                             children: [
                               Center(
                                 child: isEndTripBtnClicked
-                                    ? CircularProgressIndicator()
+                                    ? CircularProgressIndicator(color: blueColor,)
                                     : CommonButtons.getAcceptButton(
                                     'End Trip', context, Colors.transparent,
                                         () async {

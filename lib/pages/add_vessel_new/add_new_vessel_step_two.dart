@@ -429,7 +429,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                       child: isBtnClicked!
                           ? CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
-                            circularProgressColor),
+                            blueColor),
                       )
                           : CommonButtons.getActionButton(
                           title:

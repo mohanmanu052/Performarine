@@ -259,7 +259,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     child: Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
-                            circularProgressColor),
+                            blueColor),
                       ),
                     ),
                   )

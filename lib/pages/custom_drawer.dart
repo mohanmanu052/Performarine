@@ -635,124 +635,147 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 15, bottom: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
                       children: [
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        Center(
-                          child: Image.asset('assets/icons/export_img.png',
-                          //height: displayHeight(context) * 0.2,
-                          width: displayWidth(context) * 0.18,),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: Column(
-                            children: [
-                              commonText(
-                                  context: context,
-                                  text:
-                                      'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
-                                  fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.038,
-                                  textAlign: TextAlign.center,
-                              fontFamily: inter),
-                              SizedBox(
-                                height: displayHeight(context) * 0.015,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                child: commonText(
-                                    context: context,
-                                    text:
-                                        'Click Sync & Sign Out for not loosing local data which is not uploaded',
-                                    fontWeight: FontWeight.w400,
-                                    textColor: Colors.grey,
-                                    textSize: displayWidth(context) * 0.032,
-                                    textAlign: TextAlign.center,
-                                    fontFamily: inter),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
                         Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              margin: EdgeInsets.only(
-                                top: 8.0,
-                              ),
-                              child: isSigningOut
-                                  ? Container(
-                                height:  displayHeight(context) * 0.055,
-                                  child: Center(child: CircularProgressIndicator(color: blueColor,)))
-                                  : Center(
-                                child: CommonButtons.getAcceptButton(
-                                    'Sync & Sign Out',
-                                    context,
-                                    blueColor, () async {
-                                  bool internet =
-                                  await Utils().check(scaffoldKey);
-
-                                  if (internet) {
-                                    setDialogState(() {
-                                      isSigningOut = true;
-                                    });
-
-                                    syncAndSignOut(false, context);
-                                  }
-                                },
-                                    displayWidth(context) / 1.6,
-                                    displayHeight(context) * 0.055,
-                                    primaryColor,
-                                    Colors.white,
-                                    displayHeight(context) * 0.018,
-                                    blueColor,
-                                    '',
-                                    fontWeight: FontWeight.w500),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            Center(
+                              child: Image.asset('assets/icons/export_img.png',
+                              //height: displayHeight(context) * 0.2,
+                              width: displayWidth(context) * 0.18,),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              child: Column(
+                                children: [
+                                  commonText(
+                                      context: context,
+                                      text:
+                                          'There are some vessel & trips data not sync with cloud, do you want to proceed further?',
+                                      fontWeight: FontWeight.w600,
+                                      textColor: Colors.black,
+                                      textSize: displayWidth(context) * 0.038,
+                                      textAlign: TextAlign.center,
+                                  fontFamily: inter),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.015,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                    child: commonText(
+                                        context: context,
+                                        text:
+                                            'Click Sync & Sign Out for not loosing local data which is not uploaded',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.grey,
+                                        textSize: displayWidth(context) * 0.032,
+                                        textAlign: TextAlign.center,
+                                        fontFamily: inter),
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(
-                              width: 15.0,
+                              height: displayHeight(context) * 0.01,
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
+                            Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(
+                                    top: 8.0,
                                   ),
-                              child: Center(
-                                child: CommonButtons.getAcceptButton(
-                                    'Sign Out', context,  Colors.transparent,
-                                    () async {
-                                  Navigator.of(context).pop();
+                                  child: isSigningOut
+                                      ? Container(
+                                    height:  displayHeight(context) * 0.055,
+                                      child: Center(child: CircularProgressIndicator(color: blueColor,)))
+                                      : Center(
+                                    child: CommonButtons.getAcceptButton(
+                                        'Sync & Sign Out',
+                                        context,
+                                        blueColor, () async {
+                                      bool internet =
+                                      await Utils().check(scaffoldKey);
 
-                                  signOut();
-                                },
-                                    displayWidth(context) / 1.6,
-                                    displayHeight(context) * 0.055,
-                                    primaryColor,
-                                    Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : blueColor,
-                                    displayHeight(context) * 0.015,
-                                    Colors.transparent,
-                                    '',
-                                    fontWeight: FontWeight.w500),
-                              ),
+                                      if (internet) {
+                                        setDialogState(() {
+                                          isSigningOut = true;
+                                        });
+
+                                        syncAndSignOut(false, context);
+                                      }
+                                    },
+                                        displayWidth(context) / 1.6,
+                                        displayHeight(context) * 0.055,
+                                        primaryColor,
+                                        Colors.white,
+                                        displayHeight(context) * 0.018,
+                                        blueColor,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 15.0,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      ),
+                                  child: Center(
+                                    child: CommonButtons.getAcceptButton(
+                                        'Sign Out', context,  Colors.transparent,
+                                        () async {
+                                      Navigator.of(context).pop();
+
+                                      signOut();
+                                    },
+                                        displayWidth(context) / 1.6,
+                                        displayHeight(context) * 0.055,
+                                        primaryColor,
+                                        Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : blueColor,
+                                        displayHeight(context) * 0.015,
+                                        Colors.transparent,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
+                        Positioned(
+                          right: 10,
+                          top: 0,
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,),
+                            child: Center(
+                              child: isUploadStarted
+                                  ? SizedBox()
+                                  : IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(ctx);
+                                  },
+                                  icon:  Icon(Icons.close_rounded, color: buttonBGColor)),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -806,7 +829,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   commonText(
                                       context: context,
                                       text:
-                                      'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
+                                      'There are some vessel & trips data not sync with cloud, do you want to proceed further?',
                                       fontWeight: FontWeight.w600,
                                       textColor: Colors.black,
                                       textSize: displayWidth(context) * 0.038,
@@ -816,14 +839,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     height: displayHeight(context) * 0.015,
                                   ),
                                   isChangePassword
-                                      ? commonText(
-                                      context: context,
-                                      text:
-                                      'Click Upload & Change Password for not loosing local data which is not uploaded',
-                                      fontWeight: FontWeight.w400,
-                                      textColor: Colors.grey,
-                                      textSize: displayWidth(context) * 0.032,
-                                      textAlign: TextAlign.center)
+                                      ? Padding(
+                                        padding: EdgeInsets.only(
+                                            left: displayWidth(context) * 0.06,
+                                        ),
+                                        child: Center(
+                                          child: commonText(
+                                          context: context,
+                                          text:
+                                          'Click Upload & Change Password for not loosing local data which is not uploaded',
+                                          fontWeight: FontWeight.w400,
+                                          textColor: Colors.grey,
+                                          textSize: displayWidth(context) * 0.032,
+                                          textAlign: TextAlign.start),
+                                        ),
+                                      )
                                       : commonText(
                                       context: context,
                                       text:

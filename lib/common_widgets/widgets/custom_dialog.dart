@@ -82,7 +82,7 @@ class CustomDialog extends StatelessWidget {
                                     ? Colors.white
                                     : Colors.white,
                                 displayHeight(context) * 0.018,
-                                buttonBGColor,
+                                blueColor,
                                 ''),
                           ],
                         ),
