@@ -1091,7 +1091,7 @@ childrenValue!.clear();
                                       child: CircularProgressIndicator(
                                         valueColor:
                                             AlwaysStoppedAnimation<Color>(
-                                                circularProgressColor),
+                                                blueColor),
                                       ),
                                     ),
                                   ),
@@ -1711,7 +1711,7 @@ childrenValue!.clear();
                                     child: CircularProgressIndicator(
                                       valueColor:
                                           AlwaysStoppedAnimation<Color>(
-                                              circularProgressColor),
+                                              blueColor),
                                     ),
                                   ),
                             table(context)!,
@@ -3212,7 +3212,7 @@ borderRadius: BorderRadius.circular(20),
           )
         : Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(circularProgressColor),
+              valueColor: AlwaysStoppedAnimation<Color>(blueColor),
             ),
           );
   }
