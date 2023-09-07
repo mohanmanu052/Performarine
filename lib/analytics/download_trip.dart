@@ -272,4 +272,182 @@ class DownloadTrip {
 
     return cloudImagePath;
   }
+
+  Future<String> downloadTripFromCloud(BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey, String tripUrl) async {
+    String cloudTripPath = '';
+    d.Dio dio = d.Dio();
+    Utils.customPrint('CLOUD TRIP DOWNLOAD Started!!!');
+    CustomLogger()
+        .logWithFile(Level.info, "CLOUD TRIP DOWNLOAD Started!!! -> $page");
+
+    final appDirectory = await getApplicationDocumentsDirectory();
+    ourDirectory = Directory('${appDirectory.path}');
+
+    final androidInfo, iosInfo;
+    var isStoragePermitted;
+
+    if (Platform.isAndroid) {
+      androidInfo = await DeviceInfoPlugin().androidInfo;
+
+      String fileName = tripUrl.split('/').last;
+
+      if (androidInfo.version.sdkInt < 29) {
+        isStoragePermitted = await Permission.storage.status;
+
+        if (isStoragePermitted.isGranted) {
+          Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
+          CustomLogger().logWithFile(
+              Level.info, "DIR PATH R ${ourDirectory!.path} -> $page");
+
+          Directory directory;
+
+          if (Platform.isAndroid) {
+            directory = Directory("storage/emulated/0/Download/${fileName}");
+          } else {
+            directory = await getApplicationDocumentsDirectory();
+          }
+
+          cloudTripPath = directory.path;
+
+          if (File(cloudTripPath).existsSync()) {
+            File(cloudTripPath).deleteSync();
+          }
+
+          try {
+            await dio.download(tripUrl, cloudTripPath,
+                onReceiveProgress: (progress, total) {}).then((value) {
+              Utils.showSnackBar(
+                context,
+                scaffoldKey: scaffoldKey,
+                message: 'File downloaded successfully',
+              );
+            });
+          } on d.DioError catch (e) {
+            Utils.customPrint('DOWNLOAD EXE: ${e.error}');
+            CustomLogger()
+                .logWithFile(Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
+
+            Navigator.pop(context);
+          }
+        } else {
+          await Utils.getStoragePermission(context);
+          var isStoragePermitted = await Permission.storage.status;
+
+          if (isStoragePermitted.isGranted) {
+            Directory directory;
+
+            if (Platform.isAndroid) {
+              directory = Directory("storage/emulated/0/Download/${fileName}.zip");
+            } else {
+              directory = await getApplicationDocumentsDirectory();
+            }
+
+            cloudTripPath = directory.path;
+
+            if (File(cloudTripPath).existsSync()) {
+              File(cloudTripPath).deleteSync();
+            }
+
+            try {
+              await dio.download(tripUrl, cloudTripPath,
+                  onReceiveProgress: (progress, total) {}).then((value) {
+                Utils.showSnackBar(
+                  context,
+                  scaffoldKey: scaffoldKey,
+                  message: 'File downloaded successfully',
+                );
+              });
+            } on d.DioError catch (e) {
+              Utils.customPrint('DOWNLOAD EXE: ${e.error}');
+              CustomLogger().logWithFile(
+                  Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
+
+              Navigator.pop(context);
+            }
+          }
+        }
+      } else {
+        Directory directory;
+
+        if (Platform.isAndroid) {
+          directory = Directory("storage/emulated/0/Download/${fileName}.zip");
+        } else {
+          directory = await getApplicationDocumentsDirectory();
+        }
+
+        cloudTripPath = directory.path;
+
+        if (File(cloudTripPath).existsSync()) {
+          File(cloudTripPath).deleteSync();
+        }
+
+        try {
+          await dio.download(tripUrl, cloudTripPath,
+              onReceiveProgress: (progress, total) {}).then((value)
+          {
+            Utils.showSnackBar(
+              context,
+              scaffoldKey: scaffoldKey,
+              message: 'File downloaded successfully',
+            );
+          });
+        } on d.DioError catch (e) {
+          Utils.customPrint('DOWNLOAD EXE: ${e.error}');
+          CustomLogger()
+              .logWithFile(Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
+        }
+      }
+    }
+    else {
+      iosInfo = await DeviceInfoPlugin().iosInfo;
+
+      String fileName = tripUrl.split('/').last;
+
+      Directory directory;
+
+      directory = await getApplicationDocumentsDirectory();
+
+      Directory tripsDirectory = Directory('${directory.path}/trips');
+
+      if (!tripsDirectory.existsSync()) {
+        await tripsDirectory.create();
+      }
+
+      cloudTripPath = '${directory.path}/trips/${fileName}';
+
+      Utils.customPrint("IOS IMAGE PATH ${cloudTripPath}");
+      CustomLogger()
+          .logWithFile(Level.info, "IOS IMAGE PATH ${cloudTripPath}-> $page");
+
+      if (File(cloudTripPath).existsSync()) {
+        File(cloudTripPath).deleteSync();
+      }
+
+      try {
+        await dio.download(tripUrl, cloudTripPath,
+            onReceiveProgress: (progress, total) {}).then((value)
+        {
+          Utils.showSnackBar(
+            context,
+            scaffoldKey: scaffoldKey,
+            message: 'File downloaded successfully',
+          );
+        });
+      } on d.DioError catch (e) {
+        Utils.customPrint('DOWNLOAD EXE: ${e.error}');
+        CustomLogger()
+            .logWithFile(Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
+      } on SocketException catch (s) {
+        Utils.customPrint('DOWNLOAD EXE SOCKET EXCEPTION: $s');
+        CustomLogger().logWithFile(
+            Level.error, "DOWNLOAD EXE SOCKET EXCEPTION: $s -> $page");
+      } catch (er) {
+        Utils.customPrint('DOWNLOAD EXE SOCKET EXCEPTION: $er');
+        CustomLogger().logWithFile(
+            Level.error, "DOWNLOAD EXE SOCKET EXCEPTION: $er -> $page");
+      }
+    }
+    return cloudTripPath;
+  }
 }

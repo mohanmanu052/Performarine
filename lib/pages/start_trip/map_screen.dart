@@ -14,6 +14,8 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -31,11 +33,11 @@ import '../bottom_navigation.dart';
 
 class MapScreen extends StatefulWidget {
   final bool? tripIsRunningOrNot;
-  final String? vesselId, tripId;
+  final String? vesselId, tripId, calledFrom;
   final bool isAppKilled;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final BuildContext? context;
-  const MapScreen({super.key, this.scaffoldKey, this.tripIsRunningOrNot, this.vesselId, this.tripId, this.isAppKilled = false, this.context});
+  const MapScreen({super.key, this.scaffoldKey, this.tripIsRunningOrNot, this.vesselId, this.tripId, this.isAppKilled = false, this.context, this.calledFrom = ''});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -56,10 +58,14 @@ class _MapScreenState extends State<MapScreen> {
   Trip? tripData;
   CreateVessel? vesselData;
 
+  late CommonProvider commonProvider;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    commonProvider = context.read<CommonProvider>();
 
     Utils.customPrint("LATEST TRIP ID ${widget.tripId}");
 
@@ -125,6 +131,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     print('XXXX: ${widget.tripIsRunningOrNot}');
     return Screenshot(
       controller: controller,
@@ -383,10 +390,33 @@ class _MapScreenState extends State<MapScreen> {
                                                       DatabaseService().deleteTripFromDB(tripData!
                                                           .id!);
 
-                                                      Navigator.pushAndRemoveUntil(
-                                                          widget.context!,
-                                                          MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                          ModalRoute.withName(""));
+                                                      if(widget.calledFrom == 'bottom_nav')
+                                                      {
+                                                        Navigator.pushAndRemoveUntil(
+                                                            context,
+                                                            MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                                            ModalRoute.withName(""));
+                                                      }
+                                                      else if(widget.calledFrom == 'VesselSingleView')
+                                                      {
+                                                        Navigator.of(context).pop(true);
+                                                      }
+                                                      else if(widget.calledFrom == 'tripList')
+                                                      {
+                                                        Navigator.pushAndRemoveUntil(
+                                                            context,
+                                                            MaterialPageRoute(builder: (context) => BottomNavigation(
+                                                              tabIndex: commonProvider.bottomNavIndex,
+                                                            )),
+                                                            ModalRoute.withName(""));
+                                                      }
+                                                      else
+                                                        {
+                                                          Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                                              ModalRoute.withName(""));
+                                                        }
                                                     }
                                                   });
                                                 },
@@ -574,12 +604,33 @@ class _MapScreenState extends State<MapScreen> {
 
           if(!isTripDeleted)
           {
-            Navigator.pushAndRemoveUntil(
-                widget.context!,
-                MaterialPageRoute(
-                  builder: (context) => BottomNavigation(),
-                ),
-                ModalRoute.withName(""));
+            if(widget.calledFrom == 'bottom_nav')
+            {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => BottomNavigation()),
+                  ModalRoute.withName(""));
+            }
+            else if(widget.calledFrom == 'VesselSingleView')
+            {
+              Navigator.of(context).pop(true);
+            }
+            else if(widget.calledFrom == 'tripList')
+            {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => BottomNavigation(
+                    tabIndex: commonProvider.bottomNavIndex,
+                  )),
+                  ModalRoute.withName(""));
+            }
+            else
+            {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => BottomNavigation()),
+                  ModalRoute.withName(""));
+            }
           }
         });
   }
@@ -752,10 +803,33 @@ class _MapScreenState extends State<MapScreen> {
                                                         DatabaseService().deleteTripFromDB(tripData!
                                                             .id!);
 
-                                                        Navigator.pushAndRemoveUntil(
-                                                            context,
-                                                            MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                            ModalRoute.withName(""));
+                                                        if(widget.calledFrom == 'bottom_nav')
+                                                        {
+                                                          Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                                              ModalRoute.withName(""));
+                                                        }
+                                                        else if(widget.calledFrom == 'VesselSingleView')
+                                                        {
+                                                          Navigator.of(context).pop(true);
+                                                        }
+                                                        else if(widget.calledFrom == 'tripList')
+                                                        {
+                                                          Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => BottomNavigation(
+                                                                tabIndex: commonProvider.bottomNavIndex,
+                                                              )),
+                                                              ModalRoute.withName(""));
+                                                        }
+                                                        else
+                                                        {
+                                                          Navigator.pushAndRemoveUntil(
+                                                              context,
+                                                              MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                                              ModalRoute.withName(""));
+                                                        }
                                                       }
                                                     });
                                                   });
@@ -828,12 +902,33 @@ class _MapScreenState extends State<MapScreen> {
 
                                               isDataUpdated = true;
 
-                                              Navigator.pushAndRemoveUntil(
-                                                  widget.context!,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => BottomNavigation(),
-                                                  ),
-                                                  ModalRoute.withName(""));
+                                              if(widget.calledFrom == 'bottom_nav')
+                                              {
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                                    ModalRoute.withName(""));
+                                              }
+                                              else if(widget.calledFrom == 'VesselSingleView')
+                                              {
+                                                Navigator.of(context).pop(true);
+                                              }
+                                              else if(widget.calledFrom == 'tripList')
+                                              {
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => BottomNavigation(
+                                                      tabIndex: commonProvider.bottomNavIndex,
+                                                    )),
+                                                    ModalRoute.withName(""));
+                                              }
+                                              else
+                                              {
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                                    ModalRoute.withName(""));
+                                              }
 
 
                                             });

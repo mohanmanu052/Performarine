@@ -1224,8 +1224,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                   color: backgroundColor,
                   child: Column(
                     children: [
-                      tripIsSyncOrNot == 0
-                      ? Container(
+
+                     Container(
                         margin: EdgeInsets.only(top: 10, left: 17, right: 17),
                         width: displayWidth(context),
                         height: displayHeight(context) * 0.055,
@@ -1238,10 +1238,18 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                               onPressed: (){
     
                                 debugPrint("DOWNLOAD TRIP ID ${widget.tripId!}");
-                                DownloadTrip().downloadTrip(
-                                    context,
-                                    scaffoldKey,
-                                    widget.tripId!);
+
+                                if(tripIsSyncOrNot == 0)
+                                  {
+                                    DownloadTrip().downloadTrip(
+                                        context,
+                                        scaffoldKey,
+                                        widget.tripId!);
+                                  }
+                                else
+                                  {
+                                    DownloadTrip().downloadTripFromCloud(context,scaffoldKey, tripData!.filePath!);
+                                  }
     
                               },
                               style: ButtonStyle(
@@ -1257,7 +1265,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset('assets/icons/download.png',),
+                                    Image.asset('assets/icons/download.png', height: displayHeight(context) * 0.03,),
                                     SizedBox(width: 10,),
                                     commonText(
                                       context: context,
@@ -1271,8 +1279,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     
                               ))
                         ),
-                      )
-                      : SizedBox(),
+                      ),
                       Padding(
                         padding: EdgeInsets.only(bottom: 8
                         ),
@@ -1385,7 +1392,9 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                     isBtnClick ? Center(
                                       child: Container(
                                         width: displayWidth(ctx) * 0.32,
-                                        child: Center(child: CircularProgressIndicator()),
+                                        child: Center(child: CircularProgressIndicator(
+                                          color: blueColor,
+                                        )),
                                       ),
                                     ) :  CommonButtons.getAcceptButton(
                                         'Confirm & Delete', context, deleteTripBtnColor,

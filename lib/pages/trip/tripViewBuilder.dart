@@ -13,6 +13,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
@@ -73,6 +74,9 @@ class _TripViewListingState extends State<TripViewListing> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    debugPrint("TRIP WIDGET SCREEN CALLED FROM ${widget.calledFrom}");
+
     isBtnClick = false;
     commonProvider = context.read<CommonProvider>();
     commonProvider.getTripsByVesselId(widget.vesselId);
@@ -95,7 +99,7 @@ class _TripViewListingState extends State<TripViewListing> {
                   child: Center(
                     child: CircularProgressIndicator(
                       valueColor:
-                      AlwaysStoppedAnimation<Color>(circularProgressColor),
+                      AlwaysStoppedAnimation<Color>(blueColor),
                     ),
                   ),
                 );
@@ -261,6 +265,30 @@ class _TripViewListingState extends State<TripViewListing> {
                                                   Navigator.of(context).pop();
                                                 });
                                           }
+                                        },
+                                        onViewTripTap: ()async{
+                                          var result = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                                  calledFrom: widget.calledFrom,
+                                                  tripId: snapshot.data![index].id,
+                                                  vesselName: snapshot.data![index].vesselName,
+                                                  vesselId: snapshot.data![index].vesselId,
+                                                  tripIsRunningOrNot: snapshot.data![index].tripStatus == 0)));
+
+                                          if(result != null)
+                                          {
+                                            if(result)
+                                            {
+                                              if(widget.onTripEnded != null)
+                                              {
+                                                widget.onTripEnded!.call();
+                                              }
+                                              setState(() {
+
+                                              });
+                                            }
+                                          }
                                         })
                                     : TripWidget(
                                         scaffoldKey: widget.scaffoldKey,
@@ -346,7 +374,32 @@ class _TripViewListingState extends State<TripViewListing> {
                                                   Navigator.of(context).pop();
                                                 });
                                           }
-                                        }),
+                                        },
+                                      onViewTripTap: ()async{
+                                        var result = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                                calledFrom: widget.calledFrom,
+                                                tripId: snapshot.data![index].id,
+                                                vesselName: snapshot.data![index].vesselName,
+                                                vesselId: snapshot.data![index].vesselId,
+                                                tripIsRunningOrNot: snapshot.data![index].tripStatus == 0)));
+
+                                        if(result != null)
+                                          {
+                                            if(result)
+                                              {
+                                                if(widget.onTripEnded != null)
+                                                  {
+                                                    widget.onTripEnded!.call();
+                                                  }
+                                                setState(() {
+
+                                                });
+                                              }
+                                          }
+                                    }
+                                    ),
                                   )
                                       : Container(
                                     height: displayHeight(context) / 1.5,

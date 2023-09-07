@@ -34,7 +34,7 @@ import '../web_navigation/privacy_and_policy_web_view.dart';
 
 class TripWidget extends StatefulWidget {
   final String? calledFrom;
-  final VoidCallback? onTap;
+  final VoidCallback? onTap, onViewTripTap;
   final VoidCallback? tripUploadedSuccessfully;
   final Function()? onTripEnded;
   final Trip? tripList;
@@ -49,7 +49,8 @@ class TripWidget extends StatefulWidget {
         this.tripUploadedSuccessfully,
         this.onTripEnded,
         this.scaffoldKey,
-        this.isTripDeleted
+        this.isTripDeleted,
+        this.onViewTripTap
       });
 
   @override
@@ -86,6 +87,8 @@ class _TripWidgetState extends State<TripWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    debugPrint("SCREEN CALLED FROM ${widget.calledFrom}");
 
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
@@ -142,20 +145,36 @@ class _TripWidgetState extends State<TripWidget> {
             ),
           );*/
 
-          /*var result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NewTripAnalyticsScreen(
-                tripId: widget.tripList!.id,
-                vesselId: getVesselById[0].id,
-                tripIsRunningOrNot: widget.tripList!.tripStatus == 0 ? true : false,
-                calledFrom: widget.calledFrom,
-                vessel: getVesselById[0],
-              ),
-            ),
-          );
+          if(tripIsRunning)
+            {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                      calledFrom: widget.calledFrom,
+                      tripId: widget.tripList!.id,
+                      vesselName: widget.tripList!.vesselName,
+                      vesselId: widget.tripList!.vesselId,
+                      tripIsRunningOrNot: widget.tripList?.tripStatus == 0)));
+            }
+          else
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewTripAnalyticsScreen(
+                    tripId: widget.tripList!.id,
+                    vesselId: getVesselById[0].id,
+                    tripIsRunningOrNot: widget.tripList!.tripStatus == 0 ? true : false,
+                    calledFrom: widget.calledFrom,
+                    vessel: getVesselById[0],
+                  ),
+                ),
+              );
+            }
 
-          if (result != null) {
+
+
+          /*if (result != null) {
             if (result) {
               widget.tripUploadedSuccessfully!.call();
               if (widget.onTripEnded != null) {
@@ -427,12 +446,12 @@ class _TripWidgetState extends State<TripWidget> {
                                             valueColor:
                                             AlwaysStoppedAnimation<
                                                 Color>(
-                                                Colors.blue),
+                                                blueColor),
                                           )))
                                       : CommonButtons
                                       .getTripButton(
                                     buttonPrimaryColor:
-                                    uploadTripBtnColor,
+                                    routeMapBtnColor,
                                     fontSize:
                                     displayWidth(context) *
                                         0.026,
@@ -524,7 +543,7 @@ class _TripWidgetState extends State<TripWidget> {
                           ? Center(
                           child: CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                circularProgressColor),
+                                blueColor),
                           ))
                           : Padding(
                             padding: EdgeInsets.only(right: paddingValue),
@@ -563,15 +582,7 @@ class _TripWidgetState extends State<TripWidget> {
                                   child: CommonButtons.getTripButton(
                                       buttonPrimaryColor: blueColor,
                                       fontSize: displayWidth(context) * 0.026,
-                                      onTap: () async {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => TripRecordingScreen(
-                                                tripId: widget.tripList!.id,
-                                                vesselName: widget.tripList!.vesselName,
-                                                vesselId: widget.tripList!.vesselId,
-                                                tripIsRunningOrNot: widget.tripList?.tripStatus == 0)));
-                                      },
+                                      onTap: widget.onViewTripTap,
                                       context: context,
                                       width: displayWidth(context) * 0.2,
                                       title: 'View Trip')),

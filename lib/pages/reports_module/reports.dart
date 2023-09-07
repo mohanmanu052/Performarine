@@ -1314,7 +1314,7 @@ childrenValue!.clear();
                           ? Container(
                               child: Center(
                                 child: CircularProgressIndicator(
-                                  color: circularProgressColor,
+                                  color: blueColor,
                                 ),
                               ),
                             )
