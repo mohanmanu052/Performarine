@@ -48,7 +48,7 @@ class CommonProvider with ChangeNotifier {
   bool tripStatus = false,
       isTripUploading = false,
       exceptionOccurred = false,
-      internetError = false;
+      internetError = false, downloadTripData = false;
   Future<List<Trip>>? getTripsByIdFuture;
   GetUserConfigModel? getUserConfigModel;
   ReportModel? reportModel;
@@ -415,6 +415,12 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
 
     return deleteTripModel!;
+  }
+
+  /// It will update trip uploading status
+  downloadTripProgressBar(bool value) {
+    downloadTripData = value;
+    notifyListeners();
   }
 
 }

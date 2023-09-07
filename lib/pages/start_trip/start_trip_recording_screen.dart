@@ -288,8 +288,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                 height: displayHeight(context) * 0.008,
                               ),
                               DropdownButtonHideUnderline(
-                                child:
-                                DropdownButton2<VesselDropdownItem>(
+                                child: DropdownButton2<VesselDropdownItem>(
                                   isExpanded: true,
                                   hint: Text(
                                     'Select Vessel',
@@ -387,7 +386,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                   menuItemStyleData:
                                   const MenuItemStyleData(
                                     padding: EdgeInsets.only(
-                                        left: 14, right: 14),
+                                        left: 18, right: 18, top: 8, bottom: 8),
                                   ),
                                 ),
                               ),
@@ -418,7 +417,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                               0.06,
                                           width: !isSliderDisable
                                               ? displayWidth(context) *
-                                              0.8
+                                              0.78
                                               : displayWidth(context) *
                                               0.5,
                                           child: FlutterSlider(
@@ -470,12 +469,18 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                     top: -15)),
                                             handlerWidth: 15,
                                             handlerHeight: 15,
+                                            // onDragStarted: (int value,dynamic val,dynamic val1){
+                                            //   FocusScope.of(context).requestFocus(FocusNode());
+                                            // },
                                             onDragging: (int value,dynamic val,dynamic val1){
                                               // setState(() {
                                               //   isSliderDisable = false;
                                               // });
                                              val != 11 ? passengerValue = val.toInt() : val;
                                               print("On dragging: value: $value, val: $val, val1: $val1");
+                                              numberOfPassengers = passengerValue;
+                                              textEditingController.text = (passengerValue).toString();
+
                                               if(val == sliderMinVal){
                                                 if(mounted){
 
@@ -507,7 +512,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                       Container(
                                         width: isSliderDisable
                                             ? displayWidth(context) * 0.5
-                                            : displayWidth(context) * 0.8,
+                                            : displayWidth(context) * 0.82,
                                         child: Row(
                                           mainAxisAlignment:
                                           MainAxisAlignment
@@ -1762,58 +1767,75 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                           border: InputBorder.none),
                       controller: textEditingController,
                       onFieldSubmitted: (String value) {
-                        FocusScope.of(context).requestFocus(FocusNode());
+                        if(int.parse(textEditingController.text.trim().isEmpty ? '1' : textEditingController.text.trim()) != 0 )
+                          {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          }
+                        else
+                        {
+                          textEditingController.clear();
+                        }
 
                         // popupAnimationController.reset();
                       },
                       onEditingComplete: (){
-                       // setState(() {
-                          //textEditingController.text.isNotEmpty ? numberOfPassengers = int.parse(textEditingController.text) : numberOfPassengers = passengerValue;
-                        if(textEditingController.text.isEmpty){
-                          setState(() {
-                            numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
-                            sliderMinVal = 11;
-                            sliderCount = '10+';
-                          });
-                        }else if(int.parse(textEditingController.text) < 11){
-                            numberOfPassengers = int.parse(textEditingController.text);
-                            sliderMinVal = 11;
-                          }else if(int.parse(textEditingController.text) < 1000){
-                            numberOfPassengers = int.parse(textEditingController.text);
+                       if(int.parse(textEditingController.text.trim().isEmpty ? '1' : textEditingController.text.trim()) != 0 )
+                         {
+                           // setState(() {
+                           //textEditingController.text.isNotEmpty ? numberOfPassengers = int.parse(textEditingController.text) : numberOfPassengers = passengerValue;
+                           if(textEditingController.text.isEmpty){
+                             setState(() {
+                               numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
+                               sliderMinVal = 11;
+                               sliderCount = '10+';
+                             });
+                           }else if(int.parse(textEditingController.text) < 11){
+                             numberOfPassengers = int.parse(textEditingController.text);
+                             sliderMinVal = 11;
+                           }else if(int.parse(textEditingController.text) < 1000){
+                             numberOfPassengers = int.parse(textEditingController.text);
 
-                            if(numberOfPassengers.toString().length == 3)
-                              {
-                                sliderMinVal = (numberOfPassengers.toDouble() + 20) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 20;
-                              }
-                            else
-                              {
-                                sliderMinVal = numberOfPassengers.toDouble() + 4;
-                              }
+                             if(numberOfPassengers.toString().length == 3)
+                             {
+                               sliderMinVal = (numberOfPassengers.toDouble() + 1) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 1;
+                             }
+                             else
+                             {
+                               sliderMinVal = numberOfPassengers.toDouble() + 1;
+                             }
 
-                            //sliderMinVal = 999;
-                            sliderCount = '$numberOfPassengers+';
-                          }
-                        //});
+                             //sliderMinVal = 999;
+                             sliderCount = '$numberOfPassengers+';
+                           }
+                           //});
+                         }
+                       else
+                       {
+                         textEditingController.clear();
+                       }
                       },
                       onChanged: (String value) {
                         print("value is: $value");
                         if (value.length == 3) {
-                          setState(() {
-                            numberOfPassengers =
-                                int.parse(textEditingController.text);
+                          if(int.parse(value) != 0)
+                            {
+                              setState(() {
+                                numberOfPassengers =
+                                    int.parse(textEditingController.text);
 
-                            if(numberOfPassengers.toString().length == 3)
-                            {
-                              sliderMinVal = (numberOfPassengers.toDouble() + 20) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 20;
+                                if(numberOfPassengers.toString().length == 3)
+                                {
+                                  sliderMinVal = (numberOfPassengers.toDouble() + 1) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 1;
+                                }
+                                else
+                                {
+                                  sliderMinVal = numberOfPassengers.toDouble() + 1;
+                                }
+                                //sliderMinVal = 999;
+                                sliderCount = '$numberOfPassengers+';
+                              });
+                              FocusScope.of(context).requestFocus(new FocusNode());
                             }
-                            else
-                            {
-                              sliderMinVal = numberOfPassengers.toDouble() + 4;
-                            }
-                            //sliderMinVal = 999;
-                            sliderCount = '$numberOfPassengers+';
-                          });
-                          FocusScope.of(context).requestFocus(new FocusNode());
                         }
                       /*  else if(value.length == 2){
                              setState(() {
@@ -1862,50 +1884,57 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                               borderRadius: BorderRadius.circular(5))),
                     ),
                     onPressed: () {
-                      setState(() {
-                        isOKClick = true;
-                        if (textEditingController.text.isEmpty) {
+                      if(int.parse(textEditingController.text.trim().isEmpty ? '1' : textEditingController.text.trim()) != 0)
+                        {
+                          setState(() {
+                            isOKClick = true;
+                            if (textEditingController.text.isEmpty) {
 
-                            sliderMinVal = 11;
+                              sliderMinVal = 11;
 
-                          numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
+                              numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
 
-                          sliderCount = '10+';
-                          isSliderDisable = false;
-                          isCheck = false;
+                              sliderCount = '10+';
+                              isSliderDisable = false;
+                              isCheck = false;
 
-                        } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
+                            } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
 
-                          numberOfPassengers =
-                              int.parse(textEditingController.text);
+                              numberOfPassengers =
+                                  int.parse(textEditingController.text);
 
-                          if (numberOfPassengers.toString().length == 3) {
-                            sliderMinVal = (numberOfPassengers.toDouble() + 20) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 20;
-                          } else {
-                            sliderMinVal = numberOfPassengers.toDouble() + 4;
-                          }
-                          //sliderMinVal = numberOfPassengers.toDouble();
-                          sliderCount = '$numberOfPassengers+';
-                          isSliderDisable = false;
+                              if (numberOfPassengers.toString().length == 3) {
+                                sliderMinVal = (numberOfPassengers.toDouble() + 1) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 1;
+                              } else {
+                                sliderMinVal = numberOfPassengers.toDouble() + 1;
+                              }
+                              //sliderMinVal = numberOfPassengers.toDouble();
+                              sliderCount = '$numberOfPassengers+';
+                              isSliderDisable = false;
 
-                        } else if (textEditingController.text.isNotEmpty &&
-                            int.parse(textEditingController.text) < 11) {
+                            } else if (textEditingController.text.isNotEmpty &&
+                                int.parse(textEditingController.text) < 11) {
 
-                          sliderMinVal = 11;
-                          sliderCount = '10+';
-                          isSliderDisable = false;
-                          numberOfPassengers =
-                              int.parse(textEditingController.text);
+                              sliderMinVal = 11;
+                              sliderCount = '10+';
+                              isSliderDisable = false;
+                              numberOfPassengers =
+                                  int.parse(textEditingController.text);
+                            }
+                          });
+                          FocusScope.of(context).requestFocus(new FocusNode());
+
+                          kReleaseMode
+                              ? null
+                              : debugPrint(
+                              'Number of passengers $numberOfPassengers');
+
+                          // popupAnimationController.reset();
                         }
-                      });
-                      FocusScope.of(context).requestFocus(new FocusNode());
-
-                      kReleaseMode
-                          ? null
-                          : debugPrint(
-                          'Number of passengers $numberOfPassengers');
-
-                      // popupAnimationController.reset();
+                      else
+                        {
+                          textEditingController.clear();
+                        }
                     },
                     child: Image.asset('assets/icons/done_icon.png', height: displayHeight(context) * 0.02,),
                     /*commonText(
@@ -2409,12 +2438,14 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           numberOfPassengers: numberOfPassengers,
           filePath: file,
           isSync: 0,
+          isCloud: 0,
           tripStatus: 0,
           createdAt: Utils.getCurrentTZDateTime(),
           updatedAt: Utils.getCurrentTZDateTime(),
           startPosition: [latitude, longitude].join(","),
           endPosition: [latitude, longitude].join(","),
-          deviceInfo: deviceDetails!.toJson().toString()));
+          deviceInfo: deviceDetails!.toJson().toString(),
+          ));
     } on Exception catch (e) {
       Utils.customPrint('ON SAVE EXE: $e');
     }

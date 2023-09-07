@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../common_widgets/widgets/log_level.dart';
@@ -274,7 +275,7 @@ class DownloadTrip {
   }
 
   Future<String> downloadTripFromCloud(BuildContext context,
-      GlobalKey<ScaffoldState> scaffoldKey, String tripUrl) async {
+      GlobalKey<ScaffoldState> scaffoldKey, String tripUrl, CommonProvider commonProvider) async {
     String cloudTripPath = '';
     d.Dio dio = d.Dio();
     Utils.customPrint('CLOUD TRIP DOWNLOAD Started!!!');
@@ -317,6 +318,7 @@ class DownloadTrip {
           try {
             await dio.download(tripUrl, cloudTripPath,
                 onReceiveProgress: (progress, total) {}).then((value) {
+              commonProvider.downloadTripProgressBar(false);
               Utils.showSnackBar(
                 context,
                 scaffoldKey: scaffoldKey,
@@ -324,6 +326,7 @@ class DownloadTrip {
               );
             });
           } on d.DioError catch (e) {
+            commonProvider.downloadTripProgressBar(false);
             Utils.customPrint('DOWNLOAD EXE: ${e.error}');
             CustomLogger()
                 .logWithFile(Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
@@ -338,7 +341,7 @@ class DownloadTrip {
             Directory directory;
 
             if (Platform.isAndroid) {
-              directory = Directory("storage/emulated/0/Download/${fileName}.zip");
+              directory = Directory("storage/emulated/0/Download/${fileName}");
             } else {
               directory = await getApplicationDocumentsDirectory();
             }
@@ -352,6 +355,7 @@ class DownloadTrip {
             try {
               await dio.download(tripUrl, cloudTripPath,
                   onReceiveProgress: (progress, total) {}).then((value) {
+                commonProvider.downloadTripProgressBar(false);
                 Utils.showSnackBar(
                   context,
                   scaffoldKey: scaffoldKey,
@@ -359,6 +363,7 @@ class DownloadTrip {
                 );
               });
             } on d.DioError catch (e) {
+              commonProvider.downloadTripProgressBar(false);
               Utils.customPrint('DOWNLOAD EXE: ${e.error}');
               CustomLogger().logWithFile(
                   Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
@@ -371,7 +376,7 @@ class DownloadTrip {
         Directory directory;
 
         if (Platform.isAndroid) {
-          directory = Directory("storage/emulated/0/Download/${fileName}.zip");
+          directory = Directory("storage/emulated/0/Download/${fileName}");
         } else {
           directory = await getApplicationDocumentsDirectory();
         }
@@ -386,6 +391,7 @@ class DownloadTrip {
           await dio.download(tripUrl, cloudTripPath,
               onReceiveProgress: (progress, total) {}).then((value)
           {
+            commonProvider.downloadTripProgressBar(false);
             Utils.showSnackBar(
               context,
               scaffoldKey: scaffoldKey,
@@ -393,6 +399,7 @@ class DownloadTrip {
             );
           });
         } on d.DioError catch (e) {
+          commonProvider.downloadTripProgressBar(false);
           Utils.customPrint('DOWNLOAD EXE: ${e.error}');
           CustomLogger()
               .logWithFile(Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
@@ -428,6 +435,7 @@ class DownloadTrip {
         await dio.download(tripUrl, cloudTripPath,
             onReceiveProgress: (progress, total) {}).then((value)
         {
+          commonProvider.downloadTripProgressBar(false);
           Utils.showSnackBar(
             context,
             scaffoldKey: scaffoldKey,
@@ -435,14 +443,17 @@ class DownloadTrip {
           );
         });
       } on d.DioError catch (e) {
+        commonProvider.downloadTripProgressBar(false);
         Utils.customPrint('DOWNLOAD EXE: ${e.error}');
         CustomLogger()
             .logWithFile(Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
       } on SocketException catch (s) {
+        commonProvider.downloadTripProgressBar(false);
         Utils.customPrint('DOWNLOAD EXE SOCKET EXCEPTION: $s');
         CustomLogger().logWithFile(
             Level.error, "DOWNLOAD EXE SOCKET EXCEPTION: $s -> $page");
       } catch (er) {
+        commonProvider.downloadTripProgressBar(false);
         Utils.customPrint('DOWNLOAD EXE SOCKET EXCEPTION: $er');
         CustomLogger().logWithFile(
             Level.error, "DOWNLOAD EXE SOCKET EXCEPTION: $er -> $page");

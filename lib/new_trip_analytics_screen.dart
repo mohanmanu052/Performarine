@@ -1225,7 +1225,9 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                   child: Column(
                     children: [
 
-                     Container(
+                      commonProvider.downloadTripData
+                          ? CircularProgressIndicator(color: blueColor,)
+                          : Container(
                         margin: EdgeInsets.only(top: 10, left: 17, right: 17),
                         width: displayWidth(context),
                         height: displayHeight(context) * 0.055,
@@ -1236,19 +1238,22 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                         child: Center(
                           child: ElevatedButton(
                               onPressed: (){
-    
                                 debugPrint("DOWNLOAD TRIP ID ${widget.tripId!}");
+                                debugPrint("DOWNLOAD TRIP ID ${tripData!.isCloud}");
 
-                                if(tripIsSyncOrNot == 0)
+                                if(tripData!.isCloud != 0)
+                                  {
+                                    commonProvider.downloadTripProgressBar(true);
+                                    // setState(() {});
+                                    DownloadTrip().downloadTripFromCloud(context,scaffoldKey, tripData!.filePath!, commonProvider);
+
+                                  }
+                                else
                                   {
                                     DownloadTrip().downloadTrip(
                                         context,
                                         scaffoldKey,
                                         widget.tripId!);
-                                  }
-                                else
-                                  {
-                                    DownloadTrip().downloadTripFromCloud(context,scaffoldKey, tripData!.filePath!);
                                   }
     
                               },
@@ -1269,7 +1274,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                     SizedBox(width: 10,),
                                     commonText(
                                       context: context,
-                                      text: 'Download Trip Data',
+                                      text: 'Download Trip Data ',
                                       fontWeight: FontWeight.w600,
                                       textColor: Colors.white,
                                       textSize: displayWidth(context) * 0.036,
