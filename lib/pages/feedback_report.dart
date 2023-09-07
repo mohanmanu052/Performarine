@@ -307,11 +307,17 @@ class _FeedbackReportState extends State<FeedbackReport> {
           bottom: displayWidth(context) * 0.09
           // top: displayWidth(context) * 0.02,
         ),
-        child: isBtnClick ?  Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  circularProgressColor),
-            ))
+        child: isBtnClick ?  Padding(
+          padding: EdgeInsets.only(
+              left: displayWidth(context) /2.55,
+              right: displayWidth(context) /2.55,
+             // bottom: displayWidth(context) * 0.09
+          ),
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+                blueColor),
+          ),
+        )
             : CommonButtons.getActionButton(
             title: 'Submit',
             context: context,

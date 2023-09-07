@@ -897,6 +897,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                           dividerColor: Colors.transparent),
                       child: Container(
                         child: ExpansionTile(
+                          initiallyExpanded: true,
                           trailing: Container(
                             width: displayWidth(context) * 0.12,
                             child: Row(

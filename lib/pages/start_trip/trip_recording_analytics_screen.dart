@@ -454,7 +454,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                       valueColor:
                       AlwaysStoppedAnimation<
                           Color>(
-                          circularProgressColor),
+                          blueColor),
                     ))
                     : CommonButtons.getRichTextActionButton(
                     icon: Image.asset('assets/icons/end_btn.png',
