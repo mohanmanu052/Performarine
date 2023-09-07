@@ -693,16 +693,31 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Flexible(
-                                    child: commonText(
-                                        context: context,
-                                        text: '${widget.vessel!.name}',
+                                    child: Text(
+                                      '${widget.vessel!.name}',
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                        fontSize: displayWidth(context) * 0.045,
+                                        color: Colors.black87,
+                                        fontFamily: outfit,
                                         fontWeight: FontWeight.w700,
-                                        textColor: Colors.black87,
-                                        textSize: displayWidth(context) * 0.045,
-                                        textAlign: TextAlign.start),
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+
+                                    ),
                                   ),
+                                  // Flexible(
+                                  //   child: commonText(
+                                  //       context: context,
+                                  //       text: '${widget.vessel!.name}',
+                                  //       fontWeight: FontWeight.w700,
+                                  //       textColor: Colors.black87,
+                                  //       textSize: displayWidth(context) * 0.045,
+                                  //       textAlign: TextAlign.start),
+                                  // ),
                                   SizedBox(
-                                    width: 4,
+                                    width: 8,
                                   ),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -745,7 +760,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                 ],
                               ),
                               SizedBox(
-                                height: displayHeight(context) * 0.01,
+                                height: displayHeight(context) * 0.008,
                               ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,

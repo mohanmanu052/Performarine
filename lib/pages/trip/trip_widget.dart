@@ -299,7 +299,7 @@ class _TripWidgetState extends State<TripWidget> {
                                 fontFamily: poppins,
                               ),
                               textAlign: TextAlign.start,
-                              overflow: TextOverflow.clip,
+                              overflow: TextOverflow.ellipsis,
                               softWrap: true,
                             ),
                           ),

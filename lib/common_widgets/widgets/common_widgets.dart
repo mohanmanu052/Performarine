@@ -751,7 +751,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                           ),
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
-                          maxLines: 2,
+                          //maxLines: 2,
                         ),
                         /*dashboardRichText(
                             modelName: vesselData.model,

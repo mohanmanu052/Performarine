@@ -1077,6 +1077,7 @@ class _TripListScreenState extends State<TripListScreen> {
         filePath: file.path,
         isSync: 0,
         tripStatus: 0,
+        isCloud: 0,
         createdAt: DateTime.now().toUtc().toString(),
         updatedAt: DateTime.now().toUtc().toString(),
         startPosition: [latitude, longitude].join(","),
