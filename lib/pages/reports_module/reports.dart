@@ -865,216 +865,222 @@ childrenValue!.clear();
                               child: IgnorePointer(
                                 ignoring: isBtnClick??false,
                                 child: DropdownButtonHideUnderline(
-                                  child: DropdownButtonFormField2<DropdownItem>(
-                                    
-                                    isExpanded: true,
-                                    decoration: InputDecoration(
-                                                    //errorText: _showDropdownError1 ? 'Select Vessel' : null,
-                              
-                                      prefixIcon: Container(
-                              width: 50,
-                                        height:displayHeight(context) * 0.02 ,
-                                     child: Transform.scale(
-                                        scale: 0.5,
-                                        child: Image.asset('assets/icons/vessels.png',
-                                         height: displayHeight(context) * 0.02,),
-                                      )),
-                                      contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 0,vertical: orientation==Orientation.portrait?10:15),
-                              
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      errorStyle: TextStyle(
-                                          fontFamily: inter,
-                                          fontSize:
-                                          displayWidth(context) * 0.025),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      fillColor: reportDropdownColor,
-                                      filled: true,
-                                      hintText: "Filter By",
+                                  child: FormField(
+                                    builder: (state) {
+            return
+                                     DropdownButtonFormField2<DropdownItem>(
                                       
-                                      hintStyle: TextStyle(
-                                          color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                              ? "Filter By" == 'User SubRole'
-                                              ? Colors.black54
-                                              : Colors.white
-                                              : Colors.black,
-                                          fontSize:
-                                          displayWidth(context) * 0.034,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w300),
-                                    ),
-                                    hint:                                          Container(
-                                      alignment: Alignment.centerLeft,
-                                      margin:EdgeInsets.only(left: 15),
-
-                                                                                                                     
-                              
-                                      child: Text(
-                                        'Select Vessel',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                            // color: Theme.of(context)
-                                            //     .brightness ==
-                                            //     Brightness.dark
-                                            //     ? "Select Vessel" ==
-                                            //     'User SubRole'
-                                            //     ? Colors.black54
-                                            //     : Colors.white
-                                            //     : Colors.black54,
+                                      isExpanded: true,
+                                      decoration: InputDecoration(
+                                                      //errorText: _showDropdownError1 ? 'Select Vessel' : null,
+                                                                
+                                        prefixIcon: Container(
+                                                                width: 50,
+                                          height:displayHeight(context) * 0.02 ,
+                                       child: Transform.scale(
+                                          scale: 0.5,
+                                          child: Image.asset('assets/icons/vessels.png',
+                                           height: displayHeight(context) * 0.02,),
+                                        )),
+                                        contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 0,vertical: orientation==Orientation.portrait?10:15),
+                                                                
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1.5,
+                                                color: Colors.transparent),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1.5,
+                                                color: Colors.transparent),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        errorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1.5,
+                                                color: Colors.red.shade300
+                                                    .withOpacity(0.7)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        errorStyle: TextStyle(
+                                            fontFamily: inter,
                                             fontSize:
-                                    
-                                            orientation==Orientation.portrait?
+                                            displayWidth(context) * 0.025),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1.5,
+                                                color: Colors.red.shade300
+                                                    .withOpacity(0.7)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        fillColor: reportDropdownColor,
+                                        filled: true,
+                                        hintText: "Filter By",
+                                        
+                                        hintStyle: TextStyle(
+                                            color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                                ? "Filter By" == 'User SubRole'
+                                                ? Colors.black54
+                                                : Colors.white
+                                                : Colors.black,
+                                            fontSize:
+                                            displayWidth(context) * 0.034,
+                                            fontFamily: outfit,
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                      hint:                                          Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin:EdgeInsets.only(left: 15),
+                                  
+                                                                                                                       
+                                                                
+                                        child: Text(
+                                          'Select Vessel',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                              // color: Theme.of(context)
+                                              //     .brightness ==
+                                              //     Brightness.dark
+                                              //     ? "Select Vessel" ==
+                                              //     'User SubRole'
+                                              //     ? Colors.black54
+                                              //     : Colors.white
+                                              //     : Colors.black54,
+                                              fontSize:
+                                      
+                                              orientation==Orientation.portrait?
+                                              displayWidth(context) *
+                                                  0.032:displayWidth(context) *
+                                                  0.022
+                                              ,
+                                              fontFamily: outfit,
+                                              fontWeight: FontWeight.w400),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      value: selectedValue,
+                                      items: vesselData.map((item) {
+                                        return DropdownMenuItem<
+                                            DropdownItem>(
+                                          value: item,
+                                          child: Container(
+                                        margin:EdgeInsets.only(left: 15),
+                                            child: Text(
+                                              item.name!,
+                                              style: TextStyle(
+                                                                
+                                             fontSize:   orientation==Orientation.portrait?
                                             displayWidth(context) *
                                                 0.032:displayWidth(context) *
-                                                0.022
-                                            ,
-                                            fontFamily: outfit,
-                                            fontWeight: FontWeight.w400),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    value: selectedValue,
-                                    items: vesselData.map((item) {
-                                      return DropdownMenuItem<
-                                          DropdownItem>(
-                                        value: item,
-                                        child: Container(
-                                      margin:EdgeInsets.only(left: 15),
-                                          child: Text(
-                                            item.name!,
-                                            style: TextStyle(
-                              
-                                           fontSize:   orientation==Orientation.portrait?
-                                          displayWidth(context) *
-                                              0.032:displayWidth(context) *
-                                              0.022,
-                                                 
-                                                color: Theme.of(context)
-                                                    .brightness ==
-                                                    Brightness.dark
-                                                    ? "Select Vessel" ==
-                                                    'User SubRole'
-                                                    ? Colors.black
-                                                    : Colors.white
-                                                    : Colors.black,
-                                                fontWeight:
-                                                FontWeight.w500),
-                                            overflow:
-                                            TextOverflow.ellipsis,
+                                                0.022,
+                                                   
+                                                  color: Theme.of(context)
+                                                      .brightness ==
+                                                      Brightness.dark
+                                                      ? "Select Vessel" ==
+                                                      'User SubRole'
+                                                      ? Colors.black
+                                                      : Colors.white
+                                                      : Colors.black,
+                                                  fontWeight:
+                                                  FontWeight.w500),
+                                              overflow:
+                                              TextOverflow.ellipsis,
+                                            ),
                                           ),
+                                        );
+                                      }).toList(),
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return 'Select Vessel';
+                                        }
+                                        return null;
+                                      },
+                                      onChanged: (item) {
+                                                                
+                                        if(item!=null){
+                                          if (item != null) {
+                                                // Remove error for the first dropdown
+                                                _formKey.currentState?.validate();
+                                              }
+                                        }
+                                        getVesselDetails(item?.id??"");
+                                        Utils.customPrint(
+                                            "id is: ${item?.id} ");
+                                        CustomLogger().logWithFile(
+                                            Level.info,
+                                            "id is: ${item?.id}-> $page");
+                                                                
+                                        parentValue = false;
+                                        selectedVessel = item!.id;
+                                        selectedVesselName = item.name;
+                                                                
+                                        if (mounted) {
+                                          setState(() {
+                                            isTripIdListLoading = false;
+                                            isSHowGraph = false;
+                                            avgSpeed = null;
+                                            avgDuration = null;
+                                            avgFuelConsumption = null;
+                                            avgPower = null;
+                                            triSpeedList.clear();
+                                            tripList.clear();
+                                            duration1 = null;
+                                            avgSpeed1 = null;
+                                            fuelUsage = null;
+                                            powerUsage = null;
+                                            finalData.clear();
+                                            durationGraphData.clear();
+                                                                
+                                            durationColumnSeriesData
+                                                .clear();
+                                            avgSpeedColumnSeriesData
+                                                .clear();
+                                            fuelUsageColumnSeriesData
+                                                .clear();
+                                            powerUsageColumnSeriesData
+                                                .clear();
+                                            selectedTripIdList!.clear();
+                                            selectedTripLabelList!.clear();
+                                          });
+                                        }
+                                                                
+                                        dateTimeList!.clear();
+                                        children!.clear();
+                                        getTripListData(item.id!);
+                                      },
+                                      buttonStyleData:  ButtonStyleData(
+                                        padding: EdgeInsets.only(right: 0),
+                                      ),
+                                      iconStyleData:  IconStyleData(
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_down_rounded,
+                                          color: Colors.black,
                                         ),
-                                      );
-                                    }).toList(),
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return 'Select Vessel';
-                                      }
-                                      return null;
+                                        iconSize: displayHeight(context) * 0.035,
+                                      ),
+                                      dropdownStyleData: DropdownStyleData(
+                                        maxHeight: displayHeight(context) * 0.25,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(14),
+                                          // color: backgroundColor,
+                                        ),
+                                        offset: const Offset(0, 0),
+                                        scrollbarTheme: ScrollbarThemeData(
+                                          radius: const Radius.circular(20),
+                                          thickness: MaterialStateProperty.all<double>(6),
+                                          thumbVisibility: MaterialStateProperty.all<bool>(true),
+                                        ),
+                                      ),
+                                      menuItemStyleData: MenuItemStyleData(
+                                        padding: EdgeInsets.symmetric(horizontal: 0),
+                                      ),
+                                    
+                                    );
                                     },
-                                    onChanged: (item) {
-                              
-                                      if(item!=null){
-                                        if (item != null) {
-                                              // Remove error for the first dropdown
-                                              _formKey.currentState?.validate();
-                                            }
-                                      }
-                                      getVesselDetails(item?.id??"");
-                                      Utils.customPrint(
-                                          "id is: ${item?.id} ");
-                                      CustomLogger().logWithFile(
-                                          Level.info,
-                                          "id is: ${item?.id}-> $page");
-                              
-                                      parentValue = false;
-                                      selectedVessel = item!.id;
-                                      selectedVesselName = item.name;
-                              
-                                      if (mounted) {
-                                        setState(() {
-                                          isTripIdListLoading = false;
-                                          isSHowGraph = false;
-                                          avgSpeed = null;
-                                          avgDuration = null;
-                                          avgFuelConsumption = null;
-                                          avgPower = null;
-                                          triSpeedList.clear();
-                                          tripList.clear();
-                                          duration1 = null;
-                                          avgSpeed1 = null;
-                                          fuelUsage = null;
-                                          powerUsage = null;
-                                          finalData.clear();
-                                          durationGraphData.clear();
-                              
-                                          durationColumnSeriesData
-                                              .clear();
-                                          avgSpeedColumnSeriesData
-                                              .clear();
-                                          fuelUsageColumnSeriesData
-                                              .clear();
-                                          powerUsageColumnSeriesData
-                                              .clear();
-                                          selectedTripIdList!.clear();
-                                          selectedTripLabelList!.clear();
-                                        });
-                                      }
-                              
-                                      dateTimeList!.clear();
-                                      children!.clear();
-                                      getTripListData(item.id!);
-                                    },
-                                    buttonStyleData:  ButtonStyleData(
-                                      padding: EdgeInsets.only(right: 0),
-                                    ),
-                                    iconStyleData:  IconStyleData(
-                                      icon: Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        color: Colors.black,
-                                      ),
-                                      iconSize: displayHeight(context) * 0.035,
-                                    ),
-                                    dropdownStyleData: DropdownStyleData(
-                                      maxHeight: displayHeight(context) * 0.25,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(14),
-                                        // color: backgroundColor,
-                                      ),
-                                      offset: const Offset(0, 0),
-                                      scrollbarTheme: ScrollbarThemeData(
-                                        radius: const Radius.circular(20),
-                                        thickness: MaterialStateProperty.all<double>(6),
-                                        thumbVisibility: MaterialStateProperty.all<bool>(true),
-                                      ),
-                                    ),
-                                    menuItemStyleData: MenuItemStyleData(
-                                      padding: EdgeInsets.symmetric(horizontal: 0),
-                                    ),
                                   ),
                                 ),
                               ),
@@ -1235,12 +1241,12 @@ childrenValue!.clear();
                                       return null;
                                     },
                                     onChanged: (item) {
-                                            if (item != null) {
+                              
+                                                                                  if (item != null) {
                                               // Remove error for the second dropdown
                                               _formKey.currentState?.validate();
                                             }
-                              
-                                      
+
                                       if (item == "Filter by Date") {
                                         setState(() {
                                           selectedCaseType = 1;
