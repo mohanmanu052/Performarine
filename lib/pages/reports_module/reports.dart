@@ -938,7 +938,7 @@ childrenValue!.clear();
                                                                                                                        
                                                                 
                                         child: Text(
-                                          'Select Vessel',
+                                          'Select Vessel *',
                                           style: TextStyle(
                                             color: Colors.black,
                                               // color: Theme.of(context)
@@ -1177,7 +1177,7 @@ childrenValue!.clear();
                               
                                       child: Text(
                                         
-                                        'Filter By',
+                                        'Filter By *',
                                       
                                         style: TextStyle(
                               color: Colors.black,
@@ -1844,17 +1844,20 @@ childrenValue!.clear();
                   Container(
                     margin: EdgeInsets.only(left: 4),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      //mainAxisAlignment: MainAxisAlignment.center,
+                     // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          capacity??'-',
-
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontFamily: inter,
-                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
-                              color: blutoothDialogTxtColor),
+                        Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            capacity??'-',
+                        textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontFamily: inter,
+                                fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
+                                color: blutoothDialogTxtColor),
+                          ),
                         ),
                         SizedBox(
                           height: displayHeight(context) * 0.008,
@@ -1909,7 +1912,10 @@ childrenValue!.clear();
                       crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                      registerNumber!.isEmpty?'-' : registerNumber!,
+registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
+
+
+                   // registerNumber==null&&  registerNumber!.isEmpty?'-' : registerNumber!,
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontFamily: inter,
@@ -1970,7 +1976,7 @@ childrenValue!.clear();
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Avg Speed (Kt/h)',
+                child: Text('Avg Speed ($speedKnot)',
                     style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
@@ -1978,7 +1984,7 @@ childrenValue!.clear();
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Fuel Usage (L)',
+                child: Text('Fuel Usage ($liters)',
                     style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
@@ -1986,7 +1992,7 @@ childrenValue!.clear();
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Power Usage (W)',
+                child: Text('Power Usage ($watt)',
                     style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
@@ -2060,7 +2066,7 @@ childrenValue!.clear();
             ...finalData.map((e) => DataRow(cells: [
                   DataCell(
                     Text(
-                      e['date']!,
+                     'Average',
                       style: TextStyle(
                           color: circularProgressColor,
                           fontFamily: dmsans,
@@ -2326,7 +2332,7 @@ childrenValue!.clear();
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('Kt/h',
+                  Text(speedKnot,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2401,7 +2407,7 @@ childrenValue!.clear();
               ),
               plotBands: <PlotBand>[
                 PlotBand(
-                  text: 'avg ${avgSpeed}Kt/h',
+                  text: 'avg ${avgSpeed}$speedKnot',
                   isVisible: true,
                   start: avgSpeed,
                   end: avgSpeed,
@@ -2466,7 +2472,7 @@ childrenValue!.clear();
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('L',
+                  Text(liters,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2539,7 +2545,7 @@ childrenValue!.clear();
               ),
               plotBands: [
                 PlotBand(
-                    text: 'avg ${avgFuelConsumption}L',
+                    text: 'avg ${avgFuelConsumption}$liters',
                     isVisible: true,
                     start: avgFuelConsumption,
                     end: avgFuelConsumption,
@@ -2675,7 +2681,7 @@ childrenValue!.clear();
               ),
               plotBands: [
                 PlotBand(
-                    text: 'avg ${avgPower.toStringAsFixed(2)}W',
+                    text: 'avg ${avgPower.toStringAsFixed(2)}$watt',
                     isVisible: true,
                     start: avgPower,
                     end: avgPower,
@@ -3161,7 +3167,7 @@ borderRadius: BorderRadius.circular(20),
                                   value: childrenValue![index],
                                   imageUrl: imageUrl,
                                   dateTime: dateTimeList![index],
-                                  distance: '${distanceList![index]} NM',
+                                  distance: '${distanceList![index]} $nauticalMile',
                                   time: timeList![index],
                                   onChanged: (value) {
                         isSHowGraph = false;
