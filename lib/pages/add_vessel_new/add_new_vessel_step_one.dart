@@ -92,6 +92,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   bool? isBatteryCapacityEnable = false;
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
+  bool isDeleted = false;
 
   final statuses = List.generate(
     2,
@@ -335,7 +336,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 child: CommonTextField(
                     controller: weightController,
                     focusNode: weightFocusNode,
-                    labelText: 'Weight (lb)',
+                    labelText: 'Weight',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.done,
@@ -428,7 +429,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     child: CommonTextField(
                         controller: fuelCapacityController,
                         focusNode: fuelCapacityFocusNode,
-                        labelText: 'Fuel Capacity(l/kw)',
+                        labelText: 'Fuel($litre)',
                         hintText: '',
                         suffixText: null,
                         textInputAction: selectedEngineType == 'Hybrid'
@@ -447,14 +448,14 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                         },
                         validator: (value) {
                           if (value!.trim().isEmpty) {
-                            return 'Enter Fuel Capacity';
+                            return 'Enter Fuel';
                           }
 
                           return null;
                         },
                         onSaved: (String value) {
                           Utils.customPrint(value);
-                          CustomLogger().logWithFile(Level.info, "Fuel Capacity $value-> $page");
+                          CustomLogger().logWithFile(Level.info, "Fuel $value-> $page");
                         }),
                   ),
                 ],
@@ -472,7 +473,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     child: CommonTextField(
                         controller: batteryCapacityController,
                         focusNode: batteryCapacityFocusNode,
-                        labelText: 'Battery Capacity(kw)',
+                        labelText: 'Battery Capacity ($kiloWattHour)',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.done,
@@ -523,6 +524,9 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                               && selectedEngineType!.toLowerCase() == 'hybrid' ? fuelCapacityFormKey.currentState!.validate() && batteryCapacityFormKey.currentState!.validate()
                               : selectedEngineType!.toLowerCase() == 'combustion' ? fuelCapacityFormKey.currentState!.validate() : batteryCapacityFormKey.currentState!.validate()
                           ) {
+                            if(isDeleted){
+                              widget.addVesselData?.imageURLs = '';
+                            }
                             /*    Utils.customPrint(
                                 'FINAL SELECTED FILES ${finalSelectedFiles.isEmpty}');
                             CustomLogger().logWithFile(Level.info, "FINAL SELECTED FILES ${finalSelectedFiles.isEmpty} -> $page");
@@ -630,7 +634,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 setState(() {
                   isImageSelected = false;
                   if(finalSelectedFiles.isNotEmpty){
-                    widget.addVesselData?.imageURLs = '';
+                    isDeleted = true;
                     finalSelectedFiles.clear();
                   }
                 });
@@ -679,7 +683,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   finalSelectedFiles.clear();
                   isImageSelected = true;
                   finalSelectedFiles.addAll(selectedImageFileList);
-
+                  widget.addVesselData?.selectedImages = selectedImageFileList;
                   Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
                   CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
                   Utils.customPrint('CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
@@ -707,6 +711,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     finalSelectedFiles.clear();
                     isImageSelected = true;
                     finalSelectedFiles.addAll(selectedImageFileList);
+                    widget.addVesselData?.selectedImages = selectedImageFileList;
                     Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
 
                     CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
@@ -753,7 +758,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
             currentIndex: curIndex,
             connectorThickness: 5,
             children: statuses,
-            value: 0.35,
+            value: 0.5,
           ),
           SizedBox(
             height: 14,

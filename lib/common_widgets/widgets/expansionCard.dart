@@ -280,7 +280,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                 commonText(
                                                     context: context,
                                                     text:
-                                                    ' ${widget.vessel!.batteryCapacity!} kw'
+                                                    ' ${widget.vessel!.batteryCapacity!} $kiloWattHour'
                                                         .toString(),
                                                     fontWeight:
                                                     FontWeight.w500,
@@ -390,7 +390,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                 commonText(
                                                     context: context,
                                                     text:
-                                                    ' ${widget.vessel!.batteryCapacity!} kw'
+                                                    ' ${widget.vessel!.batteryCapacity!} $kiloWattHour'
                                                         .toString(),
                                                     fontWeight: FontWeight.w500,
                                                     textColor: Colors.white,

@@ -92,6 +92,15 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   }
 
   @override
+  void didUpdateWidget(covariant AddNewVesselStepTwo oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(commonProvider.addVesselRequestModel!.selectedImages != null || commonProvider.addVesselRequestModel!.selectedImages!.isNotEmpty)
+    {
+      finalSelectedFiles = commonProvider.addVesselRequestModel!.selectedImages!;
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     setState(() {
@@ -114,7 +123,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
       }
     }
 
-    if(commonProvider.addVesselRequestModel!.selectedImages != null)
+    if(commonProvider.addVesselRequestModel!.selectedImages != null || commonProvider.addVesselRequestModel!.selectedImages!.isNotEmpty)
     {
       finalSelectedFiles = commonProvider.addVesselRequestModel!.selectedImages!;
     }
@@ -185,7 +194,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: freeBoardController,
                         focusNode: freeBoardFocusNode,
-                        labelText: 'Freeboard (ft)',
+                        labelText: 'Freeboard ($feet)',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -218,7 +227,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: lengthOverallController,
                         focusNode: lengthOverallFocusNode,
-                        labelText: 'Length overall (ft)',
+                        labelText: 'Length Overall ($feet)',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -249,7 +258,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: moldedBeamController,
                         focusNode: moldedBeamFocusNode,
-                        labelText: 'Beam (ft)',
+                        labelText: 'Beam ($feet)',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -281,7 +290,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: moldedDepthController,
                         focusNode: moldedDepthFocusNode,
-                        labelText: 'Draft (ft)',
+                        labelText: 'Draft ($feet)',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -387,7 +396,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: builtYearController,
                         focusNode: builtYearFocusNode,
-                        labelText: 'Built Year (YYYY)',
+                        labelText: 'Built Year ($year)',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.done,
