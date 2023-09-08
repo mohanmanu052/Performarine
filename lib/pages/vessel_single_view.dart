@@ -55,6 +55,7 @@ import '../new_trip_analytics_screen.dart';
 import 'add_vessel_new/add_new_vessel_screen.dart';
 import 'bottom_navigation.dart';
 import 'feedback_report.dart';
+import 'package:geolocator/geolocator.dart' as geo;
 
 class VesselSingleView extends StatefulWidget {
   CreateVessel? vessel;
@@ -2824,7 +2825,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
 
-    ReceivePort port = ReceivePort();
+    String? latitude, longitude;
+
+    geo.Position currentPosition = await geo.Geolocator.getCurrentPosition();
+
+    if(currentPosition != null)
+    {
+      latitude = currentPosition.latitude.toString();
+      longitude = currentPosition.longitude.toString();
+    }
+    /*ReceivePort port = ReceivePort();
     String? latitude, longitude;
     port.listen((dynamic data) async {
       LocationDto? locationDto =
@@ -2834,7 +2844,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         longitude = locationDto.longitude.toString();
       }
       ;
-    });
+    });*/
     await fetchDeviceData();
 
     try {

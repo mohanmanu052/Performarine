@@ -61,8 +61,10 @@ ScreenshotController screen_shot_controller=ScreenshotController();
   double progress = 0.9, lprSensorProgress = 1.0;
   String bluetoothName = '';
 
+
   late CommonProvider commonProvider;
   late Future<List<CreateVessel>> getVesselFuture;
+
 
 
   final iconList = [
@@ -116,14 +118,15 @@ ScreenshotController screen_shot_controller=ScreenshotController();
         {
           Future.delayed(Duration(microseconds: 500), (){
 
-            Utils.customPrint("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+            Utils.customPrint("XXXXXXXXX ${isThereCurrentDialogShowing(context)}");
 
-            if(!_isThereCurrentDialogShowing(context))
+            if(!isThereCurrentDialogShowing(context))
             {
               WidgetsBinding.instance.addPostFrameCallback((duration)
               {
                 Utils.customPrint("RESET PASSWORD 1");
                 showResetPasswordDialogBox(context,updatedToken);
+
               });
             }
           });
@@ -132,8 +135,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
       Utils.customPrint('HomeScreen did update');
     }
   }
-
-
+  
   @override
   void initState() {
     // TODO: implement initState
@@ -174,7 +176,10 @@ ScreenshotController screen_shot_controller=ScreenshotController();
       {
         Future.delayed(Duration(microseconds: 500), (){
           Utils.customPrint("RESET PASSWORD 2");
-          showResetPasswordDialogBox(context, widget.token);
+          if(!isThereCurrentDialogShowing(context)){
+            showResetPasswordDialogBox(context, widget.token);
+          }
+
         });
       }
     }
@@ -225,13 +230,13 @@ void captureScreenShot()async{
             if(isComingFrom != null && isComingFrom )
             {
               Future.delayed(Duration(microseconds: 500), (){
-                Utils.customPrint("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+                Utils.customPrint("XXXXXXXXX ${isThereCurrentDialogShowing(context)}");
                 bool? result;
                 if(sharedPreferences != null){
                   result = sharedPreferences!.getBool('reset_dialog_opened');
                 }
 
-                if(!_isThereCurrentDialogShowing(context))
+                if(!isThereCurrentDialogShowing(context))
                 {
                   WidgetsBinding.instance.addPostFrameCallback((duration)
                   {
@@ -1968,7 +1973,7 @@ return
     });
   }
 
-  _isThereCurrentDialogShowing(BuildContext context) => ModalRoute.of(context)?.isCurrent != true;
+  bool isThereCurrentDialogShowing(BuildContext context) => ModalRoute.of(context)?.isCurrent != true;
 
   showEndTripDialogBox(BuildContext context) {
     if(sharedPreferences != null){
