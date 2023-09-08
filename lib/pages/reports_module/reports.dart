@@ -2199,7 +2199,6 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
                       Utils.customPrint("tapped on go to report button");
                       CustomLogger().logWithFile(Level.info,
                           "Navigating user into Trip Analytics Screen -> $page");
-                          print('the trip Id Was-----------------------'+selectedIndex.toString());
  bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
  if(isTripExists){
                       Navigator.push(
@@ -2358,7 +2357,6 @@ Utils.showSnackBar(context,
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
-                          print('the trip Id Was-----------------------'+selectedIndex.toString());
 
  bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
  if(isTripExists){
@@ -2510,7 +2508,6 @@ Utils.showSnackBar(context,
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
-                          print('the trip Id Was-----------------------'+selectedIndex.toString());
 
  bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
  if(isTripExists){
@@ -2660,7 +2657,6 @@ Utils.showSnackBar(context,
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
-                          print('the trip Id Was-----------------------'+selectedIndex.toString());
 
  bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
  if(isTripExists){
