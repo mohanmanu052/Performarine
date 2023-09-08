@@ -228,6 +228,13 @@ class DatabaseService {
     return exists == 1;
   }
 
+Future<bool> checkIfTripExist(String tripId) async {
+  final db = await _databaseService.database;
+  final List<Map<String, dynamic>> maps =
+  await db.query('trips', where: 'id = ?', whereArgs: [tripId]);
+  return maps.isNotEmpty;
+}
+
   /// To check trip is running for which vessel
   Future<bool> checkIfTripIsRunningForSpecificVessel(String vesselId) async {
 

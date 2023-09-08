@@ -69,6 +69,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
   String? finalTripDuration, finalTripDistance, finalAvgSpeed;
   bool cancelVisible=true;
+  bool? internet;
 
   final List<NewChartData> chartData = [
     NewChartData(2010, 35),
@@ -1334,7 +1335,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
               child: StatefulBuilder(
                 builder: (ctx,  stateSetter) {
                   return Container(
-                    height: displayHeight(ctx) * 0.45,
+                    height: displayHeight(ctx) * 0.46,
                     width: MediaQuery.of(ctx).size.width,
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -1365,146 +1366,162 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 height: displayHeight(ctx) * 0.02,
                               ),
 
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0, right: 10),
-                                child: Column(
-                                  children: [
-                                    Center(
-                                      child: commonText(
-                                          context: context,
-                                          text:
-                                          'Do you want to delete the Trip? ',
-                                          fontWeight: FontWeight.w500,
-                                          textColor: Colors.black,
-                                          textSize: displayWidth(ctx) * 0.045,
-                                          textAlign: TextAlign.center),
-                                    ),
-                                    SizedBox(
-                                      height: displayHeight(ctx) * 0.005,
-                                    ),
-                                    commonText(
-                                        context: context,
-                                        text:
-                                        'This action is irreversible. do you want to delete it?',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: Colors.grey,
-                                        textSize: displayWidth(ctx) * 0.036,
-                                        textAlign: TextAlign.center),
-                                  ],
+                              SizedBox(
+                                height: displayHeight(context)/8.5,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 10.0, right: 10),
+                                  child: Column(
+                                    children: [
+                                      Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 4),
+                                          child: commonText(
+                                              context: context,
+                                              text:
+                                              'Do you want to delete the Trip? ',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize: displayWidth(ctx) * 0.045,
+                                              textAlign: TextAlign.center),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: displayHeight(ctx) * 0.008,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: commonText(
+                                            context: context,
+                                            text:
+                                            'This action is irreversible. do you want to delete it?',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.grey,
+                                            textSize: displayWidth(ctx) * 0.036,
+                                            textAlign: TextAlign.center),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               Container(
                                 margin: EdgeInsets.only(
                                     top: 8.0,left: displayWidth(ctx) * 0.035,right: displayWidth(ctx) * 0.035
                                 ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
+                                child: SizedBox(
+                                  height: displayHeight(context)/8.3,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                
+                                      isBtnClick ? Center(
+                                        child: Container(
+                                          width: displayWidth(ctx) * 0.32,
+                                          child: Center(child: CircularProgressIndicator(
+                                            color: blueColor,
+                                          )),
+                                        ),
+                                      ) :  CommonButtons.getAcceptButton(
+                                          'Confirm & Delete', context, deleteTripBtnColor,
+                                              () async {
+                                                stateSetter(() {
+                                                  cancelVisible=false;
+                                                  isBtnClick = true;
+                                                });
+                                            internalStateSetter = stateSetter;
+                                             internet =
+                                            await Utils().check(scaffoldKey);
+                                                stateSetter(() {
+                                                  internet;
+                                                });
 
-                                    isBtnClick ? Center(
-                                      child: Container(
-                                        width: displayWidth(ctx) * 0.32,
-                                        child: Center(child: CircularProgressIndicator(
-                                          color: blueColor,
-                                        )),
-                                      ),
-                                    ) :  CommonButtons.getAcceptButton(
-                                        'Confirm & Delete', context, deleteTripBtnColor,
-                                            () async {
+                                
+                                            if(internet??false){
                                               stateSetter(() {
-                                                cancelVisible=false;
                                                 isBtnClick = true;
                                               });
-                                          internalStateSetter = stateSetter;
-                                          bool internet =
-                                          await Utils().check(scaffoldKey);
-
-                                          if(internet){
-                                            stateSetter(() {
-                                              isBtnClick = true;
-                                            });
-                                            Utils.customPrint("Ok button action : $isBtnClick");
-                                            bool deletedtrip = false;
-                                            deletedtrip =  await deleteTripFunctionality(
-                                                tripId,
-                                                    (){
-                                                  setState(() {
-                                                    // widget.isTripDeleted!.call();
-                                                    Navigator.pop(dialogContext);
-                                                  //  Navigator.pop(context);
-                                                    Navigator.pushAndRemoveUntil(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) => BottomNavigation()),
-                                                        ModalRoute.withName(""));
-                                                  });
-                                                }
-                                            );
-                                          } else if(tripUploadStatus){
-                                            stateSetter(() {
-                                              isBtnClick = true;
-                                            });
-                                            DatabaseService().deleteTripFromDB(tripId).then((value)
-                                            {
-                                              deleteFilePath('${ourDirectory!.path}/${tripId}.zip');
-                                              deleteFolder('${ourDirectory!.path}/${tripId}');
-                                              commonProvider.getTripsCount();
-                                             // widget.isTripDeleted!.call();
-                                              onDeleteCallBack.call();
-
+                                              Utils.customPrint("Ok button action : $isBtnClick");
+                                              bool deletedtrip = false;
+                                              deletedtrip =  await deleteTripFunctionality(
+                                                  tripId,
+                                                      (){
+                                                    setState(() {
+                                                      // widget.isTripDeleted!.call();
+                                                      Navigator.pop(dialogContext);
+                                                    //  Navigator.pop(context);
+                                                      Navigator.pushAndRemoveUntil(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) => BottomNavigation()),
+                                                          ModalRoute.withName(""));
+                                                    });
+                                                  }
+                                              );
+                                            } else if(tripUploadStatus){
+                                              stateSetter(() {
+                                                isBtnClick = true;
+                                              });
+                                              DatabaseService().deleteTripFromDB(tripId).then((value)
+                                              {
+                                                deleteFilePath('${ourDirectory!.path}/${tripId}.zip');
+                                                deleteFolder('${ourDirectory!.path}/${tripId}');
+                                                commonProvider.getTripsCount();
+                                               // widget.isTripDeleted!.call();
+                                                onDeleteCallBack.call();
+                                
+                                                stateSetter(() {
+                                                  isBtnClick = false;
+                                                });
+                                                Navigator.pop(dialogContext);
+                                                Navigator.pop(dialogContext);
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => BottomNavigation()),
+                                                    ModalRoute.withName(""));
+                                              });
+                                            } else{
                                               stateSetter(() {
                                                 isBtnClick = false;
                                               });
-                                              Navigator.pop(dialogContext);
-                                              Navigator.pop(dialogContext);
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => BottomNavigation()),
-                                                  ModalRoute.withName(""));
-                                            });
-                                          } else{
-                                            stateSetter(() {
-                                              isBtnClick = false;
-                                            });
-                                          }
-                                        },
-                                        displayWidth(ctx) ,
-                                        displayHeight(ctx) * 0.07,
-                                        deleteTripBtnColor,
-                                        Colors.white,
-                                        displayHeight(ctx) * 0.02,
-                                        deleteTripBtnColor,
-                                        '',
-                                        fontWeight: FontWeight.w600),
-
-                                    CommonButtons.getAcceptButton(
-                                        'Cancel',
-                                        context,
-                                        Colors.transparent,
-
-                                        (){
-
-                                          if(!cancelVisible){
-                                          }else{
-                                          Navigator.pop(dialogContext);
-
-                                          }
-                                    
-                                          
-                                        },
-                                        displayWidth(ctx) ,
-                                        displayHeight(ctx) * 0.05,
-                                        primaryColor,
-                                        Theme.of(ctx).brightness ==
-                                            Brightness.dark
-                                            ? Colors.white
-                                            : Colors.grey,
-                                        displayHeight(ctx) * 0.02,
-                                        Colors.transparent,
-                                        '',
-                                        fontWeight: FontWeight.w600),
-                                  ],
+                                            }
+                                          },
+                                          displayWidth(ctx) ,
+                                          displayHeight(ctx) * 0.07,
+                                          deleteTripBtnColor,
+                                          Colors.white,
+                                          displayHeight(ctx) * 0.02,
+                                          deleteTripBtnColor,
+                                          '',
+                                          fontWeight: FontWeight.w600),
+                                
+                                      CommonButtons.getAcceptButton(
+                                          'Cancel',
+                                          context,
+                                          Colors.transparent,
+                                
+                                          (){
+                                
+                                            if(!cancelVisible&&internet==true){
+                                            }else{
+                                            Navigator.pop(dialogContext);
+                                
+                                            }
+                                      
+                                            
+                                          },
+                                          displayWidth(ctx) ,
+                                          displayHeight(ctx) * 0.05,
+                                          primaryColor,
+                                          Theme.of(ctx).brightness ==
+                                              Brightness.dark
+                                              ? Colors.white
+                                              : Colors.grey,
+                                          displayHeight(ctx) * 0.02,
+                                          Colors.transparent,
+                                          '',
+                                          fontWeight: FontWeight.w600),
+                                    ],
+                                  ),
                                 ),
                               ),
                               SizedBox(
