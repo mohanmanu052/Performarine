@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
@@ -1064,6 +1065,14 @@ class _TripListScreenState extends State<TripListScreen> {
 
     String latitude = '0.0';
     String longitude = '0.0';
+
+    Position currentPosition = await Geolocator.getCurrentPosition();
+
+    if(currentPosition != null)
+    {
+      latitude = currentPosition.latitude.toString();
+      longitude = currentPosition.longitude.toString();
+    }
 
     Utils.customPrint("current lod:$currentLoad");
     CustomLogger().logWithFile(Level.info, "current lod:$currentLoad -> $page");

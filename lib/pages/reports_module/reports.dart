@@ -2191,8 +2191,8 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
                         color: Colors.white,
                       )),
                   TextButton(
-                    onPressed: () {
-                      Utils.customPrint("tapped on go to report button");
+                    onPressed: ()async {
+                      Utils.customPrint("tapped on go to report button ${selectedIndex}");
                       CustomLogger().logWithFile(Level.info,
                           "Navigating user into Trip Analytics Screen -> $page");
 

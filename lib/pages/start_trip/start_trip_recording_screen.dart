@@ -490,9 +490,15 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                     true;
                                                     popupAnimationController
                                                         .forward()
-                                                        .then((value) =>
-                                                        _focusNode
-                                                            .requestFocus());
+                                                        .then((value) {
+                                                      _focusNode
+                                                          .requestFocus();
+
+                                                      textEditingController.selection = TextSelection(baseOffset: 0, extentOffset: textEditingController.value.text.length);
+
+                                                    }
+
+                                                    );
                                                   });
                                                 }
                                               }
@@ -1797,11 +1803,11 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
                              if(numberOfPassengers.toString().length == 3)
                              {
-                               sliderMinVal = (numberOfPassengers.toDouble() + 1) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 1;
+                               sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
                              }
                              else
                              {
-                               sliderMinVal = numberOfPassengers.toDouble() + 1;
+                               sliderMinVal = numberOfPassengers.toDouble();
                              }
 
                              //sliderMinVal = 999;
@@ -1825,11 +1831,11 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
                                 if(numberOfPassengers.toString().length == 3)
                                 {
-                                  sliderMinVal = (numberOfPassengers.toDouble() + 1) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 1;
+                                  sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
                                 }
                                 else
                                 {
-                                  sliderMinVal = numberOfPassengers.toDouble() + 1;
+                                  sliderMinVal = numberOfPassengers.toDouble();
                                 }
                                 //sliderMinVal = 999;
                                 sliderCount = '$numberOfPassengers+';
@@ -1904,9 +1910,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                   int.parse(textEditingController.text);
 
                               if (numberOfPassengers.toString().length == 3) {
-                                sliderMinVal = (numberOfPassengers.toDouble() + 1) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble() + 1;
+                                sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
                               } else {
-                                sliderMinVal = numberOfPassengers.toDouble() + 1;
+                                sliderMinVal = numberOfPassengers.toDouble();
                               }
                               //sliderMinVal = numberOfPassengers.toDouble();
                               sliderCount = '$numberOfPassengers+';
@@ -2414,7 +2420,17 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     final vesselName = selectedVesselName;
     final currentLoad = selectedVesselWeight;
 
-    ReceivePort port = ReceivePort();
+    String? latitude, longitude;
+
+    geo.Position currentPosition = await geo.Geolocator.getCurrentPosition();
+
+    if(currentPosition != null)
+      {
+        latitude = currentPosition.latitude.toString();
+        longitude = currentPosition.longitude.toString();
+      }
+
+   /* ReceivePort port = ReceivePort();
     String? latitude, longitude;
     port.listen((dynamic data) async {
       LocationDto? locationDto =
@@ -2422,9 +2438,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       if (locationDto != null) {
         latitude = locationDto.latitude.toString();
         longitude = locationDto.longitude.toString();
-      }
-      ;
-    });
+      };
+    });*/
     await fetchDeviceData();
 
     debugPrint("NUMBER OF PASS 4 $numberOfPassengers");

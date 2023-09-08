@@ -11,7 +11,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:wakelock/wakelock.dart';
-
+import 'package:geolocator/geolocator.dart' as geo;
 import '../common_widgets/widgets/log_level.dart';
 
 class EndTrip {
@@ -34,7 +34,14 @@ class EndTrip {
     CustomLogger().logWithFile(Level.info, "abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance -> $page");
     ReceivePort port = ReceivePort();
     String? latitude, longitude;
-    port.listen((dynamic data) async {
+    geo.Position currentPosition = await geo.Geolocator.getCurrentPosition();
+
+    if(currentPosition != null)
+    {
+      latitude = currentPosition.latitude.toString();
+      longitude = currentPosition.longitude.toString();
+    }
+    /*port.listen((dynamic data) async {
       LocationDto? locationDto =
           data != null ? await LocationDto.fromJson(data) : null;
       if (locationDto != null) {
@@ -42,7 +49,7 @@ class EndTrip {
         longitude = locationDto.longitude.toString();
       }
       ;
-    });
+    });*/
 
 
     Utils.customPrint("endtrip location:$latitude");
