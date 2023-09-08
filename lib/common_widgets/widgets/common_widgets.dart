@@ -566,7 +566,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               commonText(
                                   context: context,
                                   text:
-                                  ' ${vesselData.batteryCapacity!} kw'
+                                  ' ${vesselData.batteryCapacity!} $kiloWattHour'
                                       .toString(),
                                   fontWeight:
                                   FontWeight.w500,
@@ -675,7 +675,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               commonText(
                                   context: context,
                                   text:
-                                  ' ${vesselData.batteryCapacity!} kw'
+                                  ' ${vesselData.batteryCapacity!} $kiloWattHour'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
                                   textColor: backgroundColor,
@@ -1105,7 +1105,7 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 commonText(
                                     context: context,
                                     text:
-                                    ' ${vesselData.batteryCapacity!} kw'
+                                    ' ${vesselData.batteryCapacity!} $kiloWattHour'
                                         .toString(),
                                     fontWeight:
                                     FontWeight.w500,
@@ -1209,7 +1209,7 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 commonText(
                                     context: context,
                                     text:
-                                    ' ${vesselData.batteryCapacity!} kw'
+                                    ' ${vesselData.batteryCapacity!} $kiloWattHour'
                                         .toString(),
                                     fontWeight: FontWeight.w500,
                                     textColor: Colors.white,

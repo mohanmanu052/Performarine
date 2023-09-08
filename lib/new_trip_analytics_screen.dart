@@ -345,7 +345,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                             commonText(
                                                 context: context,
                                                 text:
-                                                '${vesselData!.capacity}cc',
+                                                '${vesselData!.capacity}$cubicCapacity',
                                                 fontWeight: FontWeight.w500,
                                                 textColor: Colors.white,
                                                 textSize:
@@ -529,7 +529,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                   commonText(
                                                       context: context,
                                                       text:
-                                                      ' ${vesselData!.batteryCapacity!} kw'
+                                                      ' ${vesselData!.batteryCapacity!} $kiloWattHour'
                                                           .toString(),
                                                       fontWeight:
                                                       FontWeight.w400,
@@ -636,7 +636,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                   commonText(
                                                       context: context,
                                                       text:
-                                                      ' ${vesselData!.batteryCapacity!} kw'
+                                                      ' ${vesselData!.batteryCapacity!} $kiloWattHour'
                                                           .toString(),
                                                       fontWeight: FontWeight.w400,
                                                       textColor: Colors.white,

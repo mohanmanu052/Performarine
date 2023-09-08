@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/common_size_helper.dart';
@@ -302,7 +303,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                       commonText(
                                           context: context,
                                           text:
-                                          '${widget.data!.capacity}cc',
+                                          '${widget.data!.capacity}$cubicCapacity',
                                           fontWeight: FontWeight.w500,
                                           textColor: Colors.white,
                                           textSize:
@@ -486,7 +487,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                             commonText(
                                                 context: context,
                                                 text:
-                                                ' ${widget.data!.batteryCapacity!} kw'
+                                                ' ${widget.data!.batteryCapacity!} $kiloWattHour'
                                                     .toString(),
                                                 fontWeight:
                                                 FontWeight.w400,
@@ -593,7 +594,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                             commonText(
                                                 context: context,
                                                 text:
-                                                ' ${widget.data!.batteryCapacity!} kw'
+                                                ' ${widget.data!.batteryCapacity!} $kiloWattHour'
                                                     .toString(),
                                                 fontWeight: FontWeight.w400,
                                                 textColor: Colors.white,
@@ -743,7 +744,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                           child: commonText(
                                             context: context,
                                             text:
-                                            '${widget.data!.lengthOverall} ft',
+                                            '${widget.data!.lengthOverall} $feet',
                                             fontWeight: FontWeight.w500,
                                             textColor: Colors.black,
                                             textSize:
@@ -783,7 +784,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                           child: commonText(
                                               context: context,
                                               text:
-                                              '${widget.data!.freeBoard} ft',
+                                              '${widget.data!.freeBoard} $feet',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
                                               textSize:
@@ -820,7 +821,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                         Flexible(
                                           child: commonText(
                                               context: context,
-                                              text: '${widget.data!.beam} ft',
+                                              text: '${widget.data!.beam} $feet',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
                                               textSize:
@@ -860,7 +861,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                         Flexible(
                                           child: commonText(
                                               context: context,
-                                              text: '${widget.data!.draft} ft',
+                                              text: '${widget.data!.draft} $feet',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
                                               textSize:
@@ -973,7 +974,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                           commonText(
                                               context: context,
                                               text:
-                                              '130 hp',
+                                              '130 $hp',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:
@@ -998,7 +999,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                         children: [
                                           commonText(
                                               context: context,
-                                              text: '320 kW',
+                                              text: '320 $kiloWattHour',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:
@@ -1023,7 +1024,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                         children: [
                                           commonText(
                                               context: context,
-                                              text: '4500 lb',
+                                              text: '4500 $pound',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:

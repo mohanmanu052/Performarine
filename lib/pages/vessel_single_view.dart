@@ -178,8 +178,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isCheckingPermission = false,
       isTripEndedOrNot = false,
       vesselAnalytics = false,
-      isVesselParticularExpanded = true,
+      isVesselParticularExpanded = false,
       isVesselDimensionsExpanded = true,
+      isPropulsionDetails = true,
       anotherVesselEndTrip = false;
 
   late CommonProvider commonProvider;
@@ -435,7 +436,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     width: displayWidth(context) * 0.045,
                                                     color: Colors.black),
                                               ),
-                                              !isVesselDimensionsExpanded ? Icon(
+                                              !isPropulsionDetails ? Icon(
                                                   Icons.keyboard_arrow_down_outlined,
                                                   color: Colors.black,
                                               ) : Icon(
@@ -448,12 +449,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         initiallyExpanded: true,
                                         onExpansionChanged: ((newState) {
                                           setState(() {
-                                            isVesselDimensionsExpanded = newState;
+                                            isPropulsionDetails = newState;
                                           });
 
                                           Utils.customPrint(
-                                              'EXPANSION CHANGE $isVesselDimensionsExpanded');
-                                          CustomLogger().logWithFile(Level.info, "EXPANSION CHANGE $isVesselDimensionsExpanded -> $page");
+                                              'EXPANSION CHANGE $isPropulsionDetails');
+                                          CustomLogger().logWithFile(Level.info, "EXPANSION CHANGE $isPropulsionDetails -> $page");
                                         }),
                                         tilePadding: EdgeInsets.zero,
                                         childrenPadding: EdgeInsets.zero,
@@ -483,7 +484,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           child: commonText(
                                                             context: context,
                                                             text:
-                                                            '${widget.vessel!.lengthOverall} ft',
+                                                            '${widget.vessel!.lengthOverall} $feet',
                                                             fontWeight: FontWeight.w500,
                                                             textColor: Colors.black,
                                                             textSize:
@@ -523,7 +524,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           child: commonText(
                                                               context: context,
                                                               text:
-                                                              '${widget.vessel!.freeBoard} ft',
+                                                              '${widget.vessel!.freeBoard} $feet',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.black,
                                                               textSize:
@@ -560,7 +561,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         Flexible(
                                                           child: commonText(
                                                               context: context,
-                                                              text: '${widget.vessel!.beam} ft',
+                                                              text: '${widget.vessel!.beam} $feet',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.black,
                                                               textSize:
@@ -600,7 +601,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         Flexible(
                                                           child: commonText(
                                                               context: context,
-                                                              text: '${widget.vessel!.draft} ft',
+                                                              text: '${widget.vessel!.draft} $feet',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.black,
                                                               textSize:
@@ -712,7 +713,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           commonText(
                                                               context: context,
                                                               text:
-                                                              '130 hp',
+                                                              '130 $hp',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
@@ -737,7 +738,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         children: [
                                                           commonText(
                                                               context: context,
-                                                              text: '320 kW',
+                                                              text: '320 $kiloWattHour',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
@@ -762,7 +763,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         children: [
                                                           commonText(
                                                               context: context,
-                                                              text: '4500 lb',
+                                                              text: '4500 $pound',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
