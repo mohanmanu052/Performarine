@@ -817,7 +817,7 @@ childrenValue!.clear();
               Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: reportFilterBackColor),
+                    color: reportTripsListBackColor),
                 child: Theme(
                   data: Theme.of(context)
                       .copyWith(dividerColor: Colors.transparent),
@@ -1508,34 +1508,38 @@ childrenValue!.clear();
                                   SizedBox(
                                     height: displayWidth(context) * 0.04,
                                   ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "$selectedTripsAndDateString",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w400,
-                                            fontFamily: outfit),
-                                      ),
-                                      SizedBox(
-                                        width: displayWidth(context) * 0.05,
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          selectedCaseType == 1
-                                              ? ": ${selectedTripsAndDateDetails}"
-                                              : ":  ${selectedTripLabelList!.join(', ')}",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
+                                  Visibility(
+                                    visible: selectedCaseType==1?true:false,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "$selectedTripsAndDateString",
                                           style: TextStyle(
                                               color: Colors.black,
-                                              fontSize: 12,
+                                              fontSize: 13,
                                               fontWeight: FontWeight.w400,
-                                              fontFamily: inter),
+                                              fontFamily: outfit),
                                         ),
-                                      ),
-                                    ],
+                                        SizedBox(
+                                          width: displayWidth(context) * 0.05,
+                                        ),
+                                      
+                                        Expanded(
+                                          child: Text(
+                                            selectedCaseType == 1
+                                                ? ": ${selectedTripsAndDateDetails}"
+                                                : ":  ${selectedTripLabelList!.join(', ')}",
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: inter),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   SizedBox(
                                     height: displayWidth(context) * 0.06,
@@ -2191,11 +2195,13 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
                         color: Colors.white,
                       )),
                   TextButton(
-                    onPressed: () {
+                    onPressed: ()async {
                       Utils.customPrint("tapped on go to report button");
                       CustomLogger().logWithFile(Level.info,
                           "Navigating user into Trip Analytics Screen -> $page");
-
+                          print('the trip Id Was-----------------------'+selectedIndex.toString());
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -2208,7 +2214,15 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
                                     calledFrom: 'Report',
                                     // vessel: getVesselById[0]
                                   )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
                     },
+
+
+
                     child: Text('Go to Trip Report',
                         style: TextStyle(
                           fontSize: 12,
@@ -2340,23 +2354,35 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
                 ],
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async{
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
+                          print('the trip Id Was-----------------------'+selectedIndex.toString());
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewTripAnalyticsScreen(
-                                tripId: selectedIndex,
-                                vesselName: selectedVesselName,
-                                // avgInfo: reportModel!.data!.avgInfo,
-                                vesselId: selectedVessel,
-                                tripIsRunningOrNot: false,
-                                calledFrom: 'Report',
-                              )));
-                },
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewTripAnalyticsScreen(
+                                    tripId: selectedIndex,
+                                    vesselName: selectedVesselName,
+                                    // avgInfo: reportModel!.data!.avgInfo,
+                                    vesselId: selectedVessel,
+                                    tripIsRunningOrNot: false,
+                                    calledFrom: 'Report',
+                                    // vessel: getVesselById[0]
+                                  )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
+                    },
+
+
+                
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
@@ -2480,22 +2506,35 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
                 ],
               ),
               TextButton(
-                onPressed: () {
+                onPressed: ()async {
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
+                          print('the trip Id Was-----------------------'+selectedIndex.toString());
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewTripAnalyticsScreen(
-                                tripId: selectedIndex,
-                                vesselName: selectedVesselName,
-                                vesselId: selectedVessel,
-                                tripIsRunningOrNot: false,
-                                calledFrom: 'Report',
-                              )));
-                },
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewTripAnalyticsScreen(
+                                    tripId: selectedIndex,
+                                    vesselName: selectedVesselName,
+                                    // avgInfo: reportModel!.data!.avgInfo,
+                                    vesselId: selectedVessel,
+                                    tripIsRunningOrNot: false,
+                                    calledFrom: 'Report',
+                                    // vessel: getVesselById[0]
+                                  )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
+                    },
+
+
+                
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
@@ -2617,22 +2656,36 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
                 ],
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async{
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
+                          print('the trip Id Was-----------------------'+selectedIndex.toString());
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewTripAnalyticsScreen(
-                                tripId: selectedIndex,
-                                vesselName: selectedVesselName,
-                                vesselId: selectedVessel,
-                                tripIsRunningOrNot: false,
-                                calledFrom: 'Report',
-                              )));
-                },
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewTripAnalyticsScreen(
+                                    tripId: selectedIndex,
+                                    vesselName: selectedVesselName,
+                                    // avgInfo: reportModel!.data!.avgInfo,
+                                    vesselId: selectedVessel,
+                                    tripIsRunningOrNot: false,
+                                    calledFrom: 'Report',
+                                    // vessel: getVesselById[0]
+                                  )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
+                    },
+
+
+
+                
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
