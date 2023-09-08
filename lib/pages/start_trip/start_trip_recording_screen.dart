@@ -1890,6 +1890,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                               borderRadius: BorderRadius.circular(5))),
                     ),
                     onPressed: () {
+// <<<<<<< GOE-Sprint13
                       if(int.parse(textEditingController.text.trim().isEmpty ? '1' : textEditingController.text.trim()) != 0)
                         {
                           setState(() {
@@ -1917,6 +1918,47 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                               //sliderMinVal = numberOfPassengers.toDouble();
                               sliderCount = '$numberOfPassengers+';
                               isSliderDisable = false;
+// =======
+//                       setState(() {
+//                         isOKClick = true;
+//                         if (textEditingController.text.isEmpty) {
+                          
+// ;
+
+//                           numberOfPassengers = passengerValue;
+
+//                           if(numberOfPassengers>11){
+//                                                       sliderMinVal = numberOfPassengers.toDouble();
+
+//                           }
+//                           else{
+//                             sliderMinVal=11;
+//                           }
+
+                          
+//                           sliderCount = '10+';
+//                           isSliderDisable = false;
+//                           isCheck = false;
+
+//                         } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
+
+//                           sliderMinVal = 999;
+//                           sliderCount = '999';
+//                           isSliderDisable = false;
+//                           numberOfPassengers =
+//                               int.parse(textEditingController.text);
+//                         } else if (textEditingController.text.isNotEmpty &&
+//                             int.parse(textEditingController.text) < 11) {
+
+//                           sliderMinVal = 11;
+//                           sliderCount = '10+';
+//                           isSliderDisable = false;
+//                           numberOfPassengers =
+//                               int.parse(textEditingController.text);
+//                         }
+//                       });
+//                       FocusScope.of(context).requestFocus(new FocusNode());
+// >>>>>>> GOE-Sprint12-Base
 
                             } else if (textEditingController.text.isNotEmpty &&
                                 int.parse(textEditingController.text) < 11) {

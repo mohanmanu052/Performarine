@@ -101,17 +101,18 @@ class _SyncDataCloudToMobileScreenState
               margin: EdgeInsets.symmetric(horizontal: 17),
               child: Column(
                 children: [
-                  // SizedBox(
-                  //   height: displayHeight(context) * 0.045,
-                  // ),
+                  SizedBox(
+                    height:Platform.isAndroid? MediaQuery.of(context).size.height/27:MediaQuery.of(context).size.height/30,
+                  ),
                   Container(
                     width: displayWidth(context) * 0.7,
+                    height: MediaQuery.of(context).size.height/5.5,
                     child: Image.asset(
                       'assets/images/sync_cloud.png',
                     ),
                   ),
                   SizedBox(
-                    height: displayHeight(context) * 0.03,
+                    height: MediaQuery.of(context).size.height/24,
                   ),
                   Container(
                     width: displayWidth(context) * 0.36,
@@ -121,7 +122,8 @@ class _SyncDataCloudToMobileScreenState
                     ),
                   ),
                   SizedBox(
-                    height: displayHeight(context) * 0.04,
+                    height:Platform.isAndroid? MediaQuery.of(context).size.height/24:MediaQuery.of(context).size.height/28,
+                   // height: displayHeight(context) * 0.04,
                   ),
                   
                   Container(
@@ -145,7 +147,8 @@ class _SyncDataCloudToMobileScreenState
                             ),
                           ),
                           SizedBox(
-                            height: displayHeight(context) * 0.04,
+                            height: MediaQuery.of(context).size.height/25,
+                            //height: displayHeight(context) * 0.04,
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -154,7 +157,7 @@ class _SyncDataCloudToMobileScreenState
                             ),
                           ),
                           SizedBox(
-                            height: displayHeight(context) * 0.03
+                            height:Platform.isAndroid? displayHeight(context) * 0.03:displayHeight(context) * 0.02
                             ,
                           ),
                           Padding(
@@ -170,7 +173,8 @@ class _SyncDataCloudToMobileScreenState
                             ),
                           ),
                           SizedBox(
-                            height: displayHeight(context) * 0.03,
+                            height: displayHeight(context) * 0.03
+                            
                           ),
                           !commonProvider.exceptionOccurred
                               ? Container(
@@ -259,9 +263,14 @@ class _SyncDataCloudToMobileScreenState
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height/40,
+                  ),
 
                   commonProvider.exceptionOccurred
-                  ? Padding(
+                  ? 
+                  
+                  Padding(
                     padding: EdgeInsets.only(
                       top: displayWidth(context) * 0.03,
                     ),
@@ -277,9 +286,9 @@ class _SyncDataCloudToMobileScreenState
                   )
                   : Container(),
 
-                  SizedBox(
-                    height: displayWidth(context) * 0.02,
-                  )
+                  // SizedBox(
+                  //   height: displayWidth(context) * 0.02,
+                  // )
                 ],
               ),
             ),
