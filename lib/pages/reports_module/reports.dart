@@ -938,7 +938,7 @@ childrenValue!.clear();
                                                                                                                        
                                                                 
                                         child: Text(
-                                          'Select Vessel',
+                                          'Select Vessel *',
                                           style: TextStyle(
                                             color: Colors.black,
                                               // color: Theme.of(context)
@@ -1177,7 +1177,7 @@ childrenValue!.clear();
                               
                                       child: Text(
                                         
-                                        'Filter By',
+                                        'Filter By *',
                                       
                                         style: TextStyle(
                               color: Colors.black,
@@ -1976,7 +1976,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Avg Speed (Kt/h)',
+                child: Text('Avg Speed ($speedKnot)',
                     style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
@@ -1984,7 +1984,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Fuel Usage (L)',
+                child: Text('Fuel Usage ($liters)',
                     style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
@@ -1992,7 +1992,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Power Usage (W)',
+                child: Text('Power Usage ($watt)',
                     style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
@@ -2066,7 +2066,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
             ...finalData.map((e) => DataRow(cells: [
                   DataCell(
                     Text(
-                      e['date']!,
+                     'Average',
                       style: TextStyle(
                           color: circularProgressColor,
                           fontFamily: dmsans,
@@ -2332,7 +2332,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('Kt/h',
+                  Text(speedKnot,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2407,7 +2407,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
               ),
               plotBands: <PlotBand>[
                 PlotBand(
-                  text: 'avg ${avgSpeed}Kt/h',
+                  text: 'avg ${avgSpeed}$speedKnot',
                   isVisible: true,
                   start: avgSpeed,
                   end: avgSpeed,
@@ -2472,7 +2472,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('L',
+                  Text(liters,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2545,7 +2545,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
               ),
               plotBands: [
                 PlotBand(
-                    text: 'avg ${avgFuelConsumption}L',
+                    text: 'avg ${avgFuelConsumption}$liters',
                     isVisible: true,
                     start: avgFuelConsumption,
                     end: avgFuelConsumption,
@@ -2681,7 +2681,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
               ),
               plotBands: [
                 PlotBand(
-                    text: 'avg ${avgPower.toStringAsFixed(2)}W',
+                    text: 'avg ${avgPower.toStringAsFixed(2)}$watt',
                     isVisible: true,
                     start: avgPower,
                     end: avgPower,
@@ -3167,7 +3167,7 @@ borderRadius: BorderRadius.circular(20),
                                   value: childrenValue![index],
                                   imageUrl: imageUrl,
                                   dateTime: dateTimeList![index],
-                                  distance: '${distanceList![index]} NM',
+                                  distance: '${distanceList![index]} $nauticalMile',
                                   time: timeList![index],
                                   onChanged: (value) {
                         isSHowGraph = false;
