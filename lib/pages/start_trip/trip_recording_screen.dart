@@ -92,12 +92,12 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
             {
               if(widget.calledFrom!.isNotEmpty)
               {
-                if(widget.calledFrom == 'bottom_nav')
+                if(widget.calledFrom == 'bottom_nav' || widget.calledFrom == 'notification')
                 {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => BottomNavigation(
-                        tabIndex: commonProvider.bottomNavIndex,
+                        tabIndex: widget.calledFrom == 'notification' ? 0 : commonProvider.bottomNavIndex,
                       )),
                       ModalRoute.withName(""));
                 }
@@ -167,12 +167,12 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                   {
                     if(widget.calledFrom!.isNotEmpty)
                     {
-                      if(widget.calledFrom == 'bottom_nav')
+                      if(widget.calledFrom == 'bottom_nav'|| widget.calledFrom == 'notification')
                       {
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (context) => BottomNavigation(
-                              tabIndex: commonProvider.bottomNavIndex,
+                              tabIndex: widget.calledFrom == 'notification' ? 0 : commonProvider.bottomNavIndex,
                             )),
                             ModalRoute.withName(""));
                       }

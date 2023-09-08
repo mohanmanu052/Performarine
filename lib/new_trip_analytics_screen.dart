@@ -1238,23 +1238,30 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                         ),
                         child: Center(
                           child: ElevatedButton(
-                              onPressed: (){
+                              onPressed: ()async{
                                 debugPrint("DOWNLOAD TRIP ID ${widget.tripId!}");
                                 debugPrint("DOWNLOAD TRIP ID ${tripData!.isCloud}");
 
-                                if(tripData!.isCloud != 0)
-                                  {
-                                    commonProvider.downloadTripProgressBar(true);
-                                    // setState(() {});
-                                    DownloadTrip().downloadTripFromCloud(context,scaffoldKey, tripData!.filePath!, commonProvider);
+                                bool check = await Utils().check(scaffoldKey);
 
-                                  }
-                                else
+                                Utils.customPrint("NETWORK $check");
+
+                                if(check)
                                   {
-                                    DownloadTrip().downloadTrip(
-                                        context,
-                                        scaffoldKey,
-                                        widget.tripId!);
+                                    if(tripData!.isCloud != 0)
+                                    {
+                                      commonProvider.downloadTripProgressBar(true);
+                                      // setState(() {});
+                                      DownloadTrip().downloadTripFromCloud(context,scaffoldKey, tripData!.filePath!, commonProvider);
+
+                                    }
+                                    else
+                                    {
+                                      DownloadTrip().downloadTrip(
+                                          context,
+                                          scaffoldKey,
+                                          widget.tripId!);
+                                    }
                                   }
     
                               },

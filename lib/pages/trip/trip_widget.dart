@@ -118,7 +118,10 @@ class _TripWidgetState extends State<TripWidget> {
 
     vesselImageUrl = vesselData!.imageURLs ?? '';
 
-    setState(() {});
+    if(mounted)
+      {
+        setState(() {});
+      }
 
   }
 
@@ -145,7 +148,11 @@ class _TripWidgetState extends State<TripWidget> {
             ),
           );*/
 
-          if(tripIsRunning)
+         var checkIfSpecificTripIsRunning = await _databaseService.checkIfSpecificTripIsRunningOrNot(widget.tripList!.id!);
+
+          debugPrint("TRIP ANALYTICS 1212 ${checkIfSpecificTripIsRunning}");
+
+          if(checkIfSpecificTripIsRunning)
             {
               Navigator.push(
                   context,

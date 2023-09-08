@@ -536,4 +536,16 @@ Future<bool> checkIfTripExist(String tripId) async {
       whereArgs: [tripId],
     );
   }
+
+  Future<bool> checkIfSpecificTripIsRunningOrNot(String tripID) async {
+
+    final db = await _databaseService.database;
+    var result = await db.rawQuery(
+      'SELECT EXISTS(SELECT 1 FROM trips WHERE id="$tripID" AND tripStatus="0")',
+    );
+    int? exists = Sqflite.firstIntValue(result);
+    Utils.customPrint('EXIST $exists');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
+    return exists == 1;
+  }
 }
