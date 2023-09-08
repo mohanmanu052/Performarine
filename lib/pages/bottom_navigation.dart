@@ -61,8 +61,10 @@ ScreenshotController screen_shot_controller=ScreenshotController();
   double progress = 0.9, lprSensorProgress = 1.0;
   String bluetoothName = '';
 
+
   late CommonProvider commonProvider;
   late Future<List<CreateVessel>> getVesselFuture;
+
 
 
   final iconList = [
@@ -116,14 +118,15 @@ ScreenshotController screen_shot_controller=ScreenshotController();
         {
           Future.delayed(Duration(microseconds: 500), (){
 
-            Utils.customPrint("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+            Utils.customPrint("XXXXXXXXX ${isThereCurrentDialogShowing(context)}");
 
-            if(!_isThereCurrentDialogShowing(context))
+            if(!isThereCurrentDialogShowing(context))
             {
               WidgetsBinding.instance.addPostFrameCallback((duration)
               {
                 Utils.customPrint("RESET PASSWORD 1");
                 showResetPasswordDialogBox(context,updatedToken);
+
               });
             }
           });
@@ -132,8 +135,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
       Utils.customPrint('HomeScreen did update');
     }
   }
-
-
+  
   @override
   void initState() {
     // TODO: implement initState
@@ -174,7 +176,10 @@ ScreenshotController screen_shot_controller=ScreenshotController();
       {
         Future.delayed(Duration(microseconds: 500), (){
           Utils.customPrint("RESET PASSWORD 2");
-          showResetPasswordDialogBox(context, widget.token);
+          if(!isThereCurrentDialogShowing(context)){
+            showResetPasswordDialogBox(context, widget.token);
+          }
+
         });
       }
     }
@@ -225,13 +230,13 @@ void captureScreenShot()async{
             if(isComingFrom != null && isComingFrom )
             {
               Future.delayed(Duration(microseconds: 500), (){
-                Utils.customPrint("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
+                Utils.customPrint("XXXXXXXXX ${isThereCurrentDialogShowing(context)}");
                 bool? result;
                 if(sharedPreferences != null){
                   result = sharedPreferences!.getBool('reset_dialog_opened');
                 }
 
-                if(!_isThereCurrentDialogShowing(context))
+                if(!isThereCurrentDialogShowing(context))
                 {
                   WidgetsBinding.instance.addPostFrameCallback((duration)
                   {
@@ -1859,7 +1864,7 @@ return
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.45,
+                  height: displayHeight(context) * 0.4,
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -1868,33 +1873,29 @@ return
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-
                         ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
                               child: Image.asset(
-                                'assets/images/boat.gif',
-                                height: displayHeight(context) * 0.1,
+                                'assets/icons/lock.png',
+                                height: displayHeight(context) * 0.15,
                                 width: displayWidth(context),
                                 fit: BoxFit.contain,
                               ),
                             )),
 
                         SizedBox(
-                          height: displayHeight(context) * 0.02,
+                          height: displayHeight(context) * 0.01,
                         ),
 
                         Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          padding: const EdgeInsets.only(left: 10.0, right: 10),
                           child: Column(
                             children: [
                               commonText(
                                   context: context,
                                   text:
-                                  'You are already logged in, Click OK to reset password.',
+                                  'If you are already logged in, click Continue to reset password.',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,
@@ -1909,30 +1910,50 @@ return
                           margin: EdgeInsets.only(
                             top: 8.0,
                           ),
-                          child: Center(
-                            child: CommonButtons.getAcceptButton(
-                                'OK', context, blueColor,
-                                    () async {
-                                  Navigator.pop(dialogContext);
+                          child: Column(
+                            children: [
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Continue', context, blueColor,
+                                        () async {
+                                      Navigator.pop(dialogContext);
 
-                                  if(sharedPreferences != null){
-                                    sharedPreferences!.setBool('reset_dialog_opened', false);
-                                  }
-                                  // Get.reset();
-                                  // Get.resetRootNavigator();
+                                      if(sharedPreferences != null){
+                                        sharedPreferences!.setBool('reset_dialog_opened', false);
+                                      }
+                                      // Get.reset();
+                                      // Get.resetRootNavigator();
 
-                                  var result = await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => ResetPassword(token: token, isCalledFrom:  "HomePage",)),);
-                                },
-                                displayWidth(context) * 0.65,
-                                displayHeight(context) * 0.054,
-                                primaryColor,
-                                Colors.white,
-                                displayHeight(context) * 0.015,
-                                blueColor,
-                                '',
-                                fontWeight: FontWeight.w500),
+                                      var result = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => ResetPassword(token: token, isCalledFrom:  "HomePage",)),);
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Colors.white,
+                                    displayHeight(context) * 0.018,
+                                    blueColor,
+                                    '',
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(height: 4,),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Cancel', context, Colors.transparent,
+                                        () async {
+                                      Navigator.pop(dialogContext);
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    Colors.transparent,
+                                    blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.transparent,
+                                    '',
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
                           ),
                         ),
                         SizedBox(
@@ -1952,7 +1973,7 @@ return
     });
   }
 
-  _isThereCurrentDialogShowing(BuildContext context) => ModalRoute.of(context)?.isCurrent != true;
+  bool isThereCurrentDialogShowing(BuildContext context) => ModalRoute.of(context)?.isCurrent != true;
 
   showEndTripDialogBox(BuildContext context) {
     if(sharedPreferences != null){

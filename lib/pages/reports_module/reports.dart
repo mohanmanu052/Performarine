@@ -817,7 +817,7 @@ childrenValue!.clear();
               Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: reportFilterBackColor),
+                    color: reportTripsListBackColor),
                 child: Theme(
                   data: Theme.of(context)
                       .copyWith(dividerColor: Colors.transparent),
@@ -938,7 +938,7 @@ childrenValue!.clear();
                                                                                                                        
                                                                 
                                         child: Text(
-                                          'Select Vessel',
+                                          'Select Vessel *',
                                           style: TextStyle(
                                             color: Colors.black,
                                               // color: Theme.of(context)
@@ -1177,7 +1177,7 @@ childrenValue!.clear();
                               
                                       child: Text(
                                         
-                                        'Filter By',
+                                        'Filter By *',
                                       
                                         style: TextStyle(
                               color: Colors.black,
@@ -1508,34 +1508,38 @@ childrenValue!.clear();
                                   SizedBox(
                                     height: displayWidth(context) * 0.04,
                                   ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "$selectedTripsAndDateString",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w400,
-                                            fontFamily: outfit),
-                                      ),
-                                      SizedBox(
-                                        width: displayWidth(context) * 0.05,
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          selectedCaseType == 1
-                                              ? ": ${selectedTripsAndDateDetails}"
-                                              : ":  ${selectedTripLabelList!.join(', ')}",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
+                                  Visibility(
+                                    visible: selectedCaseType==1?true:false,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "$selectedTripsAndDateString",
                                           style: TextStyle(
                                               color: Colors.black,
-                                              fontSize: 12,
+                                              fontSize: 13,
                                               fontWeight: FontWeight.w400,
-                                              fontFamily: inter),
+                                              fontFamily: outfit),
                                         ),
-                                      ),
-                                    ],
+                                        SizedBox(
+                                          width: displayWidth(context) * 0.05,
+                                        ),
+                                      
+                                        Expanded(
+                                          child: Text(
+                                            selectedCaseType == 1
+                                                ? ": ${selectedTripsAndDateDetails}"
+                                                : ":  ${selectedTripLabelList!.join(', ')}",
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400,
+                                                fontFamily: inter),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   SizedBox(
                                     height: displayWidth(context) * 0.06,
@@ -1844,17 +1848,20 @@ childrenValue!.clear();
                   Container(
                     margin: EdgeInsets.only(left: 4),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      //mainAxisAlignment: MainAxisAlignment.center,
+                     // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          capacity??'-',
-
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontFamily: inter,
-                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
-                              color: blutoothDialogTxtColor),
+                        Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            capacity??'-',
+                        textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontFamily: inter,
+                                fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
+                                color: blutoothDialogTxtColor),
+                          ),
                         ),
                         SizedBox(
                           height: displayHeight(context) * 0.008,
@@ -1909,7 +1916,10 @@ childrenValue!.clear();
                       crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                      registerNumber!.isEmpty?'-' : registerNumber!,
+registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
+
+
+                   // registerNumber==null&&  registerNumber!.isEmpty?'-' : registerNumber!,
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontFamily: inter,
@@ -1970,7 +1980,7 @@ childrenValue!.clear();
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Avg Speed (Kt/h)',
+                child: Text('Avg Speed ($speedKnot)',
                     style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
@@ -1978,7 +1988,7 @@ childrenValue!.clear();
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Fuel Usage (L)',
+                child: Text('Fuel Usage ($liters)',
                     style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
@@ -1986,7 +1996,7 @@ childrenValue!.clear();
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Power Usage (W)',
+                child: Text('Power Usage ($watt)',
                     style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
@@ -2060,7 +2070,7 @@ childrenValue!.clear();
             ...finalData.map((e) => DataRow(cells: [
                   DataCell(
                     Text(
-                      e['date']!,
+                     'Average',
                       style: TextStyle(
                           color: circularProgressColor,
                           fontFamily: dmsans,
@@ -2185,11 +2195,12 @@ childrenValue!.clear();
                         color: Colors.white,
                       )),
                   TextButton(
-                    onPressed: () {
+                    onPressed: ()async {
                       Utils.customPrint("tapped on go to report button");
                       CustomLogger().logWithFile(Level.info,
                           "Navigating user into Trip Analytics Screen -> $page");
-
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -2202,7 +2213,15 @@ childrenValue!.clear();
                                     calledFrom: 'Report',
                                     // vessel: getVesselById[0]
                                   )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
                     },
+
+
+
                     child: Text('Go to Trip Report',
                         style: TextStyle(
                           fontSize: 12,
@@ -2326,7 +2345,7 @@ childrenValue!.clear();
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('Kt/h',
+                  Text(speedKnot,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2334,23 +2353,34 @@ childrenValue!.clear();
                 ],
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async{
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewTripAnalyticsScreen(
-                                tripId: selectedIndex,
-                                vesselName: selectedVesselName,
-                                // avgInfo: reportModel!.data!.avgInfo,
-                                vesselId: selectedVessel,
-                                tripIsRunningOrNot: false,
-                                calledFrom: 'Report',
-                              )));
-                },
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewTripAnalyticsScreen(
+                                    tripId: selectedIndex,
+                                    vesselName: selectedVesselName,
+                                    // avgInfo: reportModel!.data!.avgInfo,
+                                    vesselId: selectedVessel,
+                                    tripIsRunningOrNot: false,
+                                    calledFrom: 'Report',
+                                    // vessel: getVesselById[0]
+                                  )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
+                    },
+
+
+                
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
@@ -2401,7 +2431,7 @@ childrenValue!.clear();
               ),
               plotBands: <PlotBand>[
                 PlotBand(
-                  text: 'avg ${avgSpeed}Kt/h',
+                  text: 'avg ${avgSpeed}$speedKnot',
                   isVisible: true,
                   start: avgSpeed,
                   end: avgSpeed,
@@ -2466,7 +2496,7 @@ childrenValue!.clear();
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('L',
+                  Text(liters,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2474,22 +2504,34 @@ childrenValue!.clear();
                 ],
               ),
               TextButton(
-                onPressed: () {
+                onPressed: ()async {
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewTripAnalyticsScreen(
-                                tripId: selectedIndex,
-                                vesselName: selectedVesselName,
-                                vesselId: selectedVessel,
-                                tripIsRunningOrNot: false,
-                                calledFrom: 'Report',
-                              )));
-                },
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewTripAnalyticsScreen(
+                                    tripId: selectedIndex,
+                                    vesselName: selectedVesselName,
+                                    // avgInfo: reportModel!.data!.avgInfo,
+                                    vesselId: selectedVessel,
+                                    tripIsRunningOrNot: false,
+                                    calledFrom: 'Report',
+                                    // vessel: getVesselById[0]
+                                  )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
+                    },
+
+
+                
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
@@ -2539,7 +2581,7 @@ childrenValue!.clear();
               ),
               plotBands: [
                 PlotBand(
-                    text: 'avg ${avgFuelConsumption}L',
+                    text: 'avg ${avgFuelConsumption}$liters',
                     isVisible: true,
                     start: avgFuelConsumption,
                     end: avgFuelConsumption,
@@ -2611,22 +2653,35 @@ childrenValue!.clear();
                 ],
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async{
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewTripAnalyticsScreen(
-                                tripId: selectedIndex,
-                                vesselName: selectedVesselName,
-                                vesselId: selectedVessel,
-                                tripIsRunningOrNot: false,
-                                calledFrom: 'Report',
-                              )));
-                },
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewTripAnalyticsScreen(
+                                    tripId: selectedIndex,
+                                    vesselName: selectedVesselName,
+                                    // avgInfo: reportModel!.data!.avgInfo,
+                                    vesselId: selectedVessel,
+                                    tripIsRunningOrNot: false,
+                                    calledFrom: 'Report',
+                                    // vessel: getVesselById[0]
+                                  )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
+                    },
+
+
+
+                
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
@@ -2675,7 +2730,7 @@ childrenValue!.clear();
               ),
               plotBands: [
                 PlotBand(
-                    text: 'avg ${avgPower.toStringAsFixed(2)}W',
+                    text: 'avg ${avgPower.toStringAsFixed(2)}$watt',
                     isVisible: true,
                     start: avgPower,
                     end: avgPower,
@@ -3161,7 +3216,7 @@ borderRadius: BorderRadius.circular(20),
                                   value: childrenValue![index],
                                   imageUrl: imageUrl,
                                   dateTime: dateTimeList![index],
-                                  distance: '${distanceList![index]} NM',
+                                  distance: '${distanceList![index]} $nauticalMile',
                                   time: timeList![index],
                                   onChanged: (value) {
                         isSHowGraph = false;

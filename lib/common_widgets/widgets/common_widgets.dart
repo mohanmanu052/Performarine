@@ -298,39 +298,37 @@ Widget vesselSingleViewRichText(
           : SizedBox(),
 
       regNo != null && regNo != ''
-          ? Flexible(
-        child: Column(
-          children: [
-            Text(
-              regNo,
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: displayWidth(context) * 0.038,
-                color: color,
-                fontFamily: outfit,
-                fontWeight: FontWeight.w600,
+          ? Column(
+            children: [
+              Text(
+                regNo,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  fontSize: displayWidth(context) * 0.038,
+                  color: color,
+                  fontFamily: outfit,
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.clip,
+                softWrap: true,
+                maxLines: 1,
               ),
-              overflow: TextOverflow.ellipsis,
-              softWrap: true,
-              maxLines: 1,
-            ),
 
-            Text(
-              'Registration Number',
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: displayWidth(context) * 0.03,
-                color: Colors.black87,
-                fontFamily: poppins,
-                fontWeight: FontWeight.w400,
+              Text(
+                'Registration Number',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  fontSize: displayWidth(context) * 0.03,
+                  color: Colors.black87,
+                  fontFamily: poppins,
+                  fontWeight: FontWeight.w400,
+                ),
+                overflow: TextOverflow.clip,
+                softWrap: true,
+                maxLines: 1,
               ),
-              overflow: TextOverflow.ellipsis,
-              softWrap: true,
-              maxLines: 1,
-            ),
-          ],
-        ),
-      )
+            ],
+          )
           : SizedBox(),
     ],
   );

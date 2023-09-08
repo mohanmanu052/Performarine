@@ -7,7 +7,9 @@ const dmsans="DMSans";
 
 const nauticalMile = 'NM';
 const knot = 'KT';
-const speedKnot = 'Kt/h';
+const speedKnot = 'KT/h';
+const liters='L';
+const watt='W';
 const litre = 'l';
 const kiloWattHour = 'kWh';
 const feet = 'ft';
