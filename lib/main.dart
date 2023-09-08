@@ -316,6 +316,7 @@ Future<void> initializeService() async {
               vesselName: tripData[2],
               vesselId: tripData[1],
               isAppKilled: false,
+              calledFrom: 'notification',
               tripIsRunningOrNot: isTripStarted));
         }
       else
@@ -337,6 +338,7 @@ Future<void> initializeService() async {
               tripId: tripData![0],
               vesselName: tripData[2],
               vesselId: tripData[1],
+              calledFrom: 'notification',
               isAppKilled: true,
               tripIsRunningOrNot: isTripStarted));
         }
@@ -606,6 +608,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                           vesselName: tripData[2],
                           vesselId: tripData[1],
                           isAppKilled: false,
+                          calledFrom: 'notification',
                           tripIsRunningOrNot: isTripStarted));
 
                       CustomLogger().logWithFile(Level.info, "User navigating to trip analytics screen :: isAppKilledFromBGMain $isAppKilledFromBGMain -> $page");
@@ -624,6 +627,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                           vesselName: tripData[2],
                           vesselId: tripData[1],
                           isAppKilled: true,
+                          calledFrom: 'notification',
                           tripIsRunningOrNot: isTripStarted));
 
                       CustomLogger().logWithFile(Level.info, "User navigating to trip analytics screen :: isAppKilledFromBGMain $isAppKilledFromBGMain -> $page");
