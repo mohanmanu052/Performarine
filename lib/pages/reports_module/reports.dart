@@ -1844,17 +1844,20 @@ childrenValue!.clear();
                   Container(
                     margin: EdgeInsets.only(left: 4),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      //mainAxisAlignment: MainAxisAlignment.center,
+                     // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          capacity??'-',
-
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontFamily: inter,
-                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
-                              color: blutoothDialogTxtColor),
+                        Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            capacity??'-',
+                        textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontFamily: inter,
+                                fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
+                                color: blutoothDialogTxtColor),
+                          ),
                         ),
                         SizedBox(
                           height: displayHeight(context) * 0.008,
@@ -1909,7 +1912,10 @@ childrenValue!.clear();
                       crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                      registerNumber!.isEmpty?'-' : registerNumber!,
+registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
+
+
+                   // registerNumber==null&&  registerNumber!.isEmpty?'-' : registerNumber!,
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontFamily: inter,
