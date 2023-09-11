@@ -200,6 +200,8 @@ class _TripViewListingState extends State<TripViewListing> {
                                         },
                                         onTap: () async {
 
+                                          commonProvider.updateStateOfOnTripEndClick(true);
+
                                           final currentTrip = await _databaseService
                                               .getTrip(snapshot.data![index].id!);
 
@@ -230,9 +232,11 @@ class _TripViewListingState extends State<TripViewListing> {
                                                     {
                                                       debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
                                                       DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
+                                                      commonProvider.updateStateOfOnTripEndClick(false);
                                                     }
                                                   });
                                                 }, onCancelClick: (){
+                                                  commonProvider.updateStateOfOnTripEndClick(false);
                                                   Navigator.of(context).pop();
                                                 }
                                             );
@@ -262,6 +266,7 @@ class _TripViewListingState extends State<TripViewListing> {
 
                                                   return;
                                                 }, () {
+                                                  commonProvider.updateStateOfOnTripEndClick(false);
                                                   Navigator.of(context).pop();
                                                 });
                                           }
@@ -652,6 +657,7 @@ class _TripViewListingState extends State<TripViewListing> {
   /// To Check trip is Running or not
   Future<bool> tripIsRunningOrNot(Trip trip) async {
     bool result = await _databaseService.tripIsRunning();
+if(mounted){
 
     setState(() {
       tripIsRunning = result;
@@ -660,7 +666,7 @@ class _TripViewListingState extends State<TripViewListing> {
         trip.isEndTripClicked = false;
       });
     });
-
+}
     return result;
   }
 
@@ -699,10 +705,13 @@ class _TripViewListingState extends State<TripViewListing> {
         scaffoldKey: widget.scaffoldKey,
         duration: tripDuration,
         onEnded: () async {
+          if(mounted){
           setState(() {
             trip.tripStatus =
             1;
           });
+
+          }
 
           await commonProvider
               .updateTripStatus(false);
