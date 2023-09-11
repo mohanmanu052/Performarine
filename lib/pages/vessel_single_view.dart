@@ -180,7 +180,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isTripEndedOrNot = false,
       vesselAnalytics = false,
       isVesselParticularExpanded = false,
-      isVesselDimensionsExpanded = true,
+      isVesselAnalyticsExpanded = false,
       isPropulsionDetails = true,
       anotherVesselEndTrip = false;
 
@@ -882,14 +882,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               child: Container(
                                 margin: EdgeInsets.symmetric(horizontal: 15),
                                 child: ExpansionTile(
+                                  collapsedIconColor: Colors.black,
                                   initiallyExpanded: true,
                                   onExpansionChanged: ((newState) {
                                     setState(() {
-                                      isVesselParticularExpanded = newState;
+                                      isVesselAnalyticsExpanded = newState;
                                     });
 
                                     Utils.customPrint(
-                                        'EXPANSION CHANGE $isVesselParticularExpanded');
+                                        'EXPANSION CHANGE $isVesselAnalyticsExpanded');
                                   }),
                                   tilePadding: EdgeInsets.zero,
                                   childrenPadding: EdgeInsets.zero,

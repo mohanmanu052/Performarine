@@ -60,6 +60,7 @@ class CommonProvider with ChangeNotifier {
   UserFeedbackModel? userFeedbackModel;
   DeleteTripModel? deleteTripModel;
   int bottomNavIndex = 0;
+  List<File?> selectedImageFiles = [];
 
 
   init() {

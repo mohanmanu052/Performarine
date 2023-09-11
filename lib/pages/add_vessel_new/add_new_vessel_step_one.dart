@@ -108,6 +108,14 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   bool isImageSelected = false;
 
   @override
+  void didUpdateWidget(covariant AddNewVesselStepOne oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(commonProvider.selectedImageFiles != null  && commonProvider.selectedImageFiles.isNotEmpty){
+      finalSelectedFiles = commonProvider.selectedImageFiles;
+    }
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -525,7 +533,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                               : selectedEngineType!.toLowerCase() == 'combustion' ? fuelCapacityFormKey.currentState!.validate() : batteryCapacityFormKey.currentState!.validate()
                           ) {
                             if(isDeleted){
-                              widget.addVesselData?.imageURLs = '';
+                              commonProvider.selectedImageFiles = [];
+                             // widget.addVesselData?.imageURLs = '';
                             }
                             /*    Utils.customPrint(
                                 'FINAL SELECTED FILES ${finalSelectedFiles.isEmpty}');
@@ -556,10 +565,13 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                                 : fuelCapacityController.text;
                             commonProvider.addVesselRequestModel!.weight =
                                 weightController.text;
-                            commonProvider.addVesselRequestModel!.selectedImages =
-                            finalSelectedFiles.isEmpty
+                            commonProvider.selectedImageFiles = finalSelectedFiles.isEmpty
                                 ? []
                                 : finalSelectedFiles;
+                            // commonProvider.addVesselRequestModel!.selectedImages =
+                            // finalSelectedFiles.isEmpty
+                            //     ? []
+                            //     : finalSelectedFiles;
                             commonProvider.addVesselRequestModel!.batteryCapacity =
                             batteryCapacityController.text.isEmpty
                                 ? '0'
@@ -683,7 +695,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   finalSelectedFiles.clear();
                   isImageSelected = true;
                   finalSelectedFiles.addAll(selectedImageFileList);
-                  widget.addVesselData?.selectedImages = selectedImageFileList;
+                  commonProvider.selectedImageFiles = selectedImageFileList;
+                //  widget.addVesselData?.selectedImages = selectedImageFileList;
                   Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
                   CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
                   Utils.customPrint('CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
