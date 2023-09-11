@@ -94,9 +94,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   @override
   void didUpdateWidget(covariant AddNewVesselStepTwo oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(commonProvider.addVesselRequestModel!.selectedImages != null || commonProvider.addVesselRequestModel!.selectedImages!.isNotEmpty)
-    {
-      finalSelectedFiles = commonProvider.addVesselRequestModel!.selectedImages!;
+    if(commonProvider.selectedImageFiles != null && commonProvider.selectedImageFiles.isNotEmpty){
+      finalSelectedFiles = commonProvider.selectedImageFiles;
     }
   }
 
@@ -123,9 +122,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
       }
     }
 
-    if(commonProvider.addVesselRequestModel!.selectedImages != null || commonProvider.addVesselRequestModel!.selectedImages!.isNotEmpty)
-    {
-      finalSelectedFiles = commonProvider.addVesselRequestModel!.selectedImages!;
+    if(commonProvider.selectedImageFiles != null || commonProvider.selectedImageFiles.isNotEmpty){
+      finalSelectedFiles = commonProvider.selectedImageFiles;
     }
   }
 
@@ -581,6 +579,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                             .addVesselRequestModel!.name!,
                                         widget.addVesselData!.id!.toString());
 
+                                    commonProvider.selectedImageFiles = [];
+
                                     CustomLogger().logWithFile(Level.info, "User Navigating to SuccessfullyAddedScreen -> $page");
 
                                     Navigator.pushReplacement(
@@ -609,6 +609,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                   Utils.showSnackBar(context,
                                       scaffoldKey: scaffoldKey,
                                       message: "Vessel created successfully");
+                                  commonProvider.selectedImageFiles = [];
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
@@ -632,6 +633,63 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
       ),
     );
   }
+
+  stepperWidget(){
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.height * 0.1, vertical: 8),
+      child: Column(
+        children: [
+          StatusStepper(
+            connectorCurve: Curves.linear,
+            itemCurve: Curves.easeOut,
+            activeColor: blueColor,
+            disabledColor: dropDownBackgroundColor,
+            animationDuration: const Duration(milliseconds: 500),
+            lastActiveIndex: lastIndex,
+            currentIndex: curIndex,
+            connectorThickness: 5,
+            children: statuses,
+            value: 1,
+          ),
+          SizedBox(
+            height: 14,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Step 1",
+                      style: TextStyle(
+                          fontSize: displayWidth(context) * 0.028,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: inter
+                      ),
+                    ),)),
+              Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "Step 2",
+                      style: TextStyle(
+                          fontSize: displayWidth(context) * 0.028,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: inter
+                      ),
+                    ),)),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+
   Widget uploadingImage(BuildContext context){
     return SizedBox(
       height: displayHeight(context) * 0.206,
@@ -693,61 +751,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     );
   }
 
-  stepperWidget(){
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.height * 0.1, vertical: 8),
-      child: Column(
-        children: [
-          StatusStepper(
-            connectorCurve: Curves.linear,
-            itemCurve: Curves.easeOut,
-            activeColor: blueColor,
-            disabledColor: dropDownBackgroundColor,
-            animationDuration: const Duration(milliseconds: 500),
-            lastActiveIndex: lastIndex,
-            currentIndex: curIndex,
-            connectorThickness: 5,
-            children: statuses,
-            value: 1,
-          ),
-          SizedBox(
-            height: 14,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Step 1",
-                      style: TextStyle(
-                          fontSize: displayWidth(context) * 0.028,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: inter
-                      ),
-                    ),)),
-              Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      "Step 2",
-                      style: TextStyle(
-                          fontSize: displayWidth(context) * 0.028,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: inter
-                      ),
-                    ),)),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
   //Upload images from adding new vessel page
   uploadImageFunction() async {
     if (Platform.isAndroid) {
@@ -768,6 +771,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                   finalSelectedFiles.clear();
                   isImageSelected = true;
                   finalSelectedFiles.addAll(selectedImageFileList);
+                  commonProvider.selectedImageFiles = selectedImageFileList;
 
                   Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
                   CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
