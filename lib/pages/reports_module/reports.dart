@@ -2904,99 +2904,103 @@ Utils.showSnackBar(context,
                           bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)
                         )
                       ),
-                      child: TableCalendar(
-                        
-                        
-                        daysOfWeekVisible: true,
-                        focusedDay: selectedDateForStartDate,
-                        firstDay: firstDate,
-                        lastDay: lastDate,
-                        
-                        onFormatChanged: (CalendarFormat _format) {},
-                        calendarBuilders: CalendarBuilders(
+                      child: IgnorePointer(
+                                                      ignoring: isBtnClick??false,
+
+                        child: TableCalendar(
                           
-                          selectedBuilder: (context, date, events) => Container(
-                              margin: const EdgeInsets.all(5.0),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: blueColor,
-                                  borderRadius: BorderRadius.circular(15)
-                                  //shape: BoxShape.circle
-                                  
+                          
+                          daysOfWeekVisible: true,
+                          focusedDay: selectedDateForStartDate,
+                          firstDay: firstDate,
+                          lastDay: lastDate,
+                          
+                          onFormatChanged: (CalendarFormat _format) {},
+                          calendarBuilders: CalendarBuilders(
+                            
+                            selectedBuilder: (context, date, events) => Container(
+                                margin: const EdgeInsets.all(5.0),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: blueColor,
+                                    borderRadius: BorderRadius.circular(15)
+                                    //shape: BoxShape.circle
+                                    
+                                    ),
+                                child: Text(
+                                  date.day.toString(),
+                                  style: TextStyle(color: Colors.white,
+                                  fontFamily: dmsans
                                   ),
-                              child: Text(
-                                date.day.toString(),
-                                style: TextStyle(color: Colors.white,
-                                fontFamily: dmsans
-                                ),
-                              )),
-                        ),
-                        calendarStyle: CalendarStyle(
-                          
-                          
-                                todayDecoration: BoxDecoration(
-borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-
-                                      color: blueColor,
-                                    )),
-                            isTodayHighlighted: true,
-                            selectedDecoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(8),
-                    
-                              // color: blueColor,
-                             shape: BoxShape.rectangle,
-                            ),
-                            selectedTextStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22.0,
-                                fontFamily: dmsans,
-                                color: Colors.pink),
-                            todayTextStyle: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16.0,
-                                fontFamily: dmsans,
-                                color: selectedDateForStartDate == DateTime.now()
-                                    ? Colors.white
-                                    : blueColor)),
-                        selectedDayPredicate: (DateTime date) {
-                          return isSameDay(selectedDateForStartDate, date);
-                        },
-                        startingDayOfWeek: StartingDayOfWeek.monday,
-                        onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
-                          setState(() {
-                            isSelectedStartDay = true;
-                            selectedDateForStartDate = selectDay!;
-                            focusedDay = focusDay!;
-                            focusedDayString = focusDay.toString();
-                            pickStartDate = convertIntoMonthDayYear(selectDay);
-                            selectedStartDateFromCal = selectDay;
-                    
-                            Utils.customPrint("pick start date: $pickStartDate");
-                            CustomLogger().logWithFile(Level.info,
-                                "pick start date: $pickStartDate -> $page");
-                          });
-                          Utils.customPrint("focusedDay: $focusDay");
-                          CustomLogger().logWithFile(
-                              Level.info, "focused Day: $focusedDay -> $page");
-                        },
-                        headerStyle: HeaderStyle(
-                                          titleCentered: true,
-                                          
-                                          titleTextStyle: TextStyle(fontSize: 17,
-                                          fontFamily: dmsans,
-                                          fontWeight: FontWeight.w600,
-                                          color: blackcolorCalender
-                                          
-                                          ), // Center the month title
-
-                          formatButtonVisible: false,
-                          formatButtonDecoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(22.0),
+                                )),
                           ),
-                          formatButtonTextStyle: TextStyle(color: Colors.white),
-                          formatButtonShowsNext: false,
+                          calendarStyle: CalendarStyle(
+                            
+                            
+                                  todayDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                      
+                                        color: blueColor,
+                                      )),
+                              isTodayHighlighted: true,
+                              selectedDecoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(8),
+                                          
+                                // color: blueColor,
+                               shape: BoxShape.rectangle,
+                              ),
+                              selectedTextStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22.0,
+                                  fontFamily: dmsans,
+                                  color: Colors.pink),
+                              todayTextStyle: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16.0,
+                                  fontFamily: dmsans,
+                                  color: selectedDateForStartDate == DateTime.now()
+                                      ? Colors.white
+                                      : blueColor)),
+                          selectedDayPredicate: (DateTime date) {
+                            return isSameDay(selectedDateForStartDate, date);
+                          },
+                          startingDayOfWeek: StartingDayOfWeek.monday,
+                          onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
+                            setState(() {
+                              isSelectedStartDay = true;
+                              selectedDateForStartDate = selectDay!;
+                              focusedDay = focusDay!;
+                              focusedDayString = focusDay.toString();
+                              pickStartDate = convertIntoMonthDayYear(selectDay);
+                              selectedStartDateFromCal = selectDay;
+                                          
+                              Utils.customPrint("pick start date: $pickStartDate");
+                              CustomLogger().logWithFile(Level.info,
+                                  "pick start date: $pickStartDate -> $page");
+                            });
+                            Utils.customPrint("focusedDay: $focusDay");
+                            CustomLogger().logWithFile(
+                                Level.info, "focused Day: $focusedDay -> $page");
+                          },
+                          headerStyle: HeaderStyle(
+                                            titleCentered: true,
+                                            
+                                            titleTextStyle: TextStyle(fontSize: 17,
+                                            fontFamily: dmsans,
+                                            fontWeight: FontWeight.w600,
+                                            color: blackcolorCalender
+                                            
+                                            ), // Center the month title
+                      
+                            formatButtonVisible: false,
+                            formatButtonDecoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(22.0),
+                            ),
+                            formatButtonTextStyle: TextStyle(color: Colors.white),
+                            formatButtonShowsNext: false,
+                          ),
                         ),
                       ),
                     ),
@@ -3048,94 +3052,98 @@ borderRadius: BorderRadius.circular(20),
                           bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)
                         )
                       ),
-                          child: TableCalendar(
-                            
-                            daysOfWeekVisible: true,
-                            focusedDay: selectedDateForEndDate,
-                            firstDay: firstDate,
-                            lastDay: lastDate,
-                            onFormatChanged: (CalendarFormat _format) {},
-                            calendarBuilders: CalendarBuilders(
-                              selectedBuilder: (context, date, events) =>
- Container(
-                              margin: const EdgeInsets.all(5.0),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: blueColor,
-                                  borderRadius: BorderRadius.circular(15)
-                                  //shape: BoxShape.circle
-                                  
-                                  ),
-                                      child: Text(
-                                        date.day.toString(),
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                            ),
-                            calendarStyle: CalendarStyle(
-                                todayDecoration: BoxDecoration(
-borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
+                          child: IgnorePointer(
+                                                      ignoring: isBtnClick??false,
 
-                                      color: blueColor,
-                                    )),
-                                isTodayHighlighted: true,
-                                selectedDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: blueColor,
-                                  shape: BoxShape.rectangle,
-                                ),
-                                selectedTextStyle: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 22.0,
-                                    color: Colors.pink),
-                                todayTextStyle: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 16.0,
-                                    color:
-                                        selectedDateForEndDate == DateTime.now()
-                                            ? Colors.white
-                                            : blueColor)),
-                            selectedDayPredicate: (DateTime date) {
-                              return isSameDay(selectedDateForEndDate, date);
-                            },
-                            startingDayOfWeek: StartingDayOfWeek.monday,
-                            onDaySelected:
-                                (DateTime? selectDay, DateTime? focusDay) {
-                              setState(() {
-                                isSelectedEndDay = true;
-                                selectedDateForEndDate = selectDay!;
-                                lastDayFocused = focusDay!;
-                                lastFocusedDayString = focusDay.toString();
-                                pickEndDate = convertIntoMonthDayYear(selectDay);
-                                selectedEndDateFromCal = selectDay;
-                        
-                                Utils.customPrint("pick end date: $pickEndDate");
-                                CustomLogger().logWithFile(Level.info,
-                                    "pick end date: $pickEndDate -> $page");
-                              });
-                              Utils.customPrint(
-                                  "lastDayFocused: $lastDayFocused");
-                              CustomLogger().logWithFile(Level.info,
-                                  "lastDayFocused: $lastDayFocused -> $page");
-                            },
-                        headerStyle: HeaderStyle(
-                                          titleCentered: true,
-                                          
-                                          titleTextStyle: TextStyle(fontSize: 17,
-                                          fontWeight: FontWeight.w600,
-                                          color: blackcolorCalender
-                                          
-                                          ), // Center the month title
-
-
-                              formatButtonVisible: false,
-                              formatButtonDecoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(22.0),
+                            child: TableCalendar(
+                              
+                              daysOfWeekVisible: true,
+                              focusedDay: selectedDateForEndDate,
+                              firstDay: firstDate,
+                              lastDay: lastDate,
+                              onFormatChanged: (CalendarFormat _format) {},
+                              calendarBuilders: CalendarBuilders(
+                                selectedBuilder: (context, date, events) =>
+                           Container(
+                                margin: const EdgeInsets.all(5.0),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: blueColor,
+                                    borderRadius: BorderRadius.circular(15)
+                                    //shape: BoxShape.circle
+                                    
+                                    ),
+                                        child: Text(
+                                          date.day.toString(),
+                                          style: TextStyle(color: Colors.white),
+                                        )),
                               ),
-                              formatButtonTextStyle:
-                                  TextStyle(color: Colors.white),
-                              formatButtonShowsNext: false,
+                              calendarStyle: CalendarStyle(
+                                  todayDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                          
+                                        color: blueColor,
+                                      )),
+                                  isTodayHighlighted: true,
+                                  selectedDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: blueColor,
+                                    shape: BoxShape.rectangle,
+                                  ),
+                                  selectedTextStyle: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22.0,
+                                      color: Colors.pink),
+                                  todayTextStyle: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16.0,
+                                      color:
+                                          selectedDateForEndDate == DateTime.now()
+                                              ? Colors.white
+                                              : blueColor)),
+                              selectedDayPredicate: (DateTime date) {
+                                return isSameDay(selectedDateForEndDate, date);
+                              },
+                              startingDayOfWeek: StartingDayOfWeek.monday,
+                              onDaySelected:
+                                  (DateTime? selectDay, DateTime? focusDay) {
+                                setState(() {
+                                  isSelectedEndDay = true;
+                                  selectedDateForEndDate = selectDay!;
+                                  lastDayFocused = focusDay!;
+                                  lastFocusedDayString = focusDay.toString();
+                                  pickEndDate = convertIntoMonthDayYear(selectDay);
+                                  selectedEndDateFromCal = selectDay;
+                                                  
+                                  Utils.customPrint("pick end date: $pickEndDate");
+                                  CustomLogger().logWithFile(Level.info,
+                                      "pick end date: $pickEndDate -> $page");
+                                });
+                                Utils.customPrint(
+                                    "lastDayFocused: $lastDayFocused");
+                                CustomLogger().logWithFile(Level.info,
+                                    "lastDayFocused: $lastDayFocused -> $page");
+                              },
+                                                  headerStyle: HeaderStyle(
+                                            titleCentered: true,
+                                            
+                                            titleTextStyle: TextStyle(fontSize: 17,
+                                            fontWeight: FontWeight.w600,
+                                            color: blackcolorCalender
+                                            
+                                            ), // Center the month title
+                          
+                          
+                                formatButtonVisible: false,
+                                formatButtonDecoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(22.0),
+                                ),
+                                formatButtonTextStyle:
+                                    TextStyle(color: Colors.white),
+                                formatButtonShowsNext: false,
+                              ),
                             ),
                           ),
                         ),
@@ -3165,103 +3173,107 @@ borderRadius: BorderRadius.circular(20),
                             text: 'No Trips available',
                             textSize: displayWidth(context) * 0.030,
                             textColor: primaryColor))
-                    : ListView(
-                        primary: false,
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: displayWidth(context) * 0.046),
-                            child: CustomLabeledCheckbox(
+                    : IgnorePointer(
+                                                      ignoring: isBtnClick??false,
 
-                              label: 'Select All',
-                              value: parentValue != null ? parentValue! : false,
-                              onChanged: (value) {
-                    if (value) {
-                      Utils.customPrint("select all status: $value");
-                      selectedTripIdList!.clear();
-                      selectedTripIdList!.addAll(tripIdList!);
-                      isSHowGraph = false;
-                      selectedTripLabelList!.clear();
-                      selectedTripLabelList!.addAll(children!);
-                      Utils.customPrint(
-                          "selected trip label list: ${selectedTripLabelList}");
-                      CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
-                      _checkAll(value);
-                    } else if (!value) {
-                      // Tristate
-
-                      selectedTripIdList!.clear();
-                      selectedTripLabelList!.clear();
-                      _checkAll(false);
-                    }
-                              },
-                              checkboxType: CheckboxType.Parent,
-                              activeColor: Colors.indigo,
-                            ),
-                          ),
-                          ListView.builder(
-                            itemCount: children?.length ?? 0,
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            itemBuilder: (context, index) => Column(
-                              children: [
-                                SizedBox(
-                                  height:orientation==Orientation.portrait? displayHeight(context) * 0.01:displayHeight(context) * 0.03,
-                                ),
-                                CustomLabeledCheckboxNew(
-                                  orientation:orientation,
-                                  label: children![index],
-                                  value: childrenValue![index],
-                                  imageUrl: imageUrl,
-                                  dateTime: dateTimeList![index],
-                                  distance: '${distanceList![index]} $nauticalMile',
-                                  time: timeList![index],
-                                  onChanged: (value) {
+                      child: ListView(
+                          primary: false,
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: displayWidth(context) * 0.046),
+                              child: CustomLabeledCheckbox(
+                    
+                                label: 'Select All',
+                                value: parentValue != null ? parentValue! : false,
+                                onChanged: (value) {
+                      if (value) {
+                        Utils.customPrint("select all status: $value");
+                        selectedTripIdList!.clear();
+                        selectedTripIdList!.addAll(tripIdList!);
                         isSHowGraph = false;
-                        Utils.customPrint("trip list id: ${tripIdList![index]}");
-                        CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
-
-
-                        if(selectedTripIdList!.contains(tripIdList![index])){
-
-                          selectedTripIdList!
-                              .remove(tripIdList![index]);
-                          //tripIdList!.remove(index);
-                          selectedTripLabelList!
-                              .remove(children![index]);
-                          Utils.customPrint(
-                              "selected trip label list: ${selectedTripLabelList}");
-                          CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
-                          setState(() {
-
-                          });
-
-                        }else{
-
-                          selectedTripIdList!
-                              .add(tripIdList![index]);
-                          // tripIdList!.add(index);
-                          selectedTripLabelList!
-                              .add(children![index]);
-                          setState(() {
-
-                          });
-
-
-                        }
-
-                        manageTristate(index, value);
-                                  },
-                                  checkboxType: CheckboxType.Child,
-                                  activeColor: Colors.indigo,
-                                ),
-                              ],
+                        selectedTripLabelList!.clear();
+                        selectedTripLabelList!.addAll(children!);
+                        Utils.customPrint(
+                            "selected trip label list: ${selectedTripLabelList}");
+                        CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
+                        _checkAll(value);
+                      } else if (!value) {
+                        // Tristate
+                    
+                        selectedTripIdList!.clear();
+                        selectedTripLabelList!.clear();
+                        _checkAll(false);
+                      }
+                                },
+                                checkboxType: CheckboxType.Parent,
+                                activeColor: Colors.indigo,
+                              ),
                             ),
-                          ),
-                        ],
-                      )
+                            ListView.builder(
+                              itemCount: children?.length ?? 0,
+                              shrinkWrap: true,
+                              physics: ClampingScrollPhysics(),
+                              itemBuilder: (context, index) => Column(
+                                children: [
+                                  SizedBox(
+                                    height:orientation==Orientation.portrait? displayHeight(context) * 0.01:displayHeight(context) * 0.03,
+                                  ),
+                                  CustomLabeledCheckboxNew(
+                                    orientation:orientation,
+                                    label: children![index],
+                                    value: childrenValue![index],
+                                    imageUrl: imageUrl,
+                                    dateTime: dateTimeList![index],
+                                    distance: '${distanceList![index]} $nauticalMile',
+                                    time: timeList![index],
+                                    onChanged: (value) {
+                          isSHowGraph = false;
+                          Utils.customPrint("trip list id: ${tripIdList![index]}");
+                          CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
+                    
+                    
+                          if(selectedTripIdList!.contains(tripIdList![index])){
+                    
+                            selectedTripIdList!
+                                .remove(tripIdList![index]);
+                            //tripIdList!.remove(index);
+                            selectedTripLabelList!
+                                .remove(children![index]);
+                            Utils.customPrint(
+                                "selected trip label list: ${selectedTripLabelList}");
+                            CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
+                            setState(() {
+                    
+                            });
+                    
+                          }else{
+                    
+                            selectedTripIdList!
+                                .add(tripIdList![index]);
+                            // tripIdList!.add(index);
+                            selectedTripLabelList!
+                                .add(children![index]);
+                            setState(() {
+                    
+                            });
+                    
+                    
+                          }
+                    
+                          manageTristate(index, value);
+                                    },
+                                    checkboxType: CheckboxType.Child,
+                                    activeColor: Colors.indigo,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                    )
               ],
             ),
           )
