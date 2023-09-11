@@ -648,6 +648,7 @@ class _TripViewListingState extends State<TripViewListing> {
   /// To Check trip is Running or not
   Future<bool> tripIsRunningOrNot(Trip trip) async {
     bool result = await _databaseService.tripIsRunning();
+if(mounted){
 
     setState(() {
       tripIsRunning = result;
@@ -656,7 +657,7 @@ class _TripViewListingState extends State<TripViewListing> {
         trip.isEndTripClicked = false;
       });
     });
-
+}
     return result;
   }
 
@@ -695,10 +696,13 @@ class _TripViewListingState extends State<TripViewListing> {
         scaffoldKey: widget.scaffoldKey,
         duration: tripDuration,
         onEnded: () async {
+          if(mounted){
           setState(() {
             trip.tripStatus =
             1;
           });
+
+          }
 
           await commonProvider
               .updateTripStatus(false);
