@@ -124,6 +124,7 @@ String? imageUrl;
   bool? isCheckInternalServer = false;
   bool? isTripsAreAvailable = false;
   String? capacity;
+  bool? isExportBtnClick=false;
   String? builtYear;
   String? registerNumber;
 List<Vessels>? vesselList;
@@ -131,7 +132,7 @@ List<Vessels>? vesselList;
 
   //Convertion of date time into month/day/year format
   String convertIntoMonthDayYear(DateTime date) {
-    String dateString = DateFormat('yyyy/MM/dd').format(date);
+    String dateString = DateFormat('yyyy-MM-dd').format(date);
 
     Utils.customPrint(dateString);
     CustomLogger().logWithFile(
@@ -370,6 +371,44 @@ List<Vessels>? vesselList;
           "Error while fetching data from getUserConfigById: $e -> $page");
     }
   }
+
+exportTripData()async{
+  isExportBtnClick=true;
+  setState(() {
+    
+  });
+
+Map<String,dynamic> body={};
+String token=commonProvider.loginModel?.token??'';
+if(selectedCaseType==1){
+  body={
+  		"case": 1,
+"vesselID": selectedVessel,
+
+    "startDate": pickStartDate,
+            "isExport": true,
+            "endDate" : pickEndDate,
+  };
+
+}else{
+    body={
+  		"case": 2,
+            "isExport": true,
+            		"tripIds": tripIdList
+  };
+
+}
+
+
+var data=await commonProvider.exportReportData(body, token, context, scaffoldKey);
+
+setState(() {
+  isExportBtnClick=false;
+
+});
+
+}
+
 
   //To get all trip details based on vessel Id
   getTripListData(String vesselID) async {
@@ -1722,31 +1761,48 @@ childrenValue!.clear();
                             SizedBox(
                               height: displayWidth(context) * 0.03,
                             ),
-                            Container(
-                              height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
-                              width: displayWidth(context) * 0.8,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.grey),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.file_download_outlined,
-                                    color: Colors.white,
-                                    size: 25,
-                                  ),
-                                  SizedBox(
-                                    width: displayWidth(context) * 0.01,
-                                  ),
-                                  commonText(
-                                    context: context,
-                                    text: 'Export Complete Report',
-                                    fontWeight: FontWeight.w600,
-                                    textColor: Colors.white,
-                                    textSize: displayWidth(context) * 0.041,
-                                  ),
-                                ],
+                            InkWell(
+                              onTap: (){
+                                exportTripData();
+                              
+                              },
+                              child: 
+                              
+                              
+                              Container(
+                                height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
+                                width: displayWidth(context) * 0.8,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: blueColor),
+                                child:isExportBtnClick??false?Center(
+                            child:    CircularProgressIndicator(color: Colors.white,)
+
+                              ):
+                                
+                                
+                                
+                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.file_download_outlined,
+                                      color: Colors.white,
+                                      size: 25,
+                                    ),
+                                    SizedBox(
+                                      width: displayWidth(context) * 0.01,
+                                    ),
+                                    commonText(
+                                      context: context,
+                                      text: 'Export Complete Report',
+                                      
+                                      fontWeight: FontWeight.w600,
+                                      textColor: Colors.white,
+                                      textSize: displayWidth(context) * 0.041,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             Padding(
