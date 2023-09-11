@@ -290,7 +290,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                             }
                                           }
                                         })
-                                    : TripWidget(
+                                      : TripWidget(
                                         scaffoldKey: widget.scaffoldKey,
                                         tripList: snapshot.data![index],
                                         calledFrom: widget.calledFrom,
@@ -309,6 +309,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                         },
                                         onTap: () async {
 
+                                          commonProvider.updateStateOfOnTripEndClick(true);
                                           final currentTrip = await _databaseService
                                               .getTrip(snapshot.data![index].id!);
 
@@ -339,9 +340,11 @@ class _TripViewListingState extends State<TripViewListing> {
                                                     {
                                                       debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
                                                       DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
+                                                      commonProvider.updateStateOfOnTripEndClick(false);
                                                     }
                                                   });
                                                 }, onCancelClick: (){
+                                                  commonProvider.updateStateOfOnTripEndClick(false);
                                                   Navigator.of(context).pop();
                                                 }
                                             );
@@ -371,6 +374,7 @@ class _TripViewListingState extends State<TripViewListing> {
 
                                                   return;
                                                 }, () {
+                                                  commonProvider.updateStateOfOnTripEndClick(false);
                                                   Navigator.of(context).pop();
                                                 });
                                           }
@@ -709,6 +713,7 @@ class _TripViewListingState extends State<TripViewListing> {
 
           await tripIsRunningOrNot(
               trip);
+          commonProvider.updateStateOfOnTripEndClick(false);
         });
   }
 

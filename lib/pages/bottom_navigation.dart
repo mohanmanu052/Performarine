@@ -124,7 +124,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
             {
               WidgetsBinding.instance.addPostFrameCallback((duration)
               {
-                Utils.customPrint("RESET PASSWORD 1");
+                Utils.customPrint("RESET PASSWORD didUpdateWidget");
                 showResetPasswordDialogBox(context,updatedToken);
 
               });
@@ -175,7 +175,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
       if(widget.isComingFromReset!)
       {
         Future.delayed(Duration(microseconds: 500), (){
-          Utils.customPrint("RESET PASSWORD 2");
+          Utils.customPrint("RESET PASSWORD INIT");
           if(!isThereCurrentDialogShowing(context)){
             showResetPasswordDialogBox(context, widget.token);
           }
@@ -219,7 +219,8 @@ void captureScreenShot()async{
         if(arg !=  null)
         {
           Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
-          bool isComingFrom = arguments?['isComingFromReset'] ?? false;
+          //bool isComingFrom = arguments?['isComingFromReset'] ?? false;
+          bool isComingFrom = widget.isComingFromReset!;
           String updatedToken = arguments?['token'] ?? "";
 
           if(mounted){
@@ -240,9 +241,9 @@ void captureScreenShot()async{
                 {
                   WidgetsBinding.instance.addPostFrameCallback((duration)
                   {
-                    if(result != null){
-                      if(!result){
-                        Utils.customPrint("RESET PASSWORD 3");
+                    if(isComingFrom != null){
+                      if(!isComingFrom){
+                        Utils.customPrint("RESET PASSWORD LIFECYCLE");
                         showResetPasswordDialogBox(context,updatedToken);
                       }
                     }
@@ -274,7 +275,7 @@ void captureScreenShot()async{
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    commonProvider = context.watch<CommonProvider>();
+
     var screensList = [
       Dashboard(tripData: widget.tripData,tabIndex: widget.tabIndex,isComingFromReset: false,isAppKilled: widget.isAppKilled,token: widget.token),
      ReportsModule(onScreenShotCaptureCallback: (){
@@ -353,7 +354,7 @@ void captureScreenShot()async{
 
 
 
-return
+      return
        Screenshot(
         controller: screen_shot_controller,
          child: Scaffold(
@@ -439,40 +440,51 @@ return
 
                           if(index == 2){
 
-                            if(mounted)
-                              {
-                                bool? isTripStarted =
-                                sharedPreferences!.getBool('trip_started');
+                           if(!commonProvider.onTripEndClicked)
+                             {
+                               if(mounted)
+                               {
+                                 bool? isTripStarted =
+                                 sharedPreferences!.getBool('trip_started');
 
-                                if (isTripStarted != null) {
-                                  if (isTripStarted) {
-                                    List<String>? tripData = sharedPreferences!
-                                        .getStringList('trip_data');
-                                    Trip tripDetails = await _databaseService
-                                        .getTrip(tripData![0]);
+                                 if (isTripStarted != null) {
+                                   if (isTripStarted) {
+                                     List<String>? tripData = sharedPreferences!
+                                         .getStringList('trip_data');
+                                     Trip tripDetails = await _databaseService
+                                         .getTrip(tripData![0]);
 
-                                    if (isTripStarted) {
-                                      showDialogBox(context);
-                                      return;
-                                    }
-                                    else
-                                      {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
-                                          // isLocationPermitted: isLocationPermitted,
-                                          // isBluetoothConnected: isBluetoothConnected,
-                                          calledFrom: 'bottom_nav',)));
-                                      }
+                                     if (isTripStarted) {
+                                       showDialogBox(context);
+                                       return;
+                                     }
+                                     else
+                                     {
+                                       Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+                                         // isLocationPermitted: isLocationPermitted,
+                                         // isBluetoothConnected: isBluetoothConnected,
+                                         calledFrom: 'bottom_nav',)));
+                                     }
 
-                                  }
-                                  }
-                                else
-                                  {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
-                                      // isLocationPermitted: isLocationPermitted,
-                                      // isBluetoothConnected: isBluetoothConnected,
-                                      calledFrom: 'bottom_nav',)));
-                                  }
-                                }
+                                   }
+                                 }
+                                 else
+                                 {
+                                   Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+                                     // isLocationPermitted: isLocationPermitted,
+                                     // isBluetoothConnected: isBluetoothConnected,
+                                     calledFrom: 'bottom_nav',)));
+                                 }
+                               }
+                             }
+                           else
+                             {
+                               Utils.showSnackBar(
+                                 context,
+                                 scaffoldKey: scaffoldKey,
+                                 message: 'Please wait. Another trip\'s process is still going on',
+                               );
+                             }
 
                             /*if(mounted) {
                               bool? isTripStarted =
@@ -632,7 +644,8 @@ return
                                                 );
                                               }).then((value) {
                                             isLocationDialogBoxOpen = false;
-                                          });*//*
+                                          });*/
+                            /*
                                     }
                                   }
                                   else
@@ -1942,6 +1955,9 @@ return
                                 child: CommonButtons.getAcceptButton(
                                     'Cancel', context, Colors.transparent,
                                         () async {
+                                          if(sharedPreferences != null){
+                                            sharedPreferences!.setBool('reset_dialog_opened', false);
+                                          }
                                       Navigator.pop(dialogContext);
                                     },
                                     displayWidth(context) * 0.65,
