@@ -71,7 +71,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   FocusNode builtYearFocusNode = FocusNode();
 
   late CommonProvider commonProvider;
-  bool? isBtnClicked = false,isImageSelected = false;
+  bool? isBtnClicked = false,isImageSelected = false,isDeleted = false;
   String page = "Add_new_vessel_step_two";
   final statuses = List.generate(
     2,
@@ -457,6 +457,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
 
                               FocusScope.of(context)
                                   .requestFocus(new FocusNode());
+                              if(isDeleted!){
+                                commonProvider
+                                    .addVesselRequestModel!.imageURLs = '';
+                              }
 
                               commonProvider.addVesselRequestModel!.freeBoard =
                                   double.parse(freeBoardController.text);
@@ -724,6 +728,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                   isImageSelected = false;
                   if(finalSelectedFiles.isNotEmpty){
                     finalSelectedFiles.clear();
+                    isDeleted = true;
+                    commonProvider.selectedImageFiles.clear();
                   }
                 });
                 Utils.customPrint(
@@ -768,6 +774,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                 (List<File?> selectedImageFileList) {
               if (selectedImageFileList.isNotEmpty ) {
                 setState(() {
+                  commonProvider.selectedImageFiles.clear();
                   finalSelectedFiles.clear();
                   isImageSelected = true;
                   finalSelectedFiles.addAll(selectedImageFileList);
