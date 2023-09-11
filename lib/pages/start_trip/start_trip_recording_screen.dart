@@ -476,7 +476,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                               // setState(() {
                                               //   isSliderDisable = false;
                                               // });
-                                             val != 11 ? passengerValue = val.toInt() : val;
+                                             //val != 11 ? passengerValue = val.toInt() : val;
+                                              passengerValue = val == 11 ? (val.toInt() - 1) : val.toInt();
                                               print("On dragging: value: $value, val: $val, val1: $val1");
                                               numberOfPassengers = passengerValue;
                                               textEditingController.text = (passengerValue).toString();

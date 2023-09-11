@@ -1242,27 +1242,26 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 debugPrint("DOWNLOAD TRIP ID ${widget.tripId!}");
                                 debugPrint("DOWNLOAD TRIP ID ${tripData!.isCloud}");
 
-                                bool check = await Utils().check(scaffoldKey);
-
-                                Utils.customPrint("NETWORK $check");
-
-                                if(check)
+                                if(tripData!.isCloud != 0)
+                                {
+                                  bool check = await Utils().check(scaffoldKey);
+                                  Utils.customPrint("NETWORK $check");
+                                  if(check)
                                   {
-                                    if(tripData!.isCloud != 0)
-                                    {
-                                      commonProvider.downloadTripProgressBar(true);
-                                      // setState(() {});
-                                      DownloadTrip().downloadTripFromCloud(context,scaffoldKey, tripData!.filePath!, commonProvider);
+                                    commonProvider.downloadTripProgressBar(true);
+                                    // setState(() {});
+                                    DownloadTrip().downloadTripFromCloud(context,scaffoldKey, tripData!.filePath!, commonProvider);
 
-                                    }
-                                    else
-                                    {
-                                      DownloadTrip().downloadTrip(
-                                          context,
-                                          scaffoldKey,
-                                          widget.tripId!);
-                                    }
                                   }
+
+                                }
+                                else
+                                {
+                                  DownloadTrip().downloadTrip(
+                                      context,
+                                      scaffoldKey,
+                                      widget.tripId!);
+                                }
     
                               },
                               style: ButtonStyle(
