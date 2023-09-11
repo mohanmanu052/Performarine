@@ -534,7 +534,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                           ) {
                             if(isDeleted){
                               commonProvider.selectedImageFiles = [];
-                             // widget.addVesselData?.imageURLs = '';
+                              widget.addVesselData?.imageURLs = '';
                             }
                             /*    Utils.customPrint(
                                 'FINAL SELECTED FILES ${finalSelectedFiles.isEmpty}');
