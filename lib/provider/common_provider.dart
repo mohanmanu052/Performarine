@@ -7,6 +7,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/add_vessel_model.dart';
 import 'package:performarine/models/common_model.dart';
 import 'package:performarine/models/delete_trip_model.dart';
+import 'package:performarine/models/export_report_model.dart';
 import 'package:performarine/models/get_user_config_model.dart';
 import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/registration_model.dart';
@@ -331,6 +332,11 @@ class CommonProvider with ChangeNotifier {
     return reportModel;
   }
 
+Future<ExportDataModel> exportReportData(Map<String,dynamic>body,String token,BuildContext context,GlobalKey<ScaffoldState> scaffoldKey ) async{
+  var data= await ReportModuleProvider().exportReportData(body, token, context, scaffoldKey);
+  notifyListeners();
+  return data;
+}
   /// All Trip list
   Future<TripList> tripListData(
     String vesselID,
