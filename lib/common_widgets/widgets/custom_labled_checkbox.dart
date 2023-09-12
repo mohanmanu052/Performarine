@@ -314,6 +314,8 @@ Container(
                  children: [
                    Text(
                      "$distance",
+                     maxLines: 1,
+                     overflow: TextOverflow.ellipsis,
                      style: TextStyle(
                          fontWeight: FontWeight.bold,
                          fontFamily: outfit,
