@@ -1015,12 +1015,12 @@ class _MapScreenState extends State<MapScreen> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.NAVIGATION,
+            accuracy: LocationAccuracy.HIGH,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.NAVIGATION,
+            accuracy: LocationAccuracy.HIGH,
             interval: 1,
             distanceFilter: 0,
             //client: bglas.LocationClient.android,
