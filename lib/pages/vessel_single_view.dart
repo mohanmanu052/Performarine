@@ -928,6 +928,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   ),
                                   dividerColor: Colors.transparent),
                               child: ExpansionTile(
+                                collapsedIconColor: Colors.black,
                                 initiallyExpanded: true,
                                 onExpansionChanged: ((newState) {
                                   Utils.customPrint('CURRENT STAT $newState');
