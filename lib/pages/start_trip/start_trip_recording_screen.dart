@@ -2636,12 +2636,12 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.NAVIGATION,
+            accuracy: LocationAccuracy.HIGH,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.NAVIGATION,
+            accuracy: LocationAccuracy.HIGH,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(
@@ -2910,7 +2910,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                color: bluetoothConnectBtnBackColor,
+                                color: blueColor,
                                 borderRadius:
                                 BorderRadius.all(Radius.circular(10)),
                               ),
