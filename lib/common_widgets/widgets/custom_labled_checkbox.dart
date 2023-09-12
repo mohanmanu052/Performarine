@@ -205,7 +205,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
     return InkWell(
       onTap: _onChanged,
       child: Container(
-        width: displayWidth(context) * 0.8,
+        width: displayWidth(context)/1.2,
         height:orientation==Orientation.portrait? displayHeight(context) * 0.09:displayHeight(context) * 0.19,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -255,39 +255,42 @@ Container(
             //  ),
 
              SizedBox(
-               width: displayWidth(context) * 0.015,
-             ),
-
-             Column(
-               mainAxisAlignment: MainAxisAlignment.center,
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: [
-                 Text(
-                   "$dateTime",
-                   style: TextStyle(
-                       fontWeight: FontWeight.bold,
-                       fontFamily: outfit,
-                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
-                       color: blutoothDialogTxtColor),
-                 ),
-
-                 SizedBox(
-                   height: displayHeight(context) * 0.005,
-                 ),
-
-                 Text(
-                   "Date",
-                   style: TextStyle(
-                       fontWeight: FontWeight.w400,
-                       fontFamily: poppins,
-                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
-                       color: filterByTripTxtColor),
-                 ),
-               ],
+               width: 10,
              ),
 
              SizedBox(
-               width: displayWidth(context) * 0.015,
+              width: displayWidth(context)/5.3,
+               child: Column(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   Text(
+                     "$dateTime",
+                     style: TextStyle(
+                         fontWeight: FontWeight.bold,
+                         fontFamily: outfit,
+                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
+                         color: blutoothDialogTxtColor),
+                   ),
+             
+                   SizedBox(
+                     height: displayHeight(context) * 0.005,
+                   ),
+             
+                   Text(
+                     "Date",
+                     style: TextStyle(
+                         fontWeight: FontWeight.w400,
+                         fontFamily: poppins,
+                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
+                         color: filterByTripTxtColor),
+                   ),
+                 ],
+               ),
+             ),
+
+             SizedBox(
+               width: 5,
              ),
 
              VerticalDivider(
@@ -298,39 +301,44 @@ Container(
                color: Colors.black,
              ),
              SizedBox(
-               width: displayWidth(context) * 0.015,
+               width: 8,
              ),
 
-             Column(
-               mainAxisAlignment: MainAxisAlignment.center,
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: [
-                 Text(
-                   "$distance",
-                   style: TextStyle(
-                       fontWeight: FontWeight.bold,
-                       fontFamily: outfit,
-                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
-                       color: blutoothDialogTxtColor),
-                 ),
 
-                 SizedBox(
-                   height: displayHeight(context) * 0.005,
-                 ),
+             SizedBox(
+              width: displayWidth(context) /8.1,
 
-                 Text(
-                   "Distance",
-                   style: TextStyle(
-                       fontWeight: FontWeight.w400,
-                       fontFamily: poppins,
-                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
-                       color: filterByTripTxtColor),
-                 ),
-               ],
+               child: Column(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   Text(
+                     "$distance",
+                     style: TextStyle(
+                         fontWeight: FontWeight.bold,
+                         fontFamily: outfit,
+                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
+                         color: blutoothDialogTxtColor),
+                   ),
+             
+                   SizedBox(
+                     height: displayHeight(context) * 0.005,
+                   ),
+             
+                   Text(
+                     "Distance",
+                     style: TextStyle(
+                         fontWeight: FontWeight.w400,
+                         fontFamily: poppins,
+                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
+                         color: filterByTripTxtColor),
+                   ),
+                 ],
+               ),
              ),
 
              SizedBox(
-               width: displayWidth(context) * 0.015,
+               width: 8,
              ),
 
              VerticalDivider(
