@@ -96,6 +96,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     super.didUpdateWidget(oldWidget);
     if(commonProvider.selectedImageFiles != null && commonProvider.selectedImageFiles.isNotEmpty){
       finalSelectedFiles = commonProvider.selectedImageFiles;
+    } else{
+      isDeleted = true;
     }
   }
 
@@ -124,6 +126,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
 
     if(commonProvider.selectedImageFiles != null || commonProvider.selectedImageFiles.isNotEmpty){
       finalSelectedFiles = commonProvider.selectedImageFiles;
+    } else{
+      isDeleted = true;
     }
   }
 
