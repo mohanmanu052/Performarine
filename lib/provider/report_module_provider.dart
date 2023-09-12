@@ -22,7 +22,6 @@ class ReportModuleProvider with ChangeNotifier {
 
 Future<ExportDataModel> exportReportData(Map<String,dynamic> body,String token,BuildContext context,
       GlobalKey<ScaffoldState> scaffoldKey)async{
-        print('the export report body was----'+body.toString());
 
 ExportDataModel?  exportData;
 
