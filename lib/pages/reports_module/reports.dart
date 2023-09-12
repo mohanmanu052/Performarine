@@ -1761,47 +1761,55 @@ childrenValue!.clear();
                             SizedBox(
                               height: displayWidth(context) * 0.03,
                             ),
-                            InkWell(
-                              onTap: (){
-                                exportTripData();
-                              
-                              },
-                              child: 
-                              
-                              
-                              Container(
-                                height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
-                                width: displayWidth(context) * 0.8,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: blueColor),
-                                child:isExportBtnClick??false?Center(
-                            child:    CircularProgressIndicator(color: Colors.white,)
+                            SizedBox(
+                                  height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
+
+                              child: isExportBtnClick??false?Center(
+                            child:    CircularProgressIndicator(color: blueColor,)
 
                               ):
+                              
+                              
+                              
+                              InkWell(
+                                onTap: (){
+                                  exportTripData();
+                                
+                                },
+                                child: 
                                 
                                 
-                                
-                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.file_download_outlined,
-                                      color: Colors.white,
-                                      size: 25,
-                                    ),
-                                    SizedBox(
-                                      width: displayWidth(context) * 0.01,
-                                    ),
-                                    commonText(
-                                      context: context,
-                                      text: 'Export Complete Report',
-                                      
-                                      fontWeight: FontWeight.w600,
-                                      textColor: Colors.white,
-                                      textSize: displayWidth(context) * 0.041,
-                                    ),
-                                  ],
+                                Container(
+                                  height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
+                                  width: displayWidth(context) * 0.8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: blueColor),
+                                  child:
+                                  
+                                  
+                                  
+                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.file_download_outlined,
+                                        color: Colors.white,
+                                        size: 25,
+                                      ),
+                                      SizedBox(
+                                        width: displayWidth(context) * 0.01,
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: 'Export Complete Report',
+                                        
+                                        fontWeight: FontWeight.w600,
+                                        textColor: Colors.white,
+                                        textSize: displayWidth(context) * 0.041,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
