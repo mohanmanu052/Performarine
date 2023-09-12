@@ -227,6 +227,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               setState(() {
                                 isGoogleSignInBtnClicked = false;
                               });
+                              return null;
                             } else {
                               try {
                                 setState(() {
