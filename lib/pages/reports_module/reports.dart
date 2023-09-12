@@ -394,7 +394,7 @@ if(selectedCaseType==1){
     body={
   		"case": 2,
             "isExport": true,
-            		"tripIds": tripIdList
+            		"tripIds": selectedTripIdList
   };
 
 }
