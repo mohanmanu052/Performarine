@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/common_size_helper.dart';
@@ -13,9 +14,11 @@ import '../bottom_navigation.dart';
 import '../vessel_single_view.dart';
 import 'dart:io';
 
+import 'add_new_vessel_screen.dart';
+
 class SuccessfullyAddedScreen extends StatefulWidget {
   final bool? isEdit;
-  final CreateVessel? data;
+   CreateVessel? data;
   SuccessfullyAddedScreen({Key? key, this.data, this.isEdit = false}) : super(key: key);
 
   @override
@@ -27,7 +30,9 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   String page = "Successfully_added_screen";
 
-  bool? isVesselParticularExpanded = false;
+  bool isVesselParticularExpanded = true,
+      isVesselDimensionsExpanded = true,
+      isDataUpdated = false;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +64,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
         bottomNavigationBar: Container(
           margin: EdgeInsets.symmetric(
               horizontal: displayHeight(context) * 0.03,
-              vertical: displayHeight(context) * 0.02),
+              vertical: displayHeight(context) * 0.01),
           child: CommonButtons.getActionButton(
               title: 'View Full Details',
               context: context,
@@ -75,7 +80,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            VesselSingleView(vessel: widget.data!)),
+                            VesselSingleView(vessel: widget.data!,isCalledFromSuccessScreen: true,)),
                   );
                 } else {
                   CustomLogger().logWithFile(Level.info, "User Navigating to VesselSingleView -> $page");
@@ -83,7 +88,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            VesselSingleView(vessel: widget.data!)),
+                            VesselSingleView(vessel: widget.data!,isCalledFromSuccessScreen: true,)),
                   );
                 }
               }),
@@ -123,7 +128,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
           title: commonText(
               context: context,
               text: widget.isEdit!
-                  ? 'Successfully Updated'
+                  ? 'Vessel Updated'
                   : 'Vessel Added',
               fontWeight: FontWeight.w700,
               textColor: Colors.black,
@@ -154,16 +159,16 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
               children: [
 
                 SizedBox(
-                  height: displayHeight(context) * 0.05,
+                  height: displayHeight(context) * 0.04,
                 ),
 
                 Container(
-                    height: displayHeight(context) * 0.1,
+                    height: displayHeight(context) * 0.09,
                     decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(10)),
                     child: Image.asset(
                       'assets/images/success_image.png',
-                      height: displayHeight(context) * 0.28,
+                      height: displayHeight(context) * 0.24,
                     ),),
 
                 SizedBox(
@@ -175,13 +180,13 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                     text: widget.isEdit!
                         ? 'Vessel Updated Successfully'
                         : 'Vessel Added Successfully',
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                     textColor: blueColor,
                     textSize: displayWidth(context) * 0.05,
                     textAlign: TextAlign.start),
 
                 SizedBox(
-                  height: displayHeight(context) * 0.02,
+                  height: displayHeight(context) * 0.03,
                 ),
 
                 Stack(
@@ -196,13 +201,15 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                             widget.data!.imageURLs == '[]'
                             ? Stack(
                           children: [
-                            Container(
-                              color: Colors.white,
-                              child: Image.asset(
-                                'assets/images/vessel_default_img.png',
-                                height: displayHeight(context) * 0.24,
-                                width: displayWidth(context),
-                                fit: BoxFit.cover,
+                            Center(
+                              child: Container(
+                                color: Colors.white,
+                                child: Image.asset(
+                                  'assets/images/vessel_default_img.png',
+                                  width: displayWidth(context) * 0.65,
+                                  height: displayHeight(context) * 0.22,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                              Positioned(
@@ -227,7 +234,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                             : Stack(
                               children: [
                                 Container(
-                          height: displayHeight(context) * 0.24,
+                          height: displayHeight(context) * 0.22,
                           width: displayWidth(context),
                           decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
@@ -296,7 +303,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                       commonText(
                                           context: context,
                                           text:
-                                          '${widget.data!.capacity}cc',
+                                          '${widget.data!.capacity}$cubicCapacity',
                                           fontWeight: FontWeight.w500,
                                           textColor: Colors.white,
                                           textSize:
@@ -409,7 +416,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                             commonText(
                                                 context: context,
                                                 text:
-                                                '${widget.data!.fuelCapacity!}gal'
+                                                '${widget.data!.fuelCapacity!} L'
                                                     .toString(),
                                                 fontWeight: FontWeight.w400,
                                                 textColor: Colors.white,
@@ -480,7 +487,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                             commonText(
                                                 context: context,
                                                 text:
-                                                ' ${widget.data!.batteryCapacity!} kw'
+                                                ' ${widget.data!.batteryCapacity!} $kiloWattHour'
                                                     .toString(),
                                                 fontWeight:
                                                 FontWeight.w400,
@@ -553,7 +560,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                                     .fuelCapacity ==
                                                     null
                                                     ? '-'
-                                                    : '${widget.data!.fuelCapacity!}gal'
+                                                    : '${widget.data!.fuelCapacity!} L'
                                                     .toString(),
                                                 fontWeight: FontWeight.w400,
                                                 textColor: Colors.white,
@@ -587,7 +594,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                             commonText(
                                                 context: context,
                                                 text:
-                                                ' ${widget.data!.batteryCapacity!} kw'
+                                                ' ${widget.data!.batteryCapacity!} $kiloWattHour'
                                                     .toString(),
                                                 fontWeight: FontWeight.w400,
                                                 textColor: Colors.white,
@@ -639,7 +646,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                 ),
 
                 SizedBox(
-                  height: displayHeight(context) * 0.02,
+                  height: displayHeight(context) * 0.015,
                 ),
 
             Container(
@@ -648,7 +655,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                   borderRadius: BorderRadius.all(Radius.circular(15))
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0),
                 child: Column(
                   children: [
                     Theme(
@@ -658,8 +665,57 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                           ),
                           dividerColor: Colors.transparent),
                       child: ExpansionTile(
+                        trailing: Container(
+                          width: displayWidth(context) * 0.12,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap:()async{
+                                  var result = await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => AddNewVesselPage(
+                                        isEdit: true,
+                                        createVessel: widget.data,
+                                      ),
+                                      fullscreenDialog: true,
+                                    ),
+                                  );
+
+                                  if (result != null) {
+                                    Utils.customPrint('RESULT 1 ${result[0]}');
+                                    Utils.customPrint(
+                                        'RESULT 1 ${result[1] as CreateVessel}');
+                                    setState(() {
+                                      widget.data = result[1] as CreateVessel?;
+                                      isDataUpdated = result[0];
+                                    });
+                                  }
+                                },
+                                child: Image.asset('assets/icons/Edit.png',
+                                    width: displayWidth(context) * 0.045,
+                                    color: Colors.black),
+                              ),
+                              !isVesselDimensionsExpanded ? Icon(
+                                Icons.keyboard_arrow_down_outlined,
+                                color: Colors.black,
+                              ) : Icon(
+                                Icons.keyboard_arrow_up_outlined,
+                                color: Colors.black,
+                              ),
+                            ],
+                          ),
+                        ),
                         initiallyExpanded: true,
-                        onExpansionChanged: ((newState) {}),
+                        onExpansionChanged: ((newState) {
+                          setState(() {
+                            isVesselDimensionsExpanded = newState;
+                          });
+
+                          Utils.customPrint(
+                              'EXPANSION CHANGE $isVesselDimensionsExpanded');
+                          CustomLogger().logWithFile(Level.info, "EXPANSION CHANGE $isVesselDimensionsExpanded -> $page");
+                        }),
                         tilePadding: EdgeInsets.zero,
                         childrenPadding: EdgeInsets.zero,
                         title: commonText(
@@ -688,7 +744,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                           child: commonText(
                                             context: context,
                                             text:
-                                            '${widget.data!.lengthOverall} ft',
+                                            '${widget.data!.lengthOverall} $feet',
                                             fontWeight: FontWeight.w500,
                                             textColor: Colors.black,
                                             textSize:
@@ -728,7 +784,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                           child: commonText(
                                               context: context,
                                               text:
-                                              '${widget.data!.freeBoard} ft',
+                                              '${widget.data!.freeBoard} $feet',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
                                               textSize:
@@ -765,7 +821,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                         Flexible(
                                           child: commonText(
                                               context: context,
-                                              text: '${widget.data!.beam} ft',
+                                              text: '${widget.data!.beam} $feet',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
                                               textSize:
@@ -805,7 +861,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                         Flexible(
                                           child: commonText(
                                               context: context,
-                                              text: '${widget.data!.draft} ft',
+                                              text: '${widget.data!.draft} $feet',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
                                               textSize:
@@ -832,7 +888,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: displayHeight(context) * 0.01,
+                      height: displayHeight(context) * 0.00,
                     ),
                     Theme(
                       data: Theme.of(context).copyWith(
@@ -843,6 +899,47 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                       child: Container(
                         child: ExpansionTile(
                           initiallyExpanded: true,
+                          trailing: Container(
+                            width: displayWidth(context) * 0.12,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                                  onTap:()async{
+                                    var result = await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => AddNewVesselPage(
+                                          isEdit: true,
+                                          createVessel: widget.data,
+                                        ),
+                                        fullscreenDialog: true,
+                                      ),
+                                    );
+
+                                    if (result != null) {
+                                      Utils.customPrint('RESULT 1 ${result[0]}');
+                                      Utils.customPrint(
+                                          'RESULT 1 ${result[1] as CreateVessel}');
+                                      setState(() {
+                                        widget.data = result[1] as CreateVessel?;
+                                        isDataUpdated = result[0];
+                                      });
+                                    }
+                                  },
+                                  child: Image.asset('assets/icons/Edit.png',
+                                      width: displayWidth(context) * 0.045,
+                                      color: Colors.black),
+                                ),
+                                !isVesselParticularExpanded ? Icon(
+                                  Icons.keyboard_arrow_down_outlined,
+                                  color: Colors.black,
+                                ) : Icon(
+                                  Icons.keyboard_arrow_up_outlined,
+                                  color: Colors.black,
+                                ),
+                              ],
+                            ),
+                          ),
                           onExpansionChanged: ((newState) {
                             setState(() {
                               isVesselParticularExpanded = newState;
@@ -865,6 +962,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                             Column(
                               children: [
                                 Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment:
                                   MainAxisAlignment.spaceBetween,
                                   children: [
@@ -876,15 +974,16 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                           commonText(
                                               context: context,
                                               text:
-                                              '${widget.data!.capacity}cc',
+                                              '130 $hp',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:
                                               displayWidth(context) * 0.04,
                                               textAlign: TextAlign.start),
+                                          SizedBox(height: 2,),
                                           commonText(
                                               context: context,
-                                              text: 'Capacity',
+                                              text: 'Diesel Engine\nPower' ,
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.grey,
                                               textSize:
@@ -900,16 +999,16 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                         children: [
                                           commonText(
                                               context: context,
-                                              text: widget.data!.builtYear
-                                                  .toString(),
+                                              text: '320 $kiloWattHour',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:
                                               displayWidth(context) * 0.04,
                                               textAlign: TextAlign.start),
+                                          SizedBox(height: 2,),
                                           commonText(
                                               context: context,
-                                              text: 'Built',
+                                              text: 'Electric Engine\nPower',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.grey,
                                               textSize:
@@ -923,28 +1022,19 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                         children: [
-                                          widget.data!.regNumber! == ""
-                                              ? commonText(
+                                          commonText(
                                               context: context,
-                                              text: '-',
+                                              text: '4500 $pound',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:
                                               displayWidth(context) *
                                                   0.04,
-                                              textAlign: TextAlign.start)
-                                              : commonText(
-                                              context: context,
-                                              text: widget.data!.regNumber,
-                                              fontWeight: FontWeight.w700,
-                                              textColor: Colors.black,
-                                              textSize:
-                                              displayWidth(context) *
-                                                  0.048,
                                               textAlign: TextAlign.start),
+                                          SizedBox(height: 2,),
                                           commonText(
                                               context: context,
-                                              text: 'Registration Number',
+                                              text: 'Displacement',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.grey,
                                               textSize:
@@ -955,20 +1045,14 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                     )
                                   ],
                                 ),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 8),
-                                  child: const Divider(
-                                    color: Colors.grey,
-                                    thickness: 1,
-                                    indent: 1,
-                                    endIndent: 2,
-                                  ),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.012,
                                 ),
                                 Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
+                                      //flex: 01,
                                       child: Column(
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -976,15 +1060,16 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                           commonText(
                                               context: context,
                                               text:
-                                              '${widget.data!.weight} Lbs',
+                                              'Planning',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:
                                               displayWidth(context) * 0.04,
                                               textAlign: TextAlign.start),
+                                          SizedBox(height: 2,),
                                           commonText(
                                               context: context,
-                                              text: 'Weight',
+                                              text: 'Hull Type',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.grey,
                                               textSize:
@@ -994,31 +1079,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                       ),
                                     ),
                                     Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          commonText(
-                                              context: context,
-                                              text:
-                                              '${widget.data!.vesselSize} hp',
-                                              fontWeight: FontWeight.w600,
-                                              textColor: Colors.black,
-                                              textSize:
-                                              displayWidth(context) * 0.042,
-                                              textAlign: TextAlign.start),
-                                          commonText(
-                                              context: context,
-                                              text: 'Size (hp)',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.grey,
-                                              textSize:
-                                              displayWidth(context) * 0.024,
-                                              textAlign: TextAlign.start),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
+                                      flex: 02,
                                       child: Column(
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -1042,6 +1103,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                               displayWidth(context) *
                                                   0.04,
                                               textAlign: TextAlign.start),
+                                          SizedBox(height: 2,),
                                           commonText(
                                               context: context,
                                               text: 'MMSI',
@@ -1061,10 +1123,16 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(
+                      height: displayHeight(context) * 0.022,
+                    ),
                   ],
                 ),
               ),
-            )
+            ),
+                SizedBox(
+                  height: displayHeight(context) * 0.01,
+                ),
             /*    Column(
                   children: [
                     SizedBox(

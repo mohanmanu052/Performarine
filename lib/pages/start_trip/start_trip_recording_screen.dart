@@ -79,7 +79,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       getTripId = '',
       bluetoothName = 'LPR';
 
-  int valueHolder = 1, numberOfPassengers = 0, passengerValue = 0;
+  int valueHolder = 1, numberOfPassengers = 1, passengerValue = 0;
 
   bool? isGpsOn, isLPRConnected, isBleOn;
   bool addingDataToDB = false,
@@ -125,6 +125,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     WidgetsBinding.instance.addObserver(this);
 
     //checkAllPermission(false);
+
+    debugPrint("SCREEN CALLED FROM ${widget.calledFrom}");
 
     commonProvider = context.read<CommonProvider>();
     getVesselAndTripsData();
@@ -257,7 +259,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     child: Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
-                            circularProgressColor),
+                            blueColor),
                       ),
                     ),
                   )
@@ -286,8 +288,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                 height: displayHeight(context) * 0.008,
                               ),
                               DropdownButtonHideUnderline(
-                                child:
-                                DropdownButton2<VesselDropdownItem>(
+                                child: DropdownButton2<VesselDropdownItem>(
                                   isExpanded: true,
                                   hint: Text(
                                     'Select Vessel',
@@ -385,7 +386,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                   menuItemStyleData:
                                   const MenuItemStyleData(
                                     padding: EdgeInsets.only(
-                                        left: 14, right: 14),
+                                        left: 18, right: 18, top: 8, bottom: 8),
                                   ),
                                 ),
                               ),
@@ -416,7 +417,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                               0.06,
                                           width: !isSliderDisable
                                               ? displayWidth(context) *
-                                              0.8
+                                              0.78
                                               : displayWidth(context) *
                                               0.5,
                                           child: FlutterSlider(
@@ -426,7 +427,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                   .toDouble()
                                             ],
                                             max: sliderMinVal,
-                                            min: 0,
+                                            min: 1,
                                             trackBar: FlutterSliderTrackBar(
                                                 activeTrackBarHeight: 4.5,
                                                 inactiveTrackBarHeight:
@@ -450,10 +451,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                     child: commonText(
                                                       context: context,
                                                       text:
-                                                      numberOfPassengers ==
-                                                          0
-                                                          ? ''
-                                                          : '$data',
+                                                      '$data',
                                                       fontWeight:
                                                       FontWeight.w500,
                                                       textColor:
@@ -471,10 +469,20 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                     top: -15)),
                                             handlerWidth: 15,
                                             handlerHeight: 15,
+                                            // onDragStarted: (int value,dynamic val,dynamic val1){
+                                            //   FocusScope.of(context).requestFocus(FocusNode());
+                                            // },
                                             onDragging: (int value,dynamic val,dynamic val1){
-                                             val != 11 ? passengerValue = val.toInt() : val;
+                                              // setState(() {
+                                              //   isSliderDisable = false;
+                                              // });
+                                             //val != 11 ? passengerValue = val.toInt() : val;
+                                              passengerValue = val == 11 ? (val.toInt() - 1) : val.toInt();
                                               print("On dragging: value: $value, val: $val, val1: $val1");
-                                              if(val == 11 && sliderMinVal == 11){
+                                              numberOfPassengers = passengerValue;
+                                              textEditingController.text = (passengerValue).toString();
+
+                                              if(val == sliderMinVal){
                                                 if(mounted){
 
                                                   setState(() {
@@ -483,12 +491,17 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                     true;
                                                     popupAnimationController
                                                         .forward()
-                                                        .then((value) =>
-                                                        _focusNode
-                                                            .requestFocus());
+                                                        .then((value) {
+                                                      _focusNode
+                                                          .requestFocus();
+
+                                                    }
+
+                                                    );
                                                   });
                                                 }
                                               }
+                                              textEditingController.selection = TextSelection(baseOffset: 0, extentOffset: textEditingController.value.text.length);
                                             },
                                             handler: FlutterSliderHandler(
                                                 child: Container(
@@ -505,7 +518,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                       Container(
                                         width: isSliderDisable
                                             ? displayWidth(context) * 0.5
-                                            : displayWidth(context) * 0.8,
+                                            : displayWidth(context) * 0.82,
                                         child: Row(
                                           mainAxisAlignment:
                                           MainAxisAlignment
@@ -518,7 +531,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                   vertical: 5),
                                               child: commonText(
                                                 context: context,
-                                                text: '0',
+                                                text: '01',
                                                 fontWeight:
                                                 FontWeight.w500,
                                                 textColor: Colors.black,
@@ -761,6 +774,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                                     showBluetoothListDialog(context);
                                                                   }
                                                                   else{
+
                                                                     if (await Permission
                                                                         .location
                                                                         .isPermanentlyDenied) {
@@ -774,12 +788,39 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                                             await openAppSettings();
                                                                           });
                                                                     } else {
+                                                                      print('kkkkkkk: ${await Permission
+                                                                          .location
+                                                                          .isGranted}');
+                                                                      print('kkkkkkk: ${await Permission
+                                                                          .location
+                                                                          .isDenied}');
+                                                                      print('kkkkkkk: ${await Permission
+                                                                          .location
+                                                                          .shouldShowRequestRationale}');
                                                                       if (await Permission
                                                                           .location
                                                                           .isGranted) {
                                                                         showBluetoothListDialog(context);
                                                                       } else {
-                                                                        await Permission.location.request();
+                                                                        if(!(await Permission
+                                                                            .location
+                                                                            .shouldShowRequestRationale))
+                                                                          {
+                                                                            Utils.showSnackBar(
+                                                                                context,
+                                                                                scaffoldKey: scaffoldKey,
+                                                                                message: 'Location permissions are denied without permissions we are unable to start the trip');
+                                                                            Future.delayed(
+                                                                                Duration(seconds: 2),
+                                                                                    () async {
+                                                                                  await openAppSettings();
+                                                                                });
+                                                                          }
+                                                                        else
+                                                                          {
+                                                                            await Permission.location.request();
+                                                                          }
+
                                                                       }
                                                                     }
                                                                   }
@@ -857,36 +898,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                               }
                                                             }
                                                           }
-
-                                                          /*bool
-                                                          isNDPermittedOne =
-                                                          await Permission
-                                                              .bluetoothConnect
-                                                              .isGranted;
-
-                                                          if (isNDPermittedOne) {
-                                                            dynamic isBluetoothEnable = Platform
-                                                                .isAndroid
-                                                                ? await blueIsOn()
-                                                                : await commonProvider
-                                                                .checkIfBluetoothIsEnabled(
-                                                                scaffoldKey,
-                                                                    () {
-                                                                  showBluetoothDialog(
-                                                                      context);
-                                                                });
-
-                                                            if (isBluetoothEnable) {
-                                                              showBluetoothListDialog(
-                                                                  context);
-                                                            }
-                                                            else{
-                                                              Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Bluetooth is disabled. Please enable.');
-                                                            }
-                                                          }
-                                                          else{
-                                                            Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Bluetooth permission is needed.');
-                                                          }*/
                                                         },
                                                         child: Text(
                                                           'LPR',
@@ -991,7 +1002,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                       valueColor:
                                       AlwaysStoppedAnimation<
                                           Color>(
-                                          circularProgressColor)))
+                                          blueColor)))
                                   : Container(
                                 child: CommonButtons
                                     .getRichTextActionButton(
@@ -1049,8 +1060,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                           textEditingController
                                               .text) >
                                           11) {
-                                        sliderMinVal = 999;
-                                        sliderCount = '999';
+                                        sliderMinVal = numberOfPassengers.toDouble();
+                                        sliderCount = '$numberOfPassengers+';
                                         isSliderDisable = false;
                                       } else {
                                         sliderMinVal = 11;
@@ -1727,9 +1738,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       child: Center(
         child: Container(
           width: displayWidth(context) * 0.25,
-          padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
-              color: Color(0xffE6E9F0),
+              color: backgroundColor,
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
@@ -1740,81 +1750,134 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               ]),
           child: Row(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                child: TextFormField(
-                  focusNode: _focusNode,
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(3),
-                    FilteringTextInputFormatter.allow(RegExp("[0-9]"))
-                  ],
-                  textAlignVertical: TextAlignVertical.center,
-                  keyboardType: TextInputType.number,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: MediaQuery.of(context).size.width * 0.035),
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(bottom: 12),
-                      border: InputBorder.none),
-                  controller: textEditingController,
-                  onFieldSubmitted: (String value) {
-                    FocusScope.of(context).requestFocus(FocusNode());
+                child: Center(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 6,bottom: 4),
+                    child: TextFormField(
+                      focusNode: _focusNode,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(3),
+                        FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+                      ],
+                      textAlignVertical: TextAlignVertical.center,
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: MediaQuery.of(context).size.width * 0.035),
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(bottom: 12),
+                          border: InputBorder.none),
+                      controller: textEditingController,
+                      onFieldSubmitted: (String value) {
+                        if(int.parse(textEditingController.text.trim().isEmpty ? '1' : textEditingController.text.trim()) != 0 )
+                          {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          }
+                        else
+                        {
+                          textEditingController.clear();
+                        }
 
-                    // popupAnimationController.reset();
-                  },
-                  onEditingComplete: (){
-                   // setState(() {
-                      //textEditingController.text.isNotEmpty ? numberOfPassengers = int.parse(textEditingController.text) : numberOfPassengers = passengerValue;
-                    if(textEditingController.text.isEmpty){
-                      setState(() {
-                        numberOfPassengers = passengerValue;
-                        sliderMinVal = 11;
-                        sliderCount = '10+';
-                      });
-                    }else if(int.parse(textEditingController.text) < 11){
-                        numberOfPassengers = int.parse(textEditingController.text);
-                        sliderMinVal = 11;
-                      }else if(int.parse(textEditingController.text) < 1000){
-                        numberOfPassengers = int.parse(textEditingController.text);
+                        // popupAnimationController.reset();
+                      },
+                      onEditingComplete: (){
+                       if(int.parse(textEditingController.text.trim().isEmpty ? '1' : textEditingController.text.trim()) != 0 )
+                         {
+                           // setState(() {
+                           //textEditingController.text.isNotEmpty ? numberOfPassengers = int.parse(textEditingController.text) : numberOfPassengers = passengerValue;
+                           if(textEditingController.text.isEmpty){
+                             setState(() {
+                               numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
+                               sliderMinVal = 11;
+                               sliderCount = '10+';
+                             });
+                           }else if(int.parse(textEditingController.text) < 11){
+                             numberOfPassengers = int.parse(textEditingController.text);
+                             sliderMinVal = 11;
+                           }else if(int.parse(textEditingController.text) < 1000){
+                             numberOfPassengers = int.parse(textEditingController.text);
 
-                        sliderMinVal = 999;
-                        sliderCount = '999';
-                      }
-                    //});
-                  },
-                  onChanged: (String value) {
-                    print("value is: $value");
-                    if (value.length == 3) {
-                      setState(() {
-                        numberOfPassengers =
-                            int.parse(textEditingController.text);
-                        sliderMinVal = 999;
-                        sliderCount = '999';
-                      });
-                      FocusScope.of(context).requestFocus(new FocusNode());
-                    }
-                  /*  else if(value.length == 2){
-                         setState(() {
-                           numberOfPassengers = int.parse(textEditingController.text);
+                             if(numberOfPassengers.toString().length == 3)
+                             {
+                               sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
+                             }
+                             else
+                             {
+                               sliderMinVal = numberOfPassengers.toDouble();
+                             }
+
+                             //sliderMinVal = 999;
+                             sliderCount = '$numberOfPassengers+';
+                           }
+                           //});
+                         }
+                       else
+                       {
+                         textEditingController.clear();
+                       }
+                      },
+                      onChanged: (String value) {
+                        print("value is: $value");
+                        if (value.length == 3) {
+                          if(int.parse(value) != 0)
+                            {
+                              setState(() {
+                                numberOfPassengers =
+                                    int.parse(textEditingController.text);
+
+                                if(numberOfPassengers.toString().length == 3)
+                                {
+                                  sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
+                                }
+                                else
+                                {
+                                  sliderMinVal = numberOfPassengers.toDouble();
+                                }
+                                //sliderMinVal = 999;
+                                sliderCount = '$numberOfPassengers+';
+                              });
+                              FocusScope.of(context).requestFocus(new FocusNode());
+                            }
+                        }
+                      /*  else if(value.length == 2){
+                             setState(() {
+                               numberOfPassengers = int.parse(textEditingController.text);
+                               sliderMinVal = 11;
+                               sliderCount = '1';
+                             });
+                        }  */
+                        else if(value.length == 0){
+                          setState(() {
+                            numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
+                             /*if(numberOfPassengers.toString().length == 3)
+                             {
+                               sliderMinVal = numberOfPassengers.toDouble() + 20;
+                             }
+                             else
+                             {
+                               sliderMinVal = numberOfPassengers.toDouble() + 4;
+                             }
+                             //sliderMinVal = 999;
+                             sliderCount = '$numberOfPassengers+';*/
                            sliderMinVal = 11;
-                           sliderCount = '1';
-                         });
-                    }  */
-                    else if(value.length == 0){
-                      setState(() {
-                         numberOfPassengers = passengerValue;
-                       //sliderMinVal = 11;
-                        sliderCount = '10+';
-                      });
-                    }
-                  },
+                            sliderCount = '10+';
+                          });
+                        }
+                      },
+                    ),
+                  ),
                 ),
               ),
               Expanded(
+                flex: 2,
                 child: Container(
-                  //width: displayWidth(context) * 0.01,
-                  height: displayHeight(context) * 0.03,
+                 //width: displayWidth(context) * 0.08,
+                  height: displayHeight(context) * 0.04,
+                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   child: ElevatedButton(
                     style: ButtonStyle(
                       elevation: MaterialStateProperty.all(null),
@@ -1827,52 +1890,108 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                               borderRadius: BorderRadius.circular(5))),
                     ),
                     onPressed: () {
-                      setState(() {
-                        isOKClick = true;
-                        if (textEditingController.text.isEmpty) {
+// <<<<<<< GOE-Sprint13
+                      if(int.parse(textEditingController.text.trim().isEmpty ? '1' : textEditingController.text.trim()) != 0)
+                        {
+                          setState(() {
+                            isOKClick = true;
+                            if (textEditingController.text.isEmpty) {
+
+                              sliderMinVal = 11;
+
+                              numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
+
+                              sliderCount = '10+';
+                              isSliderDisable = false;
+                              isCheck = false;
+
+                            } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
+
+                              numberOfPassengers =
+                                  int.parse(textEditingController.text);
+
+                              if (numberOfPassengers.toString().length == 3) {
+                                sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
+                              } else {
+                                sliderMinVal = numberOfPassengers.toDouble();
+                              }
+                              //sliderMinVal = numberOfPassengers.toDouble();
+                              sliderCount = '$numberOfPassengers+';
+                              isSliderDisable = false;
+// =======
+//                       setState(() {
+//                         isOKClick = true;
+//                         if (textEditingController.text.isEmpty) {
                           
-                            sliderMinVal = 11;
-;
+// ;
 
-                          numberOfPassengers = passengerValue;
+//                           numberOfPassengers = passengerValue;
+
+//                           if(numberOfPassengers>11){
+//                                                       sliderMinVal = numberOfPassengers.toDouble();
+
+//                           }
+//                           else{
+//                             sliderMinVal=11;
+//                           }
+
                           
-                          sliderCount = '10+';
-                          isSliderDisable = false;
-                          isCheck = false;
+//                           sliderCount = '10+';
+//                           isSliderDisable = false;
+//                           isCheck = false;
 
-                        } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
+//                         } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
 
-                          sliderMinVal = 999;
-                          sliderCount = '999';
-                          isSliderDisable = false;
-                          numberOfPassengers =
-                              int.parse(textEditingController.text);
-                        } else if (textEditingController.text.isNotEmpty &&
-                            int.parse(textEditingController.text) < 11) {
+//                           sliderMinVal = 999;
+//                           sliderCount = '999';
+//                           isSliderDisable = false;
+//                           numberOfPassengers =
+//                               int.parse(textEditingController.text);
+//                         } else if (textEditingController.text.isNotEmpty &&
+//                             int.parse(textEditingController.text) < 11) {
 
-                          sliderMinVal = 11;
-                          sliderCount = '10+';
-                          isSliderDisable = false;
-                          numberOfPassengers =
-                              int.parse(textEditingController.text);
+//                           sliderMinVal = 11;
+//                           sliderCount = '10+';
+//                           isSliderDisable = false;
+//                           numberOfPassengers =
+//                               int.parse(textEditingController.text);
+//                         }
+//                       });
+//                       FocusScope.of(context).requestFocus(new FocusNode());
+// >>>>>>> GOE-Sprint12-Base
+
+                            } else if (textEditingController.text.isNotEmpty &&
+                                int.parse(textEditingController.text) < 11) {
+
+                              sliderMinVal = 11;
+                              sliderCount = '10+';
+                              isSliderDisable = false;
+                              numberOfPassengers =
+                                  int.parse(textEditingController.text);
+                            }
+                          });
+                          FocusScope.of(context).requestFocus(new FocusNode());
+
+                          kReleaseMode
+                              ? null
+                              : debugPrint(
+                              'Number of passengers $numberOfPassengers');
+
+                          // popupAnimationController.reset();
                         }
-                      });
-                      FocusScope.of(context).requestFocus(new FocusNode());
-
-                      kReleaseMode
-                          ? null
-                          : debugPrint(
-                          'Number of passengers $numberOfPassengers');
-
-                      // popupAnimationController.reset();
+                      else
+                        {
+                          textEditingController.clear();
+                        }
                     },
-                    child: commonText(
+                    child: Image.asset('assets/icons/done_icon.png', height: displayHeight(context) * 0.02,),
+                    /*commonText(
                       context: context,
                       text: 'OK',
                       fontWeight: FontWeight.w500,
                       textColor: backgroundColor,
                       textSize: displayWidth(context) * 0.034,
-                    ),
+                    ),*/
                   ),
                 ),
               )
@@ -2010,10 +2129,10 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               Utils.customPrint(
                   'XXXXX@@@ ${await Permission.locationWhenInUse.shouldShowRequestRationale}');
 
-              if (await Permission.locationWhenInUse.isDenied ||
-                  await Permission.locationWhenInUse.isPermanentlyDenied) {
-                await openAppSettings();
-              }
+              // if (await Permission.locationWhenInUse.isDenied ||
+              //     await Permission.locationWhenInUse.isPermanentlyDenied) {
+              //   await openAppSettings();
+              // }
 
               showDialog(
                   context: scaffoldKey.currentContext!,
@@ -2343,7 +2462,17 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     final vesselName = selectedVesselName;
     final currentLoad = selectedVesselWeight;
 
-    ReceivePort port = ReceivePort();
+    String? latitude, longitude;
+
+    geo.Position currentPosition = await geo.Geolocator.getCurrentPosition();
+
+    if(currentPosition != null)
+      {
+        latitude = currentPosition.latitude.toString();
+        longitude = currentPosition.longitude.toString();
+      }
+
+   /* ReceivePort port = ReceivePort();
     String? latitude, longitude;
     port.listen((dynamic data) async {
       LocationDto? locationDto =
@@ -2351,9 +2480,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       if (locationDto != null) {
         latitude = locationDto.latitude.toString();
         longitude = locationDto.longitude.toString();
-      }
-      ;
-    });
+      };
+    });*/
     await fetchDeviceData();
 
     debugPrint("NUMBER OF PASS 4 $numberOfPassengers");
@@ -2367,12 +2495,14 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           numberOfPassengers: numberOfPassengers,
           filePath: file,
           isSync: 0,
+          isCloud: 0,
           tripStatus: 0,
           createdAt: Utils.getCurrentTZDateTime(),
           updatedAt: Utils.getCurrentTZDateTime(),
           startPosition: [latitude, longitude].join(","),
           endPosition: [latitude, longitude].join(","),
-          deviceInfo: deviceDetails!.toJson().toString()));
+          deviceInfo: deviceDetails!.toJson().toString(),
+          ));
     } on Exception catch (e) {
       Utils.customPrint('ON SAVE EXE: $e');
     }
@@ -3770,7 +3900,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               child: StatefulBuilder(builder: (ctx, setDialogState) {
                 return Container(
                   width: displayWidth(context),
-                  height: displayHeight(context) * 0.5,
+                  height: displayHeight(context) * 0.6,
                   decoration: new BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.dark
                         ? Colors.black
@@ -3782,8 +3912,17 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
+
+                      SizedBox(
+                        height: displayHeight(context) * 0.03,
+                      ),
+
+                      Image.asset('assets/icons/web.png',
+                        width: displayWidth(context) * 0.2,
+                      ),
+
                       Padding(
-                        padding: EdgeInsets.only(top: 30),
+                        padding: EdgeInsets.only(top: 10),
                         child: Text(
                           "Available Devices",
                           style: TextStyle(
@@ -3858,46 +3997,15 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         width: displayWidth(context),
                         margin:
                         EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
+                          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                // FlutterBluePlus.instance.
-
-                                Navigator.pop(context);
-                                /*setState(() {
-                                  progress = 0.9;
-                                  lprSensorProgress = 0.0;
-                                  isStartButton = true;
-                                  bluetoothName = '';
-                                });*/
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: bluetoothCancelBtnBackColor,
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                                ),
-                                height: displayWidth(context) * 0.12,
-                                width: displayWidth(context) * 0.34,
-                                // color: HexColor(AppColors.introButtonColor),
-                                child: Center(
-                                  child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: bluetoothCancelBtnTxtColor),
-                                  ),
-                                ),
-                              ),
-                            ),
                             GestureDetector(
                               onTap: () {
                                 Utils.customPrint("Tapped on scan button");
 
                                 if (mounted) {
-                                  setState(() {
+                                  setDialogState(() {
                                     isScanningBluetooth = true;
                                   });
                                 }
@@ -3907,7 +4015,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
                                 if (mounted) {
                                   Future.delayed(Duration(seconds: 2), () {
-                                    setState(() {
+                                    setDialogState(() {
                                       isScanningBluetooth = false;
                                     });
                                   });
@@ -3929,23 +4037,54 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                     width: displayWidth(context) * 0.34,
                                     child: Center(
                                         child:
-                                        CircularProgressIndicator())),
+                                        CircularProgressIndicator(color: blueColor,))),
                               )
                                   : Container(
                                 decoration: BoxDecoration(
                                   color: blueColor,
                                   borderRadius: BorderRadius.all(
-                                      Radius.circular(10)),
+                                      Radius.circular(8)),
                                 ),
-                                height: displayWidth(context) * 0.12,
-                                width: displayWidth(context) * 0.34,
+                                height: displayHeight(context) * 0.055,
+                                width : displayWidth(context) / 1.6,
                                 // color: HexColor(AppColors.introButtonColor),
                                 child: Center(
                                   child: Text(
-                                    "Scan",
+                                    "Scan for Devices",
                                     style: TextStyle(
                                         fontSize: 15,
                                         color: bluetoothConnectBtncolor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                // FlutterBluePlus.instance.
+
+                                FlutterBluePlus.instance.stopScan();
+
+                                setDialogState(() {
+                                  isScanningBluetooth = false;
+                                });
+                                Navigator.pop(context);
+
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                                ),
+                                height: displayHeight(context) * 0.055,
+                                width : displayWidth(context) / 1.6,
+                                // color: HexColor(AppColors.introButtonColor),
+                                child: Center(
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: blueColor),
                                   ),
                                 ),
                               ),

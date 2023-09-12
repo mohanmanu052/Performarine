@@ -30,10 +30,11 @@ import '../../common_widgets/utils/urls.dart';
 import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/status_tage.dart';
 import '../start_trip/trip_recording_screen.dart';
+import '../web_navigation/privacy_and_policy_web_view.dart';
 
 class TripWidget extends StatefulWidget {
   final String? calledFrom;
-  final VoidCallback? onTap;
+  final VoidCallback? onTap, onViewTripTap;
   final VoidCallback? tripUploadedSuccessfully;
   final Function()? onTripEnded;
   final Trip? tripList;
@@ -48,7 +49,8 @@ class TripWidget extends StatefulWidget {
         this.tripUploadedSuccessfully,
         this.onTripEnded,
         this.scaffoldKey,
-        this.isTripDeleted
+        this.isTripDeleted,
+        this.onViewTripTap
       });
 
   @override
@@ -86,6 +88,8 @@ class _TripWidgetState extends State<TripWidget> {
     // TODO: implement initState
     super.initState();
 
+    debugPrint("SCREEN CALLED FROM ${widget.calledFrom}");
+
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
 
@@ -114,7 +118,10 @@ class _TripWidgetState extends State<TripWidget> {
 
     vesselImageUrl = vesselData!.imageURLs ?? '';
 
-    setState(() {});
+    if(mounted)
+      {
+        setState(() {});
+      }
 
   }
 
@@ -141,20 +148,40 @@ class _TripWidgetState extends State<TripWidget> {
             ),
           );*/
 
-          /*var result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NewTripAnalyticsScreen(
-                tripId: widget.tripList!.id,
-                vesselId: getVesselById[0].id,
-                tripIsRunningOrNot: widget.tripList!.tripStatus == 0 ? true : false,
-                calledFrom: widget.calledFrom,
-                vessel: getVesselById[0],
-              ),
-            ),
-          );
+         var checkIfSpecificTripIsRunning = await _databaseService.checkIfSpecificTripIsRunningOrNot(widget.tripList!.id!);
 
-          if (result != null) {
+          debugPrint("TRIP ANALYTICS 1212 ${checkIfSpecificTripIsRunning}");
+
+          if(checkIfSpecificTripIsRunning)
+            {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                      calledFrom: widget.calledFrom,
+                      tripId: widget.tripList!.id,
+                      vesselName: widget.tripList!.vesselName,
+                      vesselId: widget.tripList!.vesselId,
+                      tripIsRunningOrNot: widget.tripList?.tripStatus == 0)));
+            }
+          else
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewTripAnalyticsScreen(
+                    tripId: widget.tripList!.id,
+                    vesselId: getVesselById[0].id,
+                    tripIsRunningOrNot: widget.tripList!.tripStatus == 0 ? true : false,
+                    calledFrom: widget.calledFrom,
+                    vessel: getVesselById[0],
+                  ),
+                ),
+              );
+            }
+
+
+
+          /*if (result != null) {
             if (result) {
               widget.tripUploadedSuccessfully!.call();
               if (widget.onTripEnded != null) {
@@ -243,7 +270,7 @@ class _TripWidgetState extends State<TripWidget> {
                             child: commonText(
                               context: context,
                               text:
-                              '${DateFormat('MM/dd/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
+                              '${DateFormat('yyyy/MM/dd hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.016,
@@ -254,7 +281,7 @@ class _TripWidgetState extends State<TripWidget> {
                             child: commonText(
                               context: context,
                               text:
-                              '${DateFormat('MM/dd/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('MM/dd/yyyy hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
+                              '${DateFormat('yyyy/MM/dd hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('yyy/MM/dd hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.016,
@@ -279,7 +306,7 @@ class _TripWidgetState extends State<TripWidget> {
                                 fontFamily: poppins,
                               ),
                               textAlign: TextAlign.start,
-                              overflow: TextOverflow.clip,
+                              overflow: TextOverflow.ellipsis,
                               softWrap: true,
                             ),
                           ),
@@ -331,7 +358,12 @@ class _TripWidgetState extends State<TripWidget> {
                                       buttonPrimaryColor: routeMapBtnColor,
                                       fontSize: displayWidth(context) * 0.026,
                                       onTap: () async {
-                                        _launchURL();
+                                        //_launchURL();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => CustomWebView(url: 'https://${Urls.baseUrl}/goeMaps/${widget.tripList!.id}')),
+                                        );
                                       },
                                       context: context,
                                       width: displayWidth(context) * 0.2,
@@ -421,12 +453,12 @@ class _TripWidgetState extends State<TripWidget> {
                                             valueColor:
                                             AlwaysStoppedAnimation<
                                                 Color>(
-                                                Colors.blue),
+                                                blueColor),
                                           )))
                                       : CommonButtons
                                       .getTripButton(
                                     buttonPrimaryColor:
-                                    uploadTripBtnColor,
+                                    routeMapBtnColor,
                                     fontSize:
                                     displayWidth(context) *
                                         0.026,
@@ -462,7 +494,7 @@ class _TripWidgetState extends State<TripWidget> {
                                     width:
                                     displayWidth(context) *
                                         0.28,
-                                    title: 'Upload trip',)),
+                                    title: 'Upload Trip Data',)),
                             ),
                             SizedBox(
                               width: 10,
@@ -518,7 +550,7 @@ class _TripWidgetState extends State<TripWidget> {
                           ? Center(
                           child: CircularProgressIndicator(
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                circularProgressColor),
+                                blueColor),
                           ))
                           : Padding(
                             padding: EdgeInsets.only(right: paddingValue),
@@ -557,15 +589,7 @@ class _TripWidgetState extends State<TripWidget> {
                                   child: CommonButtons.getTripButton(
                                       buttonPrimaryColor: blueColor,
                                       fontSize: displayWidth(context) * 0.026,
-                                      onTap: () async {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => TripRecordingScreen(
-                                                tripId: widget.tripList!.id,
-                                                vesselName: widget.tripList!.vesselName,
-                                                vesselId: widget.tripList!.vesselId,
-                                                tripIsRunningOrNot: widget.tripList?.tripStatus == 0)));
-                                      },
+                                      onTap: widget.onViewTripTap,
                                       context: context,
                                       width: displayWidth(context) * 0.2,
                                       title: 'View Trip')),
@@ -663,6 +687,7 @@ class _TripWidgetState extends State<TripWidget> {
           ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'
           : '${tripDir.path}/${tripData.id}.zip',
       "createdAt": tripData.createdAt,
+      "updatedAt": tripData.updatedAt,
       "duration": tripDuration,
       "distance": double.parse(tripDistance),
       "speed": double.parse(tripSpeed),

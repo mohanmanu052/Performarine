@@ -30,7 +30,8 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> subjectFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> descFormKey = GlobalKey<FormState>();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -95,7 +96,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
             textAlign: TextAlign.start),
       ),
       body: Form(
-        key: formKey,
+        //key: formKey,
         child: Stack(
           children: [
             SingleChildScrollView(
@@ -146,30 +147,34 @@ class _FeedbackReportState extends State<FeedbackReport> {
                       left: displayWidth(context) * 0.06,
                       right: displayWidth(context) * 0.06,
                     ),
-                    child: CommonTextField(
-                        controller: nameController,
-                        focusNode: nameFocusNode,
-                        labelText: 'Subject*',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.text,
-                        textCapitalization: TextCapitalization.words,
-                        // maxLength: 32,
-                        prefixIcon: null,
-                        requestFocusNode: descriptionFocusNode,
-                        obscureText: false,
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.trim().isEmpty) {
-                            return 'Enter Subject';
-                          }
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          Utils.customPrint(value);
-                        }),
+                    child: Form(
+                      key: subjectFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: nameController,
+                          focusNode: nameFocusNode,
+                          labelText: 'Subject*',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          // maxLength: 32,
+                          prefixIcon: null,
+                          requestFocusNode: descriptionFocusNode,
+                          obscureText: false,
+                          onTap: () {},
+                          onChanged: (String value) {},
+                          validator: (value) {
+                            if (value!.trim().isEmpty) {
+                              return 'Enter Subject';
+                            }
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                          }),
+                    ),
                   ),
 
                   Padding(
@@ -178,24 +183,28 @@ class _FeedbackReportState extends State<FeedbackReport> {
                       left: displayWidth(context) * 0.06,
                       right: displayWidth(context) * 0.06,
                     ),
-                    child: CommonTextField(
-                        controller: descriptionController,
-                        focusNode: descriptionFocusNode,
-                        labelText: 'Description',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.done,
-                        textInputType: TextInputType.text,
-                        textCapitalization: TextCapitalization.words,
-                        maxLines: null,
-                        prefixIcon: null,
-                        requestFocusNode: null,
-                        obscureText: false,
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        onSaved: (String value) {
-                          Utils.customPrint(value);
-                        }),
+                    child: Form(
+                      key: descFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: descriptionController,
+                          focusNode: descriptionFocusNode,
+                          labelText: 'Description',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.done,
+                          textInputType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          maxLines: null,
+                          prefixIcon: null,
+                          requestFocusNode: null,
+                          obscureText: false,
+                          onTap: () {},
+                          onChanged: (String value) {},
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                          }),
+                    ),
                   ),
 
                   Container(
@@ -298,21 +307,27 @@ class _FeedbackReportState extends State<FeedbackReport> {
           bottom: displayWidth(context) * 0.09
           // top: displayWidth(context) * 0.02,
         ),
-        child: isBtnClick ?  Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  circularProgressColor),
-            ))
+        child: isBtnClick ?  Padding(
+          padding: EdgeInsets.only(
+              left: displayWidth(context) /2.55,
+              right: displayWidth(context) /2.55,
+             // bottom: displayWidth(context) * 0.09
+          ),
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+                blueColor),
+          ),
+        )
             : CommonButtons.getActionButton(
             title: 'Submit',
             context: context,
             fontSize: displayWidth(context) * 0.044,
             textColor: Colors.white,
-            buttonPrimaryColor: buttonBGColor,
-            borderColor: buttonBGColor,
+            buttonPrimaryColor: blueColor,
+            borderColor: blueColor,
             width: displayWidth(context),
             onTap: () async {
-              if(formKey.currentState!.validate()){
+              if(subjectFormKey.currentState!.validate() && descFormKey.currentState!.validate()){
                 unFocusKeyBoard(context);
                 bool check = await Utils().check(scaffoldKey);
 

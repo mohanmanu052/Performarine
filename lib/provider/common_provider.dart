@@ -7,6 +7,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/add_vessel_model.dart';
 import 'package:performarine/models/common_model.dart';
 import 'package:performarine/models/delete_trip_model.dart';
+import 'package:performarine/models/export_report_model.dart';
 import 'package:performarine/models/get_user_config_model.dart';
 import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/registration_model.dart';
@@ -48,7 +49,7 @@ class CommonProvider with ChangeNotifier {
   bool tripStatus = false,
       isTripUploading = false,
       exceptionOccurred = false,
-      internetError = false;
+      internetError = false, downloadTripData = false, onTripEndClicked = false;
   Future<List<Trip>>? getTripsByIdFuture;
   GetUserConfigModel? getUserConfigModel;
   ReportModel? reportModel;
@@ -60,6 +61,7 @@ class CommonProvider with ChangeNotifier {
   UserFeedbackModel? userFeedbackModel;
   DeleteTripModel? deleteTripModel;
   int bottomNavIndex = 0;
+  List<File?> selectedImageFiles = [];
 
 
   init() {
@@ -331,6 +333,11 @@ class CommonProvider with ChangeNotifier {
     return reportModel;
   }
 
+Future<ExportDataModel> exportReportData(Map<String,dynamic>body,String token,BuildContext context,GlobalKey<ScaffoldState> scaffoldKey ) async{
+  var data= await ReportModuleProvider().exportReportData(body, token, context, scaffoldKey);
+  notifyListeners();
+  return data;
+}
   /// All Trip list
   Future<TripList> tripListData(
     String vesselID,
@@ -415,6 +422,18 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
 
     return deleteTripModel!;
+  }
+
+  /// It will update trip uploading status
+  downloadTripProgressBar(bool value) {
+    downloadTripData = value;
+    notifyListeners();
+  }
+
+  updateStateOfOnTripEndClick(bool value)
+  {
+    onTripEndClicked = value;
+    notifyListeners();
   }
 
 }

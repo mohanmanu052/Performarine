@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -165,6 +167,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
         this.dateTime,
         this.distance,
         this.orientation,
+        this.imageUrl,
         this.time
       })
       : assert(label != null),
@@ -178,6 +181,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
   String label;
   bool value;
   bool tristate;
+  String? imageUrl;
   ValueChanged<bool> onChanged;
   CheckboxType checkboxType;
   Color activeColor;
@@ -201,8 +205,8 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
     return InkWell(
       onTap: _onChanged,
       child: Container(
-        width: displayWidth(context) * 0.8,
-        height:orientation==Orientation.portrait? displayHeight(context) * 0.09:displayHeight(context) * 0.15,
+        width: displayWidth(context)/1.2,
+        height:orientation==Orientation.portrait? displayHeight(context) * 0.09:displayHeight(context) * 0.19,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
           color: reportTripsListColor
@@ -219,46 +223,74 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                },
                activeColor: activeColor,
              ),
-             Image.asset(
-               "assets/images/reports-boat.png",
-               height: displayHeight(context) * 0.06,
-               width: displayWidth(context) * 0.13,
+
+Container(
+                 height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.11,
+               width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.12,
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(15),
+                      image: imageUrl!=null&&imageUrl!.isNotEmpty?
+                      DecorationImage(  
+                        fit: BoxFit.cover,
+                      
+                          image:
+                          FileImage(
+                          File(imageUrl??''))):                     
+                            DecorationImage(
+                            fit: BoxFit.cover,
+                            image:AssetImage("assets/images/vessel_default_img.png",)
+
+
+                      
+                      
+                      
+                  ),
+                )),
+
+
+            //  Image.asset(
+            //    "assets/images/reports-boat.png",
+            //    height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.10,
+            //    width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.15,
+            //  ),
+
+             SizedBox(
+               width: 10,
              ),
 
              SizedBox(
-               width: displayWidth(context) * 0.015,
-             ),
-
-             Column(
-               mainAxisAlignment: MainAxisAlignment.center,
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: [
-                 Text(
-                   "$dateTime",
-                   style: TextStyle(
-                       fontWeight: FontWeight.bold,
-                       fontFamily: outfit,
-                       fontSize: displayWidth(context) * 0.032,
-                       color: blutoothDialogTxtColor),
-                 ),
-
-                 SizedBox(
-                   height: displayHeight(context) * 0.005,
-                 ),
-
-                 Text(
-                   "Date",
-                   style: TextStyle(
-                       fontWeight: FontWeight.w400,
-                       fontFamily: poppins,
-                       fontSize: displayWidth(context) * 0.026,
-                       color: filterByTripTxtColor),
-                 ),
-               ],
+              width: displayWidth(context)/5.3,
+               child: Column(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   Text(
+                     "$dateTime",
+                     style: TextStyle(
+                         fontWeight: FontWeight.bold,
+                         fontFamily: outfit,
+                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
+                         color: blutoothDialogTxtColor),
+                   ),
+             
+                   SizedBox(
+                     height: displayHeight(context) * 0.005,
+                   ),
+             
+                   Text(
+                     "Date",
+                     style: TextStyle(
+                         fontWeight: FontWeight.w400,
+                         fontFamily: poppins,
+                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
+                         color: filterByTripTxtColor),
+                   ),
+                 ],
+               ),
              ),
 
              SizedBox(
-               width: displayWidth(context) * 0.015,
+               width: 5,
              ),
 
              VerticalDivider(
@@ -269,39 +301,44 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                color: Colors.black,
              ),
              SizedBox(
-               width: displayWidth(context) * 0.015,
+               width: 8,
              ),
 
-             Column(
-               mainAxisAlignment: MainAxisAlignment.center,
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: [
-                 Text(
-                   "$distance",
-                   style: TextStyle(
-                       fontWeight: FontWeight.bold,
-                       fontFamily: outfit,
-                       fontSize: displayWidth(context) * 0.032,
-                       color: blutoothDialogTxtColor),
-                 ),
 
-                 SizedBox(
-                   height: displayHeight(context) * 0.005,
-                 ),
+             SizedBox(
+              width: displayWidth(context) /8.1,
 
-                 Text(
-                   "Distance",
-                   style: TextStyle(
-                       fontWeight: FontWeight.w400,
-                       fontFamily: poppins,
-                       fontSize: displayWidth(context) * 0.026,
-                       color: filterByTripTxtColor),
-                 ),
-               ],
+               child: Column(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   Text(
+                     "$distance",
+                     style: TextStyle(
+                         fontWeight: FontWeight.bold,
+                         fontFamily: outfit,
+                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
+                         color: blutoothDialogTxtColor),
+                   ),
+             
+                   SizedBox(
+                     height: displayHeight(context) * 0.005,
+                   ),
+             
+                   Text(
+                     "Distance",
+                     style: TextStyle(
+                         fontWeight: FontWeight.w400,
+                         fontFamily: poppins,
+                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
+                         color: filterByTripTxtColor),
+                   ),
+                 ],
+               ),
              ),
 
              SizedBox(
-               width: displayWidth(context) * 0.015,
+               width: 8,
              ),
 
              VerticalDivider(
@@ -324,7 +361,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.bold,
                        fontFamily: outfit,
-                       fontSize: displayWidth(context) * 0.032,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
                        color: blutoothDialogTxtColor),
                  ),
 
@@ -337,7 +374,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
                    style: TextStyle(
                        fontWeight: FontWeight.w400,
                        fontFamily: poppins,
-                       fontSize: displayWidth(context) * 0.026,
+                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
                        color: filterByTripTxtColor),
                  ),
                ],

@@ -55,6 +55,7 @@ import '../new_trip_analytics_screen.dart';
 import 'add_vessel_new/add_new_vessel_screen.dart';
 import 'bottom_navigation.dart';
 import 'feedback_report.dart';
+import 'package:geolocator/geolocator.dart' as geo;
 
 class VesselSingleView extends StatefulWidget {
   CreateVessel? vessel;
@@ -178,7 +179,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isCheckingPermission = false,
       isTripEndedOrNot = false,
       vesselAnalytics = false,
-      isVesselParticularExpanded = false,
+      isVesselParticularExpanded = true,
+      isVesselAnalyticsExpanded = false,
+      isPropulsionDetails = true,
       anotherVesselEndTrip = false;
 
   late CommonProvider commonProvider;
@@ -339,7 +342,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
               ),
             ],
           ),
-          drawer: OldCustomDrawer(scaffoldKey: scaffoldKey,),
+          drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
           body: Stack(
             children: [
               SizedBox(
@@ -403,8 +406,57 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                           ),
                                           dividerColor: Colors.transparent),
                                       child: ExpansionTile(
+                                        trailing: Container(
+                                          width: displayWidth(context) * 0.12,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              InkWell(
+                                              onTap:()async{
+                                                var result = await Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (_) => AddNewVesselPage(
+                                                      isEdit: true,
+                                                      createVessel: widget.vessel,
+                                                    ),
+                                                    fullscreenDialog: true,
+                                                  ),
+                                                );
+
+                                                if (result != null) {
+                                                  Utils.customPrint('RESULT 1 ${result[0]}');
+                                                  Utils.customPrint(
+                                                      'RESULT 1 ${result[1] as CreateVessel}');
+                                                  setState(() {
+                                                    widget.vessel = result[1] as CreateVessel?;
+                                                    isDataUpdated = result[0];
+                                                  });
+                                                }
+                                                 },
+                                                child: Image.asset('assets/icons/Edit.png',
+                                                    width: displayWidth(context) * 0.045,
+                                                    color: Colors.black),
+                                              ),
+                                              !isPropulsionDetails ? Icon(
+                                                  Icons.keyboard_arrow_down_outlined,
+                                                  color: Colors.black,
+                                              ) : Icon(
+                                                  Icons.keyboard_arrow_up_outlined,
+                                                  color: Colors.black,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                         initiallyExpanded: true,
-                                        onExpansionChanged: ((newState) {}),
+                                        onExpansionChanged: ((newState) {
+                                          setState(() {
+                                            isPropulsionDetails = newState;
+                                          });
+
+                                          Utils.customPrint(
+                                              'EXPANSION CHANGE $isPropulsionDetails');
+                                          CustomLogger().logWithFile(Level.info, "EXPANSION CHANGE $isPropulsionDetails -> $page");
+                                        }),
                                         tilePadding: EdgeInsets.zero,
                                         childrenPadding: EdgeInsets.zero,
                                         title: commonText(
@@ -433,7 +485,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           child: commonText(
                                                             context: context,
                                                             text:
-                                                            '${widget.vessel!.lengthOverall} ft',
+                                                            '${widget.vessel!.lengthOverall} $feet',
                                                             fontWeight: FontWeight.w500,
                                                             textColor: Colors.black,
                                                             textSize:
@@ -473,7 +525,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           child: commonText(
                                                               context: context,
                                                               text:
-                                                              '${widget.vessel!.freeBoard} ft',
+                                                              '${widget.vessel!.freeBoard} $feet',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.black,
                                                               textSize:
@@ -510,7 +562,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         Flexible(
                                                           child: commonText(
                                                               context: context,
-                                                              text: '${widget.vessel!.beam} ft',
+                                                              text: '${widget.vessel!.beam} $feet',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.black,
                                                               textSize:
@@ -550,7 +602,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         Flexible(
                                                           child: commonText(
                                                               context: context,
-                                                              text: '${widget.vessel!.draft} ft',
+                                                              text: '${widget.vessel!.draft} $feet',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.black,
                                                               textSize:
@@ -588,6 +640,47 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       child: Container(
                                         child: ExpansionTile(
                                           initiallyExpanded: true,
+                                          trailing: Container(
+                                            width: displayWidth(context) * 0.12,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                InkWell(
+                                                  onTap:()async{
+                                                    var result = await Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                        builder: (_) => AddNewVesselPage(
+                                                          isEdit: true,
+                                                          createVessel: widget.vessel,
+                                                        ),
+                                                        fullscreenDialog: true,
+                                                      ),
+                                                    );
+
+                                                    if (result != null) {
+                                                      Utils.customPrint('RESULT 1 ${result[0]}');
+                                                      Utils.customPrint(
+                                                          'RESULT 1 ${result[1] as CreateVessel}');
+                                                      setState(() {
+                                                        widget.vessel = result[1] as CreateVessel?;
+                                                        isDataUpdated = result[0];
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Image.asset('assets/icons/Edit.png',
+                                                      width: displayWidth(context) * 0.045,
+                                                      color: Colors.black),
+                                                ),
+                                                !isVesselParticularExpanded ? Icon(
+                                                  Icons.keyboard_arrow_down_outlined,
+                                                  color: Colors.black,
+                                                ) : Icon(
+                                                  Icons.keyboard_arrow_up_outlined,
+                                                  color: Colors.black,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                           onExpansionChanged: ((newState) {
                                             setState(() {
                                               isVesselParticularExpanded = newState;
@@ -610,8 +703,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             Column(
                                               children: [
                                                 Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Expanded(
                                                       child: Column(
@@ -621,15 +714,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           commonText(
                                                               context: context,
                                                               text:
-                                                              '${widget.vessel!.capacity}cc',
+                                                              '130 $hp',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
                                                               displayWidth(context) * 0.04,
                                                               textAlign: TextAlign.start),
+                                                          SizedBox(height: 2,),
                                                           commonText(
                                                               context: context,
-                                                              text: 'Capacity' ,
+                                                              text: 'Diesel Engine\nPower' ,
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.grey,
                                                               textSize:
@@ -645,16 +739,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         children: [
                                                           commonText(
                                                               context: context,
-                                                              text: widget.vessel!.builtYear
-                                                                  .toString(),
+                                                              text: '320 $kiloWattHour',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
                                                               displayWidth(context) * 0.04,
                                                               textAlign: TextAlign.start),
+                                                          SizedBox(height: 2,),
                                                           commonText(
                                                               context: context,
-                                                              text: 'Built',
+                                                              text: 'Electric Engine\nPower',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.grey,
                                                               textSize:
@@ -668,28 +762,19 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         crossAxisAlignment:
                                                         CrossAxisAlignment.start,
                                                         children: [
-                                                          widget.vessel!.regNumber! == ""
-                                                              ? commonText(
+                                                          commonText(
                                                               context: context,
-                                                              text: '-',
+                                                              text: '4500 $pound',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
                                                               displayWidth(context) *
                                                                   0.04,
-                                                              textAlign: TextAlign.start)
-                                                              : commonText(
-                                                              context: context,
-                                                              text: widget.vessel!.regNumber,
-                                                              fontWeight: FontWeight.w700,
-                                                              textColor: Colors.black,
-                                                              textSize:
-                                                              displayWidth(context) *
-                                                                  0.048,
                                                               textAlign: TextAlign.start),
+                                                          SizedBox(height: 2,),
                                                           commonText(
                                                               context: context,
-                                                              text: 'Registration Number',
+                                                              text: 'Displacement',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.grey,
                                                               textSize:
@@ -700,20 +785,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                     )
                                                   ],
                                                 ),
-                                                Container(
-                                                  margin: const EdgeInsets.symmetric(vertical: 8),
-                                                  child: const Divider(
-                                                    color: Colors.grey,
-                                                    thickness: 1,
-                                                    indent: 1,
-                                                    endIndent: 2,
-                                                  ),
+                                                SizedBox(
+                                                  height: displayHeight(context) * 0.012,
                                                 ),
                                                 Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Expanded(
+                                                      //flex: 01,
                                                       child: Column(
                                                         crossAxisAlignment:
                                                         CrossAxisAlignment.start,
@@ -721,15 +800,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           commonText(
                                                               context: context,
                                                               text:
-                                                              '${widget.vessel!.weight} Lbs',
+                                                              'Planning',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
                                                               displayWidth(context) * 0.04,
                                                               textAlign: TextAlign.start),
+                                                          SizedBox(height: 2,),
                                                           commonText(
                                                               context: context,
-                                                              text: 'Weight',
+                                                              text: 'Hull Type',
                                                               fontWeight: FontWeight.w500,
                                                               textColor: Colors.grey,
                                                               textSize:
@@ -739,31 +819,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                       ),
                                                     ),
                                                     Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                        children: [
-                                                          commonText(
-                                                              context: context,
-                                                              text:
-                                                              '${widget.vessel!.vesselSize} hp',
-                                                              fontWeight: FontWeight.w600,
-                                                              textColor: Colors.black,
-                                                              textSize:
-                                                              displayWidth(context) * 0.042,
-                                                              textAlign: TextAlign.start),
-                                                          commonText(
-                                                              context: context,
-                                                              text: 'Size (hp)',
-                                                              fontWeight: FontWeight.w500,
-                                                              textColor: Colors.grey,
-                                                              textSize:
-                                                              displayWidth(context) * 0.024,
-                                                              textAlign: TextAlign.start),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Expanded(
+                                                      flex: 02,
                                                       child: Column(
                                                         crossAxisAlignment:
                                                         CrossAxisAlignment.start,
@@ -787,6 +843,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                               displayWidth(context) *
                                                                   0.04,
                                                               textAlign: TextAlign.start),
+                                                          SizedBox(height: 2,),
                                                           commonText(
                                                               context: context,
                                                               text: 'MMSI',
@@ -814,7 +871,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               ),
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 8,
                             ),
                             Theme(
                               data: Theme.of(context).copyWith(
@@ -825,14 +882,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
                               child: Container(
                                 margin: EdgeInsets.symmetric(horizontal: 15),
                                 child: ExpansionTile(
+                                  collapsedIconColor: Colors.black,
                                   initiallyExpanded: true,
                                   onExpansionChanged: ((newState) {
                                     setState(() {
-                                      isVesselParticularExpanded = newState;
+                                      isVesselAnalyticsExpanded = newState;
                                     });
 
                                     Utils.customPrint(
-                                        'EXPANSION CHANGE $isVesselParticularExpanded');
+                                        'EXPANSION CHANGE $isVesselAnalyticsExpanded');
                                   }),
                                   tilePadding: EdgeInsets.zero,
                                   childrenPadding: EdgeInsets.zero,
@@ -848,7 +906,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     vesselAnalytics
                                         ? Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: CircularProgressIndicator(),
+                                      child: CircularProgressIndicator(
+                                          color: blueColor,
+                                      ),
                                     )
                                         : vesselSingleViewVesselAnalytics(
                                         context,
@@ -876,7 +936,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 iconColor: Colors.black,
                                 title: commonText(
                                     context: context,
-                                    text: 'Trip History',
+                                    text: 'TRIP HISTORY',
                                     fontWeight: FontWeight.w500,
                                     textColor: Colors.black,
                                     textSize: displayWidth(context) * 0.038,
@@ -2767,7 +2827,16 @@ class VesselSingleViewState extends State<VesselSingleView> {
     final vesselName = widget.vessel!.name;
     final currentLoad = selectedVesselWeight;
 
-    ReceivePort port = ReceivePort();
+    String? latitude, longitude;
+
+    geo.Position currentPosition = await geo.Geolocator.getCurrentPosition();
+
+    if(currentPosition != null)
+    {
+      latitude = currentPosition.latitude.toString();
+      longitude = currentPosition.longitude.toString();
+    }
+    /*ReceivePort port = ReceivePort();
     String? latitude, longitude;
     port.listen((dynamic data) async {
       LocationDto? locationDto =
@@ -2777,7 +2846,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
         longitude = locationDto.longitude.toString();
       }
       ;
-    });
+    });*/
     await fetchDeviceData();
 
     try {

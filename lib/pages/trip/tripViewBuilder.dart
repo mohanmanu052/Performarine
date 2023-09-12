@@ -13,6 +13,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
@@ -73,6 +74,9 @@ class _TripViewListingState extends State<TripViewListing> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    debugPrint("TRIP WIDGET SCREEN CALLED FROM ${widget.calledFrom}");
+
     isBtnClick = false;
     commonProvider = context.read<CommonProvider>();
     commonProvider.getTripsByVesselId(widget.vesselId);
@@ -95,7 +99,7 @@ class _TripViewListingState extends State<TripViewListing> {
                   child: Center(
                     child: CircularProgressIndicator(
                       valueColor:
-                      AlwaysStoppedAnimation<Color>(circularProgressColor),
+                      AlwaysStoppedAnimation<Color>(blueColor),
                     ),
                   ),
                 );
@@ -196,6 +200,8 @@ class _TripViewListingState extends State<TripViewListing> {
                                         },
                                         onTap: () async {
 
+                                          commonProvider.updateStateOfOnTripEndClick(true);
+
                                           final currentTrip = await _databaseService
                                               .getTrip(snapshot.data![index].id!);
 
@@ -226,9 +232,11 @@ class _TripViewListingState extends State<TripViewListing> {
                                                     {
                                                       debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
                                                       DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
+                                                      commonProvider.updateStateOfOnTripEndClick(false);
                                                     }
                                                   });
                                                 }, onCancelClick: (){
+                                                  commonProvider.updateStateOfOnTripEndClick(false);
                                                   Navigator.of(context).pop();
                                                 }
                                             );
@@ -258,11 +266,36 @@ class _TripViewListingState extends State<TripViewListing> {
 
                                                   return;
                                                 }, () {
+                                                  commonProvider.updateStateOfOnTripEndClick(false);
                                                   Navigator.of(context).pop();
                                                 });
                                           }
+                                        },
+                                        onViewTripTap: ()async{
+                                          var result = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                                  calledFrom: widget.calledFrom,
+                                                  tripId: snapshot.data![index].id,
+                                                  vesselName: snapshot.data![index].vesselName,
+                                                  vesselId: snapshot.data![index].vesselId,
+                                                  tripIsRunningOrNot: snapshot.data![index].tripStatus == 0)));
+
+                                          if(result != null)
+                                          {
+                                            if(result)
+                                            {
+                                              if(widget.onTripEnded != null)
+                                              {
+                                                widget.onTripEnded!.call();
+                                              }
+                                              setState(() {
+
+                                              });
+                                            }
+                                          }
                                         })
-                                    : TripWidget(
+                                      : TripWidget(
                                         scaffoldKey: widget.scaffoldKey,
                                         tripList: snapshot.data![index],
                                         calledFrom: widget.calledFrom,
@@ -281,6 +314,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                         },
                                         onTap: () async {
 
+                                          commonProvider.updateStateOfOnTripEndClick(true);
                                           final currentTrip = await _databaseService
                                               .getTrip(snapshot.data![index].id!);
 
@@ -311,9 +345,11 @@ class _TripViewListingState extends State<TripViewListing> {
                                                     {
                                                       debugPrint("SMALL TRIPP IDDD 11 ${snapshot.data![index].id!}");
                                                       DatabaseService().deleteTripFromDB(snapshot.data![index].id!);
+                                                      commonProvider.updateStateOfOnTripEndClick(false);
                                                     }
                                                   });
                                                 }, onCancelClick: (){
+                                                  commonProvider.updateStateOfOnTripEndClick(false);
                                                   Navigator.of(context).pop();
                                                 }
                                             );
@@ -343,10 +379,36 @@ class _TripViewListingState extends State<TripViewListing> {
 
                                                   return;
                                                 }, () {
+                                                  commonProvider.updateStateOfOnTripEndClick(false);
                                                   Navigator.of(context).pop();
                                                 });
                                           }
-                                        }),
+                                        },
+                                      onViewTripTap: ()async{
+                                        var result = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                                calledFrom: widget.calledFrom,
+                                                tripId: snapshot.data![index].id,
+                                                vesselName: snapshot.data![index].vesselName,
+                                                vesselId: snapshot.data![index].vesselId,
+                                                tripIsRunningOrNot: snapshot.data![index].tripStatus == 0)));
+
+                                        if(result != null)
+                                          {
+                                            if(result)
+                                              {
+                                                if(widget.onTripEnded != null)
+                                                  {
+                                                    widget.onTripEnded!.call();
+                                                  }
+                                                setState(() {
+
+                                                });
+                                              }
+                                          }
+                                    }
+                                    ),
                                   )
                                       : Container(
                                     height: displayHeight(context) / 1.5,
@@ -595,6 +657,7 @@ class _TripViewListingState extends State<TripViewListing> {
   /// To Check trip is Running or not
   Future<bool> tripIsRunningOrNot(Trip trip) async {
     bool result = await _databaseService.tripIsRunning();
+if(mounted){
 
     setState(() {
       tripIsRunning = result;
@@ -603,7 +666,7 @@ class _TripViewListingState extends State<TripViewListing> {
         trip.isEndTripClicked = false;
       });
     });
-
+}
     return result;
   }
 
@@ -642,10 +705,13 @@ class _TripViewListingState extends State<TripViewListing> {
         scaffoldKey: widget.scaffoldKey,
         duration: tripDuration,
         onEnded: () async {
+          if(mounted){
           setState(() {
             trip.tripStatus =
             1;
           });
+
+          }
 
           await commonProvider
               .updateTripStatus(false);
@@ -656,6 +722,7 @@ class _TripViewListingState extends State<TripViewListing> {
 
           await tripIsRunningOrNot(
               trip);
+          commonProvider.updateStateOfOnTripEndClick(false);
         });
   }
 

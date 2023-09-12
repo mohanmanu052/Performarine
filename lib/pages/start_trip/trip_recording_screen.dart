@@ -27,6 +27,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../../analytics/end_trip.dart';
+import '../../common_widgets/utils/constants.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import '../bottom_navigation.dart';
 import '../feedback_report.dart';
@@ -91,16 +92,20 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
             {
               if(widget.calledFrom!.isNotEmpty)
               {
-                if(widget.calledFrom == 'bottom_nav')
+                if(widget.calledFrom == 'bottom_nav' || widget.calledFrom == 'notification')
                 {
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => BottomNavigation(
-                        tabIndex: commonProvider.bottomNavIndex,
+                        tabIndex: widget.calledFrom == 'notification' ? 0 : commonProvider.bottomNavIndex,
                       )),
                       ModalRoute.withName(""));
                 }
-                else if(widget.calledFrom == 'VesselSingleView')
+                else
+                  {
+                    Navigator.of(context).pop();
+                  }
+                /*else if(widget.calledFrom == 'VesselSingleView')
                 {
                   CreateVessel? vesselData = await DatabaseService()
                       .getVesselFromVesselID(widget.vesselId!);
@@ -112,24 +117,36 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                       isCalledFromSuccessScreen: true,
                     )),);
                 }
+                else if(widget.calledFrom == 'tripList')
+                {
+                  CreateVessel? vesselData = await DatabaseService()
+                      .getVesselFromVesselID(widget.vesselId!);
+
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => BottomNavigation(
+                        tabIndex: commonProvider.bottomNavIndex,
+                      )),
+                      ModalRoute.withName(""));
+                }*/
               }
               else
               {
-                if(mounted){
+                /*if(mounted){
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => BottomNavigation(
                         tabIndex: 0,
                       )),
                       ModalRoute.withName(""));
-                }
-                // Navigator.of(context).pop(true);
+                }*/
+                 Navigator.of(context).pop();
               }
               return false;
             }
             else
             {
-              Navigator.of(context).pop(true);
+              Navigator.of(context).pop();
               return false;
             }
           });
@@ -150,16 +167,20 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                   {
                     if(widget.calledFrom!.isNotEmpty)
                     {
-                      if(widget.calledFrom == 'bottom_nav')
+                      if(widget.calledFrom == 'bottom_nav'|| widget.calledFrom == 'notification')
                       {
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (context) => BottomNavigation(
-                              tabIndex: commonProvider.bottomNavIndex,
+                              tabIndex: widget.calledFrom == 'notification' ? 0 : commonProvider.bottomNavIndex,
                             )),
                             ModalRoute.withName(""));
                       }
-                      else if(widget.calledFrom == 'VesselSingleView')
+                      else
+                        {
+                          Navigator.of(context).pop();
+                        }
+                      /*else if(widget.calledFrom == 'VesselSingleView')
                       {
                         CreateVessel? vesselData = await DatabaseService()
                             .getVesselFromVesselID(widget.vesselId!);
@@ -170,25 +191,25 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                             vessel: vesselData,
                             isCalledFromSuccessScreen: true,
                           )),);
-                      }
+                      }*/
                     }
                     else
                     {
-                      if(mounted){
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => BottomNavigation(
-                              tabIndex: 0,
-                            )),
-                            ModalRoute.withName(""));
-                      }
+                      // if(mounted){
+                      //   Navigator.pushAndRemoveUntil(
+                      //       context,
+                      //       MaterialPageRoute(builder: (context) => BottomNavigation(
+                      //         tabIndex: 0,
+                      //       )),
+                      //       ModalRoute.withName(""));
+                      // }
 
-                      //Navigator.of(context).pop(true);
+                      Navigator.of(context).pop();
                     }
                   }
                   else
                   {
-                    Navigator.of(context).pop(true);
+                    Navigator.of(context).pop();
                   }
                 });
 
@@ -200,13 +221,28 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                   : Colors.black,
             ),
             title: Container(
-              child: commonText(
+              child: Text(
+                widget.vesselName != null ? widget.vesselName! : 'Trip Recording',
+                  //widget.vesselName != null ? widget.vesselName :'Trip Recording',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  fontSize: displayWidth(context) * 0.045,
+                  color: Colors.black87,
+                  fontFamily: outfit,
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+
+              ),
+
+             /* commonText(
                 context: context,
                 text: widget.vesselName != null ? widget.vesselName :'Trip Recording',
                 fontWeight: FontWeight.w600,
                 textColor: Colors.black87,
                 textSize: displayWidth(context) * 0.045,
-              ),
+              ),*/
             ),
             bottom: TabBar(
               controller: tabController,
@@ -292,6 +328,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                 controller: tabController,
                 children: [
                   MapScreen(
+                    calledFrom: widget.calledFrom,
                     scaffoldKey: scaffoldKey,
                     tripId: widget.tripId,
                     vesselId: widget.vesselId,
@@ -300,6 +337,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                     isAppKilled: widget.isAppKilled
                   ),
                   TripRecordingAnalyticsScreen(
+                      calledFrom: widget.calledFrom,
                       scaffoldKey: scaffoldKey,
                       tripId: widget.tripId,
                       vesselId: widget.vesselId,

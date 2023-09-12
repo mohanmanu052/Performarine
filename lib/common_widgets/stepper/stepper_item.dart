@@ -32,9 +32,7 @@ class StepperItem extends StatelessWidget {
         child: Stack(
           children: [
             FutureBuilder(
-              future: Future.delayed(
-                animationDuration * delayFactor + animationAwaitDuration,
-              ),
+              future: Future.delayed(Duration(seconds: 0),),
               builder: (context, snapshot) => AnimatedSwitcher(
                 transitionBuilder: (child, animation) => SizeTransition(
                   sizeFactor: animation,
@@ -42,14 +40,14 @@ class StepperItem extends StatelessWidget {
                   axis: Axis.horizontal,
                 ),
                 switchInCurve: curve,
-                duration: animationDuration,
+                duration: Duration(seconds: 0),
                 child: isPassed && snapshot.connectionState == ConnectionState.done || !shouldRedraw
                     ? Container(
-                  color: activeColor ?? Theme.of(context).primaryColor,
+                  color: activeColor,
                   alignment: Alignment.centerLeft,
                   child: child,
                   foregroundDecoration: BoxDecoration(
-                    color: activeColor ?? Theme.of(context).primaryColor,
+                    color: activeColor,
                   ),
                 )
                     : const SizedBox(),

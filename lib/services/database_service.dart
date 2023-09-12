@@ -228,6 +228,13 @@ class DatabaseService {
     return exists == 1;
   }
 
+Future<bool> checkIfTripExist(String tripId) async {
+  final db = await _databaseService.database;
+  final List<Map<String, dynamic>> maps =
+  await db.query('trips', where: 'id = ?', whereArgs: [tripId]);
+  return maps.isNotEmpty;
+}
+
   /// To check trip is running for which vessel
   Future<bool> checkIfTripIsRunningForSpecificVessel(String vesselId) async {
 
@@ -528,5 +535,17 @@ class DatabaseService {
       // Pass the Trip's id as a whereArg to prevent SQL injection.
       whereArgs: [tripId],
     );
+  }
+
+  Future<bool> checkIfSpecificTripIsRunningOrNot(String tripID) async {
+
+    final db = await _databaseService.database;
+    var result = await db.rawQuery(
+      'SELECT EXISTS(SELECT 1 FROM trips WHERE id="$tripID" AND tripStatus="0")',
+    );
+    int? exists = Sqflite.firstIntValue(result);
+    Utils.customPrint('EXIST $exists');
+    CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
+    return exists == 1;
   }
 }

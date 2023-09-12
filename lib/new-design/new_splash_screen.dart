@@ -192,6 +192,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                         vesselName: tripData[2],
                         vesselId: tripData[1],
                         isAppKilled: true,
+                        calledFrom: 'notification',
                         tripIsRunningOrNot: isTripStarted)),
                 ModalRoute.withName(""));
 
@@ -293,6 +294,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                       tripId: tripData![0],
                       vesselName: tripData[2],
                       vesselId: tripData[1],
+                      calledFrom: 'notification',
                       tripIsRunningOrNot: isTripStarted)),
               ModalRoute.withName(""));
         }
@@ -376,7 +378,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             if(isUserLoggedIn)
             {
               sharedPreferences!.setBool('reset_dialog_opened', false);
-              Get.to(BottomNavigation(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
+              Get.offAll(BottomNavigation(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
 
             }
           }

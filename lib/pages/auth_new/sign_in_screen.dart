@@ -34,6 +34,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> emailFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> passwordFormKey = GlobalKey<FormState>();
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -166,6 +168,7 @@ class _SignInScreenState extends State<SignInScreen> {
         body: Center(
           child: Form(
             key: formKey,
+              //autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Container(
                 height: displayHeight(context),
                 margin: const EdgeInsets.symmetric(horizontal: 25),
@@ -192,11 +195,16 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       SizedBox(height: displayHeight(context) * 0.02),
                       isGoogleSignInBtnClicked!
-                          ? Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                circularProgressColor),
-                          )) :
+                          ? Container(
+                            height: displayHeight(context) * 0.067,
+                            width: displayWidth(context) * 0.1,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    blueColor),
+                              ),
+                            ),
+                          ) :
                       GestureDetector(
                         onTap: () async {
                           bool check =
@@ -219,6 +227,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               setState(() {
                                 isGoogleSignInBtnClicked = false;
                               });
+                              return null;
                             } else {
                               try {
                                 setState(() {
@@ -317,66 +326,74 @@ class _SignInScreenState extends State<SignInScreen> {
                           fontFamily: outfit
                       ),
                       SizedBox(height: displayHeight(context) * 0.02),
-                      CommonTextField(
-                        //key: emailFormFieldKey,
-                          controller: emailController,
-                          focusNode: emailFocusNode,
-                          labelText: 'Enter Your Email',
-                          hintText: '',
-                          suffixText: null,
-                          textInputAction: TextInputAction.next,
-                          textInputType: TextInputType.emailAddress,
-                          textCapitalization: TextCapitalization.words,
-                          maxLength: 52,
-                          prefixIcon: null,
-                          requestFocusNode: null,
-                          obscureText: false,
-                          readOnly: false,
-                          onTap: () {},
-                          onChanged: (value) {},
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter Your Email';
-                            } else if (!EmailValidator.validate(value)) {
-                              return 'Enter Valid Email';
-                            }
-                            return null;
-                          },
-                          onFieldSubmitted: (value) {
-                          },
-                          onSaved: (String value) {
-                            Utils.customPrint(value);
-                          }),
+                      Form(
+                        key: emailFormKey,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        child: CommonTextField(
+                          //key: emailFormFieldKey,
+                            controller: emailController,
+                            focusNode: emailFocusNode,
+                            labelText: 'Enter Your Email',
+                            hintText: '',
+                            suffixText: null,
+                            textInputAction: TextInputAction.next,
+                            textInputType: TextInputType.emailAddress,
+                            textCapitalization: TextCapitalization.words,
+                            maxLength: 52,
+                            prefixIcon: null,
+                            requestFocusNode: null,
+                            obscureText: false,
+                            readOnly: false,
+                            onTap: () {},
+                            onChanged: (value) {},
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Enter Your Email';
+                              } else if (!EmailValidator.validate(value)) {
+                                return 'Enter Valid Email';
+                              }
+                              return null;
+                            },
+                            onFieldSubmitted: (value) {
+                            },
+                            onSaved: (String value) {
+                              Utils.customPrint(value);
+                            }),
+                      ),
                       SizedBox(height: displayHeight(context) * 0.012),
-                      CommonTextField(
-                          controller: passwordController,
-                          focusNode: passwordFocusNode,
-                          labelText: 'Enter Password',
-                          hintText: '',
-                          suffixText: null,
-                          textInputAction: TextInputAction.done,
-                          textInputType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
-                          maxLength: 32,
-                          prefixIcon: null,
-                          requestFocusNode: null,
-                          obscureText: true,
-                          onTap: () {},
-                          onFieldSubmitted: (value) {},
-                          onChanged: (String value) {},
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter Password';
-                            } else if (!RegExp(
-                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
-                                .hasMatch(value)) {
-                              return 'Invalid password';
-                            }
-                            return null;
-                          },
-                          onSaved: (String value) {
-                            Utils.customPrint(value);
-                          }),
+                      Form(
+                        key: passwordFormKey,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        child: CommonTextField(
+                            controller: passwordController,
+                            focusNode: passwordFocusNode,
+                            labelText: 'Enter Password',
+                            hintText: '',
+                            suffixText: null,
+                            textInputAction: TextInputAction.done,
+                            textInputType: TextInputType.text,
+                            textCapitalization: TextCapitalization.words,
+                            maxLength: 32,
+                            prefixIcon: null,
+                            requestFocusNode: null,
+                            obscureText: true,
+                            onTap: () {},
+                            onFieldSubmitted: (value) {},
+                            onChanged: (String value) {},
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Enter Password';
+                              } else if (!RegExp(
+                                  r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
+                                  .hasMatch(value)) {
+                                return 'Invalid password';
+                              }
+                              return null;
+                            },
+                            onSaved: (String value) {
+                              Utils.customPrint(value);
+                            }),
+                      ),
                       SizedBox(height: displayHeight(context) * 0.03),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -404,7 +421,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 child: Center(
                                 child: CircularProgressIndicator(
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                      circularProgressColor),
+                                      blueColor),
                                 )),
                               )
                               : CommonButtons.getActionButton(
@@ -417,7 +434,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               width: displayWidth(context) * 0.45,
                               onTap: () async {
 
-                                if (formKey.currentState!.validate()) {
+                                if (emailFormKey.currentState!.validate() && passwordFormKey.currentState!.validate()) {
                                   bool check = await Utils().check(scaffoldKey);
 
                                   Utils.customPrint("NETWORK $check");

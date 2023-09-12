@@ -298,39 +298,37 @@ Widget vesselSingleViewRichText(
           : SizedBox(),
 
       regNo != null && regNo != ''
-          ? Flexible(
-        child: Column(
-          children: [
-            Text(
-              regNo,
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: displayWidth(context) * 0.038,
-                color: color,
-                fontFamily: outfit,
-                fontWeight: FontWeight.w600,
+          ? Column(
+            children: [
+              Text(
+                regNo,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  fontSize: displayWidth(context) * 0.038,
+                  color: color,
+                  fontFamily: outfit,
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.clip,
+                softWrap: true,
+                maxLines: 1,
               ),
-              overflow: TextOverflow.ellipsis,
-              softWrap: true,
-              maxLines: 1,
-            ),
 
-            Text(
-              'Registration Number',
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: displayWidth(context) * 0.03,
-                color: Colors.black87,
-                fontFamily: poppins,
-                fontWeight: FontWeight.w400,
+              Text(
+                'Registration Number',
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  fontSize: displayWidth(context) * 0.03,
+                  color: Colors.black87,
+                  fontFamily: poppins,
+                  fontWeight: FontWeight.w400,
+                ),
+                overflow: TextOverflow.clip,
+                softWrap: true,
+                maxLines: 1,
               ),
-              overflow: TextOverflow.ellipsis,
-              softWrap: true,
-              maxLines: 1,
-            ),
-          ],
-        ),
-      )
+            ],
+          )
           : SizedBox(),
     ],
   );
@@ -430,7 +428,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
           ),
           Positioned(
             top: 10,
-            right: 10,
+            right: 0,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -459,6 +457,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                         : SizedBox(),
 
                 Container(
+                  alignment: Alignment.centerRight,
                   padding: EdgeInsets.only(right: 10, top: 5),
                   //width: displayWidth(context) * 0.28,
                   child: Column(
@@ -493,7 +492,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               commonText(
                                   context: context,
                                   text:
-                                  '${vesselData.fuelCapacity!}gal'
+                                  '${vesselData.fuelCapacity!} L'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
                                   textColor: backgroundColor,
@@ -565,7 +564,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               commonText(
                                   context: context,
                                   text:
-                                  ' ${vesselData.batteryCapacity!} kw'
+                                  ' ${vesselData.batteryCapacity!} $kiloWattHour'
                                       .toString(),
                                   fontWeight:
                                   FontWeight.w500,
@@ -638,7 +637,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                       .fuelCapacity ==
                                       null
                                       ? '-'
-                                      : '${vesselData.fuelCapacity!}gal'
+                                      : '${vesselData.fuelCapacity!} L'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
                                   textColor: backgroundColor,
@@ -674,7 +673,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               commonText(
                                   context: context,
                                   text:
-                                  ' ${vesselData.batteryCapacity!} kw'
+                                  ' ${vesselData.batteryCapacity!} $kiloWattHour'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
                                   textColor: backgroundColor,
@@ -718,26 +717,26 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                       ),
                     ],
                   ),
-                ),
+                )
               ],
             ),
           ),
           Positioned(
-            bottom: 10,
+            bottom: 8,
             left: 0,
             right: 0,
             child: Container(
               width: displayWidth(context),
-              //color: Colors.red,
-              margin: const EdgeInsets.only(left: 8, right: 0, bottom: 4),
+              margin: const EdgeInsets.only(left: 8, right: 0, bottom: 0),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     flex: 2,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           vesselData.name == "" ? '-' : vesselData.name!,
@@ -750,7 +749,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                           ),
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
-                          maxLines: 2,
+                          //maxLines: 2,
                         ),
                         /*dashboardRichText(
                             modelName: vesselData.model,
@@ -763,43 +762,45 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                   SizedBox(
                     width: displayWidth(context) * 0.04,
                   ),
-                  vesselData.vesselStatus == 0
-                      ? Container(
-                    margin: EdgeInsets.only(
-                      top: 8.0,
-                    ),
-                    child: Card(
-                      color: primaryColor,
-                      elevation: 6,
-                      shadowColor: Colors.black,
-                      child: Center(
-                        child: CommonButtons.getAcceptButton(
-                            'Unretire', context, endTripBtnColor, () async {
-                          showDialogBox(context, vesselData, scaffoldKey);
-                        },
-                            displayWidth(context) * 0.18,
-                            displayHeight(context) * 0.04,
-                            primaryColor,
-                            Colors.white,
-                            displayHeight(context) * 0.014,
-                            endTripBtnColor,
-                            '',
-                            fontWeight: FontWeight.w500),
+                  Container(
+                    child: vesselData.vesselStatus == 0
+                        ? Container(
+                      margin: EdgeInsets.only(
+                        top: 8.0,
                       ),
-                    ),
-                  )
-                      : CommonButtons.getActionButton(
-                      title: 'View Details',
-                      context: context,
-                      fontSize: displayWidth(context) * 0.03,
-                      textColor: Colors.white,
-                      buttonPrimaryColor: blueColor,
-                      borderColor: blueColor,
-                      width: displayWidth(context) * 0.26,
-                      height: displayHeight(context) * 0.045,
-                      onTap: () async {
-                        onTap(vesselData);
-                      }),
+                      child: Card(
+                        color: primaryColor,
+                        elevation: 6,
+                        shadowColor: Colors.black,
+                        child: Center(
+                          child: CommonButtons.getAcceptButton(
+                              'Unretire', context, endTripBtnColor, () async {
+                            showDialogBox(context, vesselData, scaffoldKey);
+                          },
+                              displayWidth(context) * 0.18,
+                              displayHeight(context) * 0.04,
+                              primaryColor,
+                              Colors.white,
+                              displayHeight(context) * 0.014,
+                              endTripBtnColor,
+                              '',
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    )
+                        : CommonButtons.getActionButton(
+                        title: 'View Details',
+                        context: context,
+                        fontSize: displayWidth(context) * 0.03,
+                        textColor: Colors.white,
+                        buttonPrimaryColor: blueColor,
+                        borderColor: blueColor,
+                        width: displayWidth(context) * 0.26,
+                        height: displayHeight(context) * 0.045,
+                        onTap: () async {
+                          onTap(vesselData);
+                        }),
+                  ),
                   SizedBox(
                     width: displayWidth(context) * 0.02,
                   ),
@@ -1102,7 +1103,7 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 commonText(
                                     context: context,
                                     text:
-                                    ' ${vesselData.batteryCapacity!} kw'
+                                    ' ${vesselData.batteryCapacity!} $kiloWattHour'
                                         .toString(),
                                     fontWeight:
                                     FontWeight.w500,
@@ -1206,7 +1207,7 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 commonText(
                                     context: context,
                                     text:
-                                    ' ${vesselData.batteryCapacity!} kw'
+                                    ' ${vesselData.batteryCapacity!} $kiloWattHour'
                                         .toString(),
                                     fontWeight: FontWeight.w500,
                                     textColor: Colors.white,
@@ -1594,18 +1595,52 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
     String distance, String totalCount, String avgSpeed) {
   double finalAvgSpeed = double.parse(avgSpeed);
   return Container(
-    margin: EdgeInsets.symmetric(horizontal: 10,),
+    margin: EdgeInsets.symmetric(horizontal: 0,),
     child: Column(
       children: [
+        Container(
+          width: displayWidth(context),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: backgroundColor),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+            child: Column(
+              children: [
+                commonText(
+                    context: context,
+                    text: '$distance $nauticalMile',
+                    fontWeight: FontWeight.w600,
+                    textColor: Colors.black,
+                    textSize: displayWidth(context) * 0.044,
+                    textAlign: TextAlign.start),
+                SizedBox(
+                  height: 4,
+                ),
+                commonText(
+                    context: context,
+                    text: 'Total Distance',
+                    fontWeight: FontWeight.w400,
+                    textColor: Colors.grey,
+                    textSize: displayWidth(context) * 0.028,
+                    textAlign: TextAlign.start,
+                    fontFamily: poppins),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
         Row(
           children: [
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(15),
                     color: backgroundColor),
                 child: Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
                   child: Column(
                     children: [
                       commonText(
@@ -1620,7 +1655,7 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                       ),
                       commonText(
                           context: context,
-                          text: 'Total Trips Duration',
+                          text: 'Total Recorded Time',
                           fontWeight: FontWeight.w400,
                           textColor: Colors.grey,
                           textSize: displayWidth(context) * 0.03,
@@ -1634,52 +1669,14 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
             SizedBox(
               width: 10,
             ),
+
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(15),
                     color: backgroundColor),
                 child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    children: [
-                      commonText(
-                          context: context,
-                          text: '$distance $nauticalMile',
-                          fontWeight: FontWeight.w600,
-                          textColor: Colors.black,
-                          textSize: displayWidth(context) * 0.044,
-                          textAlign: TextAlign.start),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      commonText(
-                          context: context,
-                          text: 'Total Distance',
-                          fontWeight: FontWeight.w400,
-                          textColor: Colors.grey,
-                          textSize: displayWidth(context) * 0.03,
-                          textAlign: TextAlign.start,
-                          fontFamily: poppins),
-                    ],
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: backgroundColor),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
                   child: Column(
                     children: [
                       commonText(
@@ -1694,12 +1691,52 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                       ),
                       commonText(
                           context: context,
-                          text: 'Total no of Trips',
+                          text: 'Total Trips',
                           fontWeight: FontWeight.w400,
                           textColor: Colors.grey,
                           textSize: displayWidth(context) * 0.03,
                           textAlign: TextAlign.start,
                           fontFamily: poppins),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: backgroundColor),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+                  child: Column(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: finalAvgSpeed.isNaN
+                              ? '0'
+                              : '$finalAvgSpeed $speedKnot',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.044,
+                          textAlign: TextAlign.start),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'Average Speed',
+                          fontWeight: FontWeight.w400,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start,fontFamily: poppins),
                     ],
                   ),
                 ),
@@ -1711,17 +1748,15 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(15),
                     color: backgroundColor),
                 child: Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
                   child: Column(
                     children: [
                       commonText(
                           context: context,
-                          text: finalAvgSpeed.isNaN
-                              ? '0'
-                              : '$finalAvgSpeed $knot',
+                          text: '803 Ltr',
                           fontWeight: FontWeight.w600,
                           textColor: Colors.black,
                           textSize: displayWidth(context) * 0.044,
@@ -1731,7 +1766,79 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                       ),
                       commonText(
                           context: context,
-                          text: 'Avg. Speed',
+                          text: 'Total Fuel Consumed',
+                          fontWeight: FontWeight.w400,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start,fontFamily: poppins),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: backgroundColor),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+                  child: Column(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: '23 kg',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.044,
+                          textAlign: TextAlign.start),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'Total CO2 Emissions',
+                          fontWeight: FontWeight.w400,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start,fontFamily: poppins),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: backgroundColor),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+                  child: Column(
+                    children: [
+                      commonText(
+                          context: context,
+                          text: '10 kg',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.044,
+                          textAlign: TextAlign.start),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      commonText(
+                          context: context,
+                          text: 'Total NO2 Emissions',
                           fontWeight: FontWeight.w400,
                           textColor: Colors.grey,
                           textSize: displayWidth(context) * 0.03,

@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:performarine/models/export_report_model.dart';
 
 import '../common_widgets/utils/urls.dart';
 import '../common_widgets/utils/utils.dart';
@@ -15,6 +17,103 @@ import 'package:http/http.dart' as http;
 class ReportModuleProvider with ChangeNotifier {
   ReportModel? reportModel;
   String page = "Report_module_Provider";
+
+
+
+Future<ExportDataModel> exportReportData(Map<String,dynamic> body,String token,BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey)async{
+        print('the export report body was----'+body.toString());
+
+ExportDataModel?  exportData;
+
+
+      var headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+      "x-access-token": token,
+    };
+
+    Uri uri = Uri.https(Urls.baseUrl, Urls.reportModule);
+
+
+
+    try {
+
+      final response = await http.post(uri,
+          body: jsonEncode(body), headers: headers);
+                Utils.customPrint('Headers REs : ' + headers.toString());
+
+      var decodedData = json.decode(response.body);
+
+      if (response.statusCode == HttpStatus.ok) {
+        exportData = ExportDataModel.fromJson(json.decode(response.body));
+
+  //       if(exportData.data?.exportUrl!=null&&exportData.data!.exportUrl!.isNotEmpty){
+  //           final response = await http.get(Uri.parse(exportData.data!.exportUrl!));
+  //             if (response.statusCode == 200) {
+  //   final appDir = await getApplicationDocumentsDirectory();
+  //   final filePath = '${appDir.path}/${extractFileNameFromUrl(exportData.data!.exportUrl!.toString())}';
+
+  //   final File imageFile = File(filePath);
+  //   await imageFile.writeAsBytes(response.bodyBytes);
+
+  //   // You can display a success message or use the saved image as needed.
+  //   print('Csv File downloaded Suceessfully: $filePath');
+  // } 
+
+  //       }
+
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
+
+        return exportData!;
+      } else if (response.statusCode == HttpStatus.gatewayTimeout) {
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+        Utils.customPrint('EXE RESP: $response');
+
+        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
+
+        if (scaffoldKey != null) {
+          Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey, message: decodedData['message']);
+        }
+
+        reportModel = null;
+      } else {
+        if (scaffoldKey != null) {
+          Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey, message: decodedData['message']);
+        }
+
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
+        Utils.customPrint('EXE RESP: $response');
+
+        CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
+        CustomLogger().logWithFile(Level.info, "EXE RESP: $response -> $page");
+      }
+      reportModel = null;
+    } on SocketException catch (_) {
+      await Utils().check(scaffoldKey);
+      Utils.customPrint('Socket Exception');
+      CustomLogger().logWithFile(Level.error, "Socket Exception -> $page");
+
+      reportModel = null;
+    } catch (exception, s) {
+      Utils.customPrint('error caught report module:- $exception \n $s');
+      CustomLogger().logWithFile(Level.error, "error caught report module:- $exception \n $s -> $page");
+      reportModel = null;
+    }
+    return exportData ?? ExportDataModel();
+  }
+
+
+String extractFileNameFromUrl(String url) {
+  Uri uri = Uri.parse(url);
+  return uri.pathSegments.last;
+}
+
+
+
 
   Future<ReportModel> reportData(
       String startDate,
@@ -63,6 +162,8 @@ class ReportModuleProvider with ChangeNotifier {
 
       final response = await http.post(uri,
           body: jsonEncode(queryParameters), headers: headers);
+                Utils.customPrint('Headers REs : ' + headers.toString());
+
 
       Utils.customPrint('Report REs : ' + response.body);
       CustomLogger().logWithFile(Level.info, "Report REs : ' + ${response.body} -> $page");

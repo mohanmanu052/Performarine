@@ -17,7 +17,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
-import 'package:performarine/pages/auth_new/change_password.dart';
+import 'package:performarine/pages/auth/change_password.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
@@ -152,7 +152,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InkWell(
+                      /*InkWell(
                         onTap: () {
                           CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
                           Navigator.of(context).pop();
@@ -175,7 +175,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
-                      ),
+                      ),*/
                       InkWell(
                         onTap: () {
                           CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
@@ -452,7 +452,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: true)),
+                            builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false)),
                       );
                     },
                     child: commonText(
@@ -473,7 +473,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: true)),
+                            builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false)),
                       );
                     },
                     child: commonText(
@@ -568,7 +568,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             style: TextStyle(
                                 decoration: TextDecoration.underline,
                                 fontSize: displayWidth(context) * 0.035,
-                                color: primaryColor,
+                                color: blueColor,
                                 fontWeight: FontWeight.w500)),
                       )
                     ],
@@ -630,125 +630,152 @@ class _CustomDrawerState extends State<CustomDrawer> {
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.32,
+                  height: displayHeight(context) * 0.42,
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 15, bottom: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Stack(
                       children: [
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: Column(
-                            children: [
-                              commonText(
-                                  context: context,
-                                  text:
-                                      'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
-                                  fontWeight: FontWeight.w600,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.038,
-                                  textAlign: TextAlign.center),
-                              SizedBox(
-                                height: displayHeight(context) * 0.015,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text:
-                                      'If you click on SignOut, you may loose local data which is not uploaded',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.grey,
-                                  textSize: displayWidth(context) * 0.032,
-                                  textAlign: TextAlign.center),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        Row(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.white
-                                            : Colors.grey)),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Sign Out', context,  Colors.grey.shade400,
-                                      () async {
-                                    Navigator.of(context).pop();
-
-                                    signOut();
-                                  },
-                                      displayWidth(context) * 0.4,
-                                      displayHeight(context) * 0.05,
-                                      Colors.grey.shade400,
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                      displayHeight(context) * 0.015,
-                                      Colors.grey.shade400,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            Center(
+                              child: Image.asset('assets/icons/export_img.png',
+                              //height: displayHeight(context) * 0.2,
+                              width: displayWidth(context) * 0.18,),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              child: Column(
+                                children: [
+                                  commonText(
+                                      context: context,
+                                      text:
+                                          'There are some vessel & trips data not sync with cloud, do you want to proceed further?',
+                                      fontWeight: FontWeight.w600,
+                                      textColor: Colors.black,
+                                      textSize: displayWidth(context) * 0.038,
+                                      textAlign: TextAlign.center,
+                                  fontFamily: inter),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.015,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                    child: commonText(
+                                        context: context,
+                                        text:
+                                            'Click Sync & Sign Out for not loosing local data which is not uploaded',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.grey,
+                                        textSize: displayWidth(context) * 0.032,
+                                        textAlign: TextAlign.center,
+                                        fontFamily: inter),
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(
-                              width: 15.0,
+                              height: displayHeight(context) * 0.01,
                             ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
+                            Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(
+                                    top: 8.0,
+                                  ),
+                                  child: isSigningOut
+                                      ? Container(
+                                    height:  displayHeight(context) * 0.055,
+                                      child: Center(child: CircularProgressIndicator(color: blueColor,)))
+                                      : Center(
+                                    child: CommonButtons.getAcceptButton(
+                                        'Sync & Sign Out',
+                                        context,
+                                        blueColor, () async {
+                                      bool internet =
+                                      await Utils().check(scaffoldKey);
+
+                                      if (internet) {
+                                        setDialogState(() {
+                                          isSigningOut = true;
+                                        });
+
+                                        syncAndSignOut(false, context);
+                                      }
+                                    },
+                                        displayWidth(context) / 1.6,
+                                        displayHeight(context) * 0.055,
+                                        primaryColor,
+                                        Colors.white,
+                                        displayHeight(context) * 0.018,
+                                        blueColor,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
                                 ),
-                                child: isSigningOut
-                                    ? Center(child: CircularProgressIndicator())
-                                    : Center(
-                                        child: CommonButtons.getAcceptButton(
-                                            'Sync and Sign Out',
-                                            context,
-                                            buttonBGColor, () async {
-                                          bool internet =
-                                              await Utils().check(scaffoldKey);
-
-                                          if (internet) {
-                                            setDialogState(() {
-                                              isSigningOut = true;
-                                            });
-
-                                            syncAndSignOut(false, context);
-                                          }
-                                        },
-                                            displayWidth(context) * 0.4,
-                                            displayHeight(context) * 0.05,
-                                            primaryColor,
-                                            Colors.white,
-                                            displayHeight(context) * 0.015,
-                                            buttonBGColor,
-                                            '',
-                                            fontWeight: FontWeight.w500),
+                                SizedBox(
+                                  width: 15.0,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
                                       ),
-                              ),
+                                  child: Center(
+                                    child: CommonButtons.getAcceptButton(
+                                        'Sign Out', context,  Colors.transparent,
+                                        () async {
+                                      Navigator.of(context).pop();
+
+                                      signOut();
+                                    },
+                                        displayWidth(context) / 1.6,
+                                        displayHeight(context) * 0.055,
+                                        primaryColor,
+                                        Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : blueColor,
+                                        displayHeight(context) * 0.015,
+                                        Colors.transparent,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
+                        Positioned(
+                          right: 10,
+                          top: 0,
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,),
+                            child: Center(
+                              child: isUploadStarted
+                                  ? SizedBox()
+                                  : IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(ctx);
+                                  },
+                                  icon:  Icon(Icons.close_rounded, color: buttonBGColor)),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -773,77 +800,137 @@ class _CustomDrawerState extends State<CustomDrawer> {
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.32,
+                  height: displayHeight(context) * 0.42,
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 15, bottom: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                        left: 8.0, right: 8.0, top: 5, bottom: 15),
+                    child: Stack(
                       children: [
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: Column(
-                            children: [
-                              commonText(
-                                  context: context,
-                                  text:
-                                      'There are some vessel and trips data not sync with cloud, do you want to proceed further?',
-                                  fontWeight: FontWeight.w600,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.038,
-                                  textAlign: TextAlign.center),
-                              SizedBox(
-                                height: displayHeight(context) * 0.015,
-                              ),
-                              isChangePassword
-                              ? commonText(
-                                  context: context,
-                                  text:
-                                  'If you click on change password, you may loose local data which is not uploaded',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.grey,
-                                  textSize: displayWidth(context) * 0.032,
-                                  textAlign: TextAlign.center)
-                              : commonText(
-                                  context: context,
-                                  text:
-                                      'If you click on sync, you may loose local data which is not uploaded',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.grey,
-                                  textSize: displayWidth(context) * 0.032,
-                                  textAlign: TextAlign.center),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        Row(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            Center(
+                              child: Image.asset('assets/icons/export_img.png',
+                                //height: displayHeight(context) * 0.2,
+                                width: displayWidth(context) * 0.18,),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              child: Column(
+                                children: [
+                                  commonText(
+                                      context: context,
+                                      text:
+                                      'There are some vessel & trips data not sync with cloud, do you want to proceed further?',
+                                      fontWeight: FontWeight.w600,
+                                      textColor: Colors.black,
+                                      textSize: displayWidth(context) * 0.038,
+                                      textAlign: TextAlign.center,
+                                      fontFamily: inter),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.015,
+                                  ),
+                                  isChangePassword
+                                      ? Padding(
+                                        padding: EdgeInsets.only(
+                                            left: displayWidth(context) * 0.06,
+                                        ),
+                                        child: Center(
+                                          child: commonText(
+                                          context: context,
+                                          text:
+                                          'Click Upload & Change Password for not loosing local data which is not uploaded',
+                                          fontWeight: FontWeight.w400,
+                                          textColor: Colors.grey,
+                                          textSize: displayWidth(context) * 0.032,
+                                          textAlign: TextAlign.start),
+                                        ),
+                                      )
+                                      : commonText(
+                                      context: context,
+                                      text:
+                                      'Click Upload & Sync for not loosing local data which is not uploaded',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.grey,
+                                      textSize: displayWidth(context) * 0.032,
+                                      textAlign: TextAlign.center),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(
+                                    top: 8.0,
+                                  ),
+                                  child: Center(
+                                    child: isUploadStarted
+                                        ? Center(
+                                      child: Container(
+                                          height: displayHeight(context) * 0.055,
+                                          child: Center(
+                                              child:
+                                              CircularProgressIndicator(
+                                                color: blueColor,
+                                              ))),
+                                    )
+                                        : CommonButtons.getAcceptButton(
+                                        isChangePassword
+                                            ? 'Upload & Change Password'
+                                            : 'Upload & Sync',
+                                        context,
+                                        blueColor, () async {
+                                      //  Navigator.of(context).pop();
+
+                                      bool internet =
+                                      await Utils().check(scaffoldKey);
+                                      setState(() {
+                                        isSync = true;
+                                      });
+                                      if (internet) {
+                                        if (mounted) {
+                                          setDialogState(() {
+                                            isUploadStarted = true;
+                                          });
+                                        }
+                                        syncAndSignOut(isChangePassword, context);
+                                      }
+                                    },
+                                        displayWidth(context) / 1.6,
+                                        displayHeight(context) * 0.055,
+                                        primaryColor,
+                                        Colors.white,
+                                        displayHeight(context) * 0.018,
+                                        blueColor,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
                                 ),
-                                decoration: BoxDecoration(
+                                SizedBox(
+                                  width: 15.0,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.white
-                                            : Colors.grey)),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      isChangePassword
-                                          ? 'Change Password'
-                                      : 'Skip And Sync', context, Colors.grey.shade400,
-                                      () {
-                                        if(isChangePassword)
+                                  ),
+                                  child: Center(
+                                    child: CommonButtons.getAcceptButton(
+                                        isChangePassword
+                                            ? 'Skip & Change Password'
+                                            : 'Skip & Sync', context, Colors.transparent,
+                                            () {
+                                          if(isChangePassword)
                                           {
                                             Navigator.of(context).pop();
                                             Navigator.of(context).pop();
@@ -855,85 +942,55 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             );
 
                                           }else
-                                            {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                    const SyncDataCloudToMobileScreen()),
-                                              );
-                                            }
+                                          {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                  const SyncDataCloudToMobileScreen()),
+                                            );
+                                          }
 
-                                  },
-                                      displayWidth(context) * 0.4,
-                                      displayHeight(context) * 0.05,
-                                      Colors.grey.shade400,
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                      displayHeight(context) * 0.014,
-                                      Colors.grey.shade400,
-                                      '',
-                                      fontWeight: FontWeight.w500),
+                                        },
+                                        displayWidth(context) / 1.6,
+                                        displayHeight(context) * 0.055,
+                                        Colors.transparent,
+                                        Theme.of(context).brightness ==
+                                            Brightness.dark
+                                            ? Colors.white
+                                            : blueColor,
+                                        displayHeight(context) * 0.015,
+                                        Colors.transparent,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                             SizedBox(
-                              width: 15.0,
-                            ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: isUploadStarted
-                                      ? Center(
-                                          child: Container(
-                                              // width: displayWidth(context) * 0.34,
-                                              child: Center(
-                                                  child:
-                                                      CircularProgressIndicator())),
-                                        )
-                                      : CommonButtons.getAcceptButton(
-                                      isChangePassword
-                                          ? 'Upload And Change'
-                                      : 'Upload And Sync',
-                                          context,
-                                      buttonBGColor, () async {
-                                          //  Navigator.of(context).pop();
-
-                                          bool internet =
-                                              await Utils().check(scaffoldKey);
-                                          setState(() {
-                                            isSync = true;
-                                          });
-                                          if (internet) {
-                                            if (mounted) {
-                                              setDialogState(() {
-                                                isUploadStarted = true;
-                                              });
-                                            }
-                                            syncAndSignOut(isChangePassword, context);
-                                          }
-                                        },
-                                          displayWidth(context) * 0.4,
-                                          displayHeight(context) * 0.05,
-                                          primaryColor,
-                                          Colors.white,
-                                          displayHeight(context) * 0.014,
-                                          buttonBGColor,
-                                          '',
-                                          fontWeight: FontWeight.w500),
-                                ),
-                              ),
+                              height: displayHeight(context) * 0.01,
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
+                        Positioned(
+                          right: 10,
+                          top: 0,
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,),
+                            child: Center(
+                              child: isUploadStarted
+                                  ? SizedBox()
+                                  : IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(ctx);
+                                  },
+                                  icon:  Icon(Icons.close_rounded, color: buttonBGColor)),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -1226,10 +1283,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ),
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
-                                      'Go to trip', context, buttonBGColor,
+                                      'Go to trip', context, blueColor,
                                           () async {
 
-                                            Utils.customPrint("Click on GO TO TRIP 1");
+                                        Utils.customPrint("Click on GO TO TRIP 1");
                                         CustomLogger().logWithFile(Level.info, "Click on go to trip 1-> $page");
 
 
@@ -1243,38 +1300,30 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           vesselName = tripData[1];
                                         }
 
-                                            Utils.customPrint("Click on GO TO TRIP 2");
+                                        Utils.customPrint("Click on GO TO TRIP 2");
                                         CustomLogger().logWithFile(Level.info, "Click on go to trip 2-> $page");
 
 
                                         Navigator.of(dialogContext).pop();
 
-                                        /*Navigator.push(
+                                        Navigator.push(
                                           dialogContext,
-                                          MaterialPageRoute(builder: (context) => TripAnalyticsScreen(
-                                              tripId: tripId,
-                                              vesselId: tripData![1],
-                                              tripIsRunningOrNot: runningTrip)),
-                                        );*/
-                                            Navigator.push(
-                                              dialogContext,
-                                              MaterialPageRoute(builder: (context) => TripRecordingScreen(
-                                                  tripId: tripId,
-                                                  vesselId: tripData![1],
-                                                  vesselName: tripData[2],
-                                                  tripIsRunningOrNot: runningTrip)),
-                                            );
+                                          MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                            tripId: tripId,
+                                            vesselId: tripData![1],
+                                            tripIsRunningOrNot: runningTrip,)),
+                                        );
 
                                         Utils.customPrint("Click on GO TO TRIP 3");
-                                            CustomLogger().logWithFile(Level.info, "Click on go to trip 3-> $page");
+                                        CustomLogger().logWithFile(Level.info, "Click on go to trip 3-> $page");
 
                                       },
                                       displayWidth(context) * 0.65,
                                       displayHeight(context) * 0.054,
                                       primaryColor,
                                       Colors.white,
-                                      displayHeight(context) * 0.015,
-                                      buttonBGColor,
+                                      displayHeight(context) * 0.02,
+                                      blueColor,
                                       '',
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -1282,27 +1331,22 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               SizedBox(
                                 height: 15.0,
                               ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Cancel', context, buttonBGColor, () {
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                      displayWidth(context) * 0.65,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Theme.of(context).brightness ==
-                                          Brightness.dark
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      displayHeight(context) * 0.015,
-                                      Colors.white,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Cancel', context, Colors.transparent, () {
+                                  Navigator.of(dialogContext).pop();
+                                },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                        ? Colors.white
+                                        : blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.white,
+                                    '',
+                                    fontWeight: FontWeight.w500),
                               ),
 
                             ],

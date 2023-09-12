@@ -877,6 +877,7 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
           ? '/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'
           : '${tripDir.path}/${tripData.id}.zip',
       "createdAt": tripData.createdAt,
+      "updatedAt": tripData.updatedAt,
       "duration": tripDuration,
       "distance": double.parse(tripDistance),
       "speed": double.parse(tripSpeed),

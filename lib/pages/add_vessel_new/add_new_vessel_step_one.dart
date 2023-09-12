@@ -32,19 +32,19 @@ class AddNewVesselStepOne extends StatefulWidget {
       fuelCapacityFocusNode,
       batteryCapacityFocusNode,
       weightFocusNode;
-   AddNewVesselStepOne({Key? key,
-     this.pageController,
-     this.scaffoldKey,
-     this.addVesselData,
-     this.isEdit,
-     this.nameFocusNode,
-     this.modelFocusNode,
-     this.builderNameFocusNode,
-     this.registrationNumberFocusNode,
-     this.mmsiFocusNode,
-     this.fuelCapacityFocusNode,
-     this.batteryCapacityFocusNode,
-     this.weightFocusNode}) : super(key: key);
+  AddNewVesselStepOne({Key? key,
+    this.pageController,
+    this.scaffoldKey,
+    this.addVesselData,
+    this.isEdit,
+    this.nameFocusNode,
+    this.modelFocusNode,
+    this.builderNameFocusNode,
+    this.registrationNumberFocusNode,
+    this.mmsiFocusNode,
+    this.fuelCapacityFocusNode,
+    this.batteryCapacityFocusNode,
+    this.weightFocusNode}) : super(key: key);
 
   @override
   State<AddNewVesselStepOne> createState() => _AddNewVesselStepOneState();
@@ -54,8 +54,19 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
 
   late GlobalKey<ScaffoldState> scaffoldKey;
 
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> nameFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> modelFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> builderNameFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> regNumberFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> mmsiFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> fuelCapacityFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> batteryCapacityFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> weightFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> selectedEngineFormKey = GlobalKey<FormState>();
+
   final FocusScopeNode node = FocusScopeNode();
+
+  AutovalidateMode _autoValidate = AutovalidateMode.onUserInteraction;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController modelController = TextEditingController();
@@ -81,6 +92,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   bool? isBatteryCapacityEnable = false;
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
+  bool isDeleted = false;
 
   final statuses = List.generate(
     2,
@@ -96,10 +108,17 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   bool isImageSelected = false;
 
   @override
+  void didUpdateWidget(covariant AddNewVesselStepOne oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(commonProvider.selectedImageFiles != null  && commonProvider.selectedImageFiles.isNotEmpty){
+      finalSelectedFiles = commonProvider.selectedImageFiles;
+    }
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
     });
@@ -122,13 +141,13 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
             widget.addVesselData!.batteryCapacity!.toString();
         weightController.text = widget.addVesselData!.weight!.toString();
         if(widget.addVesselData!.imageURLs != null)
+        {
+          if(widget.addVesselData!.imageURLs!.isNotEmpty)
           {
-            if(widget.addVesselData!.imageURLs!.isNotEmpty)
-              {
-                finalSelectedFiles.add(File(widget.addVesselData!.imageURLs!));
-              }
-
+            finalSelectedFiles.add(File(widget.addVesselData!.imageURLs!));
           }
+
+        }
       }
     }
   }
@@ -137,7 +156,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
     return Form(
-      key: formKey,
+      //key: formKey,
+      autovalidateMode: _autoValidate,
       child: Expanded(
         child: SingleChildScrollView(
           child: Column(
@@ -159,7 +179,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
               ) : Stack(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 20.0),
+                    margin: EdgeInsets.only(top: displayHeight(context) * 0.008),
                     child: CommonButtons.uploadVesselImage(
                         'Click here to Upload Vessel Image\n(png, jpeg files only)', context, () {
                       uploadImageFunction();
@@ -169,209 +189,241 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     }, blueColor),
                   ),
                   Positioned(
-                    top: displayHeight(context) * 0.033,
+                      top: displayHeight(context) * 0.016,
                       left: displayWidth(context) * 0.045,
                       child: uploadingImage(context)
                   )
                 ],
               ),
               SizedBox(height: displayHeight(context) * 0.03),
-              CommonTextField(
-                  controller: nameController,
-                  focusNode: nameFocusNode,
-                  labelText: 'Name of the Vessel',
-                  hintText: '',
-                  suffixText: null,
-                  textInputAction: TextInputAction.next,
-                  textInputType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  maxLength: 32,
-                  prefixIcon: null,
-                  requestFocusNode: modelFocusNode,
-                  obscureText: false,
-                  onTap: () {},
-                  onChanged: (String value) {},
-                  validator: (value) {
-                    if (value!.trim().isEmpty) {
-                      return 'Enter Vessel Name';
-                    }
-                    return null;
-                  },
-                  onSaved: (String value) {
-                    CustomLogger().logWithFile(Level.info, "vessel name $value -> $page");
-                    Utils.customPrint(value);
-                  }),
+              Form(
+                key: nameFormKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: CommonTextField(
+                    controller: nameController,
+                    focusNode: nameFocusNode,
+                    labelText: 'Name of the Vessel',
+                    hintText: '',
+                    suffixText: null,
+                    textInputAction: TextInputAction.next,
+                    textInputType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    maxLength: 32,
+                    prefixIcon: null,
+                    requestFocusNode: modelFocusNode,
+                    obscureText: false,
+                    onTap: () {},
+                    onChanged: (String value) {
+                    },
+                    validator: (value) {
+                      if (value!.trim().isEmpty) {
+                        return 'Enter Vessel Name';
+                      }
+                      return null;
+                    },
+                    onSaved: (String value) {
+                      CustomLogger().logWithFile(Level.info, "vessel name $value -> $page");
+                      Utils.customPrint(value);
+                    }),
+              ),
               SizedBox(height: displayHeight(context) * 0.015),
-              CommonTextField(
-                  controller: modelController,
-                  focusNode: modelFocusNode,
-                  labelText: 'Model',
-                  hintText: '',
-                  suffixText: null,
-                  textInputAction: TextInputAction.next,
-                  textInputType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  maxLength: 32,
-                  prefixIcon: null,
-                  requestFocusNode: builderNameFocusNode,
-                  obscureText: false,
-                  onTap: () {},
-                  onChanged: (String value) {},
-                  validator: (value) {
-                    if (value!.trim().isEmpty) {
-                      return 'Enter Vessel Model';
-                    }
-                    return null;
-                  },
-                  onSaved: (String value) {
-                    Utils.customPrint(value);
-                    CustomLogger().logWithFile(Level.info, "vessel model $value -> $page");
-                  }),
+              Form(
+                key: modelFormKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: CommonTextField(
+                    controller: modelController,
+                    focusNode: modelFocusNode,
+                    labelText: 'Model',
+                    hintText: '',
+                    suffixText: null,
+                    textInputAction: TextInputAction.next,
+                    textInputType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    maxLength: 32,
+                    prefixIcon: null,
+                    requestFocusNode: builderNameFocusNode,
+                    obscureText: false,
+                    onTap: () {},
+                    onChanged: (String value) {
+                    },
+                    validator: (value) {
+                      if (value!.trim().isEmpty) {
+                        return 'Enter Vessel Model';
+                      }
+                      return null;
+                    },
+                    onSaved: (String value) {
+                      Utils.customPrint(value);
+                      CustomLogger().logWithFile(Level.info, "vessel model $value -> $page");
+                    }),
+              ),
               SizedBox(height: displayHeight(context) * 0.015),
-              CommonTextField(
-                  controller: builderNameController,
-                  focusNode: builderNameFocusNode,
-                  labelText: 'Builder Name',
-                  hintText: '',
-                  suffixText: null,
-                  textInputAction: TextInputAction.next,
-                  textInputType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  maxLength: 32,
-                  prefixIcon: null,
-                  requestFocusNode: registrationNumberFocusNode,
-                  obscureText: false,
-                  onTap: () {},
-                  onChanged: (String value) {},
-                  validator: (value) {
-                    if (value!.trim().isEmpty) {
-                      return 'Enter Vessel Builder Name';
-                    }
+              Form(
+                key: builderNameFormKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: CommonTextField(
+                    controller: builderNameController,
+                    focusNode: builderNameFocusNode,
+                    labelText: 'Builder Name',
+                    hintText: '',
+                    suffixText: null,
+                    textInputAction: TextInputAction.next,
+                    textInputType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    maxLength: 32,
+                    prefixIcon: null,
+                    requestFocusNode: registrationNumberFocusNode,
+                    obscureText: false,
+                    onTap: () {},
+                    onChanged: (String value) {
+                    },
+                    validator: (value) {
+                      if (value!.trim().isEmpty) {
+                        return 'Enter Vessel Builder Name';
+                      }
 
-                    return null;
-                  },
-                  onSaved: (String value) {
-                    Utils.customPrint(value);
-                    CustomLogger().logWithFile(Level.info, "Vessel Builder Name $value -> $page");
-                  }),
+                      return null;
+                    },
+                    onSaved: (String value) {
+                      Utils.customPrint(value);
+                      CustomLogger().logWithFile(Level.info, "Vessel Builder Name $value -> $page");
+                    }),
+              ),
               SizedBox(height: displayHeight(context) * 0.015),
-              CommonTextField(
-                  controller: registrationNumberController,
-                  focusNode: registrationNumberFocusNode,
-                  labelText: 'Registration Number',
-                  hintText: '',
-                  suffixText: null,
-                  textInputAction: TextInputAction.next,
-                  textInputType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  maxLength: 10,
-                  prefixIcon: null,
-                  requestFocusNode: mmsiFocusNode,
-                  obscureText: false,
-                  onTap: () {},
-                  onChanged: (String value) {},
-                  onSaved: (String value) {
-                    Utils.customPrint(value);
-                    CustomLogger().logWithFile(Level.info, "Registration Number $value -> $page");
-                  }),
+              Form(
+                key: regNumberFormKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: CommonTextField(
+                    controller: registrationNumberController,
+                    focusNode: registrationNumberFocusNode,
+                    labelText: 'Registration Number',
+                    hintText: '',
+                    suffixText: null,
+                    textInputAction: TextInputAction.next,
+                    textInputType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    maxLength: 10,
+                    prefixIcon: null,
+                    requestFocusNode: mmsiFocusNode,
+                    obscureText: false,
+                    onTap: () {},
+                    onChanged: (String value) {},
+                    onSaved: (String value) {
+                      Utils.customPrint(value);
+                      CustomLogger().logWithFile(Level.info, "Registration Number $value -> $page");
+                    }),
+              ),
               SizedBox(height: displayHeight(context) * 0.015),
-              CommonTextField(
-                  controller: mmsiController,
-                  focusNode: mmsiFocusNode,
-                  labelText: 'MMSI',
-                  hintText: '',
-                  suffixText: null,
-                  textInputAction: TextInputAction.next,
-                  textInputType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  maxLength: 10,
-                  prefixIcon: null,
-                  requestFocusNode: weightFocusNode,
-                  obscureText: false,
-                  onTap: () {},
-                  onChanged: (String value) {},
-                  onSaved: (String value) {
-                    Utils.customPrint(value);
-                    CustomLogger().logWithFile(Level.info, "MMSI $value -> $page");
-                  }),
+              Form(
+                key: mmsiFormKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: CommonTextField(
+                    controller: mmsiController,
+                    focusNode: mmsiFocusNode,
+                    labelText: 'MMSI',
+                    hintText: '',
+                    suffixText: null,
+                    textInputAction: TextInputAction.next,
+                    textInputType: TextInputType.text,
+                    textCapitalization: TextCapitalization.words,
+                    maxLength: 10,
+                    prefixIcon: null,
+                    requestFocusNode: weightFocusNode,
+                    obscureText: false,
+                    onTap: () {},
+                    onChanged: (String value) {},
+                    onSaved: (String value) {
+                      Utils.customPrint(value);
+                      CustomLogger().logWithFile(Level.info, "MMSI $value -> $page");
+                    }),
+              ),
               SizedBox(height: displayHeight(context) * 0.015),
-              CommonTextField(
-                  controller: weightController,
-                  focusNode: weightFocusNode,
-                  labelText: 'Weight (lb)',
-                  hintText: '',
-                  suffixText: null,
-                  textInputAction: TextInputAction.done,
-                  textInputType: TextInputType.number,
-                  textCapitalization: TextCapitalization.words,
-                  maxLength: 6,
-                  prefixIcon: null,
-                  requestFocusNode: null,
-                  obscureText: false,
-                  onTap: () {},
-                  onChanged: (String value) {},
-                  validator: (value) {
-                    if (value!.trim().isEmpty) {
-                      return 'Enter Vessel Weight';
-                    }
+              Form(
+                key: weightFormKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: CommonTextField(
+                    controller: weightController,
+                    focusNode: weightFocusNode,
+                    labelText: 'Weight',
+                    hintText: '',
+                    suffixText: null,
+                    textInputAction: TextInputAction.done,
+                    textInputType: TextInputType.number,
+                    textCapitalization: TextCapitalization.words,
+                    maxLength: 6,
+                    prefixIcon: null,
+                    requestFocusNode: null,
+                    obscureText: false,
+                    onTap: () {},
+                    onChanged: (String value) {
+                    },
+                    validator: (value) {
+                      if (value!.trim().isEmpty) {
+                        return 'Enter Vessel Weight';
+                      }
 
-                    return null;
-                  },
-                  onSaved: (String value) {
-                    Utils.customPrint(value);
-                    CustomLogger().logWithFile(Level.info, "Vessel Weight $value -> $page");
-                  }),
+                      return null;
+                    },
+                    onSaved: (String value) {
+                      Utils.customPrint(value);
+                      CustomLogger().logWithFile(Level.info, "Vessel Weight $value -> $page");
+                    }),
+              ),
               SizedBox(height: displayHeight(context) * 0.015),
-              Container(
-                margin: EdgeInsets.only(top: 2.0),
-                child: CommonDropDownFormField(
-                  context: context,
-                  value: selectedEngineType,
-                  hintText: 'Engine Type',
-                  labelText: '',
-                  onChanged: (String value) {
-                    setState(() {
-                      selectedEngineType = value;
-                      Utils.customPrint('engine $selectedEngineType');
-                      CustomLogger().logWithFile(Level.info, "engine $selectedEngineType -> $page");
-                    });
-
-                    if (selectedEngineType!.toLowerCase() == 'hybrid') {
+              Form(
+                key: selectedEngineFormKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Container(
+                  margin: EdgeInsets.only(top: 2.0),
+                  child: CommonDropDownFormField(
+                    context: context,
+                    value: selectedEngineType,
+                    hintText: 'Engine Type',
+                    labelText: '',
+                    onChanged: (String value) {
                       setState(() {
-                        isBatteryCapacityEnable = true;
+                        selectedEngineType = value;
+                        Utils.customPrint('engine $selectedEngineType');
+                        CustomLogger().logWithFile(Level.info, "engine $selectedEngineType -> $page");
                       });
-                    } else {
-                      setState(() {
-                        isBatteryCapacityEnable = false;
-                      });
-                    }
 
-                    if (selectedEngineType!.toLowerCase() == 'hybrid' ||
-                        selectedEngineType!.toLowerCase() == 'combustion') {
-                      // setState(() {
-                      //   FocusScope.of(context)
-                      //       .requestFocus(fuelCapacityFocusNode);
-                      // });
-                    } else if (selectedEngineType!.toLowerCase() ==
-                        'electric') {
-                      // setState(() {
-                      //   FocusScope.of(context)
-                      //       .requestFocus(batteryCapacityFocusNode);
-                      // });
-                    }
-                  },
-                  dataSource: ['Hybrid', 'Combustion', 'Electric'],
-                  borderRadius: 10,
-                  padding: 6,
-                  textColor: Colors.black,
-                  textField: 'key',
-                  valueField: 'value',
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Select Vessel Engine Type';
-                    }
-                    return null;
-                  },
+                      if (selectedEngineType!.toLowerCase() == 'hybrid') {
+                        setState(() {
+                          isBatteryCapacityEnable = true;
+                        });
+                      } else {
+                        setState(() {
+                          isBatteryCapacityEnable = false;
+                        });
+                      }
+
+                      if (selectedEngineType!.toLowerCase() == 'hybrid' ||
+                          selectedEngineType!.toLowerCase() == 'combustion') {
+                        // setState(() {
+                        //   FocusScope.of(context)
+                        //       .requestFocus(fuelCapacityFocusNode);
+                        // });
+                      } else if (selectedEngineType!.toLowerCase() ==
+                          'electric') {
+                        // setState(() {
+                        //   FocusScope.of(context)
+                        //       .requestFocus(batteryCapacityFocusNode);
+                        // });
+                      }
+                    },
+                    dataSource: ['Hybrid', 'Combustion', 'Electric'],
+                    borderRadius: 10,
+                    padding: 6,
+                    textColor: Colors.black,
+                    textField: 'key',
+                    valueField: 'value',
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Select Vessel Engine Type';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
               ),
               selectedEngineType == 'Hybrid' ||
@@ -379,36 +431,41 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   ? Column(
                 children: [
                   SizedBox(height: displayHeight(context) * 0.015),
-                  CommonTextField(
-                      controller: fuelCapacityController,
-                      focusNode: fuelCapacityFocusNode,
-                      labelText: 'Fuel Capacity(gal/kw)',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: selectedEngineType == 'Hybrid'
-                          ? TextInputAction.next
-                          : TextInputAction.done,
-                      textInputType: TextInputType.number,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 6,
-                      prefixIcon: null,
-                      requestFocusNode: selectedEngineType == 'Hybrid'
-                          ? batteryCapacityFocusNode
-                          : null,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {},
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return 'Enter Fuel Capacity';
-                        }
+                  Form(
+                    key: fuelCapacityFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
+                        controller: fuelCapacityController,
+                        focusNode: fuelCapacityFocusNode,
+                        labelText: 'Fuel($litre)',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: selectedEngineType == 'Hybrid'
+                            ? TextInputAction.next
+                            : TextInputAction.done,
+                        textInputType: TextInputType.number,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 6,
+                        prefixIcon: null,
+                        requestFocusNode: selectedEngineType == 'Hybrid'
+                            ? batteryCapacityFocusNode
+                            : null,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {
+                        },
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter Fuel';
+                          }
 
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        Utils.customPrint(value);
-                        CustomLogger().logWithFile(Level.info, "Fuel Capacity $value-> $page");
-                      }),
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Fuel $value-> $page");
+                        }),
+                  ),
                 ],
               )
                   : SizedBox(),
@@ -418,39 +475,44 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 children: [
                   SizedBox(height: displayHeight(context) * 0.015),
 
-                  CommonTextField(
-                      controller: batteryCapacityController,
-                      focusNode: batteryCapacityFocusNode,
-                      labelText: 'Battery Capacity(kw)',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: TextInputAction.done,
-                      textInputType: TextInputType.number,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 6,
-                      prefixIcon: null,
-                      requestFocusNode: null,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {},
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return 'Enter Battery Capacity';
-                        }
+                  Form(
+                    key: batteryCapacityFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: CommonTextField(
+                        controller: batteryCapacityController,
+                        focusNode: batteryCapacityFocusNode,
+                        labelText: 'Battery Capacity ($kiloWattHour)',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.done,
+                        textInputType: TextInputType.number,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 6,
+                        prefixIcon: null,
+                        requestFocusNode: null,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {
+                        },
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter Battery Capacity';
+                          }
 
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        Utils.customPrint(value);
-                        CustomLogger().logWithFile(Level.info, "Battery Capacity $value-> $page");
-                      }),
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          Utils.customPrint(value);
+                          CustomLogger().logWithFile(Level.info, "Battery Capacity $value-> $page");
+                        }),
+                  ),
                 ],
               )
                   : SizedBox(),
 
               Container(
                 margin: EdgeInsets.only(
-                   // bottom: displayHeight(context) * 0.02,
+                  // bottom: displayHeight(context) * 0.02,
                     top: displayHeight(context) * 0.02),
                 child: Column(
                   children: [
@@ -465,8 +527,16 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                         onTap: () {
                           FocusScope.of(context).requestFocus(new FocusNode());
 
-                          if (formKey.currentState!.validate()) {
-                        /*    Utils.customPrint(
+                          if (nameFormKey.currentState!.validate() && modelFormKey.currentState!.validate() && builderNameFormKey.currentState!.validate() && regNumberFormKey.currentState!.validate()
+                              && mmsiFormKey.currentState!.validate() && weightFormKey.currentState!.validate() && selectedEngineFormKey.currentState!.validate()
+                              && selectedEngineType!.toLowerCase() == 'hybrid' ? fuelCapacityFormKey.currentState!.validate() && batteryCapacityFormKey.currentState!.validate()
+                              : selectedEngineType!.toLowerCase() == 'combustion' ? fuelCapacityFormKey.currentState!.validate() : batteryCapacityFormKey.currentState!.validate()
+                          ) {
+                            if(isDeleted){
+                              commonProvider.selectedImageFiles = [];
+                              //widget.addVesselData?.imageURLs = '';
+                            }
+                            /*    Utils.customPrint(
                                 'FINAL SELECTED FILES ${finalSelectedFiles.isEmpty}');
                             CustomLogger().logWithFile(Level.info, "FINAL SELECTED FILES ${finalSelectedFiles.isEmpty} -> $page");
                             // return; */
@@ -495,10 +565,13 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                                 : fuelCapacityController.text;
                             commonProvider.addVesselRequestModel!.weight =
                                 weightController.text;
-                            commonProvider.addVesselRequestModel!.selectedImages =
-                            finalSelectedFiles.isEmpty
+                            commonProvider.selectedImageFiles = finalSelectedFiles.isEmpty
                                 ? []
                                 : finalSelectedFiles;
+                            // commonProvider.addVesselRequestModel!.selectedImages =
+                            // finalSelectedFiles.isEmpty
+                            //     ? []
+                            //     : finalSelectedFiles;
                             commonProvider.addVesselRequestModel!.batteryCapacity =
                             batteryCapacityController.text.isEmpty
                                 ? '0'
@@ -559,7 +632,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     fit: BoxFit.cover,
                     image: FileImage(
                       File(finalSelectedFiles[0]
-                          !.path),
+                      !.path),
                     ))),
           ),
           Positioned(
@@ -572,11 +645,10 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 CustomLogger().logWithFile(Level.info, "FIIALLL: ${finalSelectedFiles} -> $page");
                 setState(() {
                   isImageSelected = false;
-                  widget.addVesselData!.imageURLs = '';
                   if(finalSelectedFiles.isNotEmpty){
+                    isDeleted = true;
                     finalSelectedFiles.clear();
                   }
-
                 });
                 Utils.customPrint(
                     'FIIALLL: ${finalSelectedFiles}');
@@ -586,8 +658,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 width: displayWidth(context) * 0.08,
                 height: displayHeight(context) * 0.04,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(30))
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(30))
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -623,7 +695,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   finalSelectedFiles.clear();
                   isImageSelected = true;
                   finalSelectedFiles.addAll(selectedImageFileList);
-
+                  commonProvider.selectedImageFiles = selectedImageFileList;
+                //  widget.addVesselData?.selectedImages = selectedImageFileList;
                   Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
                   CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
                   Utils.customPrint('CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');
@@ -651,6 +724,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     finalSelectedFiles.clear();
                     isImageSelected = true;
                     finalSelectedFiles.addAll(selectedImageFileList);
+                    widget.addVesselData?.selectedImages = selectedImageFileList;
                     Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
 
                     CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
@@ -697,7 +771,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
             currentIndex: curIndex,
             connectorThickness: 5,
             children: statuses,
-            value: 0.35,
+            value: 0.5,
           ),
           SizedBox(
             height: 14,
@@ -714,8 +788,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                       style: TextStyle(
                           fontSize: displayWidth(context) * 0.028,
                           color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: inter
+                          fontWeight: FontWeight.bold,
+                          fontFamily: inter
                       ),
                     ),)),
               Expanded(

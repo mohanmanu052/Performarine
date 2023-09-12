@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -5,11 +6,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/models/get_user_config_model.dart';
+import 'package:performarine/models/vessel.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
+import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'dart:typed_data';
 
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/common_size_helper.dart';
@@ -28,7 +33,8 @@ import '../home_page.dart';
 import '../trip_analytics.dart';
 
 class ReportsModule extends StatefulWidget {
-  const ReportsModule({super.key});
+   ReportsModule({super.key,this.onScreenShotCaptureCallback});
+  VoidCallback? onScreenShotCaptureCallback;
 
   @override
   State<ReportsModule> createState() => _ReportsModuleState();
@@ -95,7 +101,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   List<Map<String, dynamic>> totalData = [];
   List<TripModel> durationGraphData = [];
   double chartWidth = 0.0;
-
+String? imageUrl;
   bool? isExpansionCollapse = false;
   bool isExpandedTile = false;
   bool? isStartDate = false;
@@ -117,10 +123,16 @@ class _ReportsModuleState extends State<ReportsModule> {
   bool? powerUsageButtonColor = false;
   bool? isCheckInternalServer = false;
   bool? isTripsAreAvailable = false;
+  String? capacity;
+  bool? isExportBtnClick=false;
+  String? builtYear;
+  String? registerNumber;
+List<Vessels>? vesselList;
+  final DatabaseService _databaseService = DatabaseService();
 
   //Convertion of date time into month/day/year format
   String convertIntoMonthDayYear(DateTime date) {
-    String dateString = DateFormat('MM/dd/yyyy').format(date);
+    String dateString = DateFormat('yyyy-MM-dd').format(date);
 
     Utils.customPrint(dateString);
     CustomLogger().logWithFile(
@@ -128,6 +140,34 @@ class _ReportsModuleState extends State<ReportsModule> {
 
     return dateString;
   }
+
+
+
+
+
+  void getVesselDetails(String id)async {
+    if(vesselList!=null&&vesselList!.isNotEmpty){
+    Vessels? vessel = vesselList!.firstWhere((vessel) => vessel.id == id, orElse: () => Vessels());
+   
+      CreateVessel? vesselData = await _databaseService
+        .getVesselFromVesselID(id);
+
+    imageUrl = vesselData!.imageURLs ?? '';
+
+
+  setState(() {
+       builtYear=vessel.builtYear.toString()??'-';
+  capacity=vessel.capacity??'-';
+  registerNumber=vessel.regNumber??'-';
+
+  });
+
+    }else{
+
+    }
+
+  }
+
 
   //Convertion of date time into year-month-day format
   String convertIntoYearMonthDay(DateTime date) {
@@ -141,7 +181,7 @@ class _ReportsModuleState extends State<ReportsModule> {
 
   //Convertion of date time into year-month-day format
   String convertIntoYearMonthDayToShow(DateTime date) {
-    String dateString = DateFormat('MM-dd-yyyy').format(date);
+    String dateString = DateFormat('yyyy-MM-dd').format(date);
 
     Utils.customPrint(dateString);
     CustomLogger().logWithFile(
@@ -193,9 +233,10 @@ class _ReportsModuleState extends State<ReportsModule> {
   String tripDate(String date) {
     String inputDate = date;
     DateTime dateTime = DateTime.parse(inputDate);
-    String formattedDate = DateFormat('MM-dd-yyyy').format(dateTime);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
     return formattedDate;
   }
+
 
   //returns duration with milli seconds
   dynamic durationWithMilli3(String timeString) {
@@ -286,6 +327,7 @@ class _ReportsModuleState extends State<ReportsModule> {
             Utils.customPrint("value 1 is: ${value.status}");
             setState(() {
               isVesselDataLoading = true;
+              vesselList=value.vessels??[];
             });
 
             Utils.customPrint(
@@ -298,6 +340,8 @@ class _ReportsModuleState extends State<ReportsModule> {
             }
             vesselData = List<DropdownItem>.from(value.vessels!.map(
                 (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
+
+                
 
             Utils.customPrint("vesselData: ${vesselData.length}");
             CustomLogger().logWithFile(
@@ -328,6 +372,44 @@ class _ReportsModuleState extends State<ReportsModule> {
     }
   }
 
+exportTripData()async{
+  isExportBtnClick=true;
+  setState(() {
+    
+  });
+
+Map<String,dynamic> body={};
+String token=commonProvider.loginModel?.token??'';
+if(selectedCaseType==1){
+  body={
+  		"case": 1,
+"vesselID": selectedVessel,
+
+    "startDate": pickStartDate,
+            "isExport": true,
+            "endDate" : pickEndDate,
+  };
+
+}else{
+    body={
+  		"case": 2,
+            "isExport": true,
+            		"tripIds": tripIdList
+  };
+
+}
+
+
+var data=await commonProvider.exportReportData(body, token, context, scaffoldKey);
+
+setState(() {
+  isExportBtnClick=false;
+
+});
+
+}
+
+
   //To get all trip details based on vessel Id
   getTripListData(String vesselID) async {
     try {
@@ -345,6 +427,10 @@ class _ReportsModuleState extends State<ReportsModule> {
               Level.info, "value of trip list: ${value.data} -> $page");
           tripIdList!.clear();
           dateTimeList!.clear();
+          distanceList!.clear();
+timeList!.clear();
+children!.clear();
+childrenValue!.clear();
           for (int i = 0; i < value.data!.length; i++) {
             isTripsAreAvailable = false;
             tripIdList!.add(value.data![i].id!);
@@ -506,7 +592,9 @@ class _ReportsModuleState extends State<ReportsModule> {
                         durationWithSeconds(
                                     triSpeedList[i].tripsByDate![j].duration!) >
                                 0
-                            ? triSpeedList[i].date
+                            ? 
+                            
+                          dateWithZeros(triSpeedList[i].date??"")  
                             : null,
                     yValueMapper: (TripModel tripData, _) =>
                         durationWithSeconds(
@@ -537,7 +625,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                     width: 0.4,
                     enableTooltip: true,
                     xValueMapper: (TripModel tripData, _) =>
-                        triSpeedList[i].date,
+                       dateWithZeros( triSpeedList[i].date??""),
                     yValueMapper: (TripModel tripData, _) =>
                         triSpeedList[i].tripsByDate![j].avgSpeed! > 0
                             ? triSpeedList[i].tripsByDate![j].avgSpeed!
@@ -563,7 +651,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                     enableTooltip: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, _) =>
-                        triSpeedList[i].date,
+                       dateWithZeros( triSpeedList[i].date??""),
                     yValueMapper: (TripModel tripData, _) =>
                         triSpeedList[i].tripsByDate![j].fuelConsumption! > 0
                             ? triSpeedList[i].tripsByDate![j].fuelConsumption!
@@ -593,7 +681,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                     enableTooltip: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, _) =>
-                        triSpeedList[i].date,
+                       dateWithZeros( triSpeedList[i].date??''),
                     yValueMapper: (TripModel tripData, _) =>
                         triSpeedList[i].tripsByDate![j].avgPower! > 0
                             ? triSpeedList[i].tripsByDate![j].avgPower!
@@ -726,7 +814,7 @@ class _ReportsModuleState extends State<ReportsModule> {
     String day = dateParts[0].padLeft(2, '0'); // '03'
     String month = dateParts[1].padLeft(2, '0'); // '03'
     String year = dateParts[2]; // '2023'
-    String formattedDate = '$day-$month-$year'; // '2023-03-03'
+    String formattedDate = '$year-$day-$month'; // '2023-03-03'
     return formattedDate;
   }
 
@@ -750,360 +838,417 @@ class _ReportsModuleState extends State<ReportsModule> {
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
 
-    return Screenshot(
-      controller: controller,
-      child: Scaffold(
-        backgroundColor: backgroundColor,
-        key: scaffoldKey,
-        body:         OrientationBuilder(
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      key: scaffoldKey,
+      body:         OrientationBuilder(
   builder: (context, orientation) {
     return 
-        
+      
 
-        
-        
-         SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: reportFilterBackColor),
-                  child: Theme(
-                    data: Theme.of(context)
-                        .copyWith(dividerColor: Colors.transparent),
-                    child: ExpansionTile(
-                      key: new Key(_key.toString()),
-                      maintainState: true,
-                      initiallyExpanded: isExpansionCollapse!,
-                      onExpansionChanged: (isExpanded) {
-                        setState(() {
-                          Utils.customPrint(
-                              "isExpansionCollapse : $isExpanded");
-                          CustomLogger().logWithFile(Level.info,
-                              "isExpansionCollapse : $isExpanded -> $page");
+      
+      
+       SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: reportTripsListBackColor),
+                child: Theme(
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
+                  child: ExpansionTile(
+                    key: new Key(_key.toString()),
+                    maintainState: true,
+                    initiallyExpanded: isExpansionCollapse!,
+                    onExpansionChanged: (isExpanded) {
+                      setState(() {
+                        Utils.customPrint(
+                            "isExpansionCollapse : $isExpanded");
+                        CustomLogger().logWithFile(Level.info,
+                            "isExpansionCollapse : $isExpanded -> $page");
 
-                          isExpansionCollapse = !isExpansionCollapse!;
-                          isExpandedTile = !isExpandedTile;
-                        });
-                      },
-                      collapsedBackgroundColor: dateBackgroundColor,
-                      title: Text(
-                        "Search & Filters",
-                        style: TextStyle(
+                        isExpansionCollapse = !isExpansionCollapse!;
+                        isExpandedTile = !isExpandedTile;
+                      });
+                    },
+                    collapsedBackgroundColor: reportDropdownColor,
+                    title: Text(
+                      "Search & Filters",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.043:displayWidth(context) * 0.022,
+                          fontFamily: outfit),
+                    ),
+                    trailing: isExpandedTile
+                        ? Icon(
+                            Icons.keyboard_arrow_down,
                             color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize: displayWidth(context) * 0.043,
-                            fontFamily: outfit),
-                      ),
-                      trailing: isExpandedTile
-                          ? Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.black,
-                            )
-                          : Icon(
-                              Icons.keyboard_arrow_up,
-                              color: Colors.black,
-                            ),
-                      children: [
-                        Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              isVesselDataLoading!
-                                  ? Container(
-                                      width: displayWidth(context) * 0.8,
+                          )
+                        : Icon(
+                            Icons.keyboard_arrow_up,
+                            color: Colors.black,
+                          ),
+                    children: [
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            isVesselDataLoading!
+                                ? Container(
+                                    width: displayWidth(context) * 0.8,
+                              child: IgnorePointer(
+                                ignoring: isBtnClick??false,
                                 child: DropdownButtonHideUnderline(
-                                  child: DropdownButtonFormField2<DropdownItem>(
-                                    isExpanded: true,
-                                    decoration: InputDecoration(
-                                      prefixIcon: Transform.scale(
-                                        scale: 0.5,
-                                        child: Image.asset('assets/icons/vessels.png', height: displayHeight(context) * 0.02,),
+                                  child: FormField(
+                                    builder: (state) {
+            return
+                                     DropdownButtonFormField2<DropdownItem>(
+                                      
+                                      isExpanded: true,
+                                      decoration: InputDecoration(
+                                                      //errorText: _showDropdownError1 ? 'Select Vessel' : null,
+                                                                
+                                        prefixIcon: Container(
+                                                                width: 50,
+                                          height:displayHeight(context) * 0.02 ,
+                                       child: Transform.scale(
+                                          scale: 0.5,
+                                          child: Image.asset('assets/icons/vessels.png',
+                                           height: displayHeight(context) * 0.02,),
+                                        )),
+                                        contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 0,vertical: orientation==Orientation.portrait?10:15),
+                                                                
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1.5,
+                                                color: Colors.transparent),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1.5,
+                                                color: Colors.transparent),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        errorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1.5,
+                                                color: Colors.red.shade300
+                                                    .withOpacity(0.7)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        errorStyle: TextStyle(
+                                            fontFamily: inter,
+                                            fontSize:
+                                            displayWidth(context) * 0.025),
+                                        focusedErrorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                width: 1.5,
+                                                color: Colors.red.shade300
+                                                    .withOpacity(0.7)),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        fillColor: reportDropdownColor,
+                                        filled: true,
+                                        hintText: "Filter By",
+                                        
+                                        hintStyle: TextStyle(
+                                            color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                                ? "Filter By" == 'User SubRole'
+                                                ? Colors.black54
+                                                : Colors.white
+                                                : Colors.black,
+                                            fontSize:
+                                            displayWidth(context) * 0.034,
+                                            fontFamily: outfit,
+                                            fontWeight: FontWeight.w300),
                                       ),
-                                      contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      errorStyle: TextStyle(
-                                          fontFamily: inter,
-                                          fontSize:
-                                          displayWidth(context) * 0.025),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
-                                      fillColor: reportDropdownColor,
-                                      filled: true,
-                                      hintText: "Filter By",
-                                      hintStyle: TextStyle(
-                                          color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                              ? "Filter By" == 'User SubRole'
-                                              ? Colors.black54
-                                              : Colors.white
-                                              : Colors.black,
-                                          fontSize:
-                                          displayWidth(context) * 0.034,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w300),
-                                    ),
-                                    hint: Text(
-                                      'Select Vessel',
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .brightness ==
-                                              Brightness.dark
-                                              ? "Select Vessel" ==
-                                              'User SubRole'
-                                              ? Colors.black54
-                                              : Colors.white
-                                              : Colors.black54,
-                                          fontSize:
-
-                                          orientation==Orientation.portrait?
-                                          displayWidth(context) *
-                                              0.032:displayWidth(context) *
-                                              0.022
-                                          ,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w400),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    value: selectedValue,
-                                    items: vesselData.map((item) {
-                                      return DropdownMenuItem<
-                                          DropdownItem>(
-                                        value: item,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                                          child: Text(
-                                            item.name!,
-                                            style: TextStyle(
-
-                                           fontSize:   orientation==Orientation.portrait?
-                                          displayWidth(context) *
-                                              0.032:displayWidth(context) *
-                                              0.022,
-                                                 
-                                                color: Theme.of(context)
-                                                    .brightness ==
-                                                    Brightness.dark
-                                                    ? "Select Vessel" ==
-                                                    'User SubRole'
-                                                    ? Colors.black
-                                                    : Colors.white
-                                                    : Colors.black,
-                                                fontWeight:
-                                                FontWeight.w500),
-                                            overflow:
-                                            TextOverflow.ellipsis,
-                                          ),
+                                      hint:                                          Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin:EdgeInsets.only(left: 15),
+                                  
+                                                                                                                       
+                                                                
+                                        child: Text(
+                                          'Select Vessel *',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                              // color: Theme.of(context)
+                                              //     .brightness ==
+                                              //     Brightness.dark
+                                              //     ? "Select Vessel" ==
+                                              //     'User SubRole'
+                                              //     ? Colors.black54
+                                              //     : Colors.white
+                                              //     : Colors.black54,
+                                              fontSize:
+                                      
+                                              orientation==Orientation.portrait?
+                                              displayWidth(context) *
+                                                  0.032:displayWidth(context) *
+                                                  0.022
+                                              ,
+                                              fontFamily: outfit,
+                                              fontWeight: FontWeight.w400),
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                      );
-                                    }).toList(),
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return 'Select Vessel';
-                                      }
-                                      return null;
+                                      ),
+                                      value: selectedValue,
+                                      items: vesselData.map((item) {
+                                        return DropdownMenuItem<
+                                            DropdownItem>(
+                                          value: item,
+                                          child: Container(
+                                        margin:EdgeInsets.only(left: 15),
+                                            child: Text(
+                                              item.name!,
+                                              style: TextStyle(
+                                                                
+                                             fontSize:   orientation==Orientation.portrait?
+                                            displayWidth(context) *
+                                                0.032:displayWidth(context) *
+                                                0.022,
+                                                   
+                                                  color: Theme.of(context)
+                                                      .brightness ==
+                                                      Brightness.dark
+                                                      ? "Select Vessel" ==
+                                                      'User SubRole'
+                                                      ? Colors.black
+                                                      : Colors.white
+                                                      : Colors.black,
+                                                  fontWeight:
+                                                  FontWeight.w500),
+                                              overflow:
+                                              TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return 'Select Vessel';
+                                        }
+                                        return null;
+                                      },
+                                      onChanged: (item) {
+                                                                
+                                        if(item!=null){
+                                          if (item != null) {
+                                                // Remove error for the first dropdown
+                                                _formKey.currentState?.validate();
+                                              }
+                                        }
+                                        getVesselDetails(item?.id??"");
+                                        Utils.customPrint(
+                                            "id is: ${item?.id} ");
+                                        CustomLogger().logWithFile(
+                                            Level.info,
+                                            "id is: ${item?.id}-> $page");
+                                                                
+                                        parentValue = false;
+                                        selectedVessel = item!.id;
+                                        selectedVesselName = item.name;
+                                                                
+                                        if (mounted) {
+                                          setState(() {
+                                            isTripIdListLoading = false;
+                                            isSHowGraph = false;
+                                            avgSpeed = null;
+                                            avgDuration = null;
+                                            avgFuelConsumption = null;
+                                            avgPower = null;
+                                            triSpeedList.clear();
+                                            tripList.clear();
+                                            duration1 = null;
+                                            avgSpeed1 = null;
+                                            fuelUsage = null;
+                                            powerUsage = null;
+                                            finalData.clear();
+                                            durationGraphData.clear();
+                                                                
+                                            durationColumnSeriesData
+                                                .clear();
+                                            avgSpeedColumnSeriesData
+                                                .clear();
+                                            fuelUsageColumnSeriesData
+                                                .clear();
+                                            powerUsageColumnSeriesData
+                                                .clear();
+                                            selectedTripIdList!.clear();
+                                            selectedTripLabelList!.clear();
+                                          });
+                                        }
+                                                                
+                                        dateTimeList!.clear();
+                                        children!.clear();
+                                        getTripListData(item.id!);
+                                      },
+                                      buttonStyleData:  ButtonStyleData(
+                                        padding: EdgeInsets.only(right: 0),
+                                      ),
+                                      iconStyleData:  IconStyleData(
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_down_rounded,
+                                          color: Colors.black,
+                                        ),
+                                        iconSize: displayHeight(context) * 0.035,
+                                      ),
+                                      dropdownStyleData: DropdownStyleData(
+                                        maxHeight: displayHeight(context) * 0.25,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(14),
+                                          // color: backgroundColor,
+                                        ),
+                                        offset: const Offset(0, 0),
+                                        scrollbarTheme: ScrollbarThemeData(
+                                          radius: const Radius.circular(20),
+                                          thickness: MaterialStateProperty.all<double>(6),
+                                          thumbVisibility: MaterialStateProperty.all<bool>(true),
+                                        ),
+                                      ),
+                                      menuItemStyleData: MenuItemStyleData(
+                                        padding: EdgeInsets.symmetric(horizontal: 0),
+                                      ),
+                                    
+                                    );
                                     },
-                                    onChanged: (item) {
-                                      Utils.customPrint(
-                                          "id is: ${item?.id} ");
-                                      CustomLogger().logWithFile(
-                                          Level.info,
-                                          "id is: ${item?.id}-> $page");
-
-                                      parentValue = false;
-                                      selectedVessel = item!.id;
-                                      selectedVesselName = item.name;
-                                      if (mounted) {
-                                        setState(() {
-                                          isTripIdListLoading = false;
-                                          isSHowGraph = false;
-                                          avgSpeed = null;
-                                          avgDuration = null;
-                                          avgFuelConsumption = null;
-                                          avgPower = null;
-                                          triSpeedList.clear();
-                                          tripList.clear();
-                                          duration1 = null;
-                                          avgSpeed1 = null;
-                                          fuelUsage = null;
-                                          powerUsage = null;
-                                          finalData.clear();
-                                          durationGraphData.clear();
-
-                                          durationColumnSeriesData
-                                              .clear();
-                                          avgSpeedColumnSeriesData
-                                              .clear();
-                                          fuelUsageColumnSeriesData
-                                              .clear();
-                                          powerUsageColumnSeriesData
-                                              .clear();
-                                          selectedTripIdList!.clear();
-                                          selectedTripLabelList!.clear();
-                                        });
-                                      }
-
-                                      dateTimeList!.clear();
-                                      children!.clear();
-                                      getTripListData(item.id!);
-                                    },
-                                    buttonStyleData:  ButtonStyleData(
-                                      padding: EdgeInsets.only(right: 0),
-                                    ),
-                                    iconStyleData:  IconStyleData(
-                                      icon: Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        color: Colors.black,
-                                      ),
-                                      iconSize: displayHeight(context) * 0.035,
-                                    ),
-                                    dropdownStyleData: DropdownStyleData(
-                                      maxHeight: displayHeight(context) * 0.25,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(14),
-                                        // color: backgroundColor,
-                                      ),
-                                      offset: const Offset(0, 0),
-                                      scrollbarTheme: ScrollbarThemeData(
-                                        radius: const Radius.circular(20),
-                                        thickness: MaterialStateProperty.all<double>(6),
-                                        thumbVisibility: MaterialStateProperty.all<bool>(true),
-                                      ),
-                                    ),
-                                    menuItemStyleData: MenuItemStyleData(
-                                      padding: EdgeInsets.symmetric(horizontal: 0),
-                                    ),
                                   ),
                                 ),
-                                    )
-                                  : Container(
-                                      height: displayHeight(context) * 0.1,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  circularProgressColor),
-                                        ),
+                              ),
+                                  )
+                                : Container(
+                                    height: displayHeight(context) * 0.1,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                blueColor),
                                       ),
                                     ),
-                              SizedBox(
-                                height:orientation==Orientation.portrait?
-                                
-                                 displayHeight(context) * 0.018:displayHeight(context) * 0.050,
-                              ),
-                              Container(
-                                width: displayWidth(context) * 0.8,
+                                  ),
+                            SizedBox(
+                              height:orientation==Orientation.portrait?
+                              
+                               displayHeight(context) * 0.018:displayHeight(context) * 0.050,
+                            ),
+                            Container(
+                              width: displayWidth(context) * 0.8,
+                              child: IgnorePointer(
+                                ignoring: isBtnClick??false,
                                 child: DropdownButtonHideUnderline(
                                   
                                   child: DropdownButtonFormField2<String>(
-                                    
+                              
                                     isExpanded: true,
                                     decoration: InputDecoration(
-                                      prefixIcon: Transform.scale(
+                                                   // errorText: _showDropdownError2 ? 'Select Filters' : null,
+                              
+                                      prefixIcon: Container(
+                                        height:displayHeight(context) * 0.02 ,
+                                         width:50 ,
+                              
+                                    child:  Transform.scale(
                                         scale: 0.5,
                                         child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
-                                      ),
+                                      )),
                                       contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 10,vertical: orientation==Orientation.portrait?8:15),
+                                      EdgeInsets.symmetric(horizontal: 0,vertical: orientation==Orientation.portrait?10:15),
                                       focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
                                               color: Colors.transparent),
                                           borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
+                                              Radius.circular(15))),
                                       enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
                                               color: Colors.transparent),
                                           borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
+                                              Radius.circular(15))),
                                       errorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
                                               color: Colors.red.shade300
                                                   .withOpacity(0.7)),
                                           borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
+                                              Radius.circular(15))),
                                       errorStyle: TextStyle(
                                           fontFamily: inter,
                                           fontSize:
-                                          displayWidth(context) * 0.025),
+                                          displayWidth(context) * 0.034,
+                                          
+                                          
+                                          ),
                                       focusedErrorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1.5,
                                               color: Colors.red.shade300
                                                   .withOpacity(0.7)),
                                           borderRadius: BorderRadius.all(
-                                              Radius.circular(8))),
+                                              Radius.circular(15))),
                                       fillColor: reportDropdownColor,
                                       filled: true,
                                       //hintText: "Filter By",
                                       hintStyle: TextStyle(
-                                          color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                              ? "Filter By" == 'User SubRole'
-                                              ? Colors.black54
-                                              : Colors.white
-                                              : Colors.black,
+                                        color: Colors.black,
+                                          // color: Theme.of(context).brightness ==
+                                          //     Brightness.dark
+                                          //     ? "Filter By" == 'User SubRole'
+                                          //     ? Colors.black54
+                                          //     : Colors.white
+                                          //     : Colors.black,
                                           fontSize:orientation==
                                       Orientation.portrait?    displayWidth(context) * 0.034:displayWidth(context) * 0.034,
                                           fontFamily: outfit,
                                           fontWeight: FontWeight.w300),
                                     ),
-                                    hint: Text(
-                                      'Filter By',
-                                         textAlign: TextAlign.center,
+                                    hint: Container(
+                                      alignment: Alignment.centerLeft,
+                                      margin:EdgeInsets.only(left: 15),
+                              
+                                      child: Text(
+                                        
+                                        'Filter By *',
+                                      
+                                        style: TextStyle(
+                              color: Colors.black,
+                                            // color: Theme.of(context)
+                                            //     .brightness ==
+                                            //     Brightness.dark
+                                            //     ? "Filter By" ==
+                                            //     'User SubRole'
+                                            //     ? Colors.black54
+                                            //     : Colors.white
+                                            //     : Colors.black54,
+                                            fontSize:
                                     
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .brightness ==
-                                              Brightness.dark
-                                              ? "Filter By" ==
-                                              'User SubRole'
-                                              ? Colors.black54
-                                              : Colors.white
-                                              : Colors.black54,
-                                          fontSize:orientation==Orientation.portrait?
-                                          displayWidth(context) *
-                                              0.032:displayWidth(context) *
-                                              0.022,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w400),
-                                      overflow: TextOverflow.ellipsis,
+                                            orientation==Orientation.portrait?
+                                            displayWidth(context) *
+                                                0.032:displayWidth(context) *
+                                                0.022
+                                            ,
+                                    
+                                            fontFamily: outfit,
+                                            fontWeight: FontWeight.w400),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                     value: selectedFilter,
+                                  
                                     items: filters.map((item) {
                                       return DropdownMenuItem<String>(
                                         value: item,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                              
+                                        child: Container(
+                                      margin:EdgeInsets.only(left: 15),
                                           child: Text(
                                             item,
                                             style: TextStyle(
@@ -1111,7 +1256,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                           displayWidth(context) *
                                               0.032:displayWidth(context) *
                                               0.022,
-
+                              
                                                 // fontSize: displayWidth(context) *
                                                 //     0.0346,
                                                 color: Theme.of(context)
@@ -1135,6 +1280,12 @@ class _ReportsModuleState extends State<ReportsModule> {
                                       return null;
                                     },
                                     onChanged: (item) {
+                              
+                                                                                  if (item != null) {
+                                              // Remove error for the second dropdown
+                                              _formKey.currentState?.validate();
+                                            }
+
                                       if (item == "Filter by Date") {
                                         setState(() {
                                           selectedCaseType = 1;
@@ -1189,227 +1340,216 @@ class _ReportsModuleState extends State<ReportsModule> {
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height: displayWidth(context) * 0.04,
-                        ),
-                        selectedCaseType == 0
-                            ? Container()
-                            : selectedCaseType == 1
-                                ? filterByDate(context)!
-                                : filterByTrip(context,orientation)!,
-                        SizedBox(
-                          height: displayWidth(context) * 0.04,
-                        ),
-                        isBtnClick ?? false
-                            ? Container(
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color: circularProgressColor,
-                                  ),
+                      ),
+                      SizedBox(
+                        height: displayWidth(context) * 0.04,
+                      ),
+                      selectedCaseType == 0
+                          ? Container()
+                          : selectedCaseType == 1
+                              ? filterByDate(context,orientation)!
+                              : filterByTrip(context,orientation)!,
+                      SizedBox(
+                        height: displayWidth(context) * 0.04,
+                      ),
+                      isBtnClick ?? false
+                          ? Container(
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: blueColor,
                                 ),
-                              )
-                            : Column(
-                                children: [
-                                  CommonButtons.getAcceptButton(
-                                    "Generate Report",
-                                    context,
-                                    blueColor,
-                                    () {
-                                      if (_formKey.currentState!.validate()) {
-                                        setState(() {
-                                          isSHowGraph = false;
-                                          isBtnClick = true;
-                                          isExpansionCollapse = false;
-                                          isExpandedTile = true;
-                                          avgSpeed = null;
-                                          avgDuration = null;
-                                          avgFuelConsumption = null;
-                                          avgPower = null;
-                                          triSpeedList.clear();
-                                          tripList.clear();
-                                          duration1 = null;
-                                          avgSpeed1 = null;
-                                          fuelUsage = null;
-                                          powerUsage = null;
-                                          finalData.clear();
-                                          durationGraphData.clear();
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                CommonButtons.getAcceptButton(
+                                  "Generate Report",
+                                  
+                                  context,
+                                  blueColor,
 
-                                          durationColumnSeriesData.clear();
-                                          avgSpeedColumnSeriesData.clear();
-                                          fuelUsageColumnSeriesData.clear();
-                                          powerUsageColumnSeriesData.clear();
-                                        });
+                                  () {
+                                    if (_formKey.currentState!.validate()) {
+                                      setState(() {
+                                        isSHowGraph = false;
+                                        isBtnClick = true;
+                                        isExpansionCollapse = false;
+                                        isExpandedTile = true;
+                                        avgSpeed = null;
+                                        avgDuration = null;
+                                        avgFuelConsumption = null;
+                                        avgPower = null;
+                                        triSpeedList.clear();
+                                        tripList.clear();
+                                        duration1 = null;
+                                        avgSpeed1 = null;
+                                        fuelUsage = null;
+                                        powerUsage = null;
+                                        finalData.clear();
+                                        durationGraphData.clear();
 
-                                        // _collapseExpansionTile();
-                                        String? startDate = "";
-                                        String? endDate = "";
-                                        String? startDateToDispaly = "";
-                                        String? endDateToDispaly = "";
-                                        totalDuration = 0;
-                                        totalSpeed = 0;
-                                        totalFuelConsumption = 0;
-                                        totalAvgPower = 0;
+                                        durationColumnSeriesData.clear();
+                                        avgSpeedColumnSeriesData.clear();
+                                        fuelUsageColumnSeriesData.clear();
+                                        powerUsageColumnSeriesData.clear();
+                                      });
 
-                                        if (selectedCaseType == 1) {
-                                          if (focusedDayString!.isNotEmpty ||
-                                              lastFocusedDayString!
-                                                  .isNotEmpty) {
-                                            startDate = convertIntoYearMonthDay(
-                                                selectedDateForStartDate);
-                                            endDate = convertIntoYearMonthDay(
-                                                selectedDateForEndDate);
-                                            startDateToDispaly =
-                                                convertIntoYearMonthDayToShow(
-                                                    selectedDateForStartDate);
-                                            endDateToDispaly =
-                                                convertIntoYearMonthDayToShow(
-                                                    selectedDateForEndDate);
-                                            selectedTripsAndDateDetails =
-                                                "$startDateToDispaly to $endDateToDispaly";
-                                          }
+                                      // _collapseExpansionTile();
+                                      String? startDate = "";
+                                      String? endDate = "";
+                                      String? startDateToDispaly = "";
+                                      String? endDateToDispaly = "";
+                                      totalDuration = 0;
+                                      totalSpeed = 0;
+                                      totalFuelConsumption = 0;
+                                      totalAvgPower = 0;
 
-                                          if ((selectedStartDateFromCal !=
-                                                      null &&
-                                                  selectedEndDateFromCal !=
-                                                      null) &&
-                                              selectedDateForEndDate!.isBefore(
-                                                  selectedDateForStartDate)) {
+                                      if (selectedCaseType == 1) {
+                                        if (focusedDayString!.isNotEmpty ||
+                                            lastFocusedDayString!
+                                                .isNotEmpty) {
+                                          startDate = convertIntoYearMonthDay(
+                                              selectedDateForStartDate);
+                                          endDate = convertIntoYearMonthDay(
+                                              selectedDateForEndDate);
+                                          startDateToDispaly =
+                                              convertIntoYearMonthDayToShow(
+                                                  selectedDateForStartDate);
+                                          endDateToDispaly =
+                                              convertIntoYearMonthDayToShow(
+                                                  selectedDateForEndDate);
+                                          selectedTripsAndDateDetails =
+                                              "$startDateToDispaly to $endDateToDispaly";
+                                        }
+
+                                        if ((selectedStartDateFromCal !=
+                                                    null &&
+                                                selectedEndDateFromCal !=
+                                                    null) &&
+                                            selectedDateForEndDate!.isBefore(
+                                                selectedDateForStartDate)) {
+                                          isBtnClick = false;
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'End date ($endDate) should be greater than start date($startDate)',
+                                              duration: 2);
+                                          return;
+                                        }
+                                        if ((isSelectedStartDay! &&
+                                            isSelectedEndDay!)) {
+                                          getReportsData(selectedCaseType!,
+                                              startDate: startDate,
+                                              endDate: endDate,
+                                              vesselID: selectedVessel);
+                                        } else if (!isSelectedStartDay!) {
+                                          setState(() {
                                             isBtnClick = false;
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                    'End date ($endDate) should be greater than start date($startDate)',
-                                                duration: 2);
-                                            return;
-                                          }
-                                          if ((isSelectedStartDay! &&
-                                              isSelectedEndDay!)) {
-                                            getReportsData(selectedCaseType!,
-                                                startDate: startDate,
-                                                endDate: endDate,
-                                                vesselID: selectedVessel);
-                                          } else if (!isSelectedStartDay!) {
-                                            setState(() {
-                                              isBtnClick = false;
-                                            });
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                    'Please select the start date',
-                                                duration: 2);
-                                          } else if (!isSelectedEndDay!) {
-                                            setState(() {
-                                              isBtnClick = false;
-                                            });
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                    'Please select the end date',
-                                                duration: 2);
-                                          }
-                                        } else if (selectedCaseType == 2) {
-                                          if (selectedTripIdList?.isNotEmpty ??
+                                          });
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'Please select the start date',
+                                              duration: 2);
+                                        } else if (!isSelectedEndDay!) {
+                                          setState(() {
+                                            isBtnClick = false;
+                                          });
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'Please select the end date',
+                                              duration: 2);
+                                        }
+                                      } else if (selectedCaseType == 2) {
+                                        if (selectedTripIdList?.isNotEmpty ??
+                                            false) {
+                                          selectedTripLabelList!.sort((a, b) {
+                                            int numberA =
+                                                int.parse(a.split(" ")[1]);
+                                            int numberB =
+                                                int.parse(b.split(" ")[1]);
+                                            return numberA.compareTo(numberB);
+                                          });
+                                          getReportsData(selectedCaseType!,
+                                              selectedTripListID:
+                                                  selectedTripIdList);
+                                        } else {
+                                          setState(() {
+                                            isBtnClick = false;
+                                          });
+                                          if (selectedTripIdList?.isEmpty ??
                                               false) {
-                                            selectedTripLabelList!.sort((a, b) {
-                                              int numberA =
-                                                  int.parse(a.split(" ")[1]);
-                                              int numberB =
-                                                  int.parse(b.split(" ")[1]);
-                                              return numberA.compareTo(numberB);
-                                            });
-                                            getReportsData(selectedCaseType!,
-                                                selectedTripListID:
-                                                    selectedTripIdList);
-                                          } else {
-                                            setState(() {
-                                              isBtnClick = false;
-                                            });
-                                            if (selectedTripIdList?.isEmpty ??
-                                                false) {
-                                              Utils.showSnackBar(context,
-                                                  scaffoldKey: scaffoldKey,
-                                                  message:
-                                                      'Please select the Trip Id',
-                                                  duration: 2);
-                                            }
+                                            Utils.showSnackBar(context,
+                                                scaffoldKey: scaffoldKey,
+                                                message:
+                                                    'Please select the Trip Id',
+                                                duration: 2);
                                           }
                                         }
                                       }
-                                    },
-                                    displayWidth(context) * 0.8,
-                                    displayHeight(context) * 0.065,
-                                    Colors.grey.shade400,
-                                    Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.white,
-                                    displayHeight(context) * 0.021,
-                                    blueColor,
-                                    '',
-                                  ),
-                                  !isSHowGraph!
-                                      ? Padding(
-                                          padding: EdgeInsets.only(
-                                            top: displayWidth(context) * 0.01,
-                                          ),
-                                          child: GestureDetector(
-                                              onTap: () async {
-                                                final image =
-                                                    await controller.capture();
+                                    }
+                                    else{
+                                    }
+                                  },
 
-                                                Utils.customPrint(
-                                                    "Image is: ${image.toString()}");
-                                                CustomLogger().logWithFile(
-                                                    Level.info,
-                                                    "User navigating to user feedback screen -> $page");
-
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            FeedbackReport(
-                                                              imagePath: image
-                                                                  .toString(),
-                                                              uIntList: image,
-                                                            )));
-                                              },
-                                              child: UserFeedback()
-                                                  .getUserFeedback(context)),
-                                        )
-                                      : Container(),
-                                ],
-                              ),
-                        SizedBox(
-                          height: displayWidth(context) * 0.04,
-                        )
-                      ],
-                    ),
+                               orientation==Orientation.portrait?   displayWidth(context) * 0.8:displayWidth(context) * 0.4,
+                                 orientation==Orientation.portrait? displayHeight(context) * 0.065:displayHeight(context) * 0.090,
+                                  Colors.grey.shade400,
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Colors.white,
+                                  displayHeight(context) * 0.021,
+                                  blueColor,
+                                  '',
+                                ),
+                                !isSHowGraph!
+                                    ? Padding(
+                                        padding: EdgeInsets.only(
+                                          top: displayWidth(context) * 0.01,
+                                        ),
+                                        child: GestureDetector(
+                                            onTap:  widget.onScreenShotCaptureCallback,
+                                            child: UserFeedback()
+                                                .getUserFeedback(context)),
+                                      )
+                                    : Container(),
+                              ],
+                            ),
+                      SizedBox(
+                        height: displayWidth(context) * 0.04,
+                      )
+                    ],
                   ),
                 ),
-                !isSHowGraph!
-                    ? Container()
-                    : isReportDataLoading!
-                        ? Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(
-                                  left: displayWidth(context) * 0.05,
-                                  right: displayWidth(context) * 0.05,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      height: displayWidth(context) * 0.055,
-                                    ),
-                                    vesselDetails(context),
-                                    SizedBox(
-                                      height: displayWidth(context) * 0.04,
-                                    ),
-                                    Row(
+              ),
+              !isSHowGraph!
+                  ? Container()
+                  : isReportDataLoading!
+                      ? Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(
+                                left: displayWidth(context) * 0.03,
+                                right: displayWidth(context) * 0.03,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: displayWidth(context) * 0.055,
+                                  ),
+                                  vesselDetails(context,orientation),
+                                  SizedBox(
+                                    height: displayWidth(context) * 0.04,
+                                  ),
+                                  Visibility(
+                                    visible: selectedCaseType==1?true:false,
+                                    child: Row(
                                       children: [
                                         Text(
                                           "$selectedTripsAndDateString",
@@ -1422,6 +1562,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                                         SizedBox(
                                           width: displayWidth(context) * 0.05,
                                         ),
+                                      
                                         Expanded(
                                           child: Text(
                                             selectedCaseType == 1
@@ -1438,263 +1579,309 @@ class _ReportsModuleState extends State<ReportsModule> {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(
-                                      height: displayWidth(context) * 0.06,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              selectedButton = 'trip duration';
-                                              tripDurationButtonColor = true;
-                                              avgSpeedButtonColor = false;
-                                              fuelUsageButtonColor = false;
-                                              powerUsageButtonColor = false;
-                                            });
-                                          },
-                                          child: Container(
-                                            width: displayWidth(context) * 0.20,
-                                            height:
-                                                displayHeight(context) * 0.041,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: !tripDurationButtonColor!
-                                                    ? reportsNewTabColor
-                                                    : Color(0xff2663DB)),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(6.0),
-                                              child: Center(
-                                                child: Text(
-                                                  "Trip Duration",
-                                                  style: TextStyle(
-                                                      color:
-                                                          tripDurationButtonColor!
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                              //fontSize: 11,
-                                                      fontSize: displayWidth(context) * 0.025,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
+                                  ),
+                                  SizedBox(
+                                    height: displayWidth(context) * 0.06,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedButton = 'trip duration';
+                                            tripDurationButtonColor = true;
+                                            avgSpeedButtonColor = false;
+                                            fuelUsageButtonColor = false;
+                                            powerUsageButtonColor = false;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: displayWidth(context) * 0.20,
+                                          height:orientation==Orientation.portrait?
+                                              displayHeight(context) * 0.041:displayHeight(context) * 0.099,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              color: !tripDurationButtonColor!
+                                                  ? reportsNewTabColor
+                                                  : Color(0xff2663DB)),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(6.0),
+                                            child: Center(
+                                              child: Text(
+                                                "Trip Duration",
+                                                style: TextStyle(
+                                                    color:
+                                                        tripDurationButtonColor!
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                            //fontSize: 11,
+                                                    fontSize: displayWidth(context) * 0.025,
+                                                    fontWeight:
+                                                        FontWeight.w500),
                                               ),
                                             ),
                                           ),
                                         ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              selectedButton = 'avg speed';
-                                              tripDurationButtonColor = false;
-                                              avgSpeedButtonColor = true;
-                                              fuelUsageButtonColor = false;
-                                              powerUsageButtonColor = false;
-                                            });
-                                          },
-                                          child: Container(
-                                            width: displayWidth(context) * 0.18,
-                                            height:
-                                                displayHeight(context) * 0.041,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: !avgSpeedButtonColor!
-                                                    ? reportsNewTabColor
-                                                    : Color(0xff2663DB)),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(6.0),
-                                              child: Center(
-                                                child: Text(
-                                                  "Avg Speed",
-                                                  style: TextStyle(
-                                                      color:
-                                                          avgSpeedButtonColor!
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                      fontSize: displayWidth(context) * 0.025,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              selectedButton = 'fuel usage';
-                                              tripDurationButtonColor = false;
-                                              avgSpeedButtonColor = false;
-                                              fuelUsageButtonColor = true;
-                                              powerUsageButtonColor = false;
-                                            });
-                                          },
-                                          child: Container(
-                                            width: displayWidth(context) * 0.20,
-                                            height:
-                                                displayHeight(context) * 0.042,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: !fuelUsageButtonColor!
-                                                    ? reportsNewTabColor
-                                                    : Color(0xff2663DB)),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(6.0),
-                                              child: Center(
-                                                child: Text(
-                                                  "Fuel Usage",
-                                                  style: TextStyle(
-                                                      color:
-                                                          fuelUsageButtonColor!
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                      fontSize: displayWidth(context) * 0.025,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              selectedButton = 'power usage';
-                                              tripDurationButtonColor = false;
-                                              avgSpeedButtonColor = false;
-                                              fuelUsageButtonColor = false;
-                                              powerUsageButtonColor = true;
-                                            });
-                                          },
-                                          child: Container(
-                                            width: displayWidth(context) * 0.22,
-                                            height:
-                                                displayHeight(context) * 0.042,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: !powerUsageButtonColor!
-                                                    ? reportsNewTabColor
-                                                    : Color(0xff2663DB)),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(6.0),
-                                              child: Center(
-                                                child: Text(
-                                                  "Power Usage",
-                                                  style: TextStyle(
-                                                      color:
-                                                          powerUsageButtonColor!
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                      fontSize: displayWidth(context) * 0.025,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: displayWidth(context) * 0.02,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              isReportDataLoading!
-                                  ? buildGraph(context)
-                                  : Center(
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                circularProgressColor),
                                       ),
-                                    ),
-                              table(context)!,
-                              SizedBox(
-                                height: displayWidth(context) * 0.03,
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedButton = 'avg speed';
+                                            tripDurationButtonColor = false;
+                                            avgSpeedButtonColor = true;
+                                            fuelUsageButtonColor = false;
+                                            powerUsageButtonColor = false;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: displayWidth(context) * 0.18,
+                                          height:orientation==Orientation.portrait?
+                                              displayHeight(context) * 0.041:displayHeight(context) * 0.099,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              color: !avgSpeedButtonColor!
+                                                  ? reportsNewTabColor
+                                                  : Color(0xff2663DB)),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(6.0),
+                                            child: Center(
+                                              child: Text(
+                                                "Avg Speed",
+                                                style: TextStyle(
+                                                    color:
+                                                        avgSpeedButtonColor!
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                    fontSize: displayWidth(context) * 0.025,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedButton = 'fuel usage';
+                                            tripDurationButtonColor = false;
+                                            avgSpeedButtonColor = false;
+                                            fuelUsageButtonColor = true;
+                                            powerUsageButtonColor = false;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: displayWidth(context) * 0.20,
+                                          height:orientation==Orientation.portrait?
+                                              displayHeight(context) * 0.042:displayHeight(context) * 0.099,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              color: !fuelUsageButtonColor!
+                                                  ? reportsNewTabColor
+                                                  : Color(0xff2663DB)),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(6.0),
+                                            child: Center(
+                                              child: Text(
+                                                "Fuel Usage",
+                                                style: TextStyle(
+                                                    color:
+                                                        fuelUsageButtonColor!
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                    fontSize: displayWidth(context) * 0.025,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedButton = 'power usage';
+                                            tripDurationButtonColor = false;
+                                            avgSpeedButtonColor = false;
+                                            fuelUsageButtonColor = false;
+                                            powerUsageButtonColor = true;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: displayWidth(context) * 0.22,
+                                          height:orientation==Orientation.portrait?
+                                              displayHeight(context) * 0.042:displayHeight(context) * 0.099,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              color: !powerUsageButtonColor!
+                                                  ? reportsNewTabColor
+                                                  : Color(0xff2663DB)),
+                                          child: Padding(
+                                            padding: EdgeInsets.all(6.0),
+                                            child: Center(
+                                              child: Text(
+                                                "Power Usage",
+                                                style: TextStyle(
+                                                    color:
+                                                        powerUsageButtonColor!
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                    fontSize: displayWidth(context) * 0.025,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: displayWidth(context) * 0.02,
+                                  ),
+                                ],
                               ),
-                              Container(
-                                height: displayHeight(context) * 0.06,
-                                width: displayWidth(context) * 0.8,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.grey),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.file_download_outlined,
-                                      color: Colors.white,
-                                      size: 25,
+                            ),
+                            isReportDataLoading!
+                                ? buildGraph(context,orientation)
+                                : Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor:
+                                          AlwaysStoppedAnimation<Color>(
+                                              blueColor),
                                     ),
-                                    SizedBox(
-                                      width: displayWidth(context) * 0.01,
-                                    ),
-                                    commonText(
-                                      context: context,
-                                      text: 'Export Complete Report',
-                                      fontWeight: FontWeight.w600,
-                                      textColor: Colors.white,
-                                      textSize: displayWidth(context) * 0.041,
-                                    ),
-                                  ],
+                                  ),
+                            table(context)!,
+                            SizedBox(
+                              height: displayWidth(context) * 0.03,
+                            ),
+                            SizedBox(
+                                  height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
+
+                              child: isExportBtnClick??false?Center(
+                            child:    CircularProgressIndicator(color: blueColor,)
+
+                              ):
+                              
+                              
+                              
+                              InkWell(
+                                onTap: (){
+                                  exportTripData();
+                                
+                                },
+                                child: 
+                                
+                                
+                                Container(
+                                  height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
+                                  width: displayWidth(context) * 0.8,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: blueColor),
+                                  child:
+                                  
+                                  
+                                  
+                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.file_download_outlined,
+                                        color: Colors.white,
+                                        size: 25,
+                                      ),
+                                      SizedBox(
+                                        width: displayWidth(context) * 0.01,
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: 'Export Complete Report',
+                                        
+                                        fontWeight: FontWeight.w600,
+                                        textColor: Colors.white,
+                                        textSize: displayWidth(context) * 0.041,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: displayWidth(context) * 0.025,
-                                ),
-                                child: GestureDetector(
-                                    onTap: () async {
-                                      final image = await controller.capture();
-                                      Utils.customPrint(
-                                          "Image is: ${image.toString()}");
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  FeedbackReport(
-                                                    imagePath: image.toString(),
-                                                    uIntList: image,
-                                                  )));
-                                    },
-                                    child: UserFeedback()
-                                        .getUserFeedback(context)),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: displayWidth(context) * 0.025,
                               ),
-                            ],
-                          )
-                        : Container(),
-              ],
-            ),
+                              child: GestureDetector(
+                                  onTap:widget.onScreenShotCaptureCallback,
+                                  child: UserFeedback()
+                                      .getUserFeedback(context)),
+                            ),
+                          ],
+                        )
+                      : Container(),
+            ],
           ),
+        ),
   
-        );
+      );
   })
-      ),
     );
   }
 
   //Vessel Details in report screen
-  Widget vesselDetails(BuildContext context) {
+  Widget vesselDetails(BuildContext context,Orientation orentation) {
     return Container(
-      width: displayWidth(context) * 0.9,
-      height: displayHeight(context) * 0.14,
+      //width: displayWidth(context) * 0.99,
+    height:orentation==Orientation.portrait? displayHeight(context) * 0.14:displayHeight(context) * 0.30,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
-          color: reportsNewTabColor),
+          color: selectDayBackgroundColor),
       child: Row(
         children: [
-          Image.asset(
-            "assets/images/reports-boat.png",
-            height: displayHeight(context) * 0.1,
-            width: displayWidth(context) * 0.25,
-          ),
+
+
+          Container(
+            
+            alignment: Alignment.center,
+            margin: EdgeInsets.only(left: 8,top: 2),
+            height: orentation==Orientation.portrait?displayHeight(context) * 0.1:displayHeight(context) * 0.5,
+            width: displayWidth(context) * 0.19,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18),
+                      image: imageUrl!=null&&imageUrl!.isNotEmpty?
+                      DecorationImage(  
+                        fit: BoxFit.cover,
+                      
+                          image:
+                          FileImage(
+                          File(imageUrl??''))):                     
+                            DecorationImage(
+                            fit: BoxFit.cover,
+                            image:AssetImage("assets/images/vessel_default_img.png",)
+
+
+                      
+                      
+                      
+                  ),
+                )),
+          
+          
+        //   Image.asset(
+        //  imageUrl??   "assets/images/reports-boat.png",
+        //     height: orentation==Orientation.portrait?displayHeight(context) * 0.1:displayHeight(context) * 0.2,
+        //     width: displayWidth(context) * 0.25,
+        //   ),
+
+
+
+
           SizedBox(
             width: displayWidth(context) * 0.04,
           ),
@@ -1702,85 +1889,105 @@ class _ReportsModuleState extends State<ReportsModule> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                "$selectedVesselName",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: poppins),
+              Container(
+                width: displayWidth(context)/2,
+                child: Text(
+                                    "$selectedVesselName",
+
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: poppins),
+                ),
               ),
               SizedBox(
                 height: displayWidth(context) * 0.013,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "750cc",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.035,
-                            color: blutoothDialogTxtColor),
-                      ),
-                      SizedBox(
-                        height: displayHeight(context) * 0.008,
-                      ),
-                      Text(
-                        "Capacity",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.026,
-                            color: blutoothDialogTxtColor),
-                      ),
-                    ],
+                  Container(
+                    margin: EdgeInsets.only(left: 4),
+                    child: Column(
+                      //mainAxisAlignment: MainAxisAlignment.center,
+                     // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            capacity??'-',
+                        textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontFamily: inter,
+                                fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
+                                color: blutoothDialogTxtColor),
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.008,
+                        ),
+                        Text(
+                          "Capacity",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontFamily: inter,
+                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
+                              color: blutoothDialogTxtColor),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
-                    width: displayWidth(context) * 0.02,
+                    width: displayWidth(context) * 0.03,
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "1992",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.035,
-                            color: blutoothDialogTxtColor),
-                      ),
-                      SizedBox(
-                        height: displayHeight(context) * 0.008,
-                      ),
-                      Text(
-                        "Built",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.026,
-                            color: blutoothDialogTxtColor),
-                      ),
-                    ],
+                  Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          builtYear??'-',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontFamily: inter,
+                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
+                              color: blutoothDialogTxtColor),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.008,
+                        ),
+                        Text(
+                          "Built",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontFamily: inter,
+                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
+                              color: blutoothDialogTxtColor),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
-                    width: displayWidth(context) * 0.02,
+                    width: displayWidth(context) * 0.03,
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "CA14755",
+registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
+
+
+                   // registerNumber==null&&  registerNumber!.isEmpty?'-' : registerNumber!,
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.035,
+                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
                             color: blutoothDialogTxtColor),
                       ),
                       SizedBox(
@@ -1791,7 +1998,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontFamily: inter,
-                            fontSize: displayWidth(context) * 0.026,
+                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
                             color: blutoothDialogTxtColor),
                       ),
                     ],
@@ -1820,7 +2027,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                 child: Center(
                   child: Text(
                     'Date',
-                    style: TextStyle(color: tableHeaderColor),
+                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans,
+                    ),
                   ),
                 ),
               ),
@@ -1829,31 +2037,31 @@ class _ReportsModuleState extends State<ReportsModule> {
                 label: Expanded(
               child: Center(
                 child: Text('Duration',
-                    style: TextStyle(color: tableHeaderColor),
+                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
             )),
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Avg Speed (KT)',
-                    style: TextStyle(color: tableHeaderColor),
+                child: Text('Avg Speed ($speedKnot)',
+                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
             )),
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Fuel Usage (gal)',
-                    style: TextStyle(color: tableHeaderColor),
+                child: Text('Fuel Usage ($liters)',
+                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
             )),
             DataColumn(
                 label: Expanded(
               child: Center(
-                child: Text('Power Usage (W)',
-                    style: TextStyle(color: tableHeaderColor),
+                child: Text('Power Usage ($watt)',
+                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
             )),
@@ -1867,6 +2075,10 @@ class _ReportsModuleState extends State<ReportsModule> {
                         
                         
                         )!,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: dmsans
+                        ),
 
 
                             textAlign: TextAlign.center)),
@@ -1874,26 +2086,58 @@ class _ReportsModuleState extends State<ReportsModule> {
                   DataCell(Align(
                       alignment: Alignment.center,
                       child: Text(person['duration']!,
-                          textAlign: TextAlign.center))),
+                          textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: dmsans
+                        ),
+
+                      )
+                          
+                          )),
                   DataCell(Align(
                       alignment: Alignment.center,
                       child: Text('${person['avgSpeed']!}',
-                          textAlign: TextAlign.center))),
+                          textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: dmsans
+                        ),
+
+
+                          
+                          ))),
                   DataCell(Align(
                       alignment: Alignment.center,
                       child: Text('${person['fuelUsage']}',
-                          textAlign: TextAlign.center))),
+                          textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: dmsans
+                        ),
+
+
+                          
+                          ))),
                   DataCell(Align(
                       alignment: Alignment.center,
                       child: Text('${person['powerUsage']}',
-                          textAlign: TextAlign.center))),
+                          textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: dmsans
+                        ),
+
+
+                          ))),
                 ])),
             ...finalData.map((e) => DataRow(cells: [
                   DataCell(
                     Text(
-                      e['date']!,
+                     'Average',
                       style: TextStyle(
                           color: circularProgressColor,
+                          fontFamily: dmsans,
                           fontWeight: FontWeight.w800),
                     ),
                   ),
@@ -1903,6 +2147,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                       e['duration']!,
                       style: TextStyle(
                           color: circularProgressColor,
+                                                    fontFamily: dmsans,
+
                           fontWeight: FontWeight.w800),
                     ),
                   )),
@@ -1911,6 +2157,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                     child: Text('${e['avgSpeed'].toStringAsFixed(2)!}',
                         style: TextStyle(
                             color: circularProgressColor,
+                                                      fontFamily: dmsans,
+
                             fontWeight: FontWeight.w800)),
                   )),
                   DataCell(Align(
@@ -1918,6 +2166,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                     child: Text('${e['fuelUsage']!}',
                         style: TextStyle(
                             color: circularProgressColor,
+                                                      fontFamily: dmsans,
+
                             fontWeight: FontWeight.w800)),
                   )),
                   DataCell(Align(
@@ -1925,6 +2175,8 @@ class _ReportsModuleState extends State<ReportsModule> {
                     child: Text('${e['powerUsage']!}',
                         style: TextStyle(
                             color: circularProgressColor,
+                                                      fontFamily: dmsans,
+
                             fontWeight: FontWeight.w800)),
                   )),
                 ]))
@@ -1935,27 +2187,29 @@ class _ReportsModuleState extends State<ReportsModule> {
   }
 
   //Custom selection graph
-  buildGraph(BuildContext context) {
+  buildGraph(BuildContext context,Orientation orientation) {
+    double graph_height=orientation==Orientation.portrait? displayHeight(context) * 0.4: displayHeight(context) * 0.95;
+
     Utils.customPrint('SELECTED BUTTON Text $selectedButton');
     CustomLogger().logWithFile(
         Level.info, "SELECTED BUTTON Text $selectedButton -> $page");
 
     switch (selectedButton.toLowerCase()) {
       case 'trip duration':
-        return tripDurationGraph(context);
+        return tripDurationGraph(context,graph_height);
       case 'avg speed':
-        return avgSpeedGraph(context);
+        return avgSpeedGraph(context,graph_height);
       case 'fuel usage':
-        return fuelUsageGraph(context);
+        return fuelUsageGraph(context,graph_height);
       case 'power usage':
-        return powerUsageGraph(context);
+        return powerUsageGraph(context,graph_height);
       default:
         return Container();
     }
   }
 
   //Trip duration graph
-  Widget tripDurationGraph(BuildContext context) {
+  Widget tripDurationGraph(BuildContext context, double graph_height) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       color: commonBackgroundColor,
@@ -2005,11 +2259,12 @@ class _ReportsModuleState extends State<ReportsModule> {
                         color: Colors.white,
                       )),
                   TextButton(
-                    onPressed: () {
+                    onPressed: ()async {
                       Utils.customPrint("tapped on go to report button");
                       CustomLogger().logWithFile(Level.info,
                           "Navigating user into Trip Analytics Screen -> $page");
-
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -2022,11 +2277,19 @@ class _ReportsModuleState extends State<ReportsModule> {
                                     calledFrom: 'Report',
                                     // vessel: getVesselById[0]
                                   )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
                     },
+
+
+
                     child: Text('Go to Trip Report',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.blue,
+                          color: blueColor,
                         )),
                   )
                 ],
@@ -2043,8 +2306,9 @@ class _ReportsModuleState extends State<ReportsModule> {
         width: durationColumnSeriesData.length > 3
             ? (1.5 * 100 * durationColumnSeriesData.length)
             : displayWidth(context),
-        height: displayHeight(context) * 0.4,
+        height: graph_height,
         child: SfCartesianChart(
+
           tooltipBehavior: tooltipBehavior,
           enableSideBySideSeriesPlacement: true,
           primaryXAxis: CategoryAxis(
@@ -2094,14 +2358,16 @@ class _ReportsModuleState extends State<ReportsModule> {
                     dashArray: <double>[4, 8],
                     horizontalTextAlignment: TextAnchor.start),
               ]),
-          series: durationColumnSeriesData,
+          series: 
+          
+          durationColumnSeriesData,
         ),
       ),
     );
   }
 
   // Average speed graph in reports
-  Widget avgSpeedGraph(BuildContext context) {
+  Widget avgSpeedGraph(BuildContext context, double graph_height) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       color: commonBackgroundColor,
@@ -2143,7 +2409,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('KT',
+                  Text(speedKnot,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2151,27 +2417,38 @@ class _ReportsModuleState extends State<ReportsModule> {
                 ],
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async{
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewTripAnalyticsScreen(
-                                tripId: selectedIndex,
-                                vesselName: selectedVesselName,
-                                // avgInfo: reportModel!.data!.avgInfo,
-                                vesselId: selectedVessel,
-                                tripIsRunningOrNot: false,
-                                calledFrom: 'Report',
-                              )));
-                },
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewTripAnalyticsScreen(
+                                    tripId: selectedIndex,
+                                    vesselName: selectedVesselName,
+                                    // avgInfo: reportModel!.data!.avgInfo,
+                                    vesselId: selectedVessel,
+                                    tripIsRunningOrNot: false,
+                                    calledFrom: 'Report',
+                                    // vessel: getVesselById[0]
+                                  )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
+                    },
+
+
+                
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.blue,
+                      color: blueColor,
                     )),
               )
             ],
@@ -2186,7 +2463,7 @@ class _ReportsModuleState extends State<ReportsModule> {
         width: avgSpeedColumnSeriesData.length > 3
             ? (1.5 * 100 * avgSpeedColumnSeriesData.length)
             : displayWidth(context),
-        height: displayHeight(context) * 0.4,
+        height: graph_height,
         child: SfCartesianChart(
           // palette: barsColor,
           tooltipBehavior: tooltipBehavior,
@@ -2218,7 +2495,7 @@ class _ReportsModuleState extends State<ReportsModule> {
               ),
               plotBands: <PlotBand>[
                 PlotBand(
-                  text: 'avg ${avgSpeed}KT',
+                  text: 'avg ${avgSpeed}$speedKnot',
                   isVisible: true,
                   start: avgSpeed,
                   end: avgSpeed,
@@ -2241,7 +2518,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   }
 
   // Fuel usage graph on reports
-  Widget fuelUsageGraph(BuildContext context) {
+  Widget fuelUsageGraph(BuildContext context, double graph_height) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       color: commonBackgroundColor,
@@ -2283,7 +2560,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         fontSize: 25,
                         color: Colors.white,
                       )),
-                  Text('Gal',
+                  Text(liters,
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white,
@@ -2291,26 +2568,38 @@ class _ReportsModuleState extends State<ReportsModule> {
                 ],
               ),
               TextButton(
-                onPressed: () {
+                onPressed: ()async {
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewTripAnalyticsScreen(
-                                tripId: selectedIndex,
-                                vesselName: selectedVesselName,
-                                vesselId: selectedVessel,
-                                tripIsRunningOrNot: false,
-                                calledFrom: 'Report',
-                              )));
-                },
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewTripAnalyticsScreen(
+                                    tripId: selectedIndex,
+                                    vesselName: selectedVesselName,
+                                    // avgInfo: reportModel!.data!.avgInfo,
+                                    vesselId: selectedVessel,
+                                    tripIsRunningOrNot: false,
+                                    calledFrom: 'Report',
+                                    // vessel: getVesselById[0]
+                                  )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
+                    },
+
+
+                
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.blue,
+                      color: blueColor,
                     )),
               )
             ],
@@ -2338,10 +2627,10 @@ class _ReportsModuleState extends State<ReportsModule> {
                 fontFamily: poppins,
               )),
           primaryYAxis: NumericAxis(
-              labelFormat: '{value} gal',
+              labelFormat: '{value}',
               axisLine: AxisLine(width: 2),
               title: AxisTitle(
-                  text: 'Galance',
+                  text: 'Liters',
                   textStyle: TextStyle(
                     color: Colors.black,
                     fontSize: displayWidth(context) * 0.028,
@@ -2356,7 +2645,7 @@ class _ReportsModuleState extends State<ReportsModule> {
               ),
               plotBands: [
                 PlotBand(
-                    text: 'avg ${avgFuelConsumption}gal',
+                    text: 'avg ${avgFuelConsumption}$liters',
                     isVisible: true,
                     start: avgFuelConsumption,
                     end: avgFuelConsumption,
@@ -2378,7 +2667,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   }
 
   // Power usage graph on reports
-  Widget powerUsageGraph(BuildContext context) {
+  Widget powerUsageGraph(BuildContext context, double graph_height) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
       color: commonBackgroundColor,
@@ -2392,7 +2681,7 @@ class _ReportsModuleState extends State<ReportsModule> {
             .logWithFile(Level.info, "power y data is: ${yValue} -> $page");
 
         return Container(
-          width: displayWidth(context) * 0.4,
+          width:displayWidth(context) * 0.4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -2428,26 +2717,39 @@ class _ReportsModuleState extends State<ReportsModule> {
                 ],
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async{
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NewTripAnalyticsScreen(
-                                tripId: selectedIndex,
-                                vesselName: selectedVesselName,
-                                vesselId: selectedVessel,
-                                tripIsRunningOrNot: false,
-                                calledFrom: 'Report',
-                              )));
-                },
+ bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
+ if(isTripExists){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewTripAnalyticsScreen(
+                                    tripId: selectedIndex,
+                                    vesselName: selectedVesselName,
+                                    // avgInfo: reportModel!.data!.avgInfo,
+                                    vesselId: selectedVessel,
+                                    tripIsRunningOrNot: false,
+                                    calledFrom: 'Report',
+                                    // vessel: getVesselById[0]
+                                  )));
+
+ }else{
+Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
+
+                    },
+
+
+
+                
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.blue,
+                      color: blueColor,
                     )),
               )
             ],
@@ -2462,7 +2764,7 @@ class _ReportsModuleState extends State<ReportsModule> {
         width: powerUsageColumnSeriesData.length > 3
             ? (1.5 * 100 * powerUsageColumnSeriesData.length)
             : displayWidth(context),
-        height: displayHeight(context) * 0.4,
+        height: graph_height,
         child: SfCartesianChart(
           tooltipBehavior: tooltipBehavior,
           primaryXAxis: CategoryAxis(
@@ -2492,7 +2794,7 @@ class _ReportsModuleState extends State<ReportsModule> {
               ),
               plotBands: [
                 PlotBand(
-                    text: 'avg ${avgPower.toStringAsFixed(2)}W',
+                    text: 'avg ${avgPower.toStringAsFixed(2)}$watt',
                     isVisible: true,
                     start: avgPower,
                     end: avgPower,
@@ -2514,7 +2816,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   }
 
   // Widget for filter by date in reports
-  Widget? filterByDate(BuildContext context) {
+  Widget? filterByDate(BuildContext context,Orientation orientation) {
     return Column(
       children: [
         Column(
@@ -2535,19 +2837,23 @@ class _ReportsModuleState extends State<ReportsModule> {
                     height: displayWidth(context) * 0.1,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: dateBackgroundColor),
+                        color: reportDropdownColor),
                     child: Padding(
                       padding: EdgeInsets.only(
                           left: displayWidth(context) * 0.04,
                           right: displayWidth(context) * 0.04),
                       child: Row(
                         children: [
-                          Text(
-                            pickStartDate!,
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: inter),
+                          SizedBox(
+                            width:displayWidth(context) * 0.22 ,
+
+                            child: Text(
+                              pickStartDate!,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: inter),
+                            ),
                           ),
                           SizedBox(
                             width: displayWidth(context) * 0.02,
@@ -2578,19 +2884,23 @@ class _ReportsModuleState extends State<ReportsModule> {
                     height: displayWidth(context) * 0.1,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: dateBackgroundColor),
+                        color: reportDropdownColor
+                        ),
                     child: Padding(
                       padding: EdgeInsets.only(
                           left: displayWidth(context) * 0.038,
                           right: displayWidth(context) * 0.05),
                       child: Row(
                         children: [
-                          Text(
-                            pickEndDate!,
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: inter),
+                          SizedBox(
+                            width:displayWidth(context) * 0.22 ,
+                            child: Text(
+                              pickEndDate!,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: inter),
+                            ),
                           ),
                           SizedBox(
                             width: displayWidth(context) * 0.02,
@@ -2623,7 +2933,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                       width: displayWidth(context),
                       height: 50,
                       decoration: BoxDecoration(
-                          color: selectDayBackgroundColor,
+                          color: calenderHeaderBackgroundColor,
                           borderRadius: BorderRadius.only(
                             topRight: Radius.circular(
                               30,
@@ -2635,11 +2945,14 @@ class _ReportsModuleState extends State<ReportsModule> {
                       child: Padding(
                         padding: EdgeInsets.only(
                             left: displayWidth(context) * 0.03,
-                            top: displayWidth(context) * 0.05),
+                           top:orientation==Orientation.portrait? displayWidth(context) * 0.05:displayWidth(context) * 0.01
+                            ),
                         child: Text(
                           "Select Start Date",
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
+                              fontSize: 16, fontWeight: FontWeight.w700,
+                              fontFamily: 'DM Sans'
+                              ),
                         ),
                       ),
                     ),
@@ -2648,74 +2961,111 @@ class _ReportsModuleState extends State<ReportsModule> {
                     padding: EdgeInsets.only(
                         left: displayWidth(context) * 0.045,
                         right: displayWidth(context) * 0.045),
-                    child: TableCalendar(
-                      daysOfWeekVisible: true,
-                      focusedDay: selectedDateForStartDate,
-                      firstDay: firstDate,
-                      lastDay: lastDate,
-                      onFormatChanged: (CalendarFormat _format) {},
-                      calendarBuilders: CalendarBuilders(
-                        selectedBuilder: (context, date, events) => Container(
-                            margin: const EdgeInsets.all(5.0),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                shape: BoxShape.circle),
-                            child: Text(
-                              date.day.toString(),
-                              style: TextStyle(color: Colors.white),
-                            )),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)
+                        )
                       ),
-                      calendarStyle: CalendarStyle(
-                          todayDecoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.blue,
-                              )),
-                          isTodayHighlighted: true,
-                          selectedDecoration: BoxDecoration(
-                            color: Colors.blue,
-                            shape: BoxShape.circle,
-                          ),
-                          selectedTextStyle: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22.0,
-                              color: Colors.pink),
-                          todayTextStyle: TextStyle(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 16.0,
-                              color: selectedDateForStartDate == DateTime.now()
-                                  ? Colors.white
-                                  : Colors.blue)),
-                      selectedDayPredicate: (DateTime date) {
-                        return isSameDay(selectedDateForStartDate, date);
-                      },
-                      startingDayOfWeek: StartingDayOfWeek.monday,
-                      onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
-                        setState(() {
-                          isSelectedStartDay = true;
-                          selectedDateForStartDate = selectDay!;
-                          focusedDay = focusDay!;
-                          focusedDayString = focusDay.toString();
-                          pickStartDate = convertIntoMonthDayYear(selectDay);
-                          selectedStartDateFromCal = selectDay;
+                      child: IgnorePointer(
+                                                      ignoring: isBtnClick??false,
 
-                          Utils.customPrint("pick start date: $pickStartDate");
-                          CustomLogger().logWithFile(Level.info,
-                              "pick start date: $pickStartDate -> $page");
-                        });
-                        Utils.customPrint("focusedDay: $focusDay");
-                        CustomLogger().logWithFile(
-                            Level.info, "focused Day: $focusedDay -> $page");
-                      },
-                      headerStyle: HeaderStyle(
-                        formatButtonVisible: false,
-                        formatButtonDecoration: BoxDecoration(
-                          color: Colors.brown,
-                          borderRadius: BorderRadius.circular(22.0),
+                        child: TableCalendar(
+                          
+                          
+                          daysOfWeekVisible: true,
+                          focusedDay: selectedDateForStartDate,
+                          firstDay: firstDate,
+                          lastDay: lastDate,
+                          
+                          onFormatChanged: (CalendarFormat _format) {},
+                          calendarBuilders: CalendarBuilders(
+                            
+                            selectedBuilder: (context, date, events) => Container(
+                                margin: const EdgeInsets.all(5.0),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: blueColor,
+                                    borderRadius: BorderRadius.circular(15)
+                                    //shape: BoxShape.circle
+                                    
+                                    ),
+                                child: Text(
+                                  date.day.toString(),
+                                  style: TextStyle(color: Colors.white,
+                                  fontFamily: dmsans
+                                  ),
+                                )),
+                          ),
+                          calendarStyle: CalendarStyle(
+                            
+                            
+                                  todayDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                      
+                                        color: blueColor,
+                                      )),
+                              isTodayHighlighted: true,
+                              selectedDecoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(8),
+                                          
+                                // color: blueColor,
+                               shape: BoxShape.rectangle,
+                              ),
+                              selectedTextStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22.0,
+                                  fontFamily: dmsans,
+                                  color: Colors.pink),
+                              todayTextStyle: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16.0,
+                                  fontFamily: dmsans,
+                                  color: selectedDateForStartDate == DateTime.now()
+                                      ? Colors.white
+                                      : blueColor)),
+                          selectedDayPredicate: (DateTime date) {
+                            return isSameDay(selectedDateForStartDate, date);
+                          },
+                          startingDayOfWeek: StartingDayOfWeek.monday,
+                          onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
+                            setState(() {
+                              isSelectedStartDay = true;
+                              selectedDateForStartDate = selectDay!;
+                              focusedDay = focusDay!;
+                              focusedDayString = focusDay.toString();
+                              pickStartDate = convertIntoMonthDayYear(selectDay);
+                              selectedStartDateFromCal = selectDay;
+                                          
+                              Utils.customPrint("pick start date: $pickStartDate");
+                              CustomLogger().logWithFile(Level.info,
+                                  "pick start date: $pickStartDate -> $page");
+                            });
+                            Utils.customPrint("focusedDay: $focusDay");
+                            CustomLogger().logWithFile(
+                                Level.info, "focused Day: $focusedDay -> $page");
+                          },
+                          headerStyle: HeaderStyle(
+                                            titleCentered: true,
+                                            
+                                            titleTextStyle: TextStyle(fontSize: 17,
+                                            fontFamily: dmsans,
+                                            fontWeight: FontWeight.w600,
+                                            color: blackcolorCalender
+                                            
+                                            ), // Center the month title
+                      
+                            formatButtonVisible: false,
+                            formatButtonDecoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(22.0),
+                            ),
+                            formatButtonTextStyle: TextStyle(color: Colors.white),
+                            formatButtonShowsNext: false,
+                          ),
                         ),
-                        formatButtonTextStyle: TextStyle(color: Colors.white),
-                        formatButtonShowsNext: false,
                       ),
                     ),
                   ),
@@ -2732,7 +3082,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                           width: displayWidth(context),
                           height: 50,
                           decoration: BoxDecoration(
-                              color: selectDayBackgroundColor,
+                              color: calenderHeaderBackgroundColor,
                               borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(
                                   30,
@@ -2744,7 +3094,9 @@ class _ReportsModuleState extends State<ReportsModule> {
                           child: Padding(
                             padding: EdgeInsets.only(
                                 left: displayWidth(context) * 0.03,
-                                top: displayWidth(context) * 0.05),
+                           top:orientation==Orientation.portrait? displayWidth(context) * 0.05:displayWidth(context) * 0.01
+                                
+                                ),
                             child: Text(
                               "Select End Date",
                               style: TextStyle(
@@ -2757,79 +3109,106 @@ class _ReportsModuleState extends State<ReportsModule> {
                         padding: EdgeInsets.only(
                             left: displayWidth(context) * 0.045,
                             right: displayWidth(context) * 0.045),
-                        child: TableCalendar(
-                          daysOfWeekVisible: true,
-                          focusedDay: selectedDateForEndDate,
-                          firstDay: firstDate,
-                          lastDay: lastDate,
-                          onFormatChanged: (CalendarFormat _format) {},
-                          calendarBuilders: CalendarBuilders(
-                            selectedBuilder: (context, date, events) =>
-                                Container(
-                                    margin: const EdgeInsets.all(5.0),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
-                                        shape: BoxShape.circle),
-                                    child: Text(
-                                      date.day.toString(),
-                                      style: TextStyle(color: Colors.white),
-                                    )),
-                          ),
-                          calendarStyle: CalendarStyle(
-                              todayDecoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.blue,
-                                  )),
-                              isTodayHighlighted: true,
-                              selectedDecoration: BoxDecoration(
-                                color: Colors.blue,
-                                shape: BoxShape.circle,
-                              ),
-                              selectedTextStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 22.0,
-                                  color: Colors.pink),
-                              todayTextStyle: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16.0,
-                                  color:
-                                      selectedDateForEndDate == DateTime.now()
-                                          ? Colors.white
-                                          : Colors.blue)),
-                          selectedDayPredicate: (DateTime date) {
-                            return isSameDay(selectedDateForEndDate, date);
-                          },
-                          startingDayOfWeek: StartingDayOfWeek.monday,
-                          onDaySelected:
-                              (DateTime? selectDay, DateTime? focusDay) {
-                            setState(() {
-                              isSelectedEndDay = true;
-                              selectedDateForEndDate = selectDay!;
-                              lastDayFocused = focusDay!;
-                              lastFocusedDayString = focusDay.toString();
-                              pickEndDate = convertIntoMonthDayYear(selectDay);
-                              selectedEndDateFromCal = selectDay;
+                        child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)
+                        )
+                      ),
+                          child: IgnorePointer(
+                                                      ignoring: isBtnClick??false,
 
-                              Utils.customPrint("pick end date: $pickEndDate");
-                              CustomLogger().logWithFile(Level.info,
-                                  "pick end date: $pickEndDate -> $page");
-                            });
-                            Utils.customPrint(
-                                "lastDayFocused: $lastDayFocused");
-                            CustomLogger().logWithFile(Level.info,
-                                "lastDayFocused: $lastDayFocused -> $page");
-                          },
-                          headerStyle: HeaderStyle(
-                            formatButtonVisible: false,
-                            formatButtonDecoration: BoxDecoration(
-                              color: Colors.brown,
-                              borderRadius: BorderRadius.circular(22.0),
+                            child: TableCalendar(
+                              
+                              daysOfWeekVisible: true,
+                              focusedDay: selectedDateForEndDate,
+                              firstDay: firstDate,
+                              lastDay: lastDate,
+                              onFormatChanged: (CalendarFormat _format) {},
+                              calendarBuilders: CalendarBuilders(
+                                selectedBuilder: (context, date, events) =>
+                           Container(
+                                margin: const EdgeInsets.all(5.0),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: blueColor,
+                                    borderRadius: BorderRadius.circular(15)
+                                    //shape: BoxShape.circle
+                                    
+                                    ),
+                                        child: Text(
+                                          date.day.toString(),
+                                          style: TextStyle(color: Colors.white),
+                                        )),
+                              ),
+                              calendarStyle: CalendarStyle(
+                                  todayDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                          
+                                        color: blueColor,
+                                      )),
+                                  isTodayHighlighted: true,
+                                  selectedDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: blueColor,
+                                    shape: BoxShape.rectangle,
+                                  ),
+                                  selectedTextStyle: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22.0,
+                                      color: Colors.pink),
+                                  todayTextStyle: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16.0,
+                                      color:
+                                          selectedDateForEndDate == DateTime.now()
+                                              ? Colors.white
+                                              : blueColor)),
+                              selectedDayPredicate: (DateTime date) {
+                                return isSameDay(selectedDateForEndDate, date);
+                              },
+                              startingDayOfWeek: StartingDayOfWeek.monday,
+                              onDaySelected:
+                                  (DateTime? selectDay, DateTime? focusDay) {
+                                setState(() {
+                                  isSelectedEndDay = true;
+                                  selectedDateForEndDate = selectDay!;
+                                  lastDayFocused = focusDay!;
+                                  lastFocusedDayString = focusDay.toString();
+                                  pickEndDate = convertIntoMonthDayYear(selectDay);
+                                  selectedEndDateFromCal = selectDay;
+                                                  
+                                  Utils.customPrint("pick end date: $pickEndDate");
+                                  CustomLogger().logWithFile(Level.info,
+                                      "pick end date: $pickEndDate -> $page");
+                                });
+                                Utils.customPrint(
+                                    "lastDayFocused: $lastDayFocused");
+                                CustomLogger().logWithFile(Level.info,
+                                    "lastDayFocused: $lastDayFocused -> $page");
+                              },
+                                                  headerStyle: HeaderStyle(
+                                            titleCentered: true,
+                                            
+                                            titleTextStyle: TextStyle(fontSize: 17,
+                                            fontWeight: FontWeight.w600,
+                                            color: blackcolorCalender
+                                            
+                                            ), // Center the month title
+                          
+                          
+                                formatButtonVisible: false,
+                                formatButtonDecoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(22.0),
+                                ),
+                                formatButtonTextStyle:
+                                    TextStyle(color: Colors.white),
+                                formatButtonShowsNext: false,
+                              ),
                             ),
-                            formatButtonTextStyle:
-                                TextStyle(color: Colors.white),
-                            formatButtonShowsNext: false,
                           ),
                         ),
                       ),
@@ -2844,6 +3223,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   Widget? filterByTrip(BuildContext context,Orientation orientation) {
     return isTripIdListLoading!
         ? Container(
+        padding: EdgeInsets.only(bottom:tripIdList!.length != 0? 15:0),
             decoration: BoxDecoration(
                 color: reportTripsListBackColor,
                 borderRadius: BorderRadius.all(
@@ -2852,103 +3232,118 @@ class _ReportsModuleState extends State<ReportsModule> {
               children: [
                 tripIdList!.length == 0
                     ? Container(
+                      padding: EdgeInsets.all(8),
                         child: commonText(
                             text: 'No Trips available',
                             textSize: displayWidth(context) * 0.030,
                             textColor: primaryColor))
-                    : ListView(
-                        primary: false,
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: displayWidth(context) * 0.046),
-                            child: CustomLabeledCheckbox(
-                              label: 'Select All',
-                              value: parentValue != null ? parentValue! : false,
-                              onChanged: (value) {
-                                if (value) {
-                                  Utils.customPrint(
-                                      "select all status: $value");
-                                  selectedTripIdList!.addAll(tripIdList!);
-                                  selectedTripLabelList!.clear();
-                                  selectedTripLabelList!.addAll(children!);
-                                  Utils.customPrint(
-                                      "selected trip label list: ${selectedTripLabelList}");
-                                  CustomLogger().logWithFile(Level.info,
-                                      "selected trip label list: ${selectedTripLabelList} -> $page");
-                                  _checkAll(value);
-                                } else if (!value) {
-                                  // Tristate
-                                  selectedTripIdList!.clear();
-                                  selectedTripLabelList!.clear();
-                                  _checkAll(false);
-                                }
-                              },
-                              checkboxType: CheckboxType.Parent,
-                              activeColor: Colors.indigo,
-                            ),
-                          ),
-                          ListView.builder(
-                            itemCount: children?.length ?? 0,
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            itemBuilder: (context, index) => Column(
-                              children: [
-                                SizedBox(
-                                  height: displayHeight(context) * 0.01,
-                                ),
-                                CustomLabeledCheckboxNew(
-                                  orientation:orientation,
-                                  label: children![index],
-                                  value: childrenValue![index],
-                                  dateTime: dateTimeList![index],
-                                  distance: distanceList![index],
-                                  time: timeList![index],
-                                  onChanged: (value) {
-                                    Utils.customPrint(
-                                        "trip list id: ${tripIdList![index]}");
-                                    CustomLogger().logWithFile(Level.info,
-                                        "trip list id: ${tripIdList![index]} -> $page");
+                    : IgnorePointer(
+                                                      ignoring: isBtnClick??false,
 
-                                    if (!selectedTripIdList!
-                                        .contains(tripIdList![index])) {
-                                      selectedTripIdList!
-                                          .add(tripIdList![index]);
-                                      selectedTripLabelList!
-                                          .add(children![index]);
-                                      Utils.customPrint(
-                                          "selected trip label list: ${selectedTripLabelList}");
-                                      CustomLogger().logWithFile(Level.info,
-                                          "trip list id: ${tripIdList![index]} -> $page");
-                                    } else {
-                                      selectedTripIdList!
-                                          .remove(tripIdList![index]);
-                                      // tripIdList!.removeAt(index);
-                                      selectedTripLabelList!
-                                          .remove(children![index]);
-                                      Utils.customPrint(
-                                          "selected trip label list: ${selectedTripLabelList}");
-                                      CustomLogger().logWithFile(Level.info,
-                                          "selected trip label list: ${selectedTripLabelList} -> $page");
-                                    }
-                                    manageTristate(index, value);
-                                  },
-                                  checkboxType: CheckboxType.Child,
-                                  activeColor: Colors.indigo,
-                                ),
-                              ],
+                      child: ListView(
+                          primary: false,
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: displayWidth(context) * 0.046),
+                              child: CustomLabeledCheckbox(
+                    
+                                label: 'Select All',
+                                value: parentValue != null ? parentValue! : false,
+                                onChanged: (value) {
+                      if (value) {
+                        Utils.customPrint("select all status: $value");
+                        selectedTripIdList!.clear();
+                        selectedTripIdList!.addAll(tripIdList!);
+                        isSHowGraph = false;
+                        selectedTripLabelList!.clear();
+                        selectedTripLabelList!.addAll(children!);
+                        Utils.customPrint(
+                            "selected trip label list: ${selectedTripLabelList}");
+                        CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
+                        _checkAll(value);
+                      } else if (!value) {
+                        // Tristate
+                    
+                        selectedTripIdList!.clear();
+                        selectedTripLabelList!.clear();
+                        _checkAll(false);
+                      }
+                                },
+                                checkboxType: CheckboxType.Parent,
+                                activeColor: Colors.indigo,
+                              ),
                             ),
-                          ),
-                        ],
-                      )
+                            ListView.builder(
+                              itemCount: children?.length ?? 0,
+                              shrinkWrap: true,
+                              physics: ClampingScrollPhysics(),
+                              itemBuilder: (context, index) => Column(
+                                children: [
+                                  SizedBox(
+                                    height:orientation==Orientation.portrait? displayHeight(context) * 0.01:displayHeight(context) * 0.03,
+                                  ),
+                                  CustomLabeledCheckboxNew(
+                                    orientation:orientation,
+                                    label: children![index],
+                                    value: childrenValue![index],
+                                    imageUrl: imageUrl,
+                                    dateTime: dateTimeList![index],
+                                    distance: '${distanceList![index]} $nauticalMile',
+                                    time: timeList![index],
+                                    onChanged: (value) {
+                          isSHowGraph = false;
+                          Utils.customPrint("trip list id: ${tripIdList![index]}");
+                          CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
+                    
+                    
+                          if(selectedTripIdList!.contains(tripIdList![index])){
+                    
+                            selectedTripIdList!
+                                .remove(tripIdList![index]);
+                            //tripIdList!.remove(index);
+                            selectedTripLabelList!
+                                .remove(children![index]);
+                            Utils.customPrint(
+                                "selected trip label list: ${selectedTripLabelList}");
+                            CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
+                            setState(() {
+                    
+                            });
+                    
+                          }else{
+                    
+                            selectedTripIdList!
+                                .add(tripIdList![index]);
+                            // tripIdList!.add(index);
+                            selectedTripLabelList!
+                                .add(children![index]);
+                            setState(() {
+                    
+                            });
+                    
+                    
+                          }
+                    
+                          manageTristate(index, value);
+                                    },
+                                    checkboxType: CheckboxType.Child,
+                                    activeColor: Colors.indigo,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                    )
               ],
             ),
           )
         : Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(circularProgressColor),
+              valueColor: AlwaysStoppedAnimation<Color>(blueColor),
             ),
           );
   }
