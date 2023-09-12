@@ -219,8 +219,8 @@ void captureScreenShot()async{
         if(arg !=  null)
         {
           Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
-          //bool isComingFrom = arguments?['isComingFromReset'] ?? false;
-          bool isComingFrom = widget.isComingFromReset!;
+          bool isComingFrom = arguments?['isComingFromReset'] ?? false;
+         // bool isComingFrom = widget.isComingFromReset ?? false;
           String updatedToken = arguments?['token'] ?? "";
 
           if(mounted){

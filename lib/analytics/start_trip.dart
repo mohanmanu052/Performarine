@@ -399,8 +399,8 @@ class StartTrip {
                   title: '',
                   msg: 'Trip is in progress',
                   bigMsg:
-                  'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot'
-                  //'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot'
+                  'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $speedKnot'
+                  //'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $speedKnot    Avg Speed: $tripAvgSpeedForStorage $knot'
               ).catchError((onError){
 
                 Utils.customPrint('UPDATE NOTI ERROR: $onError');
@@ -415,8 +415,8 @@ class StartTrip {
                 .show(
               1,
               'Trip is in progress',
-              'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot',
-              //'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $knot    Avg Speed: $tripAvgSpeedForStorage $knot',
+              'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $speedKnot',
+              //'Duration: $tripDuration        Distance: $tripDistanceForStorage $nauticalMile\nCurrent Speed: $tripSpeedForStorage $speedKnot    Avg Speed: $tripAvgSpeedForStorage $knot',
               NotificationDetails(
                 android: AndroidNotificationDetails(
                     'performarine_trip_$tripId-3', '$tripId-3',
