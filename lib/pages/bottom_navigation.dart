@@ -57,7 +57,7 @@ class _BottomNavigationState extends State<BottomNavigation> with SingleTickerPr
 ScreenshotController screen_shot_controller=ScreenshotController();
 
   var _bottomNavIndex = 0;
-  bool isFloatBtnSelect = false, isBluetoothConnected = false, isStartButton = false, isLocationDialogBoxOpen = false, isEndTripBtnClicked = false;
+  bool isFloatBtnSelect = false, isBluetoothConnected = false, isStartButton = false, isLocationDialogBoxOpen = false, isEndTripBtnClicked = false, locationAccuracy = false;
   double progress = 0.9, lprSensorProgress = 1.0;
   String bluetoothName = '';
 
@@ -141,6 +141,8 @@ ScreenshotController screen_shot_controller=ScreenshotController();
     // TODO: implement initState
     super.initState();
 
+    checkLocationAccuracy();
+
     WidgetsBinding.instance.addObserver(this);
 
     _tabController = TabController(vsync: this, length: 5, initialIndex: widget.tabIndex);
@@ -183,6 +185,12 @@ ScreenshotController screen_shot_controller=ScreenshotController();
         });
       }
     }
+  }
+  checkLocationAccuracy()async
+  {
+    locationAccuracy = await Utils().getLocationAccuracy();
+
+    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
   }
 
 void captureScreenShot()async{
@@ -2204,12 +2212,12 @@ void captureScreenShot()async{
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION : LocationAccuracy.HIGH,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION : LocationAccuracy.HIGH,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(

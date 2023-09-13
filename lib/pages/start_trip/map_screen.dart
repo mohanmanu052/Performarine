@@ -53,7 +53,8 @@ class _MapScreenState extends State<MapScreen> {
 
   final DatabaseService _databaseService = DatabaseService();
 
-  bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false, isEndTripBtnClicked = false, isDataUpdated = false, lastTimePopupBtnClicked = false;
+  bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false, isEndTripBtnClicked = false, isDataUpdated = false, lastTimePopupBtnClicked = false,
+      locationAccuracy = false;
 
   Trip? tripData;
   CreateVessel? vesselData;
@@ -64,6 +65,8 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    checkLocationAccuracy();
 
     commonProvider = context.read<CommonProvider>();
 
@@ -91,6 +94,14 @@ class _MapScreenState extends State<MapScreen> {
       }
     }
   }
+
+  checkLocationAccuracy()async
+  {
+    locationAccuracy = await Utils().getLocationAccuracy();
+
+    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
+  }
+
 
   getRealTimeTripDetails() async {
 
@@ -1020,12 +1031,12 @@ class _MapScreenState extends State<MapScreen> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION :LocationAccuracy.HIGH,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION :LocationAccuracy.HIGH,
             interval: 1,
             distanceFilter: 0,
             //client: bglas.LocationClient.android,

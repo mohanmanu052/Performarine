@@ -54,7 +54,8 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
   final DatabaseService _databaseService = DatabaseService();
 
-  bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false, isEndTripBtnClicked = false, isDataUpdated = false;
+  bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false, isEndTripBtnClicked = false, isDataUpdated = false,
+      locationAccuracy = false;
 
   late CommonProvider commonProvider;
 
@@ -62,6 +63,8 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    checkLocationAccuracy();
 
     commonProvider = context.read<CommonProvider>();
 
@@ -74,6 +77,13 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
       getRealTimeTripDetails();
       Wakelock.enable();
     }
+  }
+
+  checkLocationAccuracy()async
+  {
+    locationAccuracy = await Utils().getLocationAccuracy();
+
+    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
   }
 
   getRealTimeTripDetails() async {
@@ -973,12 +983,12 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION : LocationAccuracy.HIGH,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION : LocationAccuracy.HIGH,
             interval: 1,
             distanceFilter: 0,
             //client: bglas.LocationClient.android,

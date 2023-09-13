@@ -31,7 +31,7 @@ class NewSplashScreen extends StatefulWidget {
 
 class _NewSplashScreenState extends State<NewSplashScreen> {
 
-  bool? isBtnVisible = false, isTripRunningCurrently = false;
+  bool isBtnVisible = false, isTripRunningCurrently = false, locationAccuracy = false;
   StreamSubscription? _sub;
   String page = "Intro_screen";
 
@@ -40,8 +40,18 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
     // TODO: implement initState
     super.initState();
 
+    checkLocationAccuracy();
+
     initUniLinks();
   }
+
+  checkLocationAccuracy()async
+  {
+    locationAccuracy = await Utils().getLocationAccuracy();
+
+    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
+  }
+
 
   /*@override
   void initState() {
@@ -119,7 +129,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
     CustomLogger().logWithFile(Level.info, "INTRO START $isTripStarted -> $page");
 
     setState(() {
-      isTripRunningCurrently = isTripStarted;
+      isTripRunningCurrently = isTripStarted!;
     });
 
     if (isTripRunningCurrently == null) {
@@ -330,12 +340,12 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION : LocationAccuracy.HIGH,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION : LocationAccuracy.HIGH,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(

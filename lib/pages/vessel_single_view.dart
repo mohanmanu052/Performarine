@@ -97,7 +97,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isBluetoothDialog = false,
       isBluetoothConnected = false,
       isRefreshList = false,
-      isScanningBluetooth = false;
+      isScanningBluetooth = false, locationAccuracy = false;
 
   String fileName = '', getTripId = '', selectedVesselWeight = 'Select Current Load', bluetoothName = '';
   int fileIndex = 1;
@@ -208,6 +208,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
     // TODO: implement initState
     super.initState();
 
+    checkLocationAccuracy();
+
     tripIsRunningOrNot();
 
     commonProvider = context.read<CommonProvider>();
@@ -217,6 +219,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
     checkSensorAvailabelOrNot();
 
     getVesselAnalytics(widget.vessel!.id!);
+  }
+
+  checkLocationAccuracy()async
+  {
+    locationAccuracy = await Utils().getLocationAccuracy();
+
+    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
   }
 
   /// To get running trip details
@@ -2916,7 +2925,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     await initPlatformStateBGL();
 
-
     await tripIsRunningOrNot();
 
     Navigator.pop(bottomSheetContext);
@@ -2936,12 +2944,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION : LocationAccuracy.HIGH,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION : LocationAccuracy.HIGH,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(
