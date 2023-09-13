@@ -2061,7 +2061,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                             height: displayHeight(context) * 0.012,
                           ),
                           Container(
-                            margin: EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               top: 8.0,
                             ),
                             child: Column(
