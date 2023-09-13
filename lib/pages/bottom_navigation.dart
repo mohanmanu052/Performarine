@@ -2053,7 +2053,7 @@ void captureScreenShot()async{
                           height: displayHeight(context) * 0.012,
                         ),
                         Container(
-                          margin: EdgeInsets.only(
+                          padding: EdgeInsets.only(
                             top: 8.0,
                           ),
                           child: Column(
@@ -2061,7 +2061,9 @@ void captureScreenShot()async{
                             children: [
                               Center(
                                 child: isEndTripBtnClicked
-                                    ? CircularProgressIndicator()
+                                    ? CircularProgressIndicator(
+
+                                    )
                                     : CommonButtons.getAcceptButton(
                                     'End Trip', context, Colors.transparent,
                                         () async {

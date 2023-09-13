@@ -724,7 +724,7 @@ class _MapScreenState extends State<MapScreen> {
                             height: displayHeight(context) * 0.012,
                           ),
                           Container(
-                            margin: EdgeInsets.only(
+                            padding: EdgeInsets.only(
                               top: 8.0,
                             ),
                             child: Column(
