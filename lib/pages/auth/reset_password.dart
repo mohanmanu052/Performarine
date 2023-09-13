@@ -258,7 +258,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                                           CustomLogger().logWithFile(Level.info, "User navigating into sign in scren -> $page");
                                           Navigator.pushAndRemoveUntil(
                                               context,
-                                              MaterialPageRoute(builder: (context) => const SignInScreen()),
+                                              MaterialPageRoute(builder: (context) => const SignInScreen(calledFrom:'ResetPassword')),
                                               ModalRoute.withName(""));
                                         }
 
@@ -312,7 +312,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
     Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const SignInScreen()),
+        MaterialPageRoute(builder: (context) => const SignInScreen(calledFrom:'ResetPassword')),
         ModalRoute.withName(""));
   }
 }

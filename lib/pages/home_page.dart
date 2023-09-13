@@ -116,8 +116,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   void initState() {
     super.initState();
 
-    checkLocationAccuracy();
-
     WidgetsBinding.instance.addObserver(this);
 
     commonProvider = context.read<CommonProvider>();
@@ -168,13 +166,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
       }
     }
 
-  }
-
-  checkLocationAccuracy()async
-  {
-    locationAccuracy = await Utils().getLocationAccuracy();
-
-    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
   }
 
   @override
@@ -746,12 +737,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy:  LocationAccuracy.HIGH,
+            accuracy:  LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(

@@ -40,16 +40,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
     // TODO: implement initState
     super.initState();
 
-    checkLocationAccuracy();
-
     initUniLinks();
-  }
-
-  checkLocationAccuracy()async
-  {
-    locationAccuracy = await Utils().getLocationAccuracy();
-
-    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
   }
 
 
@@ -340,12 +331,12 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(

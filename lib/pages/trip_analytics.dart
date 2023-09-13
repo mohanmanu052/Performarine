@@ -98,8 +98,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     // TODO: implement initState
     super.initState();
 
-    checkLocationAccuracy();
-
     Utils.customPrint('CURRENT TIME TIME ${widget.tripId}');
     Utils.customPrint('CURRENT TIME TIME ${widget.vesselId}');
     Utils.customPrint('CURRENT TIME TIME ${widget.tripIsRunningOrNot}');
@@ -129,13 +127,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     commonProvider = context.read<CommonProvider>();
 
     deviceDetails = DeviceInfoPlugin();
-  }
-
-  checkLocationAccuracy()async
-  {
-    locationAccuracy = await Utils().getLocationAccuracy();
-
-    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
   }
 
   getData() async {
@@ -2368,12 +2359,12 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             //client: bglas.LocationClient.android,

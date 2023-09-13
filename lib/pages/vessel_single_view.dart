@@ -208,8 +208,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
     // TODO: implement initState
     super.initState();
 
-    checkLocationAccuracy();
-
     tripIsRunningOrNot();
 
     commonProvider = context.read<CommonProvider>();
@@ -219,13 +217,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
     checkSensorAvailabelOrNot();
 
     getVesselAnalytics(widget.vessel!.id!);
-  }
-
-  checkLocationAccuracy()async
-  {
-    locationAccuracy = await Utils().getLocationAccuracy();
-
-    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
   }
 
   /// To get running trip details
@@ -2958,12 +2949,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(

@@ -66,8 +66,6 @@ class _MapScreenState extends State<MapScreen> {
     // TODO: implement initState
     super.initState();
 
-    checkLocationAccuracy();
-
     commonProvider = context.read<CommonProvider>();
 
     Utils.customPrint("LATEST TRIP ID ${widget.tripId}");
@@ -93,13 +91,6 @@ class _MapScreenState extends State<MapScreen> {
 
       }
     }
-  }
-
-  checkLocationAccuracy()async
-  {
-    locationAccuracy = await Utils().getLocationAccuracy();
-
-    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
   }
 
 
@@ -1031,12 +1022,12 @@ class _MapScreenState extends State<MapScreen> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             //client: bglas.LocationClient.android,

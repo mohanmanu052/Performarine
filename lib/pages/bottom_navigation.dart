@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -43,9 +44,10 @@ import 'package:performarine/pages/trips/Trips.dart';
 class BottomNavigation extends StatefulWidget {
   List<String> tripData;
   final int tabIndex;
-  final bool? isComingFromReset, isAppKilled;
+  final bool? isAppKilled;
+  bool? isComingFromReset;
   String token;
-   BottomNavigation({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset,this.token = "", this.isAppKilled = false}) : super(key: key);
+   BottomNavigation({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset, this.token = "", this.isAppKilled = false}) : super(key: key);
 
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
@@ -111,7 +113,6 @@ ScreenshotController screen_shot_controller=ScreenshotController();
 
       setState(() {});
 
-
       Utils.customPrint("isComingFromReset: ${isComingFrom}");
       if(mounted){
         if(isComingFrom != null && isComingFrom )
@@ -124,7 +125,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
             {
               WidgetsBinding.instance.addPostFrameCallback((duration)
               {
-                Utils.customPrint("RESET PASSWORD didUpdateWidget");
+                print("RESET PASSWORD didUpdateWidget");
                 showResetPasswordDialogBox(context,updatedToken);
 
               });
@@ -140,8 +141,6 @@ ScreenshotController screen_shot_controller=ScreenshotController();
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    checkLocationAccuracy();
 
     WidgetsBinding.instance.addObserver(this);
 
@@ -169,16 +168,18 @@ ScreenshotController screen_shot_controller=ScreenshotController();
 
     }
 
-    Utils.customPrint("RESET PASSWORD 4 ${widget.isComingFromReset}");
+    print("RESET PASSWORD 4 ${widget.isComingFromReset}");
 
     if(widget.isComingFromReset != null)
     {
-      Utils.customPrint("RESET PASSWORD 3");
+      print("RESET PASSWORD 3");
       if(widget.isComingFromReset!)
       {
         Future.delayed(Duration(microseconds: 500), (){
-          Utils.customPrint("RESET PASSWORD INIT");
+          print("RESET PASSWORD INIT ${isThereCurrentDialogShowing(context)}");
           if(!isThereCurrentDialogShowing(context)){
+            widget.isComingFromReset = false;
+            print("RESET PASSWORD 5 ${widget.isComingFromReset}");
             showResetPasswordDialogBox(context, widget.token);
           }
 
@@ -186,28 +187,22 @@ ScreenshotController screen_shot_controller=ScreenshotController();
       }
     }
   }
-  checkLocationAccuracy()async
-  {
-    locationAccuracy = await Utils().getLocationAccuracy();
 
-    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
+  void captureScreenShot()async{
+        final image = await screen_shot_controller.capture();
+      Utils.customPrint(
+          "Image is: ${image.toString()}");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  FeedbackReport(
+                    imagePath: image.toString(),
+                    uIntList: image,
+                  )));
+
+
   }
-
-void captureScreenShot()async{
-                                      final image = await screen_shot_controller.capture();
-                                    Utils.customPrint(
-                                        "Image is: ${image.toString()}");
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                FeedbackReport(
-                                                  imagePath: image.toString(),
-                                                  uIntList: image,
-                                                )));
-
-
-}
 
 
   @override
@@ -251,7 +246,7 @@ void captureScreenShot()async{
                   {
                     if(isComingFrom != null){
                       if(!isComingFrom){
-                        Utils.customPrint("RESET PASSWORD LIFECYCLE");
+                        print("RESET PASSWORD LIFECYCLE");
                         showResetPasswordDialogBox(context,updatedToken);
                       }
                     }
@@ -303,6 +298,7 @@ void captureScreenShot()async{
       child:
       
       OrientationBuilder(
+        key: UniqueKey(),
         builder: (context, orientation) {
                 double iconHeight=        orientation==Orientation.portrait? displayHeight(context) * 0.035:displayHeight(context) * 0.060;
                               List<Widget> _icons = [
@@ -2212,12 +2208,12 @@ void captureScreenShot()async{
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy:LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(

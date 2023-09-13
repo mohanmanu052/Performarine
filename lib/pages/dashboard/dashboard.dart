@@ -97,7 +97,6 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
   @override
   void initState() {
     super.initState();
-    checkLocationAccuracy();
 
     WidgetsBinding.instance.addObserver(this);
 
@@ -140,13 +139,6 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
       }
     }
 */
-  }
-
-  checkLocationAccuracy()async
-  {
-    locationAccuracy = await Utils().getLocationAccuracy();
-
-    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
   }
 
   /*@override
@@ -599,12 +591,12 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy:LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy:LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(
