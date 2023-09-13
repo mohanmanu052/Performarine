@@ -226,7 +226,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
 
 Container(
                  height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.11,
-               width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.12,
+               width:orientation==Orientation.portrait? displayWidth(context) * 0.11:displayWidth(context) * 0.12,
   decoration: BoxDecoration(
     borderRadius: BorderRadius.circular(15),
                       image: imageUrl!=null&&imageUrl!.isNotEmpty?
@@ -259,7 +259,7 @@ Container(
              ),
 
              SizedBox(
-              width: displayWidth(context)/5.3,
+              width: displayWidth(context)/5.4,
                child: Column(
                  mainAxisAlignment: MainAxisAlignment.center,
                  crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,7 +306,7 @@ Container(
 
 
              SizedBox(
-              width: displayWidth(context) /8.1,
+              width: displayWidth(context) /7,
 
                child: Column(
                  mainAxisAlignment: MainAxisAlignment.center,

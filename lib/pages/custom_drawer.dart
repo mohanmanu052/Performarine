@@ -51,6 +51,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
   bool isSync = false, isUploadStarted = false;
   String page = "Custom_drawer";
   String? chosenValue = "Info";
+  bool uploadandSyncClicked=false;
+  bool isSyncSignoutClicked=false;
 
 
   @override
@@ -706,6 +708,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                                       if (internet) {
                                         setDialogState(() {
+                                          isSyncSignoutClicked=true;
                                           isSigningOut = true;
                                         });
 
@@ -733,9 +736,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     child: CommonButtons.getAcceptButton(
                                         'Sign Out', context,  Colors.transparent,
                                         () async {
+
+if(!isSyncSignoutClicked){
                                       Navigator.of(context).pop();
 
                                       signOut();
+
+}else{
+
+}
+
+
+                                          
                                     },
                                         displayWidth(context) / 1.6,
                                         displayHeight(context) * 0.055,
@@ -932,6 +944,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             () {
                                           if(isChangePassword)
                                           {
+
+                                            if(!isSync){
                                             Navigator.of(context).pop();
                                             Navigator.of(context).pop();
 
@@ -941,14 +955,25 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                                   builder: (context) => ChangePassword(isChange: true,)),
                                             );
 
+                                          }else{
+
+                                          }
+                                          
+                                          
                                           }else
                                           {
+                                            if(!isUploadStarted){
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                   const SyncDataCloudToMobileScreen()),
                                             );
+
+                                            }
+                                            else{
+
+                                            }
                                           }
 
                                         },
