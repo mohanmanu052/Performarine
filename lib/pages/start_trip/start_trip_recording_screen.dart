@@ -10,6 +10,7 @@ import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -92,7 +93,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       isRefreshList = false,
       isScanningBluetooth = false,
       isSliderDisable = false,
-      isCheck = false,isOKClick = false;
+      isCheck = false,isOKClick = false, locationAccuracy = false;
 
   final controller = ScreenshotController();
 
@@ -122,6 +123,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     // TODO: implement initState
     super.initState();
 
+    checkLocationAccuracy();
+
     WidgetsBinding.instance.addObserver(this);
 
     //checkAllPermission(false);
@@ -144,6 +147,13 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             extentOffset: textEditingController.value.text.length);
       }
     });
+  }
+
+  checkLocationAccuracy()async
+  {
+    locationAccuracy = await Utils().getLocationAccuracy();
+
+    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
   }
 
   @override
@@ -2636,12 +2646,12 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy:  LocationAccuracy.HIGH,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy:  LocationAccuracy.HIGH,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(
