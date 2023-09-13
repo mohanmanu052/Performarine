@@ -179,7 +179,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isCheckingPermission = false,
       isTripEndedOrNot = false,
       vesselAnalytics = false,
-      isVesselParticularExpanded = false,
+      isVesselParticularExpanded = true,
       isVesselAnalyticsExpanded = false,
       isPropulsionDetails = true,
       anotherVesselEndTrip = false;

@@ -495,14 +495,13 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                       _focusNode
                                                           .requestFocus();
 
-                                                      textEditingController.selection = TextSelection(baseOffset: 0, extentOffset: textEditingController.value.text.length);
-
                                                     }
 
                                                     );
                                                   });
                                                 }
                                               }
+                                              textEditingController.selection = TextSelection(baseOffset: 0, extentOffset: textEditingController.value.text.length);
                                             },
                                             handler: FlutterSliderHandler(
                                                 child: Container(

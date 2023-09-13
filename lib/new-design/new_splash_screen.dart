@@ -378,7 +378,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             if(isUserLoggedIn)
             {
               sharedPreferences!.setBool('reset_dialog_opened', false);
-              Get.to(BottomNavigation(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
+              Get.offAll(BottomNavigation(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
 
             }
           }
