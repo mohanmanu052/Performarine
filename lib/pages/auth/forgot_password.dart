@@ -164,7 +164,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              SignInScreen(),
+                                              SignInScreen(calledFrom: 'forgotPassword',),
                                         ),
                                         ModalRoute.withName(""));
                                   }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -568,5 +569,26 @@ class Utils {
               }
           }
       }
+  }
+
+   Future<bool> getLocationAccuracy() async {
+    FirebaseRemoteConfig data = await setupRemoteConfig();
+    bool locationAccuracy = data.getBool('isBasedOnNavigation');
+
+    Utils.customPrint('ACCURACY DATA ${locationAccuracy}');
+
+    return locationAccuracy;
+
+  }
+
+  Future<FirebaseRemoteConfig> setupRemoteConfig() async {
+    final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.instance;
+    await remoteConfig.setConfigSettings(RemoteConfigSettings(
+      fetchTimeout: const Duration(seconds: 10),
+      minimumFetchInterval: const Duration(hours: 1),
+    ));
+    await remoteConfig.fetchAndActivate();
+    RemoteConfigValue(null, ValueSource.valueStatic);
+    return remoteConfig;
   }
 }

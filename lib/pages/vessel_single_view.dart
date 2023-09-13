@@ -342,6 +342,20 @@ class VesselSingleViewState extends State<VesselSingleView> {
               ),
             ],
           ),
+          bottomSheet:  Padding(
+            padding: EdgeInsets.only(
+              bottom : displayHeight(context) * 0.01,
+            ),
+            child: GestureDetector(
+                onTap: ()async{
+                  final image = await controller.capture();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                    imagePath: image.toString(),
+                    uIntList: image,)));
+                },
+                child: UserFeedback().getUserFeedback(context)
+            ),
+          ),
           drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
           body: Stack(
             children: [
@@ -928,6 +942,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                   ),
                                   dividerColor: Colors.transparent),
                               child: ExpansionTile(
+                                collapsedIconColor: Colors.black,
                                 initiallyExpanded: true,
                                 onExpansionChanged: ((newState) {
                                   Utils.customPrint('CURRENT STAT $newState');
@@ -962,10 +977,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                       getVesselAnalytics(widget.vessel!.id!);
                                     },
                                   ),
-                                  SizedBox(height: displayHeight(context) * 0.01,),
-                                  Padding(
+                                  SizedBox(height: displayHeight(context) * 0.023,),
+                                /*  Padding(
                                     padding: EdgeInsets.only(
-                                      bottom : displayWidth(context) * 0.01,
+                                      bottom : 0,
                                     ),
                                     child: GestureDetector(
                                         onTap: ()async{
@@ -976,7 +991,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                         },
                                         child: UserFeedback().getUserFeedback(context)
                                     ),
-                                  ),
+                                  ), */
                                 ],
                               ),
                             ),
@@ -2935,12 +2950,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.NAVIGATION,
+            accuracy: LocationAccuracy.HIGH,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.NAVIGATION,
+            accuracy: LocationAccuracy.HIGH,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(

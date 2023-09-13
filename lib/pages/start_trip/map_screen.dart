@@ -732,10 +732,15 @@ class _MapScreenState extends State<MapScreen> {
                               children: [
                                 Center(
                                   child: isEndTripBtnClicked
-                                      ? CircularProgressIndicator(color: blueColor,)
+                                      ? Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                      height: displayHeight(context) * 0.054,
+                                      width:  displayWidth(context) * 0.064,
+                                      child: CircularProgressIndicator(color: blueColor,))
                                       : CommonButtons.getAcceptButton(
                                       'End Trip', context, Colors.transparent,
                                           () async {
+
 
                                         setState(() {
                                           lastTimePopupBtnClicked = true;
@@ -1015,12 +1020,12 @@ class _MapScreenState extends State<MapScreen> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.NAVIGATION,
+            accuracy: LocationAccuracy.HIGH,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.NAVIGATION,
+            accuracy: LocationAccuracy.HIGH,
             interval: 1,
             distanceFilter: 0,
             //client: bglas.LocationClient.android,

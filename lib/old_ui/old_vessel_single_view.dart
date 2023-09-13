@@ -2668,7 +2668,7 @@ class OldVesselSingleViewState extends State<OldVesselSingleView> {
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                color: bluetoothConnectBtnBackColor,
+                                color: blueColor,
                                 borderRadius:
                                 BorderRadius.all(Radius.circular(10)),
                               ),
