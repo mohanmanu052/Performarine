@@ -80,7 +80,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
       vesselIsSync = false,
       isDataUpdated = false,
       getTripDetailsFromNoti = false,
-      isEndTripBtnClicked = false;
+      isEndTripBtnClicked = false, locationAccuracy = false;
 
   int progress = 0;
   Timer? durationTimer;
@@ -2359,12 +2359,12 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             //client: bglas.LocationClient.android,

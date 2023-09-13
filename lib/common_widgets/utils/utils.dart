@@ -570,25 +570,4 @@ class Utils {
           }
       }
   }
-
-   Future<bool> getLocationAccuracy() async {
-    FirebaseRemoteConfig data = await setupRemoteConfig();
-    bool locationAccuracy = data.getBool('isBasedOnNavigation');
-
-    Utils.customPrint('ACCURACY DATA ${locationAccuracy}');
-
-    return locationAccuracy;
-
-  }
-
-  Future<FirebaseRemoteConfig> setupRemoteConfig() async {
-    final FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.instance;
-    await remoteConfig.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: const Duration(seconds: 10),
-      minimumFetchInterval: const Duration(hours: 1),
-    ));
-    await remoteConfig.fetchAndActivate();
-    RemoteConfigValue(null, ValueSource.valueStatic);
-    return remoteConfig;
-  }
 }

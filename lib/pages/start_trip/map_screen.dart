@@ -53,7 +53,8 @@ class _MapScreenState extends State<MapScreen> {
 
   final DatabaseService _databaseService = DatabaseService();
 
-  bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false, isEndTripBtnClicked = false, isDataUpdated = false, lastTimePopupBtnClicked = false;
+  bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false, isEndTripBtnClicked = false, isDataUpdated = false, lastTimePopupBtnClicked = false,
+      locationAccuracy = false;
 
   Trip? tripData;
   CreateVessel? vesselData;
@@ -91,6 +92,7 @@ class _MapScreenState extends State<MapScreen> {
       }
     }
   }
+
 
   getRealTimeTripDetails() async {
 
@@ -1020,12 +1022,12 @@ class _MapScreenState extends State<MapScreen> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             //client: bglas.LocationClient.android,

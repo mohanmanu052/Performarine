@@ -97,7 +97,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isBluetoothDialog = false,
       isBluetoothConnected = false,
       isRefreshList = false,
-      isScanningBluetooth = false;
+      isScanningBluetooth = false, locationAccuracy = false;
 
   String fileName = '', getTripId = '', selectedVesselWeight = 'Select Current Load', bluetoothName = '';
   int fileIndex = 1;
@@ -2930,7 +2930,6 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     await initPlatformStateBGL();
 
-
     await tripIsRunningOrNot();
 
     Navigator.pop(bottomSheetContext);
@@ -2950,12 +2949,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(

@@ -54,7 +54,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
   TextEditingController searchController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
 
-  bool isEndTripBtnClicked = false;
+  bool isEndTripBtnClicked = false, locationAccuracy = false;
 
   @override
   void didUpdateWidget(covariant Dashboard oldWidget) {
@@ -591,12 +591,12 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy:LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy:LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(

@@ -973,12 +973,12 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy:LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             //client: bglas.LocationClient.android,

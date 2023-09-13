@@ -123,8 +123,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     // TODO: implement initState
     super.initState();
 
-    checkLocationAccuracy();
-
     WidgetsBinding.instance.addObserver(this);
 
     //checkAllPermission(false);
@@ -147,13 +145,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             extentOffset: textEditingController.value.text.length);
       }
     });
-  }
-
-  checkLocationAccuracy()async
-  {
-    locationAccuracy = await Utils().getLocationAccuracy();
-
-    Utils.customPrint("LOCATION ACCURACY START $locationAccuracy");
   }
 
   @override
@@ -2646,12 +2637,12 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy:  LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy:  LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.NAVIGATION,
             interval: 1,
             distanceFilter: 0,
             androidNotificationSettings: AndroidNotificationSettings(
