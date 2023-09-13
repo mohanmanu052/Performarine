@@ -2368,12 +2368,12 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
         initDataCallback: data,
         disposeCallback: LocationCallbackHandler.disposeCallback,
         iosSettings: IOSSettings(
-            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION : LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.HIGH,
             distanceFilter: 0,
             stopWithTerminate: true),
         autoStop: false,
         androidSettings: AndroidSettings(
-            accuracy: locationAccuracy ? LocationAccuracy.NAVIGATION : LocationAccuracy.HIGH,
+            accuracy: LocationAccuracy.HIGH,
             interval: 1,
             distanceFilter: 0,
             //client: bglas.LocationClient.android,

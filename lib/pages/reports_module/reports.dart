@@ -436,7 +436,10 @@ childrenValue!.clear();
             tripIdList!.add(value.data![i].id!);
             if (value.data![i].createdAt != null) {
               dateTimeList!.add(tripDate(value.data![i].createdAt.toString()));
-              distanceList!.add(value.data![i].distance.toString());
+              //distanceList!.add(100.222.toStringAsFixed(1));
+
+
+            distanceList!.add(value.data![i].distance!.toStringAsFixed(1));
               timeList!.add(value.data![i].duration.toString());
             }
             children!.add("Trip ${i.toString()}");
@@ -2845,7 +2848,7 @@ Utils.showSnackBar(context,
                       child: Row(
                         children: [
                           SizedBox(
-                            width:displayWidth(context) * 0.22 ,
+                            width:displayWidth(context) * 0.23 ,
 
                             child: Text(
                               pickStartDate!,
@@ -2888,12 +2891,12 @@ Utils.showSnackBar(context,
                         ),
                     child: Padding(
                       padding: EdgeInsets.only(
-                          left: displayWidth(context) * 0.038,
-                          right: displayWidth(context) * 0.05),
+                          left: displayWidth(context) * 0.04,
+                          right: displayWidth(context) * 0.04),
                       child: Row(
                         children: [
                           SizedBox(
-                            width:displayWidth(context) * 0.22 ,
+                            width:displayWidth(context) * 0.23 ,
                             child: Text(
                               pickEndDate!,
                               style: TextStyle(
