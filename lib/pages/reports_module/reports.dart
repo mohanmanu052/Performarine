@@ -436,7 +436,8 @@ childrenValue!.clear();
             tripIdList!.add(value.data![i].id!);
             if (value.data![i].createdAt != null) {
               dateTimeList!.add(tripDate(value.data![i].createdAt.toString()));
-              distanceList!.add(value.data![i].distance.toString());
+
+             distanceList!.add(value.data![i].distance!.toStringAsFixed(1));
               timeList!.add(value.data![i].duration.toString());
             }
             children!.add("Trip ${i.toString()}");
@@ -3291,6 +3292,7 @@ Utils.showSnackBar(context,
                                     value: childrenValue![index],
                                     imageUrl: imageUrl,
                                     dateTime: dateTimeList![index],
+                                    //distance: '123.5 NM',
                                     distance: '${distanceList![index]} $nauticalMile',
                                     time: timeList![index],
                                     onChanged: (value) {
