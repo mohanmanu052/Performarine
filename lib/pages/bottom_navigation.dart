@@ -2063,85 +2063,96 @@ void captureScreenShot()async{
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Center(
-                                  child: isEndTripBtnClicked
-                                      ? Container(
-                                    //  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                     // height: displayHeight(context) * 0.054,
-                                     // width:  displayWidth(context) * 0.064,
-                                      child: CircularProgressIndicator(color: blueColor,))
-                                      : CommonButtons.getAcceptButton(
-                                      'End Trip', context, Colors.transparent,
-                                          () async {
-                                        setDialogState(() {
-                                          isEndTripBtnClicked = true;
-                                        });
+                                SizedBox(
+                                                                          height: displayHeight(context) * 0.054,
+                                      // width:  displayWidth(context) * 0.064,
 
-                                        List<String>? tripData = sharedPreferences!
-                                            .getStringList('trip_data');
-
-                                        String tripId = '';
-                                        if (tripData != null) {
-                                          tripId = tripData[0];
-                                        }
-
-                                        final currentTrip =
-                                        await _databaseService.getTrip(tripId);
-
-                                        DateTime createdAtTime =
-                                        DateTime.parse(currentTrip.createdAt!);
-
-                                        var durationTime = DateTime.now()
-                                            .toUtc()
-                                            .difference(createdAtTime);
-                                        String tripDuration =
-                                        Utils.calculateTripDuration(
-                                            ((durationTime.inMilliseconds) / 1000)
-                                                .toInt());
-
-                                        Utils.customPrint("DURATION !!!!!! $tripDuration");
-
-                                        bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
-
-                                        if(!isSmallTrip)
-                                        {
-                                          Navigator.pop(context);
-
-                                          Utils().showDeleteTripDialog(context, endTripBtnClick: (){
-                                            EasyLoading.show(
-                                                status: 'Please wait...',
-                                                maskType: EasyLoadingMaskType.black);
-                                            endTripMethod(setDialogState);
-                                            Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
-
-                                            Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
-
-                                            Future.delayed(Duration(seconds: 1), (){
-                                              if(!isSmallTrip)
-                                              {
-                                                Utils.customPrint("SMALL TRIPP IDDD 11 ${tripId}");
-                                                DatabaseService().deleteTripFromDB(tripId);
-                                              }
-                                            });
-                                          }, onCancelClick: (){
+                                  child: Center(
+                                    child: 
+                                    isEndTripBtnClicked
+                                        ?
+                                        
+                                        
+                                         Container(
+                                      //  padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                      //   height: displayHeight(context) * 0.054,
+                                       //width:  displayWidth(context) * 0.064,
+                                        child: CircularProgressIndicator(color: blueColor,
+                                        
+                                        ))
+                                        : CommonButtons.getAcceptButton(
+                                        'End Trip', context, Colors.transparent,
+                                            () async {
+                                          setDialogState(() {
+                                            isEndTripBtnClicked = true;
+                                          });
+                                
+                                          List<String>? tripData = sharedPreferences!
+                                              .getStringList('trip_data');
+                                
+                                          String tripId = '';
+                                          if (tripData != null) {
+                                            tripId = tripData[0];
+                                          }
+                                
+                                          final currentTrip =
+                                          await _databaseService.getTrip(tripId);
+                                
+                                          DateTime createdAtTime =
+                                          DateTime.parse(currentTrip.createdAt!);
+                                
+                                          var durationTime = DateTime.now()
+                                              .toUtc()
+                                              .difference(createdAtTime);
+                                          String tripDuration =
+                                          Utils.calculateTripDuration(
+                                              ((durationTime.inMilliseconds) / 1000)
+                                                  .toInt());
+                                
+                                          Utils.customPrint("DURATION !!!!!! $tripDuration");
+                                
+                                          bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+                                
+                                          if(!isSmallTrip)
+                                          {
+                                            Navigator.pop(context);
+                                
+                                            Utils().showDeleteTripDialog(context, endTripBtnClick: (){
+                                              EasyLoading.show(
+                                                  status: 'Please wait...',
+                                                  maskType: EasyLoadingMaskType.black);
+                                              endTripMethod(setDialogState);
+                                              Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
+                                
+                                              Utils.customPrint("SMALL TRIPP IDDD ${tripId}");
+                                
+                                              Future.delayed(Duration(seconds: 1), (){
+                                                if(!isSmallTrip)
+                                                {
+                                                  Utils.customPrint("SMALL TRIPP IDDD 11 ${tripId}");
+                                                  DatabaseService().deleteTripFromDB(tripId);
+                                                }
+                                              });
+                                            }, onCancelClick: (){
+                                              endTripMethod(setDialogState);
+                                            }
+                                            );
+                                          }
+                                          else
+                                          {
                                             endTripMethod(setDialogState);
                                           }
-                                          );
-                                        }
-                                        else
-                                        {
-                                          endTripMethod(setDialogState);
-                                        }
-
-                                      },
-                                      displayWidth(context) * 0.65,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.02,
-                                      endTripBtnColor,
-                                      '',
-                                      fontWeight: FontWeight.w700),
+                                
+                                        },
+                                        displayWidth(context) * 0.65,
+                                        displayHeight(context) * 0.054,
+                                        primaryColor,
+                                        Colors.white,
+                                        displayHeight(context) * 0.02,
+                                        endTripBtnColor,
+                                        '',
+                                        fontWeight: FontWeight.w700),
+                                   ),
                                 ),
                                 SizedBox(height: 10,),
                                 Center(
