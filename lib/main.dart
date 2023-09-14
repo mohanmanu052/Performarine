@@ -101,6 +101,7 @@ void main() async {
 
   SharedPreferences.getInstance().then((value) {
     sharedPreferences = value;
+    //sharedPreferences!.setBool('is_initial_uri_handled', false);
     runApp(Phoenix(child: MyApp()));
   });
 }

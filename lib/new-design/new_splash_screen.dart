@@ -30,8 +30,9 @@ class NewSplashScreen extends StatefulWidget {
 }
 
 class _NewSplashScreenState extends State<NewSplashScreen> {
-
-  bool isBtnVisible = false, isTripRunningCurrently = false, locationAccuracy = false;
+  bool isBtnVisible = false,
+      isTripRunningCurrently = false,
+      locationAccuracy = false;
   StreamSubscription? _sub;
   String page = "Intro_screen";
 
@@ -40,11 +41,8 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
     // TODO: implement initState
     super.initState();
 
-    print("SPLASH SCREEN ");
-
     initUniLinks();
   }
-
 
   /*@override
   void initState() {
@@ -67,7 +65,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
     return Scaffold(
       body: SizedBox(
         height: displayHeight(context),
-        width: displayWidth(context) ,
+        width: displayWidth(context),
         child: Stack(
           children: [
             Stack(
@@ -88,8 +86,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                       padding: const EdgeInsets.only(top: 20),
                       decoration: BoxDecoration(boxShadow: [
                         BoxShadow(
-                            color:
-                            Colors.black.withOpacity(0.6),
+                            color: Colors.black.withOpacity(0.6),
                             blurRadius: 30,
                             spreadRadius: 5,
                             offset: const Offset(0, 70))
@@ -97,13 +94,13 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                     ))
               ],
             ),
-
-
             Positioned(
-              top: displayHeight(context) * 0.3,
+                top: displayHeight(context) * 0.3,
                 right: 0,
                 left: 0,
-                child: Image.asset('assets/icons/app_icon.png', width: displayWidth(context) * 0.2, height: displayHeight(context) * 0.12))
+                child: Image.asset('assets/icons/app_icon.png',
+                    width: displayWidth(context) * 0.2,
+                    height: displayHeight(context) * 0.12))
           ],
         ),
       ),
@@ -118,8 +115,10 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
     bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
 
     Utils.customPrint('INTRO START $isTripStarted');
-    CustomLogger().logWithFile(Level.info, "INTRO START $isTripStarted -> $page");
-    CustomLogger().logWithFile(Level.info, "INTRO START $isTripStarted -> $page");
+    CustomLogger()
+        .logWithFile(Level.info, "INTRO START $isTripStarted -> $page");
+    CustomLogger()
+        .logWithFile(Level.info, "INTRO START $isTripStarted -> $page");
 
     setState(() {
       isTripRunningCurrently = isTripStarted!;
@@ -148,7 +147,8 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
 
       if (notificationAppLaunchDetails == null) {
         Utils.customPrint('NotificationAppLaunchDetails IS NULL');
-        CustomLogger().logWithFile(Level.info, "NotificationAppLaunchDetails IS NULL -> $page");
+        CustomLogger().logWithFile(
+            Level.info, "NotificationAppLaunchDetails IS NULL -> $page");
         Future.delayed(Duration(seconds: 3), () {
           if (mounted) {
             setState(() {
@@ -159,7 +159,8 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
       } else {
         if (!notificationAppLaunchDetails.didNotificationLaunchApp) {
           Utils.customPrint('NotificationAppLaunchDetails IS FALSE');
-          CustomLogger().logWithFile(Level.info, "NotificationAppLaunchDetails IS FALSE -> $page");
+          CustomLogger().logWithFile(
+              Level.info, "NotificationAppLaunchDetails IS FALSE -> $page");
 
           Future.delayed(Duration(seconds: 3), () {
             if (mounted) {
@@ -170,9 +171,12 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
           });
         } else {
           Utils.customPrint('NotificationAppLaunchDetails IS TRUE');
-          CustomLogger().logWithFile(Level.info, "NotificationAppLaunchDetails IS TRUE -> $page");
+          CustomLogger().logWithFile(
+              Level.info, "NotificationAppLaunchDetails IS TRUE -> $page");
 
-          if (notificationAppLaunchDetails.notificationResponse!.id == 889 || notificationAppLaunchDetails.notificationResponse!.id == 776 || notificationAppLaunchDetails.notificationResponse!.id == 1) {
+          if (notificationAppLaunchDetails.notificationResponse!.id == 889 ||
+              notificationAppLaunchDetails.notificationResponse!.id == 776 ||
+              notificationAppLaunchDetails.notificationResponse!.id == 1) {
             List<String>? tripData =
             sharedPreferences!.getStringList('trip_data');
 
@@ -198,7 +202,6 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                         calledFrom: 'notification',
                         tripIsRunningOrNot: isTripStarted)),
                 ModalRoute.withName(""));
-
           } else {
             Future.delayed(Duration(seconds: 3), () {
               if (mounted) {
@@ -225,8 +228,10 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
     Utils.customPrint('ISUSERLOGEDIN $isUserLoggedIn');
     Utils.customPrint('ISUSERLOGEDIN 1212 $isTripStarted');
 
-    CustomLogger().logWithFile(Level.info, "ISUSERLOGEDIN  $isUserLoggedIn -> $page");
-    CustomLogger().logWithFile(Level.info, "ISUSERLOGEDIN 1212 $isTripStarted -> $page");
+    CustomLogger()
+        .logWithFile(Level.info, "ISUSERLOGEDIN  $isUserLoggedIn -> $page");
+    CustomLogger()
+        .logWithFile(Level.info, "ISUSERLOGEDIN 1212 $isTripStarted -> $page");
 
     if (isTripStarted == null) {
       if (isUserLoggedIn == null) {
@@ -244,7 +249,8 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
         } else {
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => BottomNavigation(isAppKilled:  true)),
+              MaterialPageRoute(
+                  builder: (context) => BottomNavigation(isAppKilled: true)),
               ModalRoute.withName(""));
         }
       } else {
@@ -253,17 +259,18 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             MaterialPageRoute(builder: (context) => const NewIntroScreen()),
             ModalRoute.withName(""));
       }
-    }
-    else if (isTripStarted) {
+    } else if (isTripStarted) {
       Utils.customPrint('INTRO TRIP IS RUNNING $isTripStarted');
-      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING $isTripStarted -> $page");
+      CustomLogger().logWithFile(
+          Level.info, "INTRO TRIP IS RUNNING $isTripStarted -> $page");
 
       flutterLocalNotificationsPlugin.cancel(1);
 
       final _isRunning = await BackgroundLocator();
 
       Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
-      CustomLogger().logWithFile(Level.info, "INTRO TRIP IS RUNNING $_isRunning -> $page");
+      CustomLogger().logWithFile(
+          Level.info, "INTRO TRIP IS RUNNING $_isRunning -> $page");
 
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
 
@@ -272,13 +279,17 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (context) => BottomNavigation(tripData: tripData ?? [], isAppKilled:  true,)),
+                  builder: (context) => BottomNavigation(
+                    tripData: tripData ?? [],
+                    isAppKilled: true,
+                  )),
               ModalRoute.withName(""));
         } else if (!isCalledFromNoti) {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (context) => BottomNavigation(tripData: tripData ?? [], isAppKilled:  true)),
+                  builder: (context) => BottomNavigation(
+                      tripData: tripData ?? [], isAppKilled: true)),
               ModalRoute.withName(""));
         } else {
           /*Navigator.pushAndRemoveUntil(
@@ -302,8 +313,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
               ModalRoute.withName(""));
         }
       }
-    }
-    else {
+    } else {
       if (isUserLoggedIn == null) {
         Navigator.pushAndRemoveUntil(
             context,
@@ -312,7 +322,8 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
       } else if (isUserLoggedIn) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => BottomNavigation(isAppKilled:  true)),
+            MaterialPageRoute(
+                builder: (context) => BottomNavigation(isAppKilled: true)),
             ModalRoute.withName(""));
       } else {
         Navigator.pushAndRemoveUntil(
@@ -354,52 +365,64 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
 
   Future<void> initUniLinks() async {
     Uri? initialLink;
-    final pref = await Utils.initSharedPreferences();
     try {
-      initialLink = await getInitialUri();
+      bool? isInitialUriHandled =
+          sharedPreferences!.getBool('is_initial_uri_handled') ?? false;
 
-      print('UNI LINK: $initialLink');
+      if (!isInitialUriHandled) {
+        sharedPreferences!.setBool('is_initial_uri_handled', true);
+        initialLink = await getInitialUri();
 
-      CustomLogger().logWithFile(Level.info, "UNI LINK: $initialLink -> $page");
+        Utils.customPrint('UNI LINK: $initialLink');
+        CustomLogger()
+            .logWithFile(Level.info, "UNI LINK: $initialLink -> $page");
 
-      if(initialLink != null)
-      {
-        print('Deep link received: $initialLink');
-        CustomLogger().logWithFile(Level.info, "Deep link received: $initialLink -> $page");
+        if (initialLink != null) {
+          Utils.customPrint('Deep link received: $initialLink');
+          CustomLogger().logWithFile(
+              Level.info, "Deep link received: $initialLink -> $page");
+          if (initialLink.queryParameters['verify'] != null) {
+            Utils.customPrint(
+                "reset: ${initialLink.queryParameters['verify'].toString()}");
+            CustomLogger().logWithFile(Level.info,
+                "reset: ${initialLink.queryParameters['verify'].toString()} -> $page");
+            bool? isUserLoggedIn =
+            await sharedPreferences!.getBool('isUserLoggedIn');
 
-        if(initialLink.queryParameters['verify'] != null){
-          print("reset: ${initialLink.queryParameters['verify'].toString()}");
-          CustomLogger().logWithFile(Level.info, "reset: ${initialLink.queryParameters['verify'].toString()} -> $page");
-          bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(
+                Level.info, "isUserLoggedIn: $isUserLoggedIn-> $page");
 
-          print("isUserLoggedIn: $isUserLoggedIn");
-          CustomLogger().logWithFile(Level.info, "isUserLoggedIn: $isUserLoggedIn-> $page");
-
-          Map<String, dynamic> arguments = {
-            "isComingFromReset": true,
-            "token": initialLink.queryParameters['verify'].toString()
-          };
-          if(isUserLoggedIn != null)
-          {
-            if(isUserLoggedIn)
-            {
-              print("BOTTOM NAV");
-              sharedPreferences!.setBool('reset_dialog_opened', false);
-              Get.offAll(BottomNavigation(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
-
+            Map<String, dynamic> arguments = {
+              "isComingFromReset": true,
+              "token": initialLink.queryParameters['verify'].toString()
+            };
+            if (isUserLoggedIn != null) {
+              if (isUserLoggedIn) {
+                sharedPreferences!.setBool('reset_dialog_opened', false);
+                Get.offAll(
+                    BottomNavigation(
+                        isComingFromReset: true,
+                        token: initialLink.queryParameters['verify'].toString(),
+                        isAppKilled: true),
+                    arguments: arguments);
+              }
+            } else {
+              Future.delayed(Duration(seconds: 2), () {
+                Get.offAll(ResetPassword(
+                    token: initialLink!.queryParameters['verify'].toString(),
+                    isCalledFrom: "Main"));
+              });
             }
           }
-          else
-          {
-            Future.delayed(Duration(seconds: 2), (){
-              Get.offAll(ResetPassword(token: initialLink!.queryParameters['verify'].toString(), isCalledFrom: "Main"));
-            });
-          }
-
+        } else {
+          checkIfTripIsRunning();
+          Future.delayed(Duration(seconds: 4), () {
+            checkIfUserIsLoggedIn();
+          });
         }
       }
-      else
-      {
+      else{
         checkIfTripIsRunning();
         Future.delayed(Duration(seconds: 4), () {
           checkIfUserIsLoggedIn();
@@ -411,56 +434,55 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
     }
 
     try {
-      _sub = uriLinkStream.listen((Uri? uri) async{
-
-       print("URI 1: ${uri}");
+      _sub = uriLinkStream.listen((Uri? uri) async {
+        Utils.customPrint("URI: ${uri}");
         CustomLogger().logWithFile(Level.info, "URI: $uri-> $page");
         if (uri != null) {
-          print('Deep link received 1: $uri');
+          Utils.customPrint('Deep link received: $uri');
           CustomLogger().logWithFile(Level.info, "Deep link received-> $page");
-          if(uri.queryParameters['verify'] != null){
-            print("reset 1: ${uri.queryParameters['verify'].toString()}");
-            CustomLogger().logWithFile(Level.info, "reset: ${uri.queryParameters['verify'].toString()} -> $page");
-            bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
+          if (uri.queryParameters['verify'] != null) {
+            Utils.customPrint(
+                "reset: ${uri.queryParameters['verify'].toString()}");
+            CustomLogger().logWithFile(Level.info,
+                "reset: ${uri.queryParameters['verify'].toString()} -> $page");
+            bool? isUserLoggedIn =
+            await sharedPreferences!.getBool('isUserLoggedIn');
 
-            print("isUserLoggedIn 1: $isUserLoggedIn");
-            CustomLogger().logWithFile(Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page");
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(
+                Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page");
             Map<String, dynamic> arguments = {
               "isComingFromReset": true,
               "token": uri.queryParameters['verify'].toString()
             };
-            if(isUserLoggedIn != null)
-            {
-              if(isUserLoggedIn)
-              {
-                print("BOTTOM NAV 1: $isUserLoggedIn");
+            if (isUserLoggedIn != null) {
+              if (isUserLoggedIn) {
                 sharedPreferences!.setBool('reset_dialog_opened', false);
-                Get.offAll(BottomNavigation(isComingFromReset: true,token: uri.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
-
+                Get.offAll(
+                    BottomNavigation(
+                        isComingFromReset: true,
+                        token: uri.queryParameters['verify'].toString(),
+                        isAppKilled: true),
+                    arguments: arguments);
               }
-            }
-            else
-            {
-            }
-
+            } else {}
           }
-        }
-        else
-        {
+        } else {
           checkIfTripIsRunning();
           Future.delayed(Duration(seconds: 4), () {
             checkIfUserIsLoggedIn();
           });
         }
       }, onError: (err) {
-
         Utils.customPrint('Error handling deep link: $err');
-        CustomLogger().logWithFile(Level.error, "Error handling deep link -> $page");
+        CustomLogger()
+            .logWithFile(Level.error, "Error handling deep link -> $page");
       });
     } on PlatformException {
-      Utils.customPrint("Exception while handling with uni links : ${PlatformException}");
-      CustomLogger().logWithFile(Level.error, "Exception while handling with uni links : ${PlatformException} -> $page");
-
+      Utils.customPrint(
+          "Exception while handling with uni links : ${PlatformException}");
+      CustomLogger().logWithFile(Level.error,
+          "Exception while handling with uni links : ${PlatformException} -> $page");
     }
   }
 }
