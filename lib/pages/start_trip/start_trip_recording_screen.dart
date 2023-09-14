@@ -2520,8 +2520,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           builder: (BuildContext context) {
             return LocationPermissionCustomDialog(
               isLocationDialogBox: false,
-              text: 'Require GPS',
-              subText: 'Please enable GPS.',
+              isGPSDaialogBox: true,
+              text: 'Allow access to GPS',
+              subText: 'Please enable GPS to continue.',
               buttonText: 'OK',
               buttonOnTap: () async {
                 Get.back();

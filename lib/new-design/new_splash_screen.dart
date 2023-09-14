@@ -40,6 +40,8 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
     // TODO: implement initState
     super.initState();
 
+    print("SPLASH SCREEN ");
+
     initUniLinks();
   }
 
@@ -352,22 +354,25 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
 
   Future<void> initUniLinks() async {
     Uri? initialLink;
+    final pref = await Utils.initSharedPreferences();
     try {
       initialLink = await getInitialUri();
 
-      Utils.customPrint('UNI LINK: $initialLink');
+      print('UNI LINK: $initialLink');
+
       CustomLogger().logWithFile(Level.info, "UNI LINK: $initialLink -> $page");
 
       if(initialLink != null)
       {
-        Utils.customPrint('Deep link received: $initialLink');
+        print('Deep link received: $initialLink');
         CustomLogger().logWithFile(Level.info, "Deep link received: $initialLink -> $page");
+
         if(initialLink.queryParameters['verify'] != null){
-          Utils.customPrint("reset: ${initialLink.queryParameters['verify'].toString()}");
+          print("reset: ${initialLink.queryParameters['verify'].toString()}");
           CustomLogger().logWithFile(Level.info, "reset: ${initialLink.queryParameters['verify'].toString()} -> $page");
           bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
 
-          Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+          print("isUserLoggedIn: $isUserLoggedIn");
           CustomLogger().logWithFile(Level.info, "isUserLoggedIn: $isUserLoggedIn-> $page");
 
           Map<String, dynamic> arguments = {
@@ -378,6 +383,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
           {
             if(isUserLoggedIn)
             {
+              print("BOTTOM NAV");
               sharedPreferences!.setBool('reset_dialog_opened', false);
               Get.offAll(BottomNavigation(isComingFromReset: true,token: initialLink.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
 
@@ -407,17 +413,17 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
     try {
       _sub = uriLinkStream.listen((Uri? uri) async{
 
-        Utils.customPrint("URI: ${uri}");
+       print("URI 1: ${uri}");
         CustomLogger().logWithFile(Level.info, "URI: $uri-> $page");
         if (uri != null) {
-          Utils.customPrint('Deep link received: $uri');
+          print('Deep link received 1: $uri');
           CustomLogger().logWithFile(Level.info, "Deep link received-> $page");
           if(uri.queryParameters['verify'] != null){
-            Utils.customPrint("reset: ${uri.queryParameters['verify'].toString()}");
+            print("reset 1: ${uri.queryParameters['verify'].toString()}");
             CustomLogger().logWithFile(Level.info, "reset: ${uri.queryParameters['verify'].toString()} -> $page");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
 
-            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            print("isUserLoggedIn 1: $isUserLoggedIn");
             CustomLogger().logWithFile(Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page");
             Map<String, dynamic> arguments = {
               "isComingFromReset": true,
@@ -427,6 +433,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             {
               if(isUserLoggedIn)
               {
+                print("BOTTOM NAV 1: $isUserLoggedIn");
                 sharedPreferences!.setBool('reset_dialog_opened', false);
                 Get.offAll(BottomNavigation(isComingFromReset: true,token: uri.queryParameters['verify'].toString(), isAppKilled:  true),arguments: arguments);
 
