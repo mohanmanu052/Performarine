@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -6,6 +7,8 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -22,7 +25,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../widgets/location_permission_dialog.dart';
 import '../widgets/log_level.dart';
+import 'package:geolocator/geolocator.dart' as geo;
 
 class Utils {
   String page = "Utils";
@@ -141,13 +146,46 @@ class Utils {
           });
         }
       } else if (status == PermissionStatus.permanentlyDenied) {
-        Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey,
-            message:
+        if(Platform.isIOS){
+          if (!await geo.Geolocator.isLocationServiceEnabled()) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return LocationPermissionCustomDialog(
+                    isLocationDialogBox: false,
+                    isGPSDaialogBox: true,
+                    text: 'Allow access to GPS',
+                    subText: 'Please enable GPS to continue.',
+                    buttonText: 'OK',
+                    buttonOnTap: () async {
+                      Get.back();
+
+                      // AppSettings.openAppSettings(type: AppSettingsType.location);
+                    },
+                  );
+                });
+            return;
+          }
+          else{
+            Utils.showSnackBar(context,
+                scaffoldKey: scaffoldKey,
+                message:
                 'Location permissions are denied without permissions we are unable to start the trip');
-        Future.delayed(Duration(seconds: 2), () async {
-          await openAppSettings();
-        });
+            Future.delayed(Duration(seconds: 2), () async {
+              await openAppSettings();
+            });
+          }
+        }else{
+          Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey,
+              message:
+              'Location permissions are denied without permissions we are unable to start the trip');
+          Future.delayed(Duration(seconds: 2), () async {
+            await openAppSettings();
+          });
+
+        }
+
       }
     }
 
