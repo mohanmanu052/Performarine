@@ -2071,7 +2071,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                                   child: isEndTripBtnClicked
                                       ? Container(
                                     //  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                     // height: displayHeight(context) * 0.054,
+                                      //height: displayHeight(context) * 0.046,
                                      // width:  displayWidth(context) * 0.064,
                                       child: CircularProgressIndicator(color: blueColor,))
                                       : CommonButtons.getAcceptButton(
@@ -2080,6 +2080,14 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                                         setDialogState(() {
                                           isEndTripBtnClicked = true;
                                         });
+
+                                        Future.delayed(Duration(seconds: 4), (){
+                                          setDialogState(() {
+                                            isEndTripBtnClicked = false;
+                                          });
+                                        });
+
+                                        return;
 
                                         List<String>? tripData = sharedPreferences!
                                             .getStringList('trip_data');
