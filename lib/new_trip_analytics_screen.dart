@@ -9,8 +9,6 @@ import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';
-import 'package:performarine/pages/home_page.dart';
-import 'package:performarine/pages/trips/Trips.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
@@ -60,14 +58,11 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
   GlobalKey<ScaffoldState>  scaffoldKey = GlobalKey();
 
-  final DatabaseService _databaseService = DatabaseService();
-
   CreateVessel? vesselData;
   Trip? tripData;
 
   String tripDistance = '0.00', tripDuration = '00:00:00', dateOfJourney = '', yearOfTheJourney = '', peopleOnBoard = '';
 
-  String? finalTripDuration, finalTripDistance, finalAvgSpeed;
   bool cancelVisible=true;
   bool? internet;
 
@@ -79,8 +74,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     NewChartData(2014, 40)
   ];
 
-  bool getTripDetailsFromNoti = false, tripIsRunning = false;
-
   List<SalesData> data = [
     SalesData('06-22-2023', 35, 25),
     SalesData('06-28-2023', 28, 38),
@@ -89,7 +82,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     SalesData('07-14-2023', 40, 60)
   ];
 
-  Timer? durationTimer;
 
   final controller = ScreenshotController();
 
@@ -120,7 +112,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
   }
 
-
 @override
   void dispose() {
         SystemChrome.setPreferredOrientations([
@@ -134,7 +125,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     // TODO: implement dispose
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -171,12 +161,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
             InkWell(
               onTap: ()async{
                 Utils.customPrint("Trip id is: ${tripData!.id}");
-              //  bool tripRunning = await tripIsRunningOrNot(snapshot.data![index]);
                 bool tripUploadedStatus = false;
                 if (tripData!.isSync == 0){
                   tripUploadedStatus = true;
                 }
-             //   print("status: ${widget.vessel!.}");
                 if(tripData!.tripStatus == 1){
                   showDeleteTripDialogBox(
                       context,
@@ -186,16 +174,12 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                       tripData!.distance!,
                           (){
                         Utils.customPrint("call back for delete trip in list");
-                        //snapshot.data!.removeAt(index);
-                        // Navigator.pop(context);
-    
+
                       },scaffoldKey,
                       tripUploadedStatus
                   );
                 } else{
-                  // Future.delayed(Duration(microseconds: 500), (){
-                  //   showEndTripDialogBox(context);
-                  // });
+
                 }
               },
               child: Image.asset(
@@ -1249,7 +1233,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                   if(check)
                                   {
                                     commonProvider.downloadTripProgressBar(true);
-                                    // setState(() {});
+
                                     DownloadTrip().downloadTripFromCloud(context,scaffoldKey, tripData!.filePath!, commonProvider);
 
                                   }
@@ -1581,7 +1565,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     }
   }
 
-
   void deleteFolder(String folderPath) async {
     Directory directory = Directory(folderPath);
 
@@ -1661,7 +1644,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
       });
       tripIsSyncOrNot = tripData!.isSync;
       dateOfJourney = DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.createdAt!));
-     // yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(tripData!.createdAt!));
     } else {
       final DatabaseService _databaseService = DatabaseService();
       final tripDetails = await _databaseService.getTrip(widget.tripId!);
@@ -1675,7 +1657,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
       });
       tripIsSyncOrNot = tripData!.isSync;
       dateOfJourney = DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.createdAt!));
-      //yearOfTheJourney = DateFormat('yyyy').format(DateTime.parse(tripData!.createdAt!));
     }
     peopleOnBoard = tripData!.numberOfPassengers.toString();
 
