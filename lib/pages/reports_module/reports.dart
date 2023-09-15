@@ -1,21 +1,18 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/models/get_user_config_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
+import 'package:performarine/pages/reports_module/widgets/reports_datatable.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'dart:typed_data';
-
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/common_size_helper.dart';
 import '../../common_widgets/utils/constants.dart';
@@ -27,10 +24,6 @@ import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import '../../models/reports_model.dart';
 import '../../provider/common_provider.dart';
-import '../bottom_navigation.dart';
-import '../feedback_report.dart';
-import '../home_page.dart';
-import '../trip_analytics.dart';
 
 class ReportsModule extends StatefulWidget {
    ReportsModule({super.key,this.onScreenShotCaptureCallback});
@@ -371,7 +364,7 @@ List<Vessels>? vesselList;
           "Error while fetching data from getUserConfigById: $e -> $page");
     }
   }
-
+//To export the report data
 exportTripData()async{
   isExportBtnClick=true;
   setState(() {
@@ -983,14 +976,6 @@ childrenValue!.clear();
                                           'Select Vessel *',
                                           style: TextStyle(
                                             color: Colors.black,
-                                              // color: Theme.of(context)
-                                              //     .brightness ==
-                                              //     Brightness.dark
-                                              //     ? "Select Vessel" ==
-                                              //     'User SubRole'
-                                              //     ? Colors.black54
-                                              //     : Colors.white
-                                              //     : Colors.black54,
                                               fontSize:
                                       
                                               orientation==Orientation.portrait?
@@ -1373,6 +1358,7 @@ childrenValue!.clear();
                                   
                                   context,
                                   blueColor,
+                                  
 
                                   () {
                                     if (_formKey.currentState!.validate()) {
@@ -1506,7 +1492,7 @@ childrenValue!.clear();
                                           Brightness.dark
                                       ? Colors.white
                                       : Colors.white,
-                                  displayHeight(context) * 0.021,
+                                orientation==Orientation.portrait?  displayHeight(context) * 0.021:displayHeight(context) * 0.032,
                                   blueColor,
                                   '',
                                 ),
@@ -1760,7 +1746,10 @@ childrenValue!.clear();
                                               blueColor),
                                     ),
                                   ),
-                            table(context)!,
+                           // table(context)!,
+
+ReportsDataTable(tripList: tripList, finalData: finalData),
+
                             SizedBox(
                               height: displayWidth(context) * 0.03,
                             ),
@@ -1784,7 +1773,7 @@ childrenValue!.clear();
                                 
                                 Container(
                                   height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
-                                  width: displayWidth(context) * 0.8,
+                                  width:orientation==Orientation.portrait? displayWidth(context) * 0.8:displayWidth(context) * 0.5,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
                                       color: blueColor),
@@ -1805,11 +1794,12 @@ childrenValue!.clear();
                                       ),
                                       commonText(
                                         context: context,
+                                        
                                         text: 'Export Complete Report',
                                         
                                         fontWeight: FontWeight.w600,
                                         textColor: Colors.white,
-                                        textSize: displayWidth(context) * 0.041,
+                                        textSize:orientation==Orientation.portrait? displayWidth(context) * 0.041:displayWidth(context) * 0.026,
                                       ),
                                     ],
                                   ),
@@ -1840,7 +1830,6 @@ childrenValue!.clear();
   //Vessel Details in report screen
   Widget vesselDetails(BuildContext context,Orientation orentation) {
     return Container(
-      //width: displayWidth(context) * 0.99,
     height:orentation==Orientation.portrait? displayHeight(context) * 0.14:displayHeight(context) * 0.30,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -1876,13 +1865,6 @@ childrenValue!.clear();
                 )),
           
           
-        //   Image.asset(
-        //  imageUrl??   "assets/images/reports-boat.png",
-        //     height: orentation==Orientation.portrait?displayHeight(context) * 0.1:displayHeight(context) * 0.2,
-        //     width: displayWidth(context) * 0.25,
-        //   ),
-
-
 
 
           SizedBox(
@@ -1915,8 +1897,6 @@ childrenValue!.clear();
                   Container(
                     margin: EdgeInsets.only(left: 4),
                     child: Column(
-                      //mainAxisAlignment: MainAxisAlignment.center,
-                     // crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           alignment: Alignment.center,
@@ -2015,179 +1995,6 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
     );
   }
 
-  //Table which we are showing in reports page
-  Widget? table(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Padding(
-        padding: EdgeInsets.all(12.0),
-        child: DataTable(
-          columnSpacing: displayWidth(context) * 0.07,
-          dividerThickness: 1,
-          columns: [
-            DataColumn(
-              label: Expanded(
-                child: Center(
-                  child: Text(
-                    'Date',
-                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            DataColumn(
-                label: Expanded(
-              child: Center(
-                child: Text('Duration',
-                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
-                    textAlign: TextAlign.center),
-              ),
-            )),
-            DataColumn(
-                label: Expanded(
-              child: Center(
-                child: Text('Avg Speed ($speedKnot)',
-                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
-                    textAlign: TextAlign.center),
-              ),
-            )),
-            DataColumn(
-                label: Expanded(
-              child: Center(
-                child: Text('Fuel Usage ($liters)',
-                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
-                    textAlign: TextAlign.center),
-              ),
-            )),
-            DataColumn(
-                label: Expanded(
-              child: Center(
-                child: Text('Power Usage ($watt)',
-                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
-                    textAlign: TextAlign.center),
-              ),
-            )),
-          ],
-          rows: [
-            ...tripList.map((person) => DataRow(cells: [
-                  DataCell(
-                    Align(
-                        alignment: Alignment.center,
-                        child: Text(dateWithZeros(person['date'],
-                        
-                        
-                        )!,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: dmsans
-                        ),
-
-
-                            textAlign: TextAlign.center)),
-                  ),
-                  DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text(person['duration']!,
-                          textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: dmsans
-                        ),
-
-                      )
-                          
-                          )),
-                  DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('${person['avgSpeed']!}',
-                          textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: dmsans
-                        ),
-
-
-                          
-                          ))),
-                  DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('${person['fuelUsage']}',
-                          textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: dmsans
-                        ),
-
-
-                          
-                          ))),
-                  DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('${person['powerUsage']}',
-                          textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: dmsans
-                        ),
-
-
-                          ))),
-                ])),
-            ...finalData.map((e) => DataRow(cells: [
-                  DataCell(
-                    Text(
-                     'Average',
-                      style: TextStyle(
-                          color: circularProgressColor,
-                          fontFamily: dmsans,
-                          fontWeight: FontWeight.w800),
-                    ),
-                  ),
-                  DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      e['duration']!,
-                      style: TextStyle(
-                          color: circularProgressColor,
-                                                    fontFamily: dmsans,
-
-                          fontWeight: FontWeight.w800),
-                    ),
-                  )),
-                  DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('${e['avgSpeed'].toStringAsFixed(2)!}',
-                        style: TextStyle(
-                            color: circularProgressColor,
-                                                      fontFamily: dmsans,
-
-                            fontWeight: FontWeight.w800)),
-                  )),
-                  DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('${e['fuelUsage']!}',
-                        style: TextStyle(
-                            color: circularProgressColor,
-                                                      fontFamily: dmsans,
-
-                            fontWeight: FontWeight.w800)),
-                  )),
-                  DataCell(Align(
-                    alignment: Alignment.center,
-                    child: Text('${e['powerUsage']!}',
-                        style: TextStyle(
-                            color: circularProgressColor,
-                                                      fontFamily: dmsans,
-
-                            fontWeight: FontWeight.w800)),
-                  )),
-                ]))
-          ],
-        ),
-      ),
-    );
-  }
 
   //Custom selection graph
   buildGraph(BuildContext context,Orientation orientation) {
@@ -2303,7 +2110,10 @@ Utils.showSnackBar(context,
       },
     );
 
-    return SingleChildScrollView(
+    return
+    
+    
+     SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SizedBox(
         width: durationColumnSeriesData.length > 3
@@ -3358,127 +3168,3 @@ class DropdownItem {
 
   DropdownItem({this.id, this.name});
 }
-// import 'dart:convert';
-// import 'dart:io';
-// import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
-// import 'package:logger/logger.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:performarine/common_widgets/utils/urls.dart';
-// import 'package:performarine/common_widgets/utils/utils.dart';
-// import 'package:performarine/common_widgets/widgets/log_level.dart';
-// import 'package:performarine/models/reports_model.dart';
-
-// class ReportModuleProvider with ChangeNotifier {
-//   ReportModel? reportModel;
-//   String page = "Report_module_Provider";
-
-//   Future<ReportModel> reportData(
-//       String startDate,
-//       String endDate,
-//       int? caseType,
-//       String? vesselID,
-//       String? token,
-//       List<String> selectedTripId,
-//       BuildContext context,
-//       GlobalKey<ScaffoldState> scaffoldKey) async {
-
-//     var headers = {
-//       HttpHeaders.contentTypeHeader: 'application/json',
-//       "x-access-token": token!,
-//     };
-
-//     Uri uri = Uri.https(Urls.baseUrl, Urls.reportModule);
-
-//     var queryParameters;
-//     var tempStartDate;
-//     var tempEndDate;
-//     if (startDate.isNotEmpty && endDate.isNotEmpty) {
-//       Utils.customPrint("filter by date:$startDate, $endDate ");
-//       tempStartDate = DateFormat('yyyy-MM-dd')
-//           .format(DateTime.parse(startDate + " 00:00:00.000").toUtc());
-//       tempEndDate = DateFormat('yyyy-MM-dd')
-//           .format(DateTime.parse(endDate + " 23:11:59.000").toUtc());
-//       Utils.customPrint("filter by date:$tempStartDate, $tempEndDate");
-//     }
-
-//     if (caseType == 1) {
-//       queryParameters = {
-//         "case": caseType,
-//         "vesselID": vesselID,
-//         "startDate": startDate,
-//         "endDate": endDate
-//       };
-//     } else {
-//       queryParameters = {"case": caseType, "tripIds": selectedTripId};
-//     }
-
-//     Utils.customPrint('Report module REQ $queryParameters\ntoken:$token');
-//     CustomLogger().logWithFile(Level.info, "Report module REQ $queryParameters\ntoken:$token -> $page");
-
-//     try {
-
-//       final response = await http.post(uri,
-//           body: jsonEncode(queryParameters), headers: headers);
-
-//       Utils.customPrint('Report REs : ' + response.body);
-//       CustomLogger().logWithFile(Level.info, "Report REs : ' + ${response.body} -> $page");
-
-//       var decodedData = json.decode(response.body);
-
-//       if (response.statusCode == HttpStatus.ok) {
-//         Utils.customPrint('Register Response : ' + response.body);
-//         CustomLogger().logWithFile(Level.info, "Register Response : ' + ${response.body}-> $page");
-//         // CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.reportModule}  is: ${response.statusCode}-> $page");
-
-//         // final pref = await Utils.initSharedPreferences();
-//         if(reportModel == null){
-//           CustomLogger().logWithFile(Level.error, "Error while parsing json data on reportModel -> $page");
-//         }
-
-//         reportModel = ReportModel.fromJson(json.decode(response.body));
-
-//         Utils.showSnackBar(context,
-//             scaffoldKey: scaffoldKey, message: decodedData['message']);
-
-//         return reportModel!;
-//       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
-//         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-//         Utils.customPrint('EXE RESP: $response');
-
-//         CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
-//         CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
-
-//         if (scaffoldKey != null) {
-//           Utils.showSnackBar(context,
-//               scaffoldKey: scaffoldKey, message: decodedData['message']);
-//         }
-
-//         reportModel = null;
-//       } else {
-//         if (scaffoldKey != null) {
-//           Utils.showSnackBar(context,
-//               scaffoldKey: scaffoldKey, message: decodedData['message']);
-//         }
-
-//         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
-//         Utils.customPrint('EXE RESP: $response');
-
-//         CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
-//         CustomLogger().logWithFile(Level.info, "EXE RESP: $response -> $page");
-//       }
-//       reportModel = null;
-//     } on SocketException catch (_) {
-//       await Utils().check(scaffoldKey);
-//       Utils.customPrint('Socket Exception');
-//       CustomLogger().logWithFile(Level.error, "Socket Exception -> $page");
-
-//       reportModel = null;
-//     } catch (exception, s) {
-//       Utils.customPrint('error caught report module:- $exception \n $s');
-//       CustomLogger().logWithFile(Level.error, "error caught report module:- $exception \n $s -> $page");
-//       reportModel = null;
-//     }
-//     return reportModel ?? ReportModel();
-//   }
-// }
