@@ -181,9 +181,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                   showDeleteTripDialogBox(
                       context,
                       tripData!.id!,
-                      tripData!.createdAt!,
-                      tripData!.time!,
-                      tripData!.distance!,
                           (){
                         Utils.customPrint("call back for delete trip in list");
                         //snapshot.data!.removeAt(index);
@@ -1317,7 +1314,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     );
   }
 
-  showDeleteTripDialogBox(BuildContext context,String tripId,String startDate, String totalTime, String distance,Function() onDeleteCallBack, GlobalKey<ScaffoldState> scaffoldKey,bool tripUploadStatus) {
+  showDeleteTripDialogBox(BuildContext context,String tripId,Function() onDeleteCallBack, GlobalKey<ScaffoldState> scaffoldKey,bool tripUploadStatus) {
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -1605,8 +1602,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         {
           if(value.status!)
           {
-
-
             isDeletedSuccessfully = value.status!;
             DatabaseService().deleteTripFromDB(tripId).then((value)
             {
@@ -1617,8 +1612,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
               });
             });
             onDeleteCallBack.call();
-            // Navigator.pop(context);
-            // Navigator.of(context).pop(true);
 
             internalStateSetter!(() {
               isBtnClick = false;

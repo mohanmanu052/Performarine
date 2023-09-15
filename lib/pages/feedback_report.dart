@@ -47,7 +47,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
   bool isBtnClick = false;
 
   String? _result;
-  bool _isRecursive = false;
 
   var totalSize = 1;
 
@@ -96,7 +95,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
             textAlign: TextAlign.start),
       ),
       body: Form(
-        //key: formKey,
         child: Stack(
           children: [
             SingleChildScrollView(
@@ -106,7 +104,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
                   Image.asset(
                     "assets/images/mail_new.png",
-                    //width: displayWidth(context) * 0.4,
                     height: displayHeight(context) * 0.2,
                   ),
 
@@ -290,13 +287,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
                 ],
               ),
             ),
-
-            // Positioned(
-            //   bottom: 5,
-            //   right: 0,
-            //   left: 0,
-            //   child:
-            // ),
           ],
         ),
       ),
@@ -305,13 +295,11 @@ class _FeedbackReportState extends State<FeedbackReport> {
           left: displayWidth(context) * 0.06,
           right: displayWidth(context) * 0.06,
           bottom: displayWidth(context) * 0.09
-          // top: displayWidth(context) * 0.02,
         ),
         child: isBtnClick ?  Padding(
           padding: EdgeInsets.only(
               left: displayWidth(context) /2.55,
               right: displayWidth(context) /2.55,
-             // bottom: displayWidth(context) * 0.09
           ),
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(

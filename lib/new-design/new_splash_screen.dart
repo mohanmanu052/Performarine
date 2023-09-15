@@ -114,7 +114,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
   checkIfTripIsRunning() async {
     var pref = await Utils.initSharedPreferences();
 
-    bool? isTripStarted = pref.getBool('trip_started');
+    bool? isTripStarted = pref.getBool('trip_started') ?? false;
     bool? isCalledFromNoti = pref.getBool('sp_key_called_from_noti');
 
     Utils.customPrint('INTRO START $isTripStarted');
