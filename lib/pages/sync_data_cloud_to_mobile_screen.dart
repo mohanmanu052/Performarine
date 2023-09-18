@@ -533,7 +533,7 @@ class _SyncDataCloudToMobileScreenState
                 beam: value.vessels![i].beam!,
                 draft: value.vessels![i].depth!,
                 vesselSize: value.vessels![i].vesselSize!,
-                capacity: int.parse(value.vessels![i].capacity!),
+                capacity: int.parse(value.vessels![i].capacity ?? '0'),
                 builtYear: int.parse(value.vessels![i].builtYear.toString()),
                 vesselStatus: value.vessels![i].vesselStatus == 2
                     ? 0

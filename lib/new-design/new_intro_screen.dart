@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
-import 'package:performarine/pages/auth/sign_up_screen.dart';
+import 'package:performarine/pages/auth_new/sign_up_screen.dart';
 import '../common_widgets/utils/colors.dart';
 import '../common_widgets/utils/common_size_helper.dart';
 import '../common_widgets/utils/constants.dart';

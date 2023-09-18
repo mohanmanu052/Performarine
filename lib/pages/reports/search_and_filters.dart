@@ -158,7 +158,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   //Convertion of date time into month/day/year format
   String convertIntoMonthDayYear(DateTime date) {
-    String dateString = DateFormat('MM/dd/yyyy').format(date);
+    String dateString = DateFormat('yyyy-MM-dd').format(date);
 
     Utils.customPrint(dateString);
     CustomLogger().logWithFile(Level.info, "convertIntoMonthDayYear: $dateString -> $page");
@@ -168,7 +168,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
   //Convertion of date time into year-month-day format
   String convertIntoYearMonthDayToShow(DateTime date) {
-    String dateString = DateFormat('MM-dd-yyyy').format(date);
+    String dateString = DateFormat('yyyy-MM-dd').format(date);
 
     Utils.customPrint(dateString);
     CustomLogger().logWithFile(Level.info, "convertIntoYearMonthDayToShow: $dateString -> $page");
@@ -336,7 +336,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
   String tripDate(String date) {
     String inputDate = date;
     DateTime dateTime = DateTime.parse(inputDate);
-    String formattedDate = DateFormat('MM-dd-yyyy').format(dateTime);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
     return formattedDate;
   }
 

@@ -53,6 +53,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       body: Center(
         child: Form(
           key: formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Container(
               height: displayHeight(context),
               margin: const EdgeInsets.symmetric(horizontal: 25),
@@ -117,7 +118,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             circularProgressColor),
                       ))
                       :   CommonButtons.getActionButton(
-                      title: 'Send Reset link',
+                      title: 'Send Reset Password Link',
                       context: context,
                       fontSize: displayWidth(context) * 0.044,
                       textColor: Colors.white,
@@ -145,13 +146,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                   setState(() {
                                     isLinkSuccess = true;
                                   });
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            SignInScreen(),
-                                      ),
-                                      ModalRoute.withName(""));
+
+                                  Future.delayed(Duration(seconds: 3), (){
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              SignInScreen(),
+                                        ),
+                                        ModalRoute.withName(""));
+                                  });
                                 }
                               } else{
                                 setState(() {
@@ -195,7 +199,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           text: 'Reset Link sent successfully!',
                           fontWeight: FontWeight.w500,
                           textColor: blueColor,
-                          textSize: displayWidth(context) * 0.03,
+                          textSize: displayWidth(context) * 0.032,
                           textAlign: TextAlign.start),
                     ],
                   ) : SizedBox(

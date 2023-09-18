@@ -75,11 +75,11 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
   ];
 
   List<SalesData> data = [
-    SalesData('06-22-2023', 35, 25),
-    SalesData('06-28-2023', 28, 38),
-    SalesData('07-02-2023', 34, 24),
-    SalesData('07-10-2023', 32, 52),
-    SalesData('07-14-2023', 40, 60)
+    SalesData('2023-08-15', 35, 25),
+    SalesData('2023-08-16', 28, 38),
+    SalesData('2023-08-17', 34, 24),
+    SalesData('2023-08-18', 32, 52),
+    SalesData('2023-08-19', 40, 60)
   ];
 
 

@@ -38,6 +38,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+
         if (widget.isEdit!) {
          Navigator.push(
             context,

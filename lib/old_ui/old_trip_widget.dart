@@ -154,7 +154,7 @@ class _OldTripWidgetState extends State<OldTripWidget> {
                         ? commonText(
                       context: context,
                       text:
-                      '${DateFormat('MM/dd/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
+                      '${DateFormat('yyyy-MM-dd hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
                       fontWeight: FontWeight.w500,
                       textColor: Colors.black,
                       textSize: displayWidth(context) * 0.018,
@@ -162,7 +162,7 @@ class _OldTripWidgetState extends State<OldTripWidget> {
                         : commonText(
                       context: context,
                       text:
-                      '${DateFormat('MM/dd/yyyy hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('MM/dd/yyyy hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
+                      '${DateFormat('yyyy-MM-dd hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('MM/dd/yyyy hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
                       fontWeight: FontWeight.w500,
                       textColor: Colors.black,
                       textSize: displayWidth(context) * 0.018,

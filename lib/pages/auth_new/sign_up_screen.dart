@@ -32,7 +32,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> countyFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> countryCodeFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> zipCodeFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> emailFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> phoneFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> createPassFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> confirmPassFormKey = GlobalKey<FormState>();
 
   late TextEditingController countryController;
   late TextEditingController countryCodeController;
@@ -103,7 +109,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       backgroundColor: Colors.white,
       body: Center(
         child: Form(
-          key: formKey,
             child: SingleChildScrollView(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 25),
@@ -290,210 +295,234 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         fontFamily: outfit
                     ),
                     SizedBox(height: displayHeight(context) * 0.01),
-                    Container(
-                      margin: EdgeInsets.only(top: 8.0),
-                    //  height: displayHeight(context) * 0.06,
-                      child: CommonDropDownFormField(
-                        context: context,
-                        value: selectedCountry,
-                        hintText: 'Select your Country',
-                        labelText: '',
-                        onChanged: (String value) {
-                          setState(() {
-                            selectedCountry = value;
+                    Form(
+                      key: countyFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 8.0),
+                      //  height: displayHeight(context) * 0.06,
+                        child: CommonDropDownFormField(
+                          context: context,
+                          value: selectedCountry,
+                          hintText: 'Select your Country',
+                          labelText: '',
+                          onChanged: (String value) {
+                            setState(() {
+                              selectedCountry = value;
 
-                            Utils.customPrint('country $selectedCountry');
-                            CustomLogger().logWithFile(Level.info, "country $selectedCountry -> $page");
-                          });
-                        },
-                        dataSource: [
-                          'USA',
-                          'Canada',
-                        ],
-                        borderRadius: 10,
-                        padding: 6,
-                        textColor: Colors.black,
-                        textField: 'key',
-                        valueField: 'value',
-                        validator: (value) {
-                          if (value == null) {
-                            return 'Select your Country';
-                          }
-                          return null;
-                        },
+                              Utils.customPrint('country $selectedCountry');
+                              CustomLogger().logWithFile(Level.info, "country $selectedCountry -> $page");
+                            });
+                          },
+                          dataSource: [
+                            'USA',
+                            'Canada',
+                          ],
+                          borderRadius: 10,
+                          padding: 6,
+                          textColor: Colors.black,
+                          textField: 'key',
+                          valueField: 'value',
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Select your Country';
+                            }
+                            return null;
+                          },
+                        ),
                       ),
                     ),
                     SizedBox(height: displayHeight(context) * 0.004),
-                    CommonTextField(
-                        controller: zipCodeController,
-                        focusNode: zipCodeFocusNode,
-                        labelText: selectedCountry == 'USA'
-                            ? 'Zip Code'
-                            : 'Postal Code',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType: selectedCountry == 'USA'
-                            ? TextInputType.number
-                            : TextInputType.text,
-                        textCapitalization: TextCapitalization.characters,
-                        maxLength: null, //selectedCountry == 'USA' ? 5 : 7,
-                        prefixIcon: null,
-                        requestFocusNode: null,
-                        obscureText: false,
-                        onFieldSubmitted: (value) {},
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            if (selectedCountry == 'USA') {
-                              return 'Enter Code';
-                            } else {
-                              return 'Enter Code';
+                    Form(
+                      key: zipCodeFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: zipCodeController,
+                          focusNode: zipCodeFocusNode,
+                          labelText: selectedCountry == 'USA'
+                              ? 'Zip Code'
+                              : 'Postal Code',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: selectedCountry == 'USA'
+                              ? TextInputType.number
+                              : TextInputType.text,
+                          textCapitalization: TextCapitalization.characters,
+                          maxLength: null, //selectedCountry == 'USA' ? 5 : 7,
+                          prefixIcon: null,
+                          requestFocusNode: null,
+                          obscureText: false,
+                          onFieldSubmitted: (value) {},
+                          onTap: () {},
+                          onChanged: (String value) {},
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              if (selectedCountry == 'USA') {
+                                return 'Enter Code';
+                              } else {
+                                return 'Enter Code';
+                              }
                             }
-                          }
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          Utils.customPrint(value);
-                          CustomLogger().logWithFile(Level.info, "Zip code or Postal Code $value -> $page");
-                        }),
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "Zip code or Postal Code $value -> $page");
+                          }),
+                    ),
                     SizedBox(height: displayHeight(context) * 0.01),
-                    CommonTextField(
-                        controller: emailController,
-                        focusNode: emailFocusNode,
-                        labelText: 'Enter your Email',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.emailAddress,
-                        textCapitalization: TextCapitalization.none,
-                        maxLength: 52,
-                        prefixIcon: null,
-                        requestFocusNode: null,
-                        obscureText: false,
-                        onFieldSubmitted: (value) {
-                        },
-                        onTap: () {
-                        },
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter your Email';
-                          }
-                          if (!EmailValidator.validate(value)) {
-                            return 'Enter Valid Email';
-                          } else if (EmailValidator.validate(value)) {
-                            String emailExt = value.split('.').last;
-
-                            if (!['com', 'in', 'us'].contains(emailExt)) {
-                              return 'Enter valid email';
+                    Form(
+                      key: emailFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: emailController,
+                          focusNode: emailFocusNode,
+                          labelText: 'Enter your Email',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.emailAddress,
+                          textCapitalization: TextCapitalization.none,
+                          maxLength: 52,
+                          prefixIcon: null,
+                          requestFocusNode: null,
+                          obscureText: false,
+                          onFieldSubmitted: (value) {
+                          },
+                          onTap: () {
+                          },
+                          onChanged: (String value) {},
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter your Email';
                             }
-                          }
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          Utils.customPrint(value);
-                          CustomLogger().logWithFile(Level.info, "Email $value -> $page");
-                        }),
-                    SizedBox(height: displayHeight(context) * 0.01),
-                    CommonTextField(
-                        controller: phoneController,
-                        focusNode: phoneFocusNode,
-                        labelText: 'Enter Phone Number',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 10,
-                        prefixIcon: null,
-                        requestFocusNode: null,
-                        obscureText: false,
-                        onFieldSubmitted: (value) {},
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter Mobile Number';
-                          }
-                          if (value.length > 10 || value.length < 10) {
-                            return 'Enter Valid Mobile Number';
-                          }
+                            if (!EmailValidator.validate(value)) {
+                              return 'Enter Valid Email';
+                            } else if (EmailValidator.validate(value)) {
+                              String emailExt = value.split('.').last;
 
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          Utils.customPrint(value);
-                          CustomLogger().logWithFile(Level.info, "Mobile Number $value -> $page");
-                        }),
+                              if (!['com', 'in', 'us'].contains(emailExt)) {
+                                return 'Enter valid email';
+                              }
+                            }
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "Email $value -> $page");
+                          }),
+                    ),
                     SizedBox(height: displayHeight(context) * 0.01),
-                    CommonTextField(
-                        controller: createPasswordController,
-                        focusNode: createPasswordFocusNode,
-                        labelText: 'Create Password',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.text,
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 32,
-                        prefixIcon: null,
-                        requestFocusNode: null,
-                        obscureText: true,
-                        onFieldSubmitted: (value) {},
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Enter Password';
-                          } else if (!RegExp(
-                              r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
-                              .hasMatch(value)) {
-                            return 'Password must contain at least 8 characters and \n include : \n * At least one lowercase letter (a-z) \n '
-                                '* At least one uppercase letter (A-Z) \n * At least one number (0-9) \n * At least one special character (e.g: !.@#\$&*~)';
-                          }
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          Utils.customPrint(value);
-                          CustomLogger().logWithFile(Level.info, "Create Password $value -> $page");
-                        }),
+                    Form(
+                      key: phoneFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: phoneController,
+                          focusNode: phoneFocusNode,
+                          labelText: 'Enter Phone Number',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.number,
+                          textCapitalization: TextCapitalization.words,
+                          maxLength: 10,
+                          prefixIcon: null,
+                          requestFocusNode: null,
+                          obscureText: false,
+                          onFieldSubmitted: (value) {},
+                          onTap: () {},
+                          onChanged: (String value) {},
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter Mobile Number';
+                            }
+                            if (value.length > 10 || value.length < 10) {
+                              return 'Enter Valid Mobile Number';
+                            }
+
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "Mobile Number $value -> $page");
+                          }),
+                    ),
                     SizedBox(height: displayHeight(context) * 0.01),
-                    CommonTextField(
-                        controller: confirmPasswordController,
-                        focusNode: confirmPasswordFocusNode,
-                        labelText: 'Confirm Password',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.done,
-                        textInputType: TextInputType.text,
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 32,
-                        prefixIcon: null,
-                        requestFocusNode: null,
-                        obscureText: true,
-                        onFieldSubmitted: (value) {},
-                        onTap: () {},
-                        onChanged: (String value) {},
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            isConfirmPasswordValid = false;
-                            return 'Enter Confirm Password';
-                          } else if (createPasswordController.text !=
-                              confirmPasswordController.text) {
-                            isConfirmPasswordValid = false;
-                            return "Passwords don\'t match";
-                          }
+                    Form(
+                      key: createPassFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: createPasswordController,
+                          focusNode: createPasswordFocusNode,
+                          labelText: 'Create Password',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          maxLength: 32,
+                          prefixIcon: null,
+                          requestFocusNode: null,
+                          obscureText: true,
+                          onFieldSubmitted: (value) {},
+                          onTap: () {},
+                          onChanged: (String value) {},
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter Password';
+                            } else if (!RegExp(
+                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
+                                .hasMatch(value)) {
+                              return 'Password must contain at least 8 characters and \n include : \n * At least one lowercase letter (a-z) \n '
+                                  '* At least one uppercase letter (A-Z) \n * At least one number (0-9) \n * At least one special character (e.g: !.@#\$&*~)';
+                            }
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "Create Password $value -> $page");
+                          }),
+                    ),
+                    SizedBox(height: displayHeight(context) * 0.01),
+                    Form(
+                      key: confirmPassFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: confirmPasswordController,
+                          focusNode: confirmPasswordFocusNode,
+                          labelText: 'Confirm Password',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.done,
+                          textInputType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          maxLength: 32,
+                          prefixIcon: null,
+                          requestFocusNode: null,
+                          obscureText: true,
+                          onFieldSubmitted: (value) {},
+                          onTap: () {},
+                          onChanged: (String value) {},
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              isConfirmPasswordValid = false;
+                              return 'Enter Confirm Password';
+                            } else if (createPasswordController.text !=
+                                confirmPasswordController.text) {
+                              isConfirmPasswordValid = false;
+                              return "Passwords don\'t match";
+                            }
 
-                          isConfirmPasswordValid = true;
+                            isConfirmPasswordValid = true;
 
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          Utils.customPrint(value);
-                          CustomLogger().logWithFile(Level.info, "Confirm Password $value -> $page");
-                        }),
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "Confirm Password $value -> $page");
+                          }),
+                    ),
                     SizedBox(height: displayHeight(context) * 0.01),
                     Padding(
                       padding:  EdgeInsets.only(left: displayWidth(context) * 0.04),
@@ -569,7 +598,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         borderColor: blueColor,
                         width: displayWidth(context),
                         onTap: () async {
-                          if (formKey.currentState!.validate()) {
+                          if (countyFormKey.currentState!.validate() && zipCodeFormKey.currentState!.validate() && emailFormKey.currentState!.validate()
+                              && phoneFormKey.currentState!.validate() && createPassFormKey.currentState!.validate() && confirmPassFormKey.currentState!.validate()) {
                             if(isChecked){
                               bool check = await Utils().check(scaffoldKey);
 

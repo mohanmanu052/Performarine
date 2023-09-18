@@ -35,6 +35,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/get_user_config_model.dart' as vs;
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -288,106 +289,114 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                               SizedBox(
                                 height: displayHeight(context) * 0.008,
                               ),
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton2<VesselDropdownItem>(
-                                  isExpanded: true,
-                                  hint: Text(
-                                    'Select Vessel',
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .brightness ==
-                                            Brightness.dark
-                                            ? "Select Vessel" ==
-                                            'User SubRole'
-                                            ? Colors.black54
-                                            : Colors.white
-                                            : Colors.black54,
-                                        fontSize:
-                                        displayWidth(context) * 0.032,
-                                        fontFamily: outfit,
-                                        fontWeight: FontWeight.w400),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  value: selectedValue,
-                                  items: vesselData.map((item) {
-                                    return DropdownMenuItem<
-                                        VesselDropdownItem>(
-                                      value: item,
-                                      child: Text(
-                                        item.name!,
-                                        style: TextStyle(
-                                            fontSize:
-                                            displayWidth(context) *
-                                                0.032,
-                                            color: Theme.of(context)
-                                                .brightness ==
-                                                Brightness.dark
-                                                ? "Select Vessel" ==
-                                                'User SubRole'
-                                                ? Colors.black
-                                                : Colors.white
-                                                : Colors.black,
-                                            fontWeight: FontWeight.w500),
-                                        overflow: TextOverflow.ellipsis,
+                              InkWell(
+                                onTap: (){
+                                  if(vesselData.isEmpty)
+                                    {
+                                      addNewVesselDialogBox(context);
+                                    }
+                                },
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton2<VesselDropdownItem>(
+                                    isExpanded: true,
+                                    hint: Text(
+                                      'Select Vessel',
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .brightness ==
+                                              Brightness.dark
+                                              ? "Select Vessel" ==
+                                              'User SubRole'
+                                              ? Colors.black54
+                                              : Colors.white
+                                              : Colors.black54,
+                                          fontSize:
+                                          displayWidth(context) * 0.032,
+                                          fontFamily: outfit,
+                                          fontWeight: FontWeight.w400),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    value: selectedValue,
+                                    items: vesselData.map((item) {
+                                      return DropdownMenuItem<
+                                          VesselDropdownItem>(
+                                        value: item,
+                                        child: Text(
+                                          item.name!,
+                                          style: TextStyle(
+                                              fontSize:
+                                              displayWidth(context) *
+                                                  0.032,
+                                              color: Theme.of(context)
+                                                  .brightness ==
+                                                  Brightness.dark
+                                                  ? "Select Vessel" ==
+                                                  'User SubRole'
+                                                  ? Colors.black
+                                                  : Colors.white
+                                                  : Colors.black,
+                                              fontWeight: FontWeight.w500),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onChanged: (item) {
+                                      Utils.customPrint(
+                                          "id is: ${item?.id} ");
+                                      CustomLogger().logWithFile(Level.info,
+                                          "id is: ${item?.id}-> $page");
+                                      setState(() {
+                                        selectedValue = item;
+                                        vesselId = item!.id;
+                                        selectedVesselName = item.name;
+                                      });
+                                    },
+                                    buttonStyleData: ButtonStyleData(
+                                      height: displayHeight(context) * 0.06,
+                                      width: displayWidth(context) * 0.9,
+                                      padding: EdgeInsets.only(
+                                          left: 14, right: 14),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(14),
+                                        border: Border.all(
+                                          color: Colors.transparent,
+                                        ),
+                                        color: Color(0xffE6E9F0),
                                       ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (item) {
-                                    Utils.customPrint(
-                                        "id is: ${item?.id} ");
-                                    CustomLogger().logWithFile(Level.info,
-                                        "id is: ${item?.id}-> $page");
-                                    setState(() {
-                                      selectedValue = item;
-                                      vesselId = item!.id;
-                                      selectedVesselName = item.name;
-                                    });
-                                  },
-                                  buttonStyleData: ButtonStyleData(
-                                    height: displayHeight(context) * 0.06,
-                                    width: displayWidth(context) * 0.9,
-                                    padding: EdgeInsets.only(
-                                        left: 14, right: 14),
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(14),
-                                      border: Border.all(
-                                        color: Colors.transparent,
+                                    ),
+                                    iconStyleData: IconStyleData(
+                                      icon: Icon(
+                                        Icons.keyboard_arrow_down,
                                       ),
-                                      color: Color(0xffE6E9F0),
+                                      iconSize:
+                                      displayHeight(context) * 0.03,
+                                      iconEnabledColor: Colors.black,
+                                      iconDisabledColor: Colors.grey,
                                     ),
-                                  ),
-                                  iconStyleData: IconStyleData(
-                                    icon: Icon(
-                                      Icons.keyboard_arrow_down,
+                                    dropdownStyleData: DropdownStyleData(
+                                      maxHeight:
+                                      displayHeight(context) * 0.25,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(14),
+                                        // color: backgroundColor,
+                                      ),
+                                      offset: const Offset(0, 0),
+                                      scrollbarTheme: ScrollbarThemeData(
+                                        radius: const Radius.circular(20),
+                                        thickness: MaterialStateProperty
+                                            .all<double>(6),
+                                        thumbVisibility:
+                                        MaterialStateProperty.all<bool>(
+                                            true),
+                                      ),
                                     ),
-                                    iconSize:
-                                    displayHeight(context) * 0.03,
-                                    iconEnabledColor: Colors.black,
-                                    iconDisabledColor: Colors.grey,
-                                  ),
-                                  dropdownStyleData: DropdownStyleData(
-                                    maxHeight:
-                                    displayHeight(context) * 0.25,
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(14),
-                                      // color: backgroundColor,
+                                    menuItemStyleData:
+                                    const MenuItemStyleData(
+                                      padding: EdgeInsets.only(
+                                          left: 18, right: 18, top: 8, bottom: 8),
                                     ),
-                                    offset: const Offset(0, 0),
-                                    scrollbarTheme: ScrollbarThemeData(
-                                      radius: const Radius.circular(20),
-                                      thickness: MaterialStateProperty
-                                          .all<double>(6),
-                                      thumbVisibility:
-                                      MaterialStateProperty.all<bool>(
-                                          true),
-                                    ),
-                                  ),
-                                  menuItemStyleData:
-                                  const MenuItemStyleData(
-                                    padding: EdgeInsets.only(
-                                        left: 18, right: 18, top: 8, bottom: 8),
                                   ),
                                 ),
                               ),
@@ -2362,66 +2371,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     setState(() {
       isVesselDataLoading = false;
     });
+    debugPrint("VESSEL LIST LENGTH${vesselData.isEmpty}");
     return;
 
-    /*try {
-      bool check = await Utils().check(scaffoldKey);
-      if (check) {
-        setState(() {
-          isVesselDataLoading = false;
-        });
-        commonProvider
-            .getUserConfigData(context, commonProvider.loginModel!.userId!,
-            commonProvider.loginModel!.token!, scaffoldKey)
-            .then((value) {
-
-          Utils.customPrint("value is: ${value!.status}");
-          CustomLogger().logWithFile(Level.info, "value is: ${value.status} -> $page");
-
-          if (value != null) {
-            setState(() {
-              isVesselDataLoading = true;
-            });
-            Utils.customPrint("value 1 is: ${value.status}");
-
-            Utils.customPrint("value of get user config by id: ${value.vessels}");
-            CustomLogger().logWithFile(Level.info, "value of get user config by id: ${value.vessels} -> $page");
-
-
-            Utils.customPrint("UNRETIRE VESSEL LEGNTH ${vesselData.length}");
-
-            List<vs.Vessels> vesselListData = value.vessels!.where((element) => element.vesselStatus == 1).toList();
-
-            vesselData = List<VesselDropdownItem>.from(vesselListData.map(
-                    (vessel) => VesselDropdownItem(id: vessel.id, name: vessel.name)));
-
-            Utils.customPrint("vesselData: ${vesselData.length}");
-            CustomLogger().logWithFile(Level.info, "vesselData: ${vesselData.length} -> $page");
-
-          } else {
-            setState(() {
-              isVesselDataLoading = true;
-            });
-          }
-        }).catchError((e) {
-          setState(() {
-            isVesselDataLoading = true;
-          });
-        });
-      } else {
-        setState(() {
-          isVesselDataLoading = true;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        isVesselDataLoading = true;
-      });
-
-      Utils.customPrint("Error while fetching data from getUserConfigById: $e");
-      CustomLogger().logWithFile(Level.error, "Error while fetching data from getUserConfigById: $e -> $page");
-
-    }*/
   }
 
   Future<bool> blueIsOn() async {
@@ -2439,9 +2391,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       Utils.customPrint("BLUETOOTH ENABLE $value");
 
       if (value == 'true') {
-        /* vessel!.add(widget.vessel!);
-        await locationPermissions(widget.vessel!.vesselSize!,
-            widget.vessel!.name!, widget.vessel!.id!);*/
         Utils.customPrint(" bluetooth state$value");
       } else {
         bool isNearByDevicePermitted =
@@ -2473,16 +2422,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         longitude = currentPosition.longitude.toString();
       }
 
-   /* ReceivePort port = ReceivePort();
-    String? latitude, longitude;
-    port.listen((dynamic data) async {
-      LocationDto? locationDto =
-      data != null ? LocationDto.fromJson(data) : null;
-      if (locationDto != null) {
-        latitude = locationDto.latitude.toString();
-        longitude = locationDto.longitude.toString();
-      };
-    });*/
     await fetchDeviceData();
 
     debugPrint("NUMBER OF PASS 4 $numberOfPassengers");
@@ -4101,20 +4040,125 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         }).then((value) {
       Utils.customPrint('DIALOG VALUE $value');
 
-      /*if (bluetoothName != '') {
-        setState(() {
-          progress = 1.0;
-          lprSensorProgress = 1.0;
-          isStartButton = true;
-          isBluetoothPermitted = true;
-          debugPrint("BLUETOOTH PERMISSION CODE 3 $isBluetoothPermitted");
-        });
-      } else {
-        setState(() {
-          isBluetoothPermitted = false;
-        });
-      }*/
     });
+  }
+
+  addNewVesselDialogBox(BuildContext context) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.45,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(context) * 0.1,
+                                width: displayWidth(context),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: commonText(
+                              context: context,
+                              text:
+                              'No vessel available, Please add vessel to continue',
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.black87,
+                              textSize: displayWidth(context) * 0.038,
+                              textAlign: TextAlign.center),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.012,
+                        ),
+                        Center(
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Add Vessel', context, blueColor,
+                                          () async {
+                                            Navigator.of(context).pop();
+
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                builder: (context) =>
+                                                AddNewVesselPage(calledFrom: 'startTripRecording',)));
+                                          },
+                                      displayWidth(context) * 0.65,
+                                      displayHeight(context) * 0.054,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.02,
+                                      blueColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 8.0,
+                              ),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Cancel', context, Colors.transparent,
+                                        () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                        ? Colors.white
+                                        : blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.white,
+                                    '',
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
   }
 }
 

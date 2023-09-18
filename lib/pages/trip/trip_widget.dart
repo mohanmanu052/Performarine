@@ -270,7 +270,7 @@ class _TripWidgetState extends State<TripWidget> {
                             child: commonText(
                               context: context,
                               text:
-                              '${DateFormat('yyyy/MM/dd hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
+                              '${DateFormat('yyyy-MM-dd hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.016,

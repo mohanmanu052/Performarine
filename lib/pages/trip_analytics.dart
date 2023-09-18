@@ -528,7 +528,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                               commonText(
                                                 context: context,
                                                 text:
-                                                ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
+                                                ': ${DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.createdAt!))}',
                                                 fontWeight:
                                                 FontWeight.w500,
                                                 textColor:
@@ -608,7 +608,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                 context:
                                                 context,
                                                 text:
-                                                ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.updatedAt!))}',
+                                                ': ${DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.updatedAt!))}',
                                                 fontWeight:
                                                 FontWeight
                                                     .w500,
@@ -1259,7 +1259,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                 context:
                                                 context,
                                                 text:
-                                                ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.createdAt!))}',
+                                                ': ${DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.createdAt!))}',
                                                 fontWeight:
                                                 FontWeight
                                                     .w500,
@@ -1347,7 +1347,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                 context:
                                                 context,
                                                 text:
-                                                ': ${DateFormat('MM/dd/yyyy').format(DateTime.parse(tripData!.updatedAt!))}',
+                                                ': ${DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.updatedAt!))}',
                                                 fontWeight:
                                                 FontWeight
                                                     .w500,
