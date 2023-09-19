@@ -108,7 +108,7 @@ class CommonButtons {
         child: DashedRect(
           color: primaryTextColor,
           strokeWidth: 1.5,
-          gap: 5.0,
+          gap: 2.0,
           onTap: onTap,
           title: title,
           primaryTextColor: primaryTextColor,

@@ -74,7 +74,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   TextEditingController registrationNumberController = TextEditingController();
   TextEditingController mmsiController = TextEditingController();
   TextEditingController fuelCapacityController = TextEditingController();
-  TextEditingController batteryCapacityController = TextEditingController();
+  //TextEditingController batteryCapacityController = TextEditingController();
   TextEditingController weightController = TextEditingController();
 
   FocusNode nameFocusNode = FocusNode();
@@ -137,8 +137,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
         selectedEngineType = widget.addVesselData!.engineType!.trim();
         fuelCapacityController.text =
             widget.addVesselData!.fuelCapacity!.toString();
-        batteryCapacityController.text =
-            widget.addVesselData!.batteryCapacity!.toString();
+        // batteryCapacityController.text =
+        //     widget.addVesselData!.batteryCapacity!.toString();
         weightController.text = widget.addVesselData!.weight!.toString();
         if(widget.addVesselData!.imageURLs != null)
         {
@@ -411,7 +411,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                         // });
                       }
                     },
-                    dataSource: ['Hybrid', 'Combustion', 'Electric'],
+                    dataSource: [ 'Combustion',],
                     borderRadius: 10,
                     padding: 6,
                     textColor: Colors.black,
@@ -469,7 +469,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 ],
               )
                   : SizedBox(),
-              selectedEngineType == 'Hybrid' ||
+            /*  selectedEngineType == 'Hybrid' ||
                   selectedEngineType == 'Electric'
                   ? Column(
                 children: [
@@ -508,7 +508,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   ),
                 ],
               )
-                  : SizedBox(),
+                  : SizedBox(), */
 
               Container(
                 margin: EdgeInsets.only(
@@ -528,9 +528,9 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                           FocusScope.of(context).requestFocus(new FocusNode());
 
                           if (nameFormKey.currentState!.validate() && modelFormKey.currentState!.validate() && builderNameFormKey.currentState!.validate() && regNumberFormKey.currentState!.validate()
-                              && mmsiFormKey.currentState!.validate() && weightFormKey.currentState!.validate() && selectedEngineFormKey.currentState!.validate()
-                              && selectedEngineType!.toLowerCase() == 'hybrid' ? fuelCapacityFormKey.currentState!.validate() && batteryCapacityFormKey.currentState!.validate()
-                              : selectedEngineType!.toLowerCase() == 'combustion' ? fuelCapacityFormKey.currentState!.validate() : batteryCapacityFormKey.currentState!.validate()
+                              && mmsiFormKey.currentState!.validate() && weightFormKey.currentState!.validate() && selectedEngineFormKey.currentState!.validate() && fuelCapacityFormKey.currentState!.validate()
+                              // && selectedEngineType!.toLowerCase() == 'hybrid' ? fuelCapacityFormKey.currentState!.validate()
+                              // : selectedEngineType!.toLowerCase() == 'combustion' ? fuelCapacityFormKey.currentState!.validate() : batteryCapacityFormKey.currentState!.validate()
                           ) {
                             if(isDeleted){
                               commonProvider.selectedImageFiles = [];
@@ -572,10 +572,10 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                             // finalSelectedFiles.isEmpty
                             //     ? []
                             //     : finalSelectedFiles;
-                            commonProvider.addVesselRequestModel!.batteryCapacity =
-                            batteryCapacityController.text.isEmpty
-                                ? '0'
-                                : batteryCapacityController.text;
+                            commonProvider.addVesselRequestModel!.batteryCapacity = "0";
+                            // batteryCapacityController.text.isEmpty
+                            //     ? '0'
+                            //     : batteryCapacityController.text;
                             commonProvider.addVesselRequestModel!.imageURLs =
                             widget.addVesselData == null
                                 ? ''
